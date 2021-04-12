@@ -1,0 +1,81 @@
+{
+  "name": "@findora-network/findora-sdk.js",
+  "version": "0.0.1",
+  "description": "The JavaScript SDK for Findora Network",
+  "license": "MIT",
+  "author": "Findora Network",
+  "keywords": [
+    "crypto",
+    "blockchain",
+    "smart-contracts"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/FindoraNetwork/findora-sdk"
+  },
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "build": "tsc --module commonjs && webpack --mode production",
+    "test": "jest --watch",
+    "prettier": "prettier --write ./src/**/*.ts",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "doc": "typedoc",
+    "prepublishOnly": "npm run build",
+    "start:build": "tsc -w --module commonjs ",
+    "start:run": "nodemon dist/run.js",
+    "start": "concurrently npm:start:*"
+  },
+  "lint-staged": {
+    "./src/**/*.ts": [
+      "prettier --write",
+      "eslint"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-checkout": "yarn"
+    }
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.14",
+    "@types/node": "^14.14.17",
+    "@types/readable-stream": "^2.3.9",
+    "@types/tmp": "^0.2.0",
+    "@types/ws": "^7.4.0",
+    "@typescript-eslint/eslint-plugin": "^4.5.0",
+    "@typescript-eslint/parser": "^4.5.0",
+    "buffer": "^6.0.3",
+    "concurrently": "^6.0.1",
+    "eslint": "^7.5",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-prettier": "^3.1.3",
+    "eslint-plugin-simple-import-sort": "^5.0.1",
+    "husky": "^4.3.6",
+    "jest": "^26.6.3",
+    "lint-staged": "^10.5.3",
+    "nodemon": "^2.0.7",
+    "prettier": "^2.2.1",
+    "stream-browserify": "^3.0.0",
+    "ts-jest": "^26.4.4",
+    "ts-loader": "^8.0.13",
+    "ts-node": "^9.1.1",
+    "tsconfig-paths-webpack-plugin": "^3.3.0",
+    "typedoc": "^0.20.5",
+    "typescript": "^4.1.5",
+    "webpack": "^5.11.1",
+    "webpack-bundle-analyzer": "^4.3.0",
+    "webpack-cli": "^4.3.0"
+  },
+  "dependencies": {
+    "axios": "^0.21.1"
+  }
+}
