@@ -1,2 +1,0 @@
-exports.id=786,exports.ids=[786],exports.modules={786:(e,t,a)=>{"use strict";a.r(t),a.d(t,{getNodeLedger:()=>i,getWebLedger:()=>s});const s=async()=>await(async()=>await a.e(547).then(a.bind(a,547)))(),i=async()=>await(async()=>await Promise.all([a.e(768),a.e(891)]).then(a.t.bind(a,768,23)))()}};
-//# sourceMappingURL=786.bundle.node.js.map

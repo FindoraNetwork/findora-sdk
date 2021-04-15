@@ -1,2 +1,0 @@
-(self.webpackChunkTerra=self.webpackChunkTerra||[]).push([[365],{891:e=>{function r(e){var r=new Error("Cannot find module '"+e+"'");throw r.code="MODULE_NOT_FOUND",r}r.keys=()=>[],r.resolve=r,r.id=891,e.exports=r},786:(e,r,n)=>{"use strict";n.r(r),n.d(r,{getNodeLedger:()=>o,getWebLedger:()=>s});var a=n(768),t=n.n(a);const s=async()=>await(async()=>await n.e(547).then(n.bind(n,547)))(),o=()=>t()},362:()=>{}}]);
-//# sourceMappingURL=365.bundle.js.map

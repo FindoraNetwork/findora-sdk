@@ -22,7 +22,8 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "tsc && webpack --mode production",
+    "buildAll": "tsc && webpack --mode production",
+    "build": "tsc",
     "test": "jest --watch",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",

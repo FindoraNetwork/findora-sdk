@@ -1,2 +1,0 @@
-(self.webpackChunkTerra=self.webpackChunkTerra||[]).push([[786],{786:(e,a,t)=>{"use strict";t.r(a),t.d(a,{getNodeLedger:()=>s,getWebLedger:()=>n});const n=async()=>await(async()=>await t.e(547).then(t.bind(t,547)))(),s=async()=>await(async()=>await Promise.all([t.e(768),t.e(214)]).then(t.t.bind(t,768,23)))()}}]);
-//# sourceMappingURL=786.bundle.js.map
