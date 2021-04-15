@@ -1,6 +1,2 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.uint8arrayToHexStr = void 0;
-var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
-exports.uint8arrayToHexStr = uint8arrayToHexStr;
+export const uint8arrayToHexStr = (input) => Buffer.from(input).toString('hex');
 //# sourceMappingURL=utils.js.map

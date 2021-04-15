@@ -1,0 +1,2 @@
+exports.id=580,exports.ids=[580],exports.modules={580:(e,s,t)=>{"use strict";t.r(s),t.d(s,{getLedger:()=>o});const o=async e=>{console.log("ledger",e),await t.e(577).then(t.bind(t,577))}}};
+//# sourceMappingURL=580.bundle.node.js.map

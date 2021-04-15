@@ -1,25 +1,20 @@
-import nodeLedger, { LedgerForNode } from './nodeLedger';
-import webLedger, { LedgerForWeb } from './webLedger';
+import nodeLedger from './nodeLedger';
+import webLedger from './webLedger';
 
 type LedgerType = 'nodeLedger' | 'webLedger';
 
-type Ledger = LedgerForNode | LedgerForWeb;
+// type Ledger = LedgerForNode | LedgerForWeb;
 
 const ledgers = {
   nodeLedger,
   webLedger,
 };
 
-const getLedger = async (ledger: LedgerType): Promise<Ledger> => {
+export const getLedger = async (ledger: LedgerType): Promise<any> => {
   const loadledgerModule = ledgers[ledger];
   // const loadledgerModule = await import('./webLedger');
 
-  console.log('loadledgerModule', loadledgerModule);
   const myLedger = await loadledgerModule();
 
   return myLedger;
-};
-
-export default {
-  getLedger,
 };

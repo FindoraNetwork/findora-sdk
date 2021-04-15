@@ -22,13 +22,13 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "tsc --module commonjs && webpack --mode production",
+    "build": "tsc && webpack --mode production",
     "test": "jest --watch",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc",
     "prepublishOnly": "npm run build",
-    "start:build": "tsc -w --module commonjs ",
+    "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js",
     "start": "concurrently npm:start:*"
   },

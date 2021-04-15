@@ -35,6 +35,7 @@ const webConfig = {
   },
   experiments: {
     syncWebAssembly: true, // Compatible with the old version of webpack-4
+    topLevelAwait: true, // Support top await
   },
   resolve: {
     ...commonConfig.resolve,
@@ -57,6 +58,7 @@ const nodeConfig = {
   },
   experiments: {
     asyncWebAssembly: true,
+    topLevelAwait: true, // Support top await
   },
 };
 
