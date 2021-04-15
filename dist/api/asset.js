@@ -36,18 +36,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var api_1 = require("./api");
-var myMain = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var assetCode;
+exports.getFraAssetCode = void 0;
+var ledgerWrapper_1 = require("../services/ledger/ledgerWrapper");
+var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
-                assetCode = _a.sent();
-                console.log('FRA assetCode IS', assetCode);
-                return [2 /*return*/];
+                ledger = _a.sent();
+                assetCode = ledger.fra_get_asset_code();
+                return [2 /*return*/, assetCode];
         }
     });
 }); };
-myMain();
-//# sourceMappingURL=run.js.map
+exports.getFraAssetCode = getFraAssetCode;
+//# sourceMappingURL=asset.js.map
