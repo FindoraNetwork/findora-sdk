@@ -1,2 +1,2 @@
 export { Random } from './random';
-export const { getWebLedger, getNodeLedger } = await import('./services/ledger/ledgerWrapper');
+export { getWebLedger, getNodeLedger } from './services/ledger/ledgerWrapper';
