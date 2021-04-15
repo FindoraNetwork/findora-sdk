@@ -1,2 +1,2 @@
-(self.webpackChunkTerra=self.webpackChunkTerra||[]).push([[786],{786:(e,a,n)=>{"use strict";n.r(a),n.d(a,{getLedger:()=>s});const r={nodeLedger:async()=>await Promise.all([n.e(768),n.e(214)]).then(n.t.bind(n,768,23)),webLedger:async()=>await n.e(547).then(n.bind(n,547))},s=async e=>{const a=r[e];return console.log("loadledgerModule",a),await a()}}}]);
+(self.webpackChunkTerra=self.webpackChunkTerra||[]).push([[786],{786:(e,a,n)=>{"use strict";n.r(a),n.d(a,{getLedger:()=>t});const r={nodeLedger:async()=>await Promise.all([n.e(768),n.e(214)]).then(n.t.bind(n,768,23)),webLedger:async()=>await n.e(547).then(n.bind(n,547))},t=async e=>{const a=r[e];return await a()}}}]);
 //# sourceMappingURL=786.bundle.js.map

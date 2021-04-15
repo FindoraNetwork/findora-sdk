@@ -1,2 +1,2 @@
-exports.id=786,exports.ids=[786],exports.modules={786:(e,t,s)=>{"use strict";s.r(t),s.d(t,{getLedger:()=>o});const d={nodeLedger:async()=>await Promise.all([s.e(768),s.e(891)]).then(s.t.bind(s,768,23)),webLedger:async()=>await s.e(547).then(s.bind(s,547))},o=async e=>{const t=d[e];return console.log("loadledgerModule",t),await t()}}};
+exports.id=786,exports.ids=[786],exports.modules={786:(e,t,s)=>{"use strict";s.r(t),s.d(t,{getLedger:()=>r});const n={nodeLedger:async()=>await Promise.all([s.e(768),s.e(891)]).then(s.t.bind(s,768,23)),webLedger:async()=>await s.e(547).then(s.bind(s,547))},r=async e=>{const t=n[e];return await t()}}};
 //# sourceMappingURL=786.bundle.node.js.map
