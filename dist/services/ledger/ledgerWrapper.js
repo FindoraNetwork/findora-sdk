@@ -40,11 +40,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNodeLedger = exports.getWebLedger = void 0;
-// import nodeLedger, { LedgerForNode } from './nodeLedger';
-// import webLedger, { LedgerForWeb } from './webLedger';
 var nodeLedger_1 = __importDefault(require("./nodeLedger"));
 var webLedger_1 = __importDefault(require("./webLedger"));
-// type Ledger = LedgerForNode | LedgerForWeb;
 var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
     var myLedger;
     return __generator(this, function (_a) {
@@ -69,4 +66,5 @@ var getNodeLedger = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getNodeLedger = getNodeLedger;
+// export const getLedger = async () :
 //# sourceMappingURL=ledgerWrapper.js.map

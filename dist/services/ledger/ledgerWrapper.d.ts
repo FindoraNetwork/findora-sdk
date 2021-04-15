@@ -1,2 +1,6 @@
-export declare const getWebLedger: () => Promise<typeof import('findora-wallet-wasm/bundler/wasm.js')>;
-export declare const getNodeLedger: () => Promise<typeof import('findora-wallet-wasm/nodejs/wasm.js')>;
+import { LedgerForNode } from './nodeLedger';
+import { LedgerForWeb } from './webLedger';
+declare type Ledger = LedgerForNode | LedgerForWeb;
+export declare const getWebLedger: () => Promise<Ledger>;
+export declare const getNodeLedger: () => Promise<Ledger>;
+export {};
