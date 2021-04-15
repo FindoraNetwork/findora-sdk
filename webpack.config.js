@@ -15,7 +15,7 @@ const commonConfig = {
     ],
   },
   resolve: {
-    extensions: ['.tsx', '.ts', '.js'],
+    extensions: ['.tsx', '.ts', '.js', '.wasm'],
     plugins: [new TsconfigPathsPlugin()],
   },
   plugins: [
@@ -33,11 +33,16 @@ const webConfig = {
     libraryTarget: 'umd',
     library: 'Terra',
   },
+  experiments: {
+    syncWebAssembly: true, // Compatible with the old version of webpack-4
+  },
   resolve: {
     ...commonConfig.resolve,
     fallback: {
       stream: require.resolve('stream-browserify'),
       buffer: require.resolve('buffer'),
+      path: require.resolve('path-browserify'),
+      fs: false,
     },
   },
   plugins: [...commonConfig.plugins],
@@ -50,6 +55,10 @@ const nodeConfig = {
     libraryTarget: 'commonjs',
     filename: 'bundle.node.js',
   },
+  experiments: {
+    asyncWebAssembly: true,
+  },
 };
 
+// module.exports = [webConfig];
 module.exports = [webConfig, nodeConfig];

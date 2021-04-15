@@ -12,7 +12,9 @@ const ledgers = {
 
 const getLedger = async (ledger: LedgerType): Promise<Ledger> => {
   const loadledgerModule = ledgers[ledger];
+  // const loadledgerModule = await import('./webLedger');
 
+  console.log('loadledgerModule', loadledgerModule);
   const myLedger = await loadledgerModule();
 
   return myLedger;
