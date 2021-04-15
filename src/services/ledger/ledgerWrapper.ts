@@ -1,14 +1,7 @@
 import nodeLedger, { LedgerForNode } from './nodeLedger';
 import webLedger, { LedgerForWeb } from './webLedger';
 
-// type LedgerType = 'nodeLedger' | 'webLedger';
-
 type Ledger = LedgerForNode | LedgerForWeb;
-
-// const ledgers = {
-//   nodeLedger,
-//   webLedger,
-// };
 
 export const getWebLedger = async (): Promise<Ledger> => {
   const myLedger = await webLedger();
@@ -16,8 +9,8 @@ export const getWebLedger = async (): Promise<Ledger> => {
   return myLedger;
 };
 
-export const getNodeLedger = (): Ledger => {
-  const myLedger = nodeLedger();
+export const getNodeLedger = async (): Promise<Ledger> => {
+  const myLedger = await nodeLedger();
 
   return myLedger;
 };
