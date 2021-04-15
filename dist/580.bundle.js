@@ -1,2 +1,0 @@
-(self.webpackChunkTerra=self.webpackChunkTerra||[]).push([[580],{580:(e,r,s)=>{"use strict";s.r(r),s.d(r,{getLedger:()=>a});const a=async e=>{console.log("ledger",e),await s.e(577).then(s.bind(s,577))}}}]);
-//# sourceMappingURL=580.bundle.js.map

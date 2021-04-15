@@ -62,5 +62,4 @@ const nodeConfig = {
   },
 };
 
-// module.exports = [webConfig];
 module.exports = [webConfig, nodeConfig];
