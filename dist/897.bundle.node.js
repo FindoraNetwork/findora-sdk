@@ -1,0 +1,2 @@
+exports.id=897,exports.ids=[897],exports.modules={891:e=>{function r(e){var r=new Error("Cannot find module '"+e+"'");throw r.code="MODULE_NOT_FOUND",r}r.keys=()=>[],r.resolve=r,r.id=891,e.exports=r},786:(e,r,t)=>{"use strict";t.r(r),t.d(r,{getNodeLedger:()=>n,getWebLedger:()=>d});var o=t(768),s=t.n(o);const d=async()=>await(async()=>await t.e(547).then(t.bind(t,547)))(),n=()=>s()}};
+//# sourceMappingURL=897.bundle.node.js.map

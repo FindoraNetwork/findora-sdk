@@ -1,8 +1,9 @@
 export type LedgerForNode = typeof import('findora-wallet-wasm/nodejs/wasm.js');
 
-const getNodeLedger = async (): Promise<LedgerForNode> => {
-  const ledger = await import('findora-wallet-wasm/nodejs/wasm.js');
-  return ledger;
+import Ledger from 'findora-wallet-wasm/nodejs/wasm.js';
+
+const getNodeLedger = (): LedgerForNode => {
+  return Ledger;
 };
 
 export default getNodeLedger;

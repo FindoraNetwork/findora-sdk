@@ -1,12 +1,15 @@
 import nodeLedger from './nodeLedger';
 import webLedger from './webLedger';
-const ledgers = {
-    nodeLedger,
-    webLedger,
+// const ledgers = {
+//   nodeLedger,
+//   webLedger,
+// };
+export const getWebLedger = async () => {
+    const myLedger = await webLedger();
+    return myLedger;
 };
-export const getLedger = async (ledger) => {
-    const loadledgerModule = ledgers[ledger];
-    const myLedger = await loadledgerModule();
+export const getNodeLedger = () => {
+    const myLedger = nodeLedger();
     return myLedger;
 };
 //# sourceMappingURL=ledgerWrapper.js.map
