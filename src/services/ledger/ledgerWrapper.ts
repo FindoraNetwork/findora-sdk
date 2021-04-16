@@ -18,7 +18,7 @@ export const getNodeLedger = async (): Promise<Ledger> => {
 };
 
 export const getLedger = async (): Promise<Ledger> => {
-  if (process?.env?.NODE) {
+  if (process && process?.env?.NODE) {
     return getNodeLedger();
   }
   return getWebLedger();
