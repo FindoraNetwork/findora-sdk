@@ -18,9 +18,13 @@ export const getNodeLedger = async (): Promise<Ledger> => {
 };
 
 export const getLedger = async (): Promise<Ledger> => {
-  console.log('!!p!!', process?.env);
-  if (process && process?.env?.NODE) {
+  const isNodeEnv = typeof process !== 'undefined' && process.release.name === 'node';
+
+  console.log('isNodeEnv', isNodeEnv);
+
+  if (isNodeEnv) {
     return getNodeLedger();
   }
+
   return getWebLedger();
 };

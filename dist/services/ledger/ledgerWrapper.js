@@ -67,10 +67,11 @@ var getNodeLedger = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 exports.getNodeLedger = getNodeLedger;
 var getLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a;
-    return __generator(this, function (_b) {
-        console.log('!!p!!', process === null || process === void 0 ? void 0 : process.env);
-        if (process && ((_a = process === null || process === void 0 ? void 0 : process.env) === null || _a === void 0 ? void 0 : _a.NODE)) {
+    var isNodeEnv;
+    return __generator(this, function (_a) {
+        isNodeEnv = typeof process !== 'undefined' && process.release.name === 'node';
+        console.log('isNodeEnv', isNodeEnv);
+        if (isNodeEnv) {
             return [2 /*return*/, exports.getNodeLedger()];
         }
         return [2 /*return*/, exports.getWebLedger()];
