@@ -22,13 +22,14 @@
     "node": ">=12"
   },
   "scripts": {
-    "build": "tsc --module commonjs && webpack --mode production",
+    "buildAll": "tsc && webpack --mode production",
+    "build": "tsc",
     "test": "jest --watch",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc",
     "prepublishOnly": "npm run build",
-    "start:build": "tsc -w --module commonjs ",
+    "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js",
     "start": "concurrently npm:start:*"
   },
@@ -63,6 +64,7 @@
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
     "nodemon": "^2.0.7",
+    "path-browserify": "^1.0.1",
     "prettier": "^2.2.1",
     "stream-browserify": "^3.0.0",
     "ts-jest": "^26.4.4",
@@ -76,6 +78,7 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
-    "axios": "^0.21.1"
+    "axios": "^0.21.1",
+    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#v0.1.0-rc5.5-final"
   }
 }

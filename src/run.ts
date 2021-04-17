@@ -1,5 +1,9 @@
-import { Random } from './random';
+import { Asset } from './api';
 
-const data = Random.getBytes(12);
+const myMain = async () => {
+  const assetCode = await Asset.getFraAssetCode();
 
-console.log('our data is:', data);
+  console.log('FRA assetCode IS', assetCode);
+};
+
+myMain();
