@@ -1,7 +1,7 @@
 import JSONbig from 'json-bigint';
 
 import { HOST, LEDGER_PORT, PROTOCOL, QUERY_PORT, SUBMISSION_PORT } from '../../config/network';
-import axios from '../dataProxy';
+import axios from '../../services/dataProxy';
 import * as Types from './types';
 
 const getQueryRoute = (): string => `${PROTOCOL}://${HOST}:${QUERY_PORT}`;

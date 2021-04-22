@@ -1,10 +1,10 @@
-import { network } from '../../services';
+import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '../../services/ledger/types';
-import { Fee } from '../core';
-import * as ApiKeyPair from '../keypair';
+import { WalletKeypar } from '../keypair';
+import * as Network from '../network';
 
-export interface AssetRules {
+interface AssetRules {
   transferable: boolean;
   updatable: boolean;
   decimal: number;
@@ -22,7 +22,7 @@ export const getRandomAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
-export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
+const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
   const defaultTransferable = true;
@@ -37,7 +37,7 @@ export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   return assetRules;
 };
 
-export const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRules> => {
+const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRules> => {
   if (!newAssetRules) {
     const defaultAssetRules = await getDefaultAssetRules();
     return defaultAssetRules;
@@ -63,7 +63,7 @@ const getDefineAssetTransactionBuilder = async (
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
-  const { response: stateCommitment, error } = await network.getStateCommitment();
+  const { response: stateCommitment, error } = await Network.getStateCommitment();
 
   if (error) {
     throw new Error(error.message);
@@ -76,7 +76,6 @@ const getDefineAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  // It is time to create a new transaction
   const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
     walletKeypair,
     assetMemo,
@@ -85,20 +84,10 @@ const getDefineAssetTransactionBuilder = async (
   );
 
   return definitionTransaction;
-  // // At this step we are using helper to calcualte a minimal required fee for the transaction
-  // // and add that to the instance of the transfer operation
-  // const receivedTransferOperation = await getTransferOperationWithFee(walletInfo);
-
-  // // And this operation is now added to the transaction
-  // definitionTransaction = definitionTransaction.add_transfer_operation(receivedTransferOperation);
-
-  // // Preparing data that would be submitted to the network.
-  // const submitData = definitionTransaction.transaction();
-  // console.log('Transaction Data to submit: ', submitData);
 };
 
 export const defineAsset = async (
-  walletInfo: ApiKeyPair.WalletKeypar,
+  walletInfo: WalletKeypar,
   assetName: string,
   assetMemo?: string,
   newAssetRules?: AssetRules,
@@ -122,10 +111,10 @@ export const defineAsset = async (
 
   const submitData = transactionBuilder.transaction();
 
-  console.log('Transaction Data to submit: ', submitData);
+  // console.log('Transaction Data to submit: ', submitData);
 
-  // Submitting the transaction, and as a response, we retrieve the transaction handle.
-  const handle = await network.submitTransaction(submitData);
+  const handle = await Network.submitTransaction(submitData);
+
   console.log('Transaction handle:', handle);
 
   return assetName;

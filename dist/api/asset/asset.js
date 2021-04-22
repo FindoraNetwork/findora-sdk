@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -36,10 +55,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineAsset = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
-var services_1 = require("../../services");
+exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
+var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var core_1 = require("../core");
+var Network = __importStar(require("../network"));
 var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetCode;
     return __generator(this, function (_a) {
@@ -84,14 +103,13 @@ var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0
         }
     });
 }); };
-exports.getDefaultAssetRules = getDefaultAssetRules;
 var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
     var defaultAssetRules, ledger, transferable, updatable, decimal, assetRules;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 if (!!newAssetRules) return [3 /*break*/, 2];
-                return [4 /*yield*/, exports.getDefaultAssetRules()];
+                return [4 /*yield*/, getDefaultAssetRules()];
             case 1:
                 defaultAssetRules = _a.sent();
                 return [2 /*return*/, defaultAssetRules];
@@ -107,7 +125,6 @@ var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
-exports.getAssetRules = getAssetRules;
 var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, assetRules, assetMemo) {
     if (assetMemo === void 0) { assetMemo = 'memo'; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -117,7 +134,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
                 case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
                 case 1:
                     ledger = _b.sent();
-                    return [4 /*yield*/, services_1.network.getStateCommitment()];
+                    return [4 /*yield*/, Network.getStateCommitment()];
                 case 2:
                     _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
                     if (error) {
@@ -138,13 +155,13 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
     var assetRules, fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, handle;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getAssetRules(newAssetRules)];
+            case 0: return [4 /*yield*/, getAssetRules(newAssetRules)];
             case 1:
                 assetRules = _a.sent();
                 return [4 /*yield*/, exports.getFraAssetCode()];
             case 2:
                 fraCode = _a.sent();
-                return [4 /*yield*/, core_1.Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
             case 3:
                 transferOperationBuilder = _a.sent();
                 receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
@@ -153,8 +170,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 transactionBuilder = _a.sent();
                 transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 submitData = transactionBuilder.transaction();
-                console.log('Transaction Data to submit: ', submitData);
-                return [4 /*yield*/, services_1.network.submitTransaction(submitData)];
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
             case 5:
                 handle = _a.sent();
                 console.log('Transaction handle:', handle);

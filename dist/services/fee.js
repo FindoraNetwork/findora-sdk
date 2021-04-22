@@ -55,110 +55,71 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var api_1 = require("./api");
-var Fee = __importStar(require("./services/fee"));
-var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var assetCode;
+exports.buildTransferOperationWithFee = exports.getTransferOperationWithFee = void 0;
+var Network = __importStar(require("../api/network"));
+var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
+var utxoHelper_1 = require("./utxoHelper");
+var getTransferOperationWithFee = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType, transferOp, inputParametersList, inputAmount, numberToSubmit;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
-                assetCode = _a.sent();
-                console.log('FRA assetCode IS', assetCode);
-                return [2 /*return*/];
+                ledger = _a.sent();
+                minimalFee = ledger.fra_get_minimal_fee();
+                toPublickey = ledger.fra_get_dest_pubkey();
+                assetCode = ledger.fra_get_asset_code();
+                isBlindAmount = false;
+                isBlindType = false;
+                transferOp = ledger.TransferOperationBuilder.new();
+                inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
+                inputParametersList.forEach(function (inputParameters) {
+                    var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
+                    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
+                });
+                transferOp = transferOp.add_output_no_tracing(minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType);
+                if (inputAmount > minimalFee) {
+                    numberToSubmit = BigInt(Number(inputAmount) - Number(minimalFee));
+                    transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, isBlindAmount, isBlindType);
+                }
+                return [2 /*return*/, transferOp];
         }
     });
 }); };
-var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, assetCode, walletInfo, asset;
+exports.getTransferOperationWithFee = getTransferOperationWithFee;
+var buildTransferOperationWithFee = function (walletInfo, fraCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, minimalFee, sidsResult, sids, utxoDataList, sendUtxoList, utxoInputsInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0:
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-                password = '123';
-                console.log('pass!', password);
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
-                assetCode = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
-            case 3:
-                asset = _a.sent();
-                console.log('asset IS !', asset);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, sidsResult, sid, utxo, ownerMemo, stateCommitment;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
-            case 1:
-                sidsResult = _a.sent();
-                console.log('sidsResult', sidsResult);
-                sid = 519;
-                return [4 /*yield*/, api_1.Network.getUtxo(sid)];
-            case 2:
-                utxo = _a.sent();
-                console.log('utxo!', utxo);
-                return [4 /*yield*/, api_1.Network.getOwnerMemo(sid)];
-            case 3:
-                ownerMemo = _a.sent();
-                console.log('owner memo', ownerMemo);
-                return [4 /*yield*/, api_1.Network.getStateCommitment()];
-            case 4:
-                stateCommitment = _a.sent();
-                console.log('stateCommitment', stateCommitment);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, trasferOperation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
+                ledger = _a.sent();
+                minimalFee = ledger.fra_get_minimal_fee();
+                return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
             case 2:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
-                console.log('sids', sids);
                 if (!sids) {
-                    return [2 /*return*/];
+                    console.log('sidsResult', sidsResult);
+                    throw new Error('no sids were fetched!');
                 }
-                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
+                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
             case 3:
                 utxoDataList = _a.sent();
                 console.log('utxoDataList', utxoDataList);
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                amount = BigInt(3);
-                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+                sendUtxoList = utxoHelper_1.getSendUtxo(fraCode, minimalFee, utxoDataList);
                 console.log('sendUtxoList!', sendUtxoList);
-                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
-            case 5:
+                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+            case 4:
                 utxoInputsInfo = _a.sent();
                 console.log('utxoInputsInfo!', utxoInputsInfo);
-                return [4 /*yield*/, Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
-            case 6:
+                return [4 /*yield*/, exports.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
+            case 5:
                 trasferOperation = _a.sent();
                 console.log('trasferOperation!', trasferOperation);
-                return [2 /*return*/];
+                return [2 /*return*/, trasferOperation];
         }
     });
 }); };
-myFunc4();
-//# sourceMappingURL=run.js.map
+exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
+//# sourceMappingURL=fee.js.map
