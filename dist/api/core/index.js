@@ -19,6 +19,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.network = void 0;
-exports.network = __importStar(require("./network"));
+exports.Fee = void 0;
+exports.Fee = __importStar(require("./fee"));
 //# sourceMappingURL=index.js.map
