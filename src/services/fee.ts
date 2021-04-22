@@ -63,25 +63,16 @@ export const buildTransferOperationWithFee = async (
   const { response: sids } = sidsResult;
 
   if (!sids) {
-    console.log('sidsResult', sidsResult);
     throw new Error('no sids were fetched!');
   }
 
   const utxoDataList = await addUtxo(walletInfo, sids);
 
-  console.log('utxoDataList', utxoDataList);
-
   const sendUtxoList = getSendUtxo(fraCode, minimalFee, utxoDataList);
-
-  console.log('sendUtxoList!', sendUtxoList);
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  console.log('utxoInputsInfo!', utxoInputsInfo);
-
   const trasferOperation = await getTransferOperationWithFee(walletInfo, utxoInputsInfo);
-
-  console.log('trasferOperation!', trasferOperation);
 
   return trasferOperation;
 };

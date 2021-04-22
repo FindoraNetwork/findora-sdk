@@ -100,23 +100,18 @@ var buildTransferOperationWithFee = function (walletInfo, fraCode) { return __aw
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
-                    console.log('sidsResult', sidsResult);
                     throw new Error('no sids were fetched!');
                 }
                 return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
             case 3:
                 utxoDataList = _a.sent();
-                console.log('utxoDataList', utxoDataList);
                 sendUtxoList = utxoHelper_1.getSendUtxo(fraCode, minimalFee, utxoDataList);
-                console.log('sendUtxoList!', sendUtxoList);
                 return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
             case 4:
                 utxoInputsInfo = _a.sent();
-                console.log('utxoInputsInfo!', utxoInputsInfo);
                 return [4 /*yield*/, exports.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
             case 5:
                 trasferOperation = _a.sent();
-                console.log('trasferOperation!', trasferOperation);
                 return [2 /*return*/, trasferOperation];
         }
     });
