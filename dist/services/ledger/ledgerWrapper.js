@@ -70,7 +70,6 @@ var getLedger = function () { return __awaiter(void 0, void 0, void 0, function 
     var isNodeEnv;
     return __generator(this, function (_a) {
         isNodeEnv = typeof process !== 'undefined' && process.release.name === 'node';
-        console.log('isNodeEnv', isNodeEnv);
         if (isNodeEnv) {
             return [2 /*return*/, exports.getNodeLedger()];
         }

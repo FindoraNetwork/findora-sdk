@@ -36,19 +36,36 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getFraAssetCode = void 0;
-var ledgerWrapper_1 = require("../services/ledger/ledgerWrapper");
-var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode;
+exports.restorePrivatekeypair = void 0;
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var restorePrivatekeypair = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, toSend, keypair, keypairStr, encrypted;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                assetCode = ledger.fra_get_asset_code();
-                return [2 /*return*/, assetCode];
+                toSend = "\"" + privateStr + "\"";
+                try {
+                    keypair = ledger.create_keypair_from_secret(toSend);
+                }
+                catch (error) {
+                    throw new Error("could not restore keypair. details: \"" + error.message + "\"");
+                }
+                if (!keypair) {
+                    throw new Error('could not restore keypair. Keypair is empty');
+                }
+                keypairStr = ledger.keypair_to_str(keypair);
+                encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);
+                return [2 /*return*/, {
+                        keyStore: encrypted,
+                        publickey: ledger.get_pub_key_str(keypair).replace(/"/g, ''),
+                        address: ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair)),
+                        keypair: keypair,
+                        privateStr: privateStr,
+                    }];
         }
     });
 }); };
-exports.getFraAssetCode = getFraAssetCode;
-//# sourceMappingURL=asset.js.map
+exports.restorePrivatekeypair = restorePrivatekeypair;
+//# sourceMappingURL=keypair.js.map

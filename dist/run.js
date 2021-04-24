@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -37,7 +56,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = require("./api");
-var myMain = function () { return __awaiter(void 0, void 0, void 0, function () {
+var Fee = __importStar(require("./services/fee"));
+var UtxoHelper = __importStar(require("./services/utxoHelper"));
+var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -49,5 +70,95 @@ var myMain = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
-myMain();
+var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, password, assetCode, walletInfo, asset;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                password = '123';
+                console.log('pass!', password);
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 1:
+                assetCode = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+            case 2:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
+            case 3:
+                asset = _a.sent();
+                console.log('asset IS !', asset);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var address, sidsResult, sid, utxo, ownerMemo, stateCommitment;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
+            case 1:
+                sidsResult = _a.sent();
+                console.log('sidsResult', sidsResult);
+                sid = 519;
+                return [4 /*yield*/, api_1.Network.getUtxo(sid)];
+            case 2:
+                utxo = _a.sent();
+                console.log('utxo!', utxo);
+                return [4 /*yield*/, api_1.Network.getOwnerMemo(sid)];
+            case 3:
+                ownerMemo = _a.sent();
+                console.log('owner memo', ownerMemo);
+                return [4 /*yield*/, api_1.Network.getStateCommitment()];
+            case 4:
+                stateCommitment = _a.sent();
+                console.log('stateCommitment', stateCommitment);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, trasferOperation;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
+            case 2:
+                sidsResult = _a.sent();
+                sids = sidsResult.response;
+                console.log('sids', sids);
+                if (!sids) {
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
+            case 3:
+                utxoDataList = _a.sent();
+                console.log('utxoDataList', utxoDataList);
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 4:
+                fraCode = _a.sent();
+                amount = BigInt(3);
+                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+                console.log('sendUtxoList!', sendUtxoList);
+                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
+            case 5:
+                utxoInputsInfo = _a.sent();
+                console.log('utxoInputsInfo!', utxoInputsInfo);
+                return [4 /*yield*/, Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
+            case 6:
+                trasferOperation = _a.sent();
+                console.log('trasferOperation!', trasferOperation);
+                return [2 /*return*/];
+        }
+    });
+}); };
+myFunc4();
 //# sourceMappingURL=run.js.map
