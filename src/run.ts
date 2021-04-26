@@ -20,7 +20,7 @@ const myFunc2 = async () => {
 
   const asset = await Asset.defineAsset(walletInfo, assetCode);
 
-  console.log('asset IS !', asset);
+  console.log('our new asset IS YES !', asset);
 };
 
 const myFunc3 = async () => {
@@ -131,4 +131,4 @@ const myFunc6 = async () => {
   console.log('balance IS!!!!! :)', balance);
 };
 
-myFunc5();
+myFunc6();
