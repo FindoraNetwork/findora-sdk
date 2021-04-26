@@ -56,8 +56,6 @@ export const buildTransferOperationWithFee = async (
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
-  const minimalFee = ledger.fra_get_minimal_fee();
-
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
   const { response: sids } = sidsResult;
@@ -67,6 +65,8 @@ export const buildTransferOperationWithFee = async (
   }
 
   const utxoDataList = await addUtxo(walletInfo, sids);
+
+  const minimalFee = ledger.fra_get_minimal_fee();
 
   const sendUtxoList = getSendUtxo(fraCode, minimalFee, utxoDataList);
 
