@@ -68,40 +68,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = void 0;
 var Network = __importStar(require("../api/network"));
+var cacheStore_1 = require("./cacheStore");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
-// creates a list of items with descrypted utxo information
-var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, utxoDataList, i, sid, utxoDataResult, utxoData, utxoError, memoDataResult, memoData, memoError, assetRecord, ownerMemo, decryptAssetData, item;
+var decriptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, assetRecord, ownerMemo, decryptAssetData, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                utxoDataList = [];
-                i = 0;
-                _a.label = 2;
-            case 2:
-                if (!(i < addSids.length)) return [3 /*break*/, 7];
-                sid = addSids[i];
-                console.log("Processing sid \"" + sid + "\" (" + (i + 1) + " out of " + addSids.length + ")");
-                return [4 /*yield*/, Network.getUtxo(sid)];
-            case 3:
-                utxoDataResult = _a.sent();
-                utxoData = utxoDataResult.response, utxoError = utxoDataResult.error;
-                if (utxoError || !utxoData) {
-                    return [3 /*break*/, 6];
-                }
-                return [4 /*yield*/, Network.getOwnerMemo(sid)];
-            case 4:
-                memoDataResult = _a.sent();
-                memoData = memoDataResult.response, memoError = memoDataResult.error;
-                if (memoError) {
-                    return [3 /*break*/, 6];
-                }
                 assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
                 ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
                 return [4 /*yield*/, ledger.open_client_asset_record(assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair)];
-            case 5:
+            case 2:
                 decryptAssetData = _a.sent();
                 decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 decryptAssetData.amount = BigInt(decryptAssetData.amount);
@@ -112,12 +91,94 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                     utxo: __assign({}, utxoData.utxo),
                     ownerMemo: ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(),
                 };
-                utxoDataList.push(item);
+                return [2 /*return*/, item];
+        }
+    });
+}); };
+var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataResult, utxoData, utxoError, memoDataResult, memoData, memoError, item;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (cachedItem) {
+                    console.log('we have cache for', "sid_" + sid);
+                    return [2 /*return*/, cachedItem];
+                }
+                console.log("Fetching sid \"" + sid + "\"");
+                return [4 /*yield*/, Network.getUtxo(sid)];
+            case 1:
+                utxoDataResult = _a.sent();
+                utxoData = utxoDataResult.response, utxoError = utxoDataResult.error;
+                if (utxoError || !utxoData) {
+                    throw new Error("could not fetch utxo data for sid \"" + sid + "\", Error - " + (utxoError === null || utxoError === void 0 ? void 0 : utxoError.message));
+                }
+                return [4 /*yield*/, Network.getOwnerMemo(sid)];
+            case 2:
+                memoDataResult = _a.sent();
+                memoData = memoDataResult.response, memoError = memoDataResult.error;
+                if (memoError) {
+                    throw new Error("could not fetch utxo data for sid \"" + sid + "\", Error - " + memoError.message);
+                }
+                return [4 /*yield*/, decriptUtxoItem(sid, walletInfo, utxoData, memoData)];
+            case 3:
+                item = _a.sent();
+                return [2 /*return*/, item];
+        }
+    });
+}); };
+// creates a list of items with descrypted utxo information
+var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataList, cacheDataToSave, utxoDataCache, error_1, i, sid, item, error_2, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                utxoDataList = [];
+                cacheDataToSave = {};
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, cacheStore_1.readCache('utxoDataCache')];
+            case 2:
+                utxoDataCache = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_1 = _a.sent();
+                console.log('aa');
+                return [3 /*break*/, 4];
+            case 4:
+                i = 0;
+                _a.label = 5;
+            case 5:
+                if (!(i < addSids.length)) return [3 /*break*/, 10];
+                sid = addSids[i];
+                console.log("Processing sid \"" + sid + "\" (" + (i + 1) + " out of " + addSids.length + ")");
                 _a.label = 6;
             case 6:
+                _a.trys.push([6, 8, , 9]);
+                return [4 /*yield*/, getUtxoItem(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
+            case 7:
+                item = _a.sent();
+                utxoDataList.push(item);
+                cacheDataToSave["sid_" + item.sid] = item;
+                return [3 /*break*/, 9];
+            case 8:
+                error_2 = _a.sent();
+                console.log("could not process addUtxo for sid " + sid + ", Details: \"" + error_2.message + "\"");
+                return [3 /*break*/, 9];
+            case 9:
                 i++;
-                return [3 /*break*/, 2];
-            case 7: return [2 /*return*/, utxoDataList];
+                return [3 /*break*/, 5];
+            case 10:
+                _a.trys.push([10, 12, , 13]);
+                return [4 /*yield*/, cacheStore_1.writeCache('utxoDataCache', cacheDataToSave)];
+            case 11:
+                _a.sent();
+                return [3 /*break*/, 13];
+            case 12:
+                err_1 = _a.sent();
+                console.log("could not write cache for utxoData, \"" + err_1.message + "\"");
+                return [3 /*break*/, 13];
+            case 13: return [2 /*return*/, utxoDataList];
         }
     });
 }); };

@@ -88,7 +88,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
             case 3:
                 asset = _a.sent();
-                console.log('asset IS !', asset);
+                console.log('our new asset IS YES !', asset);
                 return [2 /*return*/];
         }
     });
@@ -212,5 +212,5 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc5();
+myFunc6();
 //# sourceMappingURL=run.js.map
