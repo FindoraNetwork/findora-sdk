@@ -70,7 +70,7 @@ exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = void 0;
 var Network = __importStar(require("../api/network"));
 var cacheStore_1 = require("./cacheStore");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
-var decriptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
+var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetRecord, ownerMemo, decryptAssetData, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -119,7 +119,7 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
                 if (memoError) {
                     throw new Error("could not fetch utxo data for sid \"" + sid + "\", Error - " + memoError.message);
                 }
-                return [4 /*yield*/, decriptUtxoItem(sid, walletInfo, utxoData, memoData)];
+                return [4 /*yield*/, decryptUtxoItem(sid, walletInfo, utxoData, memoData)];
             case 3:
                 item = _a.sent();
                 return [2 /*return*/, item];
