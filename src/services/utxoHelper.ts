@@ -14,7 +14,7 @@ interface LedgerUtxoItem {
   ownerMemo: LedgerOwnerMemo | undefined;
 }
 
-interface AddUtxoItem extends LedgerUtxoItem {
+export interface AddUtxoItem extends LedgerUtxoItem {
   address: string;
   body: any;
 }
