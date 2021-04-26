@@ -55,66 +55,67 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTransferOperationWithFee = exports.getTransferOperationWithFee = void 0;
-var Network = __importStar(require("../api/network"));
-var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
-var utxoHelper_1 = require("./utxoHelper");
-var getTransferOperationWithFee = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType, transferOp, inputParametersList, inputAmount, numberToSubmit;
+exports.getBalance = exports.getAssetBalance = void 0;
+var bigNumber_1 = require("../../services/bigNumber");
+var utxoHelper_1 = require("../../services/utxoHelper");
+var asset_1 = require("../asset");
+var Network = __importStar(require("../network"));
+var getAssetBalance = function (walletKeypair, assetCode, sids) { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataList, filteredUtxoList, currentBalance;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, utxoHelper_1.addUtxo(walletKeypair, sids)];
             case 1:
-                ledger = _a.sent();
-                minimalFee = ledger.fra_get_minimal_fee();
-                toPublickey = ledger.fra_get_dest_pubkey();
-                assetCode = ledger.fra_get_asset_code();
-                isBlindAmount = false;
-                isBlindType = false;
-                transferOp = ledger.TransferOperationBuilder.new();
-                inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
-                inputParametersList.forEach(function (inputParameters) {
-                    var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
-                    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
-                });
-                transferOp = transferOp.add_output_no_tracing(minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType);
-                if (inputAmount > minimalFee) {
-                    numberToSubmit = BigInt(Number(inputAmount) - Number(minimalFee));
-                    transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, isBlindAmount, isBlindType);
+                utxoDataList = _a.sent();
+                if (!utxoDataList.length) {
+                    return [2 /*return*/, bigNumber_1.create(0)];
                 }
-                return [2 /*return*/, transferOp];
+                filteredUtxoList = utxoDataList.filter(function (row) { var _a; return ((_a = row === null || row === void 0 ? void 0 : row.body) === null || _a === void 0 ? void 0 : _a.asset_type) === assetCode; });
+                if (!filteredUtxoList.length) {
+                    return [2 /*return*/, bigNumber_1.create(0)];
+                }
+                currentBalance = filteredUtxoList.reduce(function (acc, currentUtxoItem) {
+                    var _a;
+                    return acc + Number(((_a = currentUtxoItem.body) === null || _a === void 0 ? void 0 : _a.amount) || 0);
+                }, 0);
+                return [2 /*return*/, bigNumber_1.create(currentBalance)];
         }
     });
 }); };
-exports.getTransferOperationWithFee = getTransferOperationWithFee;
-var buildTransferOperationWithFee = function (walletInfo, fraCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, utxoDataList, minimalFee, sendUtxoList, utxoInputsInfo, trasferOperation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+exports.getAssetBalance = getAssetBalance;
+var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var sidsResult, sids, assetCodeToUse, _a, balanceInWei, balance, err_1;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, Network.getOwnedSids(walletKeypair.publickey)];
             case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
-            case 2:
-                sidsResult = _a.sent();
+                sidsResult = _b.sent();
                 sids = sidsResult.response;
                 if (!sids) {
                     throw new Error('no sids were fetched!');
                 }
-                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
+                _a = assetCode;
+                if (_a) return [3 /*break*/, 3];
+                return [4 /*yield*/, asset_1.getFraAssetCode()];
+            case 2:
+                _a = (_b.sent());
+                _b.label = 3;
             case 3:
-                utxoDataList = _a.sent();
-                minimalFee = ledger.fra_get_minimal_fee();
-                sendUtxoList = utxoHelper_1.getSendUtxo(fraCode, minimalFee, utxoDataList);
-                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+                assetCodeToUse = _a;
+                _b.label = 4;
             case 4:
-                utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
+                _b.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, exports.getAssetBalance(walletKeypair, assetCodeToUse, sids)];
             case 5:
-                trasferOperation = _a.sent();
-                return [2 /*return*/, trasferOperation];
+                balanceInWei = _b.sent();
+                balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
+                return [2 /*return*/, balance];
+            case 6:
+                err_1 = _b.sent();
+                throw new Error("could not fetch balance for \"" + assetCodeToUse + "\". Error - " + err_1.message);
+            case 7: return [2 /*return*/];
         }
     });
 }); };
-exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
-//# sourceMappingURL=fee.js.map
+exports.getBalance = getBalance;
+//# sourceMappingURL=account.js.map
