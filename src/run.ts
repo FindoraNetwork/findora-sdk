@@ -1,4 +1,5 @@
-import { Asset, Keypair, Network } from './api';
+import { Account, Asset, Keypair, Network } from './api';
+import * as bigNumber from './services/bigNumber';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
 
@@ -19,7 +20,7 @@ const myFunc2 = async () => {
 
   const asset = await Asset.defineAsset(walletInfo, assetCode);
 
-  console.log('asset IS !', asset);
+  console.log('our new asset IS YES !', asset);
 };
 
 const myFunc3 = async () => {
@@ -86,4 +87,48 @@ const myFunc4 = async () => {
   console.log('trasferOperation!', trasferOperation);
 };
 
-myFunc4();
+const myFunc5 = async () => {
+  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+
+  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+  const fraCode = await Asset.getFraAssetCode();
+
+  const sidsResult = await Network.getOwnedSids(address);
+
+  // console.log('sidsResult', sidsResult);
+
+  const { response: sids } = sidsResult;
+
+  console.log('sids', sids);
+
+  if (!sids) {
+    return;
+  }
+
+  const balanceInWei = await Account.getAssetBalance(walletInfo, fraCode, sids);
+
+  console.log('balance in wei IS!!', balanceInWei);
+
+  const balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
+
+  console.log('balance IS!!!!!', balance);
+};
+
+const myFunc6 = async () => {
+  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+  const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
+
+  const balance = await Account.getBalance(walletInfo, customAssetCode);
+
+  console.log('balance IS!!!!! :)', balance);
+};
+
+myFunc6();

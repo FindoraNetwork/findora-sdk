@@ -56,6 +56,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = require("./api");
+var bigNumber = __importStar(require("./services/bigNumber"));
 var Fee = __importStar(require("./services/fee"));
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -87,7 +88,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
             case 3:
                 asset = _a.sent();
-                console.log('asset IS !', asset);
+                console.log('our new asset IS YES !', asset);
                 return [2 /*return*/];
         }
     });
@@ -160,5 +161,56 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc4();
+var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var address, pkey, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 2:
+                fraCode = _a.sent();
+                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
+            case 3:
+                sidsResult = _a.sent();
+                sids = sidsResult.response;
+                console.log('sids', sids);
+                if (!sids) {
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, api_1.Account.getAssetBalance(walletInfo, fraCode, sids)];
+            case 4:
+                balanceInWei = _a.sent();
+                console.log('balance in wei IS!!', balanceInWei);
+                balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
+                console.log('balance IS!!!!!', balance);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, password, walletInfo, customAssetCode, balance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
+            case 2:
+                balance = _a.sent();
+                console.log('balance IS!!!!! :)', balance);
+                return [2 /*return*/];
+        }
+    });
+}); };
+myFunc6();
 //# sourceMappingURL=run.js.map

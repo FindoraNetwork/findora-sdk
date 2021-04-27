@@ -1,6 +1,7 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
-import { LedgerUtxo } from '../api/network/types';
+import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
+import { CacheItem, readCache, writeCache } from './cacheStore';
 import { getLedger } from './ledger/ledgerWrapper';
 import {
   ClientAssetRecord as LedgerClientAssetRecord,
@@ -14,7 +15,7 @@ interface LedgerUtxoItem {
   ownerMemo: LedgerOwnerMemo | undefined;
 }
 
-interface AddUtxoItem extends LedgerUtxoItem {
+export interface AddUtxoItem extends LedgerUtxoItem {
   address: string;
   body: any;
 }
@@ -36,55 +37,104 @@ export interface UtxoInputsInfo {
   inputAmount: BigInt;
 }
 
-// creates a list of items with descrypted utxo information
-export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Promise<AddUtxoItem[]> => {
+const decryptUtxoItem = async (
+  sid: number,
+  walletInfo: WalletKeypar,
+  utxoData: UtxoResponse,
+  memoData?: OwnedMemoResponse,
+): Promise<AddUtxoItem> => {
   const ledger = await getLedger();
 
+  const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
+
+  const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+
+  const decryptAssetData = await ledger.open_client_asset_record(
+    assetRecord,
+    ownerMemo?.clone(),
+    walletInfo.keypair,
+  );
+
+  decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
+
+  decryptAssetData.amount = BigInt(decryptAssetData.amount);
+
+  const item = {
+    address: walletInfo.address,
+    sid,
+    body: decryptAssetData || {},
+    utxo: { ...utxoData.utxo },
+    ownerMemo: ownerMemo?.clone(),
+  };
+
+  return item;
+};
+
+const getUtxoItem = async (
+  sid: number,
+  walletInfo: WalletKeypar,
+  cachedItem?: AddUtxoItem,
+): Promise<AddUtxoItem> => {
+  if (cachedItem) {
+    console.log('we have cache for', `sid_${sid}`);
+
+    return cachedItem;
+  }
+
+  console.log(`Fetching sid "${sid}"`);
+
+  const utxoDataResult = await Network.getUtxo(sid);
+
+  const { response: utxoData, error: utxoError } = utxoDataResult;
+
+  if (utxoError || !utxoData) {
+    throw new Error(`could not fetch utxo data for sid "${sid}", Error - ${utxoError?.message}`);
+  }
+
+  const memoDataResult = await Network.getOwnerMemo(sid);
+
+  const { response: memoData, error: memoError } = memoDataResult;
+
+  if (memoError) {
+    throw new Error(`could not fetch utxo data for sid "${sid}", Error - ${memoError.message}`);
+  }
+
+  const item = await decryptUtxoItem(sid, walletInfo, utxoData, memoData);
+
+  return item;
+};
+
+// creates a list of items with descrypted utxo information
+export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Promise<AddUtxoItem[]> => {
   const utxoDataList = [];
+  const cacheDataToSave: CacheItem = {};
+  let utxoDataCache;
+
+  try {
+    utxoDataCache = await readCache('utxoDataCache');
+  } catch (error) {
+    console.log('aa');
+  }
 
   for (let i = 0; i < addSids.length; i++) {
     const sid = addSids[i];
+
     console.log(`Processing sid "${sid}" (${i + 1} out of ${addSids.length})`);
 
-    const utxoDataResult = await Network.getUtxo(sid);
-
-    const { response: utxoData, error: utxoError } = utxoDataResult;
-
-    if (utxoError || !utxoData) {
+    try {
+      const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
+      utxoDataList.push(item);
+      cacheDataToSave[`sid_${item.sid}`] = item;
+    } catch (error) {
+      console.log(`could not process addUtxo for sid ${sid}, Details: "${error.message}"`);
       continue;
     }
+  }
 
-    const memoDataResult = await Network.getOwnerMemo(sid);
-
-    const { response: memoData, error: memoError } = memoDataResult;
-
-    if (memoError) {
-      continue;
-    }
-
-    const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
-
-    const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
-
-    const decryptAssetData = await ledger.open_client_asset_record(
-      assetRecord,
-      ownerMemo?.clone(),
-      walletInfo.keypair,
-    );
-
-    decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
-
-    decryptAssetData.amount = BigInt(decryptAssetData.amount);
-
-    const item = {
-      address: walletInfo.address,
-      sid,
-      body: decryptAssetData || {},
-      utxo: { ...utxoData.utxo },
-      ownerMemo: ownerMemo?.clone(),
-    };
-
-    utxoDataList.push(item);
+  try {
+    await writeCache('utxoDataCache', cacheDataToSave);
+  } catch (err) {
+    console.log(`could not write cache for utxoData, "${err.message}"`);
   }
 
   return utxoDataList;

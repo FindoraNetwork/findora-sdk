@@ -111,8 +111,6 @@ export const defineAsset = async (
 
   const submitData = transactionBuilder.transaction();
 
-  // console.log('Transaction Data to submit: ', submitData);
-
   const handle = await Network.submitTransaction(submitData);
 
   console.log('Transaction handle:', handle);
