@@ -207,7 +207,7 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
             case 2:
                 balance = _a.sent();
-                console.log('balance IS!!!!! :)', balance);
+                console.log('balance IS!!! :)', balance);
                 return [2 /*return*/];
         }
     });

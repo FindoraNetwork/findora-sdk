@@ -65,10 +65,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = void 0;
 var Network = __importStar(require("../api/network"));
-var cacheStore_1 = require("./cacheStore");
+var factory_1 = __importDefault(require("./cacheStore/factory"));
+var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetRecord, ownerMemo, decryptAssetData, item;
@@ -137,13 +141,13 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, cacheStore_1.readCache('utxoDataCache')];
+                return [4 /*yield*/, factory_1.default.read('utxoDataCache', providers_1.FileCacheProvider)];
             case 2:
                 utxoDataCache = _a.sent();
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                console.log('aa');
+                console.log('error reading the cache', error_1.message);
                 return [3 /*break*/, 4];
             case 4:
                 i = 0;
@@ -170,7 +174,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 5];
             case 10:
                 _a.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, cacheStore_1.writeCache('utxoDataCache', cacheDataToSave)];
+                return [4 /*yield*/, factory_1.default.write('utxoDataCache', cacheDataToSave, providers_1.FileCacheProvider)];
             case 11:
                 _a.sent();
                 return [3 /*break*/, 13];
