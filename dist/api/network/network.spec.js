@@ -432,8 +432,15 @@ describe('network', function () {
             var txData = network_1.getSubmitTransactionData(JSON.stringify(givenData));
             expect(txData).toEqual({ response: givenData });
         });
-        it('return properle formatted error', function () {
+        it('return properly formatted error', function () {
             var givenData = '124343hh s';
+            var txData = network_1.getSubmitTransactionData(givenData);
+            expect(txData).not.toHaveProperty('response');
+            expect(txData).toHaveProperty('error');
+            expect(txData.error.message).toContain("Can't submit transaction. Can't parse transaction data.");
+        });
+        it('return properly formatted error for mailformed json', function () {
+            var givenData = '{f:1}';
             var txData = network_1.getSubmitTransactionData(givenData);
             expect(txData).not.toHaveProperty('response');
             expect(txData).toHaveProperty('error');
@@ -451,22 +458,75 @@ describe('network', function () {
     });
     describe('submitTransaction', function () {
         var url = "https://dev-staging.dev.findora.org:8669/submit_transaction/";
-        it('returns properly formatted utxo data', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('returns properly formatted response', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, myData, dataResult;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e4e';
-                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
-                            return res(ctx.json(myResponse));
+                        myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e3b';
+                        myData = { foo: myResponse };
+                        server.use(msw_1.rest.post(url, function (_req, res, ctx) {
+                            var foo = _req.body.foo;
+                            return res(ctx.json(foo));
                         }));
-                        myData = '{f:1}';
-                        return [4 /*yield*/, network_1.submitTransaction(myData, testConfig)];
+                        return [4 /*yield*/, network_1.submitTransaction(JSON.stringify(myData), testConfig)];
                     case 1:
                         dataResult = _a.sent();
-                        console.log('dataResult', dataResult);
                         expect(dataResult).toHaveProperty('response');
                         expect(dataResult).not.toHaveProperty('error');
+                        expect(dataResult.response).toBe(myResponse);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns properly formatted response with no input data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myResponse, dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e3b';
+                        server.use(msw_1.rest.post(url, function (_req, res, ctx) {
+                            return res(ctx.json(myResponse));
+                        }));
+                        return [4 /*yield*/, network_1.submitTransaction(undefined, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).toHaveProperty('response');
+                        expect(dataResult).not.toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a server error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.post(url, function (_req, res, ctx) {
+                            return res(ctx.status(500));
+                        }));
+                        return [4 /*yield*/, network_1.submitTransaction('', testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.post(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network_1.submitTransaction('', testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
                         return [2 /*return*/];
                 }
             });

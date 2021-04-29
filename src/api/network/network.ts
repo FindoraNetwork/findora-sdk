@@ -74,7 +74,7 @@ export const getStateCommitment = async (
   return dataResult;
 };
 
-const getSubmitTransactionData = <T extends Types.TransactionData>(data?: T): Types.DataResult => {
+export const getSubmitTransactionData = <T extends Types.TransactionData>(data?: T): Types.DataResult => {
   let txData;
 
   if (!data) {

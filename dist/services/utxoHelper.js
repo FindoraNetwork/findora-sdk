@@ -75,7 +75,7 @@ var factory_1 = __importDefault(require("./cacheStore/factory"));
 var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetRecord, ownerMemo, decryptAssetData, cloned, item;
+    var ledger, assetRecord, ownerMemo, decryptAssetData, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -88,14 +88,12 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 decryptAssetData = _a.sent();
                 decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 decryptAssetData.amount = BigInt(decryptAssetData.amount);
-                cloned = ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone();
-                console.log('cloned ', cloned);
                 item = {
                     address: walletInfo.address,
                     sid: sid,
                     body: decryptAssetData || {},
                     utxo: __assign({}, utxoData.utxo),
-                    ownerMemo: cloned,
+                    ownerMemo: ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(),
                 };
                 return [2 /*return*/, item];
         }
@@ -107,7 +105,6 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 if (cachedItem) {
-                    // console.log('we have cache for', `sid_${sid}`);
                     return [2 /*return*/, cachedItem];
                 }
                 console.log("Fetching sid \"" + sid + "\"");
@@ -163,7 +160,6 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, getUtxoItem(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
             case 7:
                 item = _a.sent();
-                // console.log('item!! from addUtxo', item);
                 utxoDataList.push(item);
                 cacheDataToSave["sid_" + item.sid] = item;
                 return [3 /*break*/, 9];
@@ -240,7 +236,6 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     inputAmount = BigInt(Number(inputAmount) + Number(item.originAmount));
                     assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
                     txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
-                    console.log('item?.ownerMemo!!', item.ownerMemo);
                     inputParameters = {
                         txoRef: txoRef,
                         assetRecord: assetRecord,
