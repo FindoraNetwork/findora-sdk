@@ -3,17 +3,16 @@ import JSONbig from 'json-bigint';
 import os from 'os';
 import path from 'path';
 
-import { readFile, writeFile } from './utils';
+import { readFile, writeFile } from '../../utils';
+import { CacheItem, CacheProvider } from '../types';
 
-export interface CacheItem {
-  [key: string]: any;
-}
-
-export const readCache = async (fileName: string): Promise<CacheItem> => {
+const readCache = async (fileName: string): Promise<CacheItem> => {
   let fileContent;
   let cacheData = {};
 
   const filePath = path.join(os.tmpdir(), `${fileName}.json`);
+
+  console.log('cache filePath', filePath);
 
   try {
     if (!fs.existsSync(filePath)) {
@@ -39,7 +38,7 @@ export const readCache = async (fileName: string): Promise<CacheItem> => {
   return cacheData;
 };
 
-export const writeCache = async (fileName: string, data: CacheItem): Promise<boolean> => {
+const writeCache = async (fileName: string, data: CacheItem): Promise<boolean> => {
   const filePath = path.join(os.tmpdir(), `${fileName}.json`);
 
   let result;
@@ -58,4 +57,9 @@ export const writeCache = async (fileName: string, data: CacheItem): Promise<boo
   }
 
   return result;
+};
+
+export const fileCacheProvider: CacheProvider = {
+  read: readCache,
+  write: writeCache,
 };

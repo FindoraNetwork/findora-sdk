@@ -39,12 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.writeCache = exports.readCache = void 0;
+exports.fileCacheProvider = void 0;
 var fs_1 = __importDefault(require("fs"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var os_1 = __importDefault(require("os"));
 var path_1 = __importDefault(require("path"));
-var utils_1 = require("./utils");
+var utils_1 = require("../../utils");
 var readCache = function (fileName) { return __awaiter(void 0, void 0, void 0, function () {
     var fileContent, cacheData, filePath, error_1;
     return __generator(this, function (_a) {
@@ -52,6 +52,7 @@ var readCache = function (fileName) { return __awaiter(void 0, void 0, void 0, f
             case 0:
                 cacheData = {};
                 filePath = path_1.default.join(os_1.default.tmpdir(), fileName + ".json");
+                console.log('cache filePath', filePath);
                 try {
                     if (!fs_1.default.existsSync(filePath)) {
                         return [2 /*return*/, cacheData];
@@ -82,7 +83,6 @@ var readCache = function (fileName) { return __awaiter(void 0, void 0, void 0, f
         }
     });
 }); };
-exports.readCache = readCache;
 var writeCache = function (fileName, data) { return __awaiter(void 0, void 0, void 0, function () {
     var filePath, result, cacheData, error_2;
     return __generator(this, function (_a) {
@@ -109,5 +109,8 @@ var writeCache = function (fileName, data) { return __awaiter(void 0, void 0, vo
         }
     });
 }); };
-exports.writeCache = writeCache;
-//# sourceMappingURL=cacheStore.js.map
+exports.fileCacheProvider = {
+    read: readCache,
+    write: writeCache,
+};
+//# sourceMappingURL=fileCacheProvider.js.map
