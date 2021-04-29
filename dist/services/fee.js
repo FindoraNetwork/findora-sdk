@@ -75,6 +75,7 @@ var getTransferOperationWithFee = function (walletInfo, utxoInputs) { return __a
                 inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputParametersList.forEach(function (inputParameters) {
                     var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
+                    console.log('asset ownerMemo!!', ownerMemo);
                     transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
                 });
                 transferOp = transferOp.add_output_no_tracing(minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType);

@@ -35,8 +35,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
+var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
 var network_1 = require("./network");
@@ -97,12 +101,12 @@ describe('network', function () {
     });
     describe('apiPost', function () {
         var data = { foo: 'bar' };
+        var myHandle = 'foobar';
         it('returns properly formatted response data', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myHandle, dataResult, response;
+            var dataResult, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        myHandle = 'foobar';
                         server.use(msw_1.rest.post(defaultUrl, function (_req, res, ctx) {
                             return res(ctx.json(myHandle));
                         }));
@@ -111,6 +115,24 @@ describe('network', function () {
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
                         expect(dataResult).not.toHaveProperty('error');
+                        response = dataResult.response;
+                        expect(response).toEqual('foobar');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('makes a call with no data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.post(defaultUrl, function (_req, res, ctx) {
+                            return res(ctx.json(myHandle));
+                        }));
+                        return [4 /*yield*/, network_1.apiPost(defaultUrl, undefined, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).toHaveProperty('response');
                         response = dataResult.response;
                         expect(response).toEqual('foobar');
                         return [2 /*return*/];
@@ -188,6 +210,263 @@ describe('network', function () {
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
                         expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getUtxo', function () {
+        var sid = 42;
+        var url = "https://dev-staging.dev.findora.org:8668/utxo_sid/" + sid;
+        it('returns properly formatted utxo data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myUtxo, myUtxoResponse, dataResult, response, utxo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myUtxo = {
+                            id: 1,
+                            record: { foo: 'bar' },
+                        };
+                        myUtxoResponse = {
+                            utxo: myUtxo,
+                        };
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(myUtxoResponse));
+                        }));
+                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).toHaveProperty('response');
+                        expect(dataResult).not.toHaveProperty('error');
+                        response = dataResult.response;
+                        expect(response).toHaveProperty('utxo');
+                        utxo = response.utxo;
+                        expect(utxo).toHaveProperty('record');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a server error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(500));
+                        }));
+                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getOwnerMemo', function () {
+        var sid = 1234342;
+        var url = "https://dev-staging.dev.findora.org:8667/get_owner_memo/" + sid;
+        it('returns properly formatted owner memo data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myLock, myResponse, dataResult, response, lock;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myLock = {
+                            ciphertext: 'foo',
+                            // eslint-disable-next-line @typescript-eslint/naming-convention
+                            ephemeral_public_key: 'bar',
+                        };
+                        myResponse = {
+                            lock: myLock,
+                        };
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(myResponse));
+                        }));
+                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).toHaveProperty('response');
+                        expect(dataResult).not.toHaveProperty('error');
+                        response = dataResult.response;
+                        expect(response).toHaveProperty('lock');
+                        lock = response.lock;
+                        expect(lock).toHaveProperty('ciphertext');
+                        expect(lock).toHaveProperty('ephemeral_public_key');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a server error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(500));
+                        }));
+                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getStateCommitment', function () {
+        var url = "https://dev-staging.dev.findora.org:8668/global_state";
+        it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myResponse, dataResult, response, _a, first, height, third;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        myResponse = [[1, 2, 3], 45, 'foobar'];
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(myResponse));
+                        }));
+                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                    case 1:
+                        dataResult = _b.sent();
+                        expect(dataResult).toHaveProperty('response');
+                        expect(dataResult).not.toHaveProperty('error');
+                        response = dataResult.response;
+                        _a = response, first = _a[0], height = _a[1], third = _a[2];
+                        expect(Array.isArray(first)).toEqual(true);
+                        expect(height).toEqual(45);
+                        expect(third).toEqual('foobar');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a server error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(500));
+                        }));
+                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getSubmitTransactionData', function () {
+        it('return empty tx data with no data given to the input', function () {
+            var txData = network_1.getSubmitTransactionData();
+            expect(txData).toStrictEqual({ response: undefined });
+        });
+        it('return empty tx data with empty string given to the input', function () {
+            var givenData = '';
+            var txData = network_1.getSubmitTransactionData(givenData);
+            expect(txData).toStrictEqual({ response: undefined });
+        });
+        it('return given string parsed as number', function () {
+            var givenData = '1234';
+            var txData = network_1.getSubmitTransactionData(givenData);
+            expect(txData).toStrictEqual({ response: 1234 });
+        });
+        it('return given stringified object properly parsed', function () {
+            var givenData = {
+                foo: 'bar',
+                barfoo: 123,
+            };
+            var txData = network_1.getSubmitTransactionData(JSON.stringify(givenData));
+            expect(txData).toEqual({ response: givenData });
+        });
+        it('return properle formatted error', function () {
+            var givenData = '124343hh s';
+            var txData = network_1.getSubmitTransactionData(givenData);
+            expect(txData).not.toHaveProperty('response');
+            expect(txData).toHaveProperty('error');
+            expect(txData.error.message).toContain("Can't submit transaction. Can't parse transaction data.");
+        });
+        it('return given stringified object properly parsed', function () {
+            var givenData = {
+                foo: 'bar',
+                barfoo: 123434343434343435343434343434242342342432,
+            };
+            var txData = network_1.getSubmitTransactionData(JSON.stringify(givenData));
+            var barfoo = txData.response.barfoo;
+            expect(barfoo instanceof bignumber_js_1.default).toEqual(true);
+        });
+    });
+    describe('submitTransaction', function () {
+        var url = "https://dev-staging.dev.findora.org:8669/submit_transaction/";
+        it('returns properly formatted utxo data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myResponse, myData, dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e4e';
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(myResponse));
+                        }));
+                        myData = '{f:1}';
+                        return [4 /*yield*/, network_1.submitTransaction(myData, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        console.log('dataResult', dataResult);
+                        expect(dataResult).toHaveProperty('response');
+                        expect(dataResult).not.toHaveProperty('error');
                         return [2 /*return*/];
                 }
             });

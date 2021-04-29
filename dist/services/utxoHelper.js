@@ -75,7 +75,7 @@ var factory_1 = __importDefault(require("./cacheStore/factory"));
 var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetRecord, ownerMemo, decryptAssetData, item;
+    var ledger, assetRecord, ownerMemo, decryptAssetData, cloned, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -88,12 +88,14 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 decryptAssetData = _a.sent();
                 decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 decryptAssetData.amount = BigInt(decryptAssetData.amount);
+                cloned = ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone();
+                console.log('cloned ', cloned);
                 item = {
                     address: walletInfo.address,
                     sid: sid,
                     body: decryptAssetData || {},
                     utxo: __assign({}, utxoData.utxo),
-                    ownerMemo: ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(),
+                    ownerMemo: cloned,
                 };
                 return [2 /*return*/, item];
         }
@@ -105,7 +107,7 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
         switch (_a.label) {
             case 0:
                 if (cachedItem) {
-                    console.log('we have cache for', "sid_" + sid);
+                    // console.log('we have cache for', `sid_${sid}`);
                     return [2 /*return*/, cachedItem];
                 }
                 console.log("Fetching sid \"" + sid + "\"");
@@ -155,13 +157,13 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
             case 5:
                 if (!(i < addSids.length)) return [3 /*break*/, 10];
                 sid = addSids[i];
-                console.log("Processing sid \"" + sid + "\" (" + (i + 1) + " out of " + addSids.length + ")");
                 _a.label = 6;
             case 6:
                 _a.trys.push([6, 8, , 9]);
                 return [4 /*yield*/, getUtxoItem(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
             case 7:
                 item = _a.sent();
+                // console.log('item!! from addUtxo', item);
                 utxoDataList.push(item);
                 cacheDataToSave["sid_" + item.sid] = item;
                 return [3 /*break*/, 9];
@@ -226,12 +228,11 @@ exports.getSendUtxo = getSendUtxo;
 // creates a list of inputs, which would be used by transaction builder in a fee service
 var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, inputAmount, inputParametersList, i, item, assetRecord, txoRef, inputParameters, res;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
-                ledger = _b.sent();
+                ledger = _a.sent();
                 inputAmount = BigInt(0);
                 inputParametersList = [];
                 for (i = 0; i < utxoSids.length; i += 1) {
@@ -239,10 +240,11 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     inputAmount = BigInt(Number(inputAmount) + Number(item.originAmount));
                     assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
                     txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+                    console.log('item?.ownerMemo!!', item.ownerMemo);
                     inputParameters = {
                         txoRef: txoRef,
                         assetRecord: assetRecord,
-                        ownerMemo: (_a = item.ownerMemo) === null || _a === void 0 ? void 0 : _a.clone(),
+                        ownerMemo: item === null || item === void 0 ? void 0 : item.ownerMemo,
                         amount: item.amount,
                     };
                     inputParametersList.push(inputParameters);
