@@ -24,7 +24,7 @@
   "scripts": {
     "buildAll": "tsc && webpack --mode production",
     "build": "tsc",
-    "test": "jest --watch",
+    "test": "jest --watch --detectOpenHandles",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc",
