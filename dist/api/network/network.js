@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.submitTransaction = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var network_1 = require("../../config/network");
 var dataProxy_1 = __importDefault(require("../../services/dataProxy"));
@@ -141,13 +141,14 @@ var getSubmitTransactionData = function (data) {
         return { error: { message: "Can't submit transaction. Can't parse transaction data. " + err.message } };
     }
 };
+exports.getSubmitTransactionData = getSubmitTransactionData;
 var submitTransaction = function (data, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, _a, txData, error, dataResult;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 url = getSubmitRoute() + "/submit_transaction";
-                _a = getSubmitTransactionData(data), txData = _a.response, error = _a.error;
+                _a = exports.getSubmitTransactionData(data), txData = _a.response, error = _a.error;
                 if (error) {
                     return [2 /*return*/, { error: error }];
                 }

@@ -78,8 +78,6 @@ const getUtxoItem = async (
   cachedItem?: AddUtxoItem,
 ): Promise<AddUtxoItem> => {
   if (cachedItem) {
-    console.log('we have cache for', `sid_${sid}`);
-
     return cachedItem;
   }
 
@@ -121,7 +119,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   for (let i = 0; i < addSids.length; i++) {
     const sid = addSids[i];
 
-    console.log(`Processing sid "${sid}" (${i + 1} out of ${addSids.length})`);
+    // console.log(`Processing sid "${sid}" (${i + 1} out of ${addSids.length})`);
 
     try {
       const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
@@ -201,7 +199,7 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
     const inputParameters: UtxoInputParameter = {
       txoRef,
       assetRecord,
-      ownerMemo: item.ownerMemo?.clone(),
+      ownerMemo: item?.ownerMemo,
       amount: item.amount,
     };
 
