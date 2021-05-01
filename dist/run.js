@@ -71,6 +71,7 @@ var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
+// define asset
 var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, assetCode, walletInfo, asset;
     return __generator(this, function (_a) {
@@ -93,6 +94,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
+// get state commitment
 var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var address, sidsResult, sid, utxo, ownerMemo, stateCommitment;
     return __generator(this, function (_a) {
@@ -120,6 +122,7 @@ var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
+// get transfer operation with fee
 var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, trasferOperation;
     return __generator(this, function (_a) {
@@ -161,6 +164,7 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
+// get fra balance
 var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var address, pkey, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
     return __generator(this, function (_a) {
@@ -193,6 +197,7 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
+// get custom asset balance
 var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, customAssetCode, balance;
     return __generator(this, function (_a) {
@@ -212,5 +217,25 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc2();
+// issue custom asset
+var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, password, walletInfo, customAssetCode, amount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2)];
+            case 2:
+                amount = _a.sent();
+                console.log('our issued amount IS ', amount);
+                return [2 /*return*/];
+        }
+    });
+}); };
+myFunc6();
 //# sourceMappingURL=run.js.map

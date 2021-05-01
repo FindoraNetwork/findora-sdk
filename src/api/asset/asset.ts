@@ -1,3 +1,5 @@
+import { DEFAULT_ASSET_RULES } from '../../config/asset';
+import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '../../services/ledger/types';
@@ -7,7 +9,7 @@ import * as Network from '../network';
 interface AssetRules {
   transferable: boolean;
   updatable: boolean;
-  decimal: number;
+  decimals: number;
 }
 
 export const getFraAssetCode = async (): Promise<string> => {
@@ -25,14 +27,14 @@ export const getRandomAssetCode = async (): Promise<string> => {
 const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
-  const defaultTransferable = true;
-  const defaultUpdatable = true;
-  const defaultDecimal = 6;
+  const defaultTransferable = DEFAULT_ASSET_RULES.DEFAULT_TRANSFERABLE;
+  const defaultUpdatable = DEFAULT_ASSET_RULES.DEFAULT_UPDATABLE;
+  const defaultDecimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
 
   const assetRules = ledger.AssetRules.new()
     .set_transferable(defaultTransferable)
     .set_updatable(defaultUpdatable)
-    .set_decimals(defaultDecimal);
+    .set_decimals(defaultDecimals);
 
   return assetRules;
 };
@@ -45,12 +47,12 @@ const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRul
 
   const ledger = await getLedger();
 
-  const { transferable, updatable, decimal } = newAssetRules;
+  const { transferable, updatable, decimals } = newAssetRules;
 
   const assetRules = ledger.AssetRules.new()
     .set_transferable(transferable)
     .set_updatable(updatable)
-    .set_decimals(decimal);
+    .set_decimals(decimals);
 
   return assetRules;
 };
@@ -86,6 +88,46 @@ const getDefineAssetTransactionBuilder = async (
   return definitionTransaction;
 };
 
+const getIssueAssetTransactionBuilder = async (
+  walletKeypair: XfrKeyPair,
+  assetName: string,
+  amountToIssue: number,
+): Promise<TransactionBuilder> => {
+  const ledger = await getLedger();
+
+  const { response: stateCommitment, error } = await Network.getStateCommitment();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!stateCommitment) {
+    throw new Error('could not receive response from state commitement call');
+  }
+
+  const [_, height] = stateCommitment;
+  const blockCount = BigInt(height);
+
+  const decimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
+
+  const utxoNumbers = BigInt(toWei(amountToIssue, decimals).toString());
+
+  const blindIsAmount = false;
+
+  const zeiParams = ledger.PublicParams.new();
+
+  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(
+    walletKeypair,
+    assetName,
+    BigInt(blockCount),
+    utxoNumbers,
+    blindIsAmount,
+    zeiParams,
+  );
+
+  return definitionTransaction;
+};
+
 export const defineAsset = async (
   walletInfo: WalletKeypar,
   assetName: string,
@@ -116,4 +158,32 @@ export const defineAsset = async (
   console.log('Transaction handle:', handle);
 
   return assetName;
+};
+
+export const issueAsset = async (
+  walletInfo: WalletKeypar,
+  assetName: string,
+  amountToIssue: number,
+): Promise<number> => {
+  const fraCode = await getFraAssetCode();
+
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+
+  const receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+
+  let transactionBuilder = await getIssueAssetTransactionBuilder(
+    walletInfo.keypair,
+    assetName,
+    amountToIssue,
+  );
+
+  transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+
+  const submitData = transactionBuilder.transaction();
+
+  const handle = await Network.submitTransaction(submitData);
+
+  console.log('Transaction handle:', handle);
+
+  return amountToIssue;
 };
