@@ -4,7 +4,9 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { Keypair } from '../api';
-import { decryptUtxoItem, getUtxoItem } from './utxoHelper';
+import Cache from './cacheStore/factory';
+import { FileCacheProvider as CacheProvider } from './cacheStore/providers';
+import * as utxoHelper from './utxoHelper';
 
 const myDefaultResult = [
   {
@@ -95,7 +97,7 @@ describe('utxoHelpers', () => {
 
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      const utxoItem = await decryptUtxoItem(sid, walletInfo, myUtxoResponse);
+      const utxoItem = await utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse);
 
       expect(utxoItem).toHaveProperty('address');
       expect(utxoItem).toHaveProperty('sid');
@@ -181,7 +183,7 @@ describe('utxoHelpers', () => {
         },
       };
 
-      const utxoItem = await decryptUtxoItem(123, walletInfo, myUtxoResponse, myMemoResponse);
+      const utxoItem = await utxoHelper.decryptUtxoItem(123, walletInfo, myUtxoResponse, myMemoResponse);
 
       expect(utxoItem).toHaveProperty('address');
       expect(utxoItem).toHaveProperty('sid');
@@ -216,7 +218,7 @@ describe('utxoHelpers', () => {
 
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      await expect(decryptUtxoItem(sid, walletInfo, myUtxoResponse)).rejects.toThrowError(
+      await expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse)).rejects.toThrowError(
         'Can not get client asset record',
       );
     });
@@ -247,7 +249,7 @@ describe('utxoHelpers', () => {
 
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      await expect(decryptUtxoItem(sid, walletInfo, myUtxoResponse, myMemo)).rejects.toThrowError(
+      await expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse, myMemo)).rejects.toThrowError(
         'Can not decode owner memo',
       );
     });
@@ -314,7 +316,7 @@ describe('utxoHelpers', () => {
 
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      await expect(decryptUtxoItem(123, walletInfo, myUtxoResponse)).rejects.toThrowError(
+      await expect(utxoHelper.decryptUtxoItem(123, walletInfo, myUtxoResponse)).rejects.toThrowError(
         'Can not open client asset record to decode',
       );
     });
@@ -348,7 +350,7 @@ describe('utxoHelpers', () => {
         }),
       );
 
-      const utxoItem = await getUtxoItem(sid, walletInfo);
+      const utxoItem = await utxoHelper.getUtxoItem(sid, walletInfo);
 
       expect(utxoItem).toHaveProperty('address');
       expect(utxoItem).toHaveProperty('sid');
@@ -373,7 +375,7 @@ describe('utxoHelpers', () => {
         }),
       );
 
-      await expect(getUtxoItem(sid, walletInfo)).rejects.toThrowError(
+      await expect(utxoHelper.getUtxoItem(sid, walletInfo)).rejects.toThrowError(
         `Could not fetch utxo data for sid "${sid}"`,
       );
     });
@@ -390,9 +392,74 @@ describe('utxoHelpers', () => {
         }),
       );
 
-      await expect(getUtxoItem(sid, walletInfo)).rejects.toThrowError(
+      await expect(utxoHelper.getUtxoItem(sid, walletInfo)).rejects.toThrowError(
         `Could not fetch memo data for sid "${sid}"`,
       );
+    });
+  });
+
+  describe('addUtxo', () => {
+    const myUtxoRecord = {
+      amount: { NonConfidential: '40000' },
+      asset_type: nonConfidentialAssetType,
+      public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+    };
+
+    const myUtxo = {
+      id: 1,
+      record: myUtxoRecord,
+    };
+
+    const myUtxoResponse = {
+      utxo: myUtxo,
+    };
+
+    server.use(
+      rest.get(utxoUrl, (_req, res, ctx) => {
+        return res(ctx.json(myUtxoResponse));
+      }),
+      rest.get(memoUrl, (_req, res, ctx) => {
+        return res(ctx.json(myMemoResponse));
+      }),
+    );
+
+    it('return a list with utxo items', async () => {
+      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+      const sids = [sid, sid];
+      const spyGetUtxoItem = jest.spyOn(utxoHelper, 'getUtxoItem');
+      const spyCacheProviderRead = jest.spyOn(CacheProvider, 'read');
+
+      spyCacheProviderRead.mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid } }));
+
+      const utxoDataList = await utxoHelper.addUtxo(walletInfo, sids);
+
+      expect(spyCacheProviderRead).toHaveBeenCalledTimes(1);
+      expect(spyGetUtxoItem).toHaveBeenCalledTimes(2);
+
+      expect(utxoDataList.length).toEqual(2);
+    });
+
+    it('throws an error if fails to read the cache', async () => {
+      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+      const sids = [sid];
+      jest.spyOn(Cache, 'read').mockRejectedValue(new Error('barfoo'));
+
+      await expect(utxoHelper.addUtxo(walletInfo, sids)).rejects.toThrowError(
+        `Error reading the cache, "barfoo"`,
+      );
+    });
+
+    it('continues iterating through sids if it cant fetch utxo for a giving sid, and skips it', async () => {
+      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+      const sids = [sid, sid];
+      jest.spyOn(utxoHelper, 'getUtxoItem').mockRejectedValueOnce(new Error('barfoo'));
+
+      const utxoDataList = await utxoHelper.addUtxo(walletInfo, sids);
+
+      expect(utxoDataList.length).toEqual(1);
     });
   });
 });

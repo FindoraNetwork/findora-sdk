@@ -139,13 +139,11 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   try {
     utxoDataCache = await Cache.read('utxoDataCache', CacheProvider);
   } catch (error) {
-    console.log('error reading the cache', error.message);
+    throw new Error(`Error reading the cache, "${error.message}"`);
   }
 
   for (let i = 0; i < addSids.length; i++) {
     const sid = addSids[i];
-
-    // console.log(`Processing sid "${sid}" (${i + 1} out of ${addSids.length})`);
 
     try {
       const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
