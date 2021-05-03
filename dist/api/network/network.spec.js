@@ -457,7 +457,7 @@ describe('network', function () {
         });
     });
     describe('submitTransaction', function () {
-        var url = "https://dev-staging.dev.findora.org:8669/submit_transaction/";
+        var url = "https://dev-staging.dev.findora.org:8669/submit_transaction";
         it('returns properly formatted response', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, myData, dataResult;
             return __generator(this, function (_a) {

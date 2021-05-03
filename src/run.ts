@@ -9,6 +9,7 @@ const myFunc1 = async () => {
   console.log('FRA assetCode IS', assetCode);
 };
 
+// define asset
 const myFunc2 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
@@ -20,9 +21,10 @@ const myFunc2 = async () => {
 
   const asset = await Asset.defineAsset(walletInfo, assetCode);
 
-  console.log('our new asset IS YES !', asset);
+  console.log('our new asset IS ', asset);
 };
 
+// get state commitment
 const myFunc3 = async () => {
   // const address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
   const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
@@ -46,6 +48,7 @@ const myFunc3 = async () => {
   console.log('stateCommitment', stateCommitment);
 };
 
+// get transfer operation with fee
 const myFunc4 = async () => {
   const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
 
@@ -55,8 +58,6 @@ const myFunc4 = async () => {
   const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
   const sidsResult = await Network.getOwnedSids(address);
-
-  // console.log('sidsResult', sidsResult);
 
   const { response: sids } = sidsResult;
 
@@ -87,6 +88,7 @@ const myFunc4 = async () => {
   console.log('trasferOperation!', trasferOperation);
 };
 
+// get fra balance
 const myFunc5 = async () => {
   const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
 
@@ -118,6 +120,7 @@ const myFunc5 = async () => {
   console.log('balance IS!!!!!', balance);
 };
 
+// get custom asset balance
 const myFunc6 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
@@ -129,6 +132,20 @@ const myFunc6 = async () => {
   const balance = await Account.getBalance(walletInfo, customAssetCode);
 
   console.log('balance IS!!!!! :)', balance);
+};
+
+// issue custom asset
+const myFunc7 = async () => {
+  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+  const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
+
+  const amount = await Asset.issueAsset(walletInfo, customAssetCode, 2);
+
+  console.log('our issued amount IS ', amount);
 };
 
 myFunc6();

@@ -55,7 +55,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
+exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
+var asset_1 = require("../../config/asset");
+var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
@@ -86,25 +88,25 @@ var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, 
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
 var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, defaultTransferable, defaultUpdatable, defaultDecimal, assetRules;
+    var ledger, defaultTransferable, defaultUpdatable, defaultDecimals, assetRules;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                defaultTransferable = true;
-                defaultUpdatable = true;
-                defaultDecimal = 6;
+                defaultTransferable = asset_1.DEFAULT_ASSET_RULES.DEFAULT_TRANSFERABLE;
+                defaultUpdatable = asset_1.DEFAULT_ASSET_RULES.DEFAULT_UPDATABLE;
+                defaultDecimals = asset_1.DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
                 assetRules = ledger.AssetRules.new()
                     .set_transferable(defaultTransferable)
                     .set_updatable(defaultUpdatable)
-                    .set_decimals(defaultDecimal);
+                    .set_decimals(defaultDecimals);
                 return [2 /*return*/, assetRules];
         }
     });
 }); };
 var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var defaultAssetRules, ledger, transferable, updatable, decimal, assetRules;
+    var defaultAssetRules, ledger, transferable, updatable, decimals, assetRules;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -116,11 +118,11 @@ var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, 
             case 2: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 3:
                 ledger = _a.sent();
-                transferable = newAssetRules.transferable, updatable = newAssetRules.updatable, decimal = newAssetRules.decimal;
+                transferable = newAssetRules.transferable, updatable = newAssetRules.updatable, decimals = newAssetRules.decimals;
                 assetRules = ledger.AssetRules.new()
                     .set_transferable(transferable)
                     .set_updatable(updatable)
-                    .set_decimals(decimal);
+                    .set_decimals(decimals);
                 return [2 /*return*/, assetRules];
         }
     });
@@ -151,6 +153,33 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
         });
     });
 };
+var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, _a, stateCommitment, error, _, height, blockCount, decimals, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _b.sent();
+                return [4 /*yield*/, Network.getStateCommitment()];
+            case 2:
+                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
+                if (error) {
+                    throw new Error(error.message);
+                }
+                if (!stateCommitment) {
+                    throw new Error('could not receive response from state commitement call');
+                }
+                _ = stateCommitment[0], height = stateCommitment[1];
+                blockCount = BigInt(height);
+                decimals = asset_1.DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
+                utxoNumbers = BigInt(bigNumber_1.toWei(amountToIssue, decimals).toString());
+                blindIsAmount = false;
+                zeiParams = ledger.PublicParams.new();
+                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, blindIsAmount, zeiParams);
+                return [2 /*return*/, definitionTransaction];
+        }
+    });
+}); };
 var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
     var assetRules, fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, handle;
     return __generator(this, function (_a) {
@@ -179,4 +208,29 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
     });
 }); };
 exports.defineAsset = defineAsset;
+var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awaiter(void 0, void 0, void 0, function () {
+    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, handle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, exports.getFraAssetCode()];
+            case 1:
+                fraCode = _a.sent();
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
+            case 2:
+                transferOperationBuilder = _a.sent();
+                receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue)];
+            case 3:
+                transactionBuilder = _a.sent();
+                transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                submitData = transactionBuilder.transaction();
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 4:
+                handle = _a.sent();
+                console.log('Transaction handle:', handle);
+                return [2 /*return*/, amountToIssue];
+        }
+    });
+}); };
+exports.issueAsset = issueAsset;
 //# sourceMappingURL=asset.js.map
