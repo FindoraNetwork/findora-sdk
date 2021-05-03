@@ -11,7 +11,7 @@ import {
   TxoRef as LedgerTxoRef,
 } from './ledger/types';
 
-interface LedgerUtxoItem {
+export interface LedgerUtxoItem {
   sid: number;
   utxo: LedgerUtxo;
   ownerMemo: LedgerOwnerMemo | undefined;
@@ -22,7 +22,7 @@ export interface AddUtxoItem extends LedgerUtxoItem {
   body: any;
 }
 
-interface UtxoOutputItem extends LedgerUtxoItem {
+export interface UtxoOutputItem extends LedgerUtxoItem {
   originAmount: BigInt;
   amount: BigInt;
 }
@@ -216,9 +216,21 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
 
     inputAmount = BigInt(Number(inputAmount) + Number(item.originAmount));
 
-    const assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+    let assetRecord;
 
-    const txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+    try {
+      assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+    } catch (error) {
+      throw new Error(`Can not get client asset record. Details: "${error.message}"`);
+    }
+
+    let txoRef;
+
+    try {
+      txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+    } catch (error) {
+      throw new Error(`Cannot convert given sid id to a BigInt, "${item.sid}"`);
+    }
 
     const inputParameters: UtxoInputParameter = {
       txoRef,

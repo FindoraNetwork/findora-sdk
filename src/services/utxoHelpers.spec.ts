@@ -7,6 +7,7 @@ import { Keypair } from '../api';
 import Cache from './cacheStore/factory';
 import { FileCacheProvider as CacheProvider } from './cacheStore/providers';
 import * as utxoHelper from './utxoHelper';
+import { UtxoOutputItem } from './utxoHelper';
 
 const myDefaultResult = [
   {
@@ -864,6 +865,119 @@ describe('utxoHelpers', () => {
 
       expect(first.amount).toEqual(BigInt(1));
       expect(first.sid).toEqual(2);
+    });
+  });
+
+  describe('addUtxoInputs', () => {
+    it('returns a proper list with utxo inputs', async () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const mySendUtxoList: UtxoOutputItem[] = [
+        {
+          amount: BigInt(1),
+          originAmount: BigInt(100),
+          sid: 1,
+          utxo: myUtxo,
+          ownerMemo: undefined,
+        },
+        {
+          amount: BigInt(2),
+          originAmount: BigInt(5),
+          sid: 2,
+          utxo: myUtxo,
+          ownerMemo: undefined,
+        },
+      ];
+
+      const utxoInputsInfo = await utxoHelper.addUtxoInputs(mySendUtxoList);
+
+      expect(utxoInputsInfo).toHaveProperty('inputParametersList');
+      expect(utxoInputsInfo).toHaveProperty('inputAmount');
+      const { inputAmount, inputParametersList } = utxoInputsInfo;
+
+      expect(inputAmount).toEqual(BigInt(105));
+      expect(inputParametersList.length).toEqual(2);
+
+      const [first, second] = inputParametersList;
+
+      expect(first.amount).toEqual(BigInt(1));
+      expect(second.amount).toEqual(BigInt(2));
+    });
+
+    it('returns an empty list for a given send utxo list', async () => {
+      const mySendUtxoList: UtxoOutputItem[] = [];
+
+      const utxoInputsInfo = await utxoHelper.addUtxoInputs(mySendUtxoList);
+
+      expect(utxoInputsInfo).toHaveProperty('inputParametersList');
+      expect(utxoInputsInfo).toHaveProperty('inputAmount');
+      const { inputAmount, inputParametersList } = utxoInputsInfo;
+
+      expect(inputAmount).toEqual(BigInt(0));
+      expect(inputParametersList.length).toEqual(0);
+    });
+
+    it('throws an error when fails to get txRef', async () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myItem = {
+        amount: BigInt(1),
+        originAmount: BigInt(100),
+        sid: Number('foobar'),
+        utxo: myUtxo,
+        ownerMemo: undefined,
+      };
+
+      const mySendUtxoList = [myItem];
+
+      await expect(utxoHelper.addUtxoInputs(mySendUtxoList)).rejects.toThrowError(
+        'Cannot convert given sid id to a BigInt',
+      );
+    });
+
+    it('throws an error when fails to get txRef  aaa', async () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'barfoo=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myItem = {
+        amount: BigInt(1),
+        originAmount: BigInt(100),
+        sid: 1,
+        utxo: myUtxo,
+        ownerMemo: undefined,
+      };
+
+      const mySendUtxoList = [myItem];
+
+      await expect(utxoHelper.addUtxoInputs(mySendUtxoList)).rejects.toThrowError(
+        'Can not get client asset record',
+      );
     });
   });
 });
