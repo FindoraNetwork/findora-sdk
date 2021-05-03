@@ -462,4 +462,408 @@ describe('utxoHelpers', () => {
       expect(utxoDataList.length).toEqual(1);
     });
   });
+
+  describe('getSendUtxo', () => {
+    it('returns a list with three items', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 4,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 2,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 1,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 10,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 3,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 13,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(13);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(3);
+
+      const [first, second, third] = sendUtxoList;
+
+      expect(first.amount).toEqual(BigInt(2));
+      expect(first.sid).toEqual(4);
+      expect(second.amount).toEqual(BigInt(10));
+      expect(second.sid).toEqual(1);
+      expect(third.amount).toEqual(BigInt(1));
+      expect(third.sid).toEqual(2);
+    });
+
+    it('returns a list with two items', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 1,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 10,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 3,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 13,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 4,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 2,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(13);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(2);
+
+      const [first, second] = sendUtxoList;
+
+      expect(first.amount).toEqual(BigInt(10));
+      expect(first.sid).toEqual(1);
+      expect(second.amount).toEqual(BigInt(3));
+      expect(second.sid).toEqual(2);
+    });
+
+    it('returns an list with one item', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 3,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 13,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 4,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 2,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 1,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 10,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(10);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(1);
+
+      const [first] = sendUtxoList;
+
+      expect(first.amount).toEqual(BigInt(10));
+      expect(first.sid).toEqual(2);
+    });
+
+    it('returns an empty for an unexisting code', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCodeOne',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 3,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCodeTwo',
+            amount: 13,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(10);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(0);
+    });
+
+    it('returns a list with three items skiping other asset codes', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 1,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 10,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 4,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCodeOne',
+            amount: 2,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+        {
+          sid: 3,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 13,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(25);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(3);
+
+      const [first, second, third] = sendUtxoList;
+
+      expect(first.amount).toEqual(BigInt(10));
+      expect(first.sid).toEqual(1);
+      expect(second.amount).toEqual(BigInt(12));
+      expect(second.sid).toEqual(2);
+      expect(third.amount).toEqual(BigInt(3));
+      expect(third.sid).toEqual(3);
+    });
+
+    it('returns an empty for a given zero amount', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(0);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(0);
+    });
+
+    it('returns a single item list for amount less than sid amount', () => {
+      const myUtxoRecord = {
+        amount: { NonConfidential: '40000' },
+        asset_type: nonConfidentialAssetType,
+        public_key: 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=',
+      };
+
+      const myUtxo = {
+        id: 1,
+        record: myUtxoRecord,
+      };
+
+      const myUtxoDataList = [
+        {
+          sid: 2,
+          public_key: 'foo',
+          address: 'bar',
+          body: {
+            asset_type: 'myAssetCode',
+            amount: 12,
+          },
+          ownerMemo: undefined,
+          utxo: myUtxo,
+        },
+      ];
+
+      const myAmount = BigInt(1);
+      const sendUtxoList = utxoHelper.getSendUtxo('myAssetCode', myAmount, myUtxoDataList);
+
+      expect(sendUtxoList.length).toEqual(1);
+
+      const [first] = sendUtxoList;
+
+      expect(first.amount).toEqual(BigInt(1));
+      expect(first.sid).toEqual(2);
+    });
+  });
 });
