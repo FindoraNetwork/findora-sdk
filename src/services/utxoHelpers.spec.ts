@@ -114,7 +114,7 @@ describe('utxoHelpers', () => {
       expect(utxo).toEqual(myUtxo);
     });
 
-    it('returns decrypted utxo with confidential amount aaa', async () => {
+    it('returns decrypted utxo with confidential amount', async () => {
       const confidentialAmount = {
         Confidential: [
           'GrOFu0uL12arzxX0VX_OzWUcD6EVrFylYaMxW655J1Q=',
@@ -456,6 +456,7 @@ describe('utxoHelpers', () => {
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
       const sids = [sid, sid];
+      jest.spyOn(Cache, 'read').mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid } }));
       jest.spyOn(utxoHelper, 'getUtxoItem').mockRejectedValueOnce(new Error('barfoo'));
 
       const utxoDataList = await utxoHelper.addUtxo(walletInfo, sids);
@@ -953,7 +954,7 @@ describe('utxoHelpers', () => {
       );
     });
 
-    it('throws an error when fails to get txRef  aaa', async () => {
+    it('throws an error when fails to get txRef', async () => {
       const myUtxoRecord = {
         amount: { NonConfidential: '40000' },
         asset_type: nonConfidentialAssetType,
