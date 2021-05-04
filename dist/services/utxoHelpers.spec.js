@@ -160,7 +160,7 @@ describe('utxoHelpers', function () {
                 }
             });
         }); });
-        it('returns decrypted utxo with confidential amount aaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('returns decrypted utxo with confidential amount', function () { return __awaiter(void 0, void 0, void 0, function () {
             var confidentialAmount, nonConfidentialAssetTypeForConfidentialAmount, myUtxoRecord, myUtxo, myUtxoResponse, walletInfo, myMemoResponse, utxoItem, body, utxo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -518,6 +518,7 @@ describe('utxoHelpers', function () {
                     case 1:
                         walletInfo = _a.sent();
                         sids = [sid, sid];
+                        jest.spyOn(factory_1.default, 'read').mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid: sid } }));
                         jest.spyOn(utxoHelper, 'getUtxoItem').mockRejectedValueOnce(new Error('barfoo'));
                         return [4 /*yield*/, utxoHelper.addUtxo(walletInfo, sids)];
                     case 2:
@@ -980,7 +981,7 @@ describe('utxoHelpers', function () {
                 }
             });
         }); });
-        it('throws an error when fails to get txRef  aaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('throws an error when fails to get txRef', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myUtxoRecord, myUtxo, myItem, mySendUtxoList;
             return __generator(this, function (_a) {
                 switch (_a.label) {

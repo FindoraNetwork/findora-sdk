@@ -237,44 +237,5 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-// debug of utxo helper test
-var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
-            case 2:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                // array of int
-                // console.log('sids!!', sids);
-                if (!sids) {
-                    return [2 /*return*/];
-                }
-                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, [532, 919, 514])];
-            case 3:
-                utxoDataList = _a.sent();
-                console.log('utxoDataList!!!', utxoDataList);
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                amount = BigInt(1);
-                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
-                console.log('sendUtxoList!', sendUtxoList);
-                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
-            case 5:
-                utxoInputsInfo = _a.sent();
-                console.log('utxoInputsInfo', utxoInputsInfo);
-                return [2 /*return*/];
-        }
-    });
-}); };
-myFunc8();
+myFunc6();
 //# sourceMappingURL=run.js.map

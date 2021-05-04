@@ -61,12 +61,19 @@ var utxoHelper_1 = require("../../services/utxoHelper");
 var asset_1 = require("../asset");
 var Network = __importStar(require("../network"));
 var getAssetBalance = function (walletKeypair, assetCode, sids) { return __awaiter(void 0, void 0, void 0, function () {
-    var utxoDataList, filteredUtxoList, currentBalance;
+    var utxoDataList, error_1, filteredUtxoList, currentBalance;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, utxoHelper_1.addUtxo(walletKeypair, sids)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, utxoHelper_1.addUtxo(walletKeypair, sids)];
             case 1:
                 utxoDataList = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_1 = _a.sent();
+                throw new Error("Could not get list of addUtxo, Details: \"" + error_1.message + "\"");
+            case 3:
                 if (!utxoDataList.length) {
                     return [2 /*return*/, bigNumber_1.create(0)];
                 }
@@ -84,36 +91,32 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
 }); };
 exports.getAssetBalance = getAssetBalance;
 var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, assetCodeToUse, _a, balanceInWei, balance, err_1;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, balance, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, Network.getOwnedSids(walletKeypair.publickey)];
             case 1:
-                sidsResult = _b.sent();
+                sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
-                    throw new Error('no sids were fetched!');
+                    throw new Error('No sids were fetched!');
                 }
-                _a = assetCode;
-                if (_a) return [3 /*break*/, 3];
                 return [4 /*yield*/, asset_1.getFraAssetCode()];
             case 2:
-                _a = (_b.sent());
-                _b.label = 3;
+                fraAssetCode = _a.sent();
+                assetCodeToUse = assetCode || fraAssetCode;
+                _a.label = 3;
             case 3:
-                assetCodeToUse = _a;
-                _b.label = 4;
-            case 4:
-                _b.trys.push([4, 6, , 7]);
+                _a.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, exports.getAssetBalance(walletKeypair, assetCodeToUse, sids)];
-            case 5:
-                balanceInWei = _b.sent();
+            case 4:
+                balanceInWei = _a.sent();
                 balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
                 return [2 /*return*/, balance];
-            case 6:
-                err_1 = _b.sent();
-                throw new Error("could not fetch balance for \"" + assetCodeToUse + "\". Error - " + err_1.message);
-            case 7: return [2 /*return*/];
+            case 5:
+                err_1 = _a.sent();
+                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + err_1.message);
+            case 6: return [2 /*return*/];
         }
     });
 }); };
