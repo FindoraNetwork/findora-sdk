@@ -47,11 +47,11 @@ export interface LedgerUtxo {
 
 export type UtxoResponse = {
   utxo: LedgerUtxo;
-  authenticated_txn: string;
-  finalized_txn: any;
-  txn_inclusion_proof: any;
-  state_commitment_data: any;
-  state_commitment: string[];
+  authenticated_txn?: string;
+  finalized_txn?: any;
+  txn_inclusion_proof?: any;
+  state_commitment_data?: any;
+  state_commitment?: string[];
 };
 
 export interface UtxoDataResult extends NetworkAxiosDataResult {

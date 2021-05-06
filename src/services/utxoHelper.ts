@@ -11,7 +11,7 @@ import {
   TxoRef as LedgerTxoRef,
 } from './ledger/types';
 
-interface LedgerUtxoItem {
+export interface LedgerUtxoItem {
   sid: number;
   utxo: LedgerUtxo;
   ownerMemo: LedgerOwnerMemo | undefined;
@@ -22,7 +22,7 @@ export interface AddUtxoItem extends LedgerUtxoItem {
   body: any;
 }
 
-interface UtxoOutputItem extends LedgerUtxoItem {
+export interface UtxoOutputItem extends LedgerUtxoItem {
   originAmount: BigInt;
   amount: BigInt;
 }
@@ -39,7 +39,7 @@ export interface UtxoInputsInfo {
   inputAmount: BigInt;
 }
 
-const decryptUtxoItem = async (
+export const decryptUtxoItem = async (
   sid: number,
   walletInfo: WalletKeypar,
   utxoData: UtxoResponse,
@@ -47,17 +47,43 @@ const decryptUtxoItem = async (
 ): Promise<AddUtxoItem> => {
   const ledger = await getLedger();
 
-  const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
+  let assetRecord;
 
-  const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+  try {
+    assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
+  } catch (error) {
+    throw new Error(`Can not get client asset record. Details: "${error.message}"`);
+  }
 
-  const decryptAssetData = await ledger.open_client_asset_record(
-    assetRecord,
-    ownerMemo?.clone(),
-    walletInfo.keypair,
-  );
+  let ownerMemo;
 
-  decryptAssetData.asset_type = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
+  try {
+    ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+  } catch (error) {
+    throw new Error(`Can not decode owner memo. Details: "${error.message}"`);
+  }
+
+  let decryptAssetData;
+
+  try {
+    decryptAssetData = await ledger.open_client_asset_record(
+      assetRecord,
+      ownerMemo?.clone(),
+      walletInfo.keypair,
+    );
+  } catch (error) {
+    throw new Error(`Can not open client asset record to decode. Details: "${error.message}"`);
+  }
+
+  let decryptedAsetType;
+
+  try {
+    decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
+  } catch (error) {
+    throw new Error(`Can not decrypt asset type. Details: "${error.message}"`);
+  }
+
+  decryptAssetData.asset_type = decryptedAsetType;
 
   decryptAssetData.amount = BigInt(decryptAssetData.amount);
 
@@ -72,7 +98,7 @@ const decryptUtxoItem = async (
   return item;
 };
 
-const getUtxoItem = async (
+export const getUtxoItem = async (
   sid: number,
   walletInfo: WalletKeypar,
   cachedItem?: AddUtxoItem,
@@ -88,7 +114,7 @@ const getUtxoItem = async (
   const { response: utxoData, error: utxoError } = utxoDataResult;
 
   if (utxoError || !utxoData) {
-    throw new Error(`could not fetch utxo data for sid "${sid}", Error - ${utxoError?.message}`);
+    throw new Error(`Could not fetch utxo data for sid "${sid}", Error - ${utxoError?.message}`);
   }
 
   const memoDataResult = await Network.getOwnerMemo(sid);
@@ -96,7 +122,7 @@ const getUtxoItem = async (
   const { response: memoData, error: memoError } = memoDataResult;
 
   if (memoError) {
-    throw new Error(`could not fetch utxo data for sid "${sid}", Error - ${memoError.message}`);
+    throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
   }
 
   const item = await decryptUtxoItem(sid, walletInfo, utxoData, memoData);
@@ -113,13 +139,11 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   try {
     utxoDataCache = await Cache.read('utxoDataCache', CacheProvider);
   } catch (error) {
-    console.log('error reading the cache', error.message);
+    throw new Error(`Error reading the cache, "${error.message}"`);
   }
 
   for (let i = 0; i < addSids.length; i++) {
     const sid = addSids[i];
-
-    // console.log(`Processing sid "${sid}" (${i + 1} out of ${addSids.length})`);
 
     try {
       const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
@@ -192,9 +216,21 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
 
     inputAmount = BigInt(Number(inputAmount) + Number(item.originAmount));
 
-    const assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+    let assetRecord;
 
-    const txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+    try {
+      assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+    } catch (error) {
+      throw new Error(`Can not get client asset record. Details: "${error.message}"`);
+    }
+
+    let txoRef;
+
+    try {
+      txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+    } catch (error) {
+      throw new Error(`Cannot convert given sid id to a BigInt, "${item.sid}"`);
+    }
 
     const inputParameters: UtxoInputParameter = {
       txoRef,

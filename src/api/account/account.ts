@@ -9,7 +9,13 @@ export const getAssetBalance = async (
   assetCode: string,
   sids: number[],
 ): Promise<BigNumberValue> => {
-  const utxoDataList = await addUtxo(walletKeypair, sids);
+  let utxoDataList;
+
+  try {
+    utxoDataList = await addUtxo(walletKeypair, sids);
+  } catch (error) {
+    throw new Error(`Could not get list of addUtxo, Details: "${error.message}"`);
+  }
 
   if (!utxoDataList.length) {
     return createBigNumber(0);
@@ -34,10 +40,12 @@ export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string
   const { response: sids } = sidsResult;
 
   if (!sids) {
-    throw new Error('no sids were fetched!');
+    throw new Error('No sids were fetched!');
   }
 
-  const assetCodeToUse = assetCode || (await getFraAssetCode());
+  const fraAssetCode = await getFraAssetCode();
+
+  const assetCodeToUse = assetCode || fraAssetCode;
 
   try {
     const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
@@ -45,6 +53,6 @@ export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string
     const balance = fromWei(balanceInWei, 6).toFormat(6);
     return balance;
   } catch (err) {
-    throw new Error(`could not fetch balance for "${assetCodeToUse}". Error - ${err.message}`);
+    throw new Error(`Could not fetch balance for "${assetCodeToUse}". Error - ${err.message}`);
   }
 };
