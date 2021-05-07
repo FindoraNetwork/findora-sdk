@@ -54,11 +54,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = require("./api");
+var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
 var Fee = __importStar(require("./services/fee"));
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
+var sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
+Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var assetCode;
     return __generator(this, function (_a) {
@@ -237,5 +243,5 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc6();
+myFunc2();
 //# sourceMappingURL=run.js.map

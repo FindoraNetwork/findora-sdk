@@ -106,7 +106,7 @@ var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0
     });
 }); };
 var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var defaultAssetRules, ledger, transferable, updatable, decimals, assetRules;
+    var defaultAssetRules, ledger, transferable, updatable, decimals, traceable, maxNumbers, assetRules, trackingKey, tracingPolicy;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -118,11 +118,19 @@ var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, 
             case 2: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 3:
                 ledger = _a.sent();
-                transferable = newAssetRules.transferable, updatable = newAssetRules.updatable, decimals = newAssetRules.decimals;
+                transferable = newAssetRules.transferable, updatable = newAssetRules.updatable, decimals = newAssetRules.decimals, traceable = newAssetRules.traceable, maxNumbers = newAssetRules.maxNumbers;
                 assetRules = ledger.AssetRules.new()
                     .set_transferable(transferable)
                     .set_updatable(updatable)
                     .set_decimals(decimals);
+                if (maxNumbers && BigInt(maxNumbers) > BigInt(0)) {
+                    assetRules = assetRules.set_max_units(BigInt(maxNumbers));
+                }
+                if (traceable) {
+                    trackingKey = ledger.AssetTracerKeyPair.new();
+                    tracingPolicy = ledger.TracingPolicy.new_with_tracing(trackingKey);
+                    assetRules = assetRules.add_tracing_policy(tracingPolicy);
+                }
                 return [2 /*return*/, assetRules];
         }
     });

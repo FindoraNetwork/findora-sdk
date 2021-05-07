@@ -41,11 +41,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var json_bigint_1 = __importDefault(require("json-bigint"));
-var network_1 = require("../../config/network");
+var Sdk_1 = __importDefault(require("../../Sdk"));
 var dataProxy_1 = __importDefault(require("../../services/dataProxy"));
-var getQueryRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.QUERY_PORT; };
-var getSubmitRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.SUBMISSION_PORT; };
-var getLedgerRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.LEDGER_PORT; };
+var getQueryRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
+    var url = protocol + "://" + hostUrl + ":" + queryPort;
+    return url;
+};
+var getSubmitRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, submissionPort = _a.submissionPort;
+    var url = protocol + "://" + hostUrl + ":" + submissionPort;
+    return url;
+};
+var getLedgerRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, ledgerPort = _a.ledgerPort;
+    var url = protocol + "://" + hostUrl + ":" + ledgerPort;
+    return url;
+};
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
     var result, dataResult;
     return __generator(this, function (_a) {
@@ -92,6 +104,7 @@ var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/utxo_sid/" + utxoSid;
+                console.log('URL!!', url);
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();

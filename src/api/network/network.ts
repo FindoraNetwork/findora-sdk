@@ -1,12 +1,32 @@
 import JSONbig from 'json-bigint';
 
-import { HOST, LEDGER_PORT, PROTOCOL, QUERY_PORT, SUBMISSION_PORT } from '../../config/network';
+import Sdk from '../../Sdk';
 import axios from '../../services/dataProxy';
 import * as Types from './types';
 
-const getQueryRoute = (): string => `${PROTOCOL}://${HOST}:${QUERY_PORT}`;
-const getSubmitRoute = (): string => `${PROTOCOL}://${HOST}:${SUBMISSION_PORT}`;
-const getLedgerRoute = (): string => `${PROTOCOL}://${HOST}:${LEDGER_PORT}`;
+const getQueryRoute = (): string => {
+  const { protocol, hostUrl, queryPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${queryPort}`;
+
+  return url;
+};
+
+const getSubmitRoute = (): string => {
+  const { protocol, hostUrl, submissionPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${submissionPort}`;
+
+  return url;
+};
+
+const getLedgerRoute = (): string => {
+  const { protocol, hostUrl, ledgerPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${ledgerPort}`;
+
+  return url;
+};
 
 export const apiPost = async (
   url: string,
@@ -48,6 +68,7 @@ export const getUtxo = async (
 ): Promise<Types.UtxoDataResult> => {
   const url = `${getLedgerRoute()}/utxo_sid/${utxoSid}`;
 
+  console.log('URL!!', url);
   const dataResult = await apiGet(url, config);
 
   return dataResult;
