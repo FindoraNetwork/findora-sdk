@@ -47,7 +47,7 @@
   //********************************
   // Workbench and window
   //********************************
-  "workbench.colorTheme": "Solarized Dark",
+  "workbench.colorTheme": "One Dark Pro",
   "workbench.editor.highlightModifiedTabs": true, // formatting only supports LF line endings
   "workbench.startupEditor": "newUntitledFile",
 
@@ -127,7 +127,8 @@
   // Other (unclassfied)
   //********************************
   "problems.showCurrentInStatus": true,
-  "explorer.openEditors.visible": 15
+  "explorer.openEditors.visible": 15,
+  "workbench.iconTheme": "material-icon-theme"
 
   //********************************
   // Below would come automatically added setting - to be sorted and saved
