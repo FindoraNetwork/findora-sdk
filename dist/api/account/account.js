@@ -58,8 +58,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getBalance = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
-var asset_1 = require("../asset");
 var Network = __importStar(require("../network"));
+var sdkAsset_1 = require("../sdkAsset");
 var getAssetBalance = function (walletKeypair, assetCode, sids) { return __awaiter(void 0, void 0, void 0, function () {
     var utxoDataList, error_1, filteredUtxoList, currentBalance;
     return __generator(this, function (_a) {
@@ -101,7 +101,7 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
                 if (!sids) {
                     throw new Error('No sids were fetched!');
                 }
-                return [4 /*yield*/, asset_1.getFraAssetCode()];
+                return [4 /*yield*/, sdkAsset_1.getFraAssetCode()];
             case 2:
                 fraAssetCode = _a.sent();
                 assetCodeToUse = assetCode || fraAssetCode;

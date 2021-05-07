@@ -241,4 +241,4 @@ var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awai
     });
 }); };
 exports.issueAsset = issueAsset;
-//# sourceMappingURL=asset.js.map
+//# sourceMappingURL=sdkAsset.js.map
