@@ -1,7 +1,7 @@
+import axios from 'axios';
 import JSONbig from 'json-bigint';
 
 import Sdk from '../../Sdk';
-import axios from '../../services/dataProxy';
 import * as Types from './types';
 
 const getQueryRoute = (): string => {
@@ -33,22 +33,40 @@ export const apiPost = async (
   data?: Types.ParsedTransactionData,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.NetworkAxiosDataResult> => {
-  const result: Types.NetworkAxiosResult = await axios.post(url, data, config);
+  let axiosResponse;
 
-  const { data: dataResult } = result;
+  try {
+    axiosResponse = await axios.post(url, data, config);
+  } catch (err) {
+    return { error: { message: err.message } };
+  }
 
-  return dataResult;
+  try {
+    const myResponse = JSONbig({ useNativeBigInt: true }).parse(axiosResponse.data);
+    return { response: myResponse };
+  } catch (_) {
+    return { response: axiosResponse.data };
+  }
 };
 
 export const apiGet = async (
   url: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.NetworkAxiosDataResult> => {
-  const result: Types.NetworkAxiosResult = await axios.get(url, config);
+  let axiosResponse;
 
-  const { data: dataResult } = result;
+  try {
+    axiosResponse = await axios.get(url, config);
+  } catch (err) {
+    return { error: { message: err.message } };
+  }
 
-  return dataResult;
+  try {
+    const myResponse = JSONbig({ useNativeBigInt: true }).parse(axiosResponse.data);
+    return { response: myResponse };
+  } catch (_) {
+    return { response: axiosResponse.data };
+  }
 };
 
 export const getOwnedSids = async (
@@ -68,7 +86,6 @@ export const getUtxo = async (
 ): Promise<Types.UtxoDataResult> => {
   const url = `${getLedgerRoute()}/utxo_sid/${utxoSid}`;
 
-  console.log('URL!!', url);
   const dataResult = await apiGet(url, config);
 
   return dataResult;
