@@ -1,4 +1,4 @@
-import { Random } from './random';
+import { Random } from '_src/random';
 
 describe('getBytes', () => {
   it('returns correct length of the array', () => {

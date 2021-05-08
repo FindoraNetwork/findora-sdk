@@ -1,8 +1,8 @@
-import { WalletKeypar } from '../api/keypair';
-import * as Network from '../api/network';
-import { getLedger } from './ledger/ledgerWrapper';
-import { TransferOperationBuilder } from './ledger/types';
-import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from './utxoHelper';
+import { WalletKeypar } from '_src/api/keypair';
+import * as Network from '_src/api/network';
+import { getLedger } from '_src/services/ledger/ledgerWrapper';
+import { TransferOperationBuilder } from '_src/services/ledger/types';
+import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from '_src/services/utxoHelper';
 
 export const getTransferOperationWithFee = async (
   walletInfo: WalletKeypar,

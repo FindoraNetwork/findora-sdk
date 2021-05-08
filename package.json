@@ -22,7 +22,7 @@
     "node": ">=12"
   },
   "scripts": {
-    "buildAll": "tsc && webpack --mode production",
+    "buildAll": "rm -rf ./dist/* && tsc && webpack --mode production",
     "build": "tsc",
     "test": "jest --watch --detectOpenHandles",
     "prettier": "prettier --write ./src/**/*.ts",
@@ -86,6 +86,7 @@
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
     "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#v0.1.0-rc5.5-final",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "os-browserify": "^0.3.0"
   }
 }

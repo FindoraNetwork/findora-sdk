@@ -58,11 +58,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var api_1 = require("./api");
-var Sdk_1 = __importDefault(require("./Sdk"));
-var bigNumber = __importStar(require("./services/bigNumber"));
-var Fee = __importStar(require("./services/fee"));
-var UtxoHelper = __importStar(require("./services/utxoHelper"));
+var api_1 = require("_src/api");
+var Sdk_1 = __importDefault(require("_src/Sdk"));
+var bigNumber = __importStar(require("_src/services/bigNumber"));
+var Fee = __importStar(require("_src/services/fee"));
+var UtxoHelper = __importStar(require("_src/services/utxoHelper"));
 var sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
 Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {

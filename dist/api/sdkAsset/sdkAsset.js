@@ -56,11 +56,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
-var asset_1 = require("../../config/asset");
-var bigNumber_1 = require("../../services/bigNumber");
-var Fee = __importStar(require("../../services/fee"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var Network = __importStar(require("../network"));
+var asset_1 = require("_src/config/asset");
+var bigNumber_1 = require("_src/services/bigNumber");
+var Fee = __importStar(require("_src/services/fee"));
+var ledgerWrapper_1 = require("_src/services/ledger/ledgerWrapper");
+var Network = __importStar(require("_src/api/network"));
 var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetCode;
     return __generator(this, function (_a) {

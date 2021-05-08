@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.restorePrivatekeypair = void 0;
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var ledgerWrapper_1 = require("_src/services/ledger/ledgerWrapper");
 var restorePrivatekeypair = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, toSend, keypair, keypairStr, encrypted;
     return __generator(this, function (_a) {

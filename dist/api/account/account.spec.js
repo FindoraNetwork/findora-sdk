@@ -58,9 +58,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
-var Keypair = __importStar(require("../../api/keypair"));
-var bigNumber = __importStar(require("../../services/bigNumber"));
-var utxoHelper = __importStar(require("../../services/utxoHelper"));
+var Keypair = __importStar(require("_src/api/keypair"));
+var bigNumber = __importStar(require("_src/services/bigNumber"));
+var utxoHelper = __importStar(require("_src/services/utxoHelper"));
 var Account = __importStar(require("./account"));
 var myDefaultResult = [
     {

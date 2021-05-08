@@ -3,9 +3,9 @@ import '@testing-library/jest-dom/extend-expect';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
-import * as Keypair from '../../api/keypair';
-import * as bigNumber from '../../services/bigNumber';
-import * as utxoHelper from '../../services/utxoHelper';
+import * as Keypair from '_src/api/keypair';
+import * as bigNumber from '_src/services/bigNumber';
+import * as utxoHelper from '_src/services/utxoHelper';
 import * as Account from './account';
 
 const myDefaultResult = [

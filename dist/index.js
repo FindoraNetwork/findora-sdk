@@ -20,11 +20,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Sdk = exports.Api = exports.getNodeLedger = exports.getWebLedger = exports.Random = void 0;
-var random_1 = require("./random");
+var random_1 = require("_src/random");
 Object.defineProperty(exports, "Random", { enumerable: true, get: function () { return random_1.Random; } });
-var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
+var ledgerWrapper_1 = require("_src/services/ledger/ledgerWrapper");
 Object.defineProperty(exports, "getWebLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getWebLedger; } });
 Object.defineProperty(exports, "getNodeLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getNodeLedger; } });
-exports.Api = __importStar(require("./api"));
-exports.Sdk = __importStar(require("./Sdk"));
+exports.Api = __importStar(require("_src/api"));
+exports.Sdk = __importStar(require("_src/Sdk"));
 //# sourceMappingURL=index.js.map

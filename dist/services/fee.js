@@ -56,9 +56,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildTransferOperationWithFee = exports.getTransferOperationWithFee = void 0;
-var Network = __importStar(require("../api/network"));
-var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
-var utxoHelper_1 = require("./utxoHelper");
+var Network = __importStar(require("_src/api/network"));
+var ledgerWrapper_1 = require("_src/services/ledger/ledgerWrapper");
+var utxoHelper_1 = require("_src/services/utxoHelper");
 var getTransferOperationWithFee = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType, transferOp, inputParametersList, inputAmount, numberToSubmit;
     return __generator(this, function (_a) {
