@@ -1,7 +1,12 @@
 import { Account, Asset, Keypair, Network } from './api';
+import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
+
+const sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
+
+Sdk.init(sdkEnv);
 
 const myFunc1 = async () => {
   const assetCode = await Asset.getFraAssetCode();
@@ -148,4 +153,4 @@ const myFunc7 = async () => {
   console.log('our issued amount IS ', amount);
 };
 
-myFunc6();
+myFunc2();

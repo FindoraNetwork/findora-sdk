@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import '@testing-library/jest-dom/extend-expect';
 
 import { rest } from 'msw';

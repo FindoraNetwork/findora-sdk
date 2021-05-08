@@ -1,0 +1,136 @@
+{
+  //********************************
+  // Files and search
+  //********************************
+  "files.trimTrailingWhitespace": true,
+  "files.eol": "\n",
+  // Specify which files are not monitored by VSCode to prevent too many files being scanned
+  // when VSCode is started, resulting in high CPU usage
+  "files.watcherExclude": {
+    "**/.git/objects/**": true,
+    "**/.git/subtree-cache/**": true,
+    "**/node_modules/*/**": true,
+    "**/dist/**": true
+  },
+  "files.associations": {
+    "Brewfile": "ruby",
+    "*.alfredappearance": "json"
+  },
+  "files.exclude": {
+    "**/.idea": true,
+    "**/bower_components": true,
+    "**/vendor": false,
+    "/.git": true,
+    "/.DS_Store": true
+  },
+  "search.exclude": {
+    "/node_modules": true,
+    "yarn.lock": true,
+    "package-lock": true
+  },
+
+  //********************************
+  // Editor and markdown
+  //********************************
+  "editor.codeActionsOnSave": {
+    // Format css
+    "source.fixAll.stylelint": true
+  },
+
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.formatOnType": true,
+  "editor.renderIndentGuides": false,
+  "editor.tabSize": 2,
+  "editor.renderWhitespace": "selection",
+
+  //********************************
+  // Workbench and window
+  //********************************
+  "workbench.colorTheme": "One Dark Pro",
+  "workbench.editor.highlightModifiedTabs": true, // formatting only supports LF line endings
+  "workbench.startupEditor": "newUntitledFile",
+
+  //********************************
+  // Git and gitlens Extension
+  //********************************
+  "git.autofetch": true,
+  "git.confirmSync": false,
+
+  //********************************
+  // Prettier Extension (eslint + prettier)
+  //********************************
+  "eslint.run": "onType",
+  "eslint.format.enable": true,
+  "eslint.codeAction.showDocumentation": {
+    "enable": true
+  },
+  "eslint.codeAction.disableRuleComment": {
+    "enable": true
+  },
+  "eslint.probe": ["javascript", "javascriptreact"],
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  // stylelint extends its own check
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+
+  // Languages specific
+  "[javascript]": {
+    "editor.tabSize": 2,
+    // here and similar line - configure VScode to use prettier formatter
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.renderWhitespace": "all",
+    "editor.acceptSuggestionOnEnter": "off",
+    "editor.parameterHints.enabled": true,
+    "editor.quickSuggestions": true
+  },
+
+  //********************************
+  // Other (unclassfied)
+  //********************************
+  "problems.showCurrentInStatus": true,
+  "explorer.openEditors.visible": 15,
+  "workbench.iconTheme": "material-icon-theme"
+
+  //********************************
+  // Below would come automatically added setting - to be sorted and saved
+  //********************************
+}

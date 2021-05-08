@@ -1,34 +1,72 @@
+import axios from 'axios';
 import JSONbig from 'json-bigint';
 
-import { HOST, LEDGER_PORT, PROTOCOL, QUERY_PORT, SUBMISSION_PORT } from '../../config/network';
-import axios from '../../services/dataProxy';
+import Sdk from '../../Sdk';
 import * as Types from './types';
 
-const getQueryRoute = (): string => `${PROTOCOL}://${HOST}:${QUERY_PORT}`;
-const getSubmitRoute = (): string => `${PROTOCOL}://${HOST}:${SUBMISSION_PORT}`;
-const getLedgerRoute = (): string => `${PROTOCOL}://${HOST}:${LEDGER_PORT}`;
+const getQueryRoute = (): string => {
+  const { protocol, hostUrl, queryPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${queryPort}`;
+
+  return url;
+};
+
+const getSubmitRoute = (): string => {
+  const { protocol, hostUrl, submissionPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${submissionPort}`;
+
+  return url;
+};
+
+const getLedgerRoute = (): string => {
+  const { protocol, hostUrl, ledgerPort } = Sdk.environment;
+
+  const url = `${protocol}://${hostUrl}:${ledgerPort}`;
+
+  return url;
+};
 
 export const apiPost = async (
   url: string,
   data?: Types.ParsedTransactionData,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.NetworkAxiosDataResult> => {
-  const result: Types.NetworkAxiosResult = await axios.post(url, data, config);
+  let axiosResponse;
 
-  const { data: dataResult } = result;
+  try {
+    axiosResponse = await axios.post(url, data, config);
+  } catch (err) {
+    return { error: { message: err.message } };
+  }
 
-  return dataResult;
+  try {
+    const myResponse = JSONbig({ useNativeBigInt: true }).parse(axiosResponse.data);
+    return { response: myResponse };
+  } catch (_) {
+    return { response: axiosResponse.data };
+  }
 };
 
 export const apiGet = async (
   url: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.NetworkAxiosDataResult> => {
-  const result: Types.NetworkAxiosResult = await axios.get(url, config);
+  let axiosResponse;
 
-  const { data: dataResult } = result;
+  try {
+    axiosResponse = await axios.get(url, config);
+  } catch (err) {
+    return { error: { message: err.message } };
+  }
 
-  return dataResult;
+  try {
+    const myResponse = JSONbig({ useNativeBigInt: true }).parse(axiosResponse.data);
+    return { response: myResponse };
+  } catch (_) {
+    return { response: axiosResponse.data };
+  }
 };
 
 export const getOwnedSids = async (

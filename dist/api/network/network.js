@@ -40,34 +40,72 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
-var network_1 = require("../../config/network");
-var dataProxy_1 = __importDefault(require("../../services/dataProxy"));
-var getQueryRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.QUERY_PORT; };
-var getSubmitRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.SUBMISSION_PORT; };
-var getLedgerRoute = function () { return network_1.PROTOCOL + "://" + network_1.HOST + ":" + network_1.LEDGER_PORT; };
+var Sdk_1 = __importDefault(require("../../Sdk"));
+var getQueryRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
+    var url = protocol + "://" + hostUrl + ":" + queryPort;
+    return url;
+};
+var getSubmitRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, submissionPort = _a.submissionPort;
+    var url = protocol + "://" + hostUrl + ":" + submissionPort;
+    return url;
+};
+var getLedgerRoute = function () {
+    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, ledgerPort = _a.ledgerPort;
+    var url = protocol + "://" + hostUrl + ":" + ledgerPort;
+    return url;
+};
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, dataResult;
+    var axiosResponse, err_1, myResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, dataProxy_1.default.post(url, data, config)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, axios_1.default.post(url, data, config)];
             case 1:
-                result = _a.sent();
-                dataResult = result.data;
-                return [2 /*return*/, dataResult];
+                axiosResponse = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                return [2 /*return*/, { error: { message: err_1.message } }];
+            case 3:
+                try {
+                    myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
+                    return [2 /*return*/, { response: myResponse }];
+                }
+                catch (_) {
+                    return [2 /*return*/, { response: axiosResponse.data }];
+                }
+                return [2 /*return*/];
         }
     });
 }); };
 exports.apiPost = apiPost;
 var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var result, dataResult;
+    var axiosResponse, err_2, myResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, dataProxy_1.default.get(url, config)];
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, axios_1.default.get(url, config)];
             case 1:
-                result = _a.sent();
-                dataResult = result.data;
-                return [2 /*return*/, dataResult];
+                axiosResponse = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_2 = _a.sent();
+                return [2 /*return*/, { error: { message: err_2.message } }];
+            case 3:
+                try {
+                    myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
+                    return [2 /*return*/, { response: myResponse }];
+                }
+                catch (_) {
+                    return [2 /*return*/, { response: axiosResponse.data }];
+                }
+                return [2 /*return*/];
         }
     });
 }); };

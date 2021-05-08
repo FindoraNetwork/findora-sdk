@@ -10,6 +10,8 @@ interface AssetRules {
   transferable: boolean;
   updatable: boolean;
   decimals: number;
+  traceable?: boolean;
+  maxNumbers?: number;
 }
 
 export const getFraAssetCode = async (): Promise<string> => {
@@ -42,17 +44,29 @@ const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
 const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRules> => {
   if (!newAssetRules) {
     const defaultAssetRules = await getDefaultAssetRules();
+
     return defaultAssetRules;
   }
 
   const ledger = await getLedger();
 
-  const { transferable, updatable, decimals } = newAssetRules;
+  const { transferable, updatable, decimals, traceable, maxNumbers } = newAssetRules;
 
-  const assetRules = ledger.AssetRules.new()
+  let assetRules = ledger.AssetRules.new()
     .set_transferable(transferable)
     .set_updatable(updatable)
     .set_decimals(decimals);
+
+  if (maxNumbers && BigInt(maxNumbers) > BigInt(0)) {
+    assetRules = assetRules.set_max_units(BigInt(maxNumbers));
+  }
+
+  if (traceable) {
+    const trackingKey = ledger.AssetTracerKeyPair.new();
+    const tracingPolicy = ledger.TracingPolicy.new_with_tracing(trackingKey);
+
+    assetRules = assetRules.add_tracing_policy(tracingPolicy);
+  }
 
   return assetRules;
 };

@@ -20,7 +20,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Account = exports.Network = exports.Keypair = exports.Asset = void 0;
-exports.Asset = __importStar(require("./asset"));
+exports.Asset = __importStar(require("./sdkAsset"));
 exports.Keypair = __importStar(require("./keypair"));
 exports.Network = __importStar(require("./network"));
 exports.Account = __importStar(require("./account"));

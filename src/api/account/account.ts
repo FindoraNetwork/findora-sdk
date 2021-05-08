@@ -1,8 +1,8 @@
 import { BigNumberValue, create as createBigNumber, fromWei } from '../../services/bigNumber';
 import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
-import { getFraAssetCode } from '../asset';
 import { WalletKeypar } from '../keypair';
 import * as Network from '../network';
+import { getFraAssetCode } from '../sdkAsset';
 
 export const getAssetBalance = async (
   walletKeypair: WalletKeypar,

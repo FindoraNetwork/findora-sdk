@@ -3,6 +3,8 @@ interface AssetRules {
     transferable: boolean;
     updatable: boolean;
     decimals: number;
+    traceable?: boolean;
+    maxNumbers?: number;
 }
 export declare const getFraAssetCode: () => Promise<string>;
 export declare const getRandomAssetCode: () => Promise<string>;

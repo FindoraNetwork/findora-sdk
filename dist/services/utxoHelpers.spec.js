@@ -58,6 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+/* eslint-disable @typescript-eslint/naming-convention */
 require("@testing-library/jest-dom/extend-expect");
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
