@@ -4,11 +4,11 @@ import '@testing-library/jest-dom/extend-expect';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
-import { Keypair } from '../api';
-import Cache from './cacheStore/factory';
-import { FileCacheProvider as CacheProvider } from './cacheStore/providers';
-import * as utxoHelper from './utxoHelper';
-import { UtxoOutputItem } from './utxoHelper';
+import { Keypair } from '_src/api';
+import Cache from '_src/services/cacheStore/factory';
+import { FileCacheProvider as CacheProvider } from '_src/services/cacheStore/providers';
+import * as utxoHelper from '_src/services/utxoHelper';
+import { UtxoOutputItem } from '_src/services/utxoHelper';
 
 const myDefaultResult = [
   {

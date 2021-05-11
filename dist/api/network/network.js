@@ -42,7 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
-var Sdk_1 = __importDefault(require("../../Sdk"));
+var Sdk_1 = __importDefault(require("_src/Sdk"));
 var getQueryRoute = function () {
     var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
     var url = protocol + "://" + hostUrl + ":" + queryPort;

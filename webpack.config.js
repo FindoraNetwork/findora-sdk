@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 const webpack = require('webpack');
+const path = require('path');
+
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const commonConfig = {
@@ -16,6 +19,9 @@ const commonConfig = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
+    alias: {
+      _src: path.resolve('./src'),
+    },
     plugins: [new TsconfigPathsPlugin()],
   },
   plugins: [
@@ -43,6 +49,7 @@ const webConfig = {
       stream: require.resolve('stream-browserify'),
       buffer: require.resolve('buffer'),
       path: require.resolve('path-browserify'),
+      os: require.resolve('os-browserify/browser'),
       fs: false,
     },
   },
@@ -53,6 +60,7 @@ const nodeConfig = {
   ...commonConfig,
   target: 'node',
   output: {
+    path: path.resolve('dist/node'),
     libraryTarget: 'commonjs',
     filename: 'bundle.node.js',
   },
@@ -62,4 +70,4 @@ const nodeConfig = {
   },
 };
 
-module.exports = [webConfig, nodeConfig];
+module.exports = nodeConfig; // [webConfig, nodeConfig];
