@@ -1,7 +1,7 @@
 import axios from 'axios';
 import JSONbig from 'json-bigint';
 
-import Sdk from '_src/Sdk';
+import Sdk from '../../Sdk';
 import * as Types from './types';
 
 const getQueryRoute = (): string => {

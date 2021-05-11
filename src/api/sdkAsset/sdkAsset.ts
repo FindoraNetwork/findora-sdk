@@ -1,10 +1,10 @@
-import { DEFAULT_ASSET_RULES } from '_src/config/asset';
-import { toWei } from '_src/services/bigNumber';
-import * as Fee from '_src/services/fee';
-import { getLedger } from '_src/services/ledger/ledgerWrapper';
-import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '_src/services/ledger/types';
-import { WalletKeypar } from '_src/api/keypair';
-import * as Network from '_src/api/network';
+import { DEFAULT_ASSET_RULES } from '../../config/asset';
+import { toWei } from '../../services/bigNumber';
+import * as Fee from '../../services/fee';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
+import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '../../services/ledger/types';
+import { WalletKeypar } from '../keypair';
+import * as Network from '../network';
 
 interface AssetRules {
   transferable: boolean;

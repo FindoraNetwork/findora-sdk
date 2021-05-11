@@ -1,4 +1,4 @@
-import { XfrKeyPair } from '_src/services/ledger/types';
+import { XfrKeyPair } from '../../services/ledger/types';
 export interface LightWalletKeypair {
     address: string;
     publickey: string;

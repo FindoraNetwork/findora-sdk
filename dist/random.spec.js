@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var random_1 = require("_src/random");
+var random_1 = require("./random");
 describe('getBytes', function () {
     it('returns correct length of the array', function () {
         var length = 4;

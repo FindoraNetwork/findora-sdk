@@ -1,4 +1,5 @@
-export { Random } from '_src/random';
-export { getWebLedger, getNodeLedger } from '_src/services/ledger/ledgerWrapper';
-export * as Api from '_src/api';
-export * as Sdk from '_src/Sdk';
+export { Random } from './random';
+export { getWebLedger, getNodeLedger } from './services/ledger/ledgerWrapper';
+export * as Api from './api';
+
+export * as Sdk from './Sdk';

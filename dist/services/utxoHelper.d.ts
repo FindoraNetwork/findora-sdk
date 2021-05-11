@@ -1,6 +1,6 @@
-import { WalletKeypar } from '_src/api/keypair';
-import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '_src/api/network/types';
-import { ClientAssetRecord as LedgerClientAssetRecord, OwnerMemo as LedgerOwnerMemo, TxoRef as LedgerTxoRef } from '_src/services/ledger/types';
+import { WalletKeypar } from '../api/keypair';
+import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
+import { ClientAssetRecord as LedgerClientAssetRecord, OwnerMemo as LedgerOwnerMemo, TxoRef as LedgerTxoRef } from './ledger/types';
 export interface LedgerUtxoItem {
     sid: number;
     utxo: LedgerUtxo;

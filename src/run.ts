@@ -1,8 +1,8 @@
-import { Account, Asset, Keypair, Network } from '_src/api';
-import Sdk from '_src/Sdk';
-import * as bigNumber from '_src/services/bigNumber';
-import * as Fee from '_src/services/fee';
-import * as UtxoHelper from '_src/services/utxoHelper';
+import { Account, Asset, Keypair, Network } from './api';
+import Sdk from './Sdk';
+import * as bigNumber from './services/bigNumber';
+import * as Fee from './services/fee';
+import * as UtxoHelper from './services/utxoHelper';
 
 const sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
 

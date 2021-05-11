@@ -1,15 +1,15 @@
-import { WalletKeypar } from '_src/api/keypair';
-import * as Network from '_src/api/network';
-import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '_src/api/network/types';
-import Cache from '_src/services/cacheStore/factory';
-import { FileCacheProvider as CacheProvider } from '_src/services/cacheStore/providers';
-import { CacheItem } from '_src/services/cacheStore/types';
-import { getLedger } from '_src/services/ledger/ledgerWrapper';
+import { WalletKeypar } from '../api/keypair';
+import * as Network from '../api/network';
+import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
+import Cache from './cacheStore/factory';
+import { FileCacheProvider as CacheProvider } from './cacheStore/providers';
+import { CacheItem } from './cacheStore/types';
+import { getLedger } from './ledger/ledgerWrapper';
 import {
   ClientAssetRecord as LedgerClientAssetRecord,
   OwnerMemo as LedgerOwnerMemo,
   TxoRef as LedgerTxoRef,
-} from '_src/services/ledger/types';
+} from './ledger/types';
 
 export interface LedgerUtxoItem {
   sid: number;
