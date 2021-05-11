@@ -1,5 +1,5 @@
-import { getLedger } from '_src/services/ledger/ledgerWrapper';
-import { XfrKeyPair } from '_src/services/ledger/types';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
+import { XfrKeyPair } from '../../services/ledger/types';
 
 export interface LightWalletKeypair {
   address: string;

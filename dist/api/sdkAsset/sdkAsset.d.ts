@@ -1,4 +1,4 @@
-import { WalletKeypar } from '_src/api/keypair';
+import { WalletKeypar } from '../keypair';
 interface AssetRules {
     transferable: boolean;
     updatable: boolean;
