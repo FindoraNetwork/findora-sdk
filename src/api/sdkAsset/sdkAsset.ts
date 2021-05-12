@@ -167,18 +167,32 @@ export const defineAsset = async (
 
   const submitData = transactionBuilder.transaction();
 
-  const handle = await Network.submitTransaction(submitData);
+  let result;
 
-  console.log('Transaction handle:', handle);
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (error) {
+    throw new Error(`could not define asset: "${error.message}"`);
+  }
 
-  return assetName;
+  const { response: handle, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`could not define asset: "${submitError.message}"`);
+  }
+
+  if (!handle) {
+    throw new Error(`could not define asset - submit handle is missing`);
+  }
+
+  return handle;
 };
 
 export const issueAsset = async (
   walletInfo: WalletKeypar,
   assetName: string,
   amountToIssue: number,
-): Promise<number> => {
+): Promise<string> => {
   const fraCode = await getFraAssetCode();
 
   const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
@@ -195,9 +209,23 @@ export const issueAsset = async (
 
   const submitData = transactionBuilder.transaction();
 
-  const handle = await Network.submitTransaction(submitData);
+  let result;
 
-  console.log('Transaction handle:', handle);
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (error) {
+    throw new Error(`could not issue asset: "${error.message}"`);
+  }
 
-  return amountToIssue;
+  const { response: handle, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`could not issue asset: "${submitError.message}"`);
+  }
+
+  if (!handle) {
+    throw new Error(`could not issue asset - submit handle is missing`);
+  }
+
+  return handle;
 };

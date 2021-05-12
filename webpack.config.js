@@ -25,30 +25,6 @@ const commonConfig = {
   ],
 };
 
-const webConfig = {
-  ...commonConfig,
-  target: 'web',
-  output: {
-    filename: 'bundle.js',
-    libraryTarget: 'umd',
-    library: 'Terra',
-  },
-  experiments: {
-    syncWebAssembly: true, // Compatible with the old version of webpack-4
-    topLevelAwait: true, // Support top await
-  },
-  resolve: {
-    ...commonConfig.resolve,
-    fallback: {
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer'),
-      path: require.resolve('path-browserify'),
-      fs: false,
-    },
-  },
-  plugins: [...commonConfig.plugins],
-};
-
 const nodeConfig = {
   ...commonConfig,
   target: 'node',
@@ -62,4 +38,4 @@ const nodeConfig = {
   },
 };
 
-module.exports = [webConfig, nodeConfig];
+module.exports = [nodeConfig];
