@@ -69,7 +69,7 @@ var Sdk = /** @class */ (function () {
                         utxoCache.forEach(function (item) {
                             cacheDataToSave["sid_" + item.sid] = item;
                         });
-                        return [4 /*yield*/, factory_1.default.write(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletAddress, __assign({}, cacheDataToSave), providers_1.MemoryCacheProvider)];
+                        return [4 /*yield*/, factory_1.default.write(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletAddress, cacheDataToSave, providers_1.MemoryCacheProvider)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, true];

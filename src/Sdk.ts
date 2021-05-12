@@ -29,7 +29,7 @@ export default class Sdk {
       cacheDataToSave[`sid_${item.sid}`] = item;
     });
 
-    await Cache.write(`${CACHE_ENTRIES.UTXO_DATA}_${walletAddress}`, { ...cacheDataToSave }, CacheProvider);
+    await Cache.write(`${CACHE_ENTRIES.UTXO_DATA}_${walletAddress}`, cacheDataToSave, CacheProvider);
 
     return true;
   }
