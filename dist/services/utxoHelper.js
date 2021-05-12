@@ -71,6 +71,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = void 0;
 var Network = __importStar(require("../api/network"));
+var cache_1 = require("../config/cache");
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
@@ -166,7 +167,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, factory_1.default.read('utxoDataCache', providers_1.FileCacheProvider)];
+                return [4 /*yield*/, factory_1.default.read(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address, providers_1.MemoryCacheProvider)];
             case 2:
                 utxoDataCache = _a.sent();
                 return [3 /*break*/, 4];
@@ -197,7 +198,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 5];
             case 10:
                 _a.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, factory_1.default.write('utxoDataCache', cacheDataToSave, providers_1.FileCacheProvider)];
+                return [4 /*yield*/, factory_1.default.write(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address, cacheDataToSave, providers_1.MemoryCacheProvider)];
             case 11:
                 _a.sent();
                 return [3 /*break*/, 13];

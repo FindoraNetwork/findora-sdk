@@ -4,7 +4,7 @@ import * as bigNumber from './services/bigNumber';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
 
-const sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
+const sdkEnv = { hostUrl: 'https://dev-staging.dev.findora.org' };
 
 Sdk.init(sdkEnv);
 
@@ -123,6 +123,14 @@ const myFunc5 = async () => {
   const balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
 
   console.log('balance IS!!!!!', balance);
+
+  const balanceInWeiT = await Account.getAssetBalance(walletInfo, fraCode, sids);
+
+  console.log('balanceT in wei IS!!', balanceInWeiT);
+
+  const balanceT = bigNumber.fromWei(balanceInWeiT, 6).toFormat(6);
+
+  console.log('balance IS!!!!!', balanceT);
 };
 
 // get custom asset balance
@@ -148,9 +156,11 @@ const myFunc7 = async () => {
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
-  const amount = await Asset.issueAsset(walletInfo, customAssetCode, 2);
+  const assetBlindRules = { isAmountBlind: false };
 
-  console.log('our issued amount IS ', amount);
+  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules);
+
+  console.log('our issued tx handle IS ', handle);
 };
 
-myFunc2();
+myFunc7();

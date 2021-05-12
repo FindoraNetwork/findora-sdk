@@ -44,18 +44,18 @@ var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var getQueryRoute = function () {
-    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
-    var url = protocol + "://" + hostUrl + ":" + queryPort;
+    var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
+    var url = hostUrl + ":" + queryPort;
     return url;
 };
 var getSubmitRoute = function () {
-    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, submissionPort = _a.submissionPort;
-    var url = protocol + "://" + hostUrl + ":" + submissionPort;
+    var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, submissionPort = _a.submissionPort;
+    var url = hostUrl + ":" + submissionPort;
     return url;
 };
 var getLedgerRoute = function () {
-    var _a = Sdk_1.default.environment, protocol = _a.protocol, hostUrl = _a.hostUrl, ledgerPort = _a.ledgerPort;
-    var url = protocol + "://" + hostUrl + ":" + ledgerPort;
+    var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, ledgerPort = _a.ledgerPort;
+    var url = hostUrl + ":" + ledgerPort;
     return url;
 };
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {

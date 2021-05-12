@@ -63,7 +63,7 @@ var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
 var Fee = __importStar(require("./services/fee"));
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var sdkEnv = { hostUrl: 'dev-staging.dev.findora.org', protocol: 'https' };
+var sdkEnv = { hostUrl: 'https://dev-staging.dev.findora.org' };
 Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var assetCode;
@@ -172,7 +172,7 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // get fra balance
 var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, pkey, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
+    var address, pkey, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance, balanceInWeiT, balanceT;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -199,6 +199,12 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 console.log('balance in wei IS!!', balanceInWei);
                 balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
                 console.log('balance IS!!!!!', balance);
+                return [4 /*yield*/, api_1.Account.getAssetBalance(walletInfo, fraCode, sids)];
+            case 5:
+                balanceInWeiT = _a.sent();
+                console.log('balanceT in wei IS!!', balanceInWeiT);
+                balanceT = bigNumber.fromWei(balanceInWeiT, 6).toFormat(6);
+                console.log('balance IS!!!!!', balanceT);
                 return [2 /*return*/];
         }
     });
@@ -225,7 +231,7 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // issue custom asset
 var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, customAssetCode, amount;
+    var pkey, password, walletInfo, customAssetCode, assetBlindRules, handle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -235,13 +241,14 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 1:
                 walletInfo = _a.sent();
                 customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2)];
+                assetBlindRules = { isAmountBlind: false };
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules)];
             case 2:
-                amount = _a.sent();
-                console.log('our issued amount IS ', amount);
+                handle = _a.sent();
+                console.log('our issued tx handle IS ', handle);
                 return [2 /*return*/];
         }
     });
 }); };
-myFunc2();
+myFunc7();
 //# sourceMappingURL=run.js.map

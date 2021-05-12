@@ -5,25 +5,25 @@ import Sdk from '../../Sdk';
 import * as Types from './types';
 
 const getQueryRoute = (): string => {
-  const { protocol, hostUrl, queryPort } = Sdk.environment;
+  const { hostUrl, queryPort } = Sdk.environment;
 
-  const url = `${protocol}://${hostUrl}:${queryPort}`;
+  const url = `${hostUrl}:${queryPort}`;
 
   return url;
 };
 
 const getSubmitRoute = (): string => {
-  const { protocol, hostUrl, submissionPort } = Sdk.environment;
+  const { hostUrl, submissionPort } = Sdk.environment;
 
-  const url = `${protocol}://${hostUrl}:${submissionPort}`;
+  const url = `${hostUrl}:${submissionPort}`;
 
   return url;
 };
 
 const getLedgerRoute = (): string => {
-  const { protocol, hostUrl, ledgerPort } = Sdk.environment;
+  const { hostUrl, ledgerPort } = Sdk.environment;
 
-  const url = `${protocol}://${hostUrl}:${ledgerPort}`;
+  const url = `${hostUrl}:${ledgerPort}`;
 
   return url;
 };
