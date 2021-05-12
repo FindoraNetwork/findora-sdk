@@ -231,7 +231,7 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // issue custom asset
 var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, customAssetCode, handle;
+    var pkey, password, walletInfo, customAssetCode, assetBlindRules, handle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -241,7 +241,8 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 1:
                 walletInfo = _a.sent();
                 customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2)];
+                assetBlindRules = { isAmountBlind: false };
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules)];
             case 2:
                 handle = _a.sent();
                 console.log('our issued tx handle IS ', handle);

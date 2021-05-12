@@ -156,7 +156,9 @@ const myFunc7 = async () => {
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
-  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 2);
+  const assetBlindRules = { isAmountBlind: false };
+
+  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules);
 
   console.log('our issued tx handle IS ', handle);
 };

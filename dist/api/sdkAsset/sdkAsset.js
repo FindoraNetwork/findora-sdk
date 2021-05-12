@@ -161,7 +161,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
         });
     });
 };
-var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue) { return __awaiter(void 0, void 0, void 0, function () {
+var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, _a, stateCommitment, error, _, height, blockCount, decimals, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -181,9 +181,9 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
                 blockCount = BigInt(height);
                 decimals = asset_1.DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
                 utxoNumbers = BigInt(bigNumber_1.toWei(amountToIssue, decimals).toString());
-                blindIsAmount = false;
+                blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                 zeiParams = ledger.PublicParams.new();
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, blindIsAmount, zeiParams);
+                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, !!blindIsAmount, zeiParams);
                 return [2 /*return*/, definitionTransaction];
         }
     });
@@ -230,7 +230,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
     });
 }); };
 exports.defineAsset = defineAsset;
-var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awaiter(void 0, void 0, void 0, function () {
+var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, result, error_2, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -241,7 +241,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awai
             case 2:
                 transferOperationBuilder = _a.sent();
                 receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue)];
+                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules)];
             case 3:
                 transactionBuilder = _a.sent();
                 transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);

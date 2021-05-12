@@ -1,13 +1,16 @@
 import { WalletKeypar } from '../keypair';
-interface AssetRules {
+export interface AssetRules {
     transferable: boolean;
     updatable: boolean;
     decimals: number;
     traceable?: boolean;
     maxNumbers?: number;
 }
+export interface AssetBlindRules {
+    isAmountBlind?: boolean;
+    isTypeBlind?: boolean;
+}
 export declare const getFraAssetCode: () => Promise<string>;
 export declare const getRandomAssetCode: () => Promise<string>;
 export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string | undefined, newAssetRules?: AssetRules | undefined) => Promise<string>;
-export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: number) => Promise<string>;
-export {};
+export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: number, assetBlindRules: AssetBlindRules) => Promise<string>;

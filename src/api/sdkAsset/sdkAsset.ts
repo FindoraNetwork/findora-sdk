@@ -6,12 +6,17 @@ import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '
 import { WalletKeypar } from '../keypair';
 import * as Network from '../network';
 
-interface AssetRules {
+export interface AssetRules {
   transferable: boolean;
   updatable: boolean;
   decimals: number;
   traceable?: boolean;
   maxNumbers?: number;
+}
+
+export interface AssetBlindRules {
+  isAmountBlind?: boolean;
+  isTypeBlind?: boolean;
 }
 
 export const getFraAssetCode = async (): Promise<string> => {
@@ -106,6 +111,7 @@ const getIssueAssetTransactionBuilder = async (
   walletKeypair: XfrKeyPair,
   assetName: string,
   amountToIssue: number,
+  assetBlindRules: AssetBlindRules,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
@@ -126,7 +132,7 @@ const getIssueAssetTransactionBuilder = async (
 
   const utxoNumbers = BigInt(toWei(amountToIssue, decimals).toString());
 
-  const blindIsAmount = false;
+  const blindIsAmount = assetBlindRules?.isAmountBlind;
 
   const zeiParams = ledger.PublicParams.new();
 
@@ -135,7 +141,7 @@ const getIssueAssetTransactionBuilder = async (
     assetName,
     BigInt(blockCount),
     utxoNumbers,
-    blindIsAmount,
+    !!blindIsAmount,
     zeiParams,
   );
 
@@ -192,6 +198,7 @@ export const issueAsset = async (
   walletInfo: WalletKeypar,
   assetName: string,
   amountToIssue: number,
+  assetBlindRules: AssetBlindRules,
 ): Promise<string> => {
   const fraCode = await getFraAssetCode();
 
@@ -203,6 +210,7 @@ export const issueAsset = async (
     walletInfo.keypair,
     assetName,
     amountToIssue,
+    assetBlindRules,
   );
 
   transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
