@@ -1,6 +1,6 @@
+import { CacheItem } from './services/cacheStore/types';
 export interface SdkEnvironmentConfig {
     hostUrl: string;
-    protocol: string;
     queryPort?: string;
     ledgerPort?: string;
     submissionPort?: string;
@@ -8,10 +8,10 @@ export interface SdkEnvironmentConfig {
 export default class Sdk {
     static environment: {
         hostUrl: string;
-        protocol: string;
         queryPort: string;
         ledgerPort: string;
         submissionPort: string;
     };
     static init(sdkEnv: SdkEnvironmentConfig): void;
+    static setUtxoData(walletAddress: string, utxoCache: CacheItem[]): Promise<true>;
 }

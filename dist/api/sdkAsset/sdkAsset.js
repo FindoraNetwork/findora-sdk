@@ -189,7 +189,7 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
     });
 }); };
 var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var assetRules, fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, handle;
+    var assetRules, fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, result, error_1, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, getAssetRules(newAssetRules)];
@@ -207,17 +207,31 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 transactionBuilder = _a.sent();
                 transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 submitData = transactionBuilder.transaction();
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
+                _a.label = 5;
             case 5:
-                handle = _a.sent();
-                console.log('Transaction handle:', handle);
-                return [2 /*return*/, assetName];
+                _a.trys.push([5, 7, , 8]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 6:
+                result = _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                error_1 = _a.sent();
+                throw new Error("could not define asset: \"" + error_1.message + "\"");
+            case 8:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("could not define asset: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("could not define asset - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
         }
     });
 }); };
 exports.defineAsset = defineAsset;
 var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, handle;
+    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, submitData, result, error_2, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, exports.getFraAssetCode()];
@@ -232,11 +246,25 @@ var issueAsset = function (walletInfo, assetName, amountToIssue) { return __awai
                 transactionBuilder = _a.sent();
                 transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 submitData = transactionBuilder.transaction();
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
+                _a.label = 4;
             case 4:
-                handle = _a.sent();
-                console.log('Transaction handle:', handle);
-                return [2 /*return*/, amountToIssue];
+                _a.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 5:
+                result = _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
+                error_2 = _a.sent();
+                throw new Error("could not issue asset: \"" + error_2.message + "\"");
+            case 7:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("could not issue asset: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("could not issue asset - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
         }
     });
 }); };

@@ -54,5 +54,5 @@ export declare type TransactionData = string;
 export interface ParsedTransactionData {
 }
 export interface SubmitTransactionDataResult extends NetworkAxiosDataResult {
-    response?: number;
+    response?: string;
 }
