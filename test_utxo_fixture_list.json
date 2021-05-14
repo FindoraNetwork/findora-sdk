@@ -1,0 +1,8574 @@
+{
+  "sid_465": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 465,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "8CFJQWrPd0dzFZvi57glIIU7bf3t-_nENG-ANoIF6n8=",
+            "ZKIDFdDRuvQriu-jdQvgsLU8P2krEluTO-xV1PFY1Qc="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            52,
+            143,
+            173,
+            182,
+            25,
+            29,
+            142,
+            144,
+            80,
+            229,
+            36,
+            234,
+            21,
+            118,
+            171,
+            60,
+            205,
+            36,
+            169,
+            190,
+            84,
+            154,
+            247,
+            69,
+            43,
+            186,
+            12,
+            212,
+            29,
+            195,
+            183,
+            48
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "DlZocefhpUnEKH6biJ8JpelLhNrhkETsFnBulJzWzQ0=",
+        "6U-xyqGVHo7X8erySWNBV-pYy-mLfjbrLvi73sB8jwQ="
+      ],
+      "asset_type": "NI-tthkdjpBQ5STqFXarPM0kqb5UmvdFK7oM1B3DtzA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "8CFJQWrPd0dzFZvi57glIIU7bf3t-_nENG-ANoIF6n8=",
+            "ZKIDFdDRuvQriu-jdQvgsLU8P2krEluTO-xV1PFY1Qc="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            52,
+            143,
+            173,
+            182,
+            25,
+            29,
+            142,
+            144,
+            80,
+            229,
+            36,
+            234,
+            21,
+            118,
+            171,
+            60,
+            205,
+            36,
+            169,
+            190,
+            84,
+            154,
+            247,
+            69,
+            43,
+            186,
+            12,
+            212,
+            29,
+            195,
+            183,
+            48
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2064744 }
+  },
+  "sid_339": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 339,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            194,
+            79,
+            175,
+            180,
+            25,
+            57,
+            17,
+            183,
+            43,
+            91,
+            198,
+            142,
+            76,
+            40,
+            89,
+            60,
+            0,
+            50,
+            6,
+            232,
+            42,
+            204,
+            108,
+            192,
+            68,
+            233,
+            223,
+            62,
+            226,
+            44,
+            105,
+            106
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "wk-vtBk5EbcrW8aOTChZPAAyBugqzGzAROnfPuIsaWo=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            194,
+            79,
+            175,
+            180,
+            25,
+            57,
+            17,
+            183,
+            43,
+            91,
+            198,
+            142,
+            76,
+            40,
+            89,
+            60,
+            0,
+            50,
+            6,
+            232,
+            42,
+            204,
+            108,
+            192,
+            68,
+            233,
+            223,
+            62,
+            226,
+            44,
+            105,
+            106
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_601": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 601,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            79,
+            47,
+            22,
+            15,
+            222,
+            243,
+            170,
+            238,
+            101,
+            42,
+            181,
+            25,
+            143,
+            20,
+            11,
+            56,
+            107,
+            145,
+            61,
+            93,
+            87,
+            148,
+            177,
+            60,
+            255,
+            93,
+            136,
+            79,
+            84,
+            141,
+            101,
+            175
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "Ty8WD97zqu5lKrUZjxQLOGuRPV1XlLE8_12IT1SNZa8=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            79,
+            47,
+            22,
+            15,
+            222,
+            243,
+            170,
+            238,
+            101,
+            42,
+            181,
+            25,
+            143,
+            20,
+            11,
+            56,
+            107,
+            145,
+            61,
+            93,
+            87,
+            148,
+            177,
+            60,
+            255,
+            93,
+            136,
+            79,
+            84,
+            141,
+            101,
+            175
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1060": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1060,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_334": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 334,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            12,
+            76,
+            27,
+            156,
+            235,
+            254,
+            84,
+            90,
+            71,
+            93,
+            152,
+            75,
+            84,
+            169,
+            215,
+            44,
+            121,
+            42,
+            159,
+            69,
+            6,
+            171,
+            3,
+            9,
+            139,
+            248,
+            33,
+            5,
+            21,
+            58,
+            165,
+            129
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "DEwbnOv-VFpHXZhLVKnXLHkqn0UGqwMJi_ghBRU6pYE=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            12,
+            76,
+            27,
+            156,
+            235,
+            254,
+            84,
+            90,
+            71,
+            93,
+            152,
+            75,
+            84,
+            169,
+            215,
+            44,
+            121,
+            42,
+            159,
+            69,
+            6,
+            171,
+            3,
+            9,
+            139,
+            248,
+            33,
+            5,
+            21,
+            58,
+            165,
+            129
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_507": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 507,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "GNbC0mEDSYv3hjAXsWKFF-sVg43zZK7KkC4Hvhjk3xs=",
+            "MIly5doab0aKTADWbuZNUqAiHd_PdcfmvqIKCwcL8Ds="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            59,
+            1,
+            250,
+            123,
+            165,
+            172,
+            232,
+            75,
+            110,
+            35,
+            142,
+            115,
+            53,
+            129,
+            23,
+            93,
+            55,
+            81,
+            157,
+            163,
+            52,
+            237,
+            165,
+            185,
+            66,
+            147,
+            26,
+            35,
+            177,
+            107,
+            15,
+            81
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "SOE5qkb1vDCm-yc5fJI2SORrFNKyfYZeo6woPZHpCwc=",
+        "_5qM8SssGrRzBSslW8sTHpFmLEKoVZ3expjcPQgzcQc="
+      ],
+      "asset_type": "OwH6e6Ws6EtuI45zNYEXXTdRnaM07aW5QpMaI7FrD1E=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "GNbC0mEDSYv3hjAXsWKFF-sVg43zZK7KkC4Hvhjk3xs=",
+            "MIly5doab0aKTADWbuZNUqAiHd_PdcfmvqIKCwcL8Ds="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            59,
+            1,
+            250,
+            123,
+            165,
+            172,
+            232,
+            75,
+            110,
+            35,
+            142,
+            115,
+            53,
+            129,
+            23,
+            93,
+            55,
+            81,
+            157,
+            163,
+            52,
+            237,
+            165,
+            185,
+            66,
+            147,
+            26,
+            35,
+            177,
+            107,
+            15,
+            81
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2049696 }
+  },
+  "sid_576": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 576,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            191,
+            212,
+            137,
+            15,
+            194,
+            103,
+            113,
+            10,
+            174,
+            209,
+            105,
+            34,
+            245,
+            66,
+            254,
+            251,
+            89,
+            213,
+            236,
+            181,
+            147,
+            112,
+            46,
+            208,
+            56,
+            150,
+            154,
+            14,
+            82,
+            40,
+            10,
+            124
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "v9SJD8JncQqu0Wki9UL--1nV7LWTcC7QOJaaDlIoCnw=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            191,
+            212,
+            137,
+            15,
+            194,
+            103,
+            113,
+            10,
+            174,
+            209,
+            105,
+            34,
+            245,
+            66,
+            254,
+            251,
+            89,
+            213,
+            236,
+            181,
+            147,
+            112,
+            46,
+            208,
+            56,
+            150,
+            154,
+            14,
+            82,
+            40,
+            10,
+            124
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_382": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 382,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "4800000" },
+        "asset_type": {
+          "NonConfidential": [
+            251,
+            203,
+            79,
+            142,
+            195,
+            94,
+            148,
+            97,
+            165,
+            194,
+            74,
+            66,
+            152,
+            112,
+            136,
+            40,
+            156,
+            82,
+            0,
+            169,
+            171,
+            231,
+            141,
+            26,
+            190,
+            195,
+            95,
+            240,
+            237,
+            4,
+            94,
+            188
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 4800000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "-8tPjsNelGGlwkpCmHCIKJxSAKmr540avsNf8O0EXrw=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "4800000" },
+        "asset_type": {
+          "NonConfidential": [
+            251,
+            203,
+            79,
+            142,
+            195,
+            94,
+            148,
+            97,
+            165,
+            194,
+            74,
+            66,
+            152,
+            112,
+            136,
+            40,
+            156,
+            82,
+            0,
+            169,
+            171,
+            231,
+            141,
+            26,
+            190,
+            195,
+            95,
+            240,
+            237,
+            4,
+            94,
+            188
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_471": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 471,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "ZCrls5exvo1zU_IV9464ez123onSzTm8nTvTkffxT2A=",
+            "eBrpenepWo3qJndx8t-4qeyecYdDnOyDV3NVxoQSwVY="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            57,
+            10,
+            6,
+            70,
+            171,
+            50,
+            90,
+            52,
+            64,
+            58,
+            213,
+            191,
+            26,
+            51,
+            123,
+            237,
+            145,
+            212,
+            211,
+            152,
+            201,
+            204,
+            208,
+            207,
+            35,
+            232,
+            40,
+            254,
+            98,
+            38,
+            172
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "s60MGm4AiX5RkUk2gIVNonUDRJ4U_iey5FhVoMCvdgk=",
+        "HVuwhdnxDdPcTbL6h2VLHIJw89MibHuVSGycDZU-Tgs="
+      ],
+      "asset_type": "wzkKBkarMlo0QDrVvxoze-2R1NOYyczQzyPoKP5iJqw=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "ZCrls5exvo1zU_IV9464ez123onSzTm8nTvTkffxT2A=",
+            "eBrpenepWo3qJndx8t-4qeyecYdDnOyDV3NVxoQSwVY="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            57,
+            10,
+            6,
+            70,
+            171,
+            50,
+            90,
+            52,
+            64,
+            58,
+            213,
+            191,
+            26,
+            51,
+            123,
+            237,
+            145,
+            212,
+            211,
+            152,
+            201,
+            204,
+            208,
+            207,
+            35,
+            232,
+            40,
+            254,
+            98,
+            38,
+            172
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2047384 }
+  },
+  "sid_1066": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1066,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1094": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1094,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "20999897545007508" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 20999897545007508,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "20999897545007508" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_553": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 553,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            127,
+            157,
+            198,
+            167,
+            126,
+            36,
+            170,
+            192,
+            169,
+            110,
+            144,
+            91,
+            168,
+            153,
+            129,
+            114,
+            37,
+            88,
+            79,
+            120,
+            103,
+            86,
+            228,
+            125,
+            247,
+            87,
+            116,
+            236,
+            152,
+            127,
+            94,
+            85
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "f53Gp34kqsCpbpBbqJmBciVYT3hnVuR991d07Jh_XlU=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            127,
+            157,
+            198,
+            167,
+            126,
+            36,
+            170,
+            192,
+            169,
+            110,
+            144,
+            91,
+            168,
+            153,
+            129,
+            114,
+            37,
+            88,
+            79,
+            120,
+            103,
+            86,
+            228,
+            125,
+            247,
+            87,
+            116,
+            236,
+            152,
+            127,
+            94,
+            85
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_531": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 531,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "GFYdptSeE36eR_7nClIIRod_JZNh4Pe_jp_IxRtEcCg=",
+            "ZLeLwAr5UCgG1mhnZB2o5Snif7biFzE6Wf3UG-eSmCw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            113,
+            61,
+            209,
+            103,
+            123,
+            18,
+            95,
+            30,
+            89,
+            234,
+            76,
+            168,
+            90,
+            72,
+            201,
+            77,
+            207,
+            163,
+            137,
+            122,
+            52,
+            240,
+            247,
+            13,
+            18,
+            55,
+            205,
+            65,
+            172,
+            66,
+            114
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "zrnUXkFnu92XDIJgO9sTP2RHtHrBncWyt7Ao6BBWzgw=",
+        "x2bcw4y1HPEnfZhuLCyrBQSzAXFkIgNX5inOUe_VQAA="
+      ],
+      "asset_type": "pHE90Wd7El8eWepMqFpIyU3Po4l6NPD3DRI3zUGsQnI=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "GFYdptSeE36eR_7nClIIRod_JZNh4Pe_jp_IxRtEcCg=",
+            "ZLeLwAr5UCgG1mhnZB2o5Snif7biFzE6Wf3UG-eSmCw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            113,
+            61,
+            209,
+            103,
+            123,
+            18,
+            95,
+            30,
+            89,
+            234,
+            76,
+            168,
+            90,
+            72,
+            201,
+            77,
+            207,
+            163,
+            137,
+            122,
+            52,
+            240,
+            247,
+            13,
+            18,
+            55,
+            205,
+            65,
+            172,
+            66,
+            114
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2063400 }
+  },
+  "sid_998": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 998,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_344": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 344,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            129,
+            28,
+            247,
+            75,
+            142,
+            146,
+            170,
+            94,
+            46,
+            220,
+            144,
+            213,
+            79,
+            9,
+            43,
+            228,
+            3,
+            189,
+            7,
+            2,
+            195,
+            104,
+            84,
+            98,
+            246,
+            243,
+            5,
+            79,
+            50,
+            59,
+            216,
+            146
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "gRz3S46Sql4u3JDVTwkr5AO9BwLDaFRi9vMFTzI72JI=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            129,
+            28,
+            247,
+            75,
+            142,
+            146,
+            170,
+            94,
+            46,
+            220,
+            144,
+            213,
+            79,
+            9,
+            43,
+            228,
+            3,
+            189,
+            7,
+            2,
+            195,
+            104,
+            84,
+            98,
+            246,
+            243,
+            5,
+            79,
+            50,
+            59,
+            216,
+            146
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_680": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 680,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            178,
+            11,
+            218,
+            36,
+            32,
+            156,
+            136,
+            19,
+            204,
+            10,
+            60,
+            36,
+            122,
+            136,
+            57,
+            225,
+            224,
+            170,
+            20,
+            89,
+            37,
+            21,
+            229,
+            28,
+            133,
+            133,
+            170,
+            164,
+            85,
+            3,
+            121,
+            243
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "sgvaJCCciBPMCjwkeog54eCqFFklFeUchYWqpFUDefM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            178,
+            11,
+            218,
+            36,
+            32,
+            156,
+            136,
+            19,
+            204,
+            10,
+            60,
+            36,
+            122,
+            136,
+            57,
+            225,
+            224,
+            170,
+            20,
+            89,
+            37,
+            21,
+            229,
+            28,
+            133,
+            133,
+            170,
+            164,
+            85,
+            3,
+            121,
+            243
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_755": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 755,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            127,
+            1,
+            168,
+            23,
+            62,
+            64,
+            122,
+            56,
+            194,
+            241,
+            135,
+            68,
+            99,
+            42,
+            149,
+            65,
+            106,
+            44,
+            239,
+            86,
+            200,
+            245,
+            141,
+            139,
+            167,
+            244,
+            234,
+            3,
+            216,
+            34,
+            31,
+            164
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "fwGoFz5AejjC8YdEYyqVQWos71bI9Y2Lp_TqA9giH6Q=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            127,
+            1,
+            168,
+            23,
+            62,
+            64,
+            122,
+            56,
+            194,
+            241,
+            135,
+            68,
+            99,
+            42,
+            149,
+            65,
+            106,
+            44,
+            239,
+            86,
+            200,
+            245,
+            141,
+            139,
+            167,
+            244,
+            234,
+            3,
+            216,
+            34,
+            31,
+            164
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_561": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 561,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "XC-MUmoD5l828g_cHfR5b7LGUlpwyMO5RTIBv6P162I=",
+            "1EQHEXEvIrfakbsmagflZ1ce9cYKIkIXGIm0S9UhoVs="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            88,
+            215,
+            11,
+            12,
+            144,
+            146,
+            58,
+            180,
+            224,
+            50,
+            75,
+            90,
+            26,
+            183,
+            155,
+            249,
+            153,
+            10,
+            39,
+            98,
+            108,
+            0,
+            130,
+            211,
+            67,
+            135,
+            52,
+            206,
+            86,
+            198,
+            245,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "9_g-tN9I96L7ymiqiLOCbb051QFAUnRuYpMuLmDBqg0=",
+        "1v3padaOPQVs2h0XSKBHbVOv2BPwGveTbn9TydsYGQo="
+      ],
+      "asset_type": "WNcLDJCSOrTgMktaGreb-ZkKJ2JsAILTQ4c0zlbG9Vo=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "XC-MUmoD5l828g_cHfR5b7LGUlpwyMO5RTIBv6P162I=",
+            "1EQHEXEvIrfakbsmagflZ1ce9cYKIkIXGIm0S9UhoVs="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            88,
+            215,
+            11,
+            12,
+            144,
+            146,
+            58,
+            180,
+            224,
+            50,
+            75,
+            90,
+            26,
+            183,
+            155,
+            249,
+            153,
+            10,
+            39,
+            98,
+            108,
+            0,
+            130,
+            211,
+            67,
+            135,
+            52,
+            206,
+            86,
+            198,
+            245,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2046416 }
+  },
+  "sid_569": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 569,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "VvwNpJxiKfpwRQorXGE-j40YlphB4RNM4pcWOHQPBjs=",
+            "UGHEE_o0TXmx-8SN8o7ZVVTLyZzurfniXqV0mhlYJ3E="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            226,
+            73,
+            124,
+            206,
+            176,
+            166,
+            172,
+            201,
+            115,
+            194,
+            75,
+            252,
+            59,
+            56,
+            72,
+            106,
+            253,
+            154,
+            224,
+            201,
+            84,
+            150,
+            149,
+            118,
+            77,
+            35,
+            151,
+            110,
+            71,
+            224,
+            221,
+            142
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "OU_XoSUt4KsCdWVgcfBWTDmVH1mpH2sWRbmyANhItw4=",
+        "_5x4fLQSbcrKUN_UBTeWKMCj7892CdUN7pz_iYMScQU="
+      ],
+      "asset_type": "4kl8zrCmrMlzwkv8OzhIav2a4MlUlpV2TSOXbkfg3Y4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "VvwNpJxiKfpwRQorXGE-j40YlphB4RNM4pcWOHQPBjs=",
+            "UGHEE_o0TXmx-8SN8o7ZVVTLyZzurfniXqV0mhlYJ3E="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            226,
+            73,
+            124,
+            206,
+            176,
+            166,
+            172,
+            201,
+            115,
+            194,
+            75,
+            252,
+            59,
+            56,
+            72,
+            106,
+            253,
+            154,
+            224,
+            201,
+            84,
+            150,
+            149,
+            118,
+            77,
+            35,
+            151,
+            110,
+            71,
+            224,
+            221,
+            142
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2040184 }
+  },
+  "sid_992": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 992,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1045": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1045,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1080": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1080,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_472": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 472,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            57,
+            10,
+            6,
+            70,
+            171,
+            50,
+            90,
+            52,
+            64,
+            58,
+            213,
+            191,
+            26,
+            51,
+            123,
+            237,
+            145,
+            212,
+            211,
+            152,
+            201,
+            204,
+            208,
+            207,
+            35,
+            232,
+            40,
+            254,
+            98,
+            38,
+            172
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "wzkKBkarMlo0QDrVvxoze-2R1NOYyczQzyPoKP5iJqw=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            57,
+            10,
+            6,
+            70,
+            171,
+            50,
+            90,
+            52,
+            64,
+            58,
+            213,
+            191,
+            26,
+            51,
+            123,
+            237,
+            145,
+            212,
+            211,
+            152,
+            201,
+            204,
+            208,
+            207,
+            35,
+            232,
+            40,
+            254,
+            98,
+            38,
+            172
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_525": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 525,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "GrOFu0uL12arzxX0VX_OzWUcD6EVrFylYaMxW655J1Q=",
+            "2qEe9-g-_QU37Zo9ORntvWNMIgStcPwMU4M7xInaMDw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            34,
+            181,
+            173,
+            185,
+            119,
+            123,
+            217,
+            243,
+            157,
+            237,
+            25,
+            202,
+            18,
+            58,
+            14,
+            226,
+            238,
+            14,
+            199,
+            207,
+            135,
+            224,
+            166,
+            72,
+            217,
+            192,
+            39,
+            190,
+            208,
+            246,
+            125,
+            30
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "25LepCMXkeeQRp0WTcfyxtHpji57gW0Bgj3bYcmeCwY=",
+        "45gqRmblA38rpl3Btmrh3lyS2eV_aG-nM2x52g_e2gw="
+      ],
+      "asset_type": "IrWtuXd72fOd7RnKEjoO4u4Ox8-H4KZI2cAnvtD2fR4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "GrOFu0uL12arzxX0VX_OzWUcD6EVrFylYaMxW655J1Q=",
+            "2qEe9-g-_QU37Zo9ORntvWNMIgStcPwMU4M7xInaMDw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            34,
+            181,
+            173,
+            185,
+            119,
+            123,
+            217,
+            243,
+            157,
+            237,
+            25,
+            202,
+            18,
+            58,
+            14,
+            226,
+            238,
+            14,
+            199,
+            207,
+            135,
+            224,
+            166,
+            72,
+            217,
+            192,
+            39,
+            190,
+            208,
+            246,
+            125,
+            30
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2057056 }
+  },
+  "sid_712": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 712,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            117,
+            100,
+            2,
+            11,
+            39,
+            111,
+            187,
+            169,
+            32,
+            176,
+            121,
+            98,
+            215,
+            7,
+            44,
+            145,
+            61,
+            254,
+            6,
+            135,
+            250,
+            37,
+            119,
+            234,
+            98,
+            255,
+            52,
+            134,
+            149,
+            110,
+            136,
+            226
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "dWQCCydvu6kgsHli1wcskT3-Bof6JXfqYv80hpVuiOI=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            117,
+            100,
+            2,
+            11,
+            39,
+            111,
+            187,
+            169,
+            32,
+            176,
+            121,
+            98,
+            215,
+            7,
+            44,
+            145,
+            61,
+            254,
+            6,
+            135,
+            250,
+            37,
+            119,
+            234,
+            98,
+            255,
+            52,
+            134,
+            149,
+            110,
+            136,
+            226
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_610": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 610,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            68,
+            109,
+            238,
+            206,
+            67,
+            54,
+            0,
+            92,
+            137,
+            223,
+            231,
+            245,
+            67,
+            121,
+            232,
+            157,
+            117,
+            150,
+            115,
+            48,
+            161,
+            199,
+            9,
+            137,
+            229,
+            103,
+            254,
+            245,
+            135,
+            158,
+            104,
+            254
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "RG3uzkM2AFyJ3-f1Q3nonXWWczChxwmJ5Wf-9YeeaP4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            68,
+            109,
+            238,
+            206,
+            67,
+            54,
+            0,
+            92,
+            137,
+            223,
+            231,
+            245,
+            67,
+            121,
+            232,
+            157,
+            117,
+            150,
+            115,
+            48,
+            161,
+            199,
+            9,
+            137,
+            229,
+            103,
+            254,
+            245,
+            135,
+            158,
+            104,
+            254
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_627": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 627,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            199,
+            60,
+            166,
+            63,
+            176,
+            215,
+            254,
+            119,
+            76,
+            241,
+            52,
+            238,
+            194,
+            247,
+            137,
+            114,
+            229,
+            218,
+            240,
+            176,
+            125,
+            36,
+            72,
+            250,
+            165,
+            252,
+            170,
+            16,
+            204,
+            152,
+            129,
+            29
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "xzymP7DX_ndM8TTuwveJcuXa8LB9JEj6pfyqEMyYgR0=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            199,
+            60,
+            166,
+            63,
+            176,
+            215,
+            254,
+            119,
+            76,
+            241,
+            52,
+            238,
+            194,
+            247,
+            137,
+            114,
+            229,
+            218,
+            240,
+            176,
+            125,
+            36,
+            72,
+            250,
+            165,
+            252,
+            170,
+            16,
+            204,
+            152,
+            129,
+            29
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_447": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 447,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "eIx1_OLYhh2ePxW4hETJuXjq2k9Ih_Ox-4RNucT-wFU=",
+            "CpkU4OKk-mewVyA5mgUhIlnY-W_9iT2i-PV_FxdPpwM="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            189,
+            9,
+            51,
+            6,
+            44,
+            44,
+            60,
+            179,
+            202,
+            203,
+            61,
+            122,
+            110,
+            202,
+            232,
+            55,
+            54,
+            185,
+            137,
+            142,
+            74,
+            147,
+            252,
+            169,
+            223,
+            180,
+            164,
+            217,
+            24,
+            208,
+            28,
+            84
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "qdNqzVdmhmpv7fbKXN5Z8SkkaJtA3zuNWZLKLl2m_QA=",
+        "DN_IuOx4Usqhf8Qoo8Zd4CdvXcRPSi0PWAgu-xC-pg8="
+      ],
+      "asset_type": "vQkzBiwsPLPKyz16bsroNza5iY5Kk_yp37Sk2RjQHFQ=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "eIx1_OLYhh2ePxW4hETJuXjq2k9Ih_Ox-4RNucT-wFU=",
+            "CpkU4OKk-mewVyA5mgUhIlnY-W_9iT2i-PV_FxdPpwM="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            189,
+            9,
+            51,
+            6,
+            44,
+            44,
+            60,
+            179,
+            202,
+            203,
+            61,
+            122,
+            110,
+            202,
+            232,
+            55,
+            54,
+            185,
+            137,
+            142,
+            74,
+            147,
+            252,
+            169,
+            223,
+            180,
+            164,
+            217,
+            24,
+            208,
+            28,
+            84
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2059744 }
+  },
+  "sid_562": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 562,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            88,
+            215,
+            11,
+            12,
+            144,
+            146,
+            58,
+            180,
+            224,
+            50,
+            75,
+            90,
+            26,
+            183,
+            155,
+            249,
+            153,
+            10,
+            39,
+            98,
+            108,
+            0,
+            130,
+            211,
+            67,
+            135,
+            52,
+            206,
+            86,
+            198,
+            245,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "WNcLDJCSOrTgMktaGreb-ZkKJ2JsAILTQ4c0zlbG9Vo=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            88,
+            215,
+            11,
+            12,
+            144,
+            146,
+            58,
+            180,
+            224,
+            50,
+            75,
+            90,
+            26,
+            183,
+            155,
+            249,
+            153,
+            10,
+            39,
+            98,
+            108,
+            0,
+            130,
+            211,
+            67,
+            135,
+            52,
+            206,
+            86,
+            198,
+            245,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_460": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 460,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            163,
+            95,
+            245,
+            56,
+            89,
+            175,
+            172,
+            176,
+            144,
+            77,
+            134,
+            155,
+            208,
+            127,
+            127,
+            31,
+            172,
+            178,
+            236,
+            159,
+            169,
+            27,
+            141,
+            154,
+            126,
+            45,
+            21,
+            53,
+            228,
+            43,
+            101,
+            200
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "o1_1OFmvrLCQTYab0H9_H6yy7J-pG42afi0VNeQrZcg=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            163,
+            95,
+            245,
+            56,
+            89,
+            175,
+            172,
+            176,
+            144,
+            77,
+            134,
+            155,
+            208,
+            127,
+            127,
+            31,
+            172,
+            178,
+            236,
+            159,
+            169,
+            27,
+            141,
+            154,
+            126,
+            45,
+            21,
+            53,
+            228,
+            43,
+            101,
+            200
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_484": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 484,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            92,
+            7,
+            58,
+            116,
+            207,
+            46,
+            52,
+            254,
+            179,
+            235,
+            104,
+            57,
+            135,
+            129,
+            3,
+            202,
+            234,
+            147,
+            215,
+            194,
+            114,
+            96,
+            255,
+            42,
+            45,
+            248,
+            47,
+            219,
+            29,
+            130,
+            170,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "XAc6dM8uNP6z62g5h4EDyuqT18JyYP8qLfgv2x2CquA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            92,
+            7,
+            58,
+            116,
+            207,
+            46,
+            52,
+            254,
+            179,
+            235,
+            104,
+            57,
+            135,
+            129,
+            3,
+            202,
+            234,
+            147,
+            215,
+            194,
+            114,
+            96,
+            255,
+            42,
+            45,
+            248,
+            47,
+            219,
+            29,
+            130,
+            170,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_489": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 489,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "Shv6A9F2-X1bkP1sN2eLnXXcaNNXSh1mCMLecF692AU=",
+            "DjttLL9b7Rp4p37kuaS2nJ_Ws9uXVfkc04-oAm5DCx4="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            120,
+            203,
+            16,
+            44,
+            197,
+            201,
+            7,
+            49,
+            142,
+            25,
+            166,
+            195,
+            154,
+            186,
+            42,
+            231,
+            225,
+            41,
+            237,
+            217,
+            231,
+            153,
+            125,
+            191,
+            115,
+            96,
+            133,
+            129,
+            28,
+            118,
+            113,
+            3
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "5ZFpwJYb31xVkgZ_E_9K77hkv7En578i46JbVuay2QA=",
+        "-COWip1ayPotwX_V-GAEG9MB0j_pi5Wb5ULxti8NuAI="
+      ],
+      "asset_type": "eMsQLMXJBzGOGabDmroq5-Ep7dnnmX2_c2CFgRx2cQM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "Shv6A9F2-X1bkP1sN2eLnXXcaNNXSh1mCMLecF692AU=",
+            "DjttLL9b7Rp4p37kuaS2nJ_Ws9uXVfkc04-oAm5DCx4="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            120,
+            203,
+            16,
+            44,
+            197,
+            201,
+            7,
+            49,
+            142,
+            25,
+            166,
+            195,
+            154,
+            186,
+            42,
+            231,
+            225,
+            41,
+            237,
+            217,
+            231,
+            153,
+            125,
+            191,
+            115,
+            96,
+            133,
+            129,
+            28,
+            118,
+            113,
+            3
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2047384 }
+  },
+  "sid_496": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 496,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            222,
+            228,
+            139,
+            243,
+            254,
+            115,
+            65,
+            248,
+            167,
+            100,
+            245,
+            202,
+            1,
+            220,
+            24,
+            18,
+            85,
+            242,
+            217,
+            177,
+            181,
+            14,
+            223,
+            193,
+            107,
+            213,
+            90,
+            96,
+            249,
+            164,
+            0,
+            166
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "3uSL8_5zQfinZPXKAdwYElXy2bG1Dt_Ba9VaYPmkAKY=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            222,
+            228,
+            139,
+            243,
+            254,
+            115,
+            65,
+            248,
+            167,
+            100,
+            245,
+            202,
+            1,
+            220,
+            24,
+            18,
+            85,
+            242,
+            217,
+            177,
+            181,
+            14,
+            223,
+            193,
+            107,
+            213,
+            90,
+            96,
+            249,
+            164,
+            0,
+            166
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_419": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 419,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            219,
+            150,
+            105,
+            103,
+            223,
+            148,
+            3,
+            154,
+            18,
+            158,
+            146,
+            195,
+            186,
+            148,
+            245,
+            191,
+            206,
+            45,
+            215,
+            251,
+            136,
+            179,
+            245,
+            227,
+            140,
+            98,
+            176,
+            190,
+            60,
+            175,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "pNuWaWfflAOaEp6Sw7qU9b_OLdf7iLP144xisL48r-A=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            219,
+            150,
+            105,
+            103,
+            223,
+            148,
+            3,
+            154,
+            18,
+            158,
+            146,
+            195,
+            186,
+            148,
+            245,
+            191,
+            206,
+            45,
+            215,
+            251,
+            136,
+            179,
+            245,
+            227,
+            140,
+            98,
+            176,
+            190,
+            60,
+            175,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_637": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 637,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            37,
+            74,
+            0,
+            122,
+            158,
+            221,
+            46,
+            38,
+            157,
+            224,
+            82,
+            221,
+            222,
+            72,
+            109,
+            218,
+            207,
+            25,
+            1,
+            219,
+            203,
+            235,
+            122,
+            149,
+            56,
+            105,
+            80,
+            42,
+            9,
+            4,
+            29,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "JUoAep7dLiad4FLd3kht2s8ZAdvL63qVOGlQKgkEHVo=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            37,
+            74,
+            0,
+            122,
+            158,
+            221,
+            46,
+            38,
+            157,
+            224,
+            82,
+            221,
+            222,
+            72,
+            109,
+            218,
+            207,
+            25,
+            1,
+            219,
+            203,
+            235,
+            122,
+            149,
+            56,
+            105,
+            80,
+            42,
+            9,
+            4,
+            29,
+            90
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_570": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 570,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            226,
+            73,
+            124,
+            206,
+            176,
+            166,
+            172,
+            201,
+            115,
+            194,
+            75,
+            252,
+            59,
+            56,
+            72,
+            106,
+            253,
+            154,
+            224,
+            201,
+            84,
+            150,
+            149,
+            118,
+            77,
+            35,
+            151,
+            110,
+            71,
+            224,
+            221,
+            142
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "4kl8zrCmrMlzwkv8OzhIav2a4MlUlpV2TSOXbkfg3Y4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            226,
+            73,
+            124,
+            206,
+            176,
+            166,
+            172,
+            201,
+            115,
+            194,
+            75,
+            252,
+            59,
+            56,
+            72,
+            106,
+            253,
+            154,
+            224,
+            201,
+            84,
+            150,
+            149,
+            118,
+            77,
+            35,
+            151,
+            110,
+            71,
+            224,
+            221,
+            142
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_702": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 702,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            211,
+            215,
+            38,
+            238,
+            185,
+            94,
+            157,
+            196,
+            230,
+            236,
+            161,
+            75,
+            178,
+            250,
+            136,
+            50,
+            210,
+            24,
+            36,
+            200,
+            34,
+            214,
+            36,
+            152,
+            77,
+            83,
+            78,
+            17,
+            7,
+            71,
+            237,
+            27
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "09cm7rlencTm7KFLsvqIMtIYJMgi1iSYTVNOEQdH7Rs=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            211,
+            215,
+            38,
+            238,
+            185,
+            94,
+            157,
+            196,
+            230,
+            236,
+            161,
+            75,
+            178,
+            250,
+            136,
+            50,
+            210,
+            24,
+            36,
+            200,
+            34,
+            214,
+            36,
+            152,
+            77,
+            83,
+            78,
+            17,
+            7,
+            71,
+            237,
+            27
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1057": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1057,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_477": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 477,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "mhxX79Ughjrvim5kqbe3oMcxTk4oO86I-npnjv7sYH8=",
+            "iNLxWxF0jp-cfwfLxcM2AQLYMAnWQX2FCfdtC7moHB4="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            241,
+            237,
+            136,
+            231,
+            208,
+            1,
+            152,
+            33,
+            174,
+            209,
+            241,
+            46,
+            64,
+            149,
+            201,
+            133,
+            162,
+            134,
+            173,
+            23,
+            19,
+            233,
+            76,
+            2,
+            13,
+            208,
+            203,
+            8,
+            36,
+            3,
+            245,
+            83
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "dyiKs6TkNQwDKYpX_XfqSN6Djau-_uwRQwmrElysegU=",
+        "F0mb1b8bD_GvIpiKltzAtqegtuyKJmfhok0Pn2DJvgk="
+      ],
+      "asset_type": "8e2I59ABmCGu0fEuQJXJhaKGrRcT6UwCDdDLCCQD9VM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "mhxX79Ughjrvim5kqbe3oMcxTk4oO86I-npnjv7sYH8=",
+            "iNLxWxF0jp-cfwfLxcM2AQLYMAnWQX2FCfdtC7moHB4="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            241,
+            237,
+            136,
+            231,
+            208,
+            1,
+            152,
+            33,
+            174,
+            209,
+            241,
+            46,
+            64,
+            149,
+            201,
+            133,
+            162,
+            134,
+            173,
+            23,
+            19,
+            233,
+            76,
+            2,
+            13,
+            208,
+            203,
+            8,
+            36,
+            3,
+            245,
+            83
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2034648 }
+  },
+  "sid_495": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 495,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "8l7efbJxk_YOcvLL63Wn_HXZhjqk0KTgUEBorAYXgHM=",
+            "tCBa4t0R9uFc-CJqJIYIQQmH5gInZJRk-Pl8sTTGHj8="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            222,
+            228,
+            139,
+            243,
+            254,
+            115,
+            65,
+            248,
+            167,
+            100,
+            245,
+            202,
+            1,
+            220,
+            24,
+            18,
+            85,
+            242,
+            217,
+            177,
+            181,
+            14,
+            223,
+            193,
+            107,
+            213,
+            90,
+            96,
+            249,
+            164,
+            0,
+            166
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "iOt4zGTuwjC-VOD2XlYPrOvCqli9sCWO3TThC811FQs=",
+        "WXXldU0SI_KYC-YeScFtzMG_-aauqKeWizGYjt5P9gw="
+      ],
+      "asset_type": "3uSL8_5zQfinZPXKAdwYElXy2bG1Dt_Ba9VaYPmkAKY=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "8l7efbJxk_YOcvLL63Wn_HXZhjqk0KTgUEBorAYXgHM=",
+            "tCBa4t0R9uFc-CJqJIYIQQmH5gInZJRk-Pl8sTTGHj8="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            222,
+            228,
+            139,
+            243,
+            254,
+            115,
+            65,
+            248,
+            167,
+            100,
+            245,
+            202,
+            1,
+            220,
+            24,
+            18,
+            85,
+            242,
+            217,
+            177,
+            181,
+            14,
+            223,
+            193,
+            107,
+            213,
+            90,
+            96,
+            249,
+            164,
+            0,
+            166
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2060928 }
+  },
+  "sid_585": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 585,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "BA4bctEJqcHvQHzdfxj1eS2dEdxMFnTPzK-1Exb952w=",
+            "eD07Pok7BPkvuG3gbV7mBCskGaXAkqX1AEVbEAnbH2M="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            39,
+            116,
+            18,
+            238,
+            254,
+            170,
+            187,
+            212,
+            143,
+            182,
+            207,
+            114,
+            107,
+            201,
+            202,
+            184,
+            105,
+            4,
+            243,
+            88,
+            136,
+            122,
+            132,
+            7,
+            21,
+            155,
+            8,
+            230,
+            139,
+            255,
+            62,
+            218
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "rNmmdPAjIxNN0nLjSP362Zd2WTj4QS5V9loklXh8gwM=",
+        "R_v18kTGqlhBZ_Hm_82c65np-HgLiReDaDaZxR-Suws="
+      ],
+      "asset_type": "J3QS7v6qu9SPts9ya8nKuGkE81iIeoQHFZsI5ov_Pto=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "BA4bctEJqcHvQHzdfxj1eS2dEdxMFnTPzK-1Exb952w=",
+            "eD07Pok7BPkvuG3gbV7mBCskGaXAkqX1AEVbEAnbH2M="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            39,
+            116,
+            18,
+            238,
+            254,
+            170,
+            187,
+            212,
+            143,
+            182,
+            207,
+            114,
+            107,
+            201,
+            202,
+            184,
+            105,
+            4,
+            243,
+            88,
+            136,
+            122,
+            132,
+            7,
+            21,
+            155,
+            8,
+            230,
+            139,
+            255,
+            62,
+            218
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2057648 }
+  },
+  "sid_454": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 454,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            18,
+            20,
+            51,
+            3,
+            218,
+            36,
+            239,
+            25,
+            48,
+            209,
+            13,
+            128,
+            78,
+            231,
+            85,
+            127,
+            192,
+            140,
+            250,
+            15,
+            203,
+            130,
+            32,
+            249,
+            142,
+            59,
+            14,
+            12,
+            74,
+            71,
+            103,
+            245
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "EhQzA9ok7xkw0Q2ATudVf8CM-g_LgiD5jjsODEpHZ_U=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            18,
+            20,
+            51,
+            3,
+            218,
+            36,
+            239,
+            25,
+            48,
+            209,
+            13,
+            128,
+            78,
+            231,
+            85,
+            127,
+            192,
+            140,
+            250,
+            15,
+            203,
+            130,
+            32,
+            249,
+            142,
+            59,
+            14,
+            12,
+            74,
+            71,
+            103,
+            245
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_354": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 354,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            216,
+            131,
+            18,
+            236,
+            102,
+            209,
+            164,
+            152,
+            62,
+            6,
+            53,
+            238,
+            226,
+            230,
+            48,
+            165,
+            212,
+            96,
+            169,
+            113,
+            154,
+            43,
+            228,
+            1,
+            109,
+            59,
+            184,
+            137,
+            228,
+            151,
+            103
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "w9iDEuxm0aSYPgY17uLmMKXUYKlxmivkAW07uInkl2c=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            195,
+            216,
+            131,
+            18,
+            236,
+            102,
+            209,
+            164,
+            152,
+            62,
+            6,
+            53,
+            238,
+            226,
+            230,
+            48,
+            165,
+            212,
+            96,
+            169,
+            113,
+            154,
+            43,
+            228,
+            1,
+            109,
+            59,
+            184,
+            137,
+            228,
+            151,
+            103
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_780": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 780,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            96,
+            48,
+            130,
+            131,
+            55,
+            142,
+            236,
+            89,
+            84,
+            92,
+            115,
+            2,
+            225,
+            238,
+            213,
+            101,
+            138,
+            9,
+            191,
+            108,
+            215,
+            110,
+            210,
+            231,
+            118,
+            93,
+            99,
+            160,
+            67,
+            204,
+            172,
+            143
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "YDCCgzeO7FlUXHMC4e7VZYoJv2zXbtLndl1joEPMrI8=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            96,
+            48,
+            130,
+            131,
+            55,
+            142,
+            236,
+            89,
+            84,
+            92,
+            115,
+            2,
+            225,
+            238,
+            213,
+            101,
+            138,
+            9,
+            191,
+            108,
+            215,
+            110,
+            210,
+            231,
+            118,
+            93,
+            99,
+            160,
+            67,
+            204,
+            172,
+            143
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_514": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 514,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_502": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 502,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            250,
+            134,
+            195,
+            132,
+            186,
+            244,
+            185,
+            197,
+            201,
+            213,
+            73,
+            148,
+            183,
+            200,
+            102,
+            92,
+            154,
+            194,
+            193,
+            57,
+            162,
+            230,
+            86,
+            217,
+            20,
+            255,
+            12,
+            239,
+            73,
+            120,
+            63,
+            208
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "-obDhLr0ucXJ1UmUt8hmXJrCwTmi5lbZFP8M70l4P9A=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            250,
+            134,
+            195,
+            132,
+            186,
+            244,
+            185,
+            197,
+            201,
+            213,
+            73,
+            148,
+            183,
+            200,
+            102,
+            92,
+            154,
+            194,
+            193,
+            57,
+            162,
+            230,
+            86,
+            217,
+            20,
+            255,
+            12,
+            239,
+            73,
+            120,
+            63,
+            208
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1063": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1063,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1077": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1077,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_478": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 478,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            241,
+            237,
+            136,
+            231,
+            208,
+            1,
+            152,
+            33,
+            174,
+            209,
+            241,
+            46,
+            64,
+            149,
+            201,
+            133,
+            162,
+            134,
+            173,
+            23,
+            19,
+            233,
+            76,
+            2,
+            13,
+            208,
+            203,
+            8,
+            36,
+            3,
+            245,
+            83
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "8e2I59ABmCGu0fEuQJXJhaKGrRcT6UwCDdDLCCQD9VM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            241,
+            237,
+            136,
+            231,
+            208,
+            1,
+            152,
+            33,
+            174,
+            209,
+            241,
+            46,
+            64,
+            149,
+            201,
+            133,
+            162,
+            134,
+            173,
+            23,
+            19,
+            233,
+            76,
+            2,
+            13,
+            208,
+            203,
+            8,
+            36,
+            3,
+            245,
+            83
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_519": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 519,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "IncnRZWQk4_H4pq6dd7751hK7nk-5pD0JlMnOOgp0G8=",
+            "_uLdkgFphstVJCWoM13A1xGG-Uwd-NBodYZHkeQYxhc="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            210,
+            221,
+            227,
+            178,
+            68,
+            151,
+            87,
+            123,
+            199,
+            251,
+            44,
+            106,
+            102,
+            40,
+            39,
+            62,
+            30,
+            133,
+            18,
+            186,
+            165,
+            101,
+            242,
+            113,
+            143,
+            84,
+            147,
+            242,
+            23,
+            120,
+            32,
+            238
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "rELMr8u1Z5Db0bC1lhKbdNeN-O1f7EdNaNgMjIHlSQw=",
+        "A7zIsuiT-746JIbqS3uq2SZvNKfKG1DkxJZUlGvfNA8="
+      ],
+      "asset_type": "0t3jskSXV3vH-yxqZignPh6FErqlZfJxj1ST8hd4IO4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "IncnRZWQk4_H4pq6dd7751hK7nk-5pD0JlMnOOgp0G8=",
+            "_uLdkgFphstVJCWoM13A1xGG-Uwd-NBodYZHkeQYxhc="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            210,
+            221,
+            227,
+            178,
+            68,
+            151,
+            87,
+            123,
+            199,
+            251,
+            44,
+            106,
+            102,
+            40,
+            39,
+            62,
+            30,
+            133,
+            18,
+            186,
+            165,
+            101,
+            242,
+            113,
+            143,
+            84,
+            147,
+            242,
+            23,
+            120,
+            32,
+            238
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2067432 }
+  },
+  "sid_544": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 544,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            180,
+            69,
+            96,
+            48,
+            213,
+            111,
+            148,
+            223,
+            205,
+            170,
+            156,
+            31,
+            53,
+            188,
+            91,
+            139,
+            27,
+            220,
+            7,
+            50,
+            128,
+            231,
+            155,
+            216,
+            133,
+            148,
+            113,
+            206,
+            129,
+            57,
+            162,
+            36
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "tEVgMNVvlN_NqpwfNbxbixvcBzKA55vYhZRxzoE5oiQ=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            180,
+            69,
+            96,
+            48,
+            213,
+            111,
+            148,
+            223,
+            205,
+            170,
+            156,
+            31,
+            53,
+            188,
+            91,
+            139,
+            27,
+            220,
+            7,
+            50,
+            128,
+            231,
+            155,
+            216,
+            133,
+            148,
+            113,
+            206,
+            129,
+            57,
+            162,
+            36
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1083": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1083,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_329": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 329,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "99800000" },
+        "asset_type": {
+          "NonConfidential": [
+            5,
+            66,
+            109,
+            24,
+            20,
+            33,
+            23,
+            175,
+            97,
+            178,
+            205,
+            142,
+            152,
+            94,
+            40,
+            204,
+            98,
+            27,
+            230,
+            14,
+            111,
+            196,
+            104,
+            82,
+            84,
+            208,
+            196,
+            165,
+            144,
+            81,
+            86,
+            62
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 99800000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "BUJtGBQhF69hss2OmF4ozGIb5g5vxGhSVNDEpZBRVj4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "99800000" },
+        "asset_type": {
+          "NonConfidential": [
+            5,
+            66,
+            109,
+            24,
+            20,
+            33,
+            23,
+            175,
+            97,
+            178,
+            205,
+            142,
+            152,
+            94,
+            40,
+            204,
+            98,
+            27,
+            230,
+            14,
+            111,
+            196,
+            104,
+            82,
+            84,
+            208,
+            196,
+            165,
+            144,
+            81,
+            86,
+            62
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_426": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 426,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            93,
+            212,
+            166,
+            30,
+            95,
+            179,
+            119,
+            140,
+            6,
+            130,
+            193,
+            219,
+            85,
+            211,
+            137,
+            163,
+            182,
+            26,
+            3,
+            181,
+            173,
+            206,
+            49,
+            141,
+            216,
+            137,
+            43,
+            94,
+            168,
+            219,
+            200,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "XdSmHl-zd4wGgsHbVdOJo7YaA7WtzjGN2IkrXqjbyCM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            93,
+            212,
+            166,
+            30,
+            95,
+            179,
+            119,
+            140,
+            6,
+            130,
+            193,
+            219,
+            85,
+            211,
+            137,
+            163,
+            182,
+            26,
+            3,
+            181,
+            173,
+            206,
+            49,
+            141,
+            216,
+            137,
+            43,
+            94,
+            168,
+            219,
+            200,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_922": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 922,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_448": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 448,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            189,
+            9,
+            51,
+            6,
+            44,
+            44,
+            60,
+            179,
+            202,
+            203,
+            61,
+            122,
+            110,
+            202,
+            232,
+            55,
+            54,
+            185,
+            137,
+            142,
+            74,
+            147,
+            252,
+            169,
+            223,
+            180,
+            164,
+            217,
+            24,
+            208,
+            28,
+            84
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "vQkzBiwsPLPKyz16bsroNza5iY5Kk_yp37Sk2RjQHFQ=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            189,
+            9,
+            51,
+            6,
+            44,
+            44,
+            60,
+            179,
+            202,
+            203,
+            61,
+            122,
+            110,
+            202,
+            232,
+            55,
+            54,
+            185,
+            137,
+            142,
+            74,
+            147,
+            252,
+            169,
+            223,
+            180,
+            164,
+            217,
+            24,
+            208,
+            28,
+            84
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1092": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1092,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_618": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 618,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "-o7BgwN4UZtQtLrZdYI_ehaNeIxA5LN-5UNKUN8gZSA=",
+            "1pxaBkpzZwzUbKpikiB2JvNj2kIz99rewJqGyD8OBxw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            19,
+            99,
+            151,
+            6,
+            168,
+            230,
+            150,
+            195,
+            86,
+            222,
+            162,
+            163,
+            129,
+            229,
+            212,
+            6,
+            120,
+            32,
+            220,
+            64,
+            26,
+            233,
+            113,
+            225,
+            121,
+            43,
+            243,
+            193,
+            82,
+            121,
+            85,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "C8KYkS06--wSwkuIaA_fn70YSKp43txHc-n0gLY9igE=",
+        "PUhmrmt4TMEhFDgaysqps-CAb6DgP6lqVSk0XcyMgAk="
+      ],
+      "asset_type": "E2OXBqjmlsNW3qKjgeXUBngg3EAa6XHheSvzwVJ5VSM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "-o7BgwN4UZtQtLrZdYI_ehaNeIxA5LN-5UNKUN8gZSA=",
+            "1pxaBkpzZwzUbKpikiB2JvNj2kIz99rewJqGyD8OBxw="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            19,
+            99,
+            151,
+            6,
+            168,
+            230,
+            150,
+            195,
+            86,
+            222,
+            162,
+            163,
+            129,
+            229,
+            212,
+            6,
+            120,
+            32,
+            220,
+            64,
+            26,
+            233,
+            113,
+            225,
+            121,
+            43,
+            243,
+            193,
+            82,
+            121,
+            85,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2060336 }
+  },
+  "sid_526": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 526,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            34,
+            181,
+            173,
+            185,
+            119,
+            123,
+            217,
+            243,
+            157,
+            237,
+            25,
+            202,
+            18,
+            58,
+            14,
+            226,
+            238,
+            14,
+            199,
+            207,
+            135,
+            224,
+            166,
+            72,
+            217,
+            192,
+            39,
+            190,
+            208,
+            246,
+            125,
+            30
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "IrWtuXd72fOd7RnKEjoO4u4Ox8-H4KZI2cAnvtD2fR4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            34,
+            181,
+            173,
+            185,
+            119,
+            123,
+            217,
+            243,
+            157,
+            237,
+            25,
+            202,
+            18,
+            58,
+            14,
+            226,
+            238,
+            14,
+            199,
+            207,
+            135,
+            224,
+            166,
+            72,
+            217,
+            192,
+            39,
+            190,
+            208,
+            246,
+            125,
+            30
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_264": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 264,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "1000000000000" },
+        "asset_type": {
+          "NonConfidential": [
+            38,
+            21,
+            49,
+            165,
+            182,
+            101,
+            88,
+            62,
+            129,
+            234,
+            65,
+            139,
+            9,
+            14,
+            223,
+            5,
+            120,
+            116,
+            152,
+            177,
+            232,
+            77,
+            113,
+            179,
+            119,
+            83,
+            37,
+            182,
+            194,
+            84,
+            97,
+            112
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 1000000000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "JhUxpbZlWD6B6kGLCQ7fBXh0mLHoTXGzd1MltsJUYXA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "1000000000000" },
+        "asset_type": {
+          "NonConfidential": [
+            38,
+            21,
+            49,
+            165,
+            182,
+            101,
+            88,
+            62,
+            129,
+            234,
+            65,
+            139,
+            9,
+            14,
+            223,
+            5,
+            120,
+            116,
+            152,
+            177,
+            232,
+            77,
+            113,
+            179,
+            119,
+            83,
+            37,
+            182,
+            194,
+            84,
+            97,
+            112
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_619": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 619,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            19,
+            99,
+            151,
+            6,
+            168,
+            230,
+            150,
+            195,
+            86,
+            222,
+            162,
+            163,
+            129,
+            229,
+            212,
+            6,
+            120,
+            32,
+            220,
+            64,
+            26,
+            233,
+            113,
+            225,
+            121,
+            43,
+            243,
+            193,
+            82,
+            121,
+            85,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "E2OXBqjmlsNW3qKjgeXUBngg3EAa6XHheSvzwVJ5VSM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            19,
+            99,
+            151,
+            6,
+            168,
+            230,
+            150,
+            195,
+            86,
+            222,
+            162,
+            163,
+            129,
+            229,
+            212,
+            6,
+            120,
+            32,
+            220,
+            64,
+            26,
+            233,
+            113,
+            225,
+            121,
+            43,
+            243,
+            193,
+            82,
+            121,
+            85,
+            35
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1048": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1048,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1051": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1051,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_520": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 520,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            210,
+            221,
+            227,
+            178,
+            68,
+            151,
+            87,
+            123,
+            199,
+            251,
+            44,
+            106,
+            102,
+            40,
+            39,
+            62,
+            30,
+            133,
+            18,
+            186,
+            165,
+            101,
+            242,
+            113,
+            143,
+            84,
+            147,
+            242,
+            23,
+            120,
+            32,
+            238
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "0t3jskSXV3vH-yxqZignPh6FErqlZfJxj1ST8hd4IO4=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            210,
+            221,
+            227,
+            178,
+            68,
+            151,
+            87,
+            123,
+            199,
+            251,
+            44,
+            106,
+            102,
+            40,
+            39,
+            62,
+            30,
+            133,
+            18,
+            186,
+            165,
+            101,
+            242,
+            113,
+            143,
+            84,
+            147,
+            242,
+            23,
+            120,
+            32,
+            238
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_586": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 586,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            39,
+            116,
+            18,
+            238,
+            254,
+            170,
+            187,
+            212,
+            143,
+            182,
+            207,
+            114,
+            107,
+            201,
+            202,
+            184,
+            105,
+            4,
+            243,
+            88,
+            136,
+            122,
+            132,
+            7,
+            21,
+            155,
+            8,
+            230,
+            139,
+            255,
+            62,
+            218
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "J3QS7v6qu9SPts9ya8nKuGkE81iIeoQHFZsI5ov_Pto=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            39,
+            116,
+            18,
+            238,
+            254,
+            170,
+            187,
+            212,
+            143,
+            182,
+            207,
+            114,
+            107,
+            201,
+            202,
+            184,
+            105,
+            4,
+            243,
+            88,
+            136,
+            122,
+            132,
+            7,
+            21,
+            155,
+            8,
+            230,
+            139,
+            255,
+            62,
+            218
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1079": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1079,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "79249991" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 79249991,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "79249991" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1091": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1091,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "77079997" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 77079997,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "77079997" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_1054": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1054,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_537": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 537,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "QFguO_fiQh0Q-S052Ue7U7bPYAOMk7aza1QDNZMAXzY=",
+            "3Dqu4mcQGozEQpb5fGL5gwBHD4YETnTtrFUVQR-LdBM="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            91,
+            150,
+            125,
+            228,
+            175,
+            78,
+            178,
+            123,
+            11,
+            100,
+            247,
+            14,
+            206,
+            235,
+            46,
+            164,
+            143,
+            6,
+            41,
+            159,
+            79,
+            30,
+            165,
+            46,
+            235,
+            237,
+            169,
+            195,
+            52,
+            165,
+            4,
+            244
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "mqZFrhOzrE4rvo0a0AtAgK9fPMjUsJGXkEZCkNiPZAM=",
+        "WzQArmh1g2vYXN9OdrG4wCJ3RVh4zQCtH8I5lpMe-gA="
+      ],
+      "asset_type": "W5Z95K9OsnsLZPcOzusupI8GKZ9PHqUu6-2pwzSlBPQ=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "QFguO_fiQh0Q-S052Ue7U7bPYAOMk7aza1QDNZMAXzY=",
+            "3Dqu4mcQGozEQpb5fGL5gwBHD4YETnTtrFUVQR-LdBM="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            91,
+            150,
+            125,
+            228,
+            175,
+            78,
+            178,
+            123,
+            11,
+            100,
+            247,
+            14,
+            206,
+            235,
+            46,
+            164,
+            143,
+            6,
+            41,
+            159,
+            79,
+            30,
+            165,
+            46,
+            235,
+            237,
+            169,
+            195,
+            52,
+            165,
+            4,
+            244
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2035240 }
+  },
+  "sid_1086": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1086,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_508": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 508,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            59,
+            1,
+            250,
+            123,
+            165,
+            172,
+            232,
+            75,
+            110,
+            35,
+            142,
+            115,
+            53,
+            129,
+            23,
+            93,
+            55,
+            81,
+            157,
+            163,
+            52,
+            237,
+            165,
+            185,
+            66,
+            147,
+            26,
+            35,
+            177,
+            107,
+            15,
+            81
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "OwH6e6Ws6EtuI45zNYEXXTdRnaM07aW5QpMaI7FrD1E=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            59,
+            1,
+            250,
+            123,
+            165,
+            172,
+            232,
+            75,
+            110,
+            35,
+            142,
+            115,
+            53,
+            129,
+            23,
+            93,
+            55,
+            81,
+            157,
+            163,
+            52,
+            237,
+            165,
+            185,
+            66,
+            147,
+            26,
+            35,
+            177,
+            107,
+            15,
+            81
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_734": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 734,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            224,
+            164,
+            72,
+            36,
+            119,
+            233,
+            203,
+            175,
+            134,
+            187,
+            203,
+            62,
+            231,
+            38,
+            220,
+            42,
+            7,
+            35,
+            238,
+            139,
+            212,
+            39,
+            68,
+            129,
+            142,
+            248,
+            197,
+            2,
+            20,
+            30,
+            49,
+            215
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "4KRIJHfpy6-Gu8s-5ybcKgcj7ovUJ0SBjvjFAhQeMdc=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            224,
+            164,
+            72,
+            36,
+            119,
+            233,
+            203,
+            175,
+            134,
+            187,
+            203,
+            62,
+            231,
+            38,
+            220,
+            42,
+            7,
+            35,
+            238,
+            139,
+            212,
+            39,
+            68,
+            129,
+            142,
+            248,
+            197,
+            2,
+            20,
+            30,
+            49,
+            215
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_453": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 453,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "Gj3EMwW_IQalxyGSfEhUrOa1Q8hTPuSXsBPK1fyc7Xw=",
+            "nHEk8rCFkmwfPMgx0UFrdWJvCLTezU0F53V_0Seg3UI="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            18,
+            20,
+            51,
+            3,
+            218,
+            36,
+            239,
+            25,
+            48,
+            209,
+            13,
+            128,
+            78,
+            231,
+            85,
+            127,
+            192,
+            140,
+            250,
+            15,
+            203,
+            130,
+            32,
+            249,
+            142,
+            59,
+            14,
+            12,
+            74,
+            71,
+            103,
+            245
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "gP_znvfsNLggPmqmrX5seqNoY0Gc23Wr54f6gUSz_AQ=",
+        "IkrrpOwlq1OFItQEA3J20HE8iYKZN7RZ67yxu2KPYAY="
+      ],
+      "asset_type": "EhQzA9ok7xkw0Q2ATudVf8CM-g_LgiD5jjsODEpHZ_U=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "Gj3EMwW_IQalxyGSfEhUrOa1Q8hTPuSXsBPK1fyc7Xw=",
+            "nHEk8rCFkmwfPMgx0UFrdWJvCLTezU0F53V_0Seg3UI="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            18,
+            20,
+            51,
+            3,
+            218,
+            36,
+            239,
+            25,
+            48,
+            209,
+            13,
+            128,
+            78,
+            231,
+            85,
+            127,
+            192,
+            140,
+            250,
+            15,
+            203,
+            130,
+            32,
+            249,
+            142,
+            59,
+            14,
+            12,
+            74,
+            71,
+            103,
+            245
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2049104 }
+  },
+  "sid_483": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 483,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "UE-rqmfOaiarSekDI2Ln3HZQZv9-gMbdve87iHY-yAU=",
+            "tlUP1kAmk9i2JyzegfYHgeveqjIFMfL8nuDxazBcQiU="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            92,
+            7,
+            58,
+            116,
+            207,
+            46,
+            52,
+            254,
+            179,
+            235,
+            104,
+            57,
+            135,
+            129,
+            3,
+            202,
+            234,
+            147,
+            215,
+            194,
+            114,
+            96,
+            255,
+            42,
+            45,
+            248,
+            47,
+            219,
+            29,
+            130,
+            170,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "5TgLwTWQfQGOXIqd45sDJYbsohdm7B3WMMhYVgX0fwQ=",
+        "I7CtXmJQmT5od0tKBaLUmiGJvT3pxMjxitze7RpNeQM="
+      ],
+      "asset_type": "XAc6dM8uNP6z62g5h4EDyuqT18JyYP8qLfgv2x2CquA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "UE-rqmfOaiarSekDI2Ln3HZQZv9-gMbdve87iHY-yAU=",
+            "tlUP1kAmk9i2JyzegfYHgeveqjIFMfL8nuDxazBcQiU="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            92,
+            7,
+            58,
+            116,
+            207,
+            46,
+            52,
+            254,
+            179,
+            235,
+            104,
+            57,
+            135,
+            129,
+            3,
+            202,
+            234,
+            147,
+            215,
+            194,
+            114,
+            96,
+            255,
+            42,
+            45,
+            248,
+            47,
+            219,
+            29,
+            130,
+            170,
+            224
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2038088 }
+  },
+  "sid_501": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 501,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "pIANJo1nEc_ulwB4h4x2qJAPcQ0ZyZlrJnIWJyUxrXg=",
+            "DoGxWmIRygzgHHyrGvhkArqPAxFkicPXKubGMF5StwY="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            250,
+            134,
+            195,
+            132,
+            186,
+            244,
+            185,
+            197,
+            201,
+            213,
+            73,
+            148,
+            183,
+            200,
+            102,
+            92,
+            154,
+            194,
+            193,
+            57,
+            162,
+            230,
+            86,
+            217,
+            20,
+            255,
+            12,
+            239,
+            73,
+            120,
+            63,
+            208
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "r7OFv1b406vg87vxjC2sVkEYoB-b27h0iQxpgJzWnAU=",
+        "LBgOmVu_e7vYzv-r_0_K_fr7qY5NlQOIZ3DjwjTLigU="
+      ],
+      "asset_type": "-obDhLr0ucXJ1UmUt8hmXJrCwTmi5lbZFP8M70l4P9A=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "pIANJo1nEc_ulwB4h4x2qJAPcQ0ZyZlrJnIWJyUxrXg=",
+            "DoGxWmIRygzgHHyrGvhkArqPAxFkicPXKubGMF5StwY="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            250,
+            134,
+            195,
+            132,
+            186,
+            244,
+            185,
+            197,
+            201,
+            213,
+            73,
+            148,
+            183,
+            200,
+            102,
+            92,
+            154,
+            194,
+            193,
+            57,
+            162,
+            230,
+            86,
+            217,
+            20,
+            255,
+            12,
+            239,
+            73,
+            120,
+            63,
+            208
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2032552 }
+  },
+  "sid_532": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 532,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            113,
+            61,
+            209,
+            103,
+            123,
+            18,
+            95,
+            30,
+            89,
+            234,
+            76,
+            168,
+            90,
+            72,
+            201,
+            77,
+            207,
+            163,
+            137,
+            122,
+            52,
+            240,
+            247,
+            13,
+            18,
+            55,
+            205,
+            65,
+            172,
+            66,
+            114
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "pHE90Wd7El8eWepMqFpIyU3Po4l6NPD3DRI3zUGsQnI=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            164,
+            113,
+            61,
+            209,
+            103,
+            123,
+            18,
+            95,
+            30,
+            89,
+            234,
+            76,
+            168,
+            90,
+            72,
+            201,
+            77,
+            207,
+            163,
+            137,
+            122,
+            52,
+            240,
+            247,
+            13,
+            18,
+            55,
+            205,
+            65,
+            172,
+            66,
+            114
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_466": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 466,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            52,
+            143,
+            173,
+            182,
+            25,
+            29,
+            142,
+            144,
+            80,
+            229,
+            36,
+            234,
+            21,
+            118,
+            171,
+            60,
+            205,
+            36,
+            169,
+            190,
+            84,
+            154,
+            247,
+            69,
+            43,
+            186,
+            12,
+            212,
+            29,
+            195,
+            183,
+            48
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "NI-tthkdjpBQ5STqFXarPM0kqb5UmvdFK7oM1B3DtzA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            52,
+            143,
+            173,
+            182,
+            25,
+            29,
+            142,
+            144,
+            80,
+            229,
+            36,
+            234,
+            21,
+            118,
+            171,
+            60,
+            205,
+            36,
+            169,
+            190,
+            84,
+            154,
+            247,
+            69,
+            43,
+            186,
+            12,
+            212,
+            29,
+            195,
+            183,
+            48
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_459": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 459,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "GihuOlFxptt8wc4MYunDsy3HwPGBhQAjo6oDSX3Ncmc=",
+            "Hvf1Ji48tzvcSxVjjoO5eDJD4xysLwV31WjEkHzqcTI="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            163,
+            95,
+            245,
+            56,
+            89,
+            175,
+            172,
+            176,
+            144,
+            77,
+            134,
+            155,
+            208,
+            127,
+            127,
+            31,
+            172,
+            178,
+            236,
+            159,
+            169,
+            27,
+            141,
+            154,
+            126,
+            45,
+            21,
+            53,
+            228,
+            43,
+            101,
+            200
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "xsCgetrMacl5rCArLUZw0OrUiVdHdUQh97K_4ova5AY=",
+        "IrhRPqCldPKNjse7YVENW3FMpnxASOWWemCi-KsHfgw="
+      ],
+      "asset_type": "o1_1OFmvrLCQTYab0H9_H6yy7J-pG42afi0VNeQrZcg=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "GihuOlFxptt8wc4MYunDsy3HwPGBhQAjo6oDSX3Ncmc=",
+            "Hvf1Ji48tzvcSxVjjoO5eDJD4xysLwV31WjEkHzqcTI="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            163,
+            95,
+            245,
+            56,
+            89,
+            175,
+            172,
+            176,
+            144,
+            77,
+            134,
+            155,
+            208,
+            127,
+            127,
+            31,
+            172,
+            178,
+            236,
+            159,
+            169,
+            27,
+            141,
+            154,
+            126,
+            45,
+            21,
+            53,
+            228,
+            43,
+            101,
+            200
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2065336 }
+  },
+  "sid_490": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 490,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            120,
+            203,
+            16,
+            44,
+            197,
+            201,
+            7,
+            49,
+            142,
+            25,
+            166,
+            195,
+            154,
+            186,
+            42,
+            231,
+            225,
+            41,
+            237,
+            217,
+            231,
+            153,
+            125,
+            191,
+            115,
+            96,
+            133,
+            129,
+            28,
+            118,
+            113,
+            3
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "eMsQLMXJBzGOGabDmroq5-Ep7dnnmX2_c2CFgRx2cQM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            120,
+            203,
+            16,
+            44,
+            197,
+            201,
+            7,
+            49,
+            142,
+            25,
+            166,
+            195,
+            154,
+            186,
+            42,
+            231,
+            225,
+            41,
+            237,
+            217,
+            231,
+            153,
+            125,
+            191,
+            115,
+            96,
+            133,
+            129,
+            28,
+            118,
+            113,
+            3
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_592": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 592,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            220,
+            89,
+            43,
+            138,
+            232,
+            53,
+            207,
+            88,
+            208,
+            94,
+            186,
+            99,
+            122,
+            153,
+            97,
+            22,
+            227,
+            242,
+            35,
+            156,
+            27,
+            177,
+            80,
+            157,
+            63,
+            210,
+            1,
+            126,
+            153,
+            141,
+            232,
+            223
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "3Fkriug1z1jQXrpjeplhFuPyI5wbsVCdP9IBfpmN6N8=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            220,
+            89,
+            43,
+            138,
+            232,
+            53,
+            207,
+            88,
+            208,
+            94,
+            186,
+            99,
+            122,
+            153,
+            97,
+            22,
+            227,
+            242,
+            35,
+            156,
+            27,
+            177,
+            80,
+            157,
+            63,
+            210,
+            1,
+            126,
+            153,
+            141,
+            232,
+            223
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_930": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 930,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "81949097" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 81949097,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "81949097" },
+        "asset_type": {
+          "NonConfidential": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_580": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 580,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "4999995" },
+        "asset_type": {
+          "NonConfidential": [
+            191,
+            212,
+            137,
+            15,
+            194,
+            103,
+            113,
+            10,
+            174,
+            209,
+            105,
+            34,
+            245,
+            66,
+            254,
+            251,
+            89,
+            213,
+            236,
+            181,
+            147,
+            112,
+            46,
+            208,
+            56,
+            150,
+            154,
+            14,
+            82,
+            40,
+            10,
+            124
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 4999995,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "v9SJD8JncQqu0Wki9UL--1nV7LWTcC7QOJaaDlIoCnw=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "4999995" },
+        "asset_type": {
+          "NonConfidential": [
+            191,
+            212,
+            137,
+            15,
+            194,
+            103,
+            113,
+            10,
+            174,
+            209,
+            105,
+            34,
+            245,
+            66,
+            254,
+            251,
+            89,
+            213,
+            236,
+            181,
+            147,
+            112,
+            46,
+            208,
+            56,
+            150,
+            154,
+            14,
+            82,
+            40,
+            10,
+            124
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_538": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 538,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            91,
+            150,
+            125,
+            228,
+            175,
+            78,
+            178,
+            123,
+            11,
+            100,
+            247,
+            14,
+            206,
+            235,
+            46,
+            164,
+            143,
+            6,
+            41,
+            159,
+            79,
+            30,
+            165,
+            46,
+            235,
+            237,
+            169,
+            195,
+            52,
+            165,
+            4,
+            244
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "W5Z95K9OsnsLZPcOzusupI8GKZ9PHqUu6-2pwzSlBPQ=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5" },
+        "asset_type": {
+          "NonConfidential": [
+            91,
+            150,
+            125,
+            228,
+            175,
+            78,
+            178,
+            123,
+            11,
+            100,
+            247,
+            14,
+            206,
+            235,
+            46,
+            164,
+            143,
+            6,
+            41,
+            159,
+            79,
+            30,
+            165,
+            46,
+            235,
+            237,
+            169,
+            195,
+            52,
+            165,
+            4,
+            244
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_995": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 995,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_659": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 659,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            65,
+            241,
+            43,
+            203,
+            69,
+            184,
+            19,
+            67,
+            9,
+            231,
+            19,
+            158,
+            101,
+            70,
+            231,
+            145,
+            208,
+            23,
+            222,
+            14,
+            97,
+            43,
+            12,
+            77,
+            16,
+            19,
+            124,
+            235,
+            75,
+            88,
+            224,
+            47
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "QfEry0W4E0MJ5xOeZUbnkdAX3g5hKwxNEBN860tY4C8=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "5000000" },
+        "asset_type": {
+          "NonConfidential": [
+            65,
+            241,
+            43,
+            203,
+            69,
+            184,
+            19,
+            67,
+            9,
+            231,
+            19,
+            158,
+            101,
+            70,
+            231,
+            145,
+            208,
+            23,
+            222,
+            14,
+            97,
+            43,
+            12,
+            77,
+            16,
+            19,
+            124,
+            235,
+            75,
+            88,
+            224,
+            47
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  },
+  "sid_513": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 513,
+    "body": {
+      "blind_asset_record": {
+        "amount": {
+          "Confidential": [
+            "MJPZwsfWM2HMUlC1J8jhxLeeRvGWOIrAsPsxJFyASQk=",
+            "dv_S1WHfE79nCJ9oCm4nMbSKy9ZsMTBtFaMEvJOoC18="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 5000000,
+      "amount_blinds": [
+        "H8VH7M1AINxLuuSMb8kmKdo1JW0fxuGWw_vpsxYYEwU=",
+        "JgPtgY_4oiSFco-AQzXPrd_H2H8KPQ2yyCg7mIuQAgY="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": {
+          "Confidential": [
+            "MJPZwsfWM2HMUlC1J8jhxLeeRvGWOIrAsPsxJFyASQk=",
+            "dv_S1WHfE79nCJ9oCm4nMbSKy9ZsMTBtFaMEvJOoC18="
+          ]
+        },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    },
+    "ownerMemo": { "ptr": 2068024 }
+  },
+  "sid_1089": {
+    "address": "fra1srxqvl5r75ra7x2yz3zmcgnjh7837f96zxpnw2zc0c2h0qqu4v5sv4txmy",
+    "sid": 1089,
+    "body": {
+      "blind_asset_record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      },
+      "amount": 2000000,
+      "amount_blinds": [
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=",
+        "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+      ],
+      "asset_type": "aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=",
+      "type_blind": "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="
+    },
+    "utxo": {
+      "id": null,
+      "record": {
+        "amount": { "NonConfidential": "2000000" },
+        "asset_type": {
+          "NonConfidential": [
+            105,
+            27,
+            22,
+            115,
+            195,
+            250,
+            196,
+            90,
+            154,
+            243,
+            196,
+            185,
+            14,
+            27,
+            150,
+            37,
+            38,
+            19,
+            65,
+            249,
+            156,
+            13,
+            4,
+            110,
+            73,
+            59,
+            26,
+            59,
+            27,
+            246,
+            25,
+            227
+          ]
+        },
+        "public_key": "gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk="
+      }
+    }
+  }
+}
