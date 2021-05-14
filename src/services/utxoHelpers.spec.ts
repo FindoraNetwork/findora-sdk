@@ -436,7 +436,7 @@ describe('utxoHelpers', () => {
       }),
     );
 
-    it('return a list with utxo items aaaa', async () => {
+    it('return a list with utxo items', async () => {
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
       const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);

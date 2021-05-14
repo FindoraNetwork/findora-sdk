@@ -483,7 +483,7 @@ describe('utxoHelpers', function () {
         }), msw_1.rest.get(memoUrl, function (_req, res, ctx) {
             return res(ctx.json(myMemoResponse));
         }));
-        it('return a list with utxo items aaaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('return a list with utxo items', function () { return __awaiter(void 0, void 0, void 0, function () {
             var walletInfo, utxoDataCache, sids, spyGetUtxoItem, spyCacheProviderRead, utxoDataList;
             return __generator(this, function (_a) {
                 switch (_a.label) {
