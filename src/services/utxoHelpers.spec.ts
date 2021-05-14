@@ -5,8 +5,10 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import { Keypair } from '../api';
+import { CACHE_ENTRIES } from '../config/cache';
+import Sdk from '../Sdk';
 import Cache from './cacheStore/factory';
-import { FileCacheProvider as CacheProvider } from './cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './cacheStore/providers';
 import * as utxoHelper from './utxoHelper';
 import { UtxoOutputItem } from './utxoHelper';
 
@@ -34,14 +36,23 @@ afterAll(() => server.close());
 describe('utxoHelpers', () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
+  const hostUrl = 'https://foo.bar';
 
   const sid = 454;
 
+  const sdkEnv = {
+    hostUrl,
+    cacheProvider: MemoryCacheProvider,
+    cachePath: '.',
+  };
+
+  Sdk.init(sdkEnv);
+
   const myMemoResponse = null;
 
-  const memoUrl = `https://dev-staging.dev.findora.org:8667/get_owner_memo/${sid}`;
+  const memoUrl = `${hostUrl}:8667/get_owner_memo/${sid}`;
 
-  const utxoUrl = `https://dev-staging.dev.findora.org:8668/utxo_sid/${sid}`;
+  const utxoUrl = `${hostUrl}:8668/utxo_sid/${sid}`;
 
   const nonConfidentialAssetType = {
     NonConfidential: [
@@ -425,12 +436,20 @@ describe('utxoHelpers', () => {
       }),
     );
 
-    it('return a list with utxo items', async () => {
+    it('return a list with utxo items aaaa', async () => {
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+
+      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+
+      await Cache.write(
+        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
+        utxoDataCache,
+        MemoryCacheProvider,
+      );
 
       const sids = [sid, sid];
       const spyGetUtxoItem = jest.spyOn(utxoHelper, 'getUtxoItem');
-      const spyCacheProviderRead = jest.spyOn(CacheProvider, 'read');
+      const spyCacheProviderRead = jest.spyOn(MemoryCacheProvider, 'read');
 
       spyCacheProviderRead.mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid } }));
 
