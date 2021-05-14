@@ -220,16 +220,32 @@ export const issueAsset = async (
 
   const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
 
-  const receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  let receivedTransferOperation;
 
-  let transactionBuilder = await getIssueAssetTransactionBuilder(
-    walletInfo.keypair,
-    assetName,
-    amountToIssue,
-    assetBlindRules,
-  );
+  try {
+    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  }
 
-  transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await getIssueAssetTransactionBuilder(
+      walletInfo.keypair,
+      assetName,
+      amountToIssue,
+      assetBlindRules,
+    );
+  } catch (error) {
+    throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${error.messaage}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  } catch (error) {
+    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+  }
 
   const submitData = transactionBuilder.transaction();
 
@@ -238,17 +254,17 @@ export const issueAsset = async (
   try {
     result = await Network.submitTransaction(submitData);
   } catch (error) {
-    throw new Error(`could not issue asset: "${error.message}"`);
+    throw new Error(`Could not issue asset: "${error.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
 
   if (submitError) {
-    throw new Error(`could not issue asset: "${submitError.message}"`);
+    throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
   }
 
   if (!handle) {
-    throw new Error(`could not issue asset - submit handle is missing`);
+    throw new Error(`Could not issue asset - submit handle is missing`);
   }
 
   return handle;
