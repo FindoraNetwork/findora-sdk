@@ -2,8 +2,8 @@ import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
 import { CACHE_ENTRIES } from '../config/cache';
+import Sdk from '../Sdk';
 import Cache from './cacheStore/factory';
-import { MemoryCacheProvider as CacheProvider } from './cacheStore/providers';
 import { CacheItem } from './cacheStore/types';
 import { getLedger } from './ledger/ledgerWrapper';
 import {
@@ -137,8 +137,11 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   const cacheDataToSave: CacheItem = {};
   let utxoDataCache;
 
+  const cacheEntryName = `${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}`;
+  const fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
+
   try {
-    utxoDataCache = await Cache.read(`${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}`, CacheProvider);
+    utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
   } catch (error) {
     throw new Error(`Error reading the cache, "${error.message}"`);
   }
@@ -157,7 +160,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   }
 
   try {
-    await Cache.write(`${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}`, cacheDataToSave, CacheProvider);
+    await Cache.write(fullPathToCacheEntry, cacheDataToSave, Sdk.environment.cacheProvider);
   } catch (err) {
     console.log(`could not write cache for utxoData, "${err.message}"`);
   }
