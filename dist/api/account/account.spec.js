@@ -54,12 +54,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
 var Keypair = __importStar(require("../../api/keypair"));
+var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber = __importStar(require("../../services/bigNumber"));
+var providers_1 = require("../../services/cacheStore/providers");
 var utxoHelper = __importStar(require("../../services/utxoHelper"));
 var Account = __importStar(require("./account"));
 var myDefaultResult = [
@@ -81,6 +86,13 @@ describe('account', function () {
     var pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
     var password = '123';
     var sids = [454];
+    var hostUrl = 'https://foo.bar';
+    var sdkEnv = {
+        hostUrl: hostUrl,
+        cacheProvider: providers_1.MemoryCacheProvider,
+        cachePath: '.',
+    };
+    Sdk_1.default.init(sdkEnv);
     var nonConfidentialAssetType = {
         NonConfidential: [
             164,
@@ -270,7 +282,7 @@ describe('account', function () {
                     case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = "https://dev-staging.dev.findora.org:8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));
@@ -291,7 +303,7 @@ describe('account', function () {
                     case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = "https://dev-staging.dev.findora.org:8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
@@ -310,7 +322,7 @@ describe('account', function () {
                     case 1:
                         walletInfo = _a.sent();
                         publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';
-                        url = "https://dev-staging.dev.findora.org:8667/get_owned_utxos/" + publickey;
+                        url = hostUrl + ":8667/get_owned_utxos/" + publickey;
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));

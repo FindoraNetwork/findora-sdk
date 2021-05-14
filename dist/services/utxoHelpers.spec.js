@@ -63,6 +63,8 @@ require("@testing-library/jest-dom/extend-expect");
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
 var api_1 = require("../api");
+var cache_1 = require("../config/cache");
+var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var providers_1 = require("./cacheStore/providers");
 var utxoHelper = __importStar(require("./utxoHelper"));
@@ -84,10 +86,17 @@ afterAll(function () { return server.close(); });
 describe('utxoHelpers', function () {
     var pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
     var password = '123';
+    var hostUrl = 'https://foo.bar';
     var sid = 454;
+    var sdkEnv = {
+        hostUrl: hostUrl,
+        cacheProvider: providers_1.MemoryCacheProvider,
+        cachePath: '.',
+    };
+    Sdk_1.default.init(sdkEnv);
     var myMemoResponse = null;
-    var memoUrl = "https://dev-staging.dev.findora.org:8667/get_owner_memo/" + sid;
-    var utxoUrl = "https://dev-staging.dev.findora.org:8668/utxo_sid/" + sid;
+    var memoUrl = hostUrl + ":8667/get_owner_memo/" + sid;
+    var utxoUrl = hostUrl + ":8668/utxo_sid/" + sid;
     var nonConfidentialAssetType = {
         NonConfidential: [
             164,
@@ -474,19 +483,25 @@ describe('utxoHelpers', function () {
         }), msw_1.rest.get(memoUrl, function (_req, res, ctx) {
             return res(ctx.json(myMemoResponse));
         }));
-        it('return a list with utxo items', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var walletInfo, sids, spyGetUtxoItem, spyCacheProviderRead, utxoDataList;
+        it('return a list with utxo items aaaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var walletInfo, utxoDataCache, sids, spyGetUtxoItem, spyCacheProviderRead, utxoDataList;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
+                        return [4 /*yield*/, factory_1.default.read("./test_utxo_fixture_list.json", providers_1.FileCacheProvider)];
+                    case 2:
+                        utxoDataCache = _a.sent();
+                        return [4 /*yield*/, factory_1.default.write("./" + cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address + ".json", utxoDataCache, providers_1.MemoryCacheProvider)];
+                    case 3:
+                        _a.sent();
                         sids = [sid, sid];
                         spyGetUtxoItem = jest.spyOn(utxoHelper, 'getUtxoItem');
-                        spyCacheProviderRead = jest.spyOn(providers_1.FileCacheProvider, 'read');
+                        spyCacheProviderRead = jest.spyOn(providers_1.MemoryCacheProvider, 'read');
                         spyCacheProviderRead.mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid: sid } }));
                         return [4 /*yield*/, utxoHelper.addUtxo(walletInfo, sids)];
-                    case 2:
+                    case 4:
                         utxoDataList = _a.sent();
                         expect(spyCacheProviderRead).toHaveBeenCalledTimes(1);
                         expect(spyGetUtxoItem).toHaveBeenCalledTimes(2);
