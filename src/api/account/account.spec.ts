@@ -4,7 +4,9 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import * as Keypair from '../../api/keypair';
+import Sdk from '../../Sdk';
 import * as bigNumber from '../../services/bigNumber';
+import { MemoryCacheProvider } from '../../services/cacheStore/providers';
 import * as utxoHelper from '../../services/utxoHelper';
 import * as Account from './account';
 
@@ -33,6 +35,16 @@ describe('account', () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
   const sids = [454];
+
+  const hostUrl = 'https://foo.bar';
+
+  const sdkEnv = {
+    hostUrl,
+    cacheProvider: MemoryCacheProvider,
+    cachePath: '.',
+  };
+
+  Sdk.init(sdkEnv);
 
   const nonConfidentialAssetType = {
     NonConfidential: [
@@ -198,7 +210,7 @@ describe('account', () => {
     it('returns asset balance for first code', async () => {
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      const url = `https://dev-staging.dev.findora.org:8667/get_owned_utxos/${walletInfo.publickey}`;
+      const url = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(
         rest.get(url, (_req, res, ctx) => {
@@ -217,7 +229,7 @@ describe('account', () => {
     it('throws an error when no sids were fetched', async () => {
       const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
 
-      const url = `https://dev-staging.dev.findora.org:8667/get_owned_utxos/${walletInfo.publickey}`;
+      const url = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(
         rest.get(url, (_req, res, ctx) => {
@@ -235,7 +247,7 @@ describe('account', () => {
 
       const publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';
 
-      const url = `https://dev-staging.dev.findora.org:8667/get_owned_utxos/${publickey}`;
+      const url = `${hostUrl}:8667/get_owned_utxos/${publickey}`;
 
       server.use(
         rest.get(url, (_req, res, ctx) => {

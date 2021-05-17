@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
+import Sdk from '../../Sdk';
+import { MemoryCacheProvider } from '../../services/cacheStore/providers';
 import {
   apiGet,
   apiPost,
@@ -42,6 +44,16 @@ describe('network', () => {
       testHeader: 'test-value',
     },
   };
+
+  const hostUrl = 'https://foo.bar';
+
+  const sdkEnv = {
+    hostUrl,
+    cacheProvider: MemoryCacheProvider,
+    cachePath: '.',
+  };
+
+  Sdk.init(sdkEnv);
 
   describe('apiGet', () => {
     it('returns properly formatted response data', async () => {
@@ -121,7 +133,7 @@ describe('network', () => {
 
   describe('getOwnedSids', () => {
     const address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
-    const url = `https://dev-staging.dev.findora.org:8667/get_owned_utxos/${address}`;
+    const url = `${hostUrl}:8667/get_owned_utxos/${address}`;
 
     it('returns properly formatted utxo sids data', async () => {
       const mySids = [3, 4, 5];
@@ -171,7 +183,7 @@ describe('network', () => {
 
   describe('getUtxo', () => {
     const sid = 42;
-    const url = `https://dev-staging.dev.findora.org:8668/utxo_sid/${sid}`;
+    const url = `${hostUrl}:8668/utxo_sid/${sid}`;
 
     it('returns properly formatted utxo data', async () => {
       const myUtxo = {
@@ -232,7 +244,7 @@ describe('network', () => {
 
   describe('getOwnerMemo', () => {
     const sid = 1234342;
-    const url = `https://dev-staging.dev.findora.org:8667/get_owner_memo/${sid}`;
+    const url = `${hostUrl}:8667/get_owner_memo/${sid}`;
 
     it('returns properly formatted owner memo data', async () => {
       const myLock = {
@@ -294,7 +306,7 @@ describe('network', () => {
   });
 
   describe('getStateCommitment', () => {
-    const url = `https://dev-staging.dev.findora.org:8668/global_state`;
+    const url = `${hostUrl}:8668/global_state`;
 
     it('returns properly formatted data', async () => {
       const myResponse = [[1, 2, 3], 45, 'foobar'];
@@ -403,7 +415,7 @@ describe('network', () => {
   });
 
   describe('submitTransaction', () => {
-    const url = `https://dev-staging.dev.findora.org:8669/submit_transaction`;
+    const url = `${hostUrl}:8669/submit_transaction`;
 
     it('returns properly formatted response', async () => {
       const myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e3b';

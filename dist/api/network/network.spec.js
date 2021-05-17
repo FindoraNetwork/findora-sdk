@@ -43,6 +43,8 @@ require("@testing-library/jest-dom/extend-expect");
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
+var Sdk_1 = __importDefault(require("../../Sdk"));
+var providers_1 = require("../../services/cacheStore/providers");
 var network_1 = require("./network");
 var myDefaultResult = [
     {
@@ -65,6 +67,13 @@ describe('network', function () {
             testHeader: 'test-value',
         },
     };
+    var hostUrl = 'https://foo.bar';
+    var sdkEnv = {
+        hostUrl: hostUrl,
+        cacheProvider: providers_1.MemoryCacheProvider,
+        cachePath: '.',
+    };
+    Sdk_1.default.init(sdkEnv);
     describe('apiGet', function () {
         it('returns properly formatted response data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var dataResult, response;
@@ -159,7 +168,7 @@ describe('network', function () {
     });
     describe('getOwnedSids', function () {
         var address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
-        var url = "https://dev-staging.dev.findora.org:8667/get_owned_utxos/" + address;
+        var url = hostUrl + ":8667/get_owned_utxos/" + address;
         it('returns properly formatted utxo sids data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var mySids, dataResult, response;
             return __generator(this, function (_a) {
@@ -217,7 +226,7 @@ describe('network', function () {
     });
     describe('getUtxo', function () {
         var sid = 42;
-        var url = "https://dev-staging.dev.findora.org:8668/utxo_sid/" + sid;
+        var url = hostUrl + ":8668/utxo_sid/" + sid;
         it('returns properly formatted utxo data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myUtxo, myUtxoResponse, dataResult, response, utxo;
             return __generator(this, function (_a) {
@@ -283,7 +292,7 @@ describe('network', function () {
     });
     describe('getOwnerMemo', function () {
         var sid = 1234342;
-        var url = "https://dev-staging.dev.findora.org:8667/get_owner_memo/" + sid;
+        var url = hostUrl + ":8667/get_owner_memo/" + sid;
         it('returns properly formatted owner memo data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myLock, myResponse, dataResult, response, lock;
             return __generator(this, function (_a) {
@@ -350,7 +359,7 @@ describe('network', function () {
         }); });
     });
     describe('getStateCommitment', function () {
-        var url = "https://dev-staging.dev.findora.org:8668/global_state";
+        var url = hostUrl + ":8668/global_state";
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, dataResult, response, _a, first, height, third;
             return __generator(this, function (_b) {
@@ -457,7 +466,7 @@ describe('network', function () {
         });
     });
     describe('submitTransaction', function () {
-        var url = "https://dev-staging.dev.findora.org:8669/submit_transaction";
+        var url = hostUrl + ":8669/submit_transaction";
         it('returns properly formatted response', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, myData, dataResult;
             return __generator(this, function (_a) {

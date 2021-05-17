@@ -42,24 +42,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fileCacheProvider = void 0;
 var fs_1 = __importDefault(require("fs"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
-var os_1 = __importDefault(require("os"));
-var path_1 = __importDefault(require("path"));
 var utils_1 = require("../../utils");
-var readCache = function (fileName) { return __awaiter(void 0, void 0, void 0, function () {
-    var fileContent, cacheData, filePath, error_1;
+var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, function () {
+    var fileContent, cacheData, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 cacheData = {};
-                filePath = path_1.default.join(os_1.default.tmpdir(), fileName + ".json");
-                console.log('cache filePath', filePath);
+                console.log("Reading file cache from \"" + filePath + "\"");
                 try {
                     if (!fs_1.default.existsSync(filePath)) {
                         return [2 /*return*/, cacheData];
                     }
                 }
                 catch (err) {
-                    console.log("File doesnt exist at \"" + fileName + "\", so returning default cache data", err);
+                    console.log("File doesnt exist at \"" + filePath + "\", so returning default cache data", err);
                     return [2 /*return*/, cacheData];
                 }
                 _a.label = 1;
@@ -83,12 +80,11 @@ var readCache = function (fileName) { return __awaiter(void 0, void 0, void 0, f
         }
     });
 }); };
-var writeCache = function (fileName, data) { return __awaiter(void 0, void 0, void 0, function () {
-    var filePath, result, cacheData, error_2;
+var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, cacheData, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                filePath = path_1.default.join(os_1.default.tmpdir(), fileName + ".json");
                 try {
                     cacheData = json_bigint_1.default({ useNativeBigInt: true }).stringify(data);
                 }
@@ -104,7 +100,7 @@ var writeCache = function (fileName, data) { return __awaiter(void 0, void 0, vo
                 return [3 /*break*/, 4];
             case 3:
                 error_2 = _a.sent();
-                throw new Error("can not write cache for \"" + fileName + "\", \"" + error_2.message + "\"");
+                throw new Error("can not write cache for \"" + filePath + "\", \"" + error_2.message + "\"");
             case 4: return [2 /*return*/, result];
         }
     });

@@ -30,7 +30,7 @@
     "doc": "typedoc",
     "prepublishOnly": "npm run build",
     "start:build": "tsc -w  ",
-    "start:run": "nodemon dist/run.js",
+    "start:run": "nodemon dist/run.js --ignore cache/",
     "start": "concurrently npm:start:*"
   },
   "lint-staged": {

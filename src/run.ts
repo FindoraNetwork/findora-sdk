@@ -1,10 +1,15 @@
 import { Account, Asset, Keypair, Network } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
+import { FileCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
 
-const sdkEnv = { hostUrl: 'https://dev-staging.dev.findora.org' };
+const sdkEnv = {
+  hostUrl: 'https://dev-staging.dev.findora.org',
+  cacheProvider: FileCacheProvider,
+  cachePath: './cache',
+};
 
 Sdk.init(sdkEnv);
 
@@ -110,7 +115,7 @@ const myFunc5 = async () => {
 
   const { response: sids } = sidsResult;
 
-  console.log('sids', sids);
+  console.log('sids!', sids);
 
   if (!sids) {
     return;
@@ -160,7 +165,7 @@ const myFunc7 = async () => {
 
   const handle = await Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules);
 
-  console.log('our issued tx handle IS ', handle);
+  console.log('our issued tx handle IS  ', handle);
 };
 
-myFunc7();
+myFunc5();

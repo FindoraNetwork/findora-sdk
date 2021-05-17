@@ -61,9 +61,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
+var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var sdkEnv = { hostUrl: 'https://dev-staging.dev.findora.org' };
+var sdkEnv = {
+    hostUrl: 'https://dev-staging.dev.findora.org',
+    cacheProvider: providers_1.FileCacheProvider,
+    cachePath: './cache',
+};
 Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var assetCode;
@@ -189,7 +194,7 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 3:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
-                console.log('sids', sids);
+                console.log('sids!', sids);
                 if (!sids) {
                     return [2 /*return*/];
                 }
@@ -245,10 +250,10 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules)];
             case 2:
                 handle = _a.sent();
-                console.log('our issued tx handle IS ', handle);
+                console.log('our issued tx handle IS  ', handle);
                 return [2 /*return*/];
         }
     });
 }); };
-myFunc7();
+myFunc5();
 //# sourceMappingURL=run.js.map

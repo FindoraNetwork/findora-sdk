@@ -72,8 +72,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = void 0;
 var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
+var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
-var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetRecord, ownerMemo, decryptAssetData, error_1, decryptedAsetType, item;
@@ -158,16 +158,18 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
 exports.getUtxoItem = getUtxoItem;
 // creates a list of items with descrypted utxo information
 var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, void 0, function () {
-    var utxoDataList, cacheDataToSave, utxoDataCache, error_2, i, sid, item, error_3, err_1;
+    var utxoDataList, cacheDataToSave, utxoDataCache, cacheEntryName, fullPathToCacheEntry, error_2, i, sid, item, error_3, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 utxoDataList = [];
                 cacheDataToSave = {};
+                cacheEntryName = cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address;
+                fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, factory_1.default.read(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address, providers_1.MemoryCacheProvider)];
+                return [4 /*yield*/, factory_1.default.read(fullPathToCacheEntry, Sdk_1.default.environment.cacheProvider)];
             case 2:
                 utxoDataCache = _a.sent();
                 return [3 /*break*/, 4];
@@ -198,7 +200,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 5];
             case 10:
                 _a.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, factory_1.default.write(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address, cacheDataToSave, providers_1.MemoryCacheProvider)];
+                return [4 /*yield*/, factory_1.default.write(fullPathToCacheEntry, cacheDataToSave, Sdk_1.default.environment.cacheProvider)];
             case 11:
                 _a.sent();
                 return [3 /*break*/, 13];
