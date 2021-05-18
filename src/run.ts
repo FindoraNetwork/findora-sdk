@@ -27,7 +27,7 @@ const myFunc2 = async () => {
 
   const assetCode = await Asset.getRandomAssetCode();
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const asset = await Asset.defineAsset(walletInfo, assetCode);
 
@@ -65,7 +65,7 @@ const myFunc4 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const sidsResult = await Network.getOwnedSids(address);
 
@@ -105,7 +105,7 @@ const myFunc5 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -143,7 +143,7 @@ const myFunc6 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
@@ -157,7 +157,7 @@ const myFunc7 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
@@ -168,4 +168,12 @@ const myFunc7 = async () => {
   console.log('our issued tx handle IS  ', handle);
 };
 
-myFunc5();
+// creates a kp
+const myFunc8 = async () => {
+  const password = '123';
+
+  const walletInfo = await Keypair.createKeypair(password);
+  console.log('new wallet info', walletInfo);
+};
+
+myFunc8();
