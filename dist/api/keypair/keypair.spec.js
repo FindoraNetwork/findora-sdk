@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var keypair_1 = require("./keypair");
 describe('keypair', function () {
-    describe('restorePrivatekeypair', function () {
+    describe('restoreFromPrivateKey', function () {
         var publickey = '1mtO4j3bvRiKlXotdD1q0DQYoxutSgee-f1LQtlq45g=';
         var address = 'fra16e45ac3amw733z540gkhg0t26q6p3gcm449q08hel4959kt2uwvq9svvqh';
         var pkey = 'Y6umoUmBJRPYJU5n_Y9bHuhoHm6aDMsxDI9FLJzOEXc=';
@@ -48,7 +48,7 @@ describe('keypair', function () {
             var walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, keypair_1.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         expect(walletInfo).toHaveProperty('keyStore');
@@ -67,7 +67,7 @@ describe('keypair', function () {
         it('throws the error when bad private key is used', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.restorePrivatekeypair('123', password)).rejects.toThrow('could not restore keypair. details')];
+                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey('123', password)).rejects.toThrow('could not restore keypair. details')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

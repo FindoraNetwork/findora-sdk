@@ -168,7 +168,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, myResponse, utxoDataCache, assetCode, givenAsset, param, memo, traceable, transferable, updatable, code, maxNumbers, decimals, assetRules, handle;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -213,7 +213,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, myResponse, utxoDataCache, assetCode, givenAsset, param, memo, traceable, transferable, updatable, code, maxNumbers, decimals, assetRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -257,7 +257,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, utxoDataCache, assetCode, givenAsset, param, memo, traceable, transferable, updatable, code, maxNumbers, decimals, assetRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -300,7 +300,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, utxoDataCache, assetCode, givenAsset, param, memo, traceable, transferable, updatable, code, maxNumbers, decimals, assetRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -343,7 +343,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, utxoDataCache, givenAsset, param, traceable, transferable, updatable, maxNumbers, decimals, assetRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -376,7 +376,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, assetCode, givenAsset, param, memo, traceable, transferable, updatable, code, maxNumbers, decimals, assetRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -409,7 +409,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, myResponse, utxoDataCache, assetCode, givenAsset, code, assetBlindRules, handle;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -447,7 +447,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, myResponse, utxoDataCache, assetCode, givenAsset, code, assetBlindRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -484,7 +484,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, utxoDataCache, assetCode, givenAsset, code, assetBlindRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -520,7 +520,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, utxoDataCache, assetCode, givenAsset, code, assetBlindRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -556,7 +556,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, utxoDataCache, assetBlindRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -581,7 +581,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, assetCode, givenAsset, code, assetBlindRules;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
