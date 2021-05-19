@@ -19,9 +19,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Account = exports.Network = exports.Keypair = exports.Asset = void 0;
+exports.Staking = exports.Account = exports.Network = exports.Keypair = exports.Asset = void 0;
 exports.Asset = __importStar(require("./sdkAsset"));
 exports.Keypair = __importStar(require("./keypair"));
 exports.Network = __importStar(require("./network"));
 exports.Account = __importStar(require("./account"));
+exports.Staking = __importStar(require("./staking"));
 //# sourceMappingURL=index.js.map
