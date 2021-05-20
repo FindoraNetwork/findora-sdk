@@ -138,7 +138,7 @@ describe('sdkAsset', () => {
 
   describe('defineAsset', () => {
     it('defines asset', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -187,7 +187,7 @@ describe('sdkAsset', () => {
       expect(handle).toBe(myResponse);
     });
     it('throws an error when submit handle is missing', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -236,7 +236,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when cant submit define asset transaction', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -283,7 +283,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when fails to submit a transaction', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -330,7 +330,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when cant get a transaction builder', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(
@@ -366,7 +366,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when cant create transfer operation', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(
@@ -400,7 +400,7 @@ describe('sdkAsset', () => {
 
   describe('issueAsset', () => {
     it('issues asset', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -440,7 +440,7 @@ describe('sdkAsset', () => {
       expect(handle).toBe(myResponse);
     });
     it('throws an error when submit handle is missing', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -480,7 +480,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when cant submit issue asset transaction', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -518,7 +518,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when fails to submit a transaction', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;
@@ -556,7 +556,7 @@ describe('sdkAsset', () => {
       );
     });
     it('throws an error when cant get a transaction builder', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(
@@ -581,7 +581,7 @@ describe('sdkAsset', () => {
     });
 
     it('throws an error when cant create transfer operation', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
       server.use(

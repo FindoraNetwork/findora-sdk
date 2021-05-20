@@ -67,6 +67,7 @@ var UtxoHelper = __importStar(require("./services/utxoHelper"));
 var sdkEnv = {
     hostUrl: 'https://dev-staging.dev.findora.org',
     cacheProvider: providers_1.FileCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
@@ -94,7 +95,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
                 assetCode = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 2:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
@@ -142,7 +143,7 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
                 pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
@@ -184,7 +185,7 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
                 pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
@@ -222,7 +223,7 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 0:
                 pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
                 customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
@@ -242,7 +243,7 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 0:
                 pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
                 customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
@@ -255,5 +256,44 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc5();
+// creates a kp
+var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, walletInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
+            case 1:
+                walletInfo = _a.sent();
+                console.log('new wallet info', walletInfo);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// send fra
+var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var address, toPkey, pkey, password, walletInfo, toWalletInfo, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0025)];
+            case 3:
+                resultHandle = _a.sent();
+                console.log('result handle', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+myFunc9();
 //# sourceMappingURL=run.js.map

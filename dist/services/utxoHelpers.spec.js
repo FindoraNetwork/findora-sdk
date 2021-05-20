@@ -151,7 +151,7 @@ describe('utxoHelpers', function () {
                         myUtxoResponse = {
                             utxo: myUtxo,
                         };
-                        return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                        return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         return [4 /*yield*/, utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse)];
@@ -229,7 +229,7 @@ describe('utxoHelpers', function () {
                         myUtxoResponse = {
                             utxo: myUtxo,
                         };
-                        return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                        return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         myMemoResponse = {
@@ -273,7 +273,7 @@ describe('utxoHelpers', function () {
                         myUtxoResponse = {
                             utxo: myUtxo,
                         };
-                        return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                        return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         return [4 /*yield*/, expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse)).rejects.toThrowError('Can not get client asset record')];
@@ -307,7 +307,7 @@ describe('utxoHelpers', function () {
                                 ephemeral_public_key: 'bar',
                             },
                         };
-                        return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                        return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         return [4 /*yield*/, expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse, myMemo)).rejects.toThrowError('Can not decode owner memo')];
@@ -376,7 +376,7 @@ describe('utxoHelpers', function () {
                         myUtxoResponse = {
                             utxo: myUtxo,
                         };
-                        return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                        return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         return [4 /*yield*/, expect(utxoHelper.decryptUtxoItem(123, walletInfo, myUtxoResponse)).rejects.toThrowError('Can not open client asset record to decode')];
@@ -404,7 +404,7 @@ describe('utxoHelpers', function () {
             var walletInfo, utxoItem, body, utxo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         server.use(msw_1.rest.get(utxoUrl, function (_req, res, ctx) {
@@ -432,7 +432,7 @@ describe('utxoHelpers', function () {
             var walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         server.use(msw_1.rest.get(utxoUrl, function (_req, res, ctx) {
@@ -449,7 +449,7 @@ describe('utxoHelpers', function () {
             var walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         server.use(msw_1.rest.get(utxoUrl, function (_req, res, ctx) {
@@ -487,7 +487,7 @@ describe('utxoHelpers', function () {
             var walletInfo, utxoDataCache, sids, spyGetUtxoItem, spyCacheProviderRead, utxoDataList;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         return [4 /*yield*/, factory_1.default.read("./test_utxo_fixture_list.json", providers_1.FileCacheProvider)];
@@ -514,7 +514,7 @@ describe('utxoHelpers', function () {
             var walletInfo, sids;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         sids = [sid];
@@ -530,7 +530,7 @@ describe('utxoHelpers', function () {
             var walletInfo, sids, utxoDataList;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, api_1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         sids = [sid, sid];

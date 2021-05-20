@@ -108,7 +108,7 @@ describe('utxoHelpers', () => {
         utxo: myUtxo,
       };
 
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const utxoItem = await utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse);
 
@@ -186,7 +186,7 @@ describe('utxoHelpers', () => {
         utxo: myUtxo,
       };
 
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const myMemoResponse = {
         blind_share: 'RcBYIEfTHDkcN1FyZQcs6njZJDIcg77Z5__n0Akw2rU=',
@@ -229,7 +229,7 @@ describe('utxoHelpers', () => {
         utxo: myUtxo,
       };
 
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       await expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse)).rejects.toThrowError(
         'Can not get client asset record',
@@ -260,7 +260,7 @@ describe('utxoHelpers', () => {
         },
       };
 
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       await expect(utxoHelper.decryptUtxoItem(sid, walletInfo, myUtxoResponse, myMemo)).rejects.toThrowError(
         'Can not decode owner memo',
@@ -327,7 +327,7 @@ describe('utxoHelpers', () => {
         utxo: myUtxo,
       };
 
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       await expect(utxoHelper.decryptUtxoItem(123, walletInfo, myUtxoResponse)).rejects.toThrowError(
         'Can not open client asset record to decode',
@@ -352,7 +352,7 @@ describe('utxoHelpers', () => {
     };
 
     it('returns properly formatted response data', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       server.use(
         rest.get(utxoUrl, (_req, res, ctx) => {
@@ -380,7 +380,7 @@ describe('utxoHelpers', () => {
     });
 
     it('throws an error if it cant fech utxo data', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       server.use(
         rest.get(utxoUrl, (_req, res, ctx) => {
@@ -394,7 +394,7 @@ describe('utxoHelpers', () => {
     });
 
     it('throws an error if it cant fech memo data', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       server.use(
         rest.get(utxoUrl, (_req, res, ctx) => {
@@ -437,7 +437,7 @@ describe('utxoHelpers', () => {
     );
 
     it('return a list with utxo items', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
 
@@ -462,7 +462,7 @@ describe('utxoHelpers', () => {
     });
 
     it('throws an error if fails to read the cache', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const sids = [sid];
       jest.spyOn(Cache, 'read').mockRejectedValue(new Error('barfoo'));
@@ -473,7 +473,7 @@ describe('utxoHelpers', () => {
     });
 
     it('continues iterating through sids if it cant fetch utxo for a giving sid, and skips it', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const sids = [sid, sid];
       jest.spyOn(Cache, 'read').mockReturnValue(Promise.resolve({ foo: 'bar', sid_454: { sid } }));

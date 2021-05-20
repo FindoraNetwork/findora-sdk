@@ -1,6 +1,6 @@
 import { BigNumberValue, create as createBigNumber, fromWei } from '../../services/bigNumber';
 import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
-import { WalletKeypar } from '../keypair';
+import { createKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import { getFraAssetCode } from '../sdkAsset';
 
@@ -55,4 +55,15 @@ export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string
   } catch (err) {
     throw new Error(`Could not fetch balance for "${assetCodeToUse}". Error - ${err.message}`);
   }
+};
+
+export const create = async (password: string): Promise<WalletKeypar> => {
+  let walletKeyPair;
+
+  try {
+    walletKeyPair = await createKeypair(password);
+  } catch (error) {
+    throw new Error(`Could not create a new account. "${error.message}"`);
+  }
+  return walletKeyPair;
 };

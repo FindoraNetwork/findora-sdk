@@ -55,9 +55,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBalance = exports.getAssetBalance = void 0;
+exports.create = exports.getBalance = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
+var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var sdkAsset_1 = require("../sdkAsset");
 var getAssetBalance = function (walletKeypair, assetCode, sids) { return __awaiter(void 0, void 0, void 0, function () {
@@ -121,4 +122,22 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
     });
 }); };
 exports.getBalance = getBalance;
+var create = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var walletKeyPair, error_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, keypair_1.createKeypair(password)];
+            case 1:
+                walletKeyPair = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_2 = _a.sent();
+                throw new Error("Could not create a new account. \"" + error_2.message + "\"");
+            case 3: return [2 /*return*/, walletKeyPair];
+        }
+    });
+}); };
+exports.create = create;
 //# sourceMappingURL=account.js.map

@@ -1,13 +1,14 @@
-import { Account, Asset, Keypair, Network } from './api';
+import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
 
 const sdkEnv = {
   hostUrl: 'https://dev-staging.dev.findora.org',
   cacheProvider: FileCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -27,7 +28,7 @@ const myFunc2 = async () => {
 
   const assetCode = await Asset.getRandomAssetCode();
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const asset = await Asset.defineAsset(walletInfo, assetCode);
 
@@ -65,7 +66,7 @@ const myFunc4 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const sidsResult = await Network.getOwnedSids(address);
 
@@ -105,7 +106,7 @@ const myFunc5 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -143,7 +144,7 @@ const myFunc6 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
@@ -157,7 +158,7 @@ const myFunc7 = async () => {
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
   const password = '123';
 
-  const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
@@ -168,4 +169,59 @@ const myFunc7 = async () => {
   console.log('our issued tx handle IS  ', handle);
 };
 
-myFunc5();
+// creates a kp
+const myFunc8 = async () => {
+  const password = '123';
+
+  const walletInfo = await Keypair.createKeypair(password);
+  console.log('new wallet info', walletInfo);
+};
+
+// send fra
+const myFunc9 = async () => {
+  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+
+  const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
+
+  // console.log('walletInfo!', walletInfo);
+  // const sidsResult = await Network.getOwnedSids(address);
+
+  // const { response: sids } = sidsResult;
+
+  // console.log('sids!', sids);
+
+  // if (!sids) {
+  //   return;
+  // }
+
+  const resultHandle = await Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0025);
+
+  console.log('result handle', resultHandle);
+
+  // const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
+
+  // console.log('utxoDataList', utxoDataList);
+
+  // const fraCode = await Asset.getFraAssetCode();
+
+  // const amount = BigInt(3);
+
+  // const sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+
+  // console.log('sendUtxoList!', sendUtxoList);
+
+  // const utxoInputsInfo = await UtxoHelper.addUtxoInputs(sendUtxoList);
+
+  // console.log('utxoInputsInfo!', utxoInputsInfo);
+
+  // const trasferOperation = await Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo);
+
+  // console.log('trasferOperation!', trasferOperation);
+};
+
+myFunc9();
