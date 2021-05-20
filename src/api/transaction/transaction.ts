@@ -8,167 +8,167 @@ import * as AssetApi from '../sdkAsset';
 
 const decimals = 6;
 
-const addUtxoIt = async ({ walletInfo, addSids }) => {
-  const ledger = await getLedger();
+// const addUtxoIt = async ({ walletInfo, addSids }) => {
+//   const ledger = await getLedger();
 
-  const utxoDataList = [];
+//   const utxoDataList = [];
 
-  console.log(`addSids for "${walletInfo.privateStr}"`, addSids);
+//   console.log(`addSids for "${walletInfo.privateStr}"`, addSids);
 
-  for (let i = 0; i < addSids.length; i++) {
-    const sid = addSids[i];
+//   for (let i = 0; i < addSids.length; i++) {
+//     const sid = addSids[i];
 
-    let utxoData;
+//     let utxoData;
 
-    try {
-      // utxoData = await network.getUtxo(sid);
-      const utxoDataResult = await Network.getUtxo(sid);
+//     try {
+//       // utxoData = await network.getUtxo(sid);
+//       const utxoDataResult = await Network.getUtxo(sid);
 
-      const { response: utxoDataFetched, error: utxoError } = utxoDataResult;
+//       const { response: utxoDataFetched, error: utxoError } = utxoDataResult;
 
-      utxoData = utxoDataFetched;
-    } catch (err) {
-      console.log(
-        `address "${walletInfo.address}", skipping sid "${sid}" because of the error - `,
-        err.message,
-      );
-      continue;
-    }
+//       utxoData = utxoDataFetched;
+//     } catch (err) {
+//       console.log(
+//         `address "${walletInfo.address}", skipping sid "${sid}" because of the error - `,
+//         err.message,
+//       );
+//       continue;
+//     }
 
-    // const memoData = await network.getOwnerMemo(sid);
+//     // const memoData = await network.getOwnerMemo(sid);
 
-    const memoDataResult = await Network.getOwnerMemo(sid);
+//     const memoDataResult = await Network.getOwnerMemo(sid);
 
-    const { response: memoData, error: memoError } = memoDataResult;
+//     const { response: memoData, error: memoError } = memoDataResult;
 
-    const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+//     const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
 
-    // const myOwnerMemo = ownerMemo ? ownerMemo.clone() : null;
+//     // const myOwnerMemo = ownerMemo ? ownerMemo.clone() : null;
 
-    if (!utxoData) {
-      throw new Error('aaaa!!');
-    }
+//     if (!utxoData) {
+//       throw new Error('aaaa!!');
+//     }
 
-    const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
+//     const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
 
-    // const ownerMemo = Object.keys(memoData).length ? Ledger.OwnerMemo.from_json(memoData) : null;
+//     // const ownerMemo = Object.keys(memoData).length ? Ledger.OwnerMemo.from_json(memoData) : null;
 
-    const decryptAssetData = await ledger.open_client_asset_record(
-      assetRecord,
-      ownerMemo ? ownerMemo.clone() : ownerMemo,
-      walletInfo.keypair,
-    );
+//     const decryptAssetData = await ledger.open_client_asset_record(
+//       assetRecord,
+//       ownerMemo ? ownerMemo.clone() : ownerMemo,
+//       walletInfo.keypair,
+//     );
 
-    decryptAssetData.asset_type = await ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
-    decryptAssetData.amount = BigInt(decryptAssetData.amount);
+//     decryptAssetData.asset_type = await ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
+//     decryptAssetData.amount = BigInt(decryptAssetData.amount);
 
-    const item = {
-      address: walletInfo.address,
-      sid,
-      body: decryptAssetData || {},
-    };
-    utxoDataList.push(item);
-  }
+//     const item = {
+//       address: walletInfo.address,
+//       sid,
+//       body: decryptAssetData || {},
+//     };
+//     utxoDataList.push(item);
+//   }
 
-  return utxoDataList;
-};
+//   return utxoDataList;
+// };
 
-const getSendUtxoIt = async ({ code, amount, walletInfo }) => {
-  const ledger = await getLedger();
+// const getSendUtxoIt = async ({ code, amount, walletInfo }) => {
+//   const ledger = await getLedger();
 
-  // Fetching utxo data (to be able to calculate and create inputs)
-  const senderBase64PubKey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(walletInfo.keypair));
-  const sidsResult = await Network.getOwnedSids(senderBase64PubKey);
+//   // Fetching utxo data (to be able to calculate and create inputs)
+//   const senderBase64PubKey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(walletInfo.keypair));
+//   const sidsResult = await Network.getOwnedSids(senderBase64PubKey);
 
-  const { response: senderTxoSidsFetched } = sidsResult;
+//   const { response: senderTxoSidsFetched } = sidsResult;
 
-  console.log('sids!', senderTxoSidsFetched);
+//   console.log('sids!', senderTxoSidsFetched);
 
-  if (!senderTxoSidsFetched) {
-    return;
-  }
+//   if (!senderTxoSidsFetched) {
+//     return;
+//   }
 
-  const addSids = senderTxoSidsFetched.sort((a, b) => a - b);
+//   const addSids = senderTxoSidsFetched.sort((a, b) => a - b);
 
-  let balance = amount;
-  const result = [];
+//   let balance = amount;
+//   const result = [];
 
-  const utxoDataList = await addUtxoIt({ walletInfo, addSids });
+//   const utxoDataList = await addUtxoIt({ walletInfo, addSids });
 
-  for (let i = 0; i < utxoDataList.length; i++) {
-    const assetItem = utxoDataList[i];
+//   for (let i = 0; i < utxoDataList.length; i++) {
+//     const assetItem = utxoDataList[i];
 
-    if (assetItem.body.asset_type === code) {
-      const _amount = BigInt(assetItem.body.amount);
+//     if (assetItem.body.asset_type === code) {
+//       const _amount = BigInt(assetItem.body.amount);
 
-      if (balance <= BigInt(0)) {
-        break;
-      } else if (BigInt(_amount) >= balance) {
-        result.push({ amount: balance, originAmount: _amount, sid: assetItem.sid });
-        break;
-      } else {
-        balance = BigInt(balance) - BigInt(_amount);
-        result.push({ amount: _amount, originAmount: _amount, sid: assetItem.sid });
-      }
-    }
-  }
+//       if (balance <= BigInt(0)) {
+//         break;
+//       } else if (BigInt(_amount) >= balance) {
+//         result.push({ amount: balance, originAmount: _amount, sid: assetItem.sid });
+//         break;
+//       } else {
+//         balance = BigInt(balance) - BigInt(_amount);
+//         result.push({ amount: _amount, originAmount: _amount, sid: assetItem.sid });
+//       }
+//     }
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
-const addUtxoInputsIt = async (givenTransferOp, utxoSids, walletInfo) => {
-  const ledger = await getLedger();
+// const addUtxoInputsIt = async (givenTransferOp, utxoSids, walletInfo) => {
+//   const ledger = await getLedger();
 
-  let inputAmount = BigInt(0);
-  let transferOp = givenTransferOp;
+//   let inputAmount = BigInt(0);
+//   let transferOp = givenTransferOp;
 
-  for (let i = 0; i < utxoSids.length; i += 1) {
-    const item = utxoSids[i];
+//   for (let i = 0; i < utxoSids.length; i += 1) {
+//     const item = utxoSids[i];
 
-    let utxoData;
+//     let utxoData;
 
-    try {
-      // utxoData = await network.getUtxo(item.sid);
-      const utxoDataResult = await Network.getUtxo(item.sid);
+//     try {
+//       // utxoData = await network.getUtxo(item.sid);
+//       const utxoDataResult = await Network.getUtxo(item.sid);
 
-      const { response: utxoDataFetched, error: utxoError } = utxoDataResult;
-      utxoData = utxoDataFetched;
-    } catch (err) {
-      console.log(`skipping sid "${item.sid}" because of the error `);
-      continue;
-    }
+//       const { response: utxoDataFetched, error: utxoError } = utxoDataResult;
+//       utxoData = utxoDataFetched;
+//     } catch (err) {
+//       console.log(`skipping sid "${item.sid}" because of the error `);
+//       continue;
+//     }
 
-    inputAmount = BigInt(inputAmount) + BigInt(item.originAmount);
+//     inputAmount = BigInt(inputAmount) + BigInt(item.originAmount);
 
-    if (!utxoData) {
-      throw new Error('aaaa!!');
-    }
+//     if (!utxoData) {
+//       throw new Error('aaaa!!');
+//     }
 
-    const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
+//     const assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
 
-    const memoDataResult = await Network.getOwnerMemo(item.sid);
+//     const memoDataResult = await Network.getOwnerMemo(item.sid);
 
-    const { response: memoData, error: memoError } = memoDataResult;
+//     const { response: memoData, error: memoError } = memoDataResult;
 
-    const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+//     const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
 
-    const myOwnerMemo = ownerMemo ? ownerMemo.clone() : null;
+//     const myOwnerMemo = ownerMemo ? ownerMemo.clone() : null;
 
-    const txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+//     const txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
 
-    transferOp = transferOp.add_input_no_tracing(
-      txoRef,
-      assetRecord,
-      myOwnerMemo,
-      walletInfo.keypair,
-      BigInt(item.amount),
-    );
-  }
+//     transferOp = transferOp.add_input_no_tracing(
+//       txoRef,
+//       assetRecord,
+//       myOwnerMemo,
+//       walletInfo.keypair,
+//       BigInt(item.amount),
+//     );
+//   }
 
-  const res = { transferOpWithInputs: transferOp, inputAmount };
+//   const res = { transferOpWithInputs: transferOp, inputAmount };
 
-  return res;
-};
+//   return res;
+// };
 
 export const sendTxToAddress = async (
   walletInfo: WalletKeypar,
@@ -179,15 +179,15 @@ export const sendTxToAddress = async (
 ) => {
   const ledger = await getLedger();
 
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+  // const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
-  const { response: sids } = sidsResult;
+  // const { response: sids } = sidsResult;
 
-  console.log('sids', sids);
+  // console.log('sids', sids);
 
-  if (!sids) {
-    return;
-  }
+  // if (!sids) {
+  //   return;
+  // }
 
   const fraAssetCode = await AssetApi.getFraAssetCode();
 
@@ -211,17 +211,53 @@ export const sendTxToAddress = async (
     false,
   );
 
-  const utxoSids = await getSendUtxoIt({
-    walletInfo,
-    code: fraAssetCode,
-    amount: utxoNumbers,
+  // begin api
+
+  // const utxoSids = await getSendUtxoIt({
+  //   walletInfo,
+  //   code: fraAssetCode,
+  //   amount: utxoNumbers,
+  // });
+
+  // const utxoInputs = await addUtxoInputsIt(transferOp, utxoSids, walletInfo);
+
+  // const { transferOpWithInputs, inputAmount } = utxoInputs;
+
+  // transferOp = transferOpWithInputs;
+
+  // end api
+
+  // begins s
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  console.log('sids', sids);
+
+  if (!sids) {
+    return;
+  }
+
+  const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
+
+  console.log('utxoDataList', utxoDataList);
+
+  const sendUtxoList = UtxoHelper.getSendUtxo(fraAssetCode, utxoNumbers, utxoDataList);
+
+  console.log('sendUtxoList!', sendUtxoList);
+
+  const utxoInputsInfo = await UtxoHelper.addUtxoInputs(sendUtxoList);
+
+  console.log('utxoInputsInfo!', utxoInputsInfo);
+
+  const { inputParametersList, inputAmount } = utxoInputsInfo;
+
+  inputParametersList.forEach(inputParameters => {
+    const { txoRef, assetRecord, ownerMemo, amount } = inputParameters;
+    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
   });
 
-  const utxoInputs = await addUtxoInputsIt(transferOp, utxoSids, walletInfo);
-
-  const { transferOpWithInputs, inputAmount } = utxoInputs;
-
-  transferOp = transferOpWithInputs;
+  // end s
 
   transferOp = transferOp.add_output_no_tracing(
     BigInt(toWei(numbers, decimals).toString()),
@@ -235,18 +271,30 @@ export const sendTxToAddress = async (
 
   console.log('inputAmount > utxoNumbers', inputAmount, utxoNumbers);
 
-  if (BigInt(inputAmount) > BigInt(utxoNumbers)) {
-    // const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
+  if (inputAmount > utxoNumbers) {
+    const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
 
-    console.log('inputAmount > utxoNumbers', inputAmount, utxoNumbers);
     transferOp = transferOp.add_output_no_tracing(
-      BigInt(inputAmount) - BigInt(utxoNumbers),
+      numberToSubmit,
       ledger.get_pk_from_keypair(walletInfo.keypair),
       fraAssetCode,
       isBlindAmount,
       isBlindType,
     );
   }
+
+  // if (BigInt(inputAmount) > BigInt(utxoNumbers)) {
+  //   // const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
+
+  //   console.log('inputAmount > utxoNumbers', inputAmount, utxoNumbers);
+  //   transferOp = transferOp.add_output_no_tracing(
+  //     BigInt(inputAmount) - BigInt(utxoNumbers),
+  //     ledger.get_pk_from_keypair(walletInfo.keypair),
+  //     fraAssetCode,
+  //     isBlindAmount,
+  //     isBlindType,
+  //   );
+  // }
 
   console.log('a', 4);
 
@@ -274,13 +322,13 @@ export const sendTxToAddress = async (
   const submitData = transferOperation.transaction();
 
   console.log('submitData!', submitData);
-  // let result;
+  let result;
 
-  // try {
-  //   result = await Network.submitTransaction(submitData);
-  // } catch (err) {
-  //   throw new Error(`Error Could not define asset: "${err.message}"`);
-  // }
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (err) {
+    throw new Error(`Error Could not define asset: "${err.message}"`);
+  }
 
-  // console.log('result!', result);
+  console.log('result!', result);
 };
