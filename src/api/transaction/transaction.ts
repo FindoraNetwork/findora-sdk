@@ -29,24 +29,21 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   return transactionBuilder;
 };
 
-export const sendTxToAddress = async (
+export const sendToAddress = async (
   walletInfo: WalletKeypar,
   toWalletInfo: WalletKeypar,
   numbers: number,
-  // isBlindAmount = false,
-  // isBlindType = false,
+  assetBlindRules: AssetApi.AssetBlindRules = { isAmountBlind: false, isTypeBlind: false },
 ): Promise<string> => {
   const ledger = await getLedger();
-
-  const fraAssetCode = await AssetApi.getFraAssetCode();
 
   const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
 
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
-    fraAssetCode,
     numbers,
     toPublickey,
+    assetBlindRules,
   );
 
   let receivedTransferOperation;
@@ -73,23 +70,25 @@ export const sendTxToAddress = async (
 
   const submitData = transactionBuilder.transaction();
 
-  let result;
+  console.log('submitData', submitData);
+  return submitData;
+  // let result;
 
-  try {
-    result = await Network.submitTransaction(submitData);
-  } catch (err) {
-    throw new Error(`Error Could not define asset: "${err.message}"`);
-  }
+  // try {
+  //   result = await Network.submitTransaction(submitData);
+  // } catch (err) {
+  //   throw new Error(`Error Could not define asset: "${err.message}"`);
+  // }
 
-  const { response: handle, error: submitError } = result;
+  // const { response: handle, error: submitError } = result;
 
-  if (submitError) {
-    throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
-  }
+  // if (submitError) {
+  //   throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
+  // }
 
-  if (!handle) {
-    throw new Error(`Could not issue asset - submit handle is missing`);
-  }
+  // if (!handle) {
+  //   throw new Error(`Could not issue asset - submit handle is missing`);
+  // }
 
-  return handle;
+  // return handle;
 };
