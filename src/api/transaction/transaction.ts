@@ -29,24 +29,21 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   return transactionBuilder;
 };
 
-export const sendTxToAddress = async (
+export const sendToAddress = async (
   walletInfo: WalletKeypar,
   toWalletInfo: WalletKeypar,
   numbers: number,
-  // isBlindAmount = false,
-  // isBlindType = false,
+  assetBlindRules: AssetApi.AssetBlindRules = { isAmountBlind: false, isTypeBlind: false },
 ): Promise<string> => {
   const ledger = await getLedger();
-
-  const fraAssetCode = await AssetApi.getFraAssetCode();
 
   const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
 
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
-    fraAssetCode,
     numbers,
     toPublickey,
+    assetBlindRules,
   );
 
   let receivedTransferOperation;
@@ -73,6 +70,8 @@ export const sendTxToAddress = async (
 
   const submitData = transactionBuilder.transaction();
 
+  // console.log('submitData', submitData);
+  // return submitData;
   let result;
 
   try {

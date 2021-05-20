@@ -199,7 +199,8 @@ const myFunc9 = async () => {
   //   return;
   // }
 
-  const resultHandle = await Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0025);
+  // const assetBlindRules = { isAmountBlind: false };
+  const resultHandle = await Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0024);
 
   console.log('result handle', resultHandle);
 

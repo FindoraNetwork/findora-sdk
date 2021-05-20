@@ -287,7 +287,7 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
             case 2:
                 toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0025)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0024)];
             case 3:
                 resultHandle = _a.sent();
                 console.log('result handle', resultHandle);

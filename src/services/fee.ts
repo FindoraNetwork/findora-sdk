@@ -1,9 +1,10 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
+// import { AssetBlindRules } from '../api/sdkAsset';
+import { toWei } from './bigNumber';
 import { getLedger } from './ledger/ledgerWrapper';
 import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from './utxoHelper';
-import { toWei } from './bigNumber';
 
 export const getTransferOperationWithFee = async (
   walletInfo: WalletKeypar,
@@ -51,22 +52,28 @@ export const getTransferOperationWithFee = async (
   return transferOp;
 };
 
+/**
+ * @todo Refactor and merge w getTransferOperationWithFee
+ */
 export const getTransferOperation = async (
   walletInfo: WalletKeypar,
   utxoInputs: UtxoInputsInfo,
   numbers: number,
   utxoNumbers: BigInt,
   toPublickey: XfrPublicKey,
+  assetBlindRules: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
+  // refactor it!
+  const decimals = 6;
+
   const minimalFee = ledger.fra_get_minimal_fee();
 
-  // const toPublickey = ledger.fra_get_dest_pubkey();
   const assetCode = ledger.fra_get_asset_code();
 
-  const isBlindAmount = false;
-  const isBlindType = false;
+  const blindIsAmount = assetBlindRules?.isAmountBlind;
+  const blindIsType = assetBlindRules?.isTypeBlind;
 
   let transferOp = ledger.TransferOperationBuilder.new();
 
@@ -74,8 +81,8 @@ export const getTransferOperation = async (
     minimalFee,
     ledger.fra_get_dest_pubkey(),
     assetCode,
-    isBlindAmount,
-    isBlindType,
+    !!blindIsAmount,
+    !!blindIsType,
   );
 
   const { inputParametersList, inputAmount } = utxoInputs;
@@ -86,11 +93,11 @@ export const getTransferOperation = async (
   });
 
   transferOp = transferOp.add_output_no_tracing(
-    BigInt(toWei(numbers, 6).toString()),
+    BigInt(toWei(numbers, decimals).toString()),
     toPublickey,
     assetCode,
-    isBlindAmount,
-    isBlindType,
+    !!blindIsAmount,
+    !!blindIsType,
   );
 
   if (inputAmount > utxoNumbers) {
@@ -100,8 +107,8 @@ export const getTransferOperation = async (
       numberToSubmit,
       ledger.get_pk_from_keypair(walletInfo.keypair),
       assetCode,
-      isBlindAmount,
-      isBlindType,
+      !!blindIsAmount,
+      !!blindIsType,
     );
   }
 
@@ -135,13 +142,21 @@ export const buildTransferOperationWithFee = async (
   return trasferOperation;
 };
 
+/**
+ * @todo merge w buildTransferOperationWithFee
+ * */
 export const buildTransferOperation = async (
   walletInfo: WalletKeypar,
-  fraCode: string,
   numbers: number,
   toPublickey: XfrPublicKey,
+  assetBlindRules: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
+
+  // refactor it!
+  const decimals = 6;
+
+  const fraCode = ledger.fra_get_asset_code();
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
@@ -155,7 +170,7 @@ export const buildTransferOperation = async (
 
   const minimalFee = ledger.fra_get_minimal_fee();
 
-  const utxoNumbers = BigInt(Number(toWei(numbers, 6).toString()) + Number(minimalFee));
+  const utxoNumbers = BigInt(Number(toWei(numbers, decimals).toString()) + Number(minimalFee));
 
   const sendUtxoList = getSendUtxo(fraCode, utxoNumbers, utxoDataList);
 
@@ -167,6 +182,7 @@ export const buildTransferOperation = async (
     numbers,
     utxoNumbers,
     toPublickey,
+    assetBlindRules,
   );
 
   return trasferOperation;
