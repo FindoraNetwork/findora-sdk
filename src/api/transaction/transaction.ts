@@ -1,96 +1,15 @@
 import { BigNumberValue, create as createBigNumber, fromWei, toWei } from '../../services/bigNumber';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
 import * as UtxoHelper from '../../services/utxoHelper';
+import * as Fee from '../../services/fee';
 import { createKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
 
-const decimals = 6;
-
-export const sendTxToAddress = async (
-  walletInfo: WalletKeypar,
-  toWalletInfo: WalletKeypar,
-  numbers: number,
-  isBlindAmount = false,
-  isBlindType = false,
-): Promise<string> => {
+export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
-
-  const fraAssetCode = await AssetApi.getFraAssetCode();
-
-  const minimalFee = ledger.fra_get_minimal_fee();
-
-  const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-
-  const utxoNumbers = BigInt(Number(toWei(numbers, decimals).toString()) + Number(minimalFee));
-
-  let transferOp = ledger.TransferOperationBuilder.new(); // +
-
-  transferOp = transferOp.add_output_no_tracing(
-    minimalFee,
-    ledger.fra_get_dest_pubkey(),
-    fraAssetCode,
-    isBlindAmount,
-    isBlindType,
-  );
-
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-
-  const { response: sids } = sidsResult;
-
-  console.log('sids', sids);
-
-  if (!sids) {
-    return;
-  }
-
-  const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
-
-  console.log('utxoDataList', utxoDataList);
-
-  const sendUtxoList = UtxoHelper.getSendUtxo(fraAssetCode, utxoNumbers, utxoDataList);
-
-  console.log('sendUtxoList!', sendUtxoList);
-
-  const utxoInputsInfo = await UtxoHelper.addUtxoInputs(sendUtxoList);
-
-  console.log('utxoInputsInfo!', utxoInputsInfo);
-
-  const { inputParametersList, inputAmount } = utxoInputsInfo;
-
-  inputParametersList.forEach(inputParameters => {
-    const { txoRef, assetRecord, ownerMemo, amount } = inputParameters;
-    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
-  });
-
-  // end s
-
-  transferOp = transferOp.add_output_no_tracing(
-    BigInt(toWei(numbers, decimals).toString()),
-    toPublickey,
-    fraAssetCode,
-    isBlindAmount,
-    isBlindType,
-  );
-
-  console.log('a', 3);
-
-  console.log('inputAmount > utxoNumbers', inputAmount, utxoNumbers);
-
-  if (inputAmount > utxoNumbers) {
-    const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
-
-    transferOp = transferOp.add_output_no_tracing(
-      numberToSubmit,
-      ledger.get_pk_from_keypair(walletInfo.keypair),
-      fraAssetCode,
-      isBlindAmount,
-      isBlindType,
-    );
-  }
-
-  transferOp = transferOp.create().sign(walletInfo.keypair);
 
   const { response: stateCommitment, error } = await Network.getStateCommitment();
 
@@ -105,11 +24,54 @@ export const sendTxToAddress = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const transferOperation = ledger.TransactionBuilder.new(BigInt(blockCount)).add_transfer_operation(
-    transferOp.transaction(),
+  const transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
+
+  return transactionBuilder;
+};
+
+export const sendTxToAddress = async (
+  walletInfo: WalletKeypar,
+  toWalletInfo: WalletKeypar,
+  numbers: number,
+  // isBlindAmount = false,
+  // isBlindType = false,
+): Promise<string> => {
+  const ledger = await getLedger();
+
+  const fraAssetCode = await AssetApi.getFraAssetCode();
+
+  const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(
+    walletInfo,
+    fraAssetCode,
+    numbers,
+    toPublickey,
   );
 
-  const submitData = transferOperation.transaction();
+  let receivedTransferOperation;
+
+  try {
+    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  }
+
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await getTransactionBuilder();
+  } catch (error) {
+    throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  } catch (err) {
+    throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
+  }
+
+  const submitData = transactionBuilder.transaction();
 
   let result;
 

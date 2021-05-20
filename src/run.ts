@@ -199,7 +199,7 @@ const myFunc9 = async () => {
   //   return;
   // }
 
-  const resultHandle = await Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0021);
+  const resultHandle = await Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.0025);
 
   console.log('result handle', resultHandle);
 

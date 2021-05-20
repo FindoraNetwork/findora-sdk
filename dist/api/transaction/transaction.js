@@ -55,98 +55,95 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendTxToAddress = void 0;
-var bigNumber_1 = require("../../services/bigNumber");
+exports.sendTxToAddress = exports.getTransactionBuilder = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var UtxoHelper = __importStar(require("../../services/utxoHelper"));
+var Fee = __importStar(require("../../services/fee"));
 var Network = __importStar(require("../network"));
 var AssetApi = __importStar(require("../sdkAsset"));
 var decimals = 6;
-var sendTxToAddress = function (walletInfo, toWalletInfo, numbers, isBlindAmount, isBlindType) {
-    if (isBlindAmount === void 0) { isBlindAmount = false; }
-    if (isBlindType === void 0) { isBlindType = false; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, fraAssetCode, minimalFee, toPublickey, utxoNumbers, transferOp, sidsResult, sids, utxoDataList, sendUtxoList, utxoInputsInfo, inputParametersList, inputAmount, numberToSubmit, _a, stateCommitment, error, _, height, blockCount, transferOperation, submitData, result, err_1, handle, submitError;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-                case 1:
-                    ledger = _b.sent();
-                    return [4 /*yield*/, AssetApi.getFraAssetCode()];
-                case 2:
-                    fraAssetCode = _b.sent();
-                    minimalFee = ledger.fra_get_minimal_fee();
-                    toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    utxoNumbers = BigInt(Number(bigNumber_1.toWei(numbers, decimals).toString()) + Number(minimalFee));
-                    transferOp = ledger.TransferOperationBuilder.new();
-                    transferOp = transferOp.add_output_no_tracing(minimalFee, ledger.fra_get_dest_pubkey(), fraAssetCode, isBlindAmount, isBlindType);
-                    return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
-                case 3:
-                    sidsResult = _b.sent();
-                    sids = sidsResult.response;
-                    console.log('sids', sids);
-                    if (!sids) {
-                        return [2 /*return*/];
-                    }
-                    return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
-                case 4:
-                    utxoDataList = _b.sent();
-                    console.log('utxoDataList', utxoDataList);
-                    sendUtxoList = UtxoHelper.getSendUtxo(fraAssetCode, utxoNumbers, utxoDataList);
-                    console.log('sendUtxoList!', sendUtxoList);
-                    return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
-                case 5:
-                    utxoInputsInfo = _b.sent();
-                    console.log('utxoInputsInfo!', utxoInputsInfo);
-                    inputParametersList = utxoInputsInfo.inputParametersList, inputAmount = utxoInputsInfo.inputAmount;
-                    inputParametersList.forEach(function (inputParameters) {
-                        var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
-                        transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
-                    });
-                    // end s
-                    transferOp = transferOp.add_output_no_tracing(BigInt(bigNumber_1.toWei(numbers, decimals).toString()), toPublickey, fraAssetCode, isBlindAmount, isBlindType);
-                    console.log('a', 3);
-                    console.log('inputAmount > utxoNumbers', inputAmount, utxoNumbers);
-                    if (inputAmount > utxoNumbers) {
-                        numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
-                        transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), fraAssetCode, isBlindAmount, isBlindType);
-                    }
-                    transferOp = transferOp.create().sign(walletInfo.keypair);
-                    return [4 /*yield*/, Network.getStateCommitment()];
-                case 6:
-                    _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                    if (error) {
-                        throw new Error(error.message);
-                    }
-                    if (!stateCommitment) {
-                        throw new Error('could not receive response from state commitement call');
-                    }
-                    _ = stateCommitment[0], height = stateCommitment[1];
-                    blockCount = BigInt(height);
-                    transferOperation = ledger.TransactionBuilder.new(BigInt(blockCount)).add_transfer_operation(transferOp.transaction());
-                    submitData = transferOperation.transaction();
-                    _b.label = 7;
-                case 7:
-                    _b.trys.push([7, 9, , 10]);
-                    return [4 /*yield*/, Network.submitTransaction(submitData)];
-                case 8:
-                    result = _b.sent();
-                    return [3 /*break*/, 10];
-                case 9:
-                    err_1 = _b.sent();
-                    throw new Error("Error Could not define asset: \"" + err_1.message + "\"");
-                case 10:
-                    handle = result.response, submitError = result.error;
-                    if (submitError) {
-                        throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
-                    }
-                    if (!handle) {
-                        throw new Error("Could not issue asset - submit handle is missing");
-                    }
-                    return [2 /*return*/, handle];
-            }
-        });
+var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _b.sent();
+                return [4 /*yield*/, Network.getStateCommitment()];
+            case 2:
+                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
+                if (error) {
+                    throw new Error(error.message);
+                }
+                if (!stateCommitment) {
+                    throw new Error('could not receive response from state commitement call');
+                }
+                _ = stateCommitment[0], height = stateCommitment[1];
+                blockCount = BigInt(height);
+                transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
+                return [2 /*return*/, transactionBuilder];
+        }
     });
-};
+}); };
+exports.getTransactionBuilder = getTransactionBuilder;
+var sendTxToAddress = function (walletInfo, toWalletInfo, numbers) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, toPublickey, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, err_1, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraAssetCode()];
+            case 2:
+                fraAssetCode = _a.sent();
+                toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, fraAssetCode, numbers, toPublickey)];
+            case 3:
+                transferOperationBuilder = _a.sent();
+                try {
+                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                }
+                catch (error) {
+                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                }
+                _a.label = 4;
+            case 4:
+                _a.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, exports.getTransactionBuilder()];
+            case 5:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
+                error_1 = _a.sent();
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
+            case 7:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (err) {
+                    throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
+                }
+                submitData = transactionBuilder.transaction();
+                _a.label = 8;
+            case 8:
+                _a.trys.push([8, 10, , 11]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 9:
+                result = _a.sent();
+                return [3 /*break*/, 11];
+            case 10:
+                err_1 = _a.sent();
+                throw new Error("Error Could not define asset: \"" + err_1.message + "\"");
+            case 11:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("Could not issue asset - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
+        }
+    });
+}); };
 exports.sendTxToAddress = sendTxToAddress;
 //# sourceMappingURL=transaction.js.map
