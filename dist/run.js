@@ -67,6 +67,7 @@ var UtxoHelper = __importStar(require("./services/utxoHelper"));
 var sdkEnv = {
     hostUrl: 'https://dev-staging.dev.findora.org',
     cacheProvider: providers_1.FileCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
@@ -270,5 +271,29 @@ var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-myFunc8();
+// send fra
+var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var address, toPkey, pkey, password, walletInfo, toWalletInfo, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.002)];
+            case 3:
+                resultHandle = _a.sent();
+                console.log('result handle', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+myFunc9();
 //# sourceMappingURL=run.js.map

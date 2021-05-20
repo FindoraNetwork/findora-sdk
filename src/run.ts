@@ -1,13 +1,14 @@
-import { Account, Asset, Keypair, Network } from './api';
+import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import * as UtxoHelper from './services/utxoHelper';
 
 const sdkEnv = {
   hostUrl: 'https://dev-staging.dev.findora.org',
   cacheProvider: FileCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -176,4 +177,51 @@ const myFunc8 = async () => {
   console.log('new wallet info', walletInfo);
 };
 
-myFunc8();
+// send fra
+const myFunc9 = async () => {
+  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+
+  const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
+
+  // console.log('walletInfo!', walletInfo);
+  // const sidsResult = await Network.getOwnedSids(address);
+
+  // const { response: sids } = sidsResult;
+
+  // console.log('sids!', sids);
+
+  // if (!sids) {
+  //   return;
+  // }
+
+  const resultHandle = await Transaction.sendTxToAddress(walletInfo, toWalletInfo, 0.002);
+
+  console.log('result handle', resultHandle);
+
+  // const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
+
+  // console.log('utxoDataList', utxoDataList);
+
+  // const fraCode = await Asset.getFraAssetCode();
+
+  // const amount = BigInt(3);
+
+  // const sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+
+  // console.log('sendUtxoList!', sendUtxoList);
+
+  // const utxoInputsInfo = await UtxoHelper.addUtxoInputs(sendUtxoList);
+
+  // console.log('utxoInputsInfo!', utxoInputsInfo);
+
+  // const trasferOperation = await Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo);
+
+  // console.log('trasferOperation!', trasferOperation);
+};
+
+myFunc9();
