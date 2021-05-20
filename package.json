@@ -85,7 +85,7 @@
     "axios": "^0.21.1",
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
-    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-staking-0.0.1",
+    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-staking-0.0.2",
     "json-bigint": "^1.0.0"
   }
 }
