@@ -170,7 +170,7 @@ var getClaimTransactionBuilder = function (walletKeypair, rewords) { return __aw
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_claim(walletKeypair, rewords);
+                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_claim_custom(walletKeypair, rewords);
                 return [2 /*return*/, definitionTransaction];
         }
     });

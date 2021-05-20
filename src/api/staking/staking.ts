@@ -102,7 +102,7 @@ const getClaimTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_claim(
+  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_claim_custom(
     walletKeypair,
     rewords,
   );
