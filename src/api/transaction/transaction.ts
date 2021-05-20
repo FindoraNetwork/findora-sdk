@@ -70,25 +70,25 @@ export const sendToAddress = async (
 
   const submitData = transactionBuilder.transaction();
 
-  console.log('submitData', submitData);
-  return submitData;
-  // let result;
+  // console.log('submitData', submitData);
+  // return submitData;
+  let result;
 
-  // try {
-  //   result = await Network.submitTransaction(submitData);
-  // } catch (err) {
-  //   throw new Error(`Error Could not define asset: "${err.message}"`);
-  // }
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (err) {
+    throw new Error(`Error Could not define asset: "${err.message}"`);
+  }
 
-  // const { response: handle, error: submitError } = result;
+  const { response: handle, error: submitError } = result;
 
-  // if (submitError) {
-  //   throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
-  // }
+  if (submitError) {
+    throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
+  }
 
-  // if (!handle) {
-  //   throw new Error(`Could not issue asset - submit handle is missing`);
-  // }
+  if (!handle) {
+    throw new Error(`Could not issue asset - submit handle is missing`);
+  }
 
-  // return handle;
+  return handle;
 };
