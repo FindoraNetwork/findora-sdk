@@ -1,8 +1,10 @@
+import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
+import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
 
 const sdkEnv = {
@@ -61,6 +63,8 @@ const myFunc3 = async () => {
 
 // get transfer operation with fee
 const myFunc4 = async () => {
+  const ledger = await getLedger();
+
   const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
 
   const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
@@ -94,7 +98,17 @@ const myFunc4 = async () => {
 
   console.log('utxoInputsInfo!', utxoInputsInfo);
 
-  const trasferOperation = await Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo);
+  const minimalFee = ledger.fra_get_minimal_fee();
+
+  const toPublickey = ledger.fra_get_dest_pubkey();
+
+  const trasferOperation = await Fee.getTransferOperation(
+    walletInfo,
+    utxoInputsInfo,
+    minimalFee,
+    toPublickey,
+    fraCode,
+  );
 
   console.log('trasferOperation!', trasferOperation);
 };
@@ -155,16 +169,21 @@ const myFunc6 = async () => {
 
 // issue custom asset
 const myFunc7 = async () => {
-  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  // const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  // const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
+
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
-
   const assetBlindRules = { isAmountBlind: false };
 
-  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 2, assetBlindRules);
+  const decimals = 6;
+
+  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules, decimals);
 
   console.log('our issued tx handle IS  ', handle);
 };
@@ -179,10 +198,11 @@ const myFunc8 = async () => {
 
 // send fra
 const myFunc9 = async () => {
-  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+  // const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
   const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -190,21 +210,19 @@ const myFunc9 = async () => {
 
   const fraCode = await Asset.getFraAssetCode();
 
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  const assetCode = fraCode;
+  // const assetCode = customAssetCode;
 
-  // const assetCode = fraCode;
-  const assetCode = customAssetCode;
-
-  const assetBlindRules = { isAmountBlind: false };
+  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: true, isAmountBlind: true };
   const resultHandle = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo,
-    0.0022,
+    0.0023,
     assetCode,
     assetBlindRules,
   );
 
-  console.log('result handle', resultHandle);
+  console.log('result handle!', resultHandle);
 };
 
-myFunc9();
+myFunc7();

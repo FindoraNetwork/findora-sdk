@@ -21,11 +21,13 @@ export interface LedgerUtxoItem {
 export interface AddUtxoItem extends LedgerUtxoItem {
   address: string;
   body: any;
+  memoData: OwnedMemoResponse | undefined;
 }
 
 export interface UtxoOutputItem extends LedgerUtxoItem {
   originAmount: BigInt;
   amount: BigInt;
+  memoData: OwnedMemoResponse | undefined;
 }
 
 export interface UtxoInputParameter {
@@ -33,6 +35,7 @@ export interface UtxoInputParameter {
   assetRecord: LedgerClientAssetRecord;
   ownerMemo: LedgerOwnerMemo | undefined;
   amount: BigInt;
+  memoData: OwnedMemoResponse | undefined;
 }
 
 export interface UtxoInputsInfo {
@@ -60,6 +63,8 @@ export const decryptUtxoItem = async (
 
   try {
     ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+    // console.log('memoData', memoData);
+    // console.log('decoded ownerMemo', ownerMemo);
   } catch (error) {
     throw new Error(`Can not decode owner memo. Details: "${error.message}"`);
   }
@@ -94,6 +99,7 @@ export const decryptUtxoItem = async (
     body: decryptAssetData || {},
     utxo: { ...utxoData.utxo },
     ownerMemo: ownerMemo?.clone(),
+    memoData,
   };
 
   return item;
@@ -189,6 +195,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
           sid: assetItem.sid,
           utxo: { ...assetItem.utxo },
           ownerMemo: assetItem.ownerMemo,
+          memoData: assetItem.memoData,
         });
         break;
       } else {
@@ -199,6 +206,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
           sid: assetItem.sid,
           utxo: { ...assetItem.utxo },
           ownerMemo: assetItem.ownerMemo,
+          memoData: assetItem.memoData,
         });
       }
     }
@@ -241,6 +249,7 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
       assetRecord,
       ownerMemo: item?.ownerMemo,
       amount: item.amount,
+      memoData: item.memoData,
     };
 
     inputParametersList.push(inputParameters);

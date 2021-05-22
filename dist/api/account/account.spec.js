@@ -148,6 +148,7 @@ describe('account', function () {
                 amount: 200000,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -159,6 +160,7 @@ describe('account', function () {
                 amount: 10,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -170,6 +172,7 @@ describe('account', function () {
                 amount: 1,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -181,6 +184,7 @@ describe('account', function () {
                 amount: 13,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
     ];

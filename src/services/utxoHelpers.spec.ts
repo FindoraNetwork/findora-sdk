@@ -508,6 +508,7 @@ describe('utxoHelpers', () => {
             amount: 2,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -519,6 +520,7 @@ describe('utxoHelpers', () => {
             amount: 10,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -530,6 +532,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -541,6 +544,7 @@ describe('utxoHelpers', () => {
             amount: 13,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -582,6 +586,7 @@ describe('utxoHelpers', () => {
             amount: 10,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -593,6 +598,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -604,6 +610,7 @@ describe('utxoHelpers', () => {
             amount: 13,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -615,6 +622,7 @@ describe('utxoHelpers', () => {
             amount: 2,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -654,6 +662,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -665,6 +674,7 @@ describe('utxoHelpers', () => {
             amount: 13,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -676,6 +686,7 @@ describe('utxoHelpers', () => {
             amount: 2,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -687,6 +698,7 @@ describe('utxoHelpers', () => {
             amount: 10,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -724,6 +736,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -735,6 +748,7 @@ describe('utxoHelpers', () => {
             amount: 13,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -767,6 +781,7 @@ describe('utxoHelpers', () => {
             amount: 10,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -778,6 +793,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -789,6 +805,7 @@ describe('utxoHelpers', () => {
             amount: 2,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
         {
@@ -800,6 +817,7 @@ describe('utxoHelpers', () => {
             amount: 13,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -841,6 +859,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -873,6 +892,7 @@ describe('utxoHelpers', () => {
             amount: 12,
           },
           ownerMemo: undefined,
+          memoData: undefined,
           utxo: myUtxo,
         },
       ];
@@ -909,6 +929,7 @@ describe('utxoHelpers', () => {
           sid: 1,
           utxo: myUtxo,
           ownerMemo: undefined,
+          memoData: undefined,
         },
         {
           amount: BigInt(2),
@@ -916,6 +937,7 @@ describe('utxoHelpers', () => {
           sid: 2,
           utxo: myUtxo,
           ownerMemo: undefined,
+          memoData: undefined,
         },
       ];
 
@@ -965,6 +987,7 @@ describe('utxoHelpers', () => {
         sid: Number('foobar'),
         utxo: myUtxo,
         ownerMemo: undefined,
+        memoData: undefined,
       };
 
       const mySendUtxoList = [myItem];
@@ -992,6 +1015,7 @@ describe('utxoHelpers', () => {
         sid: 1,
         utxo: myUtxo,
         ownerMemo: undefined,
+        memoData: undefined,
       };
 
       const mySendUtxoList = [myItem];

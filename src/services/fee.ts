@@ -6,60 +6,61 @@ import { getLedger } from './ledger/ledgerWrapper';
 import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from './utxoHelper';
 
-export const getTransferOperationWithFee = async (
-  walletInfo: WalletKeypar,
-  utxoInputs: UtxoInputsInfo,
-  assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
-): Promise<TransferOperationBuilder> => {
-  const ledger = await getLedger();
+// export const getTransferOperationWithFee = async (
+//   walletInfo: WalletKeypar,
+//   utxoInputs: UtxoInputsInfo,
+//   utxoNumbers: BigInt,
+//   toPublickey: XfrPublicKey,
+//   assetCode: string,
+//   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
+// ): Promise<TransferOperationBuilder> => {
+//   const ledger = await getLedger();
 
-  const minimalFee = ledger.fra_get_minimal_fee();
+//   // const minimalFee = ledger.fra_get_minimal_fee();
 
-  // const toPublickey = ledger.fra_get_dest_pubkey();
-  const assetCode = ledger.fra_get_asset_code();
+//   // const fraAssetCode = ledger.fra_get_asset_code();
 
-  const blindIsAmount = assetBlindRules?.isAmountBlind;
-  const blindIsType = assetBlindRules?.isTypeBlind;
+//   const blindIsAmount = assetBlindRules?.isAmountBlind;
+//   const blindIsType = assetBlindRules?.isTypeBlind;
 
-  let transferOp = ledger.TransferOperationBuilder.new();
+//   let transferOp = ledger.TransferOperationBuilder.new();
 
-  const { inputParametersList, inputAmount } = utxoInputs;
+//   const { inputParametersList, inputAmount } = utxoInputs;
 
-  inputParametersList.forEach(inputParameters => {
-    const { txoRef, assetRecord, ownerMemo, amount } = inputParameters;
-    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
-  });
+//   inputParametersList.forEach(inputParameters => {
+//     const { txoRef, assetRecord, ownerMemo, amount } = inputParameters;
+//     transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
+//   });
 
-  transferOp = transferOp.add_output_no_tracing(
-    minimalFee,
-    ledger.fra_get_dest_pubkey(),
-    assetCode,
-    !!blindIsAmount,
-    !!blindIsType,
-  );
+//   transferOp = transferOp.add_output_no_tracing(
+//     // minimalFee,
+//     utxoNumbers,
+//     // ledger.fra_get_dest_pubkey(),
+//     toPublickey,
+//     // fraAssetCode,
+//     assetCode,
+//     !!blindIsAmount,
+//     !!blindIsType,
+//   );
 
-  if (inputAmount > minimalFee) {
-    const numberToSubmit = BigInt(Number(inputAmount) - Number(minimalFee));
+//   if (inputAmount > utxoNumbers) {
+//     const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
 
-    transferOp = transferOp.add_output_no_tracing(
-      numberToSubmit,
-      ledger.get_pk_from_keypair(walletInfo.keypair),
-      assetCode,
-      !!blindIsAmount,
-      !!blindIsType,
-    );
-  }
+//     transferOp = transferOp.add_output_no_tracing(
+//       numberToSubmit,
+//       ledger.get_pk_from_keypair(walletInfo.keypair),
+//       assetCode,
+//       !!blindIsAmount,
+//       !!blindIsType,
+//     );
+//   }
 
-  return transferOp;
-};
+//   return transferOp;
+// };
 
-/**
- * @todo Refactor and merge w getTransferOperationWithFee
- */
 export const getTransferOperation = async (
   walletInfo: WalletKeypar,
   utxoInputs: UtxoInputsInfo,
-  // numbers: number,
   utxoNumbers: BigInt,
   toPublickey: XfrPublicKey,
   assetCode: string,
@@ -67,11 +68,6 @@ export const getTransferOperation = async (
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
-  // const minimalFee = ledger.fra_get_minimal_fee();
-
-  // const toPublickey = ledger.fra_get_dest_pubkey();
-  // const assetCode = ledger.fra_get_asset_code();
-
   const blindIsAmount = assetBlindRules?.isAmountBlind;
   const blindIsType = assetBlindRules?.isTypeBlind;
 
@@ -80,23 +76,26 @@ export const getTransferOperation = async (
   const { inputParametersList, inputAmount } = utxoInputs;
 
   inputParametersList.forEach(inputParameters => {
-    const { txoRef, assetRecord, ownerMemo, amount } = inputParameters;
-    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
+    // console.log('inputParameters!', inputParameters);
+
+    const { txoRef, assetRecord, amount, memoData } = inputParameters;
+
+    const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+
+    const newOwnerMemo = ownerMemo?.clone();
+
+    // console.log('ownerMemnewOwnerMemoo!', newOwnerMemo);
+
+    transferOp = transferOp.add_input_no_tracing(
+      txoRef,
+      assetRecord,
+      newOwnerMemo,
+      walletInfo.keypair,
+      amount,
+    );
   });
 
-  // FRA send Only - fee
-  // transferOp = transferOp.add_output_no_tracing(
-  //   minimalFee,
-  //   ledger.fra_get_dest_pubkey(),
-  //   assetCode,
-  //   !!blindIsAmount,
-  //   !!blindIsType,
-  // );
-
-  // const decimals = 6;
-
   transferOp = transferOp.add_output_no_tracing(
-    // BigInt(toWei(numbers, decimals).toString()),
     utxoNumbers,
     toPublickey,
     assetCode,
@@ -142,7 +141,20 @@ export const buildTransferOperationWithFee = async (
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  const trasferOperation = await getTransferOperationWithFee(walletInfo, utxoInputsInfo, assetBlindRules);
+  // const minimalFee = ledger.fra_get_minimal_fee();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const toPublickey = ledger.fra_get_dest_pubkey();
+
+  const trasferOperation = await getTransferOperation(
+    walletInfo,
+    utxoInputsInfo,
+    minimalFee,
+    toPublickey,
+    fraAssetCode,
+    assetBlindRules,
+  );
 
   return trasferOperation;
 };
@@ -157,7 +169,7 @@ export const buildTransferOperation = async (
   assetCode: string,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
-  const ledger = await getLedger();
+  // const ledger = await getLedger();
 
   // refactor it!
   const decimals = 6;
@@ -174,13 +186,15 @@ export const buildTransferOperation = async (
 
   const utxoDataList = await addUtxo(walletInfo, sids);
 
-  const minimalFee = ledger.fra_get_minimal_fee();
+  // const minimalFee = ledger.fra_get_minimal_fee();
 
-  // For FRA only
-  const utxoNumbers = BigInt(Number(toWei(numbers, decimals).toString()) + Number(minimalFee));
+  // For Custom Asset and fra - we use 2 transfers anywas
+  const utxoNumbers = BigInt(toWei(numbers, decimals).toString());
 
-  // For Custom Asset
-  // const utxoNumbersCustom = BigInt(toWei(numbers, decimals).toString());
+  // For FRA only ?
+  // if (assetCode === fraCode) {
+  // utxoNumbers = BigInt(Number(toWei(numbers, decimals).toString()) + Number(minimalFee));
+  // }
 
   const sendUtxoList = getSendUtxo(assetCode, utxoNumbers, utxoDataList);
 
@@ -195,20 +209,6 @@ export const buildTransferOperation = async (
     assetCode,
     assetBlindRules,
   );
-
-  // this part is for send only, to match with get with fee
-  // const assetCode = ledger.fra_get_asset_code();
-
-  // const blindIsAmount = assetBlindRules?.isAmountBlind;
-  // const blindIsType = assetBlindRules?.isTypeBlind;
-
-  // trasferOperation = trasferOperation.add_output_no_tracing(
-  //   BigInt(toWei(numbers, decimals).toString()),
-  //   toPublickey,
-  //   assetCode,
-  //   !!blindIsAmount,
-  //   !!blindIsType,
-  // );
 
   return trasferOperation;
 };

@@ -56,8 +56,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendToAddress = exports.getTransactionBuilder = void 0;
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Fee = __importStar(require("../../services/fee"));
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
 var AssetApi = __importStar(require("../sdkAsset"));
 var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {

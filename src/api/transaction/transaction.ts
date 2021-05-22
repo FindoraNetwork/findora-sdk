@@ -1,9 +1,9 @@
 import { BigNumberValue, create as createBigNumber, fromWei, toWei } from '../../services/bigNumber';
+import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
 import * as UtxoHelper from '../../services/utxoHelper';
-import * as Fee from '../../services/fee';
 import { createKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
