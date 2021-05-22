@@ -33,16 +33,19 @@ export const sendToAddress = async (
   walletInfo: WalletKeypar,
   toWalletInfo: WalletKeypar,
   numbers: number,
-  assetBlindRules: AssetApi.AssetBlindRules = { isAmountBlind: false, isTypeBlind: false },
+  assetCode: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const ledger = await getLedger();
 
   const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
 
+  // This builder is both for fra and custom - to get send builder
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
     numbers,
     toPublickey,
+    assetCode,
     assetBlindRules,
   );
 
@@ -50,6 +53,23 @@ export const sendToAddress = async (
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  }
+
+  // get rid of it
+  const fraCode = await AssetApi.getFraAssetCode();
+
+  // This builder is only for custom
+  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+
+  let receivedTransferOperationFee;
+
+  try {
+    receivedTransferOperationFee = transferOperationBuilderFee
+      .create()
+      .sign(walletInfo.keypair)
+      .transaction();
   } catch (error) {
     throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
   }
@@ -62,16 +82,22 @@ export const sendToAddress = async (
     throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
   }
 
+  // add transfer operation for both fra and custom asset - transfer itself
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (err) {
     throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
   }
 
+  // if non-fra add another transfer operation - fee
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+  } catch (err) {
+    throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
+  }
+
   const submitData = transactionBuilder.transaction();
 
-  // console.log('submitData', submitData);
-  // return submitData;
   let result;
 
   try {

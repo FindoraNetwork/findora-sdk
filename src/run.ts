@@ -188,41 +188,23 @@ const myFunc9 = async () => {
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
 
-  // console.log('walletInfo!', walletInfo);
-  // const sidsResult = await Network.getOwnedSids(address);
+  const fraCode = await Asset.getFraAssetCode();
 
-  // const { response: sids } = sidsResult;
+  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
-  // console.log('sids!', sids);
+  // const assetCode = fraCode;
+  const assetCode = customAssetCode;
 
-  // if (!sids) {
-  //   return;
-  // }
-
-  // const assetBlindRules = { isAmountBlind: false };
-  const resultHandle = await Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0024);
+  const assetBlindRules = { isAmountBlind: false };
+  const resultHandle = await Transaction.sendToAddress(
+    walletInfo,
+    toWalletInfo,
+    0.0022,
+    assetCode,
+    assetBlindRules,
+  );
 
   console.log('result handle', resultHandle);
-
-  // const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
-
-  // console.log('utxoDataList', utxoDataList);
-
-  // const fraCode = await Asset.getFraAssetCode();
-
-  // const amount = BigInt(3);
-
-  // const sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
-
-  // console.log('sendUtxoList!', sendUtxoList);
-
-  // const utxoInputsInfo = await UtxoHelper.addUtxoInputs(sendUtxoList);
-
-  // console.log('utxoInputsInfo!', utxoInputsInfo);
-
-  // const trasferOperation = await Fee.getTransferOperationWithFee(walletInfo, utxoInputsInfo);
-
-  // console.log('trasferOperation!', trasferOperation);
 };
 
 myFunc9();

@@ -273,7 +273,7 @@ var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // send fra
 var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, toPkey, pkey, password, walletInfo, toWalletInfo, resultHandle;
+    var address, toPkey, pkey, password, walletInfo, toWalletInfo, fraCode, customAssetCode, assetCode, assetBlindRules, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -287,8 +287,14 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
             case 2:
                 toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0024)];
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 3:
+                fraCode = _a.sent();
+                customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+                assetCode = customAssetCode;
+                assetBlindRules = { isAmountBlind: false };
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0022, assetCode, assetBlindRules)];
+            case 4:
                 resultHandle = _a.sent();
                 console.log('result handle', resultHandle);
                 return [2 /*return*/];

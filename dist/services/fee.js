@@ -61,28 +61,27 @@ var Network = __importStar(require("../api/network"));
 var bigNumber_1 = require("./bigNumber");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var utxoHelper_1 = require("./utxoHelper");
-var getTransferOperationWithFee = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType, transferOp, inputParametersList, inputAmount, numberToSubmit;
+var getTransferOperationWithFee = function (walletInfo, utxoInputs, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, minimalFee, assetCode, blindIsAmount, blindIsType, transferOp, inputParametersList, inputAmount, numberToSubmit;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 minimalFee = ledger.fra_get_minimal_fee();
-                toPublickey = ledger.fra_get_dest_pubkey();
                 assetCode = ledger.fra_get_asset_code();
-                isBlindAmount = false;
-                isBlindType = false;
+                blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
+                blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                 transferOp = ledger.TransferOperationBuilder.new();
                 inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputParametersList.forEach(function (inputParameters) {
                     var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
                     transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
                 });
-                transferOp = transferOp.add_output_no_tracing(minimalFee, toPublickey, assetCode, isBlindAmount, isBlindType);
+                transferOp = transferOp.add_output_no_tracing(minimalFee, ledger.fra_get_dest_pubkey(), assetCode, !!blindIsAmount, !!blindIsType);
                 if (inputAmount > minimalFee) {
                     numberToSubmit = BigInt(Number(inputAmount) - Number(minimalFee));
-                    transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, isBlindAmount, isBlindType);
+                    transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, !!blindIsAmount, !!blindIsType);
                 }
                 return [2 /*return*/, transferOp];
         }
@@ -92,26 +91,35 @@ exports.getTransferOperationWithFee = getTransferOperationWithFee;
 /**
  * @todo Refactor and merge w getTransferOperationWithFee
  */
-var getTransferOperation = function (walletInfo, utxoInputs, numbers, utxoNumbers, toPublickey, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, decimals, minimalFee, assetCode, blindIsAmount, blindIsType, transferOp, inputParametersList, inputAmount, numberToSubmit;
+var getTransferOperation = function (walletInfo, utxoInputs, 
+// numbers: number,
+utxoNumbers, toPublickey, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, blindIsAmount, blindIsType, transferOp, inputParametersList, inputAmount, numberToSubmit;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                decimals = 6;
-                minimalFee = ledger.fra_get_minimal_fee();
-                assetCode = ledger.fra_get_asset_code();
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                 blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                 transferOp = ledger.TransferOperationBuilder.new();
-                transferOp = transferOp.add_output_no_tracing(minimalFee, ledger.fra_get_dest_pubkey(), assetCode, !!blindIsAmount, !!blindIsType);
                 inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputParametersList.forEach(function (inputParameters) {
                     var txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, ownerMemo = inputParameters.ownerMemo, amount = inputParameters.amount;
                     transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo, walletInfo.keypair, amount);
                 });
-                transferOp = transferOp.add_output_no_tracing(BigInt(bigNumber_1.toWei(numbers, decimals).toString()), toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
+                // FRA send Only - fee
+                // transferOp = transferOp.add_output_no_tracing(
+                //   minimalFee,
+                //   ledger.fra_get_dest_pubkey(),
+                //   assetCode,
+                //   !!blindIsAmount,
+                //   !!blindIsType,
+                // );
+                // const decimals = 6;
+                transferOp = transferOp.add_output_no_tracing(
+                // BigInt(toWei(numbers, decimals).toString()),
+                utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
                 if (inputAmount > utxoNumbers) {
                     numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
                     transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, !!blindIsAmount, !!blindIsType);
@@ -121,7 +129,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, numbers, utxoNumber
     });
 }); };
 exports.getTransferOperation = getTransferOperation;
-var buildTransferOperationWithFee = function (walletInfo, fraCode) { return __awaiter(void 0, void 0, void 0, function () {
+var buildTransferOperationWithFee = function (walletInfo, fraCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, sidsResult, sids, utxoDataList, minimalFee, sendUtxoList, utxoInputsInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -143,7 +151,7 @@ var buildTransferOperationWithFee = function (walletInfo, fraCode) { return __aw
                 return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
             case 4:
                 utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperationWithFee(walletInfo, utxoInputsInfo)];
+                return [4 /*yield*/, exports.getTransferOperationWithFee(walletInfo, utxoInputsInfo, assetBlindRules)];
             case 5:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
@@ -154,15 +162,14 @@ exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
 /**
  * @todo merge w buildTransferOperationWithFee
  * */
-var buildTransferOperation = function (walletInfo, numbers, toPublickey, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, decimals, fraCode, sidsResult, sids, utxoDataList, minimalFee, utxoNumbers, sendUtxoList, utxoInputsInfo, trasferOperation;
+var buildTransferOperation = function (walletInfo, numbers, toPublickey, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, decimals, sidsResult, sids, utxoDataList, minimalFee, utxoNumbers, sendUtxoList, utxoInputsInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 decimals = 6;
-                fraCode = ledger.fra_get_asset_code();
                 return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
             case 2:
                 sidsResult = _a.sent();
@@ -175,13 +182,26 @@ var buildTransferOperation = function (walletInfo, numbers, toPublickey, assetBl
                 utxoDataList = _a.sent();
                 minimalFee = ledger.fra_get_minimal_fee();
                 utxoNumbers = BigInt(Number(bigNumber_1.toWei(numbers, decimals).toString()) + Number(minimalFee));
-                sendUtxoList = utxoHelper_1.getSendUtxo(fraCode, utxoNumbers, utxoDataList);
+                sendUtxoList = utxoHelper_1.getSendUtxo(assetCode, utxoNumbers, utxoDataList);
                 return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
             case 4:
                 utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, numbers, utxoNumbers, toPublickey, assetBlindRules)];
+                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, 
+                    // numbers,
+                    utxoNumbers, toPublickey, assetCode, assetBlindRules)];
             case 5:
                 trasferOperation = _a.sent();
+                // this part is for send only, to match with get with fee
+                // const assetCode = ledger.fra_get_asset_code();
+                // const blindIsAmount = assetBlindRules?.isAmountBlind;
+                // const blindIsType = assetBlindRules?.isTypeBlind;
+                // trasferOperation = trasferOperation.add_output_no_tracing(
+                //   BigInt(toWei(numbers, decimals).toString()),
+                //   toPublickey,
+                //   assetCode,
+                //   !!blindIsAmount,
+                //   !!blindIsType,
+                // );
                 return [2 /*return*/, trasferOperation];
         }
     });
