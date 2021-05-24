@@ -279,7 +279,36 @@ var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // send fra
 var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, customAssetCode, toPkey, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, resultHandle;
+    var pkey, toPkey, password, walletInfo, toWalletInfo, fraCode, assetCode, decimals, assetBlindRules, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 3:
+                fraCode = _a.sent();
+                assetCode = fraCode;
+                decimals = 6;
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: true };
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.2, assetCode, decimals, assetBlindRules)];
+            case 4:
+                resultHandle = _a.sent();
+                console.log('send fra result handle!!!', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// send custom asset
+var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, customAssetCode, toPkey, password, walletInfo, toWalletInfo, assetCode, decimals, assetBlindRules, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -293,18 +322,20 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
             case 2:
                 toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                assetCode = customAssetCode;
+                decimals = 6;
+                assetBlindRules = { isTypeBlind: true, isAmountBlind: false };
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.1, assetCode, decimals, assetBlindRules)];
             case 3:
-                fraCode = _a.sent();
-                assetCode = fraCode;
-                assetBlindRules = { isTypeBlind: true, isAmountBlind: true };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo, 0.0023, assetCode, assetBlindRules)];
-            case 4:
                 resultHandle = _a.sent();
-                console.log('result handle!', resultHandle);
+                console.log('send custom result handle!', resultHandle);
                 return [2 /*return*/];
         }
     });
 }); };
-myFunc7();
+// myFunc7();
+// send custom
+// myFunc10();
+// send fra
+myFunc9();
 //# sourceMappingURL=run.js.map

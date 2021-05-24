@@ -84,7 +84,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
-var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, toPublickey, transferOperationBuilder, receivedTransferOperation, fraCode, transferOperationBuilderFee, receivedTransferOperationFee, transactionBuilder, error_1, submitData, result, err_1, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -92,7 +92,7 @@ var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetCode, asse
             case 1:
                 ledger = _a.sent();
                 toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, numbers, toPublickey, assetCode, assetBlindRules)];
+                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, numbers, toPublickey, assetCode, decimals, assetBlindRules)];
             case 2:
                 transferOperationBuilder = _a.sent();
                 try {
@@ -127,14 +127,12 @@ var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetCode, asse
                 error_1 = _a.sent();
                 throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
             case 8:
-                // add transfer operation for both fra and custom asset - transfer itself
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
                 }
-                // if non-fra add another transfer operation - fee
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
                 }
