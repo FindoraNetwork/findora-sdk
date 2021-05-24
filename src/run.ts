@@ -198,9 +198,7 @@ const myFunc8 = async () => {
 
 // send fra
 const myFunc9 = async () => {
-  // const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
   const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
   const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
   const password = '123';
@@ -211,18 +209,57 @@ const myFunc9 = async () => {
   const fraCode = await Asset.getFraAssetCode();
 
   const assetCode = fraCode;
-  // const assetCode = customAssetCode;
 
-  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: true, isAmountBlind: true };
+  const decimals = 6;
+
+  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: true };
+
   const resultHandle = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo,
-    0.0023,
+    0.2,
     assetCode,
+    decimals,
     assetBlindRules,
   );
 
-  console.log('result handle!', resultHandle);
+  console.log('send fra result handle!!!', resultHandle);
 };
 
-myFunc7();
+// send custom asset
+const myFunc10 = async () => {
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+
+  const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
+
+  const assetCode = customAssetCode;
+
+  const decimals = 6;
+
+  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: true, isAmountBlind: false };
+  // const assetBlindRules: Api.Asset.AssetBlindRules = { isAmountBlind: true };
+
+  const resultHandle = await Transaction.sendToAddress(
+    walletInfo,
+    toWalletInfo,
+    0.1,
+    assetCode,
+    decimals,
+    assetBlindRules,
+  );
+
+  console.log('send custom result handle!', resultHandle);
+};
+
+// myFunc7();
+
+// send custom
+// myFunc10();
+
+// send fra
+myFunc9();
