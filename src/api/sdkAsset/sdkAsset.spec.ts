@@ -431,11 +431,11 @@ describe('sdkAsset', () => {
 
       const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
 
-      const { code } = givenAsset;
+      const { code, decimals } = givenAsset;
 
       const assetBlindRules = { isAmountBlind: false };
 
-      const handle = await issueAsset(walletInfo, code, 2, assetBlindRules);
+      const handle = await issueAsset(walletInfo, code, 2, assetBlindRules, decimals);
 
       expect(handle).toBe(myResponse);
     });
@@ -471,11 +471,11 @@ describe('sdkAsset', () => {
 
       const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
 
-      const { code } = givenAsset;
+      const { code, decimals } = givenAsset;
 
       const assetBlindRules = { isAmountBlind: false };
 
-      await expect(issueAsset(walletInfo, code, 2, assetBlindRules)).rejects.toThrowError(
+      await expect(issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError(
         'Could not issue asset - submit handle is missing',
       );
     });
@@ -509,11 +509,11 @@ describe('sdkAsset', () => {
 
       const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
 
-      const { code } = givenAsset;
+      const { code, decimals } = givenAsset;
 
       const assetBlindRules = { isAmountBlind: false };
 
-      await expect(issueAsset(walletInfo, code, 2, assetBlindRules)).rejects.toThrowError(
+      await expect(issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError(
         'Could not submit issue asset transaction',
       );
     });
@@ -551,7 +551,7 @@ describe('sdkAsset', () => {
 
       const assetBlindRules = { isAmountBlind: false };
 
-      await expect(issueAsset(walletInfo, code, 2, assetBlindRules)).rejects.toThrowError(
+      await expect(issueAsset(walletInfo, code, 2, assetBlindRules, 6)).rejects.toThrowError(
         'Could not submit issue asset transaction',
       );
     });
@@ -575,7 +575,7 @@ describe('sdkAsset', () => {
 
       const assetBlindRules = { isAmountBlind: false };
 
-      await expect(issueAsset(walletInfo, 'aaa', 2, assetBlindRules)).rejects.toThrowError(
+      await expect(issueAsset(walletInfo, 'aaa', 2, assetBlindRules, 6)).rejects.toThrowError(
         'Could not get "issueAssetTransactionBuilder"',
       );
     });
@@ -594,11 +594,11 @@ describe('sdkAsset', () => {
 
       const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
 
-      const { code } = givenAsset;
+      const { code, decimals } = givenAsset;
 
       const assetBlindRules = { isAmountBlind: false };
 
-      await expect(issueAsset(walletInfo, code, 2, assetBlindRules)).rejects.toThrowError(
+      await expect(issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError(
         'Could not create transfer operation',
       );
     });
