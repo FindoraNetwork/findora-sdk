@@ -63,8 +63,6 @@ export const decryptUtxoItem = async (
 
   try {
     ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
-    // console.log('memoData', memoData);
-    // console.log('decoded ownerMemo', ownerMemo);
   } catch (error) {
     throw new Error(`Can not decode owner memo. Details: "${error.message}"`);
   }

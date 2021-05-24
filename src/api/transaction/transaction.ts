@@ -34,18 +34,19 @@ export const sendToAddress = async (
   toWalletInfo: WalletKeypar,
   numbers: number,
   assetCode: string,
+  decimals: number,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const ledger = await getLedger();
 
   const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
 
-  // This builder is both for fra and custom - to get send builder
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
     numbers,
     toPublickey,
     assetCode,
+    decimals,
     assetBlindRules,
   );
 
@@ -57,10 +58,8 @@ export const sendToAddress = async (
     throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
   }
 
-  // get rid of it
   const fraCode = await AssetApi.getFraAssetCode();
 
-  // This builder is only for custom
   const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
 
   let receivedTransferOperationFee;
@@ -82,14 +81,12 @@ export const sendToAddress = async (
     throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
   }
 
-  // add transfer operation for both fra and custom asset - transfer itself
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (err) {
     throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
   }
 
-  // if non-fra add another transfer operation - fee
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
   } catch (err) {
