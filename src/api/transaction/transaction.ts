@@ -1,9 +1,9 @@
 import { BigNumberValue, create as createBigNumber, fromWei, toWei } from '../../services/bigNumber';
+import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
 import * as UtxoHelper from '../../services/utxoHelper';
-import * as Fee from '../../services/fee';
 import { createKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
@@ -33,7 +33,9 @@ export const sendToAddress = async (
   walletInfo: WalletKeypar,
   toWalletInfo: WalletKeypar,
   numbers: number,
-  assetBlindRules: AssetApi.AssetBlindRules = { isAmountBlind: false, isTypeBlind: false },
+  assetCode: string,
+  decimals: number,
+  assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const ledger = await getLedger();
 
@@ -43,6 +45,8 @@ export const sendToAddress = async (
     walletInfo,
     numbers,
     toPublickey,
+    assetCode,
+    decimals,
     assetBlindRules,
   );
 
@@ -50,6 +54,21 @@ export const sendToAddress = async (
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  }
+
+  const fraCode = await AssetApi.getFraAssetCode();
+
+  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+
+  let receivedTransferOperationFee;
+
+  try {
+    receivedTransferOperationFee = transferOperationBuilderFee
+      .create()
+      .sign(walletInfo.keypair)
+      .transaction();
   } catch (error) {
     throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
   }
@@ -68,10 +87,14 @@ export const sendToAddress = async (
     throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
   }
 
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+  } catch (err) {
+    throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
+  }
+
   const submitData = transactionBuilder.transaction();
 
-  // console.log('submitData', submitData);
-  // return submitData;
   let result;
 
   try {

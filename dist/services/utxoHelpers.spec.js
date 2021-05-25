@@ -566,6 +566,7 @@ describe('utxoHelpers', function () {
                         amount: 2,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -577,6 +578,7 @@ describe('utxoHelpers', function () {
                         amount: 10,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -588,6 +590,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -599,6 +602,7 @@ describe('utxoHelpers', function () {
                         amount: 13,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -633,6 +637,7 @@ describe('utxoHelpers', function () {
                         amount: 10,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -644,6 +649,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -655,6 +661,7 @@ describe('utxoHelpers', function () {
                         amount: 13,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -666,6 +673,7 @@ describe('utxoHelpers', function () {
                         amount: 2,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -698,6 +706,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -709,6 +718,7 @@ describe('utxoHelpers', function () {
                         amount: 13,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -720,6 +730,7 @@ describe('utxoHelpers', function () {
                         amount: 2,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -731,6 +742,7 @@ describe('utxoHelpers', function () {
                         amount: 10,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -761,6 +773,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -772,6 +785,7 @@ describe('utxoHelpers', function () {
                         amount: 13,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -799,6 +813,7 @@ describe('utxoHelpers', function () {
                         amount: 10,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -810,6 +825,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -821,6 +837,7 @@ describe('utxoHelpers', function () {
                         amount: 2,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
                 {
@@ -832,6 +849,7 @@ describe('utxoHelpers', function () {
                         amount: 13,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -866,6 +884,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -893,6 +912,7 @@ describe('utxoHelpers', function () {
                         amount: 12,
                     },
                     ownerMemo: undefined,
+                    memoData: undefined,
                     utxo: myUtxo,
                 },
             ];
@@ -926,6 +946,7 @@ describe('utxoHelpers', function () {
                                 sid: 1,
                                 utxo: myUtxo,
                                 ownerMemo: undefined,
+                                memoData: undefined,
                             },
                             {
                                 amount: BigInt(2),
@@ -933,6 +954,7 @@ describe('utxoHelpers', function () {
                                 sid: 2,
                                 utxo: myUtxo,
                                 ownerMemo: undefined,
+                                memoData: undefined,
                             },
                         ];
                         return [4 /*yield*/, utxoHelper.addUtxoInputs(mySendUtxoList)];
@@ -988,6 +1010,7 @@ describe('utxoHelpers', function () {
                             sid: Number('foobar'),
                             utxo: myUtxo,
                             ownerMemo: undefined,
+                            memoData: undefined,
                         };
                         mySendUtxoList = [myItem];
                         return [4 /*yield*/, expect(utxoHelper.addUtxoInputs(mySendUtxoList)).rejects.toThrowError('Cannot convert given sid id to a BigInt')];
@@ -1017,6 +1040,7 @@ describe('utxoHelpers', function () {
                             sid: 1,
                             utxo: myUtxo,
                             ownerMemo: undefined,
+                            memoData: undefined,
                         };
                         mySendUtxoList = [myItem];
                         return [4 /*yield*/, expect(utxoHelper.addUtxoInputs(mySendUtxoList)).rejects.toThrowError('Can not get client asset record')];

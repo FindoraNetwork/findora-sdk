@@ -85,6 +85,7 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                console.log("Writing file cache to \"" + filePath + "\"");
                 try {
                     cacheData = json_bigint_1.default({ useNativeBigInt: true }).stringify(data);
                 }

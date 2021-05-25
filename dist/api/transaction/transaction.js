@@ -56,9 +56,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendToAddress = exports.getTransactionBuilder = void 0;
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Fee = __importStar(require("../../services/fee"));
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
+var AssetApi = __importStar(require("../sdkAsset"));
 var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
     return __generator(this, function (_b) {
@@ -83,65 +84,83 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
-var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetBlindRules) {
-    if (assetBlindRules === void 0) { assetBlindRules = { isAmountBlind: false, isTypeBlind: false }; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, toPublickey, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, err_1, handle, submitError;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-                case 1:
-                    ledger = _a.sent();
-                    toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, numbers, toPublickey, assetBlindRules)];
-                case 2:
-                    transferOperationBuilder = _a.sent();
-                    try {
-                        receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-                    }
-                    catch (error) {
-                        throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
-                    }
-                    _a.label = 3;
-                case 3:
-                    _a.trys.push([3, 5, , 6]);
-                    return [4 /*yield*/, exports.getTransactionBuilder()];
-                case 4:
-                    transactionBuilder = _a.sent();
-                    return [3 /*break*/, 6];
-                case 5:
-                    error_1 = _a.sent();
-                    throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
-                case 6:
-                    try {
-                        transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                    }
-                    catch (err) {
-                        throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
-                    }
-                    submitData = transactionBuilder.transaction();
-                    _a.label = 7;
-                case 7:
-                    _a.trys.push([7, 9, , 10]);
-                    return [4 /*yield*/, Network.submitTransaction(submitData)];
-                case 8:
-                    result = _a.sent();
-                    return [3 /*break*/, 10];
-                case 9:
-                    err_1 = _a.sent();
-                    throw new Error("Error Could not define asset: \"" + err_1.message + "\"");
-                case 10:
-                    handle = result.response, submitError = result.error;
-                    if (submitError) {
-                        throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
-                    }
-                    if (!handle) {
-                        throw new Error("Could not issue asset - submit handle is missing");
-                    }
-                    return [2 /*return*/, handle];
-            }
-        });
+var sendToAddress = function (walletInfo, toWalletInfo, numbers, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, toPublickey, transferOperationBuilder, receivedTransferOperation, fraCode, transferOperationBuilderFee, receivedTransferOperationFee, transactionBuilder, error_1, submitData, result, err_1, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, numbers, toPublickey, assetCode, decimals, assetBlindRules)];
+            case 2:
+                transferOperationBuilder = _a.sent();
+                try {
+                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                }
+                catch (error) {
+                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                }
+                return [4 /*yield*/, AssetApi.getFraAssetCode()];
+            case 3:
+                fraCode = _a.sent();
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
+            case 4:
+                transferOperationBuilderFee = _a.sent();
+                try {
+                    receivedTransferOperationFee = transferOperationBuilderFee
+                        .create()
+                        .sign(walletInfo.keypair)
+                        .transaction();
+                }
+                catch (error) {
+                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                }
+                _a.label = 5;
+            case 5:
+                _a.trys.push([5, 7, , 8]);
+                return [4 /*yield*/, exports.getTransactionBuilder()];
+            case 6:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 8];
+            case 7:
+                error_1 = _a.sent();
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
+            case 8:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (err) {
+                    throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+                }
+                catch (err) {
+                    throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
+                }
+                submitData = transactionBuilder.transaction();
+                _a.label = 9;
+            case 9:
+                _a.trys.push([9, 11, , 12]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 10:
+                result = _a.sent();
+                return [3 /*break*/, 12];
+            case 11:
+                err_1 = _a.sent();
+                throw new Error("Error Could not define asset: \"" + err_1.message + "\"");
+            case 12:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("Could not issue asset - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
+        }
     });
-};
+}); };
 exports.sendToAddress = sendToAddress;
 //# sourceMappingURL=transaction.js.map

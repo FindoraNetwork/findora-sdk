@@ -119,6 +119,7 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                     body: decryptAssetData || {},
                     utxo: __assign({}, utxoData.utxo),
                     ownerMemo: ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(),
+                    memoData: memoData,
                 };
                 return [2 /*return*/, item];
         }
@@ -231,6 +232,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
                     sid: assetItem.sid,
                     utxo: __assign({}, assetItem.utxo),
                     ownerMemo: assetItem.ownerMemo,
+                    memoData: assetItem.memoData,
                 });
                 break;
             }
@@ -242,6 +244,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
                     sid: assetItem.sid,
                     utxo: __assign({}, assetItem.utxo),
                     ownerMemo: assetItem.ownerMemo,
+                    memoData: assetItem.memoData,
                 });
             }
         }
@@ -281,6 +284,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                         assetRecord: assetRecord,
                         ownerMemo: item === null || item === void 0 ? void 0 : item.ownerMemo,
                         amount: item.amount,
+                        memoData: item.memoData,
                     };
                     inputParametersList.push(inputParameters);
                 }

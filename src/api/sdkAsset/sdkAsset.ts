@@ -112,6 +112,7 @@ const getIssueAssetTransactionBuilder = async (
   assetName: string,
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
+  assetDecimals: number,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
@@ -128,9 +129,7 @@ const getIssueAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const decimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
-
-  const utxoNumbers = BigInt(toWei(amountToIssue, decimals).toString());
+  const utxoNumbers = BigInt(toWei(amountToIssue, assetDecimals).toString());
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
@@ -215,6 +214,7 @@ export const issueAsset = async (
   assetName: string,
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
+  assetDecimals: number,
 ): Promise<string> => {
   const fraCode = await getFraAssetCode();
 
@@ -236,6 +236,7 @@ export const issueAsset = async (
       assetName,
       amountToIssue,
       assetBlindRules,
+      assetDecimals,
     );
   } catch (error) {
     throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${error.messaage}"`);
