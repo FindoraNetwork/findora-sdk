@@ -256,10 +256,37 @@ const myFunc10 = async () => {
   console.log('send custom result handle!', resultHandle);
 };
 
+// get custom asset details
+const myFunc11 = async () => {
+  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+
+  // const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+
+  // // const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  // const password = '123';
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // console.log('winfo', walletInfo);
+  // const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
+
+  // const assetCode = customAssetCode;
+
+  // const decimals = 6;
+
+  // const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: true, isAmountBlind: false };
+  // const assetBlindRules: Api.Asset.AssetBlindRules = { isAmountBlind: true };
+
+  const result = await Api.Asset.getAssetDetails(customAssetCode);
+
+  console.log('get custom asset details !', result);
+};
+
 // myFunc7();
 
 // send custom
 // myFunc10();
 
 // send fra
-myFunc9();
+// myFunc9();
+
+myFunc11();

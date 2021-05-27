@@ -1,3 +1,4 @@
+import { AssetRules as LedgerAssetRules } from '../../services/ledger/types';
 export interface ResultError {
     message: string;
 }
@@ -45,6 +46,21 @@ export declare type UtxoResponse = {
 };
 export interface UtxoDataResult extends NetworkAxiosDataResult {
     response?: UtxoResponse;
+}
+export declare type AssetTokenResponse = {
+    properties: {
+        code: {
+            val: number[];
+        };
+        issuer: {
+            key: string;
+        };
+        memo: string;
+        asset_rules: LedgerAssetRules;
+    };
+};
+export interface AssetTokenDataResult extends NetworkAxiosDataResult {
+    response?: AssetTokenResponse;
 }
 export declare type StateCommitmenResponse = [number[], number, string];
 export interface StateCommitmentDataResult extends NetworkAxiosDataResult {

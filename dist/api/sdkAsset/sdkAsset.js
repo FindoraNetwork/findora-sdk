@@ -1,4 +1,16 @@
 "use strict";
+// import JSONbig from 'json-bigint';
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -55,11 +67,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetCode;
@@ -94,9 +107,9 @@ var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                defaultTransferable = asset_1.DEFAULT_ASSET_RULES.DEFAULT_TRANSFERABLE;
-                defaultUpdatable = asset_1.DEFAULT_ASSET_RULES.DEFAULT_UPDATABLE;
-                defaultDecimals = asset_1.DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
+                defaultTransferable = asset_1.DEFAULT_ASSET_RULES.transferable;
+                defaultUpdatable = asset_1.DEFAULT_ASSET_RULES.updatable;
+                defaultDecimals = asset_1.DEFAULT_ASSET_RULES.decimals;
                 assetRules = ledger.AssetRules.new()
                     .set_transferable(defaultTransferable)
                     .set_updatable(defaultUpdatable)
@@ -304,4 +317,46 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
     });
 }); };
 exports.issueAsset = issueAsset;
+var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, error_5, assetResult, submitError, asset, issuerAddress, assetDetails;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Network.getAssetToken(assetCode)];
+            case 1:
+                result = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_5 = _a.sent();
+                throw new Error("Error Could not define asset: \"" + error_5.message + "\"");
+            case 3:
+                assetResult = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit define asset transaction: \"" + submitError.message + "\"");
+                }
+                if (!assetResult) {
+                    throw new Error("Could not issue asset - submit handle is missing");
+                }
+                asset = assetResult.properties;
+                return [4 /*yield*/, keypair_1.getAddressByPublicKey(asset.issuer.key)];
+            case 4:
+                issuerAddress = _a.sent();
+                assetDetails = {
+                    code: assetCode,
+                    issuer: asset.issuer.key,
+                    address: issuerAddress,
+                    memo: asset.memo,
+                    assetRules: __assign(__assign({}, asset_1.DEFAULT_ASSET_RULES), asset === null || asset === void 0 ? void 0 : asset.asset_rules),
+                    numbers: BigInt(0),
+                    name: '',
+                };
+                // const b = JSONbig({ useNativeBigInt: true }).stringify(assetDetails);
+                // console.log('assetDetails', b);
+                // console.log('assetDetails', JSON.stringify(assetDetails, null, 2));
+                return [2 /*return*/, assetDetails];
+        }
+    });
+}); };
+exports.getAssetDetails = getAssetDetails;
 //# sourceMappingURL=sdkAsset.js.map

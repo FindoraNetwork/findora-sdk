@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
+exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, privateStr;
@@ -77,6 +77,19 @@ var getAddress = function (keypair) { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.getAddress = getAddress;
+var getAddressByPublicKey = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                address = ledger.base64_to_bech32(publicKey);
+                return [2 /*return*/, address];
+        }
+    });
+}); };
+exports.getAddressByPublicKey = getAddressByPublicKey;
 var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, publickey;
     return __generator(this, function (_a) {

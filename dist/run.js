@@ -58,6 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var _1 = require(".");
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
@@ -333,9 +334,25 @@ var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function (
         }
     });
 }); };
+// get custom asset details
+var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customAssetCode, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+                return [4 /*yield*/, _1.Api.Asset.getAssetDetails(customAssetCode)];
+            case 1:
+                result = _a.sent();
+                console.log('get custom asset details !', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // myFunc7();
 // send custom
 // myFunc10();
 // send fra
-myFunc9();
+// myFunc9();
+myFunc11();
 //# sourceMappingURL=run.js.map

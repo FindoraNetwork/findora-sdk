@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import { AssetRules as LedgerAssetRules } from '../../services/ledger/types';
+
 export interface ResultError {
   message: string;
 }
@@ -56,6 +58,23 @@ export type UtxoResponse = {
 
 export interface UtxoDataResult extends NetworkAxiosDataResult {
   response?: UtxoResponse;
+}
+
+export type AssetTokenResponse = {
+  properties: {
+    code: {
+      val: number[];
+    };
+    issuer: {
+      key: string;
+    };
+    memo: string;
+    asset_rules: LedgerAssetRules;
+  };
+};
+
+export interface AssetTokenDataResult extends NetworkAxiosDataResult {
+  response?: AssetTokenResponse;
 }
 
 export type StateCommitmenResponse = [number[], number, string];
