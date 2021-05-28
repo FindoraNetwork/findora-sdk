@@ -8,3 +8,4 @@ export declare const getStateCommitment: (config?: Types.NetworkAxiosConfig | un
 export declare const getSubmitTransactionData: <T extends string>(data?: T | undefined) => Types.DataResult;
 export declare const submitTransaction: <T extends string>(data?: T | undefined, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.SubmitTransactionDataResult>;
 export declare const getAssetToken: (assetCode: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AssetTokenDataResult>;
+export declare const getTransactionStatus: (handle: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TransactionStatusDataResult>;

@@ -69,7 +69,6 @@ var UtxoHelper = __importStar(require("./services/utxoHelper"));
 var sdkEnv = {
     hostUrl: 'https://dev-staging.dev.findora.org',
     cacheProvider: providers_1.FileCacheProvider,
-    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
@@ -336,7 +335,7 @@ var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function (
 }); };
 // get custom asset details
 var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var customAssetCode, result;
+    var customAssetCode, result, h, txStatus;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -345,6 +344,11 @@ var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 1:
                 result = _a.sent();
                 console.log('get custom asset details !', result);
+                h = 'b07040a5d8c9ef6fcb98b95968e6c1f14f77405e851ac8230942e1c305913ea0';
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
+            case 2:
+                txStatus = _a.sent();
+                console.log('txStatus!', JSON.stringify(txStatus, null, 2));
                 return [2 /*return*/];
         }
     });

@@ -90,3 +90,12 @@ export interface ParsedTransactionData {}
 export interface SubmitTransactionDataResult extends NetworkAxiosDataResult {
   response?: string;
 }
+
+export type TransactionStatusResponse = {
+  Commited?: [number, number[]];
+  Pending?: any;
+};
+
+export interface TransactionStatusDataResult extends NetworkAxiosDataResult {
+  response?: TransactionStatusResponse;
+}

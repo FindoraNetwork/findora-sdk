@@ -154,3 +154,14 @@ export const getAssetToken = async (
 
   return dataResult;
 };
+
+export const getTransactionStatus = async (
+  handle: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TransactionStatusDataResult> => {
+  const url = `${getSubmitRoute()}/txn_status/${handle}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};

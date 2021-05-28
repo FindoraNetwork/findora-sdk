@@ -2,7 +2,7 @@ import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -10,7 +10,6 @@ import * as UtxoHelper from './services/utxoHelper';
 const sdkEnv = {
   hostUrl: 'https://dev-staging.dev.findora.org',
   cacheProvider: FileCacheProvider,
-  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -279,6 +278,13 @@ const myFunc11 = async () => {
   const result = await Api.Asset.getAssetDetails(customAssetCode);
 
   console.log('get custom asset details !', result);
+
+  const h = 'b07040a5d8c9ef6fcb98b95968e6c1f14f77405e851ac8230942e1c305913ea0';
+
+  const txStatus = await Network.getTransactionStatus(h);
+
+  console.log('txStatus!', JSON.stringify(txStatus, null, 2));
+  // console.log('txStatus!', txStatus);
 };
 
 // myFunc7();
