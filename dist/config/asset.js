@@ -6,8 +6,11 @@ var DEFAULT_DECIMALS = 6;
 var DEFAULT_TRANSFERABLE = true;
 var DEFAULT_UPDATABLE = true;
 exports.DEFAULT_ASSET_RULES = {
-    DEFAULT_TRANSFERABLE: DEFAULT_TRANSFERABLE,
-    DEFAULT_UPDATABLE: DEFAULT_UPDATABLE,
-    DEFAULT_DECIMALS: DEFAULT_DECIMALS,
+    max_units: null,
+    transfer_multisig_rules: null,
+    transferable: DEFAULT_TRANSFERABLE,
+    updatable: DEFAULT_UPDATABLE,
+    tracing_policies: [],
+    decimals: DEFAULT_DECIMALS,
 };
 //# sourceMappingURL=asset.js.map

@@ -1,9 +1,11 @@
+// import JSONbig from 'json-bigint';
+
 import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '../../services/ledger/types';
-import { WalletKeypar } from '../keypair';
+import { getAddressByPublicKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 
 export interface AssetRules {
@@ -34,9 +36,9 @@ export const getRandomAssetCode = async (): Promise<string> => {
 const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
-  const defaultTransferable = DEFAULT_ASSET_RULES.DEFAULT_TRANSFERABLE;
-  const defaultUpdatable = DEFAULT_ASSET_RULES.DEFAULT_UPDATABLE;
-  const defaultDecimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
+  const defaultTransferable = DEFAULT_ASSET_RULES.transferable;
+  const defaultUpdatable = DEFAULT_ASSET_RULES.updatable;
+  const defaultDecimals = DEFAULT_ASSET_RULES.decimals;
 
   const assetRules = ledger.AssetRules.new()
     .set_transferable(defaultTransferable)
@@ -155,9 +157,7 @@ export const defineAsset = async (
 ): Promise<string> => {
   const assetRules = await getAssetRules(newAssetRules);
 
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
@@ -216,9 +216,7 @@ export const issueAsset = async (
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<string> => {
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
@@ -269,4 +267,44 @@ export const issueAsset = async (
   }
 
   return handle;
+};
+
+export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.IAsset> => {
+  let result;
+
+  try {
+    result = await Network.getAssetToken(assetCode);
+  } catch (error) {
+    throw new Error(`Error Could not define asset: "${error.message}"`);
+  }
+
+  const { response: assetResult, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`Could not submit define asset transaction: "${submitError.message}"`);
+  }
+
+  if (!assetResult) {
+    throw new Error(`Could not issue asset - submit handle is missing`);
+  }
+
+  const asset = assetResult.properties;
+  const issuerAddress = await getAddressByPublicKey(asset.issuer.key);
+
+  const assetDetails = {
+    code: assetCode,
+    issuer: asset.issuer.key,
+    address: issuerAddress,
+    memo: asset.memo,
+    assetRules: { ...DEFAULT_ASSET_RULES, ...asset?.asset_rules },
+    numbers: BigInt(0),
+    name: '',
+  };
+
+  // const b = JSONbig({ useNativeBigInt: true }).stringify(assetDetails);
+
+  // console.log('assetDetails', b);
+  // console.log('assetDetails', JSON.stringify(assetDetails, null, 2));
+
+  return assetDetails;
 };

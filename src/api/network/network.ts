@@ -143,3 +143,25 @@ export const submitTransaction = async <T extends Types.TransactionData>(
 
   return dataResult;
 };
+
+export const getAssetToken = async (
+  assetCode: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.AssetTokenDataResult> => {
+  const url = `${getLedgerRoute()}/asset_token/${assetCode}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getTransactionStatus = async (
+  handle: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TransactionStatusDataResult> => {
+  const url = `${getSubmitRoute()}/txn_status/${handle}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};

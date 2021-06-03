@@ -11,6 +11,7 @@ export interface WalletKeypar extends LightWalletKeypair {
 export declare const getPrivateKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddress: (keypair: XfrKeyPair) => Promise<string>;
+export declare const getAddressByPublicKey: (publicKey: string) => Promise<string>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromMnemonic: (mnemonic: string[], password: string) => Promise<WalletKeypar>;

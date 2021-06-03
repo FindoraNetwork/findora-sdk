@@ -4,7 +4,10 @@ const DEFAULT_TRANSFERABLE = true;
 const DEFAULT_UPDATABLE = true;
 
 export const DEFAULT_ASSET_RULES = {
-  DEFAULT_TRANSFERABLE,
-  DEFAULT_UPDATABLE,
-  DEFAULT_DECIMALS,
+  max_units: null,
+  transfer_multisig_rules: null,
+  transferable: DEFAULT_TRANSFERABLE,
+  updatable: DEFAULT_UPDATABLE,
+  tracing_policies: [],
+  decimals: DEFAULT_DECIMALS,
 };

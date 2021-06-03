@@ -1,10 +1,8 @@
-import { BigNumberValue, create as createBigNumber, fromWei, toWei } from '../../services/bigNumber';
+import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
-import * as UtxoHelper from '../../services/utxoHelper';
-import { createKeypair, WalletKeypar } from '../keypair';
+import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
 
@@ -29,24 +27,39 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   return transactionBuilder;
 };
 
-export const sendToAddress = async (
+export interface TransferReciever {
+  reciverWalletInfo: WalletKeypar | LightWalletKeypair;
+  amount: number;
+}
+
+export const sendToMany = async (
   walletInfo: WalletKeypar,
-  toWalletInfo: WalletKeypar,
-  numbers: number,
+  recieversList: TransferReciever[],
   assetCode: string,
   decimals: number,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const ledger = await getLedger();
 
-  const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+  const recieversInfo: Fee.ReciverInfo[] = [];
+
+  recieversList.forEach(reciver => {
+    const { reciverWalletInfo: toWalletInfo, amount: numbers } = reciver;
+    const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+    const utxoNumbers = BigInt(toWei(numbers, decimals).toString());
+
+    const recieverInfoItem = {
+      toPublickey,
+      utxoNumbers,
+    };
+
+    recieversInfo.push(recieverInfoItem);
+  });
 
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
-    numbers,
-    toPublickey,
+    recieversInfo,
     assetCode,
-    decimals,
     assetBlindRules,
   );
 
@@ -58,9 +71,7 @@ export const sendToAddress = async (
     throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
   }
 
-  const fraCode = await AssetApi.getFraAssetCode();
-
-  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperationFee;
 
@@ -114,4 +125,32 @@ export const sendToAddress = async (
   }
 
   return handle;
+};
+
+export const sendToAddress = async (
+  walletInfo: WalletKeypar,
+  address: string,
+  numbers: number,
+  assetCode: string,
+  decimals: number,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<string> => {
+  const toWalletInfoLight = await getAddressPublicAndKey(address);
+
+  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
+
+  return sendToMany(walletInfo, recieversInfo, assetCode, decimals, assetBlindRules);
+};
+
+export const sendToPublicKey = async (
+  walletInfo: WalletKeypar,
+  publicKey: string,
+  numbers: number,
+  assetCode: string,
+  decimals: number,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<string> => {
+  const address = await getAddressByPublicKey(publicKey);
+
+  return sendToAddress(walletInfo, address, numbers, assetCode, decimals, assetBlindRules);
 };

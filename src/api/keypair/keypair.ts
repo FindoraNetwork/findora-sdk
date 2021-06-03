@@ -30,6 +30,12 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   return address;
 };
 
+export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
+  const ledger = await getLedger();
+  const address = ledger.base64_to_bech32(publicKey);
+  return address;
+};
+
 export const getAddressPublicAndKey = async (address: string): Promise<LightWalletKeypair> => {
   const ledger = await getLedger();
 
