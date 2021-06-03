@@ -1,19 +1,21 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
-// import { AssetBlindRules } from '../api/sdkAsset';
-import { toWei } from './bigNumber';
 import { getLedger } from './ledger/ledgerWrapper';
 import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from './utxoHelper';
 
+export interface ReciverInfo {
+  utxoNumbers: BigInt;
+  toPublickey: XfrPublicKey;
+}
 /**
  * @todo - rename the whole file from Fee to smth like TransferHelper, which better represents its purpose
  */
 export const getTransferOperation = async (
   walletInfo: WalletKeypar,
   utxoInputs: UtxoInputsInfo,
-  utxoNumbers: BigInt,
-  toPublickey: XfrPublicKey,
+  recieversInfo: ReciverInfo[],
+  totalUtxoNumbers: BigInt,
   assetCode: string,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
@@ -42,16 +44,20 @@ export const getTransferOperation = async (
     );
   });
 
-  transferOp = transferOp.add_output_no_tracing(
-    utxoNumbers,
-    toPublickey,
-    assetCode,
-    !!blindIsAmount,
-    !!blindIsType,
-  );
+  recieversInfo.forEach(reciverInfo => {
+    const { utxoNumbers, toPublickey } = reciverInfo;
 
-  if (inputAmount > utxoNumbers) {
-    const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
+    transferOp = transferOp.add_output_no_tracing(
+      utxoNumbers,
+      toPublickey,
+      assetCode,
+      !!blindIsAmount,
+      !!blindIsType,
+    );
+  });
+
+  if (inputAmount > totalUtxoNumbers) {
+    const numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
 
     transferOp = transferOp.add_output_no_tracing(
       numberToSubmit,
@@ -67,7 +73,6 @@ export const getTransferOperation = async (
 
 export const buildTransferOperationWithFee = async (
   walletInfo: WalletKeypar,
-  fraCode: string,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
@@ -84,19 +89,26 @@ export const buildTransferOperationWithFee = async (
 
   const minimalFee = ledger.fra_get_minimal_fee();
 
-  const sendUtxoList = getSendUtxo(fraCode, minimalFee, utxoDataList);
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  const fraAssetCode = ledger.fra_get_asset_code();
-
   const toPublickey = ledger.fra_get_dest_pubkey();
+
+  const recieversInfo = [
+    {
+      utxoNumbers: minimalFee,
+      toPublickey,
+    },
+  ];
 
   const trasferOperation = await getTransferOperation(
     walletInfo,
     utxoInputsInfo,
+    recieversInfo,
     minimalFee,
-    toPublickey,
     fraAssetCode,
     assetBlindRules,
   );
@@ -106,10 +118,8 @@ export const buildTransferOperationWithFee = async (
 
 export const buildTransferOperation = async (
   walletInfo: WalletKeypar,
-  numbers: number,
-  toPublickey: XfrPublicKey,
+  recieversInfo: ReciverInfo[],
   assetCode: string,
-  decimals: number,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -120,19 +130,21 @@ export const buildTransferOperation = async (
     throw new Error('no sids were fetched!');
   }
 
+  const totalUtxoNumbers = recieversInfo.reduce((acc, receiver) => {
+    return BigInt(Number(receiver.utxoNumbers) + Number(acc));
+  }, BigInt(0));
+
   const utxoDataList = await addUtxo(walletInfo, sids);
 
-  const utxoNumbers = BigInt(toWei(numbers, decimals).toString());
-
-  const sendUtxoList = getSendUtxo(assetCode, utxoNumbers, utxoDataList);
+  const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const trasferOperation = await getTransferOperation(
     walletInfo,
     utxoInputsInfo,
-    utxoNumbers,
-    toPublickey,
+    recieversInfo,
+    totalUtxoNumbers,
     assetCode,
     assetBlindRules,
   );

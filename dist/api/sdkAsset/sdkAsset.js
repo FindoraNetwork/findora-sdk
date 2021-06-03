@@ -201,73 +201,13 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
     });
 }); };
 var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var assetRules, fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, error_2, handle, submitError;
+    var assetRules, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, error_2, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, getAssetRules(newAssetRules)];
             case 1:
                 assetRules = _a.sent();
-                return [4 /*yield*/, exports.getFraAssetCode()];
-            case 2:
-                fraCode = _a.sent();
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
-            case 3:
-                transferOperationBuilder = _a.sent();
-                try {
-                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-                }
-                catch (error) {
-                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
-                }
-                _a.label = 4;
-            case 4:
-                _a.trys.push([4, 6, , 7]);
-                return [4 /*yield*/, getDefineAssetTransactionBuilder(walletInfo.keypair, assetName, assetRules, assetMemo)];
-            case 5:
-                transactionBuilder = _a.sent();
-                return [3 /*break*/, 7];
-            case 6:
-                error_1 = _a.sent();
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
-            case 7:
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                }
-                catch (error) {
-                    throw new Error("Could not add transfer operation, Error: \"" + error.messaage + "\"");
-                }
-                submitData = transactionBuilder.transaction();
-                _a.label = 8;
-            case 8:
-                _a.trys.push([8, 10, , 11]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 9:
-                result = _a.sent();
-                return [3 /*break*/, 11];
-            case 10:
-                error_2 = _a.sent();
-                throw new Error("Error Could not define asset: \"" + error_2.message + "\"");
-            case 11:
-                handle = result.response, submitError = result.error;
-                if (submitError) {
-                    throw new Error("Could not submit define asset transaction: \"" + submitError.message + "\"");
-                }
-                if (!handle) {
-                    throw new Error("Could not define asset - submit handle is missing");
-                }
-                return [2 /*return*/, handle];
-        }
-    });
-}); };
-exports.defineAsset = defineAsset;
-var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules, assetDecimals) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_3, submitData, result, error_4, handle, submitError;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getFraAssetCode()];
-            case 1:
-                fraCode = _a.sent();
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 2:
                 transferOperationBuilder = _a.sent();
                 try {
@@ -279,13 +219,13 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, assetDecimals)];
+                return [4 /*yield*/, getDefineAssetTransactionBuilder(walletInfo.keypair, assetName, assetRules, assetMemo)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 6];
             case 5:
-                error_3 = _a.sent();
-                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"" + error_3.messaage + "\"");
+                error_1 = _a.sent();
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
             case 6:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
@@ -302,9 +242,63 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 result = _a.sent();
                 return [3 /*break*/, 10];
             case 9:
+                error_2 = _a.sent();
+                throw new Error("Error Could not define asset: \"" + error_2.message + "\"");
+            case 10:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit define asset transaction: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("Could not define asset - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
+        }
+    });
+}); };
+exports.defineAsset = defineAsset;
+var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules, assetDecimals) { return __awaiter(void 0, void 0, void 0, function () {
+    var transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_3, submitData, result, error_4, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 1:
+                transferOperationBuilder = _a.sent();
+                try {
+                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                }
+                catch (error) {
+                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                }
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, assetDecimals)];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_3 = _a.sent();
+                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"" + error_3.messaage + "\"");
+            case 5:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (error) {
+                    throw new Error("Could not add transfer operation, Error: \"" + error.messaage + "\"");
+                }
+                submitData = transactionBuilder.transaction();
+                _a.label = 6;
+            case 6:
+                _a.trys.push([6, 8, , 9]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 7:
+                result = _a.sent();
+                return [3 /*break*/, 9];
+            case 8:
                 error_4 = _a.sent();
                 throw new Error("Could not issue asset: \"" + error_4.message + "\"");
-            case 10:
+            case 9:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
                     throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");

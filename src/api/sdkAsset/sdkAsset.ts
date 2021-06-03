@@ -157,9 +157,7 @@ export const defineAsset = async (
 ): Promise<string> => {
   const assetRules = await getAssetRules(newAssetRules);
 
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
@@ -218,9 +216,7 @@ export const issueAsset = async (
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<string> => {
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
