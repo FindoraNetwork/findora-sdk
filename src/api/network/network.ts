@@ -28,6 +28,14 @@ const getLedgerRoute = (): string => {
   return url;
 };
 
+const getExplorerApiRoute = (): string => {
+  const { hostUrl, explorerApiPort } = Sdk.environment;
+
+  const url = `${hostUrl}:${explorerApiPort}`;
+
+  return url;
+};
+
 export const apiPost = async (
   url: string,
   data?: Types.ParsedTransactionData,
@@ -162,6 +170,27 @@ export const getTransactionStatus = async (
   const url = `${getSubmitRoute()}/txn_status/${handle}`;
 
   const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getBlock = async (
+  height: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.BlockDetailsDataResult> => {
+  const url = `${getExplorerApiRoute()}/block`;
+
+  const dataResult = await apiGet(url, { ...config, params: { height } });
+
+  return dataResult;
+};
+
+export const getHashSwap = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.HashSwapDataResult> => {
+  const url = `${getExplorerApiRoute()}/tx_search`;
+  const dataResult = await apiGet(url, { ...config, params: { query: `"tx.prehash='${hash}'"` } });
 
   return dataResult;
 };

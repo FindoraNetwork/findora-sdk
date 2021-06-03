@@ -24,6 +24,7 @@ export interface NetworkAxiosHeaders {
 
 export interface NetworkAxiosConfig {
   headers?: NetworkAxiosHeaders;
+  params?: any;
 }
 
 export interface OwnedSidsDataResult extends NetworkAxiosDataResult {
@@ -75,6 +76,51 @@ export type AssetTokenResponse = {
 
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
   response?: AssetTokenResponse;
+}
+
+export type BlockDetailsResponse = {
+  result: {
+    block_id: {
+      hash: string;
+    };
+    block: {
+      header: {
+        chain_id: string;
+        height: string;
+        time: string;
+      };
+      data: {
+        txs: null | any[];
+      };
+    };
+  };
+};
+
+export interface BlockDetailsDataResult extends NetworkAxiosDataResult {
+  response?: BlockDetailsResponse;
+}
+
+export interface TxInfo {
+  hash: string;
+  height: string;
+  tx_result: {
+    log: string;
+    info: string;
+    gasWanted: string;
+    gasUsed: string;
+    tx: string;
+  };
+}
+
+export type HashSwapResponse = {
+  result: {
+    txs?: TxInfo[];
+    total_count: string;
+  };
+};
+
+export interface HashSwapDataResult extends NetworkAxiosDataResult {
+  response?: HashSwapResponse;
 }
 
 export type StateCommitmenResponse = [number[], number, string];

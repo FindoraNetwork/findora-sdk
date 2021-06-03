@@ -319,6 +319,30 @@ const myFunc12 = async () => {
   console.log('send custom result handle!', resultHandle);
 };
 
+// get block details
+const myFunc13 = async () => {
+  const height = 45;
+
+  const blockDetailsResult = await Network.getBlock(height);
+
+  console.log('blockDetails! :)', JSON.stringify(blockDetailsResult, null, 2));
+
+  const { response } = blockDetailsResult;
+
+  const block = response?.result;
+  console.log('block', block?.block.header.height);
+};
+
+// get tx hash details
+const myFunc14 = async () => {
+  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+
+  const dataResult = await Network.getHashSwap(h);
+
+  const { response } = dataResult;
+
+  console.log(response?.result.txs);
+};
 // myFunc7();
 
 // send custom
@@ -327,6 +351,6 @@ const myFunc12 = async () => {
 // send fra
 // myFunc9();
 
-myFunc12();
+myFunc14();
 // myFunc8();
 // myFunc7();
