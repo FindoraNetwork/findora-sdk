@@ -101,6 +101,13 @@ const myFunc4 = async () => {
 
   const toPublickey = ledger.fra_get_dest_pubkey();
 
+  console.log('toPublickey', toPublickey);
+
+  const publicKeyInString = ledger.public_key_to_base64(toPublickey);
+  console.log('publicKeyInString', publicKeyInString);
+  const addressInString = ledger.base64_to_bech32(publicKeyInString);
+  console.log('addressInString', addressInString);
+
   const recieversInfo = [
     {
       utxoNumbers: minimalFee,
@@ -343,6 +350,26 @@ const myFunc14 = async () => {
 
   console.log(response?.result.txs);
 };
+
+// get tx list hash details
+const myFunc15 = async () => {
+  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const dataResult = await Network.getTxList(walletInfo.address, 'to');
+
+  const { response } = dataResult;
+
+  // console.log('response!', JSON.stringify(response, null, 2));
+
+  console.log('response!!!', response);
+  // console.log(response?.result.txs?.[0]);
+};
 // myFunc7();
 
 // send custom
@@ -351,6 +378,6 @@ const myFunc14 = async () => {
 // send fra
 // myFunc9();
 
-myFunc14();
+myFunc4();
 // myFunc8();
 // myFunc7();

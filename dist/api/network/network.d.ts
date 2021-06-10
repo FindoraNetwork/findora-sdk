@@ -9,3 +9,7 @@ export declare const getSubmitTransactionData: <T extends string>(data?: T | und
 export declare const submitTransaction: <T extends string>(data?: T | undefined, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.SubmitTransactionDataResult>;
 export declare const getAssetToken: (assetCode: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AssetTokenDataResult>;
 export declare const getTransactionStatus: (handle: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TransactionStatusDataResult>;
+export declare const getBlock: (height: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.BlockDetailsDataResult>;
+export declare const getHashSwap: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.HashSwapDataResult>;
+export declare const getTxList: (address: string, type: 'to' | 'from', page?: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
+export declare const getTransactionDetails: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxDetailsDataResult>;

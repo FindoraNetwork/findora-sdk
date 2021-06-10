@@ -87,7 +87,7 @@ export type BlockDetailsResponse = {
       header: {
         chain_id: string;
         height: string;
-        time: string;
+        time: string | undefined;
       };
       data: {
         txs: null | any[];
@@ -100,16 +100,43 @@ export interface BlockDetailsDataResult extends NetworkAxiosDataResult {
   response?: BlockDetailsResponse;
 }
 
+export interface TxResult {
+  hash: string;
+  time: string;
+  code: number;
+  data: null | any[];
+  log?: string;
+  info?: string;
+  gasWanted?: string;
+  gasUsed?: string;
+}
+
 export interface TxInfo {
   hash: string;
-  height: string;
-  tx_result: {
-    log: string;
-    info: string;
-    gasWanted: string;
-    gasUsed: string;
+  height: number;
+  tx_result: TxResult;
+  tx: string;
+}
+
+export type TxListResponse = {
+  result: {
+    txs: null | TxInfo[];
+    total_count: number;
+  };
+};
+
+export interface TxListDataResult extends NetworkAxiosDataResult {
+  response?: TxListResponse;
+}
+
+export type TxDetailsResponse = {
+  result: {
     tx: string;
   };
+};
+
+export interface TxDetailsDataResult extends NetworkAxiosDataResult {
+  response?: TxDetailsResponse;
 }
 
 export type HashSwapResponse = {

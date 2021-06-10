@@ -111,7 +111,7 @@ export const sendToMany = async (
   try {
     result = await Network.submitTransaction(submitData);
   } catch (err) {
-    throw new Error(`Error Could not define asset: "${err.message}"`);
+    throw new Error(`Error Could not submit transaction: "${err.message}"`);
   }
 
   const { response: handle, error: submitError } = result;

@@ -82,6 +82,7 @@ var Sdk = /** @class */ (function () {
         queryPort: '8667',
         ledgerPort: '8668',
         submissionPort: '8669',
+        explorerApiPort: '26657',
         cacheProvider: providers_1.MemoryCacheProvider,
         cachePath: './cache',
     };

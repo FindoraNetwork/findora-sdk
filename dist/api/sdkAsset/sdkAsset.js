@@ -345,9 +345,6 @@ var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, vo
                     numbers: BigInt(0),
                     name: '',
                 };
-                // const b = JSONbig({ useNativeBigInt: true }).stringify(assetDetails);
-                // console.log('assetDetails', b);
-                // console.log('assetDetails', JSON.stringify(assetDetails, null, 2));
                 return [2 /*return*/, assetDetails];
         }
     });

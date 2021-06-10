@@ -301,10 +301,5 @@ export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.
     name: '',
   };
 
-  // const b = JSONbig({ useNativeBigInt: true }).stringify(assetDetails);
-
-  // console.log('assetDetails', b);
-  // console.log('assetDetails', JSON.stringify(assetDetails, null, 2));
-
   return assetDetails;
 };

@@ -157,7 +157,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                 return [3 /*break*/, 11];
             case 10:
                 err_1 = _a.sent();
-                throw new Error("Error Could not define asset: \"" + err_1.message + "\"");
+                throw new Error("Error Could not submit transaction: \"" + err_1.message + "\"");
             case 11:
                 handle = result.response, submitError = result.error;
                 if (submitError) {

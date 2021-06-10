@@ -194,3 +194,39 @@ export const getHashSwap = async (
 
   return dataResult;
 };
+
+export const getTxList = async (
+  address: string,
+  type: 'to' | 'from',
+  page = 1,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListDataResult> => {
+  const url = `${getExplorerApiRoute()}/tx_search`;
+
+  const query = type === 'from' ? `"addr.from.${address}='y'"` : `"addr.to.${address}='y'"`;
+
+  const params = {
+    query,
+    page,
+    per_page: 10,
+    order_by: '"desc"',
+  };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTransactionDetails = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxDetailsDataResult> => {
+  const params = {
+    hash: `0x${hash}`,
+  };
+  const url = `${getExplorerApiRoute()}/tx`;
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};

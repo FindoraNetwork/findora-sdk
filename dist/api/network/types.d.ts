@@ -18,6 +18,7 @@ export interface NetworkAxiosHeaders {
 }
 export interface NetworkAxiosConfig {
     headers?: NetworkAxiosHeaders;
+    params?: any;
 }
 export interface OwnedSidsDataResult extends NetworkAxiosDataResult {
     response?: number[];
@@ -61,6 +62,68 @@ export declare type AssetTokenResponse = {
 };
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
     response?: AssetTokenResponse;
+}
+export declare type BlockDetailsResponse = {
+    result: {
+        block_id: {
+            hash: string;
+        };
+        block: {
+            header: {
+                chain_id: string;
+                height: string;
+                time: string | undefined;
+            };
+            data: {
+                txs: null | any[];
+            };
+        };
+    };
+};
+export interface BlockDetailsDataResult extends NetworkAxiosDataResult {
+    response?: BlockDetailsResponse;
+}
+export interface TxResult {
+    hash: string;
+    time: string;
+    code: number;
+    data: null | any[];
+    log?: string;
+    info?: string;
+    gasWanted?: string;
+    gasUsed?: string;
+}
+export interface TxInfo {
+    hash: string;
+    height: number;
+    tx_result: TxResult;
+    tx: string;
+}
+export declare type TxListResponse = {
+    result: {
+        txs: null | TxInfo[];
+        total_count: number;
+    };
+};
+export interface TxListDataResult extends NetworkAxiosDataResult {
+    response?: TxListResponse;
+}
+export declare type TxDetailsResponse = {
+    result: {
+        tx: string;
+    };
+};
+export interface TxDetailsDataResult extends NetworkAxiosDataResult {
+    response?: TxDetailsResponse;
+}
+export declare type HashSwapResponse = {
+    result: {
+        txs?: TxInfo[];
+        total_count: string;
+    };
+};
+export interface HashSwapDataResult extends NetworkAxiosDataResult {
+    response?: HashSwapResponse;
 }
 export declare type StateCommitmenResponse = [number[], number, string];
 export interface StateCommitmentDataResult extends NetworkAxiosDataResult {
