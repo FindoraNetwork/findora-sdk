@@ -55,12 +55,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendToPublicKey = exports.sendToAddress = exports.sendToMany = exports.getTransactionBuilder = void 0;
+exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.sendToMany = exports.getTransactionBuilder = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
+var helpers = __importStar(require("./helpers"));
+var processor_1 = require("./processor");
 var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
     return __generator(this, function (_b) {
@@ -86,7 +88,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
 var sendToMany = function (walletInfo, recieversList, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, recieversInfo, transferOperationBuilder, receivedTransferOperation, transferOperationBuilderFee, receivedTransferOperationFee, transactionBuilder, error_1, submitData, result, err_1, handle, submitError;
+    var ledger, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transferOperationBuilderFee, receivedTransferOperationFee, e, transactionBuilder, error_1, e, e, e, submitData, result, err_1, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -110,7 +112,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
                 }
                 catch (error) {
-                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                    e = error;
+                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
                 }
                 return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 3:
@@ -122,7 +125,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                         .transaction();
                 }
                 catch (error) {
-                    throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
+                    e = error;
+                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
                 }
                 _a.label = 4;
             case 4:
@@ -133,19 +137,22 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                 return [3 /*break*/, 7];
             case 6:
                 error_1 = _a.sent();
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
+                e = error_1;
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
             case 7:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
-                    throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
+                    e = err;
+                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
                 }
                 catch (err) {
-                    throw new Error("Could not add transfer operation, Error: \"" + err.messaage + "\"");
+                    e = err;
+                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 submitData = transactionBuilder.transaction();
                 _a.label = 8;
@@ -157,7 +164,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                 return [3 /*break*/, 11];
             case 10:
                 err_1 = _a.sent();
-                throw new Error("Error Could not submit transaction: \"" + err_1.message + "\"");
+                e = err_1;
+                throw new Error("Error Could not submit transaction: \"" + e.message + "\"");
             case 11:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
@@ -196,4 +204,32 @@ var sendToPublicKey = function (walletInfo, publicKey, numbers, assetCode, decim
     });
 }); };
 exports.sendToPublicKey = sendToPublicKey;
+var getTxList = function (address, type, page) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var dataResult, txList, processedTxList;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, Network.getTxList(address, type, page)];
+                case 1:
+                    dataResult = _a.sent();
+                    if (!dataResult.response) {
+                        throw new Error('could not fetch a list of transactions. No response from the server.');
+                    }
+                    txList = helpers.getTxListFromResponse(dataResult);
+                    if (!txList) {
+                        throw new Error('could not get a list of transactions from the server response.');
+                    }
+                    return [4 /*yield*/, processor_1.processeTxInfoList(txList)];
+                case 2:
+                    processedTxList = _a.sent();
+                    return [2 /*return*/, {
+                            total_count: dataResult.response.result.total_count,
+                            txs: processedTxList,
+                        }];
+            }
+        });
+    });
+};
+exports.getTxList = getTxList;
 //# sourceMappingURL=transaction.js.map
