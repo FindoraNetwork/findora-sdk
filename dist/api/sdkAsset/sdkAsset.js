@@ -67,7 +67,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraAssetCode = void 0;
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -87,6 +87,19 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.getFraAssetCode = getFraAssetCode;
+var getAssetCode = function (val) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, decryptedAsetType;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                decryptedAsetType = ledger.asset_type_from_jsvalue(val);
+                return [2 /*return*/, decryptedAsetType];
+        }
+    });
+}); };
+exports.getAssetCode = getAssetCode;
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, assetCode;
     return __generator(this, function (_a) {
