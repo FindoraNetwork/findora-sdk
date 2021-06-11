@@ -1,7 +1,8 @@
 import * as Types from '../types';
 import { Unsupported } from './unsupported';
 import { ProcessedDefineAsset } from './defineAsset';
-export declare type ProcessedTx = ProcessedDefineAsset | Unsupported;
+import { ProcessedTransferAsset } from './transferAsset';
+export declare type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | Unsupported;
 export declare type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
 export interface TxOperationProcessors {
     [key: string]: ProcessorType;

@@ -4,8 +4,9 @@ import * as Types from '../types';
 
 import { processUnsupported, Unsupported } from './unsupported';
 import { processDefineAsset, ProcessedDefineAsset } from './defineAsset';
+import { processTransferAsset, ProcessedTransferAsset } from './transferAsset';
 
-export type ProcessedTx = ProcessedDefineAsset | Unsupported;
+export type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | Unsupported;
 
 export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
 
@@ -28,5 +29,6 @@ export const getOperationProcessor = (
 
 export const processorsMap: TxOperationProcessors = {
   DefineAsset: processDefineAsset,
+  TransferAsset: processTransferAsset,
   Unsupported: processUnsupported,
 };
