@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { AssetRules as LedgerAssetRules } from '../../services/ledger/types';
-
 export interface ResultError {
   message: string;
 }
@@ -62,16 +60,7 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
 }
 
 export type AssetTokenResponse = {
-  properties: {
-    code: {
-      val: number[];
-    };
-    issuer: {
-      key: string;
-    };
-    memo: string;
-    asset_rules: LedgerAssetRules;
-  };
+  properties: FindoraWallet.IPureAsset;
 };
 
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
@@ -101,9 +90,9 @@ export interface BlockDetailsDataResult extends NetworkAxiosDataResult {
 }
 
 export interface TxResult {
-  hash: string;
-  time: string;
   code: number;
+  hash: string;
+  time: string | undefined;
   data: null | any[];
   log?: string;
   info?: string;
@@ -112,17 +101,22 @@ export interface TxResult {
 }
 
 export interface TxInfo {
+  code: number;
+  data: null | any[];
   hash: string;
+  time: string | undefined;
   height: number;
+  index: number;
   tx_result: TxResult;
   tx: string;
 }
+export interface TxListResponseResult {
+  txs: null | TxInfo[];
+  total_count: number;
+}
 
 export type TxListResponse = {
-  result: {
-    txs: null | TxInfo[];
-    total_count: number;
-  };
+  result: TxListResponseResult;
 };
 
 export interface TxListDataResult extends NetworkAxiosDataResult {
@@ -140,10 +134,7 @@ export interface TxDetailsDataResult extends NetworkAxiosDataResult {
 }
 
 export type HashSwapResponse = {
-  result: {
-    txs?: TxInfo[];
-    total_count: string;
-  };
+  result: TxListResponseResult;
 };
 
 export interface HashSwapDataResult extends NetworkAxiosDataResult {
