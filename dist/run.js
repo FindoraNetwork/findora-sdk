@@ -90,7 +90,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
                 password = '123';
                 console.log('pass!', password);
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
@@ -137,7 +137,7 @@ var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // get transfer operation with fee
 var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, recieversInfo, trasferOperation;
+    var ledger, address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, publicKeyInString, addressInString, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -173,6 +173,11 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 console.log('utxoInputsInfo!', utxoInputsInfo);
                 minimalFee = ledger.fra_get_minimal_fee();
                 toPublickey = ledger.fra_get_dest_pubkey();
+                console.log('toPublickey', toPublickey);
+                publicKeyInString = ledger.public_key_to_base64(toPublickey);
+                console.log('publicKeyInString', publicKeyInString);
+                addressInString = ledger.base64_to_bech32(publicKeyInString);
+                console.log('addressInString', addressInString);
                 recieversInfo = [
                     {
                         utxoNumbers: minimalFee,
@@ -365,7 +370,7 @@ var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function (
 }); };
 // send custom asset to many
 var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, customAssetCode, toPkey, password, walletInfo, toWalletInfo, assetCode, decimals, assetBlindRules, recieversInfo, resultHandle;
+    var pkey, customAssetCode, toPkey, password, walletInfo, toWalletInfo, fraCode, assetCode, decimals, assetBlindRules, recieversInfo, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -379,17 +384,98 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
             case 2:
                 toWalletInfo = _a.sent();
-                assetCode = customAssetCode;
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 3:
+                fraCode = _a.sent();
+                assetCode = fraCode;
                 decimals = 6;
-                assetBlindRules = { isTypeBlind: true, isAmountBlind: false };
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
                 recieversInfo = [
                     { reciverWalletInfo: toWalletInfo, amount: 0.1 },
                     { reciverWalletInfo: toWalletInfo, amount: 0.2 },
                 ];
                 return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, decimals, assetBlindRules)];
-            case 3:
+            case 4:
                 resultHandle = _a.sent();
                 console.log('send custom result handle!', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// get block details
+var myFunc13 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var height, blockDetailsResult, response, block;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                height = 45;
+                return [4 /*yield*/, api_1.Network.getBlock(height)];
+            case 1:
+                blockDetailsResult = _a.sent();
+                console.log('blockDetails! :)', JSON.stringify(blockDetailsResult, null, 2));
+                response = blockDetailsResult.response;
+                block = response === null || response === void 0 ? void 0 : response.result;
+                console.log('block', block === null || block === void 0 ? void 0 : block.block.header.height);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// get tx hash details
+var myFunc14 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var h, dataResult, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+                return [4 /*yield*/, api_1.Network.getHashSwap(h)];
+            case 1:
+                dataResult = _a.sent();
+                response = dataResult.response;
+                console.log(response === null || response === void 0 ? void 0 : response.result.txs);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// get tx list hash details
+var myFunc15 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var h, pkey, password, walletInfo, dataResult, response;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'to')];
+            case 2:
+                dataResult = _a.sent();
+                response = dataResult.response;
+                // console.log('response!', JSON.stringify(response, null, 2));
+                console.log('response!!!', response);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var myFunc16 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, toKey, password, walletInfo, toWalletInfo, txList;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.getTxList(walletInfo.address, 'from')];
+            case 3:
+                txList = _a.sent();
+                console.log('txList', txList);
                 return [2 /*return*/];
         }
     });
@@ -399,7 +485,9 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
 // myFunc10();
 // send fra
 // myFunc9();
-myFunc12();
+// myFunc4();
+myFunc16();
+// myFunc12();
 // myFunc8();
 // myFunc7();
 //# sourceMappingURL=run.js.map

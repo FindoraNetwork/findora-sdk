@@ -4,7 +4,10 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
+import { ProcessedTxListResponseResult } from './types';
 import * as AssetApi from '../sdkAsset';
+import * as helpers from './helpers';
+import { processeTxInfoList } from './processor';
 
 export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
@@ -68,7 +71,9 @@ export const sendToMany = async (
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
   } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
@@ -81,7 +86,9 @@ export const sendToMany = async (
       .sign(walletInfo.keypair)
       .transaction();
   } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -89,19 +96,25 @@ export const sendToMany = async (
   try {
     transactionBuilder = await getTransactionBuilder();
   } catch (error) {
-    throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get "defineTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (err) {
-    throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
   } catch (err) {
-    throw new Error(`Could not add transfer operation, Error: "${err.messaage}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -111,7 +124,9 @@ export const sendToMany = async (
   try {
     result = await Network.submitTransaction(submitData);
   } catch (err) {
-    throw new Error(`Error Could not define asset: "${err.message}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not submit transaction: "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -153,4 +168,29 @@ export const sendToPublicKey = async (
   const address = await getAddressByPublicKey(publicKey);
 
   return sendToAddress(walletInfo, address, numbers, assetCode, decimals, assetBlindRules);
+};
+
+export const getTxList = async (
+  address: string,
+  type: 'to' | 'from',
+  page = 1,
+): Promise<ProcessedTxListResponseResult> => {
+  const dataResult = await Network.getTxList(address, type, page);
+
+  if (!dataResult.response) {
+    throw new Error('could not fetch a list of transactions. No response from the server.');
+  }
+
+  const txList = helpers.getTxListFromResponse(dataResult);
+
+  if (!txList) {
+    throw new Error('could not get a list of transactions from the server response.');
+  }
+
+  const processedTxList = await processeTxInfoList(txList);
+
+  return {
+    total_count: dataResult.response.result.total_count,
+    txs: processedTxList,
+  };
 };

@@ -6,8 +6,21 @@ declare namespace FindoraWallet {
     transfer_multisig_rules: any;
     max_units: null | number;
   }
+  export interface ILedgerAsset {
+    memo: string;
+  }
 
-  export interface IAsset {
+  export interface IPureAsset extends ILedgerAsset {
+    code: {
+      val: number[];
+    };
+    issuer: {
+      key: string;
+    };
+    asset_rules: IAssetRules;
+  }
+
+  export interface IAsset extends ILedgerAsset {
     address: string;
     code: string;
     issuer: string;

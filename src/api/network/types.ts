@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { AssetRules as LedgerAssetRules } from '../../services/ledger/types';
-
 export interface ResultError {
   message: string;
 }
@@ -24,6 +22,7 @@ export interface NetworkAxiosHeaders {
 
 export interface NetworkAxiosConfig {
   headers?: NetworkAxiosHeaders;
+  params?: any;
 }
 
 export interface OwnedSidsDataResult extends NetworkAxiosDataResult {
@@ -61,20 +60,85 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
 }
 
 export type AssetTokenResponse = {
-  properties: {
-    code: {
-      val: number[];
-    };
-    issuer: {
-      key: string;
-    };
-    memo: string;
-    asset_rules: LedgerAssetRules;
-  };
+  properties: FindoraWallet.IPureAsset;
 };
 
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
   response?: AssetTokenResponse;
+}
+
+export type BlockDetailsResponse = {
+  result: {
+    block_id: {
+      hash: string;
+    };
+    block: {
+      header: {
+        chain_id: string;
+        height: string;
+        time: string | undefined;
+      };
+      data: {
+        txs: null | any[];
+      };
+    };
+  };
+};
+
+export interface BlockDetailsDataResult extends NetworkAxiosDataResult {
+  response?: BlockDetailsResponse;
+}
+
+export interface TxResult {
+  code: number;
+  hash: string;
+  time: string | undefined;
+  data: null | any[];
+  log?: string;
+  info?: string;
+  gasWanted?: string;
+  gasUsed?: string;
+}
+
+export interface TxInfo {
+  code: number;
+  data: null | any[];
+  hash: string;
+  time: string | undefined;
+  height: number;
+  index: number;
+  tx_result: TxResult;
+  tx: string;
+}
+export interface TxListResponseResult {
+  txs: null | TxInfo[];
+  total_count: number;
+}
+
+export type TxListResponse = {
+  result: TxListResponseResult;
+};
+
+export interface TxListDataResult extends NetworkAxiosDataResult {
+  response?: TxListResponse;
+}
+
+export type TxDetailsResponse = {
+  result: {
+    tx: string;
+  };
+};
+
+export interface TxDetailsDataResult extends NetworkAxiosDataResult {
+  response?: TxDetailsResponse;
+}
+
+export type HashSwapResponse = {
+  result: TxListResponseResult;
+};
+
+export interface HashSwapDataResult extends NetworkAxiosDataResult {
+  response?: HashSwapResponse;
 }
 
 export type StateCommitmenResponse = [number[], number, string];

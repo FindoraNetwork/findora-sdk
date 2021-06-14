@@ -23,7 +23,8 @@ const myFunc1 = async () => {
 
 // define asset
 const myFunc2 = async () => {
-  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  // const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const password = '123';
   console.log('pass!', password);
 
@@ -100,6 +101,13 @@ const myFunc4 = async () => {
   const minimalFee = ledger.fra_get_minimal_fee();
 
   const toPublickey = ledger.fra_get_dest_pubkey();
+
+  console.log('toPublickey', toPublickey);
+
+  const publicKeyInString = ledger.public_key_to_base64(toPublickey);
+  console.log('publicKeyInString', publicKeyInString);
+  const addressInString = ledger.base64_to_bech32(publicKeyInString);
+  console.log('addressInString', addressInString);
 
   const recieversInfo = [
     {
@@ -297,11 +305,14 @@ const myFunc12 = async () => {
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
 
-  const assetCode = customAssetCode;
+  const fraCode = await Asset.getFraAssetCode();
+
+  const assetCode = fraCode;
+  // const assetCode = customAssetCode;
 
   const decimals = 6;
 
-  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: true, isAmountBlind: false };
+  const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const recieversInfo = [
     { reciverWalletInfo: toWalletInfo, amount: 0.1 },
@@ -319,6 +330,64 @@ const myFunc12 = async () => {
   console.log('send custom result handle!', resultHandle);
 };
 
+// get block details
+const myFunc13 = async () => {
+  const height = 45;
+
+  const blockDetailsResult = await Network.getBlock(height);
+
+  console.log('blockDetails! :)', JSON.stringify(blockDetailsResult, null, 2));
+
+  const { response } = blockDetailsResult;
+
+  const block = response?.result;
+  console.log('block', block?.block.header.height);
+};
+
+// get tx hash details
+const myFunc14 = async () => {
+  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+
+  const dataResult = await Network.getHashSwap(h);
+
+  const { response } = dataResult;
+
+  console.log(response?.result.txs);
+};
+
+// get tx list hash details
+const myFunc15 = async () => {
+  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const dataResult = await Network.getTxList(walletInfo.address, 'to');
+
+  const { response } = dataResult;
+
+  // console.log('response!', JSON.stringify(response, null, 2));
+
+  console.log('response!!!', response);
+  // console.log(response?.result.txs?.[0]);
+};
+
+const myFunc16 = async () => {
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const txList = await Transaction.getTxList(walletInfo.address, 'from');
+
+  console.log('txList', txList);
+};
 // myFunc7();
 
 // send custom
@@ -327,6 +396,9 @@ const myFunc12 = async () => {
 // send fra
 // myFunc9();
 
-myFunc12();
+// myFunc4();
+
+myFunc16();
+// myFunc12();
 // myFunc8();
 // myFunc7();

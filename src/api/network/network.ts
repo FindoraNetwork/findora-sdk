@@ -28,6 +28,14 @@ const getLedgerRoute = (): string => {
   return url;
 };
 
+const getExplorerApiRoute = (): string => {
+  const { hostUrl, explorerApiPort } = Sdk.environment;
+
+  const url = `${hostUrl}:${explorerApiPort}`;
+
+  return url;
+};
+
 export const apiPost = async (
   url: string,
   data?: Types.ParsedTransactionData,
@@ -162,6 +170,63 @@ export const getTransactionStatus = async (
   const url = `${getSubmitRoute()}/txn_status/${handle}`;
 
   const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getBlock = async (
+  height: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.BlockDetailsDataResult> => {
+  const url = `${getExplorerApiRoute()}/block`;
+
+  const dataResult = await apiGet(url, { ...config, params: { height } });
+
+  return dataResult;
+};
+
+export const getHashSwap = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.HashSwapDataResult> => {
+  const url = `${getExplorerApiRoute()}/tx_search`;
+  const dataResult = await apiGet(url, { ...config, params: { query: `"tx.prehash='${hash}'"` } });
+
+  return dataResult;
+};
+
+export const getTxList = async (
+  address: string,
+  type: 'to' | 'from',
+  page = 1,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListDataResult> => {
+  const url = `${getExplorerApiRoute()}/tx_search`;
+
+  const query = type === 'from' ? `"addr.from.${address}='y'"` : `"addr.to.${address}='y'"`;
+
+  const params = {
+    query,
+    page,
+    per_page: 10,
+    order_by: '"desc"',
+  };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTransactionDetails = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxDetailsDataResult> => {
+  const params = {
+    hash: `0x${hash}`,
+  };
+  const url = `${getExplorerApiRoute()}/tx`;
+
+  const dataResult = await apiGet(url, { ...config, params });
 
   return dataResult;
 };

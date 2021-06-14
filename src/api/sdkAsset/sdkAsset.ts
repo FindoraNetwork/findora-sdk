@@ -27,6 +27,13 @@ export const getFraAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
+export const getAssetCode = async (val: number[]): Promise<string> => {
+  const ledger = await getLedger();
+
+  const decryptedAsetType = ledger.asset_type_from_jsvalue(val);
+  return decryptedAsetType;
+};
+
 export const getRandomAssetCode = async (): Promise<string> => {
   const ledger = await getLedger();
   const assetCode = ledger.random_asset_type();
@@ -300,11 +307,6 @@ export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.
     numbers: BigInt(0),
     name: '',
   };
-
-  // const b = JSONbig({ useNativeBigInt: true }).stringify(assetDetails);
-
-  // console.log('assetDetails', b);
-  // console.log('assetDetails', JSON.stringify(assetDetails, null, 2));
 
   return assetDetails;
 };
