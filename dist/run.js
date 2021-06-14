@@ -480,13 +480,34 @@ var myFunc16 = function () { return __awaiter(void 0, void 0, void 0, function (
         }
     });
 }); };
+var myFunc17 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, toKey, password, walletInfo, toWalletInfo, a;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getCreatedAssets(walletInfo.address)];
+            case 3:
+                a = _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); };
 // myFunc7();
 // send custom
 // myFunc10();
 // send fra
 // myFunc9();
 // myFunc4();
-myFunc16();
+myFunc17();
 // myFunc12();
 // myFunc8();
 // myFunc7();

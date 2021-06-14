@@ -134,3 +134,25 @@ export declare type TransactionStatusResponse = {
 export interface TransactionStatusDataResult extends NetworkAxiosDataResult {
     response?: TransactionStatusResponse;
 }
+export declare type IssuedRecord = [TxOutput, null | number];
+export declare type IssuedRecordResponse = IssuedRecord[];
+export interface IssuedRecordDataResult extends NetworkAxiosDataResult {
+    response?: IssuedRecordResponse;
+}
+export interface TxAmount {
+    NonConfidential?: string;
+    Confidential?: string[];
+}
+export interface TxAssetType {
+    Confidential?: string;
+    NonConfidential?: number[];
+}
+export interface TxRecord {
+    amount: TxAmount;
+    asset_type: TxAssetType;
+    public_key: string;
+}
+export interface TxOutput {
+    id: number | null;
+    record: TxRecord;
+}
