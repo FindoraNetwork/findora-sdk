@@ -388,6 +388,33 @@ const myFunc16 = async () => {
 
   console.log('txList', txList);
 };
+
+const myFunc17 = async () => {
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const a = await Account.getCreatedAssets(walletInfo.address);
+
+  // const dataResult = await Network.getIssuedRecords(walletInfo.publickey);
+
+  // console.log('dataResult!', dataResult);
+
+  // const [firstTxRecord] = dataResult.response!;
+
+  // const [txRecord, _] = firstTxRecord;
+
+  // console.log('txRecord!', txRecord);
+
+  // const { response } = dataResult;
+
+  // const txList = await Transaction.getTxList(walletInfo.address, 'from');
+};
+
 // myFunc7();
 
 // send custom
@@ -398,7 +425,7 @@ const myFunc16 = async () => {
 
 // myFunc4();
 
-myFunc16();
+myFunc17();
 // myFunc12();
 // myFunc8();
 // myFunc7();

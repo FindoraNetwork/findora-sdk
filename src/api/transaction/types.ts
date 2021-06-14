@@ -4,22 +4,26 @@ export interface TxInput {
   Absolute: number;
 }
 
+// merge with network
 export interface TxAmount {
   NonConfidential?: string;
   Confidential?: string[];
 }
 
+// merge with network
 export interface TxAssetType {
   Confidential?: string;
   NonConfidential?: number[];
 }
 
+// merge with network
 export interface TxRecord {
   amount: TxAmount;
   asset_type: TxAssetType;
   public_key: string;
 }
 
+// merge with network
 export interface TxOutput {
   id: number | null;
   record: TxRecord;
