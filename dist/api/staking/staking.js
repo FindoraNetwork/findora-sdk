@@ -96,14 +96,11 @@ var getUnDelegateTransactionBuilder = function (walletKeypair) { return __awaite
     });
 }); };
 var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, error_2, handle, submitError;
+    var transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_1, submitData, result, error_2, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getFraAssetCode()];
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 1:
-                fraCode = _a.sent();
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
-            case 2:
                 transferOperationBuilder = _a.sent();
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
@@ -111,17 +108,17 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
                 catch (error) {
                     throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
                 }
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
                 return [4 /*yield*/, getUnDelegateTransactionBuilder(walletInfo.keypair)];
-            case 4:
+            case 3:
                 transactionBuilder = _a.sent();
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 5];
+            case 4:
                 error_1 = _a.sent();
                 throw new Error("Could not get \"UnDelegateTransactionBuilder\", Error: \"" + error_1.messaage + "\"");
-            case 6:
+            case 5:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
@@ -129,17 +126,17 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
                     throw new Error("Could not add transfer operation, Error: \"" + error.messaage + "\"");
                 }
                 submitData = transactionBuilder.transaction();
-                _a.label = 7;
-            case 7:
-                _a.trys.push([7, 9, , 10]);
+                _a.label = 6;
+            case 6:
+                _a.trys.push([6, 8, , 9]);
                 return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 8:
+            case 7:
                 result = _a.sent();
-                return [3 /*break*/, 10];
-            case 9:
+                return [3 /*break*/, 9];
+            case 8:
                 error_2 = _a.sent();
                 throw new Error("Could not unDelegate : \"" + error_2.message + "\"");
-            case 10:
+            case 9:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
                     throw new Error("Could not submit unDelegate transaction: \"" + submitError.message + "\"");
@@ -176,14 +173,11 @@ var getClaimTransactionBuilder = function (walletKeypair, rewords) { return __aw
     });
 }); };
 var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_3, submitData, result, error_4, handle, submitError;
+    var transferOperationBuilder, receivedTransferOperation, transactionBuilder, error_3, submitData, result, error_4, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, exports.getFraAssetCode()];
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 1:
-                fraCode = _a.sent();
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, fraCode)];
-            case 2:
                 transferOperationBuilder = _a.sent();
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
@@ -191,17 +185,17 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 catch (error) {
                     throw new Error("Could not create transfer operation, Error: \"" + error.messaage + "\"");
                 }
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
                 return [4 /*yield*/, getClaimTransactionBuilder(walletInfo.keypair, amount)];
-            case 4:
+            case 3:
                 transactionBuilder = _a.sent();
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 5];
+            case 4:
                 error_3 = _a.sent();
                 throw new Error("Could not get \"claimTransactionBuilder\", Error: \"" + error_3.messaage + "\"");
-            case 6:
+            case 5:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
@@ -209,17 +203,17 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                     throw new Error("Could not add transfer operation, Error: \"" + error.messaage + "\"");
                 }
                 submitData = transactionBuilder.transaction();
-                _a.label = 7;
-            case 7:
-                _a.trys.push([7, 9, , 10]);
+                _a.label = 6;
+            case 6:
+                _a.trys.push([6, 8, , 9]);
                 return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 8:
+            case 7:
                 result = _a.sent();
-                return [3 /*break*/, 10];
-            case 9:
+                return [3 /*break*/, 9];
+            case 8:
                 error_4 = _a.sent();
                 throw new Error("Could not claim : \"" + error_4.message + "\"");
-            case 10:
+            case 9:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
                     throw new Error("Could not submit claim transaction: \"" + submitError.message + "\"");

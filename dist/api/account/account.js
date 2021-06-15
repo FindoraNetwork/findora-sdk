@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -55,13 +66,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBalance = exports.getAssetBalance = void 0;
+exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
+var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var sdkAsset_1 = require("../sdkAsset");
 var getAssetBalance = function (walletKeypair, assetCode, sids) { return __awaiter(void 0, void 0, void 0, function () {
-    var utxoDataList, error_1, filteredUtxoList, currentBalance;
+    var utxoDataList, err_1, e, filteredUtxoList, currentBalance;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -71,8 +83,9 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
                 utxoDataList = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                error_1 = _a.sent();
-                throw new Error("Could not get list of addUtxo, Details: \"" + error_1.message + "\"");
+                err_1 = _a.sent();
+                e = err_1;
+                throw new Error("Could not get list of addUtxo, Details: \"" + e.message + "\"");
             case 3:
                 if (!utxoDataList.length) {
                     return [2 /*return*/, bigNumber_1.create(0)];
@@ -91,7 +104,7 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
 }); };
 exports.getAssetBalance = getAssetBalance;
 var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, balance, err_1;
+    var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, balance, err_2, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Network.getOwnedSids(walletKeypair.publickey)];
@@ -114,11 +127,89 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
                 balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
                 return [2 /*return*/, balance];
             case 5:
-                err_1 = _a.sent();
-                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + err_1.message);
+                err_2 = _a.sent();
+                e = err_2;
+                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + e.message);
             case 6: return [2 /*return*/];
         }
     });
 }); };
 exports.getBalance = getBalance;
+var create = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var walletKeyPair, err_3, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, keypair_1.createKeypair(password)];
+            case 1:
+                walletKeyPair = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_3 = _a.sent();
+                e = err_3;
+                throw new Error("Could not create a new account. \"" + e.message + "\"");
+            case 3: return [2 /*return*/, walletKeyPair];
+        }
+    });
+}); };
+exports.create = create;
+var processIssuedRecordItem = function (issuedRecord) { return __awaiter(void 0, void 0, void 0, function () {
+    var txRecord, ownerMemo, assetCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                txRecord = issuedRecord[0], ownerMemo = issuedRecord[1];
+                return [4 /*yield*/, sdkAsset_1.getAssetCode(txRecord.record.asset_type.NonConfidential)];
+            case 1:
+                assetCode = _a.sent();
+                return [2 /*return*/, __assign(__assign({}, txRecord), { code: assetCode, ownerMemo: ownerMemo })];
+        }
+    });
+}); };
+exports.processIssuedRecordItem = processIssuedRecordItem;
+var processIssuedRecordList = function (issuedRecords) { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        return [2 /*return*/, Promise.all(issuedRecords.map(function (issuedRecord) { return exports.processIssuedRecordItem(issuedRecord); }))];
+    });
+}); };
+exports.processIssuedRecordList = processIssuedRecordList;
+var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var publickey, result, recordsResponse, processedIssuedRecordsList;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
+            case 1:
+                publickey = (_a.sent()).publickey;
+                return [4 /*yield*/, Network.getIssuedRecords(publickey)];
+            case 2:
+                result = _a.sent();
+                recordsResponse = result.response;
+                if (!recordsResponse) {
+                    throw new Error('No issued records were fetched!');
+                }
+                return [4 /*yield*/, exports.processIssuedRecordList(recordsResponse)];
+            case 3:
+                processedIssuedRecordsList = _a.sent();
+                return [2 /*return*/, processedIssuedRecordsList];
+        }
+    });
+}); };
+exports.getCreatedAssets = getCreatedAssets;
+var getRelatedSids = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, relatedSids;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Network.getRelatedSids(address)];
+            case 1:
+                result = _a.sent();
+                relatedSids = result.response;
+                if (!relatedSids) {
+                    throw new Error('No related sids were fetched!');
+                }
+                return [2 /*return*/, relatedSids];
+        }
+    });
+}); };
+exports.getRelatedSids = getRelatedSids;
 //# sourceMappingURL=account.js.map

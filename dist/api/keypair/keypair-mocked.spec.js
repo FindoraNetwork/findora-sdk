@@ -46,13 +46,13 @@ jest.mock('../../services/ledger/ledgerWrapper', function () { return ({
     getLedger: jest.fn(function () { return Promise.resolve(fakeLedger); }),
 }); });
 describe('keypair', function () {
-    describe('restorePrivatekeypair', function () {
+    describe('restoreFromPrivateKey', function () {
         var pkey = 'Y6umoUmBJRPYJU5n_Y9bHuhoHm6aDMsxDI9FLJzOEXc=';
         var password = '345';
         it('throws the error when ledger fails to crate a keypair', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.restorePrivatekeypair(pkey, password)).rejects.toThrow('could not restore keypair. Keypair is empty')];
+                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey(pkey, password)).rejects.toThrow('could not restore keypair. Keypair is empty')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

@@ -148,6 +148,7 @@ describe('account', function () {
                 amount: 200000,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -159,6 +160,7 @@ describe('account', function () {
                 amount: 10,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -170,6 +172,7 @@ describe('account', function () {
                 amount: 1,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
         {
@@ -181,6 +184,7 @@ describe('account', function () {
                 amount: 13,
             },
             ownerMemo: undefined,
+            memoData: undefined,
             utxo: myUtxo,
         },
     ];
@@ -189,7 +193,7 @@ describe('account', function () {
             var walletInfo, spyAddUtxo, balanceInWei, balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
@@ -207,7 +211,7 @@ describe('account', function () {
             var walletInfo, spyAddUtxo, balanceInWei, balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
@@ -225,7 +229,7 @@ describe('account', function () {
             var walletInfo, spyAddUtxo, balanceInWei, balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
@@ -243,7 +247,7 @@ describe('account', function () {
             var walletInfo, spyAddUtxo, balanceInWei, balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
@@ -261,7 +265,7 @@ describe('account', function () {
             var walletInfo, spyAddUtxo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
@@ -279,7 +283,7 @@ describe('account', function () {
             var walletInfo, url, spyAddUtxo, balance;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -300,7 +304,7 @@ describe('account', function () {
             var walletInfo, url;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
@@ -318,7 +322,7 @@ describe('account', function () {
             var walletInfo, publickey, url, spyAddUtxo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';

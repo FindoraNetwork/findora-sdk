@@ -9,16 +9,19 @@ export interface LedgerUtxoItem {
 export interface AddUtxoItem extends LedgerUtxoItem {
     address: string;
     body: any;
+    memoData: OwnedMemoResponse | undefined;
 }
 export interface UtxoOutputItem extends LedgerUtxoItem {
     originAmount: BigInt;
     amount: BigInt;
+    memoData: OwnedMemoResponse | undefined;
 }
 export interface UtxoInputParameter {
     txoRef: LedgerTxoRef;
     assetRecord: LedgerClientAssetRecord;
     ownerMemo: LedgerOwnerMemo | undefined;
     amount: BigInt;
+    memoData: OwnedMemoResponse | undefined;
 }
 export interface UtxoInputsInfo {
     inputParametersList: UtxoInputParameter[];

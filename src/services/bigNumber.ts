@@ -18,3 +18,16 @@ export const calDecimalPrecision = (val: BigNumberValue, num: number): string =>
 };
 
 export const create = (value: BigNumberValue): BigNumber => new BigNumber(value);
+
+export const totalSum = (amounts: BigNumberValue[]): BigNumber => {
+  let amount = new BigNumber(0);
+
+  amounts.forEach(currentAmount => {
+    amount = new BigNumber(currentAmount).plus(amount);
+  });
+
+  return amount;
+};
+
+export const plus = (currentValue: BigNumberValue, valueToAdd: BigNumberValue): BigNumberValue =>
+  new BigNumber(currentValue).plus(valueToAdd);

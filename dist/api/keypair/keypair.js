@@ -36,10 +36,78 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.restorePrivatekeypair = void 0;
+exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var restorePrivatekeypair = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, toSend, keypair, keypairStr, encrypted;
+var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, privateStr;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
+                return [2 /*return*/, privateStr];
+        }
+    });
+}); };
+exports.getPrivateKeyStr = getPrivateKeyStr;
+var getPublicKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, publickey;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                publickey = ledger.get_pub_key_str(keypair).replace(/"/g, '');
+                return [2 /*return*/, publickey];
+        }
+    });
+}); };
+exports.getPublicKeyStr = getPublicKeyStr;
+var getAddress = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
+                return [2 /*return*/, address];
+        }
+    });
+}); };
+exports.getAddress = getAddress;
+var getAddressByPublicKey = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                address = ledger.base64_to_bech32(publicKey);
+                return [2 /*return*/, address];
+        }
+    });
+}); };
+exports.getAddressByPublicKey = getAddressByPublicKey;
+var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, publickey;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                publickey = ledger.bech32_to_base64(address);
+                return [2 /*return*/, {
+                        address: address,
+                        publickey: publickey,
+                    }];
+        }
+    });
+}); };
+exports.getAddressPublicAndKey = getAddressPublicAndKey;
+var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, toSend, keypair, keypairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -57,15 +125,151 @@ var restorePrivatekeypair = function (privateStr, password) { return __awaiter(v
                 }
                 keypairStr = ledger.keypair_to_str(keypair);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);
+                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+            case 2:
+                publickey = _a.sent();
+                return [4 /*yield*/, exports.getAddress(keypair)];
+            case 3:
+                address = _a.sent();
                 return [2 /*return*/, {
                         keyStore: encrypted,
-                        publickey: ledger.get_pub_key_str(keypair).replace(/"/g, ''),
-                        address: ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair)),
+                        publickey: publickey,
+                        address: address,
                         keypair: keypair,
                         privateStr: privateStr,
                     }];
         }
     });
 }); };
-exports.restorePrivatekeypair = restorePrivatekeypair;
+exports.restoreFromPrivateKey = restoreFromPrivateKey;
+var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, keypair, keyPairStr, encrypted, publickey, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+                keyPairStr = ledger.keypair_to_str(keypair);
+                encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+            case 2:
+                publickey = _a.sent();
+                return [4 /*yield*/, exports.getAddress(keypair)];
+            case 3:
+                address = _a.sent();
+                return [2 /*return*/, {
+                        keyStore: encrypted,
+                        publickey: publickey,
+                        address: address,
+                        keypair: keypair,
+                        privateStr: keyPairStr,
+                    }];
+        }
+    });
+}); };
+exports.restoreFromMnemonic = restoreFromMnemonic;
+var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, keyPairStr, keypair, encrypted, publickey, address, privateStr, err_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 6, , 7]);
+                keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
+                keypair = ledger.keypair_from_str(keyPairStr);
+                encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+            case 3:
+                publickey = _a.sent();
+                return [4 /*yield*/, exports.getAddress(keypair)];
+            case 4:
+                address = _a.sent();
+                return [4 /*yield*/, exports.getPrivateKeyStr(keypair)];
+            case 5:
+                privateStr = _a.sent();
+                return [2 /*return*/, {
+                        keyStore: encrypted,
+                        publickey: publickey,
+                        address: address,
+                        keypair: keypair,
+                        privateStr: privateStr,
+                    }];
+            case 6:
+                err_1 = _a.sent();
+                throw new Error("could not restore keypair from the key string. Details: \"" + err_1.message + "\"");
+            case 7: return [2 /*return*/];
+        }
+    });
+}); };
+exports.restoreFromKeystore = restoreFromKeystore;
+var restoreFromKeystoreString = function (keyStoreString, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var keyStoreObject, keyStore, result, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
+                keyStore = new Uint8Array(Object.values(keyStoreObject));
+                return [4 /*yield*/, exports.restoreFromKeystore(keyStore, password)];
+            case 1:
+                result = _a.sent();
+                return [2 /*return*/, result];
+            case 2:
+                err_2 = _a.sent();
+                throw new Error("could not restore keypair from the key store string. Details: \"" + err_2.message + "\"");
+            case 3: return [2 /*return*/];
+        }
+    });
+}); };
+exports.restoreFromKeystoreString = restoreFromKeystoreString;
+var createKeypair = function (password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, keypair, keyPairStr, encrypted, privateStr, publickey, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                keypair = ledger.new_keypair();
+                keyPairStr = ledger.keypair_to_str(keypair);
+                encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                return [4 /*yield*/, exports.getPrivateKeyStr(keypair)];
+            case 2:
+                privateStr = _a.sent();
+                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+            case 3:
+                publickey = _a.sent();
+                return [4 /*yield*/, exports.getAddress(keypair)];
+            case 4:
+                address = _a.sent();
+                return [2 /*return*/, {
+                        keyStore: encrypted,
+                        publickey: publickey,
+                        address: address,
+                        keypair: keypair,
+                        privateStr: privateStr,
+                    }];
+        }
+    });
+}); };
+exports.createKeypair = createKeypair;
+var getMnemonic = function (desiredLength, mnemonicLang) {
+    if (mnemonicLang === void 0) { mnemonicLang = 'EN'; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var ledger, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                case 1:
+                    ledger = _a.sent();
+                    result = String(ledger.generate_mnemonic_custom(desiredLength, mnemonicLang)).split(' ');
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+};
+exports.getMnemonic = getMnemonic;
 //# sourceMappingURL=keypair.js.map

@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { restorePrivatekeypair } from './keypair';
+import { restoreFromPrivateKey } from './keypair';
 
 const fakeLedger = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -12,12 +12,12 @@ jest.mock('../../services/ledger/ledgerWrapper', () => ({
 }));
 
 describe('keypair', () => {
-  describe('restorePrivatekeypair', () => {
+  describe('restoreFromPrivateKey', () => {
     const pkey = 'Y6umoUmBJRPYJU5n_Y9bHuhoHm6aDMsxDI9FLJzOEXc=';
     const password = '345';
 
     it('throws the error when ledger fails to crate a keypair', async () => {
-      await expect(restorePrivatekeypair(pkey, password)).rejects.toThrow(
+      await expect(restoreFromPrivateKey(pkey, password)).rejects.toThrow(
         'could not restore keypair. Keypair is empty',
       );
     });

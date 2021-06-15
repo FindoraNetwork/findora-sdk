@@ -48,8 +48,10 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/user-event": "^13.1.5",
+    "@types/atob": "^2.1.2",
     "@types/jest": "^26.0.14",
     "@types/json-bigint": "^1.0.0",
+    "@types/lodash": "^4.14.170",
     "@types/node": "^14.14.17",
     "@types/readable-stream": "^2.3.9",
     "@types/tmp": "^0.2.0",
@@ -82,10 +84,12 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
+    "atob": "^2.1.2",
     "axios": "^0.21.1",
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
     "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-staking-0.0.3",
-    "json-bigint": "^1.0.0"
+    "json-bigint": "^1.0.0",
+    "lodash": "^4.17.21"
   }
 }

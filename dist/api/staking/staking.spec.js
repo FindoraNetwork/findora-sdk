@@ -168,7 +168,7 @@ describe('sdkAsset', function () {
             var walletInfo, getSidsUrl, postUrl, globalStateUrl, myResponse, utxoDataCache, handle;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, __1.Keypair.restorePrivatekeypair(pkey, password)];
+                    case 0: return [4 /*yield*/, __1.Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         getSidsUrl = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;

@@ -1,9 +1,11 @@
+// import JSONbig from 'json-bigint';
+
 import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair } from '../../services/ledger/types';
-import { WalletKeypar } from '../keypair';
+import { getAddressByPublicKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 
 export interface AssetRules {
@@ -25,6 +27,13 @@ export const getFraAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
+export const getAssetCode = async (val: number[]): Promise<string> => {
+  const ledger = await getLedger();
+
+  const decryptedAsetType = ledger.asset_type_from_jsvalue(val);
+  return decryptedAsetType;
+};
+
 export const getRandomAssetCode = async (): Promise<string> => {
   const ledger = await getLedger();
   const assetCode = ledger.random_asset_type();
@@ -34,9 +43,9 @@ export const getRandomAssetCode = async (): Promise<string> => {
 const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
-  const defaultTransferable = DEFAULT_ASSET_RULES.DEFAULT_TRANSFERABLE;
-  const defaultUpdatable = DEFAULT_ASSET_RULES.DEFAULT_UPDATABLE;
-  const defaultDecimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
+  const defaultTransferable = DEFAULT_ASSET_RULES.transferable;
+  const defaultUpdatable = DEFAULT_ASSET_RULES.updatable;
+  const defaultDecimals = DEFAULT_ASSET_RULES.decimals;
 
   const assetRules = ledger.AssetRules.new()
     .set_transferable(defaultTransferable)
@@ -112,6 +121,7 @@ const getIssueAssetTransactionBuilder = async (
   assetName: string,
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
+  assetDecimals: number,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
@@ -128,9 +138,7 @@ const getIssueAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const decimals = DEFAULT_ASSET_RULES.DEFAULT_DECIMALS;
-
-  const utxoNumbers = BigInt(toWei(amountToIssue, decimals).toString());
+  const utxoNumbers = BigInt(toWei(amountToIssue, assetDecimals).toString());
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
@@ -156,16 +164,16 @@ export const defineAsset = async (
 ): Promise<string> => {
   const assetRules = await getAssetRules(newAssetRules);
 
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-  } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -177,14 +185,18 @@ export const defineAsset = async (
       assetRules,
       assetMemo,
     );
-  } catch (error) {
-    throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not get "defineTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-  } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -193,8 +205,10 @@ export const defineAsset = async (
 
   try {
     result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    throw new Error(`Error Could not define asset: "${error.message}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not define asset: "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -215,17 +229,18 @@ export const issueAsset = async (
   assetName: string,
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
+  assetDecimals: number,
 ): Promise<string> => {
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-  } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -236,15 +251,20 @@ export const issueAsset = async (
       assetName,
       amountToIssue,
       assetBlindRules,
+      assetDecimals,
     );
-  } catch (error) {
-    throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-  } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -253,8 +273,10 @@ export const issueAsset = async (
 
   try {
     result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    throw new Error(`Could not issue asset: "${error.message}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not issue asset: "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -268,4 +290,41 @@ export const issueAsset = async (
   }
 
   return handle;
+};
+
+export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.IAsset> => {
+  let result;
+
+  try {
+    result = await Network.getAssetToken(assetCode);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not define asset: "${e.message}"`);
+  }
+
+  const { response: assetResult, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`Could not submit define asset transaction: "${submitError.message}"`);
+  }
+
+  if (!assetResult) {
+    throw new Error(`Could not issue asset - submit handle is missing`);
+  }
+
+  const asset = assetResult.properties;
+  const issuerAddress = await getAddressByPublicKey(asset.issuer.key);
+
+  const assetDetails = {
+    code: assetCode,
+    issuer: asset.issuer.key,
+    address: issuerAddress,
+    memo: asset.memo,
+    assetRules: { ...DEFAULT_ASSET_RULES, ...asset?.asset_rules },
+    numbers: BigInt(0),
+    name: '',
+  };
+
+  return assetDetails;
 };
