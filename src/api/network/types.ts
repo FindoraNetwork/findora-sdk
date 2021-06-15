@@ -163,3 +163,36 @@ export type TransactionStatusResponse = {
 export interface TransactionStatusDataResult extends NetworkAxiosDataResult {
   response?: TransactionStatusResponse;
 }
+
+export type IssuedRecord = [TxOutput, null | number];
+
+export type IssuedRecordResponse = IssuedRecord[];
+
+export interface IssuedRecordDataResult extends NetworkAxiosDataResult {
+  response?: IssuedRecordResponse;
+}
+
+// merge with network
+export interface TxAmount {
+  NonConfidential?: string;
+  Confidential?: string[];
+}
+
+// merge with network
+export interface TxAssetType {
+  Confidential?: string;
+  NonConfidential?: number[];
+}
+
+// merge with network
+export interface TxRecord {
+  amount: TxAmount;
+  asset_type: TxAssetType;
+  public_key: string;
+}
+
+// merge with network
+export interface TxOutput {
+  id: number | null;
+  record: TxRecord;
+}

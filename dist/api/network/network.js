@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -75,7 +75,7 @@ var getExplorerApiRoute = function () {
     return url;
 };
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var axiosResponse, err_1, myResponse;
+    var axiosResponse, err_1, e, myResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -86,7 +86,8 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
-                return [2 /*return*/, { error: { message: err_1.message } }];
+                e = err_1;
+                return [2 /*return*/, { error: { message: e.message } }];
             case 3:
                 try {
                     myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
@@ -101,7 +102,7 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
 }); };
 exports.apiPost = apiPost;
 var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var axiosResponse, err_2, myResponse;
+    var axiosResponse, err_2, e, myResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -112,7 +113,8 @@ var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, f
                 return [3 /*break*/, 3];
             case 2:
                 err_2 = _a.sent();
-                return [2 /*return*/, { error: { message: err_2.message } }];
+                e = err_2;
+                return [2 /*return*/, { error: { message: e.message } }];
             case 3:
                 try {
                     myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
@@ -140,6 +142,20 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
     });
 }); };
 exports.getOwnedSids = getOwnedSids;
+var getRelatedSids = function (address, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_related_txns/" + address;
+                return [4 /*yield*/, exports.apiGet(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getRelatedSids = getRelatedSids;
 var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {
@@ -192,7 +208,8 @@ var getSubmitTransactionData = function (data) {
         return { response: txData };
     }
     catch (err) {
-        return { error: { message: "Can't submit transaction. Can't parse transaction data. " + err.message } };
+        var e = err;
+        return { error: { message: "Can't submit transaction. Can't parse transaction data. " + e.message } };
     }
 };
 exports.getSubmitTransactionData = getSubmitTransactionData;
@@ -228,6 +245,20 @@ var getAssetToken = function (assetCode, config) { return __awaiter(void 0, void
     });
 }); };
 exports.getAssetToken = getAssetToken;
+var getIssuedRecords = function (address, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_issued_records/" + address;
+                return [4 /*yield*/, exports.apiGet(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getIssuedRecords = getIssuedRecords;
 var getTransactionStatus = function (handle, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {

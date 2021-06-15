@@ -1,6 +1,5 @@
 import axios from 'axios';
 import JSONbig from 'json-bigint';
-
 import Sdk from '../../Sdk';
 import * as Types from './types';
 
@@ -46,7 +45,8 @@ export const apiPost = async (
   try {
     axiosResponse = await axios.post(url, data, config);
   } catch (err) {
-    return { error: { message: err.message } };
+    const e: Error = err as Error;
+    return { error: { message: e.message } };
   }
 
   try {
@@ -66,7 +66,9 @@ export const apiGet = async (
   try {
     axiosResponse = await axios.get(url, config);
   } catch (err) {
-    return { error: { message: err.message } };
+    const e: Error = err as Error;
+
+    return { error: { message: e.message } };
   }
 
   try {
@@ -82,6 +84,17 @@ export const getOwnedSids = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnedSidsDataResult> => {
   const url = `${getQueryRoute()}/get_owned_utxos/${address}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getRelatedSids = async (
+  address: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnedSidsDataResult> => {
+  const url = `${getQueryRoute()}/get_related_txns/${address}`;
 
   const dataResult = await apiGet(url, config);
 
@@ -131,7 +144,9 @@ export const getSubmitTransactionData = <T extends Types.TransactionData>(data?:
     txData = JSONbig.parse(data);
     return { response: txData };
   } catch (err) {
-    return { error: { message: `Can't submit transaction. Can't parse transaction data. ${err.message}` } };
+    const e: Error = err as Error;
+
+    return { error: { message: `Can't submit transaction. Can't parse transaction data. ${e.message}` } };
   }
 };
 
@@ -157,6 +172,17 @@ export const getAssetToken = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.AssetTokenDataResult> => {
   const url = `${getLedgerRoute()}/asset_token/${assetCode}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getIssuedRecords = async (
+  address: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.IssuedRecordDataResult> => {
+  const url = `${getQueryRoute()}/get_issued_records/${address}`;
 
   const dataResult = await apiGet(url, config);
 

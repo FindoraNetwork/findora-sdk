@@ -170,8 +170,10 @@ export const defineAsset = async (
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-  } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -183,14 +185,18 @@ export const defineAsset = async (
       assetRules,
       assetMemo,
     );
-  } catch (error) {
-    throw new Error(`Could not get "defineTransactionBuilder", Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not get "defineTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-  } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -199,8 +205,10 @@ export const defineAsset = async (
 
   try {
     result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    throw new Error(`Error Could not define asset: "${error.message}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not define asset: "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -229,8 +237,10 @@ export const issueAsset = async (
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-  } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -243,14 +253,18 @@ export const issueAsset = async (
       assetBlindRules,
       assetDecimals,
     );
-  } catch (error) {
-    throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not get "issueAssetTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-  } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -259,8 +273,10 @@ export const issueAsset = async (
 
   try {
     result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    throw new Error(`Could not issue asset: "${error.message}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not issue asset: "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -281,8 +297,10 @@ export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.
 
   try {
     result = await Network.getAssetToken(assetCode);
-  } catch (error) {
-    throw new Error(`Error Could not define asset: "${error.message}"`);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not define asset: "${e.message}"`);
   }
 
   const { response: assetResult, error: submitError } = result;
