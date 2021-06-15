@@ -11,3 +11,4 @@ export declare const create: (password: string) => Promise<WalletKeypar>;
 export declare const processIssuedRecordItem: (issuedRecord: IssuedRecord) => Promise<ProcessedIssuedRecord>;
 export declare const processIssuedRecordList: (issuedRecords: IssuedRecord[]) => Promise<ProcessedIssuedRecord[]>;
 export declare const getCreatedAssets: (address: string) => Promise<ProcessedIssuedRecord[]>;
+export declare const getRelatedSids: (address: string) => Promise<number[]>;

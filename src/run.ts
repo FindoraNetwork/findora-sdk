@@ -403,16 +403,21 @@ const myFunc17 = async () => {
   // const dataResult = await Network.getIssuedRecords(walletInfo.publickey);
 
   // console.log('dataResult!', dataResult);
+};
 
-  // const [firstTxRecord] = dataResult.response!;
+const myFunc18 = async () => {
+  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
 
-  // const [txRecord, _] = firstTxRecord;
+  const password = '123';
 
-  // console.log('txRecord!', txRecord);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  // const { response } = dataResult;
+  // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
+  const sids = await Account.getRelatedSids(walletInfo.publickey);
 
-  // const txList = await Transaction.getTxList(walletInfo.address, 'from');
+  console.log('sids!!', sids);
 };
 
 // myFunc7();
@@ -425,7 +430,7 @@ const myFunc17 = async () => {
 
 // myFunc4();
 
-myFunc17();
+myFunc18();
 // myFunc12();
 // myFunc8();
 // myFunc7();

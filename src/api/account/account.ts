@@ -111,3 +111,15 @@ export const getCreatedAssets = async (address: string): Promise<ProcessedIssued
 
   return processedIssuedRecordsList;
 };
+
+export const getRelatedSids = async (address: string): Promise<number[]> => {
+  const result = await Network.getRelatedSids(address);
+
+  const { response: relatedSids } = result;
+
+  if (!relatedSids) {
+    throw new Error('No related sids were fetched!');
+  }
+
+  return relatedSids;
+};

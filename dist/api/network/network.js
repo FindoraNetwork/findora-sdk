@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -142,6 +142,20 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
     });
 }); };
 exports.getOwnedSids = getOwnedSids;
+var getRelatedSids = function (address, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_related_txns/" + address;
+                return [4 /*yield*/, exports.apiGet(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getRelatedSids = getRelatedSids;
 var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {

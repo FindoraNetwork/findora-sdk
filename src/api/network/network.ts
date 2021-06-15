@@ -90,6 +90,17 @@ export const getOwnedSids = async (
   return dataResult;
 };
 
+export const getRelatedSids = async (
+  address: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnedSidsDataResult> => {
+  const url = `${getQueryRoute()}/get_related_txns/${address}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
 export const getUtxo = async (
   utxoSid: number,
   config?: Types.NetworkAxiosConfig,

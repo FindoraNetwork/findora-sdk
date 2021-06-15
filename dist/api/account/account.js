@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
+exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var keypair_1 = require("../keypair");
@@ -196,4 +196,20 @@ var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getCreatedAssets = getCreatedAssets;
+var getRelatedSids = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, relatedSids;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Network.getRelatedSids(address)];
+            case 1:
+                result = _a.sent();
+                relatedSids = result.response;
+                if (!relatedSids) {
+                    throw new Error('No related sids were fetched!');
+                }
+                return [2 /*return*/, relatedSids];
+        }
+    });
+}); };
+exports.getRelatedSids = getRelatedSids;
 //# sourceMappingURL=account.js.map
