@@ -1,3 +1,5 @@
+import S3 from 'aws-sdk/clients/s3';
+import dotenv from 'dotenv';
 import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
@@ -6,6 +8,8 @@ import { FileCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
+
+dotenv.config();
 
 const sdkEnv = {
   hostUrl: 'https://dev-staging.dev.findora.org',
@@ -420,6 +424,63 @@ const myFunc18 = async () => {
   console.log('sids!!', sids);
 };
 
+const myFuncS3 = async () => {
+  const {
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    UTXO_CACHE_BUCKET_NAME,
+    UTXO_CACHE_KEY_NAME,
+  } = process.env;
+  const accessKeyId = AWS_ACCESS_KEY_ID || '';
+  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+  const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+  const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+
+  const s3Params = {
+    accessKeyId,
+    secretAccessKey,
+  };
+
+  const s3 = new S3(s3Params);
+
+  let readRes;
+
+  try {
+    readRes = await s3
+      .getObject({
+        Bucket: cacheBucketName,
+        Key: cacheItemKey,
+      })
+      .promise();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Error!', e.message);
+  }
+
+  console.log('readRes :) 5', readRes?.Body?.toString());
+
+  const existingContent = readRes?.Body?.toString('utf8');
+
+  let res;
+
+  const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+
+  try {
+    res = await s3
+      .putObject({
+        Bucket: cacheBucketName,
+        Key: cacheItemKey,
+        Body: myBody,
+      })
+      .promise();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Error!', e.message);
+  }
+};
+
 // myFunc7();
 
 // send custom
@@ -430,7 +491,7 @@ const myFunc18 = async () => {
 
 // myFunc4();
 
-myFunc18();
+myFuncS3();
 // myFunc12();
 // myFunc8();
 // myFunc7();
