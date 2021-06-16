@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const tsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const commonConfig = {
   mode: 'production',
@@ -16,7 +16,7 @@ const commonConfig = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
-    plugins: [new TsconfigPathsPlugin()],
+    plugins: [new tsconfigPathsPlugin()],
   },
   plugins: [
     new webpack.IgnorePlugin({

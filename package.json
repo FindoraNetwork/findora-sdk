@@ -85,9 +85,11 @@
   },
   "dependencies": {
     "atob": "^2.1.2",
+    "aws-sdk": "^2.929.0",
     "axios": "^0.21.1",
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
     "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#v0.1.0-rc5.5-final",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21"
