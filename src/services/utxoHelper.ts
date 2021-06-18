@@ -184,9 +184,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
     if (assetItem.body.asset_type === code) {
       const _amount = BigInt(assetItem.body.amount);
 
-      if (balance <= BigInt(0)) {
-        break;
-      } else if (BigInt(_amount) >= balance) {
+      if (balance <= BigInt(0) || BigInt(_amount) >= balance) {
         result.push({
           amount: balance,
           originAmount: _amount,
