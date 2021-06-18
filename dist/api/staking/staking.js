@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.claim = exports.unDelegate = exports.getFraAssetCode = void 0;
+exports.claim = exports.unDelegate = exports.getTransactionBuilder = exports.getFraAssetCode = void 0;
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
@@ -72,8 +72,9 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.getFraAssetCode = getFraAssetCode;
-var getUnDelegateTransactionBuilder = function (walletKeypair) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, definitionTransaction;
+// merge with same in transactions
+var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -90,20 +91,24 @@ var getUnDelegateTransactionBuilder = function (walletKeypair) { return __awaite
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_undelegate(walletKeypair);
-                return [2 /*return*/, definitionTransaction];
+                transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };
+exports.getTransactionBuilder = getTransactionBuilder;
 var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, submitData, result, error_2, e, handle, submitError;
+    var transferOperationBuilderFee, receivedTransferOperationFee, e, transactionBuilder, error_1, e, e, e, submitData, result, error_2, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 1:
-                transferOperationBuilder = _a.sent();
+                transferOperationBuilderFee = _a.sent();
                 try {
-                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                    receivedTransferOperationFee = transferOperationBuilderFee
+                        .create()
+                        .sign(walletInfo.keypair)
+                        .transaction();
                 }
                 catch (error) {
                     e = error;
@@ -112,20 +117,27 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, getUnDelegateTransactionBuilder(walletInfo.keypair)];
+                return [4 /*yield*/, exports.getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
                 e = error_1;
-                throw new Error("Could not get \"UnDelegateTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"transactionBuilder\", Error: \"" + e.message + "\"");
             case 5:
                 try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                    transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
                 }
-                catch (error) {
-                    e = error;
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not add undelegate operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+                }
+                catch (err) {
+                    e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 submitData = transactionBuilder.transaction();

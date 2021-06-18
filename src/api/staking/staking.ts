@@ -9,8 +9,8 @@ export const getFraAssetCode = async (): Promise<string> => {
   const assetCode = ledger.fra_get_asset_code();
   return assetCode;
 };
-
-const getUnDelegateTransactionBuilder = async (walletKeypair: XfrKeyPair): Promise<TransactionBuilder> => {
+// merge with same in transactions
+export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
   const { response: stateCommitment, error } = await Network.getStateCommitment();
@@ -26,20 +26,21 @@ const getUnDelegateTransactionBuilder = async (walletKeypair: XfrKeyPair): Promi
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_undelegate(
-    walletKeypair,
-  );
+  const transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
 
-  return definitionTransaction;
+  return transactionBuilder;
 };
 
 export const unDelegate = async (walletInfo: WalletKeypar): Promise<string> => {
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
 
-  let receivedTransferOperation;
+  let receivedTransferOperationFee;
 
   try {
-    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+    receivedTransferOperationFee = transferOperationBuilderFee
+      .create()
+      .sign(walletInfo.keypair)
+      .transaction();
   } catch (error) {
     const e: Error = error as Error;
 
@@ -49,16 +50,25 @@ export const unDelegate = async (walletInfo: WalletKeypar): Promise<string> => {
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getUnDelegateTransactionBuilder(walletInfo.keypair);
+    transactionBuilder = await getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
-    throw new Error(`Could not get "UnDelegateTransactionBuilder", Error: "${e.message}"`);
+
+    throw new Error(`Could not get "transactionBuilder", Error: "${e.message}"`);
   }
 
   try {
-    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-  } catch (error) {
-    const e: Error = error as Error;
+    transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add undelegate operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+  } catch (err) {
+    const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
