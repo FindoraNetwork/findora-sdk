@@ -104,6 +104,7 @@ describe('account', () => {
         amount: 200000,
       },
       ownerMemo: undefined,
+      memoData: undefined,
       utxo: myUtxo,
     },
     {
@@ -115,6 +116,7 @@ describe('account', () => {
         amount: 10,
       },
       ownerMemo: undefined,
+      memoData: undefined,
       utxo: myUtxo,
     },
     {
@@ -126,6 +128,7 @@ describe('account', () => {
         amount: 1,
       },
       ownerMemo: undefined,
+      memoData: undefined,
       utxo: myUtxo,
     },
     {
@@ -137,13 +140,14 @@ describe('account', () => {
         amount: 13,
       },
       ownerMemo: undefined,
+      memoData: undefined,
       utxo: myUtxo,
     },
   ];
 
   describe('getAssetBalance', () => {
     it('returns asset balance for first code', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
       spyAddUtxo.mockReturnValue(Promise.resolve(myUtxoDataList));
@@ -156,7 +160,7 @@ describe('account', () => {
     });
 
     it('returns asset balance for second code', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
       spyAddUtxo.mockReturnValue(Promise.resolve(myUtxoDataList));
@@ -169,7 +173,7 @@ describe('account', () => {
     });
 
     it('returns asset balance if no sid with the given code exists', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
       spyAddUtxo.mockReturnValue(Promise.resolve(myUtxoDataList));
@@ -182,7 +186,7 @@ describe('account', () => {
     });
 
     it('returns asset balance if sids list is empty', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
       spyAddUtxo.mockReturnValue(Promise.resolve([]));
@@ -195,7 +199,7 @@ describe('account', () => {
     });
 
     it('throws an error when could not get utxoDataList', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const spyAddUtxo = jest.spyOn(utxoHelper, 'addUtxo');
       spyAddUtxo.mockReturnValue(Promise.reject(new Error('foo')));
@@ -208,7 +212,7 @@ describe('account', () => {
 
   describe('getBalance', () => {
     it('returns asset balance for first code', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const url = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
@@ -227,7 +231,7 @@ describe('account', () => {
     });
 
     it('throws an error when no sids were fetched', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const url = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
 
@@ -243,7 +247,7 @@ describe('account', () => {
     });
 
     it('throws an error when getAssetBalance throws an error', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
       const publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';
 

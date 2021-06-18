@@ -38,6 +38,7 @@ const writeCache = async (filePath: string, data: CacheItem): Promise<boolean> =
   let result;
   let cacheData;
 
+  console.log(`Writing file cache to "${filePath}"`);
   try {
     cacheData = JSONbig({ useNativeBigInt: true }).stringify(data);
   } catch (err) {

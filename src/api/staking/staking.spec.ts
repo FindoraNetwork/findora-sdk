@@ -1,14 +1,12 @@
 import '@testing-library/jest-dom/extend-expect';
-
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import { Keypair } from '..';
 import { CACHE_ENTRIES } from '../../config/cache';
 import Sdk from '../../Sdk';
 import Cache from '../../services/cacheStore/factory';
 import { FileCacheProvider, MemoryCacheProvider } from '../../services/cacheStore/providers';
-import { unDelegate, claim } from './staking';
+import { claim, unDelegate } from './staking';
 
 const myDefaultResult = [
   {
@@ -138,7 +136,7 @@ describe('sdkAsset', () => {
 
   describe('staking', () => {
     it('staking unDelegate', async () => {
-      const walletInfo = await Keypair.restorePrivatekeypair(pkey, password);
+      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
       const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
       const postUrl = `${hostUrl}:8669/submit_transaction`;
       const globalStateUrl = `${hostUrl}:8668/global_state`;

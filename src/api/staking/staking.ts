@@ -34,16 +34,16 @@ const getUnDelegateTransactionBuilder = async (walletKeypair: XfrKeyPair): Promi
 };
 
 export const unDelegate = async (walletInfo: WalletKeypar): Promise<string> => {
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
   } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -51,13 +51,16 @@ export const unDelegate = async (walletInfo: WalletKeypar): Promise<string> => {
   try {
     transactionBuilder = await getUnDelegateTransactionBuilder(walletInfo.keypair);
   } catch (error) {
-    throw new Error(`Could not get "UnDelegateTransactionBuilder", Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+    throw new Error(`Could not get "UnDelegateTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -67,7 +70,9 @@ export const unDelegate = async (walletInfo: WalletKeypar): Promise<string> => {
   try {
     result = await Network.submitTransaction(submitData);
   } catch (error) {
-    throw new Error(`Could not unDelegate : "${error.message}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not unDelegate : "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
@@ -111,16 +116,16 @@ const getClaimTransactionBuilder = async (
 };
 
 export const claim = async (walletInfo: WalletKeypar, amount: BigInt): Promise<string> => {
-  const fraCode = await getFraAssetCode();
-
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, fraCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
 
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
   } catch (error) {
-    throw new Error(`Could not create transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -128,13 +133,17 @@ export const claim = async (walletInfo: WalletKeypar, amount: BigInt): Promise<s
   try {
     transactionBuilder = await getClaimTransactionBuilder(walletInfo.keypair, amount);
   } catch (error) {
-    throw new Error(`Could not get "claimTransactionBuilder", Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get "claimTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (error) {
-    throw new Error(`Could not add transfer operation, Error: "${error.messaage}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
   const submitData = transactionBuilder.transaction();
@@ -144,7 +153,9 @@ export const claim = async (walletInfo: WalletKeypar, amount: BigInt): Promise<s
   try {
     result = await Network.submitTransaction(submitData);
   } catch (error) {
-    throw new Error(`Could not claim : "${error.message}"`);
+    const e: Error = error as Error;
+
+    throw new Error(`Could not claim : "${e.message}"`);
   }
 
   const { response: handle, error: submitError } = result;
