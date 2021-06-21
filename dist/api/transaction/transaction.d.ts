@@ -1,7 +1,7 @@
 import { TransactionBuilder } from '../../services/ledger/types';
 import { LightWalletKeypair, WalletKeypar } from '../keypair';
-import { ProcessedTxListResponseResult } from './types';
 import * as AssetApi from '../sdkAsset';
+import { ProcessedTxListResponseResult } from './types';
 export declare const getTransactionBuilder: () => Promise<TransactionBuilder>;
 export interface TransferReciever {
     reciverWalletInfo: WalletKeypar | LightWalletKeypair;

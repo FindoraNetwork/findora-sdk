@@ -63,6 +63,7 @@ var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var helpers = __importStar(require("./helpers"));
 var processor_1 = require("./processor");
+// merge with same in staiking
 var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
     return __generator(this, function (_b) {

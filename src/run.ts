@@ -1,7 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import { Api } from '.';
-import { Account, Asset, Keypair, Network, Transaction } from './api';
+import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
 import { FileCacheProvider } from './services/cacheStore/providers';
@@ -12,7 +12,8 @@ import * as UtxoHelper from './services/utxoHelper';
 dotenv.config();
 
 const sdkEnv = {
-  hostUrl: 'https://dev-staging.dev.findora.org',
+  // hostUrl: 'https://dev-staging.dev.findora.org',
+  hostUrl: 'https://dev-qa01.dev.findora.org',
   cacheProvider: FileCacheProvider,
   cachePath: './cache',
 };
@@ -481,6 +482,19 @@ const myFuncS3 = async () => {
   }
 };
 
+const myFuncUndelegate = async () => {
+  const rickey2 = 'glzudSr1lCGmkLjETDeUDCP_hBNkCmXILnPHPCRuI5Y=';
+  const mine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const password = '123';
+
+  const mineWalletInfo = await Keypair.restoreFromPrivateKey(mine, password);
+
+  // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
+  const unDelegateResHandle = await Staking.unDelegate(mineWalletInfo);
+
+  console.log('unDelegateResHandle!!!', unDelegateResHandle);
+};
+
 // myFunc7();
 
 // send custom
@@ -491,7 +505,7 @@ const myFuncS3 = async () => {
 
 // myFunc4();
 
-myFuncS3();
+myFuncUndelegate();
 // myFunc12();
 // myFunc8();
 // myFunc7();

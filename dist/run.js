@@ -70,7 +70,8 @@ var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
 var sdkEnv = {
-    hostUrl: 'https://dev-staging.dev.findora.org',
+    // hostUrl: 'https://dev-staging.dev.findora.org',
+    hostUrl: 'https://dev-qa01.dev.findora.org',
     cacheProvider: providers_1.FileCacheProvider,
     cachePath: './cache',
 };
@@ -585,13 +586,32 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
         }
     });
 }); };
+var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var rickey2, mine, password, mineWalletInfo, unDelegateResHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                rickey2 = 'glzudSr1lCGmkLjETDeUDCP_hBNkCmXILnPHPCRuI5Y=';
+                mine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(mine, password)];
+            case 1:
+                mineWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Staking.unDelegate(mineWalletInfo)];
+            case 2:
+                unDelegateResHandle = _a.sent();
+                console.log('unDelegateResHandle!!!', unDelegateResHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // myFunc7();
 // send custom
 // myFunc10();
 // send fra
 // myFunc9();
 // myFunc4();
-myFuncS3();
+myFuncUndelegate();
 // myFunc12();
 // myFunc8();
 // myFunc7();

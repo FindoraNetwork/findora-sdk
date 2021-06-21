@@ -4,11 +4,12 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
-import { ProcessedTxListResponseResult } from './types';
 import * as AssetApi from '../sdkAsset';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
+import { ProcessedTxListResponseResult } from './types';
 
+// merge with same in staiking
 export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
