@@ -1,5 +1,5 @@
 import { BigNumberValue, create as createBigNumber, fromWei } from '../../services/bigNumber';
-import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
+import { addUtxo, AddUtxoItem, getAddressUtxo } from '../../services/utxoHelper';
 import { createKeypair, getAddressPublicAndKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import { IssuedRecord, TxOutput } from '../network/types';
@@ -121,5 +121,31 @@ export const getRelatedSids = async (address: string): Promise<number[]> => {
     throw new Error('No related sids were fetched!');
   }
 
+  if (typeof relatedSids === 'number') {
+    return [relatedSids];
+  }
+
   return relatedSids;
+};
+
+export const getOwnedSids = async (address: string): Promise<number[]> => {
+  const result = await Network.getOwnedSids(address);
+
+  const { response: ownedSids } = result;
+
+  if (!ownedSids) {
+    throw new Error('No owned sids were fetched!');
+  }
+
+  if (typeof ownedSids === 'number') {
+    return [ownedSids];
+  }
+
+  return ownedSids;
+};
+
+export const getSidsUtxo = async (address: string, sids: number[]) => {
+  const utxoDataList = await getAddressUtxo(address, sids);
+
+  return utxoDataList;
 };

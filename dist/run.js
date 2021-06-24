@@ -70,9 +70,12 @@ var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
 var sdkEnv = {
-    hostUrl: 'https://dev-staging.dev.findora.org',
-    cacheProvider: providers_1.FileCacheProvider,
-    cachePath: './cache',
+    // hostUrl: 'https://dev-staging.dev.findora.org',
+    hostUrl: 'https://prod-mainnet.prod.findora.org',
+    // cacheProvider: FileCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
+    cacheProvider: providers_1.S3CacheProvider,
+    cachePath: 'sdk_cache',
 };
 Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -560,7 +563,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
                 console.log('Error!', e.message);
                 return [3 /*break*/, 4];
             case 4:
-                console.log('readRes :) 5', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
+                console.log('readRes :)! 5', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
                 myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
                 _d.label = 5;
@@ -585,13 +588,37 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
         }
     });
 }); };
+var myFunc19 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var lightWallet, walletInfo, sids, sidsInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                lightWallet = {
+                    address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
+                };
+                return [4 /*yield*/, api_1.Keypair.getAddressPublicAndKey(lightWallet.address)];
+            case 1:
+                walletInfo = _a.sent();
+                console.log('w11', walletInfo);
+                return [4 /*yield*/, api_1.Account.getOwnedSids(walletInfo.publickey)];
+            case 2:
+                sids = _a.sent();
+                console.log('sids', sids);
+                return [4 /*yield*/, api_1.Account.getSidsUtxo(walletInfo.publickey, sids)];
+            case 3:
+                sidsInfo = _a.sent();
+                console.log('sidsInfo', sidsInfo);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // myFunc7();
 // send custom
 // myFunc10();
 // send fra
 // myFunc9();
 // myFunc4();
-myFuncS3();
+myFunc19();
 // myFunc12();
 // myFunc8();
 // myFunc7();

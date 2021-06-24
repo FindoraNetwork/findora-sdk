@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
+exports.getSidsUtxo = exports.getOwnedSids = exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var keypair_1 = require("../keypair");
@@ -207,9 +207,44 @@ var getRelatedSids = function (address) { return __awaiter(void 0, void 0, void 
                 if (!relatedSids) {
                     throw new Error('No related sids were fetched!');
                 }
+                if (typeof relatedSids === 'number') {
+                    return [2 /*return*/, [relatedSids]];
+                }
                 return [2 /*return*/, relatedSids];
         }
     });
 }); };
 exports.getRelatedSids = getRelatedSids;
+var getOwnedSids = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, ownedSids;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Network.getOwnedSids(address)];
+            case 1:
+                result = _a.sent();
+                ownedSids = result.response;
+                if (!ownedSids) {
+                    throw new Error('No owned sids were fetched!');
+                }
+                console.log('ownedSids', ownedSids);
+                if (typeof ownedSids === 'number') {
+                    return [2 /*return*/, [ownedSids]];
+                }
+                return [2 /*return*/, ownedSids];
+        }
+    });
+}); };
+exports.getOwnedSids = getOwnedSids;
+var getSidsUtxo = function (address, sids) { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataList;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, utxoHelper_1.getAddressUtxo(address, sids)];
+            case 1:
+                utxoDataList = _a.sent();
+                return [2 /*return*/, utxoDataList];
+        }
+    });
+}); };
+exports.getSidsUtxo = getSidsUtxo;
 //# sourceMappingURL=account.js.map

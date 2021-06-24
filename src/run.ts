@@ -4,7 +4,7 @@ import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider, S3CacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -12,9 +12,12 @@ import * as UtxoHelper from './services/utxoHelper';
 dotenv.config();
 
 const sdkEnv = {
-  hostUrl: 'https://dev-staging.dev.findora.org',
-  cacheProvider: FileCacheProvider,
-  cachePath: './cache',
+  // hostUrl: 'https://dev-staging.dev.findora.org',
+  hostUrl: 'https://prod-mainnet.prod.findora.org',
+  // cacheProvider: FileCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
+  cacheProvider: S3CacheProvider,
+  cachePath: 'sdk_cache',
 };
 
 Sdk.init(sdkEnv);
@@ -481,6 +484,20 @@ const myFuncS3 = async () => {
   }
 };
 
+const myFunc19 = async () => {
+  const lightWallet = {
+    address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
+  };
+
+  const walletInfo = await Keypair.getAddressPublicAndKey(lightWallet.address);
+  console.log('w11', walletInfo);
+
+  const sids = await Account.getOwnedSids(walletInfo.publickey);
+  console.log('sids', sids);
+  const sidsInfo = await Account.getSidsUtxo(walletInfo.publickey, sids);
+  console.log('sidsInfo', sidsInfo);
+};
+
 // myFunc7();
 
 // send custom
@@ -491,7 +508,7 @@ const myFuncS3 = async () => {
 
 // myFunc4();
 
-myFuncS3();
+myFunc19();
 // myFunc12();
 // myFunc8();
 // myFunc7();
