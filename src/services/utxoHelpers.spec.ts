@@ -1,9 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import '@testing-library/jest-dom/extend-expect';
-
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import { Keypair } from '../api';
 import { CACHE_ENTRIES } from '../config/cache';
 import Sdk from '../Sdk';
@@ -40,7 +38,10 @@ describe('utxoHelpers', () => {
 
   const sid = 454;
 
+  const name = 'foo';
+
   const sdkEnv = {
+    name,
     hostUrl,
     cacheProvider: MemoryCacheProvider,
     cachePath: '.',
