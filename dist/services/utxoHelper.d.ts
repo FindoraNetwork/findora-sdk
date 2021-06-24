@@ -39,4 +39,5 @@ export declare const addUtxo: (walletInfo: WalletKeypar, addSids: number[]) => P
 export declare const getSendUtxo: (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
 export declare const addUtxoInputs: (utxoSids: UtxoOutputItem[]) => Promise<UtxoInputsInfo>;
 export declare const getNonEncryptedUtxoItem: (sid: number, address: string, cachedItem?: UtxoCacheResponse | undefined) => Promise<UtxoCacheResponse>;
-export declare const getAddressUtxo: (address: string, sids: number[]) => Promise<CacheItem>;
+export declare const getUtxoCacheData: () => Promise<CacheItem>;
+export declare const getAddressUtxo: (address: string, publickey: string, sids: number[], utxoDataCache: CacheItem, updateCache?: boolean) => Promise<CacheItem>;

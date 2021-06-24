@@ -42,7 +42,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.s3awsCacheProvider = void 0;
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
-// import fs from 'fs';
 var json_bigint_1 = __importDefault(require("json-bigint"));
 dotenv_1.default.config();
 var _a = process.env, AWS_ACCESS_KEY_ID = _a.AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = _a.AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
@@ -61,7 +60,6 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
         switch (_b.label) {
             case 0:
                 cacheData = {};
-                console.log('s3Params', s3Params);
                 console.log("Reading s3 cache from \"" + cacheBucketName + "/" + filePath + "\"");
                 _b.label = 1;
             case 1:
@@ -100,7 +98,6 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('s3Params', s3Params);
                 console.log("Writing s3 cache to \"" + cacheBucketName + "/" + filePath + "\"");
                 try {
                     cacheData = json_bigint_1.default({ useNativeBigInt: true }).stringify(data);

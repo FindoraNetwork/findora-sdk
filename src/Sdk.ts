@@ -6,7 +6,7 @@ import { CacheItem } from './services/cacheStore/types';
 type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
 
 export interface SdkEnvironmentConfig {
-  name: string;
+  name?: string;
   hostUrl: string;
   queryPort?: string;
   ledgerPort?: string;

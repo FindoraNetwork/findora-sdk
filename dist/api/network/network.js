@@ -134,7 +134,6 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/get_owned_utxos/" + address;
-                console.log('get_owned_utxos url', url);
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -163,7 +162,6 @@ var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/utxo_sid/" + utxoSid;
-                console.log('utxo_sid!', url);
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();

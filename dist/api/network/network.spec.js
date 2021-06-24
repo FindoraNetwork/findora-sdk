@@ -68,7 +68,9 @@ describe('network', function () {
         },
     };
     var hostUrl = 'https://foo.bar';
+    var name = 'foo';
     var sdkEnv = {
+        name: name,
         hostUrl: hostUrl,
         cacheProvider: providers_1.MemoryCacheProvider,
         cachePath: '.',

@@ -87,7 +87,9 @@ describe('account', function () {
     var password = '123';
     var sids = [454];
     var hostUrl = 'https://foo.bar';
+    var name = 'foo';
     var sdkEnv = {
+        name: name,
         hostUrl: hostUrl,
         cacheProvider: providers_1.MemoryCacheProvider,
         cachePath: '.',

@@ -78,6 +78,7 @@ var Sdk = /** @class */ (function () {
         });
     };
     Sdk.environment = {
+        name: 'stage',
         hostUrl: 'https://dev-staging.dev.findora.org',
         queryPort: '8667',
         ledgerPort: '8668',

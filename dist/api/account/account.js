@@ -226,7 +226,6 @@ var getOwnedSids = function (address) { return __awaiter(void 0, void 0, void 0,
                 if (!ownedSids) {
                     throw new Error('No owned sids were fetched!');
                 }
-                console.log('ownedSids', ownedSids);
                 if (typeof ownedSids === 'number') {
                     return [2 /*return*/, [ownedSids]];
                 }
@@ -235,11 +234,11 @@ var getOwnedSids = function (address) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getOwnedSids = getOwnedSids;
-var getSidsUtxo = function (address, sids) { return __awaiter(void 0, void 0, void 0, function () {
+var getSidsUtxo = function (address, publickey, sids, utxoDataCache, updateCache) { return __awaiter(void 0, void 0, void 0, function () {
     var utxoDataList;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, utxoHelper_1.getAddressUtxo(address, sids)];
+            case 0: return [4 /*yield*/, utxoHelper_1.getAddressUtxo(address, publickey, sids, utxoDataCache, updateCache)];
             case 1:
                 utxoDataList = _a.sent();
                 return [2 /*return*/, utxoDataList];
