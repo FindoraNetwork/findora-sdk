@@ -144,8 +144,14 @@ export const getOwnedSids = async (address: string): Promise<number[]> => {
   return ownedSids;
 };
 
-export const getSidsUtxo = async (address: string, sids: number[]) => {
-  const utxoDataList = await getAddressUtxo(address, sids);
+export const getSidsUtxo = async (
+  address: string,
+  publickey: string,
+  sids: number[],
+  utxoDataCache: { [key: string]: any },
+  updateCache?: boolean,
+) => {
+  const utxoDataList = await getAddressUtxo(address, publickey, sids, utxoDataCache, updateCache);
 
   return utxoDataList;
 };

@@ -6,6 +6,7 @@ import { CacheItem } from './services/cacheStore/types';
 type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
 
 export interface SdkEnvironmentConfig {
+  name: string;
   hostUrl: string;
   queryPort?: string;
   ledgerPort?: string;
@@ -16,6 +17,7 @@ export interface SdkEnvironmentConfig {
 
 export default class Sdk {
   public static environment = {
+    name: 'stage',
     hostUrl: 'https://dev-staging.dev.findora.org',
     queryPort: '8667',
     ledgerPort: '8668',

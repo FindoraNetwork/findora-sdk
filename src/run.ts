@@ -13,11 +13,12 @@ dotenv.config();
 
 const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
+  name: 'prod',
   hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // cacheProvider: FileCacheProvider,
-  // cacheProvider: MemoryCacheProvider,
   cacheProvider: S3CacheProvider,
-  cachePath: 'sdk_cache',
+  // cacheProvider: MemoryCacheProvider,
+  // cacheProvider: S3CacheProvider,
+  cachePath: 'cache',
 };
 
 Sdk.init(sdkEnv);
@@ -485,16 +486,26 @@ const myFuncS3 = async () => {
 };
 
 const myFunc19 = async () => {
+  // const lightWallet = {
+  //   address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
+  // };
+
   const lightWallet = {
-    address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
+    address: 'fra18rfyc9vfyacssmr5x7ku7udyd5j5vmfkfejkycr06e4as8x7n3dqwlrjrc',
   };
 
   const walletInfo = await Keypair.getAddressPublicAndKey(lightWallet.address);
-  console.log('w11', walletInfo);
+  // console.log('w11', walletInfo);
 
+  const utxoDataCache = await UtxoHelper.getUtxoCacheData();
+
+  // console.log('run utxoDataCache!', utxoDataCache);
   const sids = await Account.getOwnedSids(walletInfo.publickey);
-  console.log('sids', sids);
-  const sidsInfo = await Account.getSidsUtxo(walletInfo.publickey, sids);
+
+  // console.log('sids!', sids);
+
+  const sidsInfo = await Account.getSidsUtxo(walletInfo.address, walletInfo.publickey, sids, utxoDataCache);
+
   console.log('sidsInfo', sidsInfo);
 };
 
