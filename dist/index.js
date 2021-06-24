@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getWebLedger = exports.getNodeLedger = exports.CacheProviders = exports.Sdk = exports.Random = exports.Api = void 0;
+exports.UtxoHelper = exports.getWebLedger = exports.getNodeLedger = exports.CacheProviders = exports.Sdk = exports.Random = exports.Api = void 0;
 exports.Api = __importStar(require("./api"));
 var random_1 = require("./random");
 Object.defineProperty(exports, "Random", { enumerable: true, get: function () { return random_1.Random; } });
@@ -28,4 +28,5 @@ exports.CacheProviders = __importStar(require("./services/cacheStore/providers")
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 Object.defineProperty(exports, "getNodeLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getNodeLedger; } });
 Object.defineProperty(exports, "getWebLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getWebLedger; } });
+exports.UtxoHelper = __importStar(require("./services/utxoHelper"));
 //# sourceMappingURL=index.js.map
