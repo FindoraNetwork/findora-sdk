@@ -430,13 +430,13 @@ const myFunc18 = async () => {
 
 const myFuncS3 = async () => {
   const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
+    MY_AWS_ACCESS_KEY_ID,
+    MY_AWS_SECRET_ACCESS_KEY,
     UTXO_CACHE_BUCKET_NAME,
     UTXO_CACHE_KEY_NAME,
   } = process.env;
-  const accessKeyId = AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+  const accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
+  const secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
 
@@ -462,7 +462,7 @@ const myFuncS3 = async () => {
     console.log('Error!', e.message);
   }
 
-  console.log('readRes :) 5', readRes?.Body?.toString());
+  console.log('readRes :) 56', readRes?.Body?.toString());
 
   const existingContent = readRes?.Body?.toString('utf8');
 
@@ -518,8 +518,8 @@ const myFunc19 = async () => {
 // myFunc9();
 
 // myFunc4();
-
-myFunc19();
+myFuncS3();
+// myFunc19();
 // myFunc12();
 // myFunc8();
 // myFunc7();

@@ -5,10 +5,15 @@ import { CacheItem, CacheProvider } from '../types';
 
 dotenv.config();
 
-const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } = process.env;
+const {
+  MY_AWS_ACCESS_KEY_ID,
+  MY_AWS_SECRET_ACCESS_KEY,
+  UTXO_CACHE_BUCKET_NAME,
+  UTXO_CACHE_KEY_NAME,
+} = process.env;
 
-const accessKeyId = AWS_ACCESS_KEY_ID || '';
-const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+const accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
+const secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
 const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
 
 const s3Params = {

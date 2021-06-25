@@ -44,9 +44,9 @@ var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 dotenv_1.default.config();
-var _a = process.env, AWS_ACCESS_KEY_ID = _a.AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = _a.AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
-var accessKeyId = AWS_ACCESS_KEY_ID || '';
-var secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+var _a = process.env, MY_AWS_ACCESS_KEY_ID = _a.MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY = _a.MY_AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
+var accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
+var secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
 var cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
 var s3Params = {
     accessKeyId: accessKeyId,
