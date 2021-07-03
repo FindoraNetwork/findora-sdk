@@ -207,7 +207,7 @@ const myFunc7 = async () => {
 
   const handle = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules, decimals);
 
-  console.log('our issued tx handle IS ', handle);
+  console.log('our issued tx handle IS', handle);
 };
 
 // creates a kp
@@ -502,8 +502,6 @@ const myFuncUndelegate = async () => {
   console.log('unDelegateResHandle!!!', unDelegateResHandle);
 };
 
-// myFunc7();
-
 // send custom
 // myFunc10();
 
@@ -516,13 +514,12 @@ const myFuncUndelegate = async () => {
 
 // myFunc12();
 // myFunc8();
-// myFunc7();
 
 // define asset
-// myFunc2();
+myFunc2();
 
 // issue custom asset
 // myFunc7();
 
 // send custom asset
-myFunc10();
+// myFunc10();

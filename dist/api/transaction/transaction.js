@@ -89,7 +89,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
 var sendToMany = function (walletInfo, recieversList, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transferOperationBuilderFee, receivedTransferOperationFee, e, transactionBuilder, error_1, e, e, e, submitData, result, err_1, e, handle, submitError;
+    var ledger, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, submitData, result, err_1, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -106,6 +106,17 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     };
                     recieversInfo.push(recieverInfoItem);
                 });
+                fraAssetCode = ledger.fra_get_asset_code();
+                isFraTransfer = assetCode === fraAssetCode;
+                if (isFraTransfer) {
+                    minimalFee = ledger.fra_get_minimal_fee();
+                    toPublickey = ledger.fra_get_dest_pubkey();
+                    feeRecieverInfoItem = {
+                        utxoNumbers: minimalFee,
+                        toPublickey: toPublickey,
+                    };
+                    recieversInfo.push(feeRecieverInfoItem);
+                }
                 return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode, assetBlindRules)];
             case 2:
                 transferOperationBuilder = _a.sent();
@@ -114,11 +125,32 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation (main), Error: \"" + e.message + "\"");
                 }
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+                _a.label = 3;
             case 3:
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, exports.getTransactionBuilder()];
+            case 4:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
+                e = error_1;
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
+            case 6:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                }
+                if (!!isFraTransfer) return [3 /*break*/, 8];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules)];
+            case 7:
                 transferOperationBuilderFee = _a.sent();
+                receivedTransferOperationFee = void 0;
                 try {
                     receivedTransferOperationFee = transferOperationBuilderFee
                         .create()
@@ -127,26 +159,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
-                }
-                _a.label = 4;
-            case 4:
-                _a.trys.push([4, 6, , 7]);
-                return [4 /*yield*/, exports.getTransactionBuilder()];
-            case 5:
-                transactionBuilder = _a.sent();
-                return [3 /*break*/, 7];
-            case 6:
-                error_1 = _a.sent();
-                e = error_1;
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
-            case 7:
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation for fee, Error: \"" + e.message + "\"");
                 }
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
@@ -155,19 +168,21 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
-                submitData = transactionBuilder.transaction();
                 _a.label = 8;
             case 8:
-                _a.trys.push([8, 10, , 11]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
+                submitData = transactionBuilder.transaction();
+                _a.label = 9;
             case 9:
-                result = _a.sent();
-                return [3 /*break*/, 11];
+                _a.trys.push([9, 11, , 12]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
             case 10:
+                result = _a.sent();
+                return [3 /*break*/, 12];
+            case 11:
                 err_1 = _a.sent();
                 e = err_1;
                 throw new Error("Error Could not submit transaction: \"" + e.message + "\"");
-            case 11:
+            case 12:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
                     throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");

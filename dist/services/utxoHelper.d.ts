@@ -22,6 +22,7 @@ export interface UtxoInputParameter {
     ownerMemo: LedgerOwnerMemo | undefined;
     amount: BigInt;
     memoData: OwnedMemoResponse | undefined;
+    sid: number;
 }
 export interface UtxoInputsInfo {
     inputParametersList: UtxoInputParameter[];

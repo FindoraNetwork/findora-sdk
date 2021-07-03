@@ -76,7 +76,7 @@ var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetRecord, ownerMemo, decryptAssetData, error_1, decryptedAsetType, item;
+    var ledger, assetRecord, memoDataResult, myMemoData, memoError, ownerMemo, decryptAssetData, error_1, decryptedAsetType, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -88,23 +88,31 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 catch (error) {
                     throw new Error("Can not get client asset record. Details: \"" + error.message + "\"");
                 }
+                return [4 /*yield*/, Network.getOwnerMemo(sid)];
+            case 2:
+                memoDataResult = _a.sent();
+                myMemoData = memoDataResult.response, memoError = memoDataResult.error;
+                if (memoError) {
+                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                }
                 try {
-                    ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+                    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
+                    // ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
                 }
                 catch (error) {
                     throw new Error("Can not decode owner memo. Details: \"" + error.message + "\"");
                 }
-                _a.label = 2;
-            case 2:
-                _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, ledger.open_client_asset_record(assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair)];
+                _a.label = 3;
             case 3:
-                decryptAssetData = _a.sent();
-                return [3 /*break*/, 5];
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, ledger.open_client_asset_record(assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair)];
             case 4:
+                decryptAssetData = _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
                 error_1 = _a.sent();
                 throw new Error("Can not open client asset record to decode. Details: \"" + error_1.message + "\"");
-            case 5:
+            case 6:
                 try {
                     decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 }
@@ -285,6 +293,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                         ownerMemo: item === null || item === void 0 ? void 0 : item.ownerMemo,
                         amount: item.amount,
                         memoData: item.memoData,
+                        sid: item.sid,
                     };
                     inputParametersList.push(inputParameters);
                 }
