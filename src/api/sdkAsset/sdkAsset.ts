@@ -231,7 +231,7 @@ export const issueAsset = async (
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<string> => {
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules);
 
   let receivedTransferOperation;
 

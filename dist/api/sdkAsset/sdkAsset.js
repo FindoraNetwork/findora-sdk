@@ -278,7 +278,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
     var transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, err_3, e, e, submitData, result, err_4, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules)];
             case 1:
                 transferOperationBuilder = _a.sent();
                 try {

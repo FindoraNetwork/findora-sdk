@@ -85,9 +85,21 @@ export const getOwnedSids = async (
 ): Promise<Types.OwnedSidsDataResult> => {
   const url = `${getQueryRoute()}/get_owned_utxos/${address}`;
 
+  // console.log('url get_owned_utxos', url);
   const dataResult = await apiGet(url, config);
 
-  return dataResult;
+  const { response } = dataResult;
+
+  let myResponse = response;
+
+  if (!Array.isArray(response)) {
+    myResponse = [response];
+  }
+  const toReturn = { ...dataResult, response: myResponse };
+
+  // console.log('dataResult toReturn utxo', toReturn);
+
+  return toReturn;
 };
 
 export const getRelatedSids = async (
@@ -107,8 +119,10 @@ export const getUtxo = async (
 ): Promise<Types.UtxoDataResult> => {
   const url = `${getLedgerRoute()}/utxo_sid/${utxoSid}`;
 
+  // console.log('url utxo_sid', url);
   const dataResult = await apiGet(url, config);
 
+  // console.log('dataResult utxo_sid', dataResult);
   return dataResult;
 };
 
@@ -118,8 +132,10 @@ export const getOwnerMemo = async (
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_owner_memo/${utxoSid}`;
 
+  // console.log('url owner', url);
   const dataResult = await apiGet(url, config);
 
+  // console.log('dataResult owner', dataResult);
   return dataResult;
 };
 
@@ -156,12 +172,14 @@ export const submitTransaction = async <T extends Types.TransactionData>(
 ): Promise<Types.SubmitTransactionDataResult> => {
   const url = `${getSubmitRoute()}/submit_transaction`;
 
+  // console.log('url', url);
   const { response: txData, error } = getSubmitTransactionData(data);
 
   if (error) {
     return { error };
   }
 
+  // console.log('txData', JSON.stringify(txData, null, 2));
   const dataResult = await apiPost(url, txData, config);
 
   return dataResult;

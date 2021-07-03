@@ -60,6 +60,22 @@ export const sendToMany = async (
     recieversInfo.push(recieverInfoItem);
   });
 
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  if (isFraTransfer) {
+    const minimalFee = ledger.fra_get_minimal_fee();
+    const toPublickey = ledger.fra_get_dest_pubkey();
+
+    const feeRecieverInfoItem = {
+      utxoNumbers: minimalFee,
+      toPublickey,
+    };
+
+    recieversInfo.push(feeRecieverInfoItem);
+  }
+
   const transferOperationBuilder = await Fee.buildTransferOperation(
     walletInfo,
     recieversInfo,
@@ -74,22 +90,7 @@ export const sendToMany = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
-  }
-
-  const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
-
-  let receivedTransferOperationFee;
-
-  try {
-    receivedTransferOperationFee = transferOperationBuilderFee
-      .create()
-      .sign(walletInfo.keypair)
-      .transaction();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -110,12 +111,29 @@ export const sendToMany = async (
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
-  try {
-    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
-  } catch (err) {
-    const e: Error = err as Error;
+  if (!isFraTransfer) {
+    const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules);
 
-    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+    let receivedTransferOperationFee;
+
+    try {
+      receivedTransferOperationFee = transferOperationBuilderFee
+        .create()
+        .sign(walletInfo.keypair)
+        .transaction();
+    } catch (error) {
+      const e: Error = error as Error;
+
+      throw new Error(`Could not create transfer operation for fee, Error: "${e.message}"`);
+    }
+
+    try {
+      transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+    } catch (err) {
+      const e: Error = err as Error;
+
+      throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+    }
   }
 
   const submitData = transactionBuilder.transaction();
