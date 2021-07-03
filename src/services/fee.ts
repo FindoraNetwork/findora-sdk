@@ -2,20 +2,17 @@ import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import { getLedger } from './ledger/ledgerWrapper';
 import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
-import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputsInfo } from './utxoHelper';
+import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
 
 export interface ReciverInfo {
   utxoNumbers: BigInt;
   toPublickey: XfrPublicKey;
 }
-/**
- * @todo - rename the whole file from Fee to smth like TransferHelper, which better represents its purpose
- */
+
 export const getTransferOperation = async (
   walletInfo: WalletKeypar,
   utxoInputs: UtxoInputsInfo,
   recieversInfo: ReciverInfo[],
-  totalUtxoNumbers: BigInt,
   assetCode: string,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
@@ -26,23 +23,31 @@ export const getTransferOperation = async (
 
   let transferOp = ledger.TransferOperationBuilder.new();
 
-  const { inputParametersList, inputAmount } = utxoInputs;
+  const { inputParametersList } = utxoInputs;
 
-  inputParametersList.forEach(inputParameters => {
-    const { txoRef, assetRecord, amount, memoData } = inputParameters;
+  const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
+    const { txoRef, assetRecord, amount, sid } = inputParameters;
 
-    const ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+    const memoDataResult = await Network.getOwnerMemo(sid);
 
-    const newOwnerMemo = ownerMemo?.clone();
+    const { response: myMemoData, error: memoError } = memoDataResult;
+
+    if (memoError) {
+      throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
+    }
+
+    const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
 
     transferOp = transferOp.add_input_no_tracing(
       txoRef,
       assetRecord,
-      newOwnerMemo,
+      ownerMemo?.clone(),
       walletInfo.keypair,
       amount,
     );
   });
+
+  const _p = await Promise.all(inputPromise);
 
   recieversInfo.forEach(reciverInfo => {
     const { utxoNumbers, toPublickey } = reciverInfo;
@@ -55,18 +60,6 @@ export const getTransferOperation = async (
       !!blindIsType,
     );
   });
-
-  if (inputAmount > totalUtxoNumbers) {
-    const numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
-
-    transferOp = transferOp.add_output_no_tracing(
-      numberToSubmit,
-      ledger.get_pk_from_keypair(walletInfo.keypair),
-      assetCode,
-      !!blindIsAmount,
-      !!blindIsType,
-    );
-  }
 
   return transferOp;
 };
@@ -108,7 +101,7 @@ export const buildTransferOperationWithFee = async (
     walletInfo,
     utxoInputsInfo,
     recieversInfo,
-    minimalFee,
+    // minimalFee,
     fraAssetCode,
     assetBlindRules,
   );
@@ -140,14 +133,13 @@ export const buildTransferOperation = async (
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  const trasferOperation = await getTransferOperation(
+  const transferOperationBuilder = await getTransferOperation(
     walletInfo,
     utxoInputsInfo,
     recieversInfo,
-    totalUtxoNumbers,
     assetCode,
     assetBlindRules,
   );
 
-  return trasferOperation;
+  return transferOperationBuilder;
 };

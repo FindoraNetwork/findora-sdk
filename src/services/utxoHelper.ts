@@ -36,6 +36,7 @@ export interface UtxoInputParameter {
   ownerMemo: LedgerOwnerMemo | undefined;
   amount: BigInt;
   memoData: OwnedMemoResponse | undefined;
+  sid: number;
 }
 
 export interface UtxoInputsInfo {
@@ -59,10 +60,19 @@ export const decryptUtxoItem = async (
     throw new Error(`Can not get client asset record. Details: "${error.message}"`);
   }
 
+  const memoDataResult = await Network.getOwnerMemo(sid);
+
+  const { response: myMemoData, error: memoError } = memoDataResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
+  }
+
   let ownerMemo;
 
   try {
-    ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
+    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
+    // ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
   } catch (error) {
     throw new Error(`Can not decode owner memo. Details: "${error.message}"`);
   }
@@ -248,6 +258,7 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
       ownerMemo: item?.ownerMemo,
       amount: item.amount,
       memoData: item.memoData,
+      sid: item.sid,
     };
 
     inputParametersList.push(inputParameters);
