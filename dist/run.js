@@ -591,7 +591,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
     });
 }); };
 var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var rickey2, mine, password, mineWalletInfo, unDelegateResHandle;
+    var rickey2, mine, password, mineWalletInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -601,10 +601,6 @@ var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, fu
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(mine, password)];
             case 1:
                 mineWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Staking.unDelegate(mineWalletInfo)];
-            case 2:
-                unDelegateResHandle = _a.sent();
-                console.log('unDelegateResHandle!!!', unDelegateResHandle);
                 return [2 /*return*/];
         }
     });
