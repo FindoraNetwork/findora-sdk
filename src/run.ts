@@ -497,9 +497,9 @@ const myFuncUndelegate = async () => {
   const mineWalletInfo = await Keypair.restoreFromPrivateKey(mine, password);
 
   // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
-  const unDelegateResHandle = await Staking.unDelegate(mineWalletInfo);
+  // const unDelegateResHandle = await Staking.unDelegate(mineWalletInfo);
 
-  console.log('unDelegateResHandle!!!', unDelegateResHandle);
+  // console.log('unDelegateResHandle!!!', unDelegateResHandle);
 };
 
 // send custom

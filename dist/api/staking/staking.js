@@ -55,26 +55,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.claim = exports.unDelegate = exports.getTransactionBuilder = exports.getFraAssetCode = void 0;
+exports.claim = exports.unDelegate = void 0;
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
-var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _a.sent();
-                assetCode = ledger.fra_get_asset_code();
-                return [2 /*return*/, assetCode];
-        }
-    });
-}); };
-exports.getFraAssetCode = getFraAssetCode;
-// merge with same in transactions
 var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
+    var ledger, _a, stateCommitment, error, _, height, blockCount, stakingTransaction;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -91,21 +77,20 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
-                transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-                return [2 /*return*/, transactionBuilder];
+                stakingTransaction = ledger.TransactionBuilder.new(BigInt(blockCount));
+                return [2 /*return*/, stakingTransaction];
         }
     });
 }); };
-exports.getTransactionBuilder = getTransactionBuilder;
-var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferOperationBuilderFee, receivedTransferOperationFee, e, transactionBuilder, error_1, e, e, e, submitData, result, error_2, e, handle, submitError;
+var unDelegate = function (walletInfo, amount, validator) { return __awaiter(void 0, void 0, void 0, function () {
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, submitData, result, error_2, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 1:
-                transferOperationBuilderFee = _a.sent();
+                transferFeeOperationBuilder = _a.sent();
                 try {
-                    receivedTransferOperationFee = transferOperationBuilderFee
+                    receivedTransferFeeOperation = transferFeeOperationBuilder
                         .create()
                         .sign(walletInfo.keypair)
                         .transaction();
@@ -117,28 +102,23 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, exports.getTransactionBuilder()];
+                return [4 /*yield*/, getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
                 error_1 = _a.sent();
                 e = error_1;
-                throw new Error("Could not get \"transactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
             case 5:
                 try {
-                    transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
+                    transactionBuilder = transactionBuilder
+                        .add_operation_undelegate_partially(walletInfo.keypair, amount, validator)
+                        .add_transfer_operation(receivedTransferFeeOperation);
                 }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add undelegate operation, Error: \"" + e.message + "\"");
-                }
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not staking unDelegate operation, Error: \"" + e.message + "\"");
                 }
                 submitData = transactionBuilder.transaction();
                 _a.label = 6;
@@ -151,7 +131,7 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
             case 8:
                 error_2 = _a.sent();
                 e = error_2;
-                throw new Error("Could not unDelegate : \"" + e.message + "\"");
+                throw new Error("Could not unDelegate submit transaction: \"" + e.message + "\"");
             case 9:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
@@ -165,38 +145,18 @@ var unDelegate = function (walletInfo) { return __awaiter(void 0, void 0, void 0
     });
 }); };
 exports.unDelegate = unDelegate;
-var getClaimTransactionBuilder = function (walletKeypair, rewords) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, definitionTransaction;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_claim_custom(walletKeypair, rewords);
-                return [2 /*return*/, definitionTransaction];
-        }
-    });
-}); };
 var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_3, e, e, submitData, result, error_4, e, handle, submitError;
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_3, e, e, submitData, result, error_4, e, handle, submitError;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 1:
-                transferOperationBuilder = _a.sent();
+                transferFeeOperationBuilder = _a.sent();
                 try {
-                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                    receivedTransferFeeOperation = transferFeeOperationBuilder
+                        .create()
+                        .sign(walletInfo.keypair)
+                        .transaction();
                 }
                 catch (error) {
                     e = error;
@@ -205,21 +165,23 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, getClaimTransactionBuilder(walletInfo.keypair, amount)];
+                return [4 /*yield*/, getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
                 error_3 = _a.sent();
                 e = error_3;
-                throw new Error("Could not get \"claimTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
             case 5:
                 try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                    transactionBuilder = transactionBuilder
+                        .add_operation_claim_custom(walletInfo.keypair, amount)
+                        .add_transfer_operation(receivedTransferFeeOperation);
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not staking claim operation, Error: \"" + e.message + "\"");
                 }
                 submitData = transactionBuilder.transaction();
                 _a.label = 6;
@@ -232,7 +194,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
             case 8:
                 error_4 = _a.sent();
                 e = error_4;
-                throw new Error("Could not claim : \"" + e.message + "\"");
+                throw new Error("Could not claim submit transaction: \"" + e.message + "\"");
             case 9:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
