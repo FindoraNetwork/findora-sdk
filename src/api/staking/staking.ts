@@ -1,28 +1,7 @@
 import * as Fee from '../../services/fee';
-import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { TransactionBuilder } from '../../services/ledger/types';
+import * as Transaction from '../../api/transaction';
 import { WalletKeypar } from '../keypair';
 import * as Network from '../network';
-
-const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const stakingTransaction = ledger.TransactionBuilder.new(BigInt(blockCount));
-  return stakingTransaction;
-};
 
 export const unDelegate = async (
   walletInfo: WalletKeypar,
@@ -47,7 +26,7 @@ export const unDelegate = async (
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getTransactionBuilder();
+    transactionBuilder = await Transaction.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
     throw new Error(`Could not get "stakingTransactionBuilder", Error: "${e.message}"`);
@@ -107,7 +86,7 @@ export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<s
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getTransactionBuilder();
+    transactionBuilder = await Transaction.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
     throw new Error(`Could not get "stakingTransactionBuilder", Error: "${e.message}"`);

@@ -57,31 +57,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.claim = exports.unDelegate = void 0;
 var Fee = __importStar(require("../../services/fee"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var Transaction = __importStar(require("../../api/transaction"));
 var Network = __importStar(require("../network"));
-var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, stakingTransaction;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                stakingTransaction = ledger.TransactionBuilder.new(BigInt(blockCount));
-                return [2 /*return*/, stakingTransaction];
-        }
-    });
-}); };
 var unDelegate = function (walletInfo, amount, validator) { return __awaiter(void 0, void 0, void 0, function () {
     var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, submitData, result, error_2, e, handle, submitError;
     return __generator(this, function (_a) {
@@ -102,7 +79,7 @@ var unDelegate = function (walletInfo, amount, validator) { return __awaiter(voi
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, getTransactionBuilder()];
+                return [4 /*yield*/, Transaction.getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
@@ -165,7 +142,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, getTransactionBuilder()];
+                return [4 /*yield*/, Transaction.getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
