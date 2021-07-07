@@ -55,12 +55,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.sendToMany = exports.getTransactionBuilder = void 0;
+exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitTransaction = exports.sendToMany = exports.getTransactionBuilder = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
+var AssetApi = __importStar(require("../sdkAsset"));
 var helpers = __importStar(require("./helpers"));
 var processor_1 = require("./processor");
 // merge with same in staiking
@@ -88,13 +89,17 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
-var sendToMany = function (walletInfo, recieversList, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, submitData, result, err_1, e, handle, submitError;
+var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
+                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
+            case 2:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
                 recieversInfo = [];
                 recieversList.forEach(function (reciver) {
                     var toWalletInfo = reciver.reciverWalletInfo, numbers = reciver.amount;
@@ -118,7 +123,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     recieversInfo.push(feeRecieverInfoItem);
                 }
                 return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-            case 2:
+            case 3:
                 transferOperationBuilder = _a.sent();
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
@@ -127,18 +132,18 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     e = error;
                     throw new Error("Could not create transfer operation (main), Error: \"" + e.message + "\"");
                 }
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, exports.getTransactionBuilder()];
+                _a.label = 4;
             case 4:
-                transactionBuilder = _a.sent();
-                return [3 /*break*/, 6];
+                _a.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, exports.getTransactionBuilder()];
             case 5:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 7];
+            case 6:
                 error_1 = _a.sent();
                 e = error_1;
                 throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
-            case 6:
+            case 7:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
@@ -146,9 +151,9 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
-                if (!!isFraTransfer) return [3 /*break*/, 8];
+                if (!!isFraTransfer) return [3 /*break*/, 9];
                 return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules)];
-            case 7:
+            case 8:
                 transferOperationBuilderFee = _a.sent();
                 receivedTransferOperationFee = void 0;
                 try {
@@ -168,21 +173,30 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
-                _a.label = 8;
-            case 8:
-                submitData = transactionBuilder.transaction();
                 _a.label = 9;
-            case 9:
-                _a.trys.push([9, 11, , 12]);
+            case 9: return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.sendToMany = sendToMany;
+var submitTransaction = function (transactionBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var submitData, result, err_1, e, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                submitData = transactionBuilder.transaction();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 10:
+            case 2:
                 result = _a.sent();
-                return [3 /*break*/, 12];
-            case 11:
+                return [3 /*break*/, 4];
+            case 3:
                 err_1 = _a.sent();
                 e = err_1;
                 throw new Error("Error Could not submit transaction: \"" + e.message + "\"");
-            case 12:
+            case 4:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
                     throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
@@ -194,8 +208,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, decimals, asset
         }
     });
 }); };
-exports.sendToMany = sendToMany;
-var sendToAddress = function (walletInfo, address, numbers, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+exports.submitTransaction = submitTransaction;
+var sendToAddress = function (walletInfo, address, numbers, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var toWalletInfoLight, recieversInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -203,19 +217,19 @@ var sendToAddress = function (walletInfo, address, numbers, assetCode, decimals,
             case 1:
                 toWalletInfoLight = _a.sent();
                 recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
-                return [2 /*return*/, exports.sendToMany(walletInfo, recieversInfo, assetCode, decimals, assetBlindRules)];
+                return [2 /*return*/, exports.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
         }
     });
 }); };
 exports.sendToAddress = sendToAddress;
-var sendToPublicKey = function (walletInfo, publicKey, numbers, assetCode, decimals, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var sendToPublicKey = function (walletInfo, publicKey, numbers, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var address;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, keypair_1.getAddressByPublicKey(publicKey)];
             case 1:
                 address = _a.sent();
-                return [2 /*return*/, exports.sendToAddress(walletInfo, address, numbers, assetCode, decimals, assetBlindRules)];
+                return [2 /*return*/, exports.sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules)];
         }
     });
 }); };

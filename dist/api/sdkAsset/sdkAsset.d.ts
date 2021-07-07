@@ -1,3 +1,4 @@
+import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 export interface AssetRules {
     transferable: boolean;
@@ -13,6 +14,6 @@ export interface AssetBlindRules {
 export declare const getFraAssetCode: () => Promise<string>;
 export declare const getAssetCode: (val: number[]) => Promise<string>;
 export declare const getRandomAssetCode: () => Promise<string>;
-export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string | undefined, newAssetRules?: AssetRules | undefined) => Promise<string>;
-export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: number, assetBlindRules: AssetBlindRules, assetDecimals: number) => Promise<string>;
+export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string | undefined, newAssetRules?: AssetRules | undefined) => Promise<TransactionBuilder>;
+export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: number, assetBlindRules: AssetBlindRules, assetDecimals: number) => Promise<TransactionBuilder>;
 export declare const getAssetDetails: (assetCode: string) => Promise<FindoraWallet.IAsset>;

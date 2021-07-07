@@ -57,15 +57,30 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.buildTransferOperation = exports.buildTransferOperationWithFee = exports.getTransferOperation = void 0;
 var Network = __importStar(require("../api/network"));
+var AssetApi = __importStar(require("../api/sdkAsset"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var utxoHelper_1 = require("./utxoHelper");
 var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, blindIsAmount, blindIsType, transferOp, inputParametersList, inputPromise, _p;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var ledger, asset, isTraceable, tracingPolicies, blindIsAmount, blindIsType, transferOp, inputParametersList, inputPromise, _p;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
-                ledger = _a.sent();
+                ledger = _b.sent();
+                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
+            case 2:
+                asset = _b.sent();
+                isTraceable = ((_a = asset.assetRules.tracing_policies) === null || _a === void 0 ? void 0 : _a.length) > 0;
+                if (isTraceable) {
+                    try {
+                        tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
+                        console.log('tracingPolicies:', tracingPolicies);
+                    }
+                    catch (e) {
+                        console.log(e);
+                    }
+                }
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                 blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                 transferOp = ledger.TransferOperationBuilder.new();
@@ -83,18 +98,28 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                 if (memoError) {
                                     throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                                 }
-                                ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
-                                transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair, amount);
+                                ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+                                if (isTraceable) {
+                                    transferOp = transferOp.add_input_with_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), tracingPolicies, walletInfo.keypair, amount);
+                                }
+                                else {
+                                    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair, amount);
+                                }
                                 return [2 /*return*/];
                         }
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(inputPromise)];
-            case 2:
-                _p = _a.sent();
+            case 3:
+                _p = _b.sent();
                 recieversInfo.forEach(function (reciverInfo) {
                     var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey;
-                    transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
+                    if (isTraceable) {
+                        transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
+                    }
+                    else {
+                        transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
+                    }
                 });
                 return [2 /*return*/, transferOp];
         }

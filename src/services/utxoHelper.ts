@@ -155,9 +155,11 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 
   let fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
 
-  if (window?.document) {
-    fullPathToCacheEntry = cacheEntryName;
-  }
+  try {
+    if (window && window?.document) {
+      fullPathToCacheEntry = cacheEntryName;
+    }
+  } catch (error) {}
 
   try {
     utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);

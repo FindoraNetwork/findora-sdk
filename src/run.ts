@@ -244,6 +244,8 @@ const myFunc9 = async () => {
     assetBlindRules,
   );
 
+  console.log(resultHandle.transaction());
+
   console.log('send fra result handle!!', resultHandle);
 };
 
@@ -497,7 +499,7 @@ const myFuncUndelegate = async () => {
 // fra balance
 // myFunc5();
 // send fra
-// myFunc9();
+myFunc9();
 
 // myFunc4();
 
@@ -505,7 +507,7 @@ const myFuncUndelegate = async () => {
 // myFunc8();
 
 // define asset
-myFunc2();
+// myFunc2();
 
 // issue custom asset
 // myFunc7();

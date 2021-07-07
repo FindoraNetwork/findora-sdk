@@ -55,12 +55,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.claim = exports.unDelegate = void 0;
+exports.claim = exports.delegate = exports.unDelegate = void 0;
 var Fee = __importStar(require("../../services/fee"));
 var Transaction = __importStar(require("../../api/transaction"));
-var Network = __importStar(require("../network"));
 var unDelegate = function (walletInfo, amount, validator) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, submitData, result, error_2, e, handle, submitError;
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
@@ -97,33 +96,26 @@ var unDelegate = function (walletInfo, amount, validator) { return __awaiter(voi
                     e = error;
                     throw new Error("Could not staking unDelegate operation, Error: \"" + e.message + "\"");
                 }
-                submitData = transactionBuilder.transaction();
-                _a.label = 6;
-            case 6:
-                _a.trys.push([6, 8, , 9]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 7:
-                result = _a.sent();
-                return [3 /*break*/, 9];
-            case 8:
-                error_2 = _a.sent();
-                e = error_2;
-                throw new Error("Could not unDelegate submit transaction: \"" + e.message + "\"");
-            case 9:
-                handle = result.response, submitError = result.error;
-                if (submitError) {
-                    throw new Error("Could not submit unDelegate transaction: \"" + submitError.message + "\"");
-                }
-                if (!handle) {
-                    throw new Error("Could not unDelegate - submit handle is missing");
-                }
-                return [2 /*return*/, handle];
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };
 exports.unDelegate = unDelegate;
+var delegate = function (walletInfo, address, numbers, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules)];
+            case 1:
+                transactionBuilder = _a.sent();
+                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.delegate = delegate;
 var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_3, e, e, submitData, result, error_4, e, handle, submitError;
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_2, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
@@ -147,8 +139,8 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_3 = _a.sent();
-                e = error_3;
+                error_2 = _a.sent();
+                e = error_2;
                 throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
             case 5:
                 try {
@@ -160,27 +152,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                     e = error;
                     throw new Error("Could not staking claim operation, Error: \"" + e.message + "\"");
                 }
-                submitData = transactionBuilder.transaction();
-                _a.label = 6;
-            case 6:
-                _a.trys.push([6, 8, , 9]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 7:
-                result = _a.sent();
-                return [3 /*break*/, 9];
-            case 8:
-                error_4 = _a.sent();
-                e = error_4;
-                throw new Error("Could not claim submit transaction: \"" + e.message + "\"");
-            case 9:
-                handle = result.response, submitError = result.error;
-                if (submitError) {
-                    throw new Error("Could not submit claim transaction: \"" + submitError.message + "\"");
-                }
-                if (!handle) {
-                    throw new Error("Could not claim - submit handle is missing");
-                }
-                return [2 /*return*/, handle];
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };

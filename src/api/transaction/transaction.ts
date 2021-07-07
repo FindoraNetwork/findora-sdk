@@ -41,7 +41,7 @@ export const sendToMany = async (
   recieversList: TransferReciever[],
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
   const asset = await AssetApi.getAssetDetails(assetCode);
@@ -138,6 +138,10 @@ export const sendToMany = async (
     }
   }
 
+  return transactionBuilder;
+};
+
+export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {
   const submitData = transactionBuilder.transaction();
 
   let result;
@@ -169,7 +173,7 @@ export const sendToAddress = async (
   numbers: number,
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const toWalletInfoLight = await getAddressPublicAndKey(address);
 
   const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
@@ -183,7 +187,7 @@ export const sendToPublicKey = async (
   numbers: number,
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const address = await getAddressByPublicKey(publicKey);
 
   return sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules);
