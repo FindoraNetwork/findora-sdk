@@ -40,10 +40,12 @@ export const sendToMany = async (
   walletInfo: WalletKeypar,
   recieversList: TransferReciever[],
   assetCode: string,
-  decimals: number,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const ledger = await getLedger();
+
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
 
   const recieversInfo: Fee.ReciverInfo[] = [];
 
@@ -166,14 +168,13 @@ export const sendToAddress = async (
   address: string,
   numbers: number,
   assetCode: string,
-  decimals: number,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const toWalletInfoLight = await getAddressPublicAndKey(address);
 
   const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
 
-  return sendToMany(walletInfo, recieversInfo, assetCode, decimals, assetBlindRules);
+  return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
 };
 
 export const sendToPublicKey = async (
@@ -181,12 +182,11 @@ export const sendToPublicKey = async (
   publicKey: string,
   numbers: number,
   assetCode: string,
-  decimals: number,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<string> => {
   const address = await getAddressByPublicKey(publicKey);
 
-  return sendToAddress(walletInfo, address, numbers, assetCode, decimals, assetBlindRules);
+  return sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules);
 };
 
 export const getTxList = async (

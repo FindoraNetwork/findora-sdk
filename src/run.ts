@@ -241,7 +241,6 @@ const myFunc9 = async () => {
     toWalletInfo.address,
     4,
     assetCode,
-    decimals,
     assetBlindRules,
   );
 
@@ -271,7 +270,6 @@ const myFunc10 = async () => {
     toWalletInfo.address,
     0.1,
     assetCode,
-    decimals,
     assetBlindRules,
   );
 
@@ -282,7 +280,6 @@ const myFunc10 = async () => {
   //   toWalletInfo.publickey,
   //   0.1,
   //   assetCode,
-  //   decimals,
   //   assetBlindRules,
   // );
 
@@ -322,8 +319,6 @@ const myFunc12 = async () => {
   const assetCode = fraCode;
   // const assetCode = customAssetCode;
 
-  const decimals = 6;
-
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const recieversInfo = [
@@ -331,13 +326,7 @@ const myFunc12 = async () => {
     { reciverWalletInfo: toWalletInfoMine2, amount: 0.2 },
   ];
 
-  const resultHandle = await Transaction.sendToMany(
-    walletInfo,
-    recieversInfo,
-    assetCode,
-    decimals,
-    assetBlindRules,
-  );
+  const resultHandle = await Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
 
   console.log('send custom result handle!', resultHandle);
 };

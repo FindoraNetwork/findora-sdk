@@ -1,7 +1,8 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
+import * as AssetApi from '../api/sdkAsset';
 import { getLedger } from './ledger/ledgerWrapper';
-import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
+import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
 
 export interface ReciverInfo {
@@ -17,6 +18,20 @@ export const getTransferOperation = async (
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
+
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const isTraceable = asset.assetRules.tracing_policies?.length > 0;
+
+  let tracingPolicies: TracingPolicies;
+
+  if (isTraceable) {
+    try {
+      tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
+      console.log('tracingPolicies:', tracingPolicies);
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
   const blindIsType = assetBlindRules?.isTypeBlind;
@@ -38,13 +53,24 @@ export const getTransferOperation = async (
 
     const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
 
-    transferOp = transferOp.add_input_no_tracing(
-      txoRef,
-      assetRecord,
-      ownerMemo?.clone(),
-      walletInfo.keypair,
-      amount,
-    );
+    if (isTraceable) {
+      transferOp = transferOp.add_input_with_tracing(
+        txoRef,
+        assetRecord,
+        ownerMemo?.clone(),
+        tracingPolicies,
+        walletInfo.keypair,
+        amount,
+      );
+    } else {
+      transferOp = transferOp.add_input_no_tracing(
+        txoRef,
+        assetRecord,
+        ownerMemo?.clone(),
+        walletInfo.keypair,
+        amount,
+      );
+    }
   });
 
   const _p = await Promise.all(inputPromise);
@@ -52,13 +78,24 @@ export const getTransferOperation = async (
   recieversInfo.forEach(reciverInfo => {
     const { utxoNumbers, toPublickey } = reciverInfo;
 
-    transferOp = transferOp.add_output_no_tracing(
-      utxoNumbers,
-      toPublickey,
-      assetCode,
-      !!blindIsAmount,
-      !!blindIsType,
-    );
+    if (isTraceable) {
+      transferOp = transferOp.add_output_with_tracing(
+        utxoNumbers,
+        toPublickey,
+        tracingPolicies,
+        assetCode,
+        !!blindIsAmount,
+        !!blindIsType,
+      );
+    } else {
+      transferOp = transferOp.add_output_no_tracing(
+        utxoNumbers,
+        toPublickey,
+        assetCode,
+        !!blindIsAmount,
+        !!blindIsType,
+      );
+    }
   });
 
   return transferOp;

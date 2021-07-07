@@ -5,6 +5,7 @@ declare namespace FindoraWallet {
     updatable: boolean;
     transfer_multisig_rules: any;
     max_units: null | number;
+    tracing_policies: any[];
   }
   export interface ILedgerAsset {
     memo: string;
