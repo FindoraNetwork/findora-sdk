@@ -1,11 +1,10 @@
 import _get from 'lodash/get';
 
 import * as Types from '../types';
-
-import { processUnsupported, Unsupported } from './unsupported';
 import { processDefineAsset, ProcessedDefineAsset } from './defineAsset';
-import { processTransferAsset, ProcessedTransferAsset } from './transferAsset';
-import { processIssueAsset, ProcessedIssueAsset } from './issueAsset';
+import { ProcessedIssueAsset, processIssueAsset } from './issueAsset';
+import { ProcessedTransferAsset, processTransferAsset } from './transferAsset';
+import { processUnsupported, Unsupported } from './unsupported';
 
 export type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | Unsupported;
 
@@ -19,7 +18,7 @@ export const getOperationProcessor = (
   operationItem: Types.TxOperation,
   processors: TxOperationProcessors,
 ): ProcessorType => {
-  for (let el of Object.keys(processors)) {
+  for (const el of Object.keys(processors)) {
     if (el in operationItem) {
       return _get(processors, el, processors.Unsupported);
     }

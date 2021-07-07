@@ -1,8 +1,9 @@
-import * as Fee from '../../services/fee';
-import * as Transaction from '../../api/transaction';
-import * as AssetApi from '../sdkAsset';
-import { WalletKeypar } from '../keypair';
 import { TransactionBuilder } from 'services/ledger/types';
+
+import * as Transaction from '../../api/transaction';
+import * as Fee from '../../services/fee';
+import { WalletKeypar } from '../keypair';
+import * as AssetApi from '../sdkAsset';
 
 export const unDelegate = async (
   walletInfo: WalletKeypar,

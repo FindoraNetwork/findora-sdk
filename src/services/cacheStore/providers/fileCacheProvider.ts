@@ -1,8 +1,8 @@
 import fs from 'fs';
-import path from 'path';
 import JSONbig from 'json-bigint';
+import path from 'path';
 
-import { readFile, writeFile, createCacheDir } from '../../utils';
+import { createCacheDir, readFile, writeFile } from '../../utils';
 import { CacheItem, CacheProvider } from '../types';
 
 const readCache = async (filePath: string): Promise<CacheItem> => {

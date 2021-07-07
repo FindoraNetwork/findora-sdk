@@ -1,9 +1,10 @@
-import _get from 'lodash/get';
-import { TxInfo } from '../network/types';
-import * as Types from './types';
-import { processorsMap, ProcessedTx, getOperationProcessor } from './operationProcessors';
-import * as helpers from './helpers';
 import atob from 'atob';
+import _get from 'lodash/get';
+
+import { TxInfo } from '../network/types';
+import * as helpers from './helpers';
+import { getOperationProcessor, ProcessedTx, processorsMap } from './operationProcessors';
+import * as Types from './types';
 
 const processTxOperationItem = async (operationItem: Types.TxOperation): Promise<ProcessedTx> => {
   const dataProcessor = getOperationProcessor(operationItem, processorsMap);

@@ -1,8 +1,8 @@
 import _get from 'lodash/get';
-import * as Network from '../network';
 
+import * as Network from '../network';
+import { TxInfo, TxListDataResult } from '../network/types';
 import * as Types from './types';
-import { TxListDataResult, TxInfo } from '../network/types';
 
 export const getTxListFromResponse = (result: TxListDataResult): null | TxInfo[] =>
   _get(result, 'response.result.txs', null);
