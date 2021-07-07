@@ -1,10 +1,11 @@
 export {
+  AssetRules,
+  ClientAssetRecord,
+  OwnerMemo,
+  TracingPolicies,
+  TransactionBuilder,
+  TransferOperationBuilder,
+  TxoRef,
   XfrKeyPair,
   XfrPublicKey,
-  TxoRef,
-  TransferOperationBuilder,
-  OwnerMemo,
-  AssetRules,
-  TransactionBuilder,
-  ClientAssetRecord,
 } from 'findora-wallet-wasm/web/wasm';
