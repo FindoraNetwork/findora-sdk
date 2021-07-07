@@ -51,7 +51,7 @@ export const getTransferOperation = async (
       throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
     }
 
-    const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
+    const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
 
     if (isTraceable) {
       transferOp = transferOp.add_input_with_tracing(

@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
 exports.uint8arrayToHexStr = uint8arrayToHexStr;
@@ -67,4 +67,8 @@ var readFile = function (filePath) {
     });
 };
 exports.readFile = readFile;
+var createCacheDir = function (dirPath) {
+    return fs_1.default.mkdirSync(dirPath, { recursive: true });
+};
+exports.createCacheDir = createCacheDir;
 //# sourceMappingURL=utils.js.map

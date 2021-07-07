@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.fileCacheProvider = void 0;
 var fs_1 = __importDefault(require("fs"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
+var path_1 = __importDefault(require("path"));
 var utils_1 = require("../../utils");
 var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, function () {
     var fileContent, cacheData, error_1;
@@ -91,6 +92,12 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
                 }
                 catch (err) {
                     throw new Error("can not stringify data for cache, \"" + err.message + "\"");
+                }
+                try {
+                    utils_1.createCacheDir(path_1.default.parse(filePath).dir);
+                }
+                catch (err) {
+                    throw new Error("Failed to create directory, \"" + err.message + "\", \"dir path: " + path_1.default.parse(filePath).dir + "\"");
                 }
                 _a.label = 1;
             case 1:

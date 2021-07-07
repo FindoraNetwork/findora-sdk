@@ -1,5 +1,4 @@
 // import JSONbig from 'json-bigint';
-
 import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
@@ -161,7 +160,7 @@ export const defineAsset = async (
   assetName: string,
   assetMemo?: string,
   newAssetRules?: AssetRules,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const assetRules = await getAssetRules(newAssetRules);
 
   const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
@@ -199,29 +198,7 @@ export const defineAsset = async (
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
-  const submitData = transactionBuilder.transaction();
-
-  let result;
-
-  try {
-    result = await Network.submitTransaction(submitData);
-  } catch (err) {
-    const e: Error = err as Error;
-
-    throw new Error(`Error Could not define asset: "${e.message}"`);
-  }
-
-  const { response: handle, error: submitError } = result;
-
-  if (submitError) {
-    throw new Error(`Could not submit define asset transaction: "${submitError.message}"`);
-  }
-
-  if (!handle) {
-    throw new Error(`Could not define asset - submit handle is missing`);
-  }
-
-  return handle;
+  return transactionBuilder;
 };
 
 export const issueAsset = async (
@@ -230,7 +207,7 @@ export const issueAsset = async (
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules);
 
   let receivedTransferOperation;
@@ -267,29 +244,7 @@ export const issueAsset = async (
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
-  const submitData = transactionBuilder.transaction();
-
-  let result;
-
-  try {
-    result = await Network.submitTransaction(submitData);
-  } catch (err) {
-    const e: Error = err as Error;
-
-    throw new Error(`Could not issue asset: "${e.message}"`);
-  }
-
-  const { response: handle, error: submitError } = result;
-
-  if (submitError) {
-    throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
-  }
-
-  if (!handle) {
-    throw new Error(`Could not issue asset - submit handle is missing`);
-  }
-
-  return handle;
+  return transactionBuilder;
 };
 
 export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.IAsset> => {

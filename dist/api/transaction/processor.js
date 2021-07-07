@@ -70,9 +70,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processeTxInfoList = exports.processTxInfoItem = void 0;
-var operationProcessors_1 = require("./operationProcessors");
-var helpers = __importStar(require("./helpers"));
 var atob_1 = __importDefault(require("atob"));
+var helpers = __importStar(require("./helpers"));
+var operationProcessors_1 = require("./operationProcessors");
 var processTxOperationItem = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
     var dataProcessor, processedData;
     return __generator(this, function (_a) {

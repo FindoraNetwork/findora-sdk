@@ -1,6 +1,5 @@
-import * as Keypair from '../../keypair';
 import { DEFAULT_ASSET_RULES } from '../../../config/asset';
-
+import * as Keypair from '../../keypair';
 import { DefineAssetOperation, TxOperation } from '../types';
 
 export interface ProcessedDefineAsset {

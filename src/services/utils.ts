@@ -23,3 +23,7 @@ export const readFile = (filePath: string): Promise<string> => {
     });
   });
 };
+
+export const createCacheDir = (dirPath: string) => {
+  return fs.mkdirSync(dirPath, { recursive: true });
+};

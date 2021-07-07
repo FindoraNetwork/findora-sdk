@@ -317,9 +317,10 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 assetCode = fraCode;
                 decimals = 6;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 4, assetCode, decimals, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 4, assetCode, assetBlindRules)];
             case 4:
                 resultHandle = _a.sent();
+                console.log(resultHandle.transaction());
                 console.log('send fra result handle!!', resultHandle);
                 return [2 /*return*/];
         }
@@ -344,7 +345,7 @@ var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function (
                 assetCode = customAssetCode;
                 decimals = 6;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 0.1, assetCode, decimals, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 0.1, assetCode, assetBlindRules)];
             case 3:
                 resultHandle = _a.sent();
                 console.log('send custom result handle!', resultHandle);
@@ -374,7 +375,7 @@ var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function (
 }); };
 // send custom asset to many
 var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, customAssetCode, toPkeyMine, toPkeyMine2, password, walletInfo, toWalletInfoMine, toWalletInfoMine2, fraCode, assetCode, decimals, assetBlindRules, recieversInfo, resultHandle;
+    var pkey, customAssetCode, toPkeyMine, toPkeyMine2, password, walletInfo, toWalletInfoMine, toWalletInfoMine2, fraCode, assetCode, assetBlindRules, recieversInfo, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -396,13 +397,12 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 4:
                 fraCode = _a.sent();
                 assetCode = fraCode;
-                decimals = 6;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
                 recieversInfo = [
                     { reciverWalletInfo: toWalletInfoMine, amount: 0.1 },
                     { reciverWalletInfo: toWalletInfoMine2, amount: 0.2 },
                 ];
-                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, decimals, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
             case 5:
                 resultHandle = _a.sent();
                 console.log('send custom result handle!', resultHandle);
@@ -610,12 +610,12 @@ var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, fu
 // fra balance
 // myFunc5();
 // send fra
-// myFunc9();
+myFunc9();
 // myFunc4();
 // myFunc12();
 // myFunc8();
 // define asset
-myFunc2();
+// myFunc2();
 // issue custom asset
 // myFunc7();
 // send custom asset

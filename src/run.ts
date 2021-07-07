@@ -1,5 +1,6 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
+
 import { Api } from '.';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import Sdk from './Sdk';
@@ -243,6 +244,8 @@ const myFunc9 = async () => {
     assetCode,
     assetBlindRules,
   );
+
+  console.log(resultHandle.transaction());
 
   console.log('send fra result handle!!', resultHandle);
 };
@@ -497,7 +500,7 @@ const myFuncUndelegate = async () => {
 // fra balance
 // myFunc5();
 // send fra
-// myFunc9();
+myFunc9();
 
 // myFunc4();
 
@@ -505,7 +508,7 @@ const myFuncUndelegate = async () => {
 // myFunc8();
 
 // define asset
-myFunc2();
+// myFunc2();
 
 // issue custom asset
 // myFunc7();

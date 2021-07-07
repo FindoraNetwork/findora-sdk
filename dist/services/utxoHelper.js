@@ -175,9 +175,12 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 cacheDataToSave = {};
                 cacheEntryName = cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address;
                 fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
-                if (window === null || window === void 0 ? void 0 : window.document) {
-                    fullPathToCacheEntry = cacheEntryName;
+                try {
+                    if (window && (window === null || window === void 0 ? void 0 : window.document)) {
+                        fullPathToCacheEntry = cacheEntryName;
+                    }
                 }
+                catch (error) { }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);

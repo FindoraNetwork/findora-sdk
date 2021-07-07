@@ -1,7 +1,8 @@
 import fs from 'fs';
 import JSONbig from 'json-bigint';
+import path from 'path';
 
-import { readFile, writeFile } from '../../utils';
+import { createCacheDir, readFile, writeFile } from '../../utils';
 import { CacheItem, CacheProvider } from '../types';
 
 const readCache = async (filePath: string): Promise<CacheItem> => {
@@ -43,6 +44,12 @@ const writeCache = async (filePath: string, data: CacheItem): Promise<boolean> =
     cacheData = JSONbig({ useNativeBigInt: true }).stringify(data);
   } catch (err) {
     throw new Error(`can not stringify data for cache, "${err.message}"`);
+  }
+
+  try {
+    createCacheDir(path.parse(filePath).dir);
+  } catch (err) {
+    throw new Error(`Failed to create directory, "${err.message}", "dir path: ${path.parse(filePath).dir}"`);
   }
 
   try {

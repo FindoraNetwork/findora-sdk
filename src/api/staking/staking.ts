@@ -1,13 +1,15 @@
-import * as Fee from '../../services/fee';
+import { TransactionBuilder } from 'services/ledger/types';
+
 import * as Transaction from '../../api/transaction';
+import * as Fee from '../../services/fee';
 import { WalletKeypar } from '../keypair';
-import * as Network from '../network';
+import * as AssetApi from '../sdkAsset';
 
 export const unDelegate = async (
   walletInfo: WalletKeypar,
   amount: bigint,
   validator: string,
-): Promise<string> => {
+): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferFeeOperation;
@@ -42,32 +44,31 @@ export const unDelegate = async (
     throw new Error(`Could not staking unDelegate operation, Error: "${e.message}"`);
   }
 
-  const submitData = transactionBuilder.transaction();
-
-  let result;
-
-  try {
-    result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    const e: Error = error as Error;
-
-    throw new Error(`Could not unDelegate submit transaction: "${e.message}"`);
-  }
-
-  const { response: handle, error: submitError } = result;
-
-  if (submitError) {
-    throw new Error(`Could not submit unDelegate transaction: "${submitError.message}"`);
-  }
-
-  if (!handle) {
-    throw new Error(`Could not unDelegate - submit handle is missing`);
-  }
-
-  return handle;
+  return transactionBuilder;
 };
 
-export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<string> => {
+export const delegate = async (
+  walletInfo: WalletKeypar,
+  address: string,
+  numbers: number,
+  assetCode: string,
+  validator: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  let transactionBuilder = await Transaction.sendToAddress(
+    walletInfo,
+    address,
+    numbers,
+    assetCode,
+    assetBlindRules,
+  );
+
+  transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+
+  return transactionBuilder;
+};
+
+export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferFeeOperation;
@@ -102,27 +103,5 @@ export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<s
     throw new Error(`Could not staking claim operation, Error: "${e.message}"`);
   }
 
-  const submitData = transactionBuilder.transaction();
-
-  let result;
-
-  try {
-    result = await Network.submitTransaction(submitData);
-  } catch (error) {
-    const e: Error = error as Error;
-
-    throw new Error(`Could not claim submit transaction: "${e.message}"`);
-  }
-
-  const { response: handle, error: submitError } = result;
-
-  if (submitError) {
-    throw new Error(`Could not submit claim transaction: "${submitError.message}"`);
-  }
-
-  if (!handle) {
-    throw new Error(`Could not claim - submit handle is missing`);
-  }
-
-  return handle;
+  return transactionBuilder;
 };
