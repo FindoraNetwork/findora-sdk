@@ -5,10 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processorsMap = exports.getOperationProcessor = void 0;
 var get_1 = __importDefault(require("lodash/get"));
-var unsupported_1 = require("./unsupported");
 var defineAsset_1 = require("./defineAsset");
-var transferAsset_1 = require("./transferAsset");
 var issueAsset_1 = require("./issueAsset");
+var transferAsset_1 = require("./transferAsset");
+var unsupported_1 = require("./unsupported");
 var getOperationProcessor = function (operationItem, processors) {
     for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {
         var el = _a[_i];

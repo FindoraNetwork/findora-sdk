@@ -56,8 +56,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.claim = exports.delegate = exports.unDelegate = void 0;
-var Fee = __importStar(require("../../services/fee"));
 var Transaction = __importStar(require("../../api/transaction"));
+var Fee = __importStar(require("../../services/fee"));
 var unDelegate = function (walletInfo, amount, validator) { return __awaiter(void 0, void 0, void 0, function () {
     var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e;
     return __generator(this, function (_a) {

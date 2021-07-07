@@ -1,5 +1,4 @@
 "use strict";
-// import JSONbig from 'json-bigint';
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -68,6 +67,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraAssetCode = void 0;
+// import JSONbig from 'json-bigint';
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));

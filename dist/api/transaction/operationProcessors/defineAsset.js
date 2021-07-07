@@ -67,8 +67,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processDefineAsset = void 0;
-var Keypair = __importStar(require("../../keypair"));
 var asset_1 = require("../../../config/asset");
+var Keypair = __importStar(require("../../keypair"));
 var processDefineAsset = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
     var operation, asset, from, data;
     return __generator(this, function (_a) {
