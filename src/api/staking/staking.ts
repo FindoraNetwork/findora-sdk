@@ -9,6 +9,7 @@ export const unDelegate = async (
   walletInfo: WalletKeypar,
   amount: bigint,
   validator: string,
+  isFullUnstake: boolean = false,
 ): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
@@ -35,13 +36,27 @@ export const unDelegate = async (
   }
 
   try {
-    transactionBuilder = transactionBuilder
-      .add_operation_undelegate_partially(walletInfo.keypair, amount, validator)
-      .add_transfer_operation(receivedTransferFeeOperation);
+    if (isFullUnstake) {
+      transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
+    } else {
+      transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
+        walletInfo.keypair,
+        amount,
+        validator,
+      );
+    }
   } catch (error) {
     const e: Error = error as Error;
 
     throw new Error(`Could not staking unDelegate operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not add transfer to unDelegate operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;
