@@ -4,7 +4,7 @@ import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider, S3CacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -12,9 +12,13 @@ import * as UtxoHelper from './services/utxoHelper';
 dotenv.config();
 
 const sdkEnv = {
-  hostUrl: 'https://dev-staging.dev.findora.org',
-  cacheProvider: FileCacheProvider,
-  cachePath: './cache',
+  // hostUrl: 'https://dev-staging.dev.findora.org',
+  name: 'prod',
+  hostUrl: 'https://prod-mainnet.prod.findora.org',
+  cacheProvider: S3CacheProvider,
+  // cacheProvider: MemoryCacheProvider,
+  // cacheProvider: S3CacheProvider,
+  cachePath: 'cache',
 };
 
 Sdk.init(sdkEnv);
@@ -426,13 +430,13 @@ const myFunc18 = async () => {
 
 const myFuncS3 = async () => {
   const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
+    MY_AWS_ACCESS_KEY_ID,
+    MY_AWS_SECRET_ACCESS_KEY,
     UTXO_CACHE_BUCKET_NAME,
     UTXO_CACHE_KEY_NAME,
   } = process.env;
-  const accessKeyId = AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+  const accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
+  const secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
 
@@ -458,7 +462,7 @@ const myFuncS3 = async () => {
     console.log('Error!', e.message);
   }
 
-  console.log('readRes :) 5', readRes?.Body?.toString());
+  console.log('readRes :) 56', readRes?.Body?.toString());
 
   const existingContent = readRes?.Body?.toString('utf8');
 
@@ -481,6 +485,30 @@ const myFuncS3 = async () => {
   }
 };
 
+const myFunc19 = async () => {
+  // const lightWallet = {
+  //   address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
+  // };
+
+  const lightWallet = {
+    address: 'fra18rfyc9vfyacssmr5x7ku7udyd5j5vmfkfejkycr06e4as8x7n3dqwlrjrc',
+  };
+
+  const walletInfo = await Keypair.getAddressPublicAndKey(lightWallet.address);
+  // console.log('w11', walletInfo);
+
+  const utxoDataCache = await UtxoHelper.getUtxoCacheData();
+
+  // console.log('run utxoDataCache!', utxoDataCache);
+  const sids = await Account.getOwnedSids(walletInfo.publickey);
+
+  // console.log('sids!', sids);
+
+  const sidsInfo = await Account.getSidsUtxo(walletInfo.address, walletInfo.publickey, sids, utxoDataCache);
+
+  console.log('sidsInfo', sidsInfo);
+};
+
 // myFunc7();
 
 // send custom
@@ -490,8 +518,8 @@ const myFuncS3 = async () => {
 // myFunc9();
 
 // myFunc4();
-
 myFuncS3();
+// myFunc19();
 // myFunc12();
 // myFunc8();
 // myFunc7();

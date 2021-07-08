@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
-
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import * as Keypair from '../../api/keypair';
 import Sdk from '../../Sdk';
 import * as bigNumber from '../../services/bigNumber';
@@ -37,8 +35,10 @@ describe('account', () => {
   const sids = [454];
 
   const hostUrl = 'https://foo.bar';
+  const name = 'foo';
 
   const sdkEnv = {
+    name,
     hostUrl,
     cacheProvider: MemoryCacheProvider,
     cachePath: '.',

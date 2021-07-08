@@ -12,3 +12,7 @@ export declare const processIssuedRecordItem: (issuedRecord: IssuedRecord) => Pr
 export declare const processIssuedRecordList: (issuedRecords: IssuedRecord[]) => Promise<ProcessedIssuedRecord[]>;
 export declare const getCreatedAssets: (address: string) => Promise<ProcessedIssuedRecord[]>;
 export declare const getRelatedSids: (address: string) => Promise<number[]>;
+export declare const getOwnedSids: (address: string) => Promise<number[]>;
+export declare const getSidsUtxo: (address: string, publickey: string, sids: number[], utxoDataCache: {
+    [key: string]: any;
+}, updateCache?: boolean | undefined) => Promise<import("../../services/cacheStore/types").CacheItem>;

@@ -68,7 +68,9 @@ describe('sdkAsset', function () {
     var password = '123';
     var hostUrl = 'https://foo.bar';
     var globalState = [1, 234];
+    var name = 'foo';
     var sdkEnv = {
+        name: name,
         hostUrl: hostUrl,
         cacheProvider: providers_1.MemoryCacheProvider,
         cachePath: '.',

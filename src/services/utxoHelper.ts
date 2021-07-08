@@ -24,6 +24,12 @@ export interface AddUtxoItem extends LedgerUtxoItem {
   memoData: OwnedMemoResponse | undefined;
 }
 
+export interface UtxoCacheResponse {
+  sid: number;
+  utxo: LedgerUtxo;
+  address: string;
+}
+
 export interface UtxoOutputItem extends LedgerUtxoItem {
   originAmount: BigInt;
   amount: BigInt;
@@ -254,4 +260,94 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
   const res = { inputParametersList, inputAmount };
 
   return res;
+};
+
+export const getNonEncryptedUtxoItem = async (
+  sid: number,
+  address: string,
+  cachedItem?: UtxoCacheResponse,
+): Promise<UtxoCacheResponse> => {
+  if (cachedItem) {
+    return cachedItem;
+  }
+
+  console.log(`Fetching sid "${sid}"`);
+
+  const utxoDataResult = await Network.getUtxo(sid);
+
+  const { response: utxoData, error: utxoError } = utxoDataResult;
+
+  if (utxoError || !utxoData) {
+    throw new Error(`Could not fetch utxo data for sid "${sid}", Error - ${utxoError?.message}`);
+  }
+
+  const item = {
+    address,
+    sid,
+    utxo: { ...utxoData.utxo },
+  };
+
+  return item;
+};
+
+export const getUtxoCacheData = async (): Promise<CacheItem> => {
+  let utxoDataCache = {};
+
+  const cacheEntryName = `${CACHE_ENTRIES.UTXO_RESPONSE_DATA}_${Sdk.environment.name}`;
+  const fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
+
+  try {
+    utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
+  } catch (error) {
+    const e: Error = error as Error;
+    throw new Error(`Error reading the utxo cache "${e.message}"`);
+  }
+
+  return utxoDataCache || {};
+};
+
+export const getAddressUtxo = async (
+  address: string,
+  publickey: string,
+  sids: number[],
+  utxoDataCache: CacheItem,
+  updateCache = false,
+): Promise<CacheItem> => {
+  const utxoCacheData: CacheItem = {};
+
+  const cacheEntryName = `${CACHE_ENTRIES.UTXO_RESPONSE_DATA}_${Sdk.environment.name}`;
+  const fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
+
+  for (let i = 0; i < sids.length; i++) {
+    const sid = sids[i];
+    const addressCacheItem = utxoDataCache?.[`${address}`] || {};
+    const sidCacheItem = addressCacheItem?.[`sid_${sid}`];
+
+    try {
+      const item = await getNonEncryptedUtxoItem(sid, publickey, sidCacheItem);
+      addressCacheItem[`sid_${item.sid}`] = item;
+      utxoCacheData[`${address}`] = addressCacheItem;
+    } catch (error) {
+      const e: Error = error as Error;
+
+      console.log(`could not process getAddressUtxo for sid ${sid}, Details: "${e.message}"`);
+      continue;
+    }
+  }
+
+  if (updateCache) {
+    try {
+      await Cache.write(
+        fullPathToCacheEntry,
+        { ...utxoDataCache, ...utxoCacheData },
+        Sdk.environment.cacheProvider,
+      );
+    } catch (error) {
+      const e: Error = error as Error;
+
+      console.log(`could not write cache for utxoData, "${e.message}"`);
+    }
+  }
+
+  return utxoCacheData;
 };

@@ -70,9 +70,13 @@ var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
 var sdkEnv = {
-    hostUrl: 'https://dev-staging.dev.findora.org',
-    cacheProvider: providers_1.FileCacheProvider,
-    cachePath: './cache',
+    // hostUrl: 'https://dev-staging.dev.findora.org',
+    name: 'prod',
+    hostUrl: 'https://prod-mainnet.prod.findora.org',
+    cacheProvider: providers_1.S3CacheProvider,
+    // cacheProvider: MemoryCacheProvider,
+    // cacheProvider: S3CacheProvider,
+    cachePath: 'cache',
 };
 Sdk_1.default.init(sdkEnv);
 var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -527,14 +531,14 @@ var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function (
     });
 }); };
 var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME, accessKeyId, secretAccessKey, cacheBucketName, cacheItemKey, s3Params, s3, readRes, error_1, e, existingContent, res, myBody, error_2, e;
+    var _a, MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME, accessKeyId, secretAccessKey, cacheBucketName, cacheItemKey, s3Params, s3, readRes, error_1, e, existingContent, res, myBody, error_2, e;
     var _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
-                _a = process.env, AWS_ACCESS_KEY_ID = _a.AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = _a.AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
-                accessKeyId = AWS_ACCESS_KEY_ID || '';
-                secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+                _a = process.env, MY_AWS_ACCESS_KEY_ID = _a.MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY = _a.MY_AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
+                accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
+                secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
                 cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
                 cacheItemKey = UTXO_CACHE_KEY_NAME || '';
                 s3Params = {
@@ -560,7 +564,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
                 console.log('Error!', e.message);
                 return [3 /*break*/, 4];
             case 4:
-                console.log('readRes :) 5', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
+                console.log('readRes :) 56', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
                 myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
                 _d.label = 5;
@@ -585,6 +589,31 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
         }
     });
 }); };
+var myFunc19 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var lightWallet, walletInfo, utxoDataCache, sids, sidsInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                lightWallet = {
+                    address: 'fra18rfyc9vfyacssmr5x7ku7udyd5j5vmfkfejkycr06e4as8x7n3dqwlrjrc',
+                };
+                return [4 /*yield*/, api_1.Keypair.getAddressPublicAndKey(lightWallet.address)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, UtxoHelper.getUtxoCacheData()];
+            case 2:
+                utxoDataCache = _a.sent();
+                return [4 /*yield*/, api_1.Account.getOwnedSids(walletInfo.publickey)];
+            case 3:
+                sids = _a.sent();
+                return [4 /*yield*/, api_1.Account.getSidsUtxo(walletInfo.address, walletInfo.publickey, sids, utxoDataCache)];
+            case 4:
+                sidsInfo = _a.sent();
+                console.log('sidsInfo', sidsInfo);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // myFunc7();
 // send custom
 // myFunc10();
@@ -592,6 +621,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
 // myFunc9();
 // myFunc4();
 myFuncS3();
+// myFunc19();
 // myFunc12();
 // myFunc8();
 // myFunc7();

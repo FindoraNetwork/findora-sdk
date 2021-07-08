@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
-
 import BigNumber from 'bignumber.js';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import Sdk from '../../Sdk';
 import { MemoryCacheProvider } from '../../services/cacheStore/providers';
 import {
@@ -46,8 +44,10 @@ describe('network', () => {
   };
 
   const hostUrl = 'https://foo.bar';
+  const name = 'foo';
 
   const sdkEnv = {
+    name,
     hostUrl,
     cacheProvider: MemoryCacheProvider,
     cachePath: '.',

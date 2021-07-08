@@ -88,7 +88,9 @@ describe('utxoHelpers', function () {
     var password = '123';
     var hostUrl = 'https://foo.bar';
     var sid = 454;
+    var name = 'foo';
     var sdkEnv = {
+        name: name,
         hostUrl: hostUrl,
         cacheProvider: providers_1.MemoryCacheProvider,
         cachePath: '.',

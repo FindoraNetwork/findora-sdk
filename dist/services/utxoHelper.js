@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = void 0;
+exports.getAddressUtxo = exports.getUtxoCacheData = exports.getNonEncryptedUtxoItem = exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = void 0;
 var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
@@ -222,10 +222,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
         var assetItem = utxoDataList[i];
         if (assetItem.body.asset_type === code) {
             var _amount = BigInt(assetItem.body.amount);
-            if (balance <= BigInt(0)) {
-                break;
-            }
-            else if (BigInt(_amount) >= balance) {
+            if (balance <= BigInt(0) || BigInt(_amount) >= balance) {
                 result.push({
                     amount: balance,
                     originAmount: _amount,
@@ -294,4 +291,108 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.addUtxoInputs = addUtxoInputs;
+var getNonEncryptedUtxoItem = function (sid, address, cachedItem) { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataResult, utxoData, utxoError, item;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                if (cachedItem) {
+                    return [2 /*return*/, cachedItem];
+                }
+                console.log("Fetching sid \"" + sid + "\"");
+                return [4 /*yield*/, Network.getUtxo(sid)];
+            case 1:
+                utxoDataResult = _a.sent();
+                utxoData = utxoDataResult.response, utxoError = utxoDataResult.error;
+                if (utxoError || !utxoData) {
+                    throw new Error("Could not fetch utxo data for sid \"" + sid + "\", Error - " + (utxoError === null || utxoError === void 0 ? void 0 : utxoError.message));
+                }
+                item = {
+                    address: address,
+                    sid: sid,
+                    utxo: __assign({}, utxoData.utxo),
+                };
+                return [2 /*return*/, item];
+        }
+    });
+}); };
+exports.getNonEncryptedUtxoItem = getNonEncryptedUtxoItem;
+var getUtxoCacheData = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var utxoDataCache, cacheEntryName, fullPathToCacheEntry, error_4, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                utxoDataCache = {};
+                cacheEntryName = cache_1.CACHE_ENTRIES.UTXO_RESPONSE_DATA + "_" + Sdk_1.default.environment.name;
+                fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, factory_1.default.read(fullPathToCacheEntry, Sdk_1.default.environment.cacheProvider)];
+            case 2:
+                utxoDataCache = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_4 = _a.sent();
+                e = error_4;
+                throw new Error("Error reading the utxo cache \"" + e.message + "\"");
+            case 4: return [2 /*return*/, utxoDataCache || {}];
+        }
+    });
+}); };
+exports.getUtxoCacheData = getUtxoCacheData;
+var getAddressUtxo = function (address, publickey, sids, utxoDataCache, updateCache) {
+    if (updateCache === void 0) { updateCache = false; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var utxoCacheData, cacheEntryName, fullPathToCacheEntry, i, sid, addressCacheItem, sidCacheItem, item, error_5, e, error_6, e;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    utxoCacheData = {};
+                    cacheEntryName = cache_1.CACHE_ENTRIES.UTXO_RESPONSE_DATA + "_" + Sdk_1.default.environment.name;
+                    fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < sids.length)) return [3 /*break*/, 6];
+                    sid = sids[i];
+                    addressCacheItem = (utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["" + address]) || {};
+                    sidCacheItem = addressCacheItem === null || addressCacheItem === void 0 ? void 0 : addressCacheItem["sid_" + sid];
+                    _a.label = 2;
+                case 2:
+                    _a.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, exports.getNonEncryptedUtxoItem(sid, publickey, sidCacheItem)];
+                case 3:
+                    item = _a.sent();
+                    addressCacheItem["sid_" + item.sid] = item;
+                    utxoCacheData["" + address] = addressCacheItem;
+                    return [3 /*break*/, 5];
+                case 4:
+                    error_5 = _a.sent();
+                    e = error_5;
+                    console.log("could not process getAddressUtxo for sid " + sid + ", Details: \"" + e.message + "\"");
+                    return [3 /*break*/, 5];
+                case 5:
+                    i++;
+                    return [3 /*break*/, 1];
+                case 6:
+                    if (!updateCache) return [3 /*break*/, 10];
+                    _a.label = 7;
+                case 7:
+                    _a.trys.push([7, 9, , 10]);
+                    return [4 /*yield*/, factory_1.default.write(fullPathToCacheEntry, __assign(__assign({}, utxoDataCache), utxoCacheData), Sdk_1.default.environment.cacheProvider)];
+                case 8:
+                    _a.sent();
+                    return [3 /*break*/, 10];
+                case 9:
+                    error_6 = _a.sent();
+                    e = error_6;
+                    console.log("could not write cache for utxoData, \"" + e.message + "\"");
+                    return [3 /*break*/, 10];
+                case 10: return [2 /*return*/, utxoCacheData];
+            }
+        });
+    });
+};
+exports.getAddressUtxo = getAddressUtxo;
 //# sourceMappingURL=utxoHelper.js.map
