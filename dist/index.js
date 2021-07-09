@@ -19,12 +19,13 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Sdk = exports.Api = exports.getNodeLedger = exports.getWebLedger = exports.Random = void 0;
+exports.Sdk = exports.Api = exports.CacheProviders = exports.getNodeLedger = exports.getWebLedger = exports.Random = void 0;
 var random_1 = require("./random");
 Object.defineProperty(exports, "Random", { enumerable: true, get: function () { return random_1.Random; } });
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 Object.defineProperty(exports, "getWebLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getWebLedger; } });
 Object.defineProperty(exports, "getNodeLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getNodeLedger; } });
+exports.CacheProviders = __importStar(require("./services/cacheStore/providers"));
 exports.Api = __importStar(require("./api"));
 exports.Sdk = __importStar(require("./Sdk"));
 //# sourceMappingURL=index.js.map
