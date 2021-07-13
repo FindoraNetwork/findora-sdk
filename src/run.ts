@@ -36,16 +36,20 @@ const myFunc2 = async () => {
   const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
 
   const password = '123';
-  console.log('pass!', password);
 
   const assetCode = await Asset.getRandomAssetCode();
+  console.log('🚀 ~ file: run.ts ~ line 41 ~ myFunc2 ~ assetCode', assetCode);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const asset = await Asset.defineAsset(walletInfo, assetCode);
+  const assetBuilder = await Asset.defineAsset(walletInfo, assetCode);
 
-  console.log('our new asset IS ! ! ', asset);
+  const handle = await Transaction.submitTransaction(assetBuilder);
+
+  console.log('our new asset created, handle - ! ! ', handle);
 };
+
+// myFunc2();
 
 // get state commitment
 const myFunc3 = async () => {
@@ -194,12 +198,12 @@ const myFunc5 = async () => {
 
 // get custom asset balance
 const myFunc6 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  const customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
 
   const balance = await Account.getBalance(walletInfo, customAssetCode);
 
@@ -212,7 +216,7 @@ const myFunc7 = async () => {
   // const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
   const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const customAssetCode = '1LZBwDm6JM8obbHQonBq8ICMIekDY1gbA1-Sify3t3M=';
+  const customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
 
   const password = '123';
 
@@ -220,9 +224,11 @@ const myFunc7 = async () => {
 
   const assetBlindRules = { isAmountBlind: false };
 
-  const decimals = 6;
+  // const decimals = 6;
 
-  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules, decimals);
+  const assetBuilder = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules);
+
+  const handle = await Transaction.submitTransaction(assetBuilder);
 
   console.log('our issued tx handle IS', handle);
 };
@@ -287,7 +293,7 @@ const myFunc10 = async () => {
 
   const assetCode = customAssetCode;
 
-  const decimals = 6;
+  // const decimals = 6;
 
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -457,6 +463,7 @@ const myFunc18 = async () => {
   console.log('sids!!', sids);
 };
 
+// s3
 const myFuncS3 = async () => {
   const {
     AWS_ACCESS_KEY_ID,
@@ -531,7 +538,7 @@ const myFuncUndelegate = async () => {
 // myFunc10();
 
 // fra balance
-myFunc5();
+// myFunc5();
 // myFunc12();
 // send fra
 // myFunc9();
@@ -551,3 +558,4 @@ myFunc5();
 
 // send custom asset
 // myFunc10();
+myFunc6();
