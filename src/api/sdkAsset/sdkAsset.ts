@@ -206,8 +206,11 @@ export const issueAsset = async (
   assetName: string,
   amountToIssue: number,
   assetBlindRules: AssetBlindRules,
-  assetDecimals: number,
+  assetDecimals?: number,
 ): Promise<TransactionBuilder> => {
+  const asset = await getAssetDetails(assetName);
+  const decimals = assetDecimals || asset.assetRules.decimals;
+
   const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferOperation;
@@ -228,7 +231,7 @@ export const issueAsset = async (
       assetName,
       amountToIssue,
       assetBlindRules,
-      assetDecimals,
+      decimals,
     );
   } catch (err) {
     const e: Error = err as Error;
@@ -261,11 +264,11 @@ export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.
   const { response: assetResult, error: submitError } = result;
 
   if (submitError) {
-    throw new Error(`Could not submit define asset transaction: "${submitError.message}"`);
+    throw new Error(`Could not submit get asset details transaction: "${submitError.message}"`);
   }
 
   if (!assetResult) {
-    throw new Error(`Could not issue asset - submit handle is missing`);
+    throw new Error(`Could not get asset details - submit handle is missing`);
   }
 
   const asset = assetResult.properties;

@@ -36,16 +36,20 @@ const myFunc2 = async () => {
   const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
 
   const password = '123';
-  console.log('pass!', password);
 
   const assetCode = await Asset.getRandomAssetCode();
+  console.log('🚀 ~ file: run.ts ~ line 41 ~ myFunc2 ~ assetCode', assetCode);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const asset = await Asset.defineAsset(walletInfo, assetCode);
+  const assetBuilder = await Asset.defineAsset(walletInfo, assetCode);
 
-  console.log('our new asset IS ! ! ', asset);
+  const handle = await Transaction.submitTransaction(assetBuilder);
+
+  console.log('our new asset created, handle - ! ! ', handle);
 };
+
+// myFunc2();
 
 // get state commitment
 const myFunc3 = async () => {
@@ -140,20 +144,39 @@ const myFunc4 = async () => {
 const myFunc5 = async () => {
   // const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
 
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
+
+  const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
+
+  const pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
+
+  const pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
+
+  const pkey5 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+
+  const pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
+
+  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+
   const password = '123';
 
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey1, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey2, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey3, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey4, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey5, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey6, password);
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  // const walletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
 
   const fraCode = await Asset.getFraAssetCode();
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
-  console.log('sidsResult', sidsResult);
-
   const { response: sids } = sidsResult;
-
-  console.log('sids!', sids);
 
   if (!sids) {
     return;
@@ -161,29 +184,26 @@ const myFunc5 = async () => {
 
   const balanceInWei = await Account.getAssetBalance(walletInfo, fraCode, sids);
 
-  console.log('balance in wei IS!!', balanceInWei);
-
   const balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
 
-  console.log('balance IS!!!!!', balance);
+  console.log('\n');
 
-  const balanceInWeiT = await Account.getAssetBalance(walletInfo, fraCode, sids);
+  console.log('walletInfo.address', walletInfo.address);
+  console.log('walletInfo.privateStr', walletInfo.privateStr);
 
-  console.log('balanceT in wei IS!!', balanceInWeiT);
-
-  const balanceT = bigNumber.fromWei(balanceInWeiT, 6).toFormat(6);
-
-  console.log('balance IS!!!', balanceT);
+  console.log('balance IS', balance);
+  console.log('\n');
+  console.log('\n');
 };
 
 // get custom asset balance
 const myFunc6 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  const customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
 
   const balance = await Account.getBalance(walletInfo, customAssetCode);
 
@@ -196,7 +216,7 @@ const myFunc7 = async () => {
   // const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
 
   const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const customAssetCode = '1LZBwDm6JM8obbHQonBq8ICMIekDY1gbA1-Sify3t3M=';
+  const customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
 
   const password = '123';
 
@@ -204,9 +224,11 @@ const myFunc7 = async () => {
 
   const assetBlindRules = { isAmountBlind: false };
 
-  const decimals = 6;
+  // const decimals = 6;
 
-  const handle = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules, decimals);
+  const assetBuilder = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules);
+
+  const handle = await Transaction.submitTransaction(assetBuilder);
 
   console.log('our issued tx handle IS', handle);
 };
@@ -221,23 +243,28 @@ const myFunc8 = async () => {
 
 // send fra
 const myFunc9 = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
 
-  const toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+
+  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+
+  // const toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
 
   const fraCode = await Asset.getFraAssetCode();
 
   const assetCode = fraCode;
 
-  const decimals = 6;
+  // const decimals = 6;
 
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  const resultHandle = await Transaction.sendToAddress(
+  const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
     4,
@@ -245,7 +272,9 @@ const myFunc9 = async () => {
     assetBlindRules,
   );
 
-  console.log(resultHandle.transaction());
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  // console.log(resultHandle.transaction());
 
   console.log('send fra result handle!!', resultHandle);
 };
@@ -264,7 +293,7 @@ const myFunc10 = async () => {
 
   const assetCode = customAssetCode;
 
-  const decimals = 6;
+  // const decimals = 6;
 
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -306,16 +335,19 @@ const myFunc11 = async () => {
 
 // send custom asset to many
 const myFunc12 = async () => {
-  const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  // const fkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
 
-  const toPkeyMine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
+  // const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+
   const toPkeyMine2 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const toPkeyMine3 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfoMine = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
   const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -325,11 +357,18 @@ const myFunc12 = async () => {
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const recieversInfo = [
-    { reciverWalletInfo: toWalletInfoMine, amount: 0.1 },
-    { reciverWalletInfo: toWalletInfoMine2, amount: 0.2 },
+    { reciverWalletInfo: toWalletInfoMine2, amount: 10 },
+    { reciverWalletInfo: toWalletInfoMine3, amount: 20 },
   ];
 
-  const resultHandle = await Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+  const transactionBuilder = await Transaction.sendToMany(
+    walletInfo,
+    recieversInfo,
+    assetCode,
+    assetBlindRules,
+  );
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
   console.log('send custom result handle!', resultHandle);
 };
@@ -424,6 +463,7 @@ const myFunc18 = async () => {
   console.log('sids!!', sids);
 };
 
+// s3
 const myFuncS3 = async () => {
   const {
     AWS_ACCESS_KEY_ID,
@@ -499,12 +539,15 @@ const myFuncUndelegate = async () => {
 
 // fra balance
 // myFunc5();
+// myFunc12();
 // send fra
-myFunc9();
+// myFunc9();
 
 // myFunc4();
 
+// send fra to many
 // myFunc12();
+
 // myFunc8();
 
 // define asset
@@ -515,3 +558,4 @@ myFunc9();
 
 // send custom asset
 // myFunc10();
+myFunc6();

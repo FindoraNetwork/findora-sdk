@@ -152,7 +152,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 if (!!isFraTransfer) return [3 /*break*/, 9];
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
             case 8:
                 transferOperationBuilderFee = _a.sent();
                 receivedTransferOperationFee = void 0;

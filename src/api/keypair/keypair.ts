@@ -24,6 +24,13 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   return publickey;
 };
 
+export const getPublicKeyBase64 = async (keypair: XfrKeyPair): Promise<string> => {
+  const ledger = await getLedger();
+
+  const publickey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
+  return publickey;
+};
+
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
   const address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
