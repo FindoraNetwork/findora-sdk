@@ -114,7 +114,7 @@ export const sendToMany = async (
   }
 
   if (!isFraTransfer) {
-    const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo, assetBlindRules);
+    const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
 
     let receivedTransferOperationFee;
 
