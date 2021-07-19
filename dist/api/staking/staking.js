@@ -58,61 +58,58 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.claim = exports.delegate = exports.unDelegate = void 0;
 var Transaction = __importStar(require("../../api/transaction"));
 var Fee = __importStar(require("../../services/fee"));
-var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
-    if (isFullUnstake === void 0) { isFullUnstake = false; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
-                case 1:
-                    transferFeeOperationBuilder = _a.sent();
-                    try {
-                        receivedTransferFeeOperation = transferFeeOperationBuilder
-                            .create()
-                            .sign(walletInfo.keypair)
-                            .transaction();
+var unDelegate = function (walletInfo, amount, validator, isFullUnstake) { return __awaiter(void 0, void 0, void 0, function () {
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 1:
+                transferFeeOperationBuilder = _a.sent();
+                try {
+                    receivedTransferFeeOperation = transferFeeOperationBuilder
+                        .create()
+                        .sign(walletInfo.keypair)
+                        .transaction();
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                }
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, Transaction.getTransactionBuilder()];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _a.sent();
+                e = error_1;
+                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
+            case 5:
+                try {
+                    if (isFullUnstake) {
+                        transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
                     }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    else {
+                        transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, amount, validator);
                     }
-                    _a.label = 2;
-                case 2:
-                    _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, Transaction.getTransactionBuilder()];
-                case 3:
-                    transactionBuilder = _a.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _a.sent();
-                    e = error_1;
-                    throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
-                case 5:
-                    try {
-                        if (isFullUnstake) {
-                            transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
-                        }
-                        else {
-                            transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, amount, validator);
-                        }
-                    }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not staking unDelegate operation, Error: \"" + e.message + "\"");
-                    }
-                    try {
-                        transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
-                    }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not add transfer to unDelegate operation, Error: \"" + e.message + "\"");
-                    }
-                    return [2 /*return*/, transactionBuilder];
-            }
-        });
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not staking unDelegate operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not add transfer to unDelegate operation, Error: \"" + e.message + "\"");
+                }
+                return [2 /*return*/, transactionBuilder];
+        }
     });
-};
+}); };
 exports.unDelegate = unDelegate;
 var delegate = function (walletInfo, address, numbers, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder;
