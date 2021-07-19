@@ -60,8 +60,8 @@ var Network = __importStar(require("../api/network"));
 var AssetApi = __importStar(require("../api/sdkAsset"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var utxoHelper_1 = require("./utxoHelper");
-var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, isTraceable, tracingPolicies, blindIsAmount, blindIsType, transferOp, inputParametersList, inputPromise, _p;
+var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, asset, isTraceable, tracingPolicies, transferOp, inputParametersList, inputPromise, _p;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -81,8 +81,6 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                         console.log(e);
                     }
                 }
-                blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
-                blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                 transferOp = ledger.TransferOperationBuilder.new();
                 inputParametersList = utxoInputs.inputParametersList;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
@@ -113,7 +111,9 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
             case 3:
                 _p = _b.sent();
                 recieversInfo.forEach(function (reciverInfo) {
-                    var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey;
+                    var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey, _a = reciverInfo.assetBlindRules, assetBlindRules = _a === void 0 ? {} : _a;
+                    var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
+                    var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                     if (isTraceable) {
                         transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
@@ -154,11 +154,10 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                     {
                         utxoNumbers: minimalFee,
                         toPublickey: toPublickey,
+                        assetBlindRules: assetBlindRules,
                     },
                 ];
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, 
-                    // minimalFee,
-                    fraAssetCode, assetBlindRules)];
+                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
             case 5:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
@@ -166,7 +165,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
     });
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
-var buildTransferOperation = function (walletInfo, recieversInfo, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var sidsResult, sids, totalUtxoNumbers, utxoDataList, sendUtxoList, utxoInputsInfo, transferOperationBuilder;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -187,7 +186,7 @@ var buildTransferOperation = function (walletInfo, recieversInfo, assetCode, ass
                 return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
             case 3:
                 utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode, assetBlindRules)];
+                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
             case 4:
                 transferOperationBuilder = _a.sent();
                 return [2 /*return*/, transferOperationBuilder];

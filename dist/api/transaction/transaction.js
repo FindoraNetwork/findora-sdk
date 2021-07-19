@@ -108,6 +108,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     var recieverInfoItem = {
                         toPublickey: toPublickey,
                         utxoNumbers: utxoNumbers,
+                        assetBlindRules: assetBlindRules,
                     };
                     recieversInfo.push(recieverInfoItem);
                 });
@@ -122,7 +123,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     };
                     recieversInfo.push(feeRecieverInfoItem);
                 }
-                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode, assetBlindRules)];
+                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
             case 3:
                 transferOperationBuilder = _a.sent();
                 try {

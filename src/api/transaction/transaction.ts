@@ -57,6 +57,7 @@ export const sendToMany = async (
     const recieverInfoItem = {
       toPublickey,
       utxoNumbers,
+      assetBlindRules,
     };
 
     recieversInfo.push(recieverInfoItem);
@@ -78,12 +79,7 @@ export const sendToMany = async (
     recieversInfo.push(feeRecieverInfoItem);
   }
 
-  const transferOperationBuilder = await Fee.buildTransferOperation(
-    walletInfo,
-    recieversInfo,
-    assetCode,
-    assetBlindRules,
-  );
+  const transferOperationBuilder = await Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode);
 
   let receivedTransferOperation;
 

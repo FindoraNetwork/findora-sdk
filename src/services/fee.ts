@@ -8,6 +8,7 @@ import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo
 export interface ReciverInfo {
   utxoNumbers: BigInt;
   toPublickey: XfrPublicKey;
+  assetBlindRules?: AssetApi.AssetBlindRules;
 }
 
 export const getTransferOperation = async (
@@ -15,7 +16,6 @@ export const getTransferOperation = async (
   utxoInputs: UtxoInputsInfo,
   recieversInfo: ReciverInfo[],
   assetCode: string,
-  assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
@@ -32,9 +32,6 @@ export const getTransferOperation = async (
       console.log(e);
     }
   }
-
-  const blindIsAmount = assetBlindRules?.isAmountBlind;
-  const blindIsType = assetBlindRules?.isTypeBlind;
 
   let transferOp = ledger.TransferOperationBuilder.new();
 
@@ -76,7 +73,9 @@ export const getTransferOperation = async (
   const _p = await Promise.all(inputPromise);
 
   recieversInfo.forEach(reciverInfo => {
-    const { utxoNumbers, toPublickey } = reciverInfo;
+    const { utxoNumbers, toPublickey, assetBlindRules = {} } = reciverInfo;
+    const blindIsAmount = assetBlindRules?.isAmountBlind;
+    const blindIsType = assetBlindRules?.isTypeBlind;
 
     if (isTraceable) {
       transferOp = transferOp.add_output_with_tracing(
@@ -131,6 +130,7 @@ export const buildTransferOperationWithFee = async (
     {
       utxoNumbers: minimalFee,
       toPublickey,
+      assetBlindRules,
     },
   ];
 
@@ -138,9 +138,7 @@ export const buildTransferOperationWithFee = async (
     walletInfo,
     utxoInputsInfo,
     recieversInfo,
-    // minimalFee,
     fraAssetCode,
-    assetBlindRules,
   );
 
   return trasferOperation;
@@ -150,7 +148,6 @@ export const buildTransferOperation = async (
   walletInfo: WalletKeypar,
   recieversInfo: ReciverInfo[],
   assetCode: string,
-  assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
@@ -175,7 +172,6 @@ export const buildTransferOperation = async (
     utxoInputsInfo,
     recieversInfo,
     assetCode,
-    assetBlindRules,
   );
 
   return transferOperationBuilder;
