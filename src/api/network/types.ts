@@ -156,7 +156,7 @@ export interface SubmitTransactionDataResult extends NetworkAxiosDataResult {
 }
 
 export type TransactionStatusResponse = {
-  Commited?: [number, number[]];
+  Committed?: [number, number[]];
   Pending?: any;
 };
 

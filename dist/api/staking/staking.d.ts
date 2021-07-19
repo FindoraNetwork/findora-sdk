@@ -1,4 +1,4 @@
-import { TransactionBuilder } from 'services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 export declare const unDelegate: (walletInfo: WalletKeypar, amount: bigint, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;

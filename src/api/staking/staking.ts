@@ -1,7 +1,6 @@
-import { TransactionBuilder } from 'services/ledger/types';
-
 import * as Transaction from '../../api/transaction';
 import * as Fee from '../../services/fee';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 
@@ -9,7 +8,7 @@ export const unDelegate = async (
   walletInfo: WalletKeypar,
   amount: bigint,
   validator: string,
-  isFullUnstake: boolean = false,
+  isFullUnstake: false,
 ): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
