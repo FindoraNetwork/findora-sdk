@@ -20,6 +20,7 @@ export default class Sdk {
         cachePath: string;
     };
     static init(sdkEnv: SdkEnvironmentConfig): void;
+    static reset(): void;
     static setUtxoData(walletAddress: string, utxoCache: CacheItem[]): Promise<true>;
 }
 export {};
