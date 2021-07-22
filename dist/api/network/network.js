@@ -54,6 +54,17 @@ exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = export
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
+var _axios = axios_1.default.create({});
+_axios.defaults.transformResponse = [
+    function (data) {
+        try {
+            return json_bigint_1.default({ useNativeBigInt: true }).parse(data);
+        }
+        catch (_) {
+            return data;
+        }
+    },
+];
 var getQueryRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
     var url = hostUrl + ":" + queryPort;
@@ -80,7 +91,7 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, axios_1.default.post(url, data, config)];
+                return [4 /*yield*/, _axios.post(url, data, config)];
             case 1:
                 axiosResponse = _a.sent();
                 return [3 /*break*/, 3];
@@ -90,7 +101,7 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
                 return [2 /*return*/, { error: { message: e.message } }];
             case 3:
                 try {
-                    myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
+                    myResponse = axiosResponse.data;
                     return [2 /*return*/, { response: myResponse }];
                 }
                 catch (_) {
@@ -107,7 +118,7 @@ var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, f
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, axios_1.default.get(url, config)];
+                return [4 /*yield*/, _axios.get(url, config)];
             case 1:
                 axiosResponse = _a.sent();
                 return [3 /*break*/, 3];
@@ -117,7 +128,7 @@ var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, f
                 return [2 /*return*/, { error: { message: e.message } }];
             case 3:
                 try {
-                    myResponse = json_bigint_1.default({ useNativeBigInt: true }).parse(axiosResponse.data);
+                    myResponse = axiosResponse.data;
                     return [2 /*return*/, { response: myResponse }];
                 }
                 catch (_) {
