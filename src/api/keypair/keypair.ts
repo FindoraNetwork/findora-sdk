@@ -165,8 +165,14 @@ export const createKeypair = async (password: string): Promise<WalletKeypar> => 
   };
 };
 
-export const getMnemonic = async (desiredLength: number, mnemonicLang = 'EN'): Promise<string[]> => {
+export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
   const ledger = await getLedger();
-  const result = String(ledger.generate_mnemonic_custom(desiredLength, mnemonicLang)).split(' ');
-  return result;
+
+  try {
+    const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
+    const result = String(ledgerMnemonicString).split(' ');
+    return result;
+  } catch (err) {
+    throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
+  }
 };

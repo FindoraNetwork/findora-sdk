@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { restoreFromPrivateKey } from './keypair';
+import { restoreFromPrivateKey, getMnemonic } from './keypair';
 
 describe('keypair', () => {
   describe('restoreFromPrivateKey', () => {
@@ -26,7 +26,20 @@ describe('keypair', () => {
 
     it('throws the error when bad private key is used', async () => {
       await expect(restoreFromPrivateKey('123', password)).rejects.toThrow(
-        'could not restore keypair. details',
+        'could not restore keypair. Keypair is empty',
+      );
+    });
+  });
+
+  describe('getMnemonic', () => {
+    it('creates a mnemonic of a desired length using default lang ', async () => {
+      const result = await getMnemonic(24);
+      expect(result.length).toEqual(24);
+    });
+
+    it('throws an error if an unsupported lang is submitted', async () => {
+      await expect(getMnemonic(24, 'FOO')).rejects.toThrowError(
+        'could not generate custom mnemonic. Details are',
       );
     });
   });
