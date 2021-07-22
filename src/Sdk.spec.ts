@@ -48,6 +48,7 @@ describe('SdkMain', () => {
       expect(Sdk.environment.cachePath).toEqual('./cache');
     });
   });
+
   describe('reset', () => {
     it('resets the environment with default values', async () => {
       const sdkEnv = {
