@@ -53,11 +53,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var cache_1 = require("./config/cache");
 var factory_1 = __importDefault(require("./services/cacheStore/factory"));
 var providers_1 = require("./services/cacheStore/providers");
+var SdkDefaultEnvironment = {
+    hostUrl: 'https://dev-staging.dev.findora.org',
+    queryPort: '8667',
+    ledgerPort: '8668',
+    submissionPort: '8669',
+    explorerApiPort: '26657',
+    cacheProvider: providers_1.MemoryCacheProvider,
+    cachePath: './cache',
+};
 var Sdk = /** @class */ (function () {
     function Sdk() {
     }
     Sdk.init = function (sdkEnv) {
-        Sdk.environment = __assign(__assign({}, Sdk.environment), sdkEnv);
+        Sdk.environment = __assign(__assign({}, SdkDefaultEnvironment), sdkEnv);
+    };
+    Sdk.reset = function () {
+        Sdk.environment = __assign({}, SdkDefaultEnvironment);
     };
     Sdk.setUtxoData = function (walletAddress, utxoCache) {
         return __awaiter(this, void 0, void 0, function () {
@@ -77,15 +89,7 @@ var Sdk = /** @class */ (function () {
             });
         });
     };
-    Sdk.environment = {
-        hostUrl: 'https://dev-staging.dev.findora.org',
-        queryPort: '8667',
-        ledgerPort: '8668',
-        submissionPort: '8669',
-        explorerApiPort: '26657',
-        cacheProvider: providers_1.MemoryCacheProvider,
-        cachePath: './cache',
-    };
+    Sdk.environment = __assign({}, SdkDefaultEnvironment);
     return Sdk;
 }());
 exports.default = Sdk;
