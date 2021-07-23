@@ -67,7 +67,206 @@ describe('keypair', function () {
         it('throws the error when bad private key is used', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey('123', password)).rejects.toThrow('could not restore keypair. details')];
+                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey('123', password)).rejects.toThrow('could not restore keypair. Keypair is empty')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getMnemonic', function () {
+        it('creates a mnemonic of a desired length using default lang ', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.getMnemonic(24)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result.length).toEqual(24);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if an unsupported lang is submitted', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getMnemonic(24, 'FOO')).rejects.toThrowError('could not generate custom mnemonic. Details are')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getPrivateKeyStr', function () {
+        it('creates a private key string from a given XfrKeyPair', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, keypair_1.getPrivateKeyStr(kp.keypair)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result.length).toEqual(44);
+                        expect(result.split('').pop()).toEqual('=');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getPrivateKeyStr('FOO')).rejects.toThrowError('could not get priv key string')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getPublicKeyStr', function () {
+        it('creates a public key string from a given XfrKeyPair', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, keypair_1.getPublicKeyStr(kp.keypair)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result.length).toEqual(44);
+                        expect(result.split('').pop()).toEqual('=');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getPublicKeyStr('FOO')).rejects.toThrowError('could not get pub key string')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getAddress', function () {
+        it('creates an address string from a given XfrKeyPair', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, keypair_1.getAddress(kp.keypair)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result.length).toEqual(62);
+                        expect(result.split('').slice(0, 3).join('')).toEqual('fra');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getAddress('FOO')).rejects.toThrowError('could not get address string')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getAddressByPublicKey', function () {
+        it('creates an address from a given public key string', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, keypair_1.getAddressByPublicKey(kp.publickey)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toEqual(kp.address);
+                        expect(result.length).toEqual(62);
+                        expect(result.split('').slice(0, 3).join('')).toEqual('fra');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getAddressByPublicKey('aa')).rejects.toThrowError('could not get address by public key')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getAddressPublicAndKey', function () {
+        it('creates an instance of a LightWalletKeypair using a given address', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, keypair_1.getAddressPublicAndKey(kp.address)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('address');
+                        expect(result).toHaveProperty('publickey');
+                        expect(result.address).toEqual(kp.address);
+                        expect(result.publickey).toEqual(kp.publickey);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not a valid address key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.getAddressPublicAndKey('aa')).rejects.toThrowError('could not create a LightWalletKeypair')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getAddressPublicAndKey', function () {
+        it('creates an instance of a WalletKeypar', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('keyStore');
+                        expect(result).toHaveProperty('publickey');
+                        expect(result).toHaveProperty('address');
+                        expect(result).toHaveProperty('keypair');
+                        expect(result).toHaveProperty('privateStr');
+                        expect(result.publickey.length).toEqual(44);
+                        expect(result.address.length).toEqual(62);
+                        expect(result.privateStr.length).toEqual(44);
+                        expect(result.keyStore.length).toEqual(188);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if not a valid address key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect(keypair_1.createKeypair([123])).rejects.toThrowError('could not create a WalletKeypar')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

@@ -14,44 +14,62 @@ export interface WalletKeypar extends LightWalletKeypair {
 
 export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
-  const privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
-  return privateStr;
+
+  try {
+    const privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
+    return privateStr;
+  } catch (err) {
+    throw new Error(`could not get priv key string, "${err}" `);
+  }
 };
 
 export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
-  const publickey = ledger.get_pub_key_str(keypair).replace(/"/g, '');
-  return publickey;
-};
 
-export const getPublicKeyBase64 = async (keypair: XfrKeyPair): Promise<string> => {
-  const ledger = await getLedger();
-
-  const publickey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
-  return publickey;
+  try {
+    const publickey = ledger.get_pub_key_str(keypair).replace(/"/g, '');
+    // other option is
+    //  const publickey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
+    //
+    return publickey;
+  } catch (err) {
+    throw new Error(`could not get pub key string, "${err}" `);
+  }
 };
 
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
-  const address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
-  return address;
+  try {
+    const address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
+    return address;
+  } catch (err) {
+    throw new Error(`could not get address string, "${err}" `);
+  }
 };
 
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
-  const address = ledger.base64_to_bech32(publicKey);
-  return address;
+  try {
+    const address = ledger.base64_to_bech32(publicKey);
+    return address;
+  } catch (err) {
+    throw new Error(`could not get address by public key, "${err}" `);
+  }
 };
 
 export const getAddressPublicAndKey = async (address: string): Promise<LightWalletKeypair> => {
   const ledger = await getLedger();
 
-  const publickey = ledger.bech32_to_base64(address);
+  try {
+    const publickey = ledger.bech32_to_base64(address);
 
-  return {
-    address,
-    publickey,
-  };
+    return {
+      address,
+      publickey,
+    };
+  } catch (err) {
+    throw new Error(`could not create a LightWalletKeypair, "${err}" `);
+  }
 };
 
 export const restoreFromPrivateKey = async (privateStr: string, password: string): Promise<WalletKeypar> => {
@@ -148,25 +166,35 @@ export const restoreFromKeystoreString = async (
 export const createKeypair = async (password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  const keypair = ledger.new_keypair();
-  const keyPairStr = ledger.keypair_to_str(keypair);
-  const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+  try {
+    const keypair = ledger.new_keypair();
+    const keyPairStr = ledger.keypair_to_str(keypair);
+    const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
-  const privateStr = await getPrivateKeyStr(keypair);
-  const publickey = await getPublicKeyStr(keypair);
-  const address = await getAddress(keypair);
+    const privateStr = await getPrivateKeyStr(keypair);
+    const publickey = await getPublicKeyStr(keypair);
+    const address = await getAddress(keypair);
 
-  return {
-    keyStore: encrypted,
-    publickey,
-    address,
-    keypair,
-    privateStr,
-  };
+    return {
+      keyStore: encrypted,
+      publickey,
+      address,
+      keypair,
+      privateStr,
+    };
+  } catch (err) {
+    throw new Error(`could not create a WalletKeypar, "${err}" `);
+  }
 };
 
-export const getMnemonic = async (desiredLength: number, mnemonicLang = 'EN'): Promise<string[]> => {
+export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
   const ledger = await getLedger();
-  const result = String(ledger.generate_mnemonic_custom(desiredLength, mnemonicLang)).split(' ');
-  return result;
+
+  try {
+    const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
+    const result = String(ledgerMnemonicString).split(' ');
+    return result;
+  } catch (err) {
+    throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
+  }
 };

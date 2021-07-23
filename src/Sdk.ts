@@ -14,19 +14,25 @@ export interface SdkEnvironmentConfig {
   cachePath?: string;
 }
 
+const SdkDefaultEnvironment = {
+  hostUrl: 'https://dev-staging.dev.findora.org',
+  queryPort: '8667',
+  ledgerPort: '8668',
+  submissionPort: '8669',
+  explorerApiPort: '26657',
+  cacheProvider: MemoryCacheProvider,
+  cachePath: './cache',
+};
+
 export default class Sdk {
-  public static environment = {
-    hostUrl: 'https://dev-staging.dev.findora.org',
-    queryPort: '8667',
-    ledgerPort: '8668',
-    submissionPort: '8669',
-    explorerApiPort: '26657',
-    cacheProvider: MemoryCacheProvider,
-    cachePath: './cache',
-  };
+  public static environment = { ...SdkDefaultEnvironment };
 
   public static init(sdkEnv: SdkEnvironmentConfig): void {
-    Sdk.environment = { ...Sdk.environment, ...sdkEnv };
+    Sdk.environment = { ...SdkDefaultEnvironment, ...sdkEnv };
+  }
+
+  public static reset(): void {
+    Sdk.environment = { ...SdkDefaultEnvironment };
   }
 
   public static async setUtxoData(walletAddress: string, utxoCache: CacheItem[]): Promise<true> {
