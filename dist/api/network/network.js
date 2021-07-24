@@ -86,7 +86,7 @@ var getExplorerApiRoute = function () {
     return url;
 };
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var axiosResponse, err_1, e, myResponse;
+    var axiosResponse, err_1, e, myResponse, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -104,8 +104,9 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
                     myResponse = axiosResponse.data;
                     return [2 /*return*/, { response: myResponse }];
                 }
-                catch (_) {
-                    return [2 /*return*/, { response: axiosResponse.data }];
+                catch (err) {
+                    e = err;
+                    return [2 /*return*/, { error: { message: e.message } }];
                 }
                 return [2 /*return*/];
         }
@@ -113,7 +114,7 @@ var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, vo
 }); };
 exports.apiPost = apiPost;
 var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var axiosResponse, err_2, e, myResponse;
+    var axiosResponse, err_2, e, myResponse, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -131,8 +132,9 @@ var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, f
                     myResponse = axiosResponse.data;
                     return [2 /*return*/, { response: myResponse }];
                 }
-                catch (_) {
-                    return [2 /*return*/, { response: axiosResponse.data }];
+                catch (err) {
+                    e = err;
+                    return [2 /*return*/, { error: { message: e.message } }];
                 }
                 return [2 /*return*/];
         }
@@ -140,7 +142,7 @@ var apiGet = function (url, config) { return __awaiter(void 0, void 0, void 0, f
 }); };
 exports.apiGet = apiGet;
 var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, dataResult, response, myResponse, toReturn;
+    var url, dataResult, response, error;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -148,20 +150,23 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
-                response = dataResult.response;
-                myResponse = response;
-                if (!Array.isArray(response)) {
-                    myResponse = [response];
+                response = dataResult.response, error = dataResult.error;
+                if (error) {
+                    return [2 /*return*/, { error: error }];
                 }
-                toReturn = __assign(__assign({}, dataResult), { response: myResponse });
-                // console.log('dataResult toReturn utxo', toReturn);
-                return [2 /*return*/, toReturn];
+                if (Array.isArray(response)) {
+                    return [2 /*return*/, { response: response }];
+                }
+                if (parseFloat(response) > 0) {
+                    return [2 /*return*/, { response: [response] }];
+                }
+                return [2 /*return*/, { response: [] }];
         }
     });
 }); };
 exports.getOwnedSids = getOwnedSids;
 var getRelatedSids = function (address, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var url, dataResult;
+    var url, dataResult, response, error;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -169,6 +174,16 @@ var getRelatedSids = function (address, config) { return __awaiter(void 0, void 
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
+                response = dataResult.response, error = dataResult.error;
+                if (error) {
+                    return [2 /*return*/, { error: error }];
+                }
+                if (Array.isArray(response)) {
+                    return [2 /*return*/, { response: response }];
+                }
+                if (parseFloat(response) > 0) {
+                    return [2 /*return*/, { response: [response] }];
+                }
                 return [2 /*return*/, dataResult];
         }
     });
@@ -183,7 +198,6 @@ var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
-                // console.log('dataResult utxo_sid', dataResult);
                 return [2 /*return*/, dataResult];
         }
     });
@@ -321,6 +335,7 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getHashSwap = getHashSwap;
+// done
 var getTxList = function (address, type, page, config) {
     if (page === void 0) { page = 1; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -345,6 +360,7 @@ var getTxList = function (address, type, page, config) {
     });
 };
 exports.getTxList = getTxList;
+// done
 var getTransactionDetails = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
     var params, url, dataResult;
     return __generator(this, function (_a) {

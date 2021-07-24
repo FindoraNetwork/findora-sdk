@@ -63,10 +63,12 @@ export const apiPost = async (
   }
 
   try {
-    const myResponse = axiosResponse.data; // JSONbig({ useNativeBigInt: true }).parse();
+    const myResponse = axiosResponse.data;
     return { response: myResponse };
-  } catch (_) {
-    return { response: axiosResponse.data };
+  } catch (err) {
+    const e: Error = err as Error;
+
+    return { error: { message: e.message } };
   }
 };
 
@@ -85,10 +87,12 @@ export const apiGet = async (
   }
 
   try {
-    const myResponse = axiosResponse.data; // JSONbig({ useNativeBigInt: true }).parse(axiosResponse.data);
+    const myResponse = axiosResponse.data;
     return { response: myResponse };
-  } catch (_) {
-    return { response: axiosResponse.data };
+  } catch (err) {
+    const e: Error = err as Error;
+
+    return { error: { message: e.message } };
   }
 };
 
@@ -98,21 +102,23 @@ export const getOwnedSids = async (
 ): Promise<Types.OwnedSidsDataResult> => {
   const url = `${getQueryRoute()}/get_owned_utxos/${address}`;
 
-  // console.log('url get_owned_utxos', url);
   const dataResult = await apiGet(url, config);
 
-  const { response } = dataResult;
+  const { response, error } = dataResult;
 
-  let myResponse = response;
-
-  if (!Array.isArray(response)) {
-    myResponse = [response];
+  if (error) {
+    return { error };
   }
-  const toReturn = { ...dataResult, response: myResponse };
 
-  // console.log('dataResult toReturn utxo', toReturn);
+  if (Array.isArray(response)) {
+    return { response };
+  }
 
-  return toReturn;
+  if (parseFloat(response) > 0) {
+    return { response: [response] };
+  }
+
+  return { response: [] };
 };
 
 export const getRelatedSids = async (
@@ -123,6 +129,20 @@ export const getRelatedSids = async (
 
   const dataResult = await apiGet(url, config);
 
+  const { response, error } = dataResult;
+
+  if (error) {
+    return { error };
+  }
+
+  if (Array.isArray(response)) {
+    return { response };
+  }
+
+  if (parseFloat(response) > 0) {
+    return { response: [response] };
+  }
+
   return dataResult;
 };
 
@@ -132,10 +152,8 @@ export const getUtxo = async (
 ): Promise<Types.UtxoDataResult> => {
   const url = `${getLedgerRoute()}/utxo_sid/${utxoSid}`;
 
-  // console.log('url utxo_sid', url);
   const dataResult = await apiGet(url, config);
 
-  // console.log('dataResult utxo_sid', dataResult);
   return dataResult;
 };
 
@@ -185,14 +203,12 @@ export const submitTransaction = async <T extends Types.TransactionData>(
 ): Promise<Types.SubmitTransactionDataResult> => {
   const url = `${getSubmitRoute()}/submit_transaction`;
 
-  // console.log('url', url);
   const { response: txData, error } = getSubmitTransactionData(data);
 
   if (error) {
     return { error };
   }
 
-  // console.log('txData', JSON.stringify(txData, null, 2));
   const dataResult = await apiPost(url, txData, config);
 
   return dataResult;
