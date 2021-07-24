@@ -1097,7 +1097,7 @@ describe('network', function () {
         var type = 'to';
         var page = 1;
         var url = hostUrl + ":26657/tx_search";
-        it('returns properly formatted data with default page equals to 1', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('returns properly formatted data with default page equals to 1 and check type = "to"', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result, _a, txs, total_count;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -1138,7 +1138,7 @@ describe('network', function () {
                 }
             });
         }); });
-        it('returns properly formatted data with given page', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('returns properly formatted data with given page and check type = "from"', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result, _a, txs, total_count;
             return __generator(this, function (_b) {
                 switch (_b.label) {

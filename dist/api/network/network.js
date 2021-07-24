@@ -335,7 +335,6 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getHashSwap = getHashSwap;
-// done
 var getTxList = function (address, type, page, config) {
     if (page === void 0) { page = 1; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -360,7 +359,6 @@ var getTxList = function (address, type, page, config) {
     });
 };
 exports.getTxList = getTxList;
-// done
 var getTransactionDetails = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
     var params, url, dataResult;
     return __generator(this, function (_a) {
