@@ -92,7 +92,7 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) { retur
                         transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
                     }
                     else {
-                        transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, amount, validator);
+                        transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, BigInt(amount), validator);
                     }
                 }
                 catch (error) {
@@ -111,11 +111,11 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) { retur
     });
 }); };
 exports.unDelegate = unDelegate;
-var delegate = function (walletInfo, address, numbers, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var delegate = function (walletInfo, address, amount, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules)];
+            case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
             case 1:
                 transactionBuilder = _a.sent();
                 transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
@@ -155,7 +155,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
             case 5:
                 try {
                     transactionBuilder = transactionBuilder
-                        .add_operation_claim_custom(walletInfo.keypair, amount)
+                        .add_operation_claim_custom(walletInfo.keypair, BigInt(amount))
                         .add_transfer_operation(receivedTransferFeeOperation);
                 }
                 catch (error) {

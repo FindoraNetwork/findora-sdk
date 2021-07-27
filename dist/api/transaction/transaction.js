@@ -102,9 +102,9 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 decimals = asset.assetRules.decimals;
                 recieversInfo = [];
                 recieversList.forEach(function (reciver) {
-                    var toWalletInfo = reciver.reciverWalletInfo, numbers = reciver.amount;
+                    var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
                     var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    var utxoNumbers = BigInt(bigNumber_1.toWei(numbers, decimals).toString());
+                    var utxoNumbers = BigInt(bigNumber_1.toWei(amount, decimals).toString());
                     var recieverInfoItem = {
                         toPublickey: toPublickey,
                         utxoNumbers: utxoNumbers,
@@ -210,27 +210,27 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
     });
 }); };
 exports.submitTransaction = submitTransaction;
-var sendToAddress = function (walletInfo, address, numbers, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var sendToAddress = function (walletInfo, address, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var toWalletInfoLight, recieversInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
             case 1:
                 toWalletInfoLight = _a.sent();
-                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
+                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
                 return [2 /*return*/, exports.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
         }
     });
 }); };
 exports.sendToAddress = sendToAddress;
-var sendToPublicKey = function (walletInfo, publicKey, numbers, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var sendToPublicKey = function (walletInfo, publicKey, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var address;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, keypair_1.getAddressByPublicKey(publicKey)];
             case 1:
                 address = _a.sent();
-                return [2 /*return*/, exports.sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules)];
+                return [2 /*return*/, exports.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
         }
     });
 }); };

@@ -226,7 +226,7 @@ const myFunc7 = async () => {
 
   // const decimals = 6;
 
-  const assetBuilder = await Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules);
+  const assetBuilder = await Asset.issueAsset(walletInfo, customAssetCode, '5', assetBlindRules);
 
   const handle = await Transaction.submitTransaction(assetBuilder);
 
@@ -267,7 +267,7 @@ const myFunc9 = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    4,
+    '4',
     assetCode,
     assetBlindRules,
   );
@@ -300,7 +300,7 @@ const myFunc10 = async () => {
   const resultHandle = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    0.1,
+    '0.1',
     assetCode,
     assetBlindRules,
   );
@@ -357,8 +357,8 @@ const myFunc12 = async () => {
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const recieversInfo = [
-    { reciverWalletInfo: toWalletInfoMine2, amount: 10 },
-    { reciverWalletInfo: toWalletInfoMine3, amount: 20 },
+    { reciverWalletInfo: toWalletInfoMine2, amount: '10' },
+    { reciverWalletInfo: toWalletInfoMine3, amount: '20' },
   ];
 
   const transactionBuilder = await Transaction.sendToMany(

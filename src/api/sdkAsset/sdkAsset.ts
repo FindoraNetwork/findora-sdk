@@ -12,7 +12,7 @@ export interface AssetRules {
   updatable: boolean;
   decimals: number;
   traceable?: boolean;
-  maxNumbers?: number;
+  maxNumbers?: string;
 }
 
 export interface AssetBlindRules {
@@ -118,7 +118,7 @@ const getDefineAssetTransactionBuilder = async (
 const getIssueAssetTransactionBuilder = async (
   walletKeypair: XfrKeyPair,
   assetName: string,
-  amountToIssue: number,
+  amountToIssue: string,
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<TransactionBuilder> => {
@@ -204,7 +204,7 @@ export const defineAsset = async (
 export const issueAsset = async (
   walletInfo: WalletKeypar,
   assetName: string,
-  amountToIssue: number,
+  amountToIssue: string,
   assetBlindRules: AssetBlindRules,
   assetDecimals?: number,
 ): Promise<TransactionBuilder> => {

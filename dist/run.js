@@ -279,7 +279,7 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
             case 1:
                 walletInfo = _a.sent();
                 assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, 5, assetBlindRules)];
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, '5', assetBlindRules)];
             case 2:
                 assetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
@@ -326,7 +326,7 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 4, assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '4', assetCode, assetBlindRules)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -356,7 +356,7 @@ var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function (
                 toWalletInfo = _a.sent();
                 assetCode = customAssetCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, 0.1, assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.1', assetCode, assetBlindRules)];
             case 3:
                 resultHandle = _a.sent();
                 console.log('send custom result handle!', resultHandle);
@@ -409,8 +409,8 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
                 recieversInfo = [
-                    { reciverWalletInfo: toWalletInfoMine2, amount: 10 },
-                    { reciverWalletInfo: toWalletInfoMine3, amount: 20 },
+                    { reciverWalletInfo: toWalletInfoMine2, amount: '10' },
+                    { reciverWalletInfo: toWalletInfoMine3, amount: '20' },
                 ];
                 return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
             case 5:
