@@ -6,7 +6,7 @@ import * as AssetApi from '../sdkAsset';
 
 export const unDelegate = async (
   walletInfo: WalletKeypar,
-  amount: bigint,
+  amount: string,
   validator: string,
   isFullUnstake: false,
 ): Promise<TransactionBuilder> => {
@@ -40,7 +40,7 @@ export const unDelegate = async (
     } else {
       transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
         walletInfo.keypair,
-        amount,
+        BigInt(amount),
         validator,
       );
     }
@@ -64,7 +64,7 @@ export const unDelegate = async (
 export const delegate = async (
   walletInfo: WalletKeypar,
   address: string,
-  numbers: number,
+  amount: string,
   assetCode: string,
   validator: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
@@ -72,7 +72,7 @@ export const delegate = async (
   let transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     address,
-    numbers,
+    amount,
     assetCode,
     assetBlindRules,
   );
@@ -82,7 +82,7 @@ export const delegate = async (
   return transactionBuilder;
 };
 
-export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<TransactionBuilder> => {
+export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferFeeOperation;
@@ -109,7 +109,7 @@ export const claim = async (walletInfo: WalletKeypar, amount: bigint): Promise<T
 
   try {
     transactionBuilder = transactionBuilder
-      .add_operation_claim_custom(walletInfo.keypair, amount)
+      .add_operation_claim_custom(walletInfo.keypair, BigInt(amount))
       .add_transfer_operation(receivedTransferFeeOperation);
   } catch (error) {
     const e: Error = error as Error;

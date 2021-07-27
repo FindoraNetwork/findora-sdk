@@ -33,7 +33,7 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
 
 export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
-  amount: number;
+  amount: string;
 }
 
 export const sendToMany = async (
@@ -50,9 +50,9 @@ export const sendToMany = async (
   const recieversInfo: Fee.ReciverInfo[] = [];
 
   recieversList.forEach(reciver => {
-    const { reciverWalletInfo: toWalletInfo, amount: numbers } = reciver;
+    const { reciverWalletInfo: toWalletInfo, amount } = reciver;
     const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-    const utxoNumbers = BigInt(toWei(numbers, decimals).toString());
+    const utxoNumbers = BigInt(toWei(amount, decimals).toString());
 
     const recieverInfoItem = {
       toPublickey,
@@ -166,13 +166,13 @@ export const submitTransaction = async (transactionBuilder: TransactionBuilder):
 export const sendToAddress = async (
   walletInfo: WalletKeypar,
   address: string,
-  numbers: number,
+  amount: string,
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<TransactionBuilder> => {
   const toWalletInfoLight = await getAddressPublicAndKey(address);
 
-  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: numbers }];
+  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
 
   return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
 };
@@ -180,13 +180,13 @@ export const sendToAddress = async (
 export const sendToPublicKey = async (
   walletInfo: WalletKeypar,
   publicKey: string,
-  numbers: number,
+  amount: string,
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<TransactionBuilder> => {
   const address = await getAddressByPublicKey(publicKey);
 
-  return sendToAddress(walletInfo, address, numbers, assetCode, assetBlindRules);
+  return sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
 };
 
 export const getTxList = async (

@@ -435,7 +435,7 @@ describe('sdkAsset', function () {
                         givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
                         code = givenAsset.code, decimals = givenAsset.decimals;
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, sdkAsset_1.issueAsset(walletInfo, code, 2, assetBlindRules, decimals)];
+                        return [4 /*yield*/, sdkAsset_1.issueAsset(walletInfo, code, '2', assetBlindRules, decimals)];
                     case 5:
                         handle = _a.sent();
                         expect(handle).toBe(myResponse);
@@ -473,7 +473,7 @@ describe('sdkAsset', function () {
                         givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
                         code = givenAsset.code, decimals = givenAsset.decimals;
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError('Could not issue asset - submit handle is missing')];
+                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError('Could not issue asset - submit handle is missing')];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
@@ -509,7 +509,7 @@ describe('sdkAsset', function () {
                         givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
                         code = givenAsset.code, decimals = givenAsset.decimals;
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError('Could not submit issue asset transaction')];
+                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError('Could not submit issue asset transaction')];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
@@ -545,7 +545,7 @@ describe('sdkAsset', function () {
                         givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
                         code = givenAsset.code;
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, 2, assetBlindRules, 6)).rejects.toThrowError('Could not submit issue asset transaction')];
+                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, '2', assetBlindRules, 6)).rejects.toThrowError('Could not submit issue asset transaction')];
                     case 5:
                         _a.sent();
                         return [2 /*return*/];
@@ -570,7 +570,7 @@ describe('sdkAsset', function () {
                     case 3:
                         _a.sent();
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, 'aaa', 2, assetBlindRules, 6)).rejects.toThrowError('Could not get "issueAssetTransactionBuilder"')];
+                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, 'aaa', '2', assetBlindRules, 6)).rejects.toThrowError('Could not get "issueAssetTransactionBuilder"')];
                     case 4:
                         _a.sent();
                         return [2 /*return*/];
@@ -594,7 +594,7 @@ describe('sdkAsset', function () {
                         givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
                         code = givenAsset.code, decimals = givenAsset.decimals;
                         assetBlindRules = { isAmountBlind: false };
-                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, 2, assetBlindRules, decimals)).rejects.toThrowError('Could not create transfer operation')];
+                        return [4 /*yield*/, expect(sdkAsset_1.issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError('Could not create transfer operation')];
                     case 3:
                         _a.sent();
                         return [2 /*return*/];
