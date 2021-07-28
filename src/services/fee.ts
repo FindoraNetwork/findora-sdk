@@ -11,6 +11,20 @@ export interface ReciverInfo {
   assetBlindRules?: AssetApi.AssetBlindRules;
 }
 
+export const getEmptyTransferBuilder = async (): Promise<TransferOperationBuilder> => {
+  const ledger = await getLedger();
+
+  return ledger.TransferOperationBuilder.new();
+};
+
+export const getAssetTracingPolicies = async (asset: FindoraWallet.IAsset) => {
+  const ledger = await getLedger();
+
+  const tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
+
+  return tracingPolicies;
+};
+
 export const getTransferOperation = async (
   walletInfo: WalletKeypar,
   utxoInputs: UtxoInputsInfo,
@@ -20,20 +34,21 @@ export const getTransferOperation = async (
   const ledger = await getLedger();
 
   const asset = await AssetApi.getAssetDetails(assetCode);
+
   const isTraceable = asset.assetRules.tracing_policies?.length > 0;
 
   let tracingPolicies: TracingPolicies;
 
   if (isTraceable) {
     try {
-      tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
+      tracingPolicies = await getAssetTracingPolicies(asset);
       console.log('tracingPolicies:', tracingPolicies);
     } catch (e) {
       console.log(e);
     }
   }
 
-  let transferOp = ledger.TransferOperationBuilder.new();
+  let transferOp = await getEmptyTransferBuilder();
 
   const { inputParametersList } = utxoInputs;
 

@@ -144,7 +144,7 @@ const myFunc4 = async () => {
 const myFunc5 = async () => {
   // const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
 
-  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
   const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
 
   const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
@@ -153,12 +153,15 @@ const myFunc5 = async () => {
 
   const pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
 
-  const pkey5 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  // const pkey5 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
 
   const pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
 
   const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  // const toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+
+  // const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
 
   const password = '123';
 
@@ -167,7 +170,7 @@ const myFunc5 = async () => {
   // const walletInfo = await Keypair.restoreFromPrivateKey(pkey3, password);
   // const walletInfo = await Keypair.restoreFromPrivateKey(pkey4, password);
   // const walletInfo = await Keypair.restoreFromPrivateKey(pkey5, password);
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey6, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   // const walletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
   // const walletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
@@ -335,14 +338,18 @@ const myFunc11 = async () => {
 
 // send custom asset to many
 const myFunc12 = async () => {
-  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
   // const fkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
 
-  const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
+  // const pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
   // const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
-  const toPkeyMine2 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const toPkeyMine3 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  // const toPkeyMine2 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  // const toPkeyMine3 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+
+  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -357,8 +364,8 @@ const myFunc12 = async () => {
   const assetBlindRules: Api.Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const recieversInfo = [
-    { reciverWalletInfo: toWalletInfoMine2, amount: '10' },
-    { reciverWalletInfo: toWalletInfoMine3, amount: '20' },
+    { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+    { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
   ];
 
   const transactionBuilder = await Transaction.sendToMany(
@@ -538,7 +545,7 @@ const myFuncUndelegate = async () => {
 // myFunc10();
 
 // fra balance
-// myFunc5();
+myFunc5();
 // myFunc12();
 // send fra
 // myFunc9();
@@ -558,4 +565,4 @@ const myFuncUndelegate = async () => {
 
 // send custom asset
 // myFunc10();
-myFunc6();
+// myFunc6();
