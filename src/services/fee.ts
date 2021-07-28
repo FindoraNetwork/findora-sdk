@@ -2,15 +2,8 @@ import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import * as AssetApi from '../api/sdkAsset';
 import { getLedger } from './ledger/ledgerWrapper';
-import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
-import {
-  addUtxo,
-  addUtxoInputs,
-  AddUtxoItem,
-  getSendUtxo,
-  UtxoInputParameter,
-  UtxoInputsInfo,
-} from './utxoHelper';
+import { TracingPolicies, TransferOperationBuilder, TxoRef, XfrPublicKey } from './ledger/types';
+import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
 
 export interface ReciverInfo {
   utxoNumbers: BigInt;
@@ -45,7 +38,7 @@ export const getTransferOperation = async (
   const { inputParametersList } = utxoInputs;
 
   const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
-    const { txoRef, assetRecord, amount, sid } = inputParameters;
+    const { assetRecord, amount, sid } = inputParameters;
 
     const memoDataResult = await Network.getOwnerMemo(sid);
 
@@ -56,6 +49,14 @@ export const getTransferOperation = async (
     }
 
     const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+
+    let txoRef: TxoRef;
+
+    try {
+      txoRef = ledger.TxoRef.absolute(BigInt(sid));
+    } catch (error) {
+      throw new Error(`Cannot convert given sid id to a BigInt, "${sid}"`);
+    }
 
     if (isTraceable) {
       transferOp = transferOp.add_input_with_tracing(
@@ -107,7 +108,7 @@ export const getTransferOperation = async (
   return transferOp;
 };
 
-export interface ITransferOperationFee {
+export interface TransferOperationFee {
   walletInfo: WalletKeypar;
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean };
   utxoInput?: UtxoInputsInfo;
@@ -117,7 +118,7 @@ export const buildTransferOperationWithFee = async ({
   walletInfo,
   assetBlindRules,
   utxoInput,
-}: ITransferOperationFee): Promise<TransferOperationBuilder> => {
+}: TransferOperationFee): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -161,7 +162,7 @@ export const buildTransferOperationWithFee = async ({
   return trasferOperation;
 };
 
-export interface ITransferOperation {
+export interface TransferOperation {
   walletInfo: WalletKeypar;
   recieversInfo: ReciverInfo[];
   assetCode: string;
@@ -173,7 +174,7 @@ export const buildTransferOperation = async ({
   recieversInfo,
   assetCode,
   utxoInput,
-}: ITransferOperation): Promise<TransferOperationBuilder> => {
+}: TransferOperation): Promise<TransferOperationBuilder> => {
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
   const { response: sids } = sidsResult;

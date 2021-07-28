@@ -180,7 +180,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                         fullPathToCacheEntry = cacheEntryName;
                     }
                 }
-                catch (error) { }
+                catch (_) { }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
@@ -268,7 +268,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
 exports.getSendUtxo = getSendUtxo;
 // creates a list of inputs, which would be used by transaction builder in a fee service
 var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, inputAmount, inputParametersList, i, item, assetRecord, txoRef, inputParameters, res;
+    var ledger, inputAmount, inputParametersList, i, item, assetRecord, inputParameters, res;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -286,15 +286,8 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     catch (error) {
                         throw new Error("Can not get client asset record. Details: \"" + error.message + "\"");
                     }
-                    txoRef = void 0;
-                    try {
-                        txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
-                    }
-                    catch (error) {
-                        throw new Error("Cannot convert given sid id to a BigInt, \"" + item.sid + "\"");
-                    }
                     inputParameters = {
-                        txoRef: txoRef,
+                        // txoRef,
                         assetRecord: assetRecord,
                         ownerMemo: item === null || item === void 0 ? void 0 : item.ownerMemo,
                         amount: item.amount,

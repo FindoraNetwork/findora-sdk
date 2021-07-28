@@ -84,11 +84,11 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                 transferOp = ledger.TransferOperationBuilder.new();
                 inputParametersList = utxoInputs.inputParametersList;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
-                    var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
+                    var assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo, txoRef;
                     return __generator(this, function (_a) {
                         switch (_a.label) {
                             case 0:
-                                txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, amount = inputParameters.amount, sid = inputParameters.sid;
+                                assetRecord = inputParameters.assetRecord, amount = inputParameters.amount, sid = inputParameters.sid;
                                 return [4 /*yield*/, Network.getOwnerMemo(sid)];
                             case 1:
                                 memoDataResult = _a.sent();
@@ -97,6 +97,12 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                     throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                                 }
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+                                try {
+                                    txoRef = ledger.TxoRef.absolute(BigInt(sid));
+                                }
+                                catch (error) {
+                                    throw new Error("Cannot convert given sid id to a BigInt, \"" + sid + "\"");
+                                }
                                 if (isTraceable) {
                                     transferOp = transferOp.add_input_with_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), tracingPolicies, walletInfo.keypair, amount);
                                 }

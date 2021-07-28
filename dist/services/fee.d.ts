@@ -8,7 +8,7 @@ export interface ReciverInfo {
     assetBlindRules?: AssetApi.AssetBlindRules;
 }
 export declare const getTransferOperation: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo, recieversInfo: ReciverInfo[], assetCode: string) => Promise<TransferOperationBuilder>;
-export interface ITransferOperationFee {
+export interface TransferOperationFee {
     walletInfo: WalletKeypar;
     assetBlindRules?: {
         isAmountBlind?: boolean;
@@ -16,11 +16,11 @@ export interface ITransferOperationFee {
     };
     utxoInput?: UtxoInputsInfo;
 }
-export declare const buildTransferOperationWithFee: ({ walletInfo, assetBlindRules, utxoInput, }: ITransferOperationFee) => Promise<TransferOperationBuilder>;
-export interface ITransferOperation {
+export declare const buildTransferOperationWithFee: ({ walletInfo, assetBlindRules, utxoInput, }: TransferOperationFee) => Promise<TransferOperationBuilder>;
+export interface TransferOperation {
     walletInfo: WalletKeypar;
     recieversInfo: ReciverInfo[];
     assetCode: string;
     utxoInput?: UtxoInputsInfo;
 }
-export declare const buildTransferOperation: ({ walletInfo, recieversInfo, assetCode, utxoInput, }: ITransferOperation) => Promise<TransferOperationBuilder>;
+export declare const buildTransferOperation: ({ walletInfo, recieversInfo, assetCode, utxoInput, }: TransferOperation) => Promise<TransferOperationBuilder>;

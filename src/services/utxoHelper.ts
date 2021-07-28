@@ -6,11 +6,7 @@ import Sdk from '../Sdk';
 import Cache from './cacheStore/factory';
 import { CacheItem } from './cacheStore/types';
 import { getLedger } from './ledger/ledgerWrapper';
-import {
-  ClientAssetRecord as LedgerClientAssetRecord,
-  OwnerMemo as LedgerOwnerMemo,
-  TxoRef as LedgerTxoRef,
-} from './ledger/types';
+import { ClientAssetRecord as LedgerClientAssetRecord, OwnerMemo as LedgerOwnerMemo } from './ledger/types';
 
 export interface LedgerUtxoItem {
   sid: number;
@@ -31,7 +27,7 @@ export interface UtxoOutputItem extends LedgerUtxoItem {
 }
 
 export interface UtxoInputParameter {
-  txoRef: LedgerTxoRef;
+  // txoRef: LedgerTxoRef;
   assetRecord: LedgerClientAssetRecord;
   ownerMemo: LedgerOwnerMemo | undefined;
   amount: BigInt;
@@ -159,7 +155,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
     if (window && window?.document) {
       fullPathToCacheEntry = cacheEntryName;
     }
-  } catch (error) {}
+  } catch (_) {}
 
   try {
     utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
@@ -251,16 +247,16 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
       throw new Error(`Can not get client asset record. Details: "${error.message}"`);
     }
 
-    let txoRef;
+    // let txoRef;
 
-    try {
-      txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
-    } catch (error) {
-      throw new Error(`Cannot convert given sid id to a BigInt, "${item.sid}"`);
-    }
+    // try {
+    //   txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
+    // } catch (error) {
+    //   throw new Error(`Cannot convert given sid id to a BigInt, "${item.sid}"`);
+    // }
 
     const inputParameters: UtxoInputParameter = {
-      txoRef,
+      // txoRef,
       assetRecord,
       ownerMemo: item?.ownerMemo,
       amount: item.amount,
