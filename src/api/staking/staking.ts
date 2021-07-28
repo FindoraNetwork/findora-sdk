@@ -10,7 +10,7 @@ export const unDelegate = async (
   validator: string,
   isFullUnstake: false,
 ): Promise<TransactionBuilder> => {
-  const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee({ walletInfo });
 
   let receivedTransferFeeOperation;
 
@@ -83,7 +83,7 @@ export const delegate = async (
 };
 
 export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<TransactionBuilder> => {
-  const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee({ walletInfo });
 
   let receivedTransferFeeOperation;
 

@@ -1,3 +1,4 @@
+import { UtxoInputsInfo } from 'services/utxoHelper';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
@@ -36,11 +37,17 @@ export interface TransferReciever {
   amount: string;
 }
 
+export interface UtxoInputObj {
+  utxoInput: UtxoInputsInfo;
+  utxoFeeInput: UtxoInputsInfo;
+}
+
 export const sendToMany = async (
   walletInfo: WalletKeypar,
   recieversList: TransferReciever[],
   assetCode: string,
   assetBlindRules?: AssetApi.AssetBlindRules,
+  utxoInputObj?: UtxoInputObj,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
@@ -79,7 +86,12 @@ export const sendToMany = async (
     recieversInfo.push(feeRecieverInfoItem);
   }
 
-  const transferOperationBuilder = await Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode);
+  const transferOperationBuilder = await Fee.buildTransferOperation({
+    walletInfo,
+    recieversInfo,
+    assetCode,
+    utxoInput: utxoInputObj?.utxoInput,
+  });
 
   let receivedTransferOperation;
 
@@ -110,7 +122,10 @@ export const sendToMany = async (
   }
 
   if (!isFraTransfer) {
-    const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee(walletInfo);
+    const transferOperationBuilderFee = await Fee.buildTransferOperationWithFee({
+      walletInfo,
+      utxoInput: utxoInputObj?.utxoFeeInput,
+    });
 
     let receivedTransferOperationFee;
 
@@ -171,10 +186,21 @@ export const sendToAddress = async (
   assetBlindRules?: AssetApi.AssetBlindRules,
 ): Promise<TransactionBuilder> => {
   const toWalletInfoLight = await getAddressPublicAndKey(address);
-
   const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
-
   return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+};
+
+export const sendToAddressByOffline = async (
+  walletInfo: WalletKeypar,
+  address: string,
+  amount: string,
+  assetCode: string,
+  utxoInputObj: UtxoInputObj,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  const toWalletInfoLight = await getAddressPublicAndKey(address);
+  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+  return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules, utxoInputObj);
 };
 
 export const sendToPublicKey = async (

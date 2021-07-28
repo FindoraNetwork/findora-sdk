@@ -62,7 +62,7 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) { retur
     var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee({ walletInfo: walletInfo })];
             case 1:
                 transferFeeOperationBuilder = _a.sent();
                 try {
@@ -128,7 +128,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
     var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_2, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee({ walletInfo: walletInfo })];
             case 1:
                 transferFeeOperationBuilder = _a.sent();
                 try {

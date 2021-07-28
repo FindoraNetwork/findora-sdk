@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitTransaction = exports.sendToMany = exports.getTransactionBuilder = void 0;
+exports.getTxList = exports.sendToPublicKey = exports.sendToAddressByOffline = exports.sendToAddress = exports.submitTransaction = exports.sendToMany = exports.getTransactionBuilder = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -89,7 +89,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
-var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules, utxoInputObj) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -123,7 +123,12 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     };
                     recieversInfo.push(feeRecieverInfoItem);
                 }
-                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
+                return [4 /*yield*/, Fee.buildTransferOperation({
+                        walletInfo: walletInfo,
+                        recieversInfo: recieversInfo,
+                        assetCode: assetCode,
+                        utxoInput: utxoInputObj === null || utxoInputObj === void 0 ? void 0 : utxoInputObj.utxoInput,
+                    })];
             case 3:
                 transferOperationBuilder = _a.sent();
                 try {
@@ -153,7 +158,10 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 if (!!isFraTransfer) return [3 /*break*/, 9];
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee({
+                        walletInfo: walletInfo,
+                        utxoInput: utxoInputObj === null || utxoInputObj === void 0 ? void 0 : utxoInputObj.utxoFeeInput,
+                    })];
             case 8:
                 transferOperationBuilderFee = _a.sent();
                 receivedTransferOperationFee = void 0;
@@ -223,6 +231,19 @@ var sendToAddress = function (walletInfo, address, amount, assetCode, assetBlind
     });
 }); };
 exports.sendToAddress = sendToAddress;
+var sendToAddressByOffline = function (walletInfo, address, amount, assetCode, utxoInputObj, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var toWalletInfoLight, recieversInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
+            case 1:
+                toWalletInfoLight = _a.sent();
+                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
+                return [2 /*return*/, exports.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules, utxoInputObj)];
+        }
+    });
+}); };
+exports.sendToAddressByOffline = sendToAddressByOffline;
 var sendToPublicKey = function (walletInfo, publicKey, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var address;
     return __generator(this, function (_a) {

@@ -220,7 +220,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
             case 0: return [4 /*yield*/, getAssetRules(newAssetRules)];
             case 1:
                 assetRules = _a.sent();
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee({ walletInfo: walletInfo })];
             case 2:
                 transferOperationBuilder = _a.sent();
                 try {
@@ -262,7 +262,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
             case 1:
                 asset = _a.sent();
                 decimals = assetDecimals || asset.assetRules.decimals;
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+                return [4 /*yield*/, Fee.buildTransferOperationWithFee({ walletInfo: walletInfo })];
             case 2:
                 transferOperationBuilder = _a.sent();
                 try {

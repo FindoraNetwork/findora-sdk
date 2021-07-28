@@ -163,7 +163,7 @@ export const defineAsset = async (
 ): Promise<TransactionBuilder> => {
   const assetRules = await getAssetRules(newAssetRules);
 
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee({ walletInfo });
 
   let receivedTransferOperation;
 
@@ -211,7 +211,7 @@ export const issueAsset = async (
   const asset = await getAssetDetails(assetName);
   const decimals = assetDecimals || asset.assetRules.decimals;
 
-  const transferOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
+  const transferOperationBuilder = await Fee.buildTransferOperationWithFee({ walletInfo });
 
   let receivedTransferOperation;
 

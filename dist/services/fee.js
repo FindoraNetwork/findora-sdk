@@ -126,72 +126,89 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
     });
 }); };
 exports.getTransferOperation = getTransferOperation;
-var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
-            case 2:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    throw new Error('no sids were fetched!');
-                }
-                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
-            case 3:
-                utxoDataList = _a.sent();
-                minimalFee = ledger.fra_get_minimal_fee();
-                fraAssetCode = ledger.fra_get_asset_code();
-                sendUtxoList = utxoHelper_1.getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
-                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
-            case 4:
-                utxoInputsInfo = _a.sent();
-                toPublickey = ledger.fra_get_dest_pubkey();
-                recieversInfo = [
-                    {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                        assetBlindRules: assetBlindRules,
-                    },
-                ];
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
-            case 5:
-                trasferOperation = _a.sent();
-                return [2 /*return*/, trasferOperation];
-        }
+var buildTransferOperationWithFee = function (_a) {
+    var walletInfo = _a.walletInfo, assetBlindRules = _a.assetBlindRules, utxoInput = _a.utxoInput;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var ledger, sidsResult, sids, minimalFee, fraAssetCode, utxoInputsInfo, utxoDataList, sendUtxoList, toPublickey, recieversInfo, trasferOperation;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                case 1:
+                    ledger = _b.sent();
+                    return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+                case 2:
+                    sidsResult = _b.sent();
+                    sids = sidsResult.response;
+                    if (!sids) {
+                        throw new Error('no sids were fetched!');
+                    }
+                    minimalFee = ledger.fra_get_minimal_fee();
+                    fraAssetCode = ledger.fra_get_asset_code();
+                    if (!!utxoInput) return [3 /*break*/, 5];
+                    return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
+                case 3:
+                    utxoDataList = _b.sent();
+                    sendUtxoList = utxoHelper_1.getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
+                    return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+                case 4:
+                    utxoInputsInfo = _b.sent();
+                    return [3 /*break*/, 6];
+                case 5:
+                    utxoInputsInfo = utxoInput;
+                    _b.label = 6;
+                case 6:
+                    toPublickey = ledger.fra_get_dest_pubkey();
+                    recieversInfo = [
+                        {
+                            utxoNumbers: minimalFee,
+                            toPublickey: toPublickey,
+                            assetBlindRules: assetBlindRules,
+                        },
+                    ];
+                    return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
+                case 7:
+                    trasferOperation = _b.sent();
+                    return [2 /*return*/, trasferOperation];
+            }
+        });
     });
-}); };
+};
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
-var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, totalUtxoNumbers, utxoDataList, sendUtxoList, utxoInputsInfo, transferOperationBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
-            case 1:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    throw new Error('no sids were fetched!');
-                }
-                totalUtxoNumbers = recieversInfo.reduce(function (acc, receiver) {
-                    return BigInt(Number(receiver.utxoNumbers) + Number(acc));
-                }, BigInt(0));
-                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
-            case 2:
-                utxoDataList = _a.sent();
-                sendUtxoList = utxoHelper_1.getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
-                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
-            case 3:
-                utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
-            case 4:
-                transferOperationBuilder = _a.sent();
-                return [2 /*return*/, transferOperationBuilder];
-        }
+var buildTransferOperation = function (_a) {
+    var walletInfo = _a.walletInfo, recieversInfo = _a.recieversInfo, assetCode = _a.assetCode, utxoInput = _a.utxoInput;
+    return __awaiter(void 0, void 0, void 0, function () {
+        var sidsResult, sids, totalUtxoNumbers, utxoInputsInfo, utxoDataList, sendUtxoList, transferOperationBuilder;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+                case 1:
+                    sidsResult = _b.sent();
+                    sids = sidsResult.response;
+                    if (!sids) {
+                        throw new Error('no sids were fetched!');
+                    }
+                    totalUtxoNumbers = recieversInfo.reduce(function (acc, receiver) {
+                        return BigInt(Number(receiver.utxoNumbers) + Number(acc));
+                    }, BigInt(0));
+                    if (!!utxoInput) return [3 /*break*/, 4];
+                    return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
+                case 2:
+                    utxoDataList = _b.sent();
+                    sendUtxoList = utxoHelper_1.getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
+                    return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+                case 3:
+                    utxoInputsInfo = _b.sent();
+                    return [3 /*break*/, 5];
+                case 4:
+                    utxoInputsInfo = utxoInput;
+                    _b.label = 5;
+                case 5: return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
+                case 6:
+                    transferOperationBuilder = _b.sent();
+                    return [2 /*return*/, transferOperationBuilder];
+            }
+        });
     });
-}); };
+};
 exports.buildTransferOperation = buildTransferOperation;
 //# sourceMappingURL=fee.js.map

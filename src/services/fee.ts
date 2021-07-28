@@ -3,7 +3,14 @@ import * as Network from '../api/network';
 import * as AssetApi from '../api/sdkAsset';
 import { getLedger } from './ledger/ledgerWrapper';
 import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
-import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
+import {
+  addUtxo,
+  addUtxoInputs,
+  AddUtxoItem,
+  getSendUtxo,
+  UtxoInputParameter,
+  UtxoInputsInfo,
+} from './utxoHelper';
 
 export interface ReciverInfo {
   utxoNumbers: BigInt;
@@ -100,10 +107,17 @@ export const getTransferOperation = async (
   return transferOp;
 };
 
-export const buildTransferOperationWithFee = async (
-  walletInfo: WalletKeypar,
-  assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
-): Promise<TransferOperationBuilder> => {
+export interface ITransferOperationFee {
+  walletInfo: WalletKeypar;
+  assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean };
+  utxoInput?: UtxoInputsInfo;
+}
+
+export const buildTransferOperationWithFee = async ({
+  walletInfo,
+  assetBlindRules,
+  utxoInput,
+}: ITransferOperationFee): Promise<TransferOperationBuilder> => {
   const ledger = await getLedger();
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -114,15 +128,18 @@ export const buildTransferOperationWithFee = async (
     throw new Error('no sids were fetched!');
   }
 
-  const utxoDataList = await addUtxo(walletInfo, sids);
-
   const minimalFee = ledger.fra_get_minimal_fee();
-
   const fraAssetCode = ledger.fra_get_asset_code();
 
-  const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
+  let utxoInputsInfo;
 
-  const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+  if (!utxoInput) {
+    const utxoDataList = await addUtxo(walletInfo, sids);
+    const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
+    utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+  } else {
+    utxoInputsInfo = utxoInput;
+  }
 
   const toPublickey = ledger.fra_get_dest_pubkey();
 
@@ -144,11 +161,19 @@ export const buildTransferOperationWithFee = async (
   return trasferOperation;
 };
 
-export const buildTransferOperation = async (
-  walletInfo: WalletKeypar,
-  recieversInfo: ReciverInfo[],
-  assetCode: string,
-): Promise<TransferOperationBuilder> => {
+export interface ITransferOperation {
+  walletInfo: WalletKeypar;
+  recieversInfo: ReciverInfo[];
+  assetCode: string;
+  utxoInput?: UtxoInputsInfo;
+}
+
+export const buildTransferOperation = async ({
+  walletInfo,
+  recieversInfo,
+  assetCode,
+  utxoInput,
+}: ITransferOperation): Promise<TransferOperationBuilder> => {
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
   const { response: sids } = sidsResult;
@@ -161,11 +186,15 @@ export const buildTransferOperation = async (
     return BigInt(Number(receiver.utxoNumbers) + Number(acc));
   }, BigInt(0));
 
-  const utxoDataList = await addUtxo(walletInfo, sids);
+  let utxoInputsInfo;
 
-  const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
-
-  const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+  if (!utxoInput) {
+    const utxoDataList = await addUtxo(walletInfo, sids);
+    const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
+    utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+  } else {
+    utxoInputsInfo = utxoInput;
+  }
 
   const transferOperationBuilder = await getTransferOperation(
     walletInfo,
