@@ -206,20 +206,20 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
 }); };
 // get fra balance
 var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey1, pkey2, pkey3, pkey4, pkey5, pkey6, toPkeyMine2, toPkeyMine3, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
+    var pkey, pkey1, pkey2, pkey3, pkey4, pkey6, toPkeyMine2, toPkeyMine3, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
                 pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
                 pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
                 pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
                 pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
-                pkey5 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
                 pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
                 toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey6, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
@@ -390,9 +390,9 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
-                toPkeyMine2 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-                toPkeyMine3 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -409,8 +409,8 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
                 recieversInfo = [
-                    { reciverWalletInfo: toWalletInfoMine2, amount: '10' },
-                    { reciverWalletInfo: toWalletInfoMine3, amount: '20' },
+                    { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+                    { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
                 ];
                 return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
             case 5:
@@ -622,7 +622,7 @@ var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, fu
 // send custom
 // myFunc10();
 // fra balance
-// myFunc5();
+myFunc5();
 // myFunc12();
 // send fra
 // myFunc9();
@@ -636,5 +636,5 @@ var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, fu
 // myFunc7();
 // send custom asset
 // myFunc10();
-myFunc6();
+// myFunc6();
 //# sourceMappingURL=run.js.map

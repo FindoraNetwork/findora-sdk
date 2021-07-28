@@ -1,4 +1,4 @@
-import { XfrKeyPair } from '../../services/ledger/types';
+import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 export interface LightWalletKeypair {
     address: string;
     publickey: string;
@@ -12,6 +12,11 @@ export declare const getPrivateKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddress: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddressByPublicKey: (publicKey: string) => Promise<string>;
+/**
+ *
+ * @todo Add unit test
+ */
+export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<XfrPublicKey>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromMnemonic: (mnemonic: string[], password: string) => Promise<WalletKeypar>;

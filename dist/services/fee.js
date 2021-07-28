@@ -55,13 +55,38 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTransferOperation = exports.buildTransferOperationWithFee = exports.getTransferOperation = void 0;
+exports.buildTransferOperation = exports.buildTransferOperationWithFee = exports.getTransferOperation = exports.getAssetTracingPolicies = exports.getEmptyTransferBuilder = void 0;
 var Network = __importStar(require("../api/network"));
 var AssetApi = __importStar(require("../api/sdkAsset"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var utxoHelper_1 = require("./utxoHelper");
+var getEmptyTransferBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                return [2 /*return*/, ledger.TransferOperationBuilder.new()];
+        }
+    });
+}); };
+exports.getEmptyTransferBuilder = getEmptyTransferBuilder;
+var getAssetTracingPolicies = function (asset) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tracingPolicies;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
+                return [2 /*return*/, tracingPolicies];
+        }
+    });
+}); };
+exports.getAssetTracingPolicies = getAssetTracingPolicies;
 var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, isTraceable, tracingPolicies, transferOp, inputParametersList, inputPromise, _p;
+    var ledger, asset, isTraceable, tracingPolicies, e_1, transferOp, inputParametersList, inputPromise, _p;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -72,16 +97,22 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
             case 2:
                 asset = _b.sent();
                 isTraceable = ((_a = asset.assetRules.tracing_policies) === null || _a === void 0 ? void 0 : _a.length) > 0;
-                if (isTraceable) {
-                    try {
-                        tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();
-                        console.log('tracingPolicies:', tracingPolicies);
-                    }
-                    catch (e) {
-                        console.log(e);
-                    }
-                }
-                transferOp = ledger.TransferOperationBuilder.new();
+                if (!isTraceable) return [3 /*break*/, 6];
+                _b.label = 3;
+            case 3:
+                _b.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, exports.getAssetTracingPolicies(asset)];
+            case 4:
+                tracingPolicies = _b.sent();
+                console.log('tracingPolicies:', tracingPolicies);
+                return [3 /*break*/, 6];
+            case 5:
+                e_1 = _b.sent();
+                console.log(e_1);
+                return [3 /*break*/, 6];
+            case 6: return [4 /*yield*/, exports.getEmptyTransferBuilder()];
+            case 7:
+                transferOp = _b.sent();
                 inputParametersList = utxoInputs.inputParametersList;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
                     var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
@@ -108,7 +139,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(inputPromise)];
-            case 3:
+            case 8:
                 _p = _b.sent();
                 recieversInfo.forEach(function (reciverInfo) {
                     var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey, _a = reciverInfo.assetBlindRules, assetBlindRules = _a === void 0 ? {} : _a;

@@ -1,5 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { XfrKeyPair } from '../../services/ledger/types';
+import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 
 export interface LightWalletKeypair {
   address: string;
@@ -54,6 +54,20 @@ export const getAddressByPublicKey = async (publicKey: string): Promise<string> 
     return address;
   } catch (err) {
     throw new Error(`could not get address by public key, "${err}" `);
+  }
+};
+
+/**
+ *
+ * @todo Add unit test
+ */
+export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPublicKey> => {
+  const ledger = await getLedger();
+  try {
+    const toPublickey = ledger.public_key_from_base64(publicKey);
+    return toPublickey;
+  } catch (err) {
+    throw new Error(`could not get xfr public key by base64, "${err}" `);
   }
 };
 
