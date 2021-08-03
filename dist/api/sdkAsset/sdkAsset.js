@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
 // import JSONbig from 'json-bigint';
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
@@ -87,6 +87,35 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.getFraAssetCode = getFraAssetCode;
+var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fee;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                fee = ledger.fra_get_minimal_fee();
+                return [2 /*return*/, fee];
+        }
+    });
+}); };
+exports.getMinimalFee = getMinimalFee;
+/**
+ * Add unit test
+ */
+var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, key;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                key = ledger.fra_get_dest_pubkey();
+                return [2 /*return*/, key];
+        }
+    });
+}); };
+exports.getFraPublicKey = getFraPublicKey;
 var getAssetCode = function (val) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, decryptedAsetType;
     return __generator(this, function (_a) {

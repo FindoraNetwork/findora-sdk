@@ -57,7 +57,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../api/keypair"));
+var NetworkApi = __importStar(require("../api/network/network"));
+var AssetApi = __importStar(require("../api/sdkAsset"));
 var Fee = __importStar(require("./fee"));
+var UtxoHelper = __importStar(require("./utxoHelper"));
 jest.mock('../api/sdkAsset/sdkAsset', function () { return ({
     getAssetDetails: jest.fn(),
 }); });
@@ -68,9 +71,9 @@ jest.mock('../api/network', function () { return ({
     getOwnerMemo: jest.fn(function () { return Promise.resolve({ response: null }); }),
 }); });
 describe('fee', function () {
+    var pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+    var password = '123';
     describe('getTransferOperation', function () {
-        var pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-        var password = '123';
         var assetCode = 'foo';
         it('verifies that for no-traceble assets only non tracing methods are called', function () { return __awaiter(void 0, void 0, void 0, function () {
             var mockedAssetNonTracing, fakeOpBuilder, spyGetEmptyTransferBuilder, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo;
@@ -247,7 +250,63 @@ describe('fee', function () {
             });
         }); });
     });
-    // describe('buildTransferOperationWithFee', () => {});
+    describe('buildTransferOperationWithFee', function () {
+        it('builds a transfer operation succesfully', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var spyGetOwnedSids, spyAddUtxo, spyAddUtxoInputs, spyGetSendUtxo, spyGetMinimalFee, spyGetFraAssetCode, spyGetFraPublicKey, spyGetTransferOperation, sidsResult, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, transferOperationBuilder, walletInfo;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        spyGetOwnedSids = jest.spyOn(NetworkApi, 'getOwnedSids');
+                        spyAddUtxo = jest.spyOn(UtxoHelper, 'addUtxo');
+                        spyAddUtxoInputs = jest.spyOn(UtxoHelper, 'addUtxoInputs');
+                        spyGetSendUtxo = jest.spyOn(UtxoHelper, 'getSendUtxo');
+                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee');
+                        spyGetFraAssetCode = jest.spyOn(AssetApi, 'getFraAssetCode');
+                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey');
+                        spyGetTransferOperation = jest.spyOn(Fee, 'getTransferOperation');
+                        sidsResult = { resonse: [1, 2, 3] };
+                        utxoDataList = [{ foo: 'bar' }];
+                        minimalFee = BigInt(1);
+                        fraAssetCode = 'fra';
+                        sendUtxoList = [{ bar: 1 }];
+                        utxoInputsInfo = 2;
+                        toPublickey = 1;
+                        transferOperationBuilder = { foo: 'bar' };
+                        spyGetOwnedSids.mockImplementation(function () {
+                            return Promise.resolve(sidsResult);
+                        });
+                        spyAddUtxo.mockImplementation(function () {
+                            return Promise.resolve(utxoDataList);
+                        });
+                        spyGetMinimalFee.mockImplementation(function () {
+                            return Promise.resolve(minimalFee);
+                        });
+                        spyGetFraAssetCode.mockImplementation(function () {
+                            return Promise.resolve(fraAssetCode);
+                        });
+                        spyGetSendUtxo.mockImplementation(function () {
+                            return sendUtxoList;
+                        });
+                        spyAddUtxoInputs.mockImplementation(function () {
+                            return Promise.resolve(utxoInputsInfo);
+                        });
+                        spyGetFraPublicKey.mockImplementation(function () {
+                            return Promise.resolve(toPublickey);
+                        });
+                        spyGetTransferOperation.mockImplementation(function () {
+                            return Promise.resolve(transferOperationBuilder);
+                        });
+                        return [4 /*yield*/, KeypairApi.restoreFromPrivateKey(pkey, password)];
+                    case 1:
+                        walletInfo = _a.sent();
+                        return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+                    case 2:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
     // describe('buildTransferOperation', () => {});
 });
 //# sourceMappingURL=fee.spec.js.map

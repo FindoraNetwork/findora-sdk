@@ -158,29 +158,32 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
 }); };
 exports.getTransferOperation = getTransferOperation;
 var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
+    var sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
             case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
-            case 2:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
                     throw new Error('no sids were fetched!');
                 }
                 return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
-            case 3:
+            case 2:
                 utxoDataList = _a.sent();
-                minimalFee = ledger.fra_get_minimal_fee();
-                fraAssetCode = ledger.fra_get_asset_code();
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 3:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraAssetCode()];
+            case 4:
+                fraAssetCode = _a.sent();
                 sendUtxoList = utxoHelper_1.getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
                 return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
-            case 4:
+            case 5:
                 utxoInputsInfo = _a.sent();
-                toPublickey = ledger.fra_get_dest_pubkey();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 6:
+                toPublickey = _a.sent();
                 recieversInfo = [
                     {
                         utxoNumbers: minimalFee,
@@ -189,7 +192,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                     },
                 ];
                 return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
-            case 5:
+            case 7:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
         }
