@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
+exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, privateStr;
@@ -118,7 +118,6 @@ var getAddressByPublicKey = function (publicKey) { return __awaiter(void 0, void
 }); };
 exports.getAddressByPublicKey = getAddressByPublicKey;
 /**
- *
  * @todo Add unit test
  */
 var getXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
@@ -140,6 +139,28 @@ var getXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, vo
     });
 }); };
 exports.getXfrPublicKeyByBase64 = getXfrPublicKeyByBase64;
+/**
+ * @todo Add unit test
+ */
+var getPublicKeyByXfr = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, toPublickey;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                try {
+                    toPublickey = ledger.public_key_to_base64(publicKey);
+                    return [2 /*return*/, toPublickey];
+                }
+                catch (err) {
+                    throw new Error("could not get base64 public key by xfr, \"" + err + "\" ");
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getPublicKeyByXfr = getPublicKeyByXfr;
 var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, publickey;
     return __generator(this, function (_a) {

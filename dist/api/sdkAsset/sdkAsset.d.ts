@@ -1,4 +1,4 @@
-import { TransactionBuilder } from '../../services/ledger/types';
+import { TransactionBuilder, XfrPublicKey } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 export interface AssetRules {
     transferable: boolean;
@@ -12,6 +12,11 @@ export interface AssetBlindRules {
     isTypeBlind?: boolean;
 }
 export declare const getFraAssetCode: () => Promise<string>;
+export declare const getMinimalFee: () => Promise<BigInt>;
+/**
+ * Add unit test
+ */
+export declare const getFraPublicKey: () => Promise<XfrPublicKey>;
 export declare const getAssetCode: (val: number[]) => Promise<string>;
 export declare const getRandomAssetCode: () => Promise<string>;
 export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string | undefined, newAssetRules?: AssetRules | undefined) => Promise<TransactionBuilder>;

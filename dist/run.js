@@ -60,7 +60,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
-var _1 = require(".");
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
@@ -69,6 +68,9 @@ var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
+/**
+ * Prior to using SDK we have to initialize its environment configuration
+ */
 var sdkEnv = {
     // hostUrl: 'https://dev-staging.dev.findora.org',
     hostUrl: 'https://prod-testnet.prod.findora.org',
@@ -77,7 +79,11 @@ var sdkEnv = {
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
-var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function () {
+var CustomAssetCode = 'W4-AkZy73UGA6z8pUTv4YOjRNuFwD03Bpk0YPJkKPzs=';
+/**
+ * A simple example - how to use SDK to get FRA assset code
+ */
+var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -89,139 +95,29 @@ var myFunc1 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-// define asset
-var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey2, pkey, password, assetCode, walletInfo, assetBuilder, handle;
+/**
+ * Get FRA balance
+ */
+var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkeyMine, pkeyMine2, pkeyMine3, pkeyMine4, pkey1, pkey2, pkey3, pkey4, pkey6, password, pkey, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-                password = '123';
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 1:
-                assetCode = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 41 ~ myFunc2 ~ assetCode', assetCode);
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
-            case 3:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 4:
-                handle = _a.sent();
-                console.log('our new asset created, handle - ! ! ', handle);
-                return [2 /*return*/];
-        }
-    });
-}); };
-// myFunc2();
-// get state commitment
-var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var address, sidsResult, sid, utxo, ownerMemo, stateCommitment;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
-            case 1:
-                sidsResult = _a.sent();
-                console.log('sidsResult', sidsResult);
-                sid = 519;
-                return [4 /*yield*/, api_1.Network.getUtxo(sid)];
-            case 2:
-                utxo = _a.sent();
-                console.log('utxo!', utxo);
-                return [4 /*yield*/, api_1.Network.getOwnerMemo(sid)];
-            case 3:
-                ownerMemo = _a.sent();
-                console.log('owner memo', ownerMemo);
-                return [4 /*yield*/, api_1.Network.getStateCommitment()];
-            case 4:
-                stateCommitment = _a.sent();
-                console.log('stateCommitment', stateCommitment);
-                return [2 /*return*/];
-        }
-    });
-}); };
-// get transfer operation with fee
-var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, publicKeyInString, addressInString, recieversInfo, trasferOperation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _a.sent();
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
-            case 3:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                console.log('sids', sids);
-                if (!sids) {
-                    return [2 /*return*/];
-                }
-                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
-            case 4:
-                utxoDataList = _a.sent();
-                console.log('utxoDataList', utxoDataList);
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 5:
-                fraCode = _a.sent();
-                amount = BigInt(3);
-                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
-                console.log('sendUtxoList!', sendUtxoList);
-                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
-            case 6:
-                utxoInputsInfo = _a.sent();
-                console.log('utxoInputsInfo!', utxoInputsInfo);
-                minimalFee = ledger.fra_get_minimal_fee();
-                toPublickey = ledger.fra_get_dest_pubkey();
-                console.log('toPublickey', toPublickey);
-                publicKeyInString = ledger.public_key_to_base64(toPublickey);
-                console.log('publicKeyInString', publicKeyInString);
-                addressInString = ledger.base64_to_bech32(publicKeyInString);
-                console.log('addressInString', addressInString);
-                recieversInfo = [
-                    {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                    },
-                ];
-                return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, 
-                    // minimalFee,
-                    fraCode)];
-            case 7:
-                trasferOperation = _a.sent();
-                console.log('trasferOperation!', trasferOperation);
-                return [2 /*return*/];
-        }
-    });
-}); };
-// get fra balance
-var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, pkey1, pkey2, pkey3, pkey4, pkey6, toPkeyMine2, toPkeyMine3, password, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkeyMine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
+                pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
                 pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
                 pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
                 pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
                 pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
                 pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
-                toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
                 password = '123';
+                pkey = pkeyMine2;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 2:
                 fraCode = _a.sent();
@@ -246,34 +142,66 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-// get custom asset balance
-var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, customAssetCode, balance;
+/**
+ * Get custom asset balance
+ */
+var getCustomAssetBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, customAssetCode, walletInfo, balance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                customAssetCode = CustomAssetCode;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
+            case 2:
+                balance = _a.sent();
+                console.log('balance IS', balance);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Define a custom asset
+ */
+var defineCustomAsset = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, password, assetCode, walletInfo, assetBuilder, handle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
-                walletInfo = _a.sent();
-                customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
+                assetCode = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 110 ~ defineCustomAsset ~ assetCode', assetCode);
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 2:
-                balance = _a.sent();
-                console.log('balance IS :)', balance);
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
+            case 3:
+                assetBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
+            case 4:
+                handle = _a.sent();
+                console.log('our new asset created, handle - ! ! ', handle);
                 return [2 /*return*/];
         }
     });
 }); };
-// issue custom asset
-var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Issue custom asset
+ */
+var issueCustomAsset = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, customAssetCode, password, walletInfo, assetBlindRules, assetBuilder, handle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-                customAssetCode = 'GWw7tW0-KPFldMqFE3Zy2ZT7Ko_TSIvi0wh2D8_2Vec=';
+                customAssetCode = CustomAssetCode;
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -290,8 +218,74 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-// creates a kp
-var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Get state commitment object (for example if we need to get current block height)
+ */
+var getStateCommitment = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var stateCommitment;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, api_1.Network.getStateCommitment()];
+            case 1:
+                stateCommitment = _a.sent();
+                console.log('stateCommitment', stateCommitment);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Get transfer operation builder (before sending a tx)
+ */
+var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, password, pkey, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, recieversInfo, trasferOperation;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 1:
+                ledger = _a.sent();
+                password = '123';
+                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
+            case 3:
+                sidsResult = _a.sent();
+                sids = sidsResult.response;
+                if (!sids) {
+                    return [2 /*return*/];
+                }
+                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
+            case 4:
+                utxoDataList = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 5:
+                fraCode = _a.sent();
+                amount = BigInt(3);
+                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
+            case 6:
+                utxoInputsInfo = _a.sent();
+                minimalFee = ledger.fra_get_minimal_fee();
+                toPublickey = ledger.fra_get_dest_pubkey();
+                recieversInfo = [
+                    {
+                        utxoNumbers: minimalFee,
+                        toPublickey: toPublickey,
+                    },
+                ];
+                return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode)];
+            case 7:
+                trasferOperation = _a.sent();
+                console.log('trasferOperation!', trasferOperation);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Create a wallet info object (a keypair)
+ */
+var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, function () {
     var password, walletInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -305,15 +299,16 @@ var myFunc8 = function () { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); };
-// send fra
-var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle;
+/**
+ * Send fra to a single recepient
+ */
+var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, toPkeyMine2, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
                 toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toPkeyMine3 = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -326,66 +321,21 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '4', assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '2', assetCode, assetBlindRules)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _a.sent();
-                // console.log(resultHandle.transaction());
                 console.log('send fra result handle!!', resultHandle);
                 return [2 /*return*/];
         }
     });
 }); };
-// send custom asset
-var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, customAssetCode, toPkey, password, walletInfo, toWalletInfo, assetCode, assetBlindRules, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-                customAssetCode = '1LZBwDm6JM8obbHQonBq8ICMIekDY1gbA1-Sify3t3M=';
-                toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                assetCode = customAssetCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.1', assetCode, assetBlindRules)];
-            case 3:
-                resultHandle = _a.sent();
-                console.log('send custom result handle!', resultHandle);
-                return [2 /*return*/];
-        }
-    });
-}); };
-// get custom asset details
-var myFunc11 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var customAssetCode, result, h, txStatus;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
-                return [4 /*yield*/, _1.Api.Asset.getAssetDetails(customAssetCode)];
-            case 1:
-                result = _a.sent();
-                console.log('get custom asset details !', result);
-                h = 'b07040a5d8c9ef6fcb98b95968e6c1f14f77405e851ac8230942e1c305913ea0';
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
-            case 2:
-                txStatus = _a.sent();
-                console.log('txStatus!', JSON.stringify(txStatus, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
-// send custom asset to many
-var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Send fra to multiple recepients
+ */
+var transferFraToMultipleRecepients = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfoMine2, toWalletInfoMine3, fraCode, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -418,13 +368,118 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 6:
                 resultHandle = _a.sent();
+                console.log('send to multiple receipient result handle!', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Send custom asset to a single recepient
+ */
+var transferCustomAssetToSingleRecepient = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, toPkey, customAssetCode, password, walletInfo, toWalletInfo, assetCode, assetBlindRules, transactionBuilder, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                customAssetCode = CustomAssetCode;
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                assetCode = customAssetCode;
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.1', assetCode, assetBlindRules)];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 4:
+                resultHandle = _a.sent();
+                console.log('send custom result handle', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Send custom asset to multiple recepients
+ */
+var transferCustomAssetToMultipleRecepients = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfoMine2, toWalletInfoMine3, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password)];
+            case 2:
+                toWalletInfoMine2 = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password)];
+            case 3:
+                toWalletInfoMine3 = _a.sent();
+                assetCode = CustomAssetCode;
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                recieversInfo = [
+                    { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+                    { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+                ];
+                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
+            case 4:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 5:
+                resultHandle = _a.sent();
                 console.log('send custom result handle!', resultHandle);
                 return [2 /*return*/];
         }
     });
 }); };
-// get block details
-var myFunc13 = function () { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Get custom asset details
+ */
+var getCustomAssetDetails = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var customAssetCode, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                customAssetCode = CustomAssetCode;
+                return [4 /*yield*/, api_1.Asset.getAssetDetails(customAssetCode)];
+            case 1:
+                result = _a.sent();
+                console.log('get custom asset details !', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Get transaction status
+ */
+var getTransactionStatus = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var h, txStatus;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                h = 'b07040a5d8c9ef6fcb98b95968e6c1f14f77405e851ac8230942e1c305913ea0';
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
+            case 1:
+                txStatus = _a.sent();
+                console.log('transaction status', JSON.stringify(txStatus, null, 2));
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * get block details
+ */
+var getBlockDetails = function () { return __awaiter(void 0, void 0, void 0, function () {
     var height, blockDetailsResult, response, block;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -619,22 +674,20 @@ var myFuncUndelegate = function () { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
-// send custom
-// myFunc10();
-// fra balance
-myFunc5();
-// myFunc12();
-// send fra
-// myFunc9();
-// myFunc4();
-// send fra to many
-// myFunc12();
-// myFunc8();
-// define asset
-// myFunc2();
-// issue custom asset
-// myFunc7();
-// send custom asset
-// myFunc10();
-// myFunc6();
+// New
+// getFraAssetCode(); // works
+// getFraBalance(); // works
+// getCustomAssetBalance(); // works
+// defineCustomAsset(); // works
+// issueCustomAsset(); // works
+// getStateCommitment(); // works
+// getTransferBuilderOperation(); // works
+// createNewKeypair(); // works
+// transferFraToSingleRecepient(); // works
+// transferFraToMultipleRecepients(); // works
+// transferCustomAssetToSingleRecepient(); // works
+// transferCustomAssetToMultipleRecepients();
+// getCustomAssetDetails(); // works
+// getTransactionStatus(); // works
+getBlockDetails();
 //# sourceMappingURL=run.js.map

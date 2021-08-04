@@ -13,10 +13,13 @@ export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddress: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddressByPublicKey: (publicKey: string) => Promise<string>;
 /**
- *
  * @todo Add unit test
  */
 export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<XfrPublicKey>;
+/**
+ * @todo Add unit test
+ */
+export declare const getPublicKeyByXfr: (publicKey: XfrPublicKey) => Promise<string>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromMnemonic: (mnemonic: string[], password: string) => Promise<WalletKeypar>;

@@ -114,17 +114,21 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 });
                 fraAssetCode = ledger.fra_get_asset_code();
                 isFraTransfer = assetCode === fraAssetCode;
-                if (isFraTransfer) {
-                    minimalFee = ledger.fra_get_minimal_fee();
-                    toPublickey = ledger.fra_get_dest_pubkey();
-                    feeRecieverInfoItem = {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                    };
-                    recieversInfo.push(feeRecieverInfoItem);
-                }
-                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
+                if (!isFraTransfer) return [3 /*break*/, 5];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 3:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 4:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                _a.label = 5;
+            case 5: return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
+            case 6:
                 transferOperationBuilder = _a.sent();
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
@@ -133,18 +137,18 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = error;
                     throw new Error("Could not create transfer operation (main), Error: \"" + e.message + "\"");
                 }
-                _a.label = 4;
-            case 4:
-                _a.trys.push([4, 6, , 7]);
+                _a.label = 7;
+            case 7:
+                _a.trys.push([7, 9, , 10]);
                 return [4 /*yield*/, exports.getTransactionBuilder()];
-            case 5:
+            case 8:
                 transactionBuilder = _a.sent();
-                return [3 /*break*/, 7];
-            case 6:
+                return [3 /*break*/, 10];
+            case 9:
                 error_1 = _a.sent();
                 e = error_1;
                 throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
-            case 7:
+            case 10:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
@@ -152,9 +156,9 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
-                if (!!isFraTransfer) return [3 /*break*/, 9];
+                if (!!isFraTransfer) return [3 /*break*/, 12];
                 return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
-            case 8:
+            case 11:
                 transferOperationBuilderFee = _a.sent();
                 receivedTransferOperationFee = void 0;
                 try {
@@ -174,8 +178,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
-                _a.label = 9;
-            case 9: return [2 /*return*/, transactionBuilder];
+                _a.label = 12;
+            case 12: return [2 /*return*/, transactionBuilder];
         }
     });
 }); };
