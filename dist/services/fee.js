@@ -166,7 +166,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
-                    throw new Error('no sids were fetched!');
+                    throw new Error('No sids were fetched');
                 }
                 return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
             case 2:
@@ -208,7 +208,7 @@ var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { r
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
-                    throw new Error('no sids were fetched!');
+                    throw new Error('No sids were fetched');
                 }
                 totalUtxoNumbers = recieversInfo.reduce(function (acc, receiver) {
                     return BigInt(Number(receiver.utxoNumbers) + Number(acc));
