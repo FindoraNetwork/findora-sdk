@@ -68,8 +68,8 @@ export const sendToMany = async (
   const isFraTransfer = assetCode === fraAssetCode;
 
   if (isFraTransfer) {
-    const minimalFee = ledger.fra_get_minimal_fee();
-    const toPublickey = ledger.fra_get_dest_pubkey();
+    const minimalFee = await AssetApi.getMinimalFee();
+    const toPublickey = await AssetApi.getFraPublicKey();
 
     const feeRecieverInfoItem = {
       utxoNumbers: minimalFee,

@@ -58,7 +58,6 @@ export const getAddressByPublicKey = async (publicKey: string): Promise<string> 
 };
 
 /**
- *
  * @todo Add unit test
  */
 export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPublicKey> => {
@@ -68,6 +67,19 @@ export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPub
     return toPublickey;
   } catch (err) {
     throw new Error(`could not get xfr public key by base64, "${err}" `);
+  }
+};
+
+/**
+ * @todo Add unit test
+ */
+export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string> => {
+  const ledger = await getLedger();
+  try {
+    const toPublickey = ledger.public_key_to_base64(publicKey);
+    return toPublickey;
+  } catch (err) {
+    throw new Error(`could not get base64 public key by xfr, "${err}" `);
   }
 };
 
