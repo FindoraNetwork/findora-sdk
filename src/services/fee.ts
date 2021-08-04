@@ -119,27 +119,25 @@ export const buildTransferOperationWithFee = async (
   walletInfo: WalletKeypar,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
-  const ledger = await getLedger();
-
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
   const { response: sids } = sidsResult;
 
   if (!sids) {
-    throw new Error('no sids were fetched!');
+    throw new Error('No sids were fetched');
   }
 
   const utxoDataList = await addUtxo(walletInfo, sids);
 
-  const minimalFee = ledger.fra_get_minimal_fee();
+  const minimalFee = await AssetApi.getMinimalFee();
 
-  const fraAssetCode = ledger.fra_get_asset_code();
+  const fraAssetCode = await AssetApi.getFraAssetCode();
 
   const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  const toPublickey = ledger.fra_get_dest_pubkey();
+  const toPublickey = await AssetApi.getFraPublicKey();
 
   const recieversInfo = [
     {
@@ -169,7 +167,7 @@ export const buildTransferOperation = async (
   const { response: sids } = sidsResult;
 
   if (!sids) {
-    throw new Error('no sids were fetched!');
+    throw new Error('No sids were fetched');
   }
 
   const totalUtxoNumbers = recieversInfo.reduce((acc, receiver) => {
