@@ -23,3 +23,10 @@ const server = setupServer(
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+
+describe('foo', () => {
+  it('bar', () => {
+    const foo = 1;
+    expect(foo).toEqual(1);
+  });
+});
