@@ -49,7 +49,7 @@ describe('fee', () => {
   });
 
   describe('getAssetTracingPolicies', () => {
-    it('creates an instance of a transfer operation builder aaaa', async () => {
+    it('creates an instance of a transfer operation builder', async () => {
       const tPol = [1, 2];
 
       const fakeAsset = {

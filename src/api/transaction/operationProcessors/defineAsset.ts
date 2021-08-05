@@ -8,6 +8,7 @@ export interface ProcessedDefineAsset {
   to: string[];
   type: string;
   assetRules: FindoraWallet.IAssetRules;
+  originalOperation?: TxOperation;
 }
 
 export const processDefineAsset = async (operationItem: TxOperation): Promise<ProcessedDefineAsset> => {
