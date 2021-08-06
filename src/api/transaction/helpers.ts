@@ -16,6 +16,6 @@ export const getBlockTime = async (height: number) => {
   const { response } = blockDetailsResult;
 
   const block = response?.result;
-  const blockTime = block?.block.header.time;
+  const blockTime = block?.block?.header?.time;
   return blockTime;
 };

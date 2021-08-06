@@ -6,6 +6,7 @@ export interface ProcessedTransferAsset {
   from: string[];
   to: string[];
   type: string;
+  originalOperation?: TxOperation;
 }
 
 export const processTransferAsset = async (operationItem: TxOperation): Promise<ProcessedTransferAsset> => {

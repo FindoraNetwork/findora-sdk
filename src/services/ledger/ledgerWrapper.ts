@@ -3,6 +3,8 @@ import webLedger, { LedgerForWeb } from './webLedger';
 
 export type Ledger = LedgerForNode | LedgerForWeb;
 
+export const isItNodeEnv = () => typeof process !== 'undefined' && process.release.name === 'node';
+
 export const getWebLedger = async (): Promise<Ledger> => {
   const myLedger = await webLedger();
 
@@ -16,7 +18,7 @@ export const getNodeLedger = async (): Promise<Ledger> => {
 };
 
 export const getLedger = async (): Promise<Ledger> => {
-  const isNodeEnv = typeof process !== 'undefined' && process.release.name === 'node';
+  const isNodeEnv = isItNodeEnv();
 
   if (isNodeEnv) {
     return getNodeLedger();
