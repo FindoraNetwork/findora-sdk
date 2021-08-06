@@ -95,7 +95,7 @@ describe('fee', function () {
         }); });
     });
     describe('getAssetTracingPolicies', function () {
-        it('creates an instance of a transfer operation builder aaaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('creates an instance of a transfer operation builder', function () { return __awaiter(void 0, void 0, void 0, function () {
             var tPol, fakeAsset, fakeAssetType, fakedLedger, spyLedger, asset, res;
             return __generator(this, function (_a) {
                 switch (_a.label) {

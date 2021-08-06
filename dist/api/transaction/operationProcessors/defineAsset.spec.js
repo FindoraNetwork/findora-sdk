@@ -54,35 +54,59 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBlockTime = exports.getTxOperationsList = exports.getTxListFromResponse = void 0;
-var get_1 = __importDefault(require("lodash/get"));
-var Network = __importStar(require("../network"));
-var getTxListFromResponse = function (result) {
-    return get_1.default(result, 'response.result.txs', null);
-};
-exports.getTxListFromResponse = getTxListFromResponse;
-var getTxOperationsList = function (parsedTx) {
-    return get_1.default(parsedTx, 'body.operations', []);
-};
-exports.getTxOperationsList = getTxOperationsList;
-var getBlockTime = function (height) { return __awaiter(void 0, void 0, void 0, function () {
-    var blockDetailsResult, response, block, blockTime;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0: return [4 /*yield*/, Network.getBlock(height)];
-            case 1:
-                blockDetailsResult = _c.sent();
-                response = blockDetailsResult.response;
-                block = response === null || response === void 0 ? void 0 : response.result;
-                blockTime = (_b = (_a = block === null || block === void 0 ? void 0 : block.block) === null || _a === void 0 ? void 0 : _a.header) === null || _b === void 0 ? void 0 : _b.time;
-                return [2 /*return*/, blockTime];
-        }
+require("@testing-library/jest-dom/extend-expect");
+var KeypairApi = __importStar(require("../../keypair/keypair"));
+var defineAsset_1 = require("./defineAsset");
+describe('defineAsset (processor)', function () {
+    describe('processDefineAsset', function () {
+        it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var address, type, myAsset, myOperation, payload, spyGetAddressByPublicKey, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        address = 'barfoo';
+                        type = 'defineAsset';
+                        myAsset = {
+                            issuer: {
+                                key: 'foo',
+                            },
+                            asset_rules: { rule_foo: 'bar' },
+                        };
+                        myOperation = {
+                            body: {
+                                asset: myAsset,
+                            },
+                        };
+                        payload = {
+                            DefineAsset: myOperation,
+                        };
+                        spyGetAddressByPublicKey = jest
+                            .spyOn(KeypairApi, 'getAddressByPublicKey')
+                            .mockImplementation(function () {
+                            return Promise.resolve(address);
+                        });
+                        return [4 /*yield*/, defineAsset_1.processDefineAsset(payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('defineAsset');
+                        expect(result).toHaveProperty('from');
+                        expect(result).toHaveProperty('assetRules');
+                        expect(result).toHaveProperty('to');
+                        expect(result).toHaveProperty('type');
+                        expect(result).toHaveProperty('originalOperation');
+                        expect(result.defineAsset).toBe(myOperation);
+                        expect(result.from).toEqual([address]);
+                        expect(result.assetRules).toHaveProperty('rule_foo');
+                        expect(result.to).toEqual([address]);
+                        expect(result.type).toEqual(type);
+                        expect(result.originalOperation).toBe(payload);
+                        expect(Object.keys(result)).toHaveLength(6);
+                        spyGetAddressByPublicKey.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
     });
-}); };
-exports.getBlockTime = getBlockTime;
-//# sourceMappingURL=helpers.js.map
+});
+//# sourceMappingURL=defineAsset.spec.js.map

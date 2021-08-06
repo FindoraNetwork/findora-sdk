@@ -39,9 +39,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLedger = exports.getNodeLedger = exports.getWebLedger = void 0;
+exports.getLedger = exports.getNodeLedger = exports.getWebLedger = exports.isItNodeEnv = void 0;
 var nodeLedger_1 = __importDefault(require("./nodeLedger"));
 var webLedger_1 = __importDefault(require("./webLedger"));
+var isItNodeEnv = function () { return typeof process !== 'undefined' && process.release.name === 'node'; };
+exports.isItNodeEnv = isItNodeEnv;
 var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
     var myLedger;
     return __generator(this, function (_a) {
@@ -69,7 +71,7 @@ exports.getNodeLedger = getNodeLedger;
 var getLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
     var isNodeEnv;
     return __generator(this, function (_a) {
-        isNodeEnv = typeof process !== 'undefined' && process.release.name === 'node';
+        isNodeEnv = exports.isItNodeEnv();
         if (isNodeEnv) {
             return [2 /*return*/, exports.getNodeLedger()];
         }

@@ -101,7 +101,7 @@ var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, voi
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("cant parse the tx info from the tx item. Details: \"" + e.message + "\"");
+                    throw new Error("Can not parse the tx info from the tx item. Details: \"" + e.message + "\"");
                 }
                 if (!parsedTx) {
                     throw new Error('parsed tx is empty');

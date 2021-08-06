@@ -5,5 +5,6 @@ export interface ProcessedDefineAsset {
     to: string[];
     type: string;
     assetRules: FindoraWallet.IAssetRules;
+    originalOperation?: TxOperation;
 }
 export declare const processDefineAsset: (operationItem: TxOperation) => Promise<ProcessedDefineAsset>;

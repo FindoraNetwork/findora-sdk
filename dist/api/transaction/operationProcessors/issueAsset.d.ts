@@ -4,5 +4,6 @@ export interface ProcessedIssueAsset {
     from: string[];
     to: string[];
     type: string;
+    originalOperation?: TxOperation;
 }
 export declare const processIssueAsset: (operationItem: TxOperation) => Promise<ProcessedIssueAsset>;

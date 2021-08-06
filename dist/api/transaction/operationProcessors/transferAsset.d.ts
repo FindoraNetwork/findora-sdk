@@ -4,5 +4,6 @@ export interface ProcessedTransferAsset {
     from: string[];
     to: string[];
     type: string;
+    originalOperation?: TxOperation;
 }
 export declare const processTransferAsset: (operationItem: TxOperation) => Promise<ProcessedTransferAsset>;
