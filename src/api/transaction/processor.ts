@@ -25,7 +25,7 @@ export const processTxInfoItem = async (txItem: TxInfo): Promise<Types.Processed
     parsedTx = JSON.parse(atob(txItem.tx));
   } catch (err) {
     const e: Error = err as Error;
-    throw new Error(`cant parse the tx info from the tx item. Details: "${e.message}"`);
+    throw new Error(`Can not parse the tx info from the tx item. Details: "${e.message}"`);
   }
 
   if (!parsedTx) {

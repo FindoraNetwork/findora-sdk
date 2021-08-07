@@ -18,4 +18,10 @@ var server = node_1.setupServer(msw_1.rest.get(defaultUrl, function (_req, res, 
 beforeAll(function () { return server.listen(); });
 afterEach(function () { return server.resetHandlers(); });
 afterAll(function () { return server.close(); });
+describe('foo', function () {
+    it('bar', function () {
+        var foo = 1;
+        expect(foo).toEqual(1);
+    });
+});
 //# sourceMappingURL=staking.spec.js.map
