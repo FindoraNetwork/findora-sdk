@@ -9,6 +9,11 @@ import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
 import { ProcessedTxListResponseResult } from './types';
 
+export interface TransferReciever {
+  reciverWalletInfo: WalletKeypar | LightWalletKeypair;
+  amount: string;
+}
+
 // merge with same in staiking
 export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
@@ -20,7 +25,7 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   }
 
   if (!stateCommitment) {
-    throw new Error('could not receive response from state commitement call');
+    throw new Error('Could not receive response from state commitement call');
   }
 
   const [_, height] = stateCommitment;
@@ -30,11 +35,6 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
 
   return transactionBuilder;
 };
-
-export interface TransferReciever {
-  reciverWalletInfo: WalletKeypar | LightWalletKeypair;
-  amount: string;
-}
 
 export const sendToMany = async (
   walletInfo: WalletKeypar,
@@ -98,7 +98,7 @@ export const sendToMany = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not get "defineTransactionBuilder", Error: "${e.message}"`);
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
   }
 
   try {
@@ -130,7 +130,7 @@ export const sendToMany = async (
     } catch (err) {
       const e: Error = err as Error;
 
-      throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+      throw new Error(`Could not add transfer operation for fee, Error: "${e.message}"`);
     }
   }
 
@@ -153,11 +153,11 @@ export const submitTransaction = async (transactionBuilder: TransactionBuilder):
   const { response: handle, error: submitError } = result;
 
   if (submitError) {
-    throw new Error(`Could not submit issue asset transaction: "${submitError.message}"`);
+    throw new Error(`Could not submit transaction: "${submitError.message}"`);
   }
 
   if (!handle) {
-    throw new Error(`Could not issue asset - submit handle is missing`);
+    throw new Error(`Handle is missing. Could not submit transaction - submit handle is missing`);
   }
 
   return handle;
@@ -197,13 +197,13 @@ export const getTxList = async (
   const dataResult = await Network.getTxList(address, type, page);
 
   if (!dataResult.response) {
-    throw new Error('could not fetch a list of transactions. No response from the server.');
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
   }
 
   const txList = helpers.getTxListFromResponse(dataResult);
 
   if (!txList) {
-    throw new Error('could not get a list of transactions from the server response.');
+    throw new Error('Could not get a list of transactions from the server response.');
   }
 
   const processedTxList = await processeTxInfoList(txList);

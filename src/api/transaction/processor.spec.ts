@@ -31,7 +31,7 @@ describe('processor', () => {
   } as unknown) as TxInfo;
 
   describe('processTxInfoItem', () => {
-    it('properly processes a given txItem aaaa', async () => {
+    it('properly processes a given txItem', async () => {
       const spyGetBlockTime = jest.spyOn(helpers, 'getBlockTime').mockImplementation(() => {
         return Promise.resolve(myTime);
       });
@@ -83,7 +83,7 @@ describe('processor', () => {
   });
 
   describe('processeTxInfoList', () => {
-    it('properly processes a given txItem aaaa', async () => {
+    it('properly processes a given txItem', async () => {
       const spyGetBlockTime = jest.spyOn(helpers, 'getBlockTime').mockImplementation(() => {
         return Promise.resolve(myTime);
       });
