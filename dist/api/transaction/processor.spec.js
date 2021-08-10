@@ -90,7 +90,7 @@ describe('processor', function () {
         },
     };
     describe('processTxInfoItem', function () {
-        it('properly processes a given txItem aaaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('properly processes a given txItem', function () { return __awaiter(void 0, void 0, void 0, function () {
             var spyGetBlockTime, spyGetTxOperationsList, spyGetOperationProcessor, processedData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -149,7 +149,7 @@ describe('processor', function () {
         }); });
     });
     describe('processeTxInfoList', function () {
-        it('properly processes a given txItem aaaa', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('properly processes a given txItem', function () { return __awaiter(void 0, void 0, void 0, function () {
             var spyGetBlockTime, spyGetTxOperationsList, spyGetOperationProcessor, processedDataList, processedData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
