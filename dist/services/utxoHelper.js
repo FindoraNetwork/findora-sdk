@@ -76,7 +76,7 @@ var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetRecord, memoDataResult, myMemoData, memoError, ownerMemo, decryptAssetData, error_1, decryptedAsetType, item;
+    var ledger, assetRecord, err, memoDataResult, myMemoData, memoError, ownerMemo, err, decryptAssetData, error_1, err, decryptedAsetType, err, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -86,7 +86,8 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                     assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
                 }
                 catch (error) {
-                    throw new Error("Can not get client asset record. Details: \"" + error.message + "\"");
+                    err = error;
+                    throw new Error("Can not get client asset record. Details: \"" + err.message + "\"");
                 }
                 return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 2:
@@ -97,10 +98,10 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 }
                 try {
                     ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
-                    // ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
                 }
                 catch (error) {
-                    throw new Error("Can not decode owner memo. Details: \"" + error.message + "\"");
+                    err = error;
+                    throw new Error("Can not decode owner memo. Details: \"" + err.message + "\"");
                 }
                 _a.label = 3;
             case 3:
@@ -111,13 +112,15 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 return [3 /*break*/, 6];
             case 5:
                 error_1 = _a.sent();
-                throw new Error("Can not open client asset record to decode. Details: \"" + error_1.message + "\"");
+                err = error_1;
+                throw new Error("Can not open client asset record to decode. Details: \"" + err.message + "\"");
             case 6:
                 try {
                     decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 }
                 catch (error) {
-                    throw new Error("Can not decrypt asset type. Details: \"" + error.message + "\"");
+                    err = error;
+                    throw new Error("Can not decrypt asset type. Details: \"" + err.message + "\"");
                 }
                 decryptAssetData.asset_type = decryptedAsetType;
                 decryptAssetData.amount = BigInt(decryptAssetData.amount);
@@ -167,7 +170,7 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
 exports.getUtxoItem = getUtxoItem;
 // creates a list of items with descrypted utxo information
 var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, void 0, function () {
-    var utxoDataList, cacheDataToSave, utxoDataCache, cacheEntryName, fullPathToCacheEntry, error_2, i, sid, item, error_3, err_1;
+    var utxoDataList, cacheDataToSave, utxoDataCache, cacheEntryName, fullPathToCacheEntry, error_2, err, i, sid, item, error_3, err, error_4, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -190,7 +193,8 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 4];
             case 3:
                 error_2 = _a.sent();
-                throw new Error("Error reading the cache, \"" + error_2.message + "\"");
+                err = error_2;
+                throw new Error("Error reading the cache, \"" + err.message + "\"");
             case 4:
                 i = 0;
                 _a.label = 5;
@@ -208,7 +212,8 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 9];
             case 8:
                 error_3 = _a.sent();
-                console.log("could not process addUtxo for sid " + sid + ", Details: \"" + error_3.message + "\"");
+                err = error_3;
+                console.log("Could not process addUtxo for sid " + sid + ", Details: \"" + err.message + "\"");
                 return [3 /*break*/, 9];
             case 9:
                 i++;
@@ -220,8 +225,9 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.sent();
                 return [3 /*break*/, 13];
             case 12:
-                err_1 = _a.sent();
-                console.log("could not write cache for utxoData, \"" + err_1.message + "\"");
+                error_4 = _a.sent();
+                err = error_4;
+                console.log("Could not write cache for utxoData, \"" + err.message + "\"");
                 return [3 /*break*/, 13];
             case 13: return [2 /*return*/, utxoDataList];
         }
@@ -268,7 +274,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
 exports.getSendUtxo = getSendUtxo;
 // creates a list of inputs, which would be used by transaction builder in a fee service
 var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, inputAmount, inputParametersList, i, item, assetRecord, txoRef, inputParameters, res;
+    var ledger, inputAmount, inputParametersList, i, item, assetRecord, err, txoRef, err, inputParameters, res;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -284,14 +290,16 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                         assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
                     }
                     catch (error) {
-                        throw new Error("Can not get client asset record. Details: \"" + error.message + "\"");
+                        err = error;
+                        throw new Error("Can not get client asset record. Details: \"" + err.message + "\"");
                     }
                     txoRef = void 0;
                     try {
                         txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
                     }
                     catch (error) {
-                        throw new Error("Cannot convert given sid id to a BigInt, \"" + item.sid + "\"");
+                        err = error;
+                        throw new Error("Cannot convert given sid id to a BigInt, \"" + item.sid + "\", Details - \"" + err.message + "\"");
                     }
                     inputParameters = {
                         txoRef: txoRef,
