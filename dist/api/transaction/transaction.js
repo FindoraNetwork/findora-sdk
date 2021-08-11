@@ -79,7 +79,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
                     throw new Error(error.message);
                 }
                 if (!stateCommitment) {
-                    throw new Error('could not receive response from state commitement call');
+                    throw new Error('Could not receive response from state commitement call');
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
@@ -147,7 +147,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
             case 9:
                 error_1 = _a.sent();
                 e = error_1;
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"" + e.message + "\"");
             case 10:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
@@ -176,7 +176,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not add transfer operation for fee, Error: \"" + e.message + "\"");
                 }
                 _a.label = 12;
             case 12: return [2 /*return*/, transactionBuilder];
@@ -204,10 +204,10 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
             case 4:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
-                    throw new Error("Could not submit issue asset transaction: \"" + submitError.message + "\"");
+                    throw new Error("Could not submit transaction: \"" + submitError.message + "\"");
                 }
                 if (!handle) {
-                    throw new Error("Could not issue asset - submit handle is missing");
+                    throw new Error("Handle is missing. Could not submit transaction - submit handle is missing");
                 }
                 return [2 /*return*/, handle];
         }
@@ -249,11 +249,11 @@ var getTxList = function (address, type, page) {
                 case 1:
                     dataResult = _a.sent();
                     if (!dataResult.response) {
-                        throw new Error('could not fetch a list of transactions. No response from the server.');
+                        throw new Error('Could not fetch a list of transactions. No response from the server.');
                     }
                     txList = helpers.getTxListFromResponse(dataResult);
                     if (!txList) {
-                        throw new Error('could not get a list of transactions from the server response.');
+                        throw new Error('Could not get a list of transactions from the server response.');
                     }
                     return [4 /*yield*/, processor_1.processeTxInfoList(txList)];
                 case 2:
