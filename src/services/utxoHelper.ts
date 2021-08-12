@@ -221,6 +221,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
         break;
       } else {
         balance = BigInt(Number(balance) - Number(_amount));
+
         result.push({
           amount: _amount,
           originAmount: _amount,
@@ -264,7 +265,7 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
       txoRef = ledger.TxoRef.absolute(BigInt(item.sid));
     } catch (error) {
       const err: Error = error as Error;
-      throw new Error(`Cannot convert given sid id to a BigInt, "${item.sid}", Details - "${err.message}"`);
+      throw new Error(`Can not convert given sid id to a BigInt, "${item.sid}", Details - "${err.message}"`);
     }
 
     const inputParameters: UtxoInputParameter = {

@@ -1,36 +1,21 @@
 import '@testing-library/jest-dom/extend-expect';
 import * as KeypairApi from '../api/keypair';
 import * as NetworkApi from '../api/network/network';
-import * as Asset from '../api/sdkAsset/sdkAsset';
 import * as NetworkTypes from '../api/network/types';
-import * as Fee from './fee';
 import * as UtxoHelper from './utxoHelper';
-import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
-import * as Ledger from './ledger/ledgerWrapper';
-import { LedgerForNode } from './ledger/nodeLedger';
-
-// import { WalletKeypar } from '../api/keypair';
-// import * as Network from '../api/network';
-// import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
 import { CACHE_ENTRIES } from '../config/cache';
 import Sdk from '../Sdk';
 import Cache from './cacheStore/factory';
-import { CacheItem } from './cacheStore/types';
-import { getLedger } from './ledger/ledgerWrapper';
-import {
-  ClientAssetRecord as LedgerClientAssetRecord,
-  OwnerMemo as LedgerOwnerMemo,
-  TxoRef as LedgerTxoRef,
-} from './ledger/types';
 
 import * as NodeLedger from './ledger/nodeLedger';
 
-describe('utxoHelper', () => {
+describe('utxoHelper aaa', () => {
   describe('decryptUtxoItem', () => {
     it('successfully decrypts an utxo item', async () => {
       const assetRecord = {
         a: 'myAssetRecord',
       };
+
       const ownerMemo: { b: string; clone: () => {} } = {
         b: 'myOwnerMemo',
         clone: jest.fn(() => {
@@ -39,6 +24,7 @@ describe('utxoHelper', () => {
       };
 
       const myAssetType = 'myAssetType';
+
       const decryptAssetData = {
         asset_type: myAssetType,
         amount: '2',
@@ -131,6 +117,7 @@ describe('utxoHelper', () => {
       const assetRecord = {
         a: 'myAssetRecord',
       };
+
       const ownerMemo: { b: string; clone: () => {} } = {
         b: 'myOwnerMemo',
         clone: jest.fn(() => {
@@ -139,6 +126,7 @@ describe('utxoHelper', () => {
       };
 
       const myAssetType = 'myAssetType';
+
       const decryptAssetData = {
         asset_type: myAssetType,
         amount: '2',
@@ -227,6 +215,7 @@ describe('utxoHelper', () => {
       spyLedgerAssetTypeFromJsvalue.mockRestore();
       spyGetOwnerMemo.mockRestore();
     });
+
     it('throws an error if can not open ledger client record from json', async () => {
       const LedgerClientAssetRecord = {
         from_json: jest.fn(() => {
@@ -272,6 +261,7 @@ describe('utxoHelper', () => {
       spyGetLedger.mockRestore();
       spyLedgerClientAssetRecordFromJson.mockRestore();
     });
+
     it('throws an error if gets an error while trying to get owner memo', async () => {
       const assetRecord = {
         a: 'myAssetRecord',
@@ -279,7 +269,6 @@ describe('utxoHelper', () => {
 
       const LedgerClientAssetRecord = {
         from_json: jest.fn(() => {
-          // throw new Error('boom');
           return assetRecord;
         }),
       };
@@ -332,6 +321,7 @@ describe('utxoHelper', () => {
       spyLedgerClientAssetRecordFromJson.mockRestore();
       spyGetOwnerMemo.mockRestore();
     });
+
     it('throws an error if can not open ledger owner memo from json', async () => {
       const assetRecord = {
         a: 'myAssetRecord',
@@ -401,6 +391,7 @@ describe('utxoHelper', () => {
       spyLedgerOwnerMemoFromJson.mockRestore();
       spyGetOwnerMemo.mockRestore();
     });
+
     it('throws an error if can not open ledger open_client_asset_record', async () => {
       const assetRecord = {
         a: 'myAssetRecord',
@@ -412,12 +403,12 @@ describe('utxoHelper', () => {
         }),
       };
 
-      const myAssetType = 'myAssetType';
+      // const myAssetType = 'myAssetType';
 
-      const decryptAssetData = {
-        asset_type: myAssetType,
-        amount: '2',
-      };
+      // const decryptAssetData = {
+      //   asset_type: myAssetType,
+      //   amount: '2',
+      // };
 
       const LedgerClientAssetRecord = {
         from_json: jest.fn(() => {
@@ -489,10 +480,12 @@ describe('utxoHelper', () => {
       spyLedgerOpenClientAssetRecord.mockRestore();
       spyGetOwnerMemo.mockRestore();
     });
+
     it('throws an error if can not open ledger open_client_asset_record', async () => {
       const assetRecord = {
         a: 'myAssetRecord',
       };
+
       const ownerMemo: { b: string; clone: () => {} } = {
         b: 'myOwnerMemo',
         clone: jest.fn(() => {
@@ -592,6 +585,7 @@ describe('utxoHelper', () => {
       const utxoData = {
         myKey: 'myValue',
       };
+
       const utxoDataResult = ({
         response: utxoData,
       } as unknown) as NetworkTypes.UtxoDataResult;
@@ -738,7 +732,7 @@ describe('utxoHelper', () => {
     });
   });
 
-  describe('addUtxo aaa', () => {
+  describe('addUtxo', () => {
     it('creates a utxoDataList', async () => {
       const utxoDataCache = {
         sid_1: {
@@ -875,6 +869,408 @@ describe('utxoHelper', () => {
       spyCacheRead.mockRestore();
       spyGetUtxoItem.mockRestore();
       spyCacheWrite.mockRestore();
+    });
+  });
+
+  describe('getSendUtxo', () => {
+    it('returns a single utxo if its amount bigger than requested', async () => {
+      const myCode = 'code1';
+
+      const amount = BigInt(4);
+
+      const myItem1 = ({
+        sid: 1,
+        body: {
+          asset_type: myCode,
+          amount: 5,
+        },
+        utxo: { foo1: 'bar1' },
+        ownerMemo: { bar1: 'foo1' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem2 = ({
+        sid: 3,
+        body: {
+          asset_type: myCode,
+          amount: 4,
+        },
+        utxo: { foo2: 'bar2' },
+        ownerMemo: { bar2: 'foo2' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const utxoDataList = [myItem1, myItem2];
+
+      const result = await UtxoHelper.getSendUtxo(myCode, amount, utxoDataList);
+
+      expect(result).toHaveLength(1);
+      expect(result).toStrictEqual([
+        {
+          amount,
+          originAmount: BigInt(myItem1.body.amount),
+          sid: myItem1.sid,
+          utxo: myItem1.utxo,
+          ownerMemo: myItem1.ownerMemo,
+          memoData: myItem1.memoData,
+        },
+      ]);
+    });
+    it('returns a single utxo if its amount equals to what was requested', async () => {
+      const myCode = 'code1';
+
+      const amount = BigInt(4);
+
+      const myItem1 = ({
+        sid: 1,
+        body: {
+          asset_type: myCode,
+          amount: 4,
+        },
+        utxo: { foo1: 'bar1' },
+        ownerMemo: { bar1: 'foo1' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem2 = ({
+        sid: 3,
+        body: {
+          asset_type: myCode,
+          amount: 4,
+        },
+        utxo: { foo2: 'bar2' },
+        ownerMemo: { bar2: 'foo2' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const utxoDataList = [myItem1, myItem2];
+
+      const result = await UtxoHelper.getSendUtxo(myCode, amount, utxoDataList);
+
+      expect(result).toHaveLength(1);
+      expect(result).toStrictEqual([
+        {
+          amount,
+          originAmount: BigInt(myItem1.body.amount),
+          sid: myItem1.sid,
+          utxo: myItem1.utxo,
+          ownerMemo: myItem1.ownerMemo,
+          memoData: myItem1.memoData,
+        },
+      ]);
+    });
+    it('returns a a list of utxo with the amount equals to what was requested', async () => {
+      const myCode = 'code1';
+      const amount = BigInt(4);
+
+      const myItem1 = ({
+        sid: 1,
+        body: {
+          asset_type: myCode,
+          amount: 2,
+        },
+        utxo: { foo1: 'bar1' },
+        ownerMemo: { bar1: 'foo1' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem2 = ({
+        sid: 2,
+        body: {
+          asset_type: myCode,
+          amount: 1,
+        },
+        utxo: { foo2: 'bar2' },
+        ownerMemo: { bar2: 'foo2' },
+        memoData: 'myMemoData2',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem3 = ({
+        sid: 1,
+        body: {
+          asset_type: myCode,
+          amount: 5,
+        },
+        utxo: { foo3: 'bar3' },
+        ownerMemo: { bar3: 'foo3' },
+        memoData: 'myMemoData3',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem4 = ({
+        sid: 4,
+        body: {
+          asset_type: myCode,
+          amount: 2,
+        },
+        utxo: { foo4: 'bar4' },
+        ownerMemo: { bar4: 'foo4' },
+        memoData: 'myMemoData4',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const utxoDataList = [myItem1, myItem2, myItem3, myItem4];
+
+      const result = await UtxoHelper.getSendUtxo(myCode, amount, utxoDataList);
+
+      expect(result).toHaveLength(3);
+      const [firstUtxo, secondUtxo, thirdUtxo] = result;
+
+      const totalReturnedAmount =
+        Number(firstUtxo.amount) + Number(secondUtxo.amount) + Number(thirdUtxo.amount);
+
+      expect(amount).toBe(BigInt(totalReturnedAmount));
+    });
+    it('skips utxo which do not have requested code', async () => {
+      const myCode = 'code1';
+
+      const amount = BigInt(4);
+
+      const notMyItem = ({
+        sid: 2,
+        body: {
+          asset_type: 'boo',
+          amount: 2,
+        },
+        utxo: { foo2: 'bar2' },
+        ownerMemo: { bar2: 'foo2' },
+        memoData: 'myMemoData2',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const utxoDataList = [notMyItem];
+
+      const result = await UtxoHelper.getSendUtxo(myCode, amount, utxoDataList);
+
+      expect(result).toHaveLength(0);
+    });
+    it('returns an empty list if requested amount was <= 0', async () => {
+      const myCode = 'code1';
+
+      const amount = BigInt(0);
+
+      const myItem1 = ({
+        sid: 1,
+        body: {
+          asset_type: myCode,
+          amount: 4,
+        },
+        utxo: { foo1: 'bar1' },
+        ownerMemo: { bar1: 'foo1' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const myItem2 = ({
+        sid: 3,
+        body: {
+          asset_type: myCode,
+          amount: 4,
+        },
+        utxo: { foo2: 'bar2' },
+        ownerMemo: { bar2: 'foo2' },
+        memoData: 'myMemoData1',
+      } as unknown) as UtxoHelper.AddUtxoItem;
+
+      const utxoDataList = [myItem1, myItem2];
+
+      const result = await UtxoHelper.getSendUtxo(myCode, amount, utxoDataList);
+
+      expect(result).toHaveLength(0);
+    });
+  });
+
+  describe('addUtxoInputs', () => {
+    it('returns a list of utxo inputs', async () => {
+      const amountOne = 4;
+      const amountTwo = 3;
+
+      const originAmountOne = 20;
+      const originAmountTwo = 5;
+
+      const utxoOutputItemOne = ({
+        amount: BigInt(amountOne),
+        originAmount: BigInt(originAmountOne),
+        sid: 1,
+        utxo: { foo: 'bar1' },
+        ownerMemo: { bar: 'foo1' },
+        memoData: 'myMem1o',
+      } as unknown) as UtxoHelper.UtxoOutputItem;
+
+      const utxoOutputItemTwo = ({
+        amount: BigInt(amountTwo),
+        originAmount: BigInt(originAmountTwo),
+        sid: 2,
+        utxo: { foo: 'bar2' },
+        ownerMemo: { bar: 'foo2' },
+        memoData: 'myMemo2',
+      } as unknown) as UtxoHelper.UtxoOutputItem;
+
+      const utxoSids = [utxoOutputItemOne, utxoOutputItemTwo];
+
+      const assetRecord = {
+        a: 'myAssetRecord',
+      };
+
+      const LedgerClientAssetRecord = {
+        from_json: jest.fn(() => {
+          return assetRecord;
+        }),
+      };
+      const txoRef = { bar: 'myTxoRef' };
+
+      const LedgerTxoRef = {
+        absolute: jest.fn(() => {
+          return txoRef;
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        ClientAssetRecord: LedgerClientAssetRecord,
+        TxoRef: LedgerTxoRef,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+      const spyLedgerTxoRef = jest.spyOn(LedgerTxoRef, 'absolute');
+
+      const result = await UtxoHelper.addUtxoInputs(utxoSids);
+
+      expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+      expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(2, utxoOutputItemTwo.utxo);
+
+      expect(spyLedgerTxoRef).toHaveBeenNthCalledWith(1, BigInt(utxoOutputItemOne.sid));
+      expect(spyLedgerTxoRef).toHaveBeenNthCalledWith(2, BigInt(utxoOutputItemTwo.sid));
+
+      const { inputParametersList, inputAmount } = result;
+
+      expect(inputParametersList).toHaveLength(2);
+      const [firstInput, secondInput] = inputParametersList;
+
+      expect(firstInput).toHaveProperty('txoRef');
+      expect(firstInput).toHaveProperty('assetRecord');
+      expect(firstInput).toHaveProperty('ownerMemo');
+      expect(firstInput).toHaveProperty('amount');
+      expect(firstInput).toHaveProperty('memoData');
+      expect(firstInput).toHaveProperty('sid');
+
+      expect(firstInput.txoRef).toBe(txoRef);
+      expect(firstInput.assetRecord).toBe(assetRecord);
+      expect(firstInput.ownerMemo).toBe(utxoOutputItemOne.ownerMemo);
+      expect(firstInput.amount).toBe(utxoOutputItemOne.amount);
+      expect(firstInput.memoData).toBe(utxoOutputItemOne.memoData);
+      expect(firstInput.sid).toBe(utxoOutputItemOne.sid);
+
+      expect(secondInput.amount).toBe(utxoOutputItemTwo.amount);
+
+      expect(inputAmount).toBe(BigInt(originAmountOne + originAmountTwo));
+
+      spyGetLedger.mockRestore();
+      spyLedgerClientAssetRecordFromJson.mockRestore();
+      spyLedgerTxoRef.mockRestore();
+    });
+
+    it('throws an error if it can not open client record from ledger', async () => {
+      const amountOne = 4;
+
+      const originAmountOne = 20;
+
+      const utxoOutputItemOne = ({
+        amount: BigInt(amountOne),
+        originAmount: BigInt(originAmountOne),
+        sid: 1,
+        utxo: { foo: 'bar1' },
+        ownerMemo: { bar: 'foo1' },
+        memoData: 'myMem1o',
+      } as unknown) as UtxoHelper.UtxoOutputItem;
+
+      const utxoSids = [utxoOutputItemOne];
+
+      const LedgerClientAssetRecord = {
+        from_json: jest.fn(() => {
+          throw new Error('boom');
+        }),
+      };
+      const txoRef = { bar: 'myTxoRef' };
+
+      const LedgerTxoRef = {
+        absolute: jest.fn(() => {
+          return txoRef;
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        ClientAssetRecord: LedgerClientAssetRecord,
+        TxoRef: LedgerTxoRef,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+
+      await expect(UtxoHelper.addUtxoInputs(utxoSids)).rejects.toThrow('Can not get client asset record');
+
+      expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+
+      spyGetLedger.mockRestore();
+      spyLedgerClientAssetRecordFromJson.mockRestore();
+    });
+
+    it('throws an error if it can not get txo ref from ledger', async () => {
+      const amountOne = 4;
+
+      const originAmountOne = 20;
+
+      const utxoOutputItemOne = ({
+        amount: BigInt(amountOne),
+        originAmount: BigInt(originAmountOne),
+        sid: 1,
+        utxo: { foo: 'bar1' },
+        ownerMemo: { bar: 'foo1' },
+        memoData: 'myMem1o',
+      } as unknown) as UtxoHelper.UtxoOutputItem;
+
+      const utxoSids = [utxoOutputItemOne];
+
+      const assetRecord = {
+        a: 'myAssetRecord',
+      };
+
+      const LedgerClientAssetRecord = {
+        from_json: jest.fn(() => {
+          return assetRecord;
+        }),
+      };
+
+      const LedgerTxoRef = {
+        absolute: jest.fn(() => {
+          throw new Error('boom');
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        ClientAssetRecord: LedgerClientAssetRecord,
+        TxoRef: LedgerTxoRef,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+
+      await expect(UtxoHelper.addUtxoInputs(utxoSids)).rejects.toThrow(
+        'Can not convert given sid id to a BigInt',
+      );
+
+      expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+
+      spyGetLedger.mockRestore();
+      spyLedgerClientAssetRecordFromJson.mockRestore();
     });
   });
 });
