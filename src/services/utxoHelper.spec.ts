@@ -9,7 +9,7 @@ import Cache from './cacheStore/factory';
 
 import * as NodeLedger from './ledger/nodeLedger';
 
-describe('utxoHelper aaa', () => {
+describe('utxoHelper', () => {
   describe('decryptUtxoItem', () => {
     it('successfully decrypts an utxo item', async () => {
       const assetRecord = {
