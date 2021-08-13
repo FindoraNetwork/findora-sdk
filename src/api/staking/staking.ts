@@ -8,7 +8,7 @@ export const unDelegate = async (
   walletInfo: WalletKeypar,
   amount: string,
   validator: string,
-  isFullUnstake: false,
+  isFullUnstake = false,
 ): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
@@ -22,7 +22,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation with fee, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -47,7 +47,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not staking unDelegate operation, Error: "${e.message}"`);
+    throw new Error(`Could not add staking unDelegate operation, Error: "${e.message}"`);
   }
 
   try {
@@ -114,7 +114,7 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not staking claim operation, Error: "${e.message}"`);
+    throw new Error(`Could not add staking claim operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;
