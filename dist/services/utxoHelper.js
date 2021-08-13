@@ -299,7 +299,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     }
                     catch (error) {
                         err = error;
-                        throw new Error("Cannot convert given sid id to a BigInt, \"" + item.sid + "\", Details - \"" + err.message + "\"");
+                        throw new Error("Can not convert given sid id to a BigInt, \"" + item.sid + "\", Details - \"" + err.message + "\"");
                     }
                     inputParameters = {
                         txoRef: txoRef,
