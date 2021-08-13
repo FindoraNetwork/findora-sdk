@@ -1,7 +1,7 @@
 import fs, { PathLike, WriteFileOptions, NoParamCallback } from 'fs';
 import * as Utils from './utils';
 
-describe('utils aaa', () => {
+describe('utils', () => {
   describe('uint8arrayToHexStr', () => {
     it('converts Uint8Array to hex string', () => {
       const myInput = new Uint8Array([1, 2, 3]);
