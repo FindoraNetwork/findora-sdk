@@ -1,606 +1,1563 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { toWei } from '../../services/bigNumber';
+import * as Fee from '../../services/fee';
+import * as KeypairApi from '../keypair/keypair';
+import * as SdkAsset from './sdkAsset';
+import * as NodeLedger from '../../services/ledger/nodeLedger';
+import { DEFAULT_ASSET_RULES } from '../../config/asset';
+import * as NetworkApi from '../network/network';
+import * as NetworkTypes from '../network/types';
+import {
+  AssetRules as LedgerAssetRules,
+  AssetTracerKeyPair as LedgerAssetTracerKeyPair,
+  TracingPolicy as LedgerTracingPolicy,
+  TransactionBuilder,
+  TransferOperationBuilder,
+  XfrKeyPair,
+} from '../../services/ledger/types';
+import { AssetBlindRules } from './sdkAsset';
 
-import { Keypair } from '../../api';
-import { CACHE_ENTRIES } from '../../config/cache';
-import Sdk from '../../Sdk';
-import Cache from '../../services/cacheStore/factory';
-import { FileCacheProvider, MemoryCacheProvider } from '../../services/cacheStore/providers';
-import { defineAsset, getRandomAssetCode, issueAsset } from './sdkAsset';
+interface FakeLedgerAssetRules {
+  new?: () => FakeLedgerAssetRules;
+  set_transferable?: () => FakeLedgerAssetRules;
+  set_updatable?: () => FakeLedgerAssetRules;
+  set_decimals?: () => FakeLedgerAssetRules;
+}
 
-const myDefaultResult = [
-  {
-    foo: 'bar',
-  },
-  {
-    barfoo: 'foobar',
-  },
-];
+interface TransferOpBuilderLight {
+  add_input_with_tracing?: () => TransferOpBuilderLight;
+  add_input_no_tracing?: () => TransferOpBuilderLight;
+  add_output_with_tracing?: () => TransferOpBuilderLight;
+  add_output_no_tracing?: () => TransferOpBuilderLight;
+  new?: () => TransferOpBuilderLight;
+  create?: () => TransferOpBuilderLight;
+  sign?: () => TransferOpBuilderLight;
+  add_operation_create_asset?: () => TransferOpBuilderLight;
+  add_transfer_operation?: () => TransactionBuilder;
+  add_basic_issue_asset?: () => TransferOpBuilderLight;
+  transaction?: () => string;
+}
 
-const defaultUrl = `https://foo.com`;
-
-const server = setupServer(
-  rest.get(defaultUrl, (_req, res, ctx) => {
-    return res(ctx.json(myDefaultResult));
-  }),
-);
-
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+interface PubParamsLight {
+  new?: () => string;
+}
 
 describe('sdkAsset', () => {
-  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-  const password = '123';
-  const hostUrl = 'https://foo.bar';
+  describe('getFraAssetCode', () => {
+    it('returns an fra asset code', async () => {
+      const fraAssetCode = 'AA';
 
-  const globalState = [1, 234];
-
-  const sdkEnv = {
-    hostUrl,
-    cacheProvider: MemoryCacheProvider,
-    cachePath: '.',
-  };
-
-  Sdk.init(sdkEnv);
-
-  const sids = [
-    419,
-    339,
-    501,
-    1094,
-    755,
-    1086,
-    465,
-    526,
-    627,
-    264,
-    483,
-    610,
-    992,
-    998,
-    1066,
-    1089,
-    659,
-    619,
-    553,
-    562,
-    1048,
-    538,
-    1051,
-    1054,
-    459,
-    454,
-    585,
-    680,
-    702,
-    734,
-    1092,
-    466,
-    601,
-    513,
-    460,
-    344,
-    471,
-    922,
-    447,
-    453,
-    544,
-    507,
-    618,
-    495,
-    1083,
-    780,
-    930,
-    580,
-    995,
-    1045,
-    569,
-    426,
-    1057,
-    354,
-    1077,
-    382,
-    502,
-    576,
-    561,
-    477,
-    519,
-    484,
-    448,
-    592,
-    1060,
-    1063,
-    637,
-    586,
-    329,
-    508,
-    570,
-    712,
-    1080,
-    520,
-    472,
-    531,
-    537,
-    489,
-    490,
-    496,
-    1091,
-    1079,
-    514,
-    478,
-    525,
-    532,
-    334,
-  ];
-
-  describe('defineAsset', () => {
-    it('defines asset', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
-
-      const myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e3b';
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+      const myLedger = ({
+        foo: 'node',
+        fra_get_asset_code: jest.fn(() => {
+          return fraAssetCode;
         }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.json(myResponse));
-        }),
-      );
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const result = await SdkAsset.getFraAssetCode();
 
-      const assetCode = await getRandomAssetCode();
+      expect(spyGetLedger).toHaveBeenCalled();
+      expect(result).toBe(fraAssetCode);
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        memo: 'memo1',
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { memo, traceable, transferable, updatable } = param;
-
-      const { code, maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      const handle = await defineAsset(walletInfo, code, memo, assetRules);
-
-      expect(handle).toBe(myResponse);
-    });
-    it('throws an error when submit handle is missing', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
-
-      const myResponse = null;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
-        }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.json(myResponse));
-        }),
-      );
-
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
-
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
-
-      const assetCode = await getRandomAssetCode();
-
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        memo: 'memo1',
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { memo, traceable, transferable, updatable } = param;
-
-      const { code, maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      await expect(defineAsset(walletInfo, code, memo, assetRules)).rejects.toThrowError(
-        'Could not define asset - submit handle is missing',
-      );
-    });
-    it('throws an error when cant submit define asset transaction', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
-        }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.status(500));
-        }),
-      );
-
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
-
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
-
-      const assetCode = await getRandomAssetCode();
-
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        memo: 'memo1',
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { memo, traceable, transferable, updatable } = param;
-
-      const { code, maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      await expect(defineAsset(walletInfo, code, memo, assetRules)).rejects.toThrowError(
-        'Could not submit define asset transaction',
-      );
-    });
-    it('throws an error when fails to submit a transaction', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
-        }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.status(500));
-        }),
-      );
-
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
-
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
-
-      const assetCode = await getRandomAssetCode();
-
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        memo: 'memo1',
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { memo, traceable, transferable, updatable } = param;
-
-      const { code, maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      await expect(defineAsset(walletInfo, code, memo, assetRules)).rejects.toThrowError(
-        'Could not submit define asset transaction',
-      );
-    });
-    it('throws an error when cant get a transaction builder', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
-        }),
-      );
-
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
-
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
-
-      const givenAsset = { decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { traceable, transferable, updatable } = param;
-
-      const { maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      await expect(defineAsset(walletInfo, 'aa', 'a', assetRules)).rejects.toThrowError(
-        'Could not get "defineTransactionBuilder"',
-      );
-    });
-    it('throws an error when cant create transfer operation', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json([434]));
-        }),
-      );
-
-      const assetCode = await getRandomAssetCode();
-
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const param = {
-        memo: 'memo1',
-        traceable: false,
-        transferable: true,
-        updatable: true,
-      };
-
-      const { memo, traceable, transferable, updatable } = param;
-
-      const { code, maxNumbers, decimals } = givenAsset;
-
-      const assetRules = { transferable, updatable, decimals, traceable, maxNumbers };
-
-      await expect(defineAsset(walletInfo, code, memo, assetRules)).rejects.toThrowError(
-        'Could not create transfer operation',
-      );
+      spyGetLedger.mockRestore();
     });
   });
+  describe('getMinimalFee', () => {
+    it('returns an fra minimal fee', async () => {
+      const fraMinimalFee = BigInt(2);
 
-  describe('issueAsset', () => {
-    it('issues asset', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
-
-      const myResponse = 'f6efc414f09f30a0e69cad8da9ac87b97860d2e5019c8e9964cbc208ff856e3b';
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+      const myLedger = ({
+        foo: 'node',
+        fra_get_minimal_fee: jest.fn(() => {
+          return fraMinimalFee;
         }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.json(myResponse));
-        }),
-      );
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const result = await SdkAsset.getMinimalFee();
 
-      const assetCode = await getRandomAssetCode();
+      expect(spyGetLedger).toHaveBeenCalled();
+      expect(result).toBe(fraMinimalFee);
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const { code, decimals } = givenAsset;
-
-      const assetBlindRules = { isAmountBlind: false };
-
-      const handle = await issueAsset(walletInfo, code, '2', assetBlindRules, decimals);
-
-      expect(handle).toBe(myResponse);
+      spyGetLedger.mockRestore();
     });
-    it('throws an error when submit handle is missing', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
+  });
+  describe('getFraPublicKey', () => {
+    it('returns an fra public key', async () => {
+      const fraPublicKey = 'myPub';
 
-      const myResponse = null;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+      const myLedger = ({
+        foo: 'node',
+        fra_get_dest_pubkey: jest.fn(() => {
+          return fraPublicKey;
         }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.json(myResponse));
-        }),
-      );
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const result = await SdkAsset.getFraPublicKey();
 
-      const assetCode = await getRandomAssetCode();
+      expect(spyGetLedger).toHaveBeenCalled();
+      expect(result).toBe(fraPublicKey);
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
-
-      const { code, decimals } = givenAsset;
-
-      const assetBlindRules = { isAmountBlind: false };
-
-      await expect(issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError(
-        'Could not issue asset - submit handle is missing',
-      );
+      spyGetLedger.mockRestore();
     });
-    it('throws an error when cant submit issue asset transaction', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
+  });
+  describe('getAssetCode', () => {
+    it('returns a required asset code', async () => {
+      const decryptedAsetType = 'myPub';
 
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+      const val = [1, 2];
+
+      const myLedger = ({
+        foo: 'node',
+        asset_type_from_jsvalue: jest.fn(() => {
+          return decryptedAsetType;
         }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
-        }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.status(500));
-        }),
-      );
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
 
-      const assetCode = await getRandomAssetCode();
+      const result = await SdkAsset.getAssetCode(val);
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
+      expect(spyGetLedger).toHaveBeenCalledWith();
+      expect(spyLedgerAssetTypeFromJsvalue).toHaveBeenCalledWith(val);
 
-      const { code, decimals } = givenAsset;
+      expect(result).toBe(decryptedAsetType);
 
-      const assetBlindRules = { isAmountBlind: false };
-
-      await expect(issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError(
-        'Could not submit issue asset transaction',
-      );
+      spyGetLedger.mockRestore();
+      spyLedgerAssetTypeFromJsvalue.mockRestore();
     });
-    it('throws an error when fails to submit a transaction', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-      const postUrl = `${hostUrl}:8669/submit_transaction`;
-      const globalStateUrl = `${hostUrl}:8668/global_state`;
+  });
+  describe('getDefaultAssetRules', () => {
+    it('returns default asset rules', async () => {
+      const defaultTransferable = DEFAULT_ASSET_RULES.transferable;
+      const defaultUpdatable = DEFAULT_ASSET_RULES.updatable;
+      const defaultDecimals = DEFAULT_ASSET_RULES.decimals;
 
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+      const fakeLedgerAssetRules: FakeLedgerAssetRules = {
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
         }),
-        rest.get(globalStateUrl, (_req, res, ctx) => {
-          return res(ctx.json(globalState));
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
         }),
-        rest.post(postUrl, (_req, res, ctx) => {
-          return res(ctx.status(500));
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
         }),
-      );
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      };
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const myLedger = ({
+        foo: 'node',
+        AssetRules: fakeLedgerAssetRules,
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
 
-      const assetCode = await getRandomAssetCode();
+      const spyLedgerAssetRulesNew = jest.spyOn(fakeLedgerAssetRules, 'new');
+      const spyLedgerAssetRulesSetTransferable = jest.spyOn(fakeLedgerAssetRules, 'set_transferable');
+      const spyLedgerAssetRulesSetUpdatable = jest.spyOn(fakeLedgerAssetRules, 'set_updatable');
+      const spyLedgerAssetRulesSetDecimals = jest.spyOn(fakeLedgerAssetRules, 'set_decimals');
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
+      const result = await SdkAsset.getDefaultAssetRules();
 
-      const { code } = givenAsset;
+      expect(spyGetLedger).toHaveBeenCalled();
+      expect(spyLedgerAssetRulesNew).toHaveBeenCalled();
+      expect(spyLedgerAssetRulesSetTransferable).toHaveBeenCalledWith(defaultTransferable);
+      expect(spyLedgerAssetRulesSetUpdatable).toHaveBeenCalledWith(defaultUpdatable);
+      expect(spyLedgerAssetRulesSetDecimals).toHaveBeenCalledWith(defaultDecimals);
 
-      const assetBlindRules = { isAmountBlind: false };
+      expect(result).toBe(fakeLedgerAssetRules);
 
-      await expect(issueAsset(walletInfo, code, '2', assetBlindRules, 6)).rejects.toThrowError(
-        'Could not submit issue asset transaction',
-      );
+      spyGetLedger.mockRestore();
+      spyLedgerAssetRulesNew.mockRestore();
+      spyLedgerAssetRulesSetTransferable.mockRestore();
+      spyLedgerAssetRulesSetUpdatable.mockRestore();
+      spyLedgerAssetRulesSetDecimals.mockRestore();
     });
-    it('throws an error when cant get a transaction builder', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json(sids));
+  });
+  describe('getAssetRules', () => {
+    it('returns default asset rules if no new asset rules are given', async () => {
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
         }),
-      );
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
 
-      const utxoDataCache = await Cache.read(`./test_utxo_fixture_list.json`, FileCacheProvider);
+      const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
 
-      await Cache.write(
-        `./${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`,
-        utxoDataCache,
-        MemoryCacheProvider,
-      );
+      const result = await SdkAsset.getAssetRules();
 
-      const assetBlindRules = { isAmountBlind: false };
+      expect(result).toBe(fakeLedgerAssetRules);
 
-      await expect(issueAsset(walletInfo, 'aaa', '2', assetBlindRules, 6)).rejects.toThrowError(
-        'Could not get "issueAssetTransactionBuilder"',
-      );
+      spyGetDefaultAssetRules.mockRestore();
     });
 
-    it('throws an error when cant create transfer operation', async () => {
-      const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-      const getSidsUrl = `${hostUrl}:8667/get_owned_utxos/${walletInfo.publickey}`;
-
-      server.use(
-        rest.get(getSidsUrl, (_req, res, ctx) => {
-          return res(ctx.json([434]));
+    it('returns asset rules with max units set', async () => {
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
         }),
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_max_units: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        add_tracing_policy: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const fakeLedgerAssetTracerKeyPair = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetTracerKeyPair;
+        }),
+      } as unknown) as LedgerAssetTracerKeyPair;
+
+      const fakeLedgerTracingPolicy = ({
+        new_with_tracing: jest.fn(() => {
+          return fakeLedgerTracingPolicy;
+        }),
+      } as unknown) as LedgerTracingPolicy;
+
+      const myLedger = ({
+        foo: 'node',
+        AssetRules: fakeLedgerAssetRules,
+        AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+        TracingPolicy: fakeLedgerTracingPolicy,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const maxNumbers = '10000000';
+
+      const newAssetRules = {
+        transferable: true,
+        updatable: false,
+        decimals: 6,
+        traceable: true,
+        maxNumbers,
+      };
+
+      const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
+
+      const result = await SdkAsset.getAssetRules(newAssetRules);
+
+      expect(spyLedgerAssetRulesSetMaxUnits).toHaveBeenCalledWith(BigInt(maxNumbers));
+
+      expect(result).toBe(fakeLedgerAssetRules);
+
+      spyGetDefaultAssetRules.mockRestore();
+      spyGetLedger.mockRestore();
+      spyLedgerAssetRulesSetMaxUnits.mockRestore();
+    });
+
+    it('returns asset rules without max units set and setter is not called', async () => {
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_max_units: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        add_tracing_policy: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const fakeLedgerAssetTracerKeyPair = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetTracerKeyPair;
+        }),
+      } as unknown) as LedgerAssetTracerKeyPair;
+
+      const fakeLedgerTracingPolicy = ({
+        new_with_tracing: jest.fn(() => {
+          return fakeLedgerTracingPolicy;
+        }),
+      } as unknown) as LedgerTracingPolicy;
+
+      const myLedger = ({
+        foo: 'node',
+        AssetRules: fakeLedgerAssetRules,
+        AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+        TracingPolicy: fakeLedgerTracingPolicy,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const newAssetRules = {
+        transferable: true,
+        updatable: false,
+        decimals: 6,
+        traceable: true,
+      };
+
+      const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
+
+      const result = await SdkAsset.getAssetRules(newAssetRules);
+
+      expect(spyLedgerAssetRulesSetMaxUnits).not.toHaveBeenCalled();
+
+      expect(result).toBe(fakeLedgerAssetRules);
+
+      spyGetDefaultAssetRules.mockRestore();
+      spyGetLedger.mockRestore();
+      spyLedgerAssetRulesSetMaxUnits.mockRestore();
+    });
+
+    it('returns asset rules with tracing policy', async () => {
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_max_units: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        add_tracing_policy: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const trackingKey = 'myTrackingKey';
+
+      const fakeLedgerAssetTracerKeyPair = {
+        new: jest.fn(() => {
+          return trackingKey;
+        }),
+      };
+
+      const tracingPolicy = 'myTracingPolicy';
+
+      const fakeLedgerTracingPolicy = {
+        new_with_tracing: jest.fn(() => {
+          return tracingPolicy;
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        AssetRules: fakeLedgerAssetRules,
+        AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+        TracingPolicy: fakeLedgerTracingPolicy,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const newAssetRules = {
+        transferable: true,
+        updatable: false,
+        decimals: 6,
+        traceable: true,
+      };
+
+      const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
+      const spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
+      const spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
+
+      const result = await SdkAsset.getAssetRules(newAssetRules);
+
+      expect(spyLedgerAssetTracerKeyPairNew).toHaveBeenCalled();
+      expect(spyLedgerTracingPolicyNewWithTracing).toHaveBeenCalledWith(trackingKey);
+      expect(spyLedgerAssetRulesAddTracingPolicy).toHaveBeenCalledWith(tracingPolicy);
+
+      expect(result).toBe(fakeLedgerAssetRules);
+
+      spyGetDefaultAssetRules.mockRestore();
+      spyGetLedger.mockRestore();
+      spyLedgerAssetTracerKeyPairNew.mockRestore();
+      spyLedgerTracingPolicyNewWithTracing.mockRestore();
+      spyLedgerAssetRulesAddTracingPolicy.mockRestore();
+    });
+
+    it('returns asset rules without tracing policy and tracing method was not called', async () => {
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_transferable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_updatable: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_decimals: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        set_max_units: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+        add_tracing_policy: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const trackingKey = 'myTrackingKey';
+
+      const fakeLedgerAssetTracerKeyPair = {
+        new: jest.fn(() => {
+          return trackingKey;
+        }),
+      };
+
+      const tracingPolicy = 'myTracingPolicy';
+
+      const fakeLedgerTracingPolicy = {
+        new_with_tracing: jest.fn(() => {
+          return tracingPolicy;
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        AssetRules: fakeLedgerAssetRules,
+        AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+        TracingPolicy: fakeLedgerTracingPolicy,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const newAssetRules = {
+        transferable: true,
+        updatable: false,
+        decimals: 6,
+        traceable: false,
+      };
+
+      const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
+      const spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
+
+      const spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
+
+      const result = await SdkAsset.getAssetRules(newAssetRules);
+
+      expect(spyLedgerAssetTracerKeyPairNew).not.toHaveBeenCalled();
+      expect(spyLedgerTracingPolicyNewWithTracing).not.toHaveBeenCalledWith();
+
+      expect(spyLedgerAssetRulesAddTracingPolicy).not.toHaveBeenCalledWith();
+
+      expect(result).toBe(fakeLedgerAssetRules);
+
+      spyGetDefaultAssetRules.mockRestore();
+      spyGetLedger.mockRestore();
+      spyLedgerAssetTracerKeyPairNew.mockRestore();
+      spyLedgerTracingPolicyNewWithTracing.mockRestore();
+      spyLedgerAssetRulesAddTracingPolicy.mockRestore();
+    });
+  });
+  describe('getDefineAssetTransactionBuilder', () => {
+    it('returns transaction builder instance', async () => {
+      const fakeOpBuilder: TransferOpBuilderLight = {
+        new: jest.fn(() => {
+          return fakeOpBuilder;
+        }),
+        add_operation_create_asset: jest.fn(() => {
+          return fakeOpBuilder;
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        TransactionBuilder: fakeOpBuilder,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const height = 15;
+
+      const myStateCommitementResult = {
+        response: ['foo', height],
+      };
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyNew = jest.spyOn(fakeOpBuilder, 'new');
+      const spyAddOperationCreateAsset = jest.spyOn(fakeOpBuilder, 'add_operation_create_asset');
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetMemo = 'memo';
+
+      const result = await SdkAsset.getDefineAssetTransactionBuilder(
+        walletKeypair,
+        assetName,
+        assetRules,
+        assetMemo,
       );
 
-      const assetCode = await getRandomAssetCode();
+      expect(result).toBe(fakeOpBuilder);
 
-      const givenAsset = { code: assetCode, decimals: 6, maxNumbers: undefined };
+      expect(spyGetLedger).toBeCalled();
+      expect(spyNew).toHaveBeenCalledWith(BigInt(height));
+      expect(spyAddOperationCreateAsset).toHaveBeenCalledWith(
+        walletKeypair,
+        assetMemo,
+        assetName,
+        assetRules,
+      );
 
-      const { code, decimals } = givenAsset;
+      spyGetLedger.mockRestore();
+      spyNew.mockReset();
+      spyAddOperationCreateAsset.mockReset();
+      spyGetStateCommitment.mockReset();
+    });
 
-      const assetBlindRules = { isAmountBlind: false };
+    it('throws an error if state commitment result contains an error', async () => {
+      const myLedger = ({
+        foo: 'node',
+      } as unknown) as NodeLedger.LedgerForNode;
 
-      await expect(issueAsset(walletInfo, code, '2', assetBlindRules, decimals)).rejects.toThrowError(
+      const myStateCommitementResult = {
+        error: new Error('myStateCommitementResult error'),
+      };
+
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetMemo = 'memo';
+
+      await expect(
+        SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo),
+      ).rejects.toThrowError('myStateCommitementResult error');
+
+      spyGetLedger.mockReset();
+      spyGetStateCommitment.mockReset();
+    });
+
+    it('throws an error if state commitment result does not contain a response', async () => {
+      const myLedger = ({
+        foo: 'node',
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const myStateCommitementResult = {};
+
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetMemo = 'memo';
+
+      await expect(
+        SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo),
+      ).rejects.toThrowError('Could not receive response from state commitement call');
+
+      spyGetLedger.mockReset();
+      spyGetStateCommitment.mockReset();
+    });
+  });
+  describe('getIssueAssetTransactionBuilder', () => {
+    it('returns transaction builder instance', async () => {
+      const fakeOpBuilder: TransferOpBuilderLight = {
+        new: jest.fn(() => {
+          return fakeOpBuilder;
+        }),
+        add_operation_create_asset: jest.fn(() => {
+          return fakeOpBuilder;
+        }),
+        add_basic_issue_asset: jest.fn(() => {
+          return fakeOpBuilder;
+        }),
+      };
+
+      const fakePubParams: PubParamsLight = {
+        new: jest.fn(() => {
+          return 'myParams';
+        }),
+      };
+
+      const myLedger = ({
+        foo: 'node',
+        TransactionBuilder: fakeOpBuilder,
+        PublicParams: fakePubParams,
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const height = 15;
+
+      const myStateCommitementResult = {
+        response: ['foo', height],
+      };
+
+      const blockCount = BigInt(height);
+
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const spyNew = jest.spyOn(fakeOpBuilder, 'new');
+      const spyAddBasicIssueAsset = jest.spyOn(fakeOpBuilder, 'add_basic_issue_asset');
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+
+      const amountToIssue = '11';
+      const assetBlindRules = { foo: 'barbar' };
+      const assetDecimals = 6;
+
+      const result = await SdkAsset.getIssueAssetTransactionBuilder(
+        walletKeypair,
+        assetName,
+        amountToIssue,
+        assetBlindRules as AssetBlindRules,
+        assetDecimals,
+      );
+
+      expect(result).toBe(fakeOpBuilder);
+
+      expect(spyGetLedger).toBeCalled();
+      expect(spyNew).toHaveBeenCalledWith(BigInt(height));
+
+      const utxoNumbers = BigInt(toWei(amountToIssue, assetDecimals).toString());
+
+      expect(spyAddBasicIssueAsset).toHaveBeenCalledWith(
+        walletKeypair,
+        assetName,
+        BigInt(blockCount),
+        utxoNumbers,
+        false,
+        'myParams',
+      );
+
+      spyGetStateCommitment.mockReset();
+      spyGetLedger.mockRestore();
+      spyNew.mockReset();
+      spyAddBasicIssueAsset.mockReset();
+    });
+
+    it('throws an error if state commitment result contains an error', async () => {
+      const myLedger = ({
+        foo: 'node',
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const myStateCommitementResult = {
+        error: new Error('myStateCommitementResult error'),
+      };
+
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+      const amountToIssue = '11';
+      const assetBlindRules = { foo: 'barbar' };
+      const assetDecimals = 6;
+
+      await expect(
+        SdkAsset.getIssueAssetTransactionBuilder(
+          walletKeypair,
+          assetName,
+          amountToIssue,
+          assetBlindRules as AssetBlindRules,
+          assetDecimals,
+        ),
+      ).rejects.toThrowError('myStateCommitementResult error');
+
+      spyGetLedger.mockReset();
+      spyGetStateCommitment.mockReset();
+    });
+
+    it('throws an error if state commitment result does not contain a response', async () => {
+      const myLedger = ({
+        foo: 'node',
+      } as unknown) as NodeLedger.LedgerForNode;
+
+      const myStateCommitementResult = {};
+
+      const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+        return Promise.resolve(myStateCommitementResult as NetworkTypes.StateCommitmentDataResult);
+      });
+
+      const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+        return Promise.resolve(myLedger);
+      });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const assetName = 'abc';
+      const amountToIssue = '11';
+      const assetBlindRules = { foo: 'barbar' };
+      const assetDecimals = 6;
+
+      await expect(
+        SdkAsset.getIssueAssetTransactionBuilder(
+          walletKeypair,
+          assetName,
+          amountToIssue,
+          assetBlindRules as AssetBlindRules,
+          assetDecimals,
+        ),
+      ).rejects.toThrowError('Could not receive response from state commitement call');
+
+      spyGetLedger.mockReset();
+      spyGetStateCommitment.mockReset();
+    });
+  });
+  describe('defineAsset', () => {
+    it('defines an asset', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_transfer_operation: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
+
+      const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetDefineAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        });
+
+      const spyAddTransferOperation = jest
+        .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+        .mockImplementation(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+      const assetMemo = 'memo';
+
+      const newAssetRules = {
+        transferable: true,
+        updatable: false,
+        decimals: 6,
+        traceable: true,
+      };
+
+      const result = await SdkAsset.defineAsset(walletInfo, assetName, assetMemo, newAssetRules);
+
+      expect(spyGetAssetRules).toHaveBeenCalledWith(newAssetRules);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+      expect(spyGetDefineAssetTransactionBuilder).toHaveBeenCalledWith(
+        walletInfo.keypair,
+        assetName,
+        fakeLedgerAssetRules,
+        assetMemo,
+      );
+      expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+
+      expect(result).toBe(fakeTransactionBuilder);
+
+      spyGetAssetRules.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetDefineAssetTransactionBuilder.mockRestore();
+      spyAddTransferOperation.mockRestore();
+    });
+
+    it('throws an error when could not create a transfer operation', async () => {
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          throw new Error('boom');
+        }),
+      };
+
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+      const assetMemo = 'memo';
+
+      await expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow(
         'Could not create transfer operation',
       );
+
+      spyGetAssetRules.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+    });
+
+    it('throws an error when could not create a transaction builder', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetDefineAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+        .mockImplementation(() => {
+          throw new Error('boom');
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+      const assetMemo = 'memo';
+
+      await expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow(
+        'Could not get "defineTransactionBuilder',
+      );
+
+      spyGetAssetRules.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetDefineAssetTransactionBuilder.mockRestore();
+    });
+
+    it('throws an error when could not add a transfer operation', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const fakeLedgerAssetRules = ({
+        new: jest.fn(() => {
+          return fakeLedgerAssetRules;
+        }),
+      } as unknown) as LedgerAssetRules;
+
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_transfer_operation: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
+
+      const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetRules);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetDefineAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        });
+
+      const spyAddTransferOperation = jest
+        .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+        .mockImplementation(() => {
+          throw new Error('boom');
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+      const assetMemo = 'memo';
+
+      await expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow(
+        'Could not add transfer operation',
+      );
+
+      spyGetAssetRules.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetDefineAssetTransactionBuilder.mockRestore();
+      spyAddTransferOperation.mockRestore();
+    });
+  });
+  describe('issueAsset', () => {
+    it('issues an asset with default decimal, coming from asset details', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_transfer_operation: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetIssueAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        });
+
+      const spyAddTransferOperation = jest
+        .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+        .mockImplementation(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+
+      const amountToIssue = '123';
+      const assetBlindRules = {
+        isAmountBlind: false,
+        isTypeBlind: false,
+      };
+
+      const result = await SdkAsset.issueAsset(
+        walletInfo,
+        assetName,
+        amountToIssue,
+        assetBlindRules,
+        decimals,
+      );
+
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+      expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(
+        walletInfo.keypair,
+        assetName,
+        amountToIssue,
+        assetBlindRules,
+        decimals,
+      );
+      expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+
+      expect(result).toBe(fakeTransactionBuilder);
+
+      spyGetAssetDetails.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetIssueAssetTransactionBuilder.mockRestore();
+      spyAddTransferOperation.mockRestore();
+    });
+
+    it('issues an asset with a given decimal', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_transfer_operation: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetIssueAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        });
+
+      const spyAddTransferOperation = jest
+        .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+        .mockImplementation(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+
+      const amountToIssue = '123';
+      const assetBlindRules = {
+        isAmountBlind: false,
+        isTypeBlind: false,
+      };
+
+      const result = await SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7);
+
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+      expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(
+        walletInfo.keypair,
+        assetName,
+        amountToIssue,
+        assetBlindRules,
+        7,
+      );
+      expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+
+      expect(result).toBe(fakeTransactionBuilder);
+
+      spyGetAssetDetails.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetIssueAssetTransactionBuilder.mockRestore();
+      spyAddTransferOperation.mockRestore();
+    });
+
+    it('throws an error when could not create a transfer operation', async () => {
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          throw new Error('boom');
+        }),
+      };
+
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+
+      const amountToIssue = '123';
+      const assetBlindRules = {
+        isAmountBlind: false,
+        isTypeBlind: false,
+      };
+
+      await expect(
+        SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7),
+      ).rejects.toThrow('Could not create transfer operation');
+
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+
+      spyGetAssetDetails.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+    });
+
+    it('throws an error when could not create a transaction builder', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetIssueAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+        .mockImplementation(() => {
+          throw new Error('bdnd');
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+
+      const amountToIssue = '123';
+      const assetBlindRules = {
+        isAmountBlind: false,
+        isTypeBlind: false,
+      };
+
+      await expect(
+        SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7),
+      ).rejects.toThrow('Could not get "issueAssetTransactionBuilder"');
+
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+
+      spyGetAssetDetails.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetIssueAssetTransactionBuilder.mockRestore();
+    });
+
+    it('throws an error when could not create a transaction builder', async () => {
+      const receivedTransferOperation = 'txHash';
+
+      const fakeTransferOperationBuilderFee: TransferOpBuilderLight = {
+        create: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        sign: jest.fn(() => {
+          return fakeTransferOperationBuilderFee;
+        }),
+        transaction: jest.fn(() => {
+          return receivedTransferOperation;
+        }),
+      };
+
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_transfer_operation: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
+      const spyBuildTransferOperationWithFee = jest
+        .spyOn(Fee, 'buildTransferOperationWithFee')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+        });
+
+      const spyGetIssueAssetTransactionBuilder = jest
+        .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+        .mockImplementation(() => {
+          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        });
+
+      const spyAddTransferOperation = jest
+        .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+        .mockImplementation(() => {
+          throw new Error('bad');
+        });
+
+      const walletInfo = ({
+        publickey: 'senderPub',
+        keypair: 'senderKeypair',
+        address: 'myAddress',
+      } as unknown) as KeypairApi.WalletKeypar;
+
+      const assetName = 'acb';
+
+      const amountToIssue = '123';
+      const assetBlindRules = {
+        isAmountBlind: false,
+        isTypeBlind: false,
+      };
+
+      await expect(
+        SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7),
+      ).rejects.toThrow('Could not add transfer operation');
+
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+      expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+
+      spyGetAssetDetails.mockRestore();
+      spyBuildTransferOperationWithFee.mockRestore();
+      spyGetIssueAssetTransactionBuilder.mockRestore();
+      spyAddTransferOperation.mockRestore();
+    });
+  });
+  describe('getAssetDetails', () => {
+    it('returns asset details', async () => {
+      const assetCode = 'abc';
+
+      const issuerKey = 'myIssuerKey';
+      const issuerAddress = 'myIssuerAddress';
+
+      const assetMemo = 'myMemo';
+
+      const assetRules = {
+        transferable: false,
+        updatable: false,
+      };
+
+      const assetResult = {
+        properties: {
+          issuer: {
+            key: issuerKey,
+          },
+          memo: assetMemo,
+          asset_rules: assetRules,
+        },
+      };
+
+      const getAssetTokenResult = {
+        response: assetResult,
+      } as NetworkTypes.AssetTokenDataResult;
+
+      const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+        return Promise.resolve(getAssetTokenResult);
+      });
+
+      const spGetAddressByPublicKey = jest
+        .spyOn(KeypairApi, 'getAddressByPublicKey')
+        .mockImplementation(() => {
+          return Promise.resolve(issuerAddress);
+        });
+
+      const result = await SdkAsset.getAssetDetails(assetCode);
+
+      const expectedResult = {
+        code: assetCode,
+        issuer: issuerKey,
+        address: issuerAddress,
+        memo: assetMemo,
+        assetRules: { ...DEFAULT_ASSET_RULES, ...assetRules },
+        numbers: BigInt(0),
+        name: '',
+      };
+
+      expect(result).toStrictEqual(expectedResult);
+
+      spyGetAssetToken.mockRestore();
+      spGetAddressByPublicKey.mockRestore();
+    });
+
+    it('throws an error if could not get asset token', async () => {
+      const assetCode = 'abc';
+
+      const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+        throw new Error('bcd');
+      });
+
+      await expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset token');
+
+      spyGetAssetToken.mockRestore();
+    });
+
+    it('throws an error if could not get asset details - there is an error in the result', async () => {
+      const assetCode = 'abc';
+
+      const getAssetTokenResult = {
+        error: new Error('dodo'),
+      } as NetworkTypes.AssetTokenDataResult;
+
+      const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+        return Promise.resolve(getAssetTokenResult);
+      });
+
+      await expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset details');
+
+      spyGetAssetToken.mockRestore();
+    });
+
+    it('throws an error if could not get asset details - there is no response in the result', async () => {
+      const assetCode = 'abc';
+
+      const getAssetTokenResult = {} as NetworkTypes.AssetTokenDataResult;
+
+      const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+        return Promise.resolve(getAssetTokenResult);
+      });
+
+      await expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow(
+        'Could not get asset details - asset result is missing',
+      );
+
+      spyGetAssetToken.mockRestore();
     });
   });
 });

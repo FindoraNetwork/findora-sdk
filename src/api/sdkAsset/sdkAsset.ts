@@ -37,9 +37,6 @@ export const getMinimalFee = async (): Promise<BigInt> => {
   return fee;
 };
 
-/**
- * Add unit test
- */
 export const getFraPublicKey = async (): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   const key = ledger.fra_get_dest_pubkey();
@@ -59,7 +56,7 @@ export const getRandomAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
-const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
+export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
   const defaultTransferable = DEFAULT_ASSET_RULES.transferable;
@@ -74,7 +71,7 @@ const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   return assetRules;
 };
 
-const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRules> => {
+export const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRules> => {
   if (!newAssetRules) {
     const defaultAssetRules = await getDefaultAssetRules();
 
@@ -104,7 +101,7 @@ const getAssetRules = async (newAssetRules?: AssetRules): Promise<LedgerAssetRul
   return assetRules;
 };
 
-const getDefineAssetTransactionBuilder = async (
+export const getDefineAssetTransactionBuilder = async (
   walletKeypair: XfrKeyPair,
   assetName: string,
   assetRules: LedgerAssetRules,
@@ -119,7 +116,7 @@ const getDefineAssetTransactionBuilder = async (
   }
 
   if (!stateCommitment) {
-    throw new Error('could not receive response from state commitement call');
+    throw new Error('Could not receive response from state commitement call');
   }
 
   const [_, height] = stateCommitment;
@@ -135,7 +132,7 @@ const getDefineAssetTransactionBuilder = async (
   return definitionTransaction;
 };
 
-const getIssueAssetTransactionBuilder = async (
+export const getIssueAssetTransactionBuilder = async (
   walletKeypair: XfrKeyPair,
   assetName: string,
   amountToIssue: string,
@@ -151,7 +148,7 @@ const getIssueAssetTransactionBuilder = async (
   }
 
   if (!stateCommitment) {
-    throw new Error('could not receive response from state commitement call');
+    throw new Error('Could not receive response from state commitement call');
   }
 
   const [_, height] = stateCommitment;
@@ -278,17 +275,17 @@ export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Error Could not define asset: "${e.message}"`);
+    throw new Error(`Could not get asset token: "${e.message}"`);
   }
 
   const { response: assetResult, error: submitError } = result;
 
   if (submitError) {
-    throw new Error(`Could not submit get asset details transaction: "${submitError.message}"`);
+    throw new Error(`Could not get asset details: "${submitError.message}"`);
   }
 
   if (!assetResult) {
-    throw new Error(`Could not get asset details - submit handle is missing`);
+    throw new Error(`Could not get asset details - asset result is missing`);
   }
 
   const asset = assetResult.properties;

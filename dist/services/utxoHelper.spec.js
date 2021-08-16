@@ -61,9 +61,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var NetworkApi = __importStar(require("../api/network/network"));
 var UtxoHelper = __importStar(require("./utxoHelper"));
-// import { WalletKeypar } from '../api/keypair';
-// import * as Network from '../api/network';
-// import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/types';
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
@@ -306,7 +303,6 @@ describe('utxoHelper', function () {
                         };
                         LedgerClientAssetRecord = {
                             from_json: jest.fn(function () {
-                                // throw new Error('boom');
                                 return assetRecord;
                             }),
                         };
@@ -413,7 +409,7 @@ describe('utxoHelper', function () {
             });
         }); });
         it('throws an error if can not open ledger open_client_asset_record', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var assetRecord, ownerMemo, myAssetType, decryptAssetData, LedgerClientAssetRecord, LedgerOwnerMemo, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson, spyLedgerOwnerMemoFromJson, spyLedgerOpenClientAssetRecord, memoDataResult, spyGetOwnerMemo, sid, walletInfo, utxoData, memoData;
+            var assetRecord, ownerMemo, LedgerClientAssetRecord, LedgerOwnerMemo, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson, spyLedgerOwnerMemoFromJson, spyLedgerOpenClientAssetRecord, memoDataResult, spyGetOwnerMemo, sid, walletInfo, utxoData, memoData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -425,11 +421,6 @@ describe('utxoHelper', function () {
                             clone: jest.fn(function () {
                                 return ownerMemo;
                             }),
-                        };
-                        myAssetType = 'myAssetType';
-                        decryptAssetData = {
-                            asset_type: myAssetType,
-                            amount: '2',
                         };
                         LedgerClientAssetRecord = {
                             from_json: jest.fn(function () {
@@ -732,7 +723,7 @@ describe('utxoHelper', function () {
             });
         }); });
     });
-    describe('addUtxo aaa', function () {
+    describe('addUtxo', function () {
         it('creates a utxoDataList', function () { return __awaiter(void 0, void 0, void 0, function () {
             var utxoDataCache, spyCacheRead, item, spyGetUtxoItem, addSids, walletInfo, cacheDataToSave, spyCacheWrite, fullPathToCacheEntry, result;
             return __generator(this, function (_a) {
@@ -855,6 +846,398 @@ describe('utxoHelper', function () {
                         spyCacheRead.mockRestore();
                         spyGetUtxoItem.mockRestore();
                         spyCacheWrite.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getSendUtxo', function () {
+        it('returns a single utxo if its amount bigger than requested', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myCode, amount, myItem1, myItem2, utxoDataList, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myCode = 'code1';
+                        amount = BigInt(4);
+                        myItem1 = {
+                            sid: 1,
+                            body: {
+                                asset_type: myCode,
+                                amount: 5,
+                            },
+                            utxo: { foo1: 'bar1' },
+                            ownerMemo: { bar1: 'foo1' },
+                            memoData: 'myMemoData1',
+                        };
+                        myItem2 = {
+                            sid: 3,
+                            body: {
+                                asset_type: myCode,
+                                amount: 4,
+                            },
+                            utxo: { foo2: 'bar2' },
+                            ownerMemo: { bar2: 'foo2' },
+                            memoData: 'myMemoData1',
+                        };
+                        utxoDataList = [myItem1, myItem2];
+                        return [4 /*yield*/, UtxoHelper.getSendUtxo(myCode, amount, utxoDataList)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveLength(1);
+                        expect(result).toStrictEqual([
+                            {
+                                amount: amount,
+                                originAmount: BigInt(myItem1.body.amount),
+                                sid: myItem1.sid,
+                                utxo: myItem1.utxo,
+                                ownerMemo: myItem1.ownerMemo,
+                                memoData: myItem1.memoData,
+                            },
+                        ]);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns a single utxo if its amount equals to what was requested', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myCode, amount, myItem1, myItem2, utxoDataList, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myCode = 'code1';
+                        amount = BigInt(4);
+                        myItem1 = {
+                            sid: 1,
+                            body: {
+                                asset_type: myCode,
+                                amount: 4,
+                            },
+                            utxo: { foo1: 'bar1' },
+                            ownerMemo: { bar1: 'foo1' },
+                            memoData: 'myMemoData1',
+                        };
+                        myItem2 = {
+                            sid: 3,
+                            body: {
+                                asset_type: myCode,
+                                amount: 4,
+                            },
+                            utxo: { foo2: 'bar2' },
+                            ownerMemo: { bar2: 'foo2' },
+                            memoData: 'myMemoData1',
+                        };
+                        utxoDataList = [myItem1, myItem2];
+                        return [4 /*yield*/, UtxoHelper.getSendUtxo(myCode, amount, utxoDataList)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveLength(1);
+                        expect(result).toStrictEqual([
+                            {
+                                amount: amount,
+                                originAmount: BigInt(myItem1.body.amount),
+                                sid: myItem1.sid,
+                                utxo: myItem1.utxo,
+                                ownerMemo: myItem1.ownerMemo,
+                                memoData: myItem1.memoData,
+                            },
+                        ]);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns a a list of utxo with the amount equals to what was requested', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myCode, amount, myItem1, myItem2, myItem3, myItem4, utxoDataList, result, firstUtxo, secondUtxo, thirdUtxo, totalReturnedAmount;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myCode = 'code1';
+                        amount = BigInt(4);
+                        myItem1 = {
+                            sid: 1,
+                            body: {
+                                asset_type: myCode,
+                                amount: 2,
+                            },
+                            utxo: { foo1: 'bar1' },
+                            ownerMemo: { bar1: 'foo1' },
+                            memoData: 'myMemoData1',
+                        };
+                        myItem2 = {
+                            sid: 2,
+                            body: {
+                                asset_type: myCode,
+                                amount: 1,
+                            },
+                            utxo: { foo2: 'bar2' },
+                            ownerMemo: { bar2: 'foo2' },
+                            memoData: 'myMemoData2',
+                        };
+                        myItem3 = {
+                            sid: 1,
+                            body: {
+                                asset_type: myCode,
+                                amount: 5,
+                            },
+                            utxo: { foo3: 'bar3' },
+                            ownerMemo: { bar3: 'foo3' },
+                            memoData: 'myMemoData3',
+                        };
+                        myItem4 = {
+                            sid: 4,
+                            body: {
+                                asset_type: myCode,
+                                amount: 2,
+                            },
+                            utxo: { foo4: 'bar4' },
+                            ownerMemo: { bar4: 'foo4' },
+                            memoData: 'myMemoData4',
+                        };
+                        utxoDataList = [myItem1, myItem2, myItem3, myItem4];
+                        return [4 /*yield*/, UtxoHelper.getSendUtxo(myCode, amount, utxoDataList)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveLength(3);
+                        firstUtxo = result[0], secondUtxo = result[1], thirdUtxo = result[2];
+                        totalReturnedAmount = Number(firstUtxo.amount) + Number(secondUtxo.amount) + Number(thirdUtxo.amount);
+                        expect(amount).toBe(BigInt(totalReturnedAmount));
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('skips utxo which do not have requested code', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myCode, amount, notMyItem, utxoDataList, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myCode = 'code1';
+                        amount = BigInt(4);
+                        notMyItem = {
+                            sid: 2,
+                            body: {
+                                asset_type: 'boo',
+                                amount: 2,
+                            },
+                            utxo: { foo2: 'bar2' },
+                            ownerMemo: { bar2: 'foo2' },
+                            memoData: 'myMemoData2',
+                        };
+                        utxoDataList = [notMyItem];
+                        return [4 /*yield*/, UtxoHelper.getSendUtxo(myCode, amount, utxoDataList)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveLength(0);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an empty list if requested amount was <= 0', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myCode, amount, myItem1, myItem2, utxoDataList, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myCode = 'code1';
+                        amount = BigInt(0);
+                        myItem1 = {
+                            sid: 1,
+                            body: {
+                                asset_type: myCode,
+                                amount: 4,
+                            },
+                            utxo: { foo1: 'bar1' },
+                            ownerMemo: { bar1: 'foo1' },
+                            memoData: 'myMemoData1',
+                        };
+                        myItem2 = {
+                            sid: 3,
+                            body: {
+                                asset_type: myCode,
+                                amount: 4,
+                            },
+                            utxo: { foo2: 'bar2' },
+                            ownerMemo: { bar2: 'foo2' },
+                            memoData: 'myMemoData1',
+                        };
+                        utxoDataList = [myItem1, myItem2];
+                        return [4 /*yield*/, UtxoHelper.getSendUtxo(myCode, amount, utxoDataList)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveLength(0);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('addUtxoInputs', function () {
+        it('returns a list of utxo inputs', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var amountOne, amountTwo, originAmountOne, originAmountTwo, utxoOutputItemOne, utxoOutputItemTwo, utxoSids, assetRecord, LedgerClientAssetRecord, txoRef, LedgerTxoRef, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson, spyLedgerTxoRef, result, inputParametersList, inputAmount, firstInput, secondInput;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        amountOne = 4;
+                        amountTwo = 3;
+                        originAmountOne = 20;
+                        originAmountTwo = 5;
+                        utxoOutputItemOne = {
+                            amount: BigInt(amountOne),
+                            originAmount: BigInt(originAmountOne),
+                            sid: 1,
+                            utxo: { foo: 'bar1' },
+                            ownerMemo: { bar: 'foo1' },
+                            memoData: 'myMem1o',
+                        };
+                        utxoOutputItemTwo = {
+                            amount: BigInt(amountTwo),
+                            originAmount: BigInt(originAmountTwo),
+                            sid: 2,
+                            utxo: { foo: 'bar2' },
+                            ownerMemo: { bar: 'foo2' },
+                            memoData: 'myMemo2',
+                        };
+                        utxoSids = [utxoOutputItemOne, utxoOutputItemTwo];
+                        assetRecord = {
+                            a: 'myAssetRecord',
+                        };
+                        LedgerClientAssetRecord = {
+                            from_json: jest.fn(function () {
+                                return assetRecord;
+                            }),
+                        };
+                        txoRef = { bar: 'myTxoRef' };
+                        LedgerTxoRef = {
+                            absolute: jest.fn(function () {
+                                return txoRef;
+                            }),
+                        };
+                        myLedger = {
+                            foo: 'node',
+                            ClientAssetRecord: LedgerClientAssetRecord,
+                            TxoRef: LedgerTxoRef,
+                        };
+                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
+                            return Promise.resolve(myLedger);
+                        });
+                        spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+                        spyLedgerTxoRef = jest.spyOn(LedgerTxoRef, 'absolute');
+                        return [4 /*yield*/, UtxoHelper.addUtxoInputs(utxoSids)];
+                    case 1:
+                        result = _a.sent();
+                        expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+                        expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(2, utxoOutputItemTwo.utxo);
+                        expect(spyLedgerTxoRef).toHaveBeenNthCalledWith(1, BigInt(utxoOutputItemOne.sid));
+                        expect(spyLedgerTxoRef).toHaveBeenNthCalledWith(2, BigInt(utxoOutputItemTwo.sid));
+                        inputParametersList = result.inputParametersList, inputAmount = result.inputAmount;
+                        expect(inputParametersList).toHaveLength(2);
+                        firstInput = inputParametersList[0], secondInput = inputParametersList[1];
+                        expect(firstInput).toHaveProperty('txoRef');
+                        expect(firstInput).toHaveProperty('assetRecord');
+                        expect(firstInput).toHaveProperty('ownerMemo');
+                        expect(firstInput).toHaveProperty('amount');
+                        expect(firstInput).toHaveProperty('memoData');
+                        expect(firstInput).toHaveProperty('sid');
+                        expect(firstInput.txoRef).toBe(txoRef);
+                        expect(firstInput.assetRecord).toBe(assetRecord);
+                        expect(firstInput.ownerMemo).toBe(utxoOutputItemOne.ownerMemo);
+                        expect(firstInput.amount).toBe(utxoOutputItemOne.amount);
+                        expect(firstInput.memoData).toBe(utxoOutputItemOne.memoData);
+                        expect(firstInput.sid).toBe(utxoOutputItemOne.sid);
+                        expect(secondInput.amount).toBe(utxoOutputItemTwo.amount);
+                        expect(inputAmount).toBe(BigInt(originAmountOne + originAmountTwo));
+                        spyGetLedger.mockRestore();
+                        spyLedgerClientAssetRecordFromJson.mockRestore();
+                        spyLedgerTxoRef.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if it can not open client record from ledger', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var amountOne, originAmountOne, utxoOutputItemOne, utxoSids, LedgerClientAssetRecord, txoRef, LedgerTxoRef, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        amountOne = 4;
+                        originAmountOne = 20;
+                        utxoOutputItemOne = {
+                            amount: BigInt(amountOne),
+                            originAmount: BigInt(originAmountOne),
+                            sid: 1,
+                            utxo: { foo: 'bar1' },
+                            ownerMemo: { bar: 'foo1' },
+                            memoData: 'myMem1o',
+                        };
+                        utxoSids = [utxoOutputItemOne];
+                        LedgerClientAssetRecord = {
+                            from_json: jest.fn(function () {
+                                throw new Error('boom');
+                            }),
+                        };
+                        txoRef = { bar: 'myTxoRef' };
+                        LedgerTxoRef = {
+                            absolute: jest.fn(function () {
+                                return txoRef;
+                            }),
+                        };
+                        myLedger = {
+                            foo: 'node',
+                            ClientAssetRecord: LedgerClientAssetRecord,
+                            TxoRef: LedgerTxoRef,
+                        };
+                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
+                            return Promise.resolve(myLedger);
+                        });
+                        spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+                        return [4 /*yield*/, expect(UtxoHelper.addUtxoInputs(utxoSids)).rejects.toThrow('Can not get client asset record')];
+                    case 1:
+                        _a.sent();
+                        expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+                        spyGetLedger.mockRestore();
+                        spyLedgerClientAssetRecordFromJson.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if it can not get txo ref from ledger', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var amountOne, originAmountOne, utxoOutputItemOne, utxoSids, assetRecord, LedgerClientAssetRecord, LedgerTxoRef, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        amountOne = 4;
+                        originAmountOne = 20;
+                        utxoOutputItemOne = {
+                            amount: BigInt(amountOne),
+                            originAmount: BigInt(originAmountOne),
+                            sid: 1,
+                            utxo: { foo: 'bar1' },
+                            ownerMemo: { bar: 'foo1' },
+                            memoData: 'myMem1o',
+                        };
+                        utxoSids = [utxoOutputItemOne];
+                        assetRecord = {
+                            a: 'myAssetRecord',
+                        };
+                        LedgerClientAssetRecord = {
+                            from_json: jest.fn(function () {
+                                return assetRecord;
+                            }),
+                        };
+                        LedgerTxoRef = {
+                            absolute: jest.fn(function () {
+                                throw new Error('boom');
+                            }),
+                        };
+                        myLedger = {
+                            foo: 'node',
+                            ClientAssetRecord: LedgerClientAssetRecord,
+                            TxoRef: LedgerTxoRef,
+                        };
+                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
+                            return Promise.resolve(myLedger);
+                        });
+                        spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
+                        return [4 /*yield*/, expect(UtxoHelper.addUtxoInputs(utxoSids)).rejects.toThrow('Can not convert given sid id to a BigInt')];
+                    case 1:
+                        _a.sent();
+                        expect(spyLedgerClientAssetRecordFromJson).toHaveBeenNthCalledWith(1, utxoOutputItemOne.utxo);
+                        spyGetLedger.mockRestore();
+                        spyLedgerClientAssetRecordFromJson.mockRestore();
                         return [2 /*return*/];
                 }
             });
