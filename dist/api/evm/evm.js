@@ -65,7 +65,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
-                address = ledger.get_coinbase_address();
+                address = ledger.base64_to_bech32(ledger.get_coinbase_address());
                 assetCode = ledger.fra_get_asset_code();
                 assetBlindRules = {
                     isAmountBlind: false,
