@@ -1,32 +1,70 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { rest } from 'msw';
-import { setupServer } from 'msw/node';
+import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
+import * as Evm from './evm';
+import * as Transaction from '../transaction/transaction';
+import * as Fee from '../../services/fee';
+import * as KeypairApi from '../keypair/keypair';
 
-const myDefaultResult = [
-  {
-    foo: 'bar',
-  },
-  {
-    barfoo: 'foobar',
-  },
-];
+interface TransferOpBuilderLight {
+  add_input_with_tracing?: () => TransferOpBuilderLight;
+  add_input_no_tracing?: () => TransferOpBuilderLight;
+  add_output_with_tracing?: () => TransferOpBuilderLight;
+  add_output_no_tracing?: () => TransferOpBuilderLight;
+  add_operation_convert_account?: () => TransactionBuilder;
+  new?: () => TransferOpBuilderLight;
+  add_transfer_operation?: () => TransactionBuilder;
+  create?: () => TransferOpBuilderLight;
+  sign?: () => TransferOpBuilderLight;
+  transaction?: () => string;
+}
 
-const defaultUrl = `https://foo.com`;
+describe('evm', () => {
+  describe('sendAccountToEvm', () => {
+    it('sendAccountToEvm funds', async () => {
+      const fakeTransactionBuilder: TransferOpBuilderLight = {
+        add_operation_convert_account: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        }),
+      };
 
-const server = setupServer(
-  rest.get(defaultUrl, (_req, res, ctx) => {
-    return res(ctx.json(myDefaultResult));
-  }),
-);
+      const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
+        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+      });
 
-beforeAll(() => server.listen());
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
+      const spyAddOperationConvertAccount = jest
+        .spyOn(fakeTransactionBuilder, 'add_operation_convert_account')
+        .mockImplementation(() => {
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+        });
+      const ledger = await getLedger();
+      const address = ledger.get_coinbase_address();
+      const assetCode = ledger.fra_get_asset_code();
 
-describe('foo', () => {
-  it('bar', () => {
-    const foo = 1;
-    expect(foo).toEqual(1);
+      const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
+      const amount = '2';
+      const ethAddress = 'myValidaotrAddress';
+      const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+      const result = await Evm.sendAccountToEvm(walletInfo, amount, ethAddress);
+
+      expect(spyTransactionSendToaddress).toHaveBeenCalledWith(
+        walletInfo,
+        address,
+        amount,
+        assetCode,
+        assetBlindRules,
+      );
+      expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(walletInfo.keypair, ethAddress);
+      expect(result).toBe(fakeTransactionBuilder);
+
+      spyTransactionSendToaddress.mockRestore();
+      spyAddOperationConvertAccount.mockRestore();
+    });
   });
+
+  // describe('sendEvmToAccount', () => {
+  //   it('claims the rewards from the validator', async () => {});
+  // });
 });

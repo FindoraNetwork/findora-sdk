@@ -90,8 +90,11 @@
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
-    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-evm-0.0.2",
+    "env": "^0.0.2",
+    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-evm-0.0.3",
     "json-bigint": "^1.0.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "os-browserify": "^0.3.0",
+    "util": "^0.12.4"
   }
 }

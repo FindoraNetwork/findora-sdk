@@ -17,6 +17,13 @@ const commonConfig = {
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.wasm'],
     plugins: [new tsconfigPathsPlugin()],
+    fallback: {
+      path: false,
+      fs: false,
+      env: false,
+      os: require.resolve('os-browserify/browser'),
+      util: require.resolve('util/'),
+    },
   },
   plugins: [
     new webpack.IgnorePlugin({
