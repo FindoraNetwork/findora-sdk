@@ -12,7 +12,7 @@ export const sendAccountToEvm = async (
   ethAddress: string,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
-  const address = ledger.get_coinbase_address();
+  const address = ledger.base64_to_bech32(ledger.get_coinbase_address());
   const assetCode = ledger.fra_get_asset_code();
   const assetBlindRules: AssetApi.AssetBlindRules = {
     isAmountBlind: false,
