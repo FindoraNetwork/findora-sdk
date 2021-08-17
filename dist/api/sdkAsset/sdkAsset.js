@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
 // import JSONbig from 'json-bigint';
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
@@ -100,9 +100,6 @@ var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getMinimalFee = getMinimalFee;
-/**
- * Add unit test
- */
 var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, key;
     return __generator(this, function (_a) {
@@ -160,13 +157,14 @@ var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0
         }
     });
 }); };
+exports.getDefaultAssetRules = getDefaultAssetRules;
 var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
     var defaultAssetRules, ledger, transferable, updatable, decimals, traceable, maxNumbers, assetRules, trackingKey, tracingPolicy;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 if (!!newAssetRules) return [3 /*break*/, 2];
-                return [4 /*yield*/, getDefaultAssetRules()];
+                return [4 /*yield*/, exports.getDefaultAssetRules()];
             case 1:
                 defaultAssetRules = _a.sent();
                 return [2 /*return*/, defaultAssetRules];
@@ -190,6 +188,7 @@ var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
+exports.getAssetRules = getAssetRules;
 var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, assetRules, assetMemo) {
     if (assetMemo === void 0) { assetMemo = 'memo'; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -206,7 +205,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
                         throw new Error(error.message);
                     }
                     if (!stateCommitment) {
-                        throw new Error('could not receive response from state commitement call');
+                        throw new Error('Could not receive response from state commitement call');
                     }
                     _ = stateCommitment[0], height = stateCommitment[1];
                     blockCount = BigInt(height);
@@ -216,6 +215,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
         });
     });
 };
+exports.getDefineAssetTransactionBuilder = getDefineAssetTransactionBuilder;
 var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, _a, stateCommitment, error, _, height, blockCount, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
     return __generator(this, function (_b) {
@@ -230,7 +230,7 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
                     throw new Error(error.message);
                 }
                 if (!stateCommitment) {
-                    throw new Error('could not receive response from state commitement call');
+                    throw new Error('Could not receive response from state commitement call');
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
@@ -242,11 +242,12 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
         }
     });
 }); };
+exports.getIssueAssetTransactionBuilder = getIssueAssetTransactionBuilder;
 var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { return __awaiter(void 0, void 0, void 0, function () {
     var assetRules, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, err_1, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getAssetRules(newAssetRules)];
+            case 0: return [4 /*yield*/, exports.getAssetRules(newAssetRules)];
             case 1:
                 assetRules = _a.sent();
                 return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
@@ -262,7 +263,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, getDefineAssetTransactionBuilder(walletInfo.keypair, assetName, assetRules, assetMemo)];
+                return [4 /*yield*/, exports.getDefineAssetTransactionBuilder(walletInfo.keypair, assetName, assetRules, assetMemo)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 6];
@@ -304,7 +305,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals)];
+                return [4 /*yield*/, exports.getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 6];
@@ -338,14 +339,14 @@ var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, vo
             case 2:
                 err_3 = _a.sent();
                 e = err_3;
-                throw new Error("Error Could not define asset: \"" + e.message + "\"");
+                throw new Error("Could not get asset token: \"" + e.message + "\"");
             case 3:
                 assetResult = result.response, submitError = result.error;
                 if (submitError) {
-                    throw new Error("Could not submit get asset details transaction: \"" + submitError.message + "\"");
+                    throw new Error("Could not get asset details: \"" + submitError.message + "\"");
                 }
                 if (!assetResult) {
-                    throw new Error("Could not get asset details - submit handle is missing");
+                    throw new Error("Could not get asset details - asset result is missing");
                 }
                 asset = assetResult.properties;
                 return [4 /*yield*/, keypair_1.getAddressByPublicKey(asset.issuer.key)];
