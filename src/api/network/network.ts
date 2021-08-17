@@ -342,7 +342,6 @@ export const submitEvmTx = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.SubmitEvmTxResult> => {
   const url = `${getExplorerApiRoute()}`;
-  console.log('url', url);
   const params = {
     id: 58,
     jsonrpc: '2.0',

@@ -55,7 +55,6 @@ export const sendEvmToAccount = async (
     if (result.response && result.response.result.response.code === 0) {
       nonce = result.response.result.response.value;
       nonce = atob(nonce);
-      console.log(nonce);
     } else {
       throw new Error('Get nonce error');
     }

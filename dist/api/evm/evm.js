@@ -111,7 +111,6 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 if (result_1.response && result_1.response.result.response.code === 0) {
                     nonce = result_1.response.result.response.value;
                     nonce = atob_1.default(nonce);
-                    console.log(nonce);
                 }
                 else {
                     throw new Error('Get nonce error');

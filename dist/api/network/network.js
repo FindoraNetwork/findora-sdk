@@ -427,7 +427,6 @@ var submitEvmTx = function (tx, config) { return __awaiter(void 0, void 0, void 
         switch (_a.label) {
             case 0:
                 url = "" + getExplorerApiRoute();
-                console.log('url', url);
                 params = {
                     id: 58,
                     jsonrpc: '2.0',
