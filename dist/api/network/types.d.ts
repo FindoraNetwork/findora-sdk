@@ -83,6 +83,31 @@ export interface TxResult {
     gasWanted?: string;
     gasUsed?: string;
 }
+export interface AbciNoce {
+    code: number;
+    log: string;
+    info: string;
+    index: string;
+    key: any;
+    value: string;
+    proof: any;
+    height: string;
+    codespace: string;
+}
+export interface SubmitEvmTx {
+    height: string;
+    hash: string;
+    deliver_tx: {
+        log: string;
+        data: string;
+        code: string;
+    };
+    check_tx: {
+        log: string;
+        data: string;
+        code: string;
+    };
+}
 export interface TxInfo {
     code: number;
     data: null | any[];
@@ -155,4 +180,27 @@ export interface TxRecord {
 export interface TxOutput {
     id: number | null;
     record: TxRecord;
+}
+export declare type AbciNoceResponse = {
+    result: {
+        response: AbciNoce;
+    };
+};
+export interface AbciNoceResult extends NetworkAxiosDataResult {
+    response?: AbciNoceResponse;
+}
+export interface AbciInfoResult extends NetworkAxiosDataResult {
+    response?: AbciNoceResponse;
+}
+export declare type SubmitEvmTxResponse = {
+    result: {
+        code: number;
+        data: string;
+        log: string;
+        codespace: string;
+        hash: string;
+    };
+};
+export interface SubmitEvmTxResult extends NetworkAxiosDataResult {
+    response?: SubmitEvmTxResponse;
 }

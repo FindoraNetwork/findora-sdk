@@ -54,10 +54,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEvmToAccount = exports.sendAccountToEvm = void 0;
+var atob_1 = __importDefault(require("atob"));
+var btoa_1 = __importDefault(require("btoa"));
 var Transaction = __importStar(require("../transaction"));
+var AssetApi = __importStar(require("../sdkAsset"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var api_1 = require("../../api");
+var bigNumber_1 = require("../../services/bigNumber");
 var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, address, assetCode, assetBlindRules, transactionBuilder;
     return __generator(this, function (_a) {
@@ -80,16 +88,63 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
     });
 }); };
 exports.sendAccountToEvm = sendAccountToEvm;
-var sendEvmToAccount = function (fraAddress, amount, nonce, ethPrivate) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, accountPublickey;
+var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, accountPublickey, asset, decimals, utxoNumbers, nonce, result_1, err_1, e, result, e, submitResult, err_2, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 accountPublickey = ledger.public_key_from_bech32(fraAddress);
-                ledger.transfer_to_utxo_from_account(accountPublickey, BigInt(amount), ethPrivate, BigInt(nonce));
-                return [2 /*return*/];
+                return [4 /*yield*/, AssetApi.getAssetDetails(ledger.fra_get_asset_code())];
+            case 2:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                utxoNumbers = BigInt(bigNumber_1.toWei(amount, decimals).toString());
+                nonce = '';
+                _a.label = 3;
+            case 3:
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, api_1.Network.getAbciNoce(ethAddress)];
+            case 4:
+                result_1 = _a.sent();
+                if (result_1.response && result_1.response.result.response.code === 0) {
+                    nonce = result_1.response.result.response.value;
+                    nonce = atob_1.default(nonce);
+                    console.log(nonce);
+                }
+                else {
+                    throw new Error('Get nonce error');
+                }
+                return [3 /*break*/, 6];
+            case 5:
+                err_1 = _a.sent();
+                e = err_1;
+                throw new Error("Get nonce error \"" + ethAddress + "\". Error - " + e.message);
+            case 6:
+                result = '';
+                try {
+                    result = ledger.transfer_to_utxo_from_account(accountPublickey, BigInt(utxoNumbers), ethPrivate, BigInt(nonce));
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Evm to Account wasm error\". Error - " + e.message);
+                }
+                _a.label = 7;
+            case 7:
+                _a.trys.push([7, 9, , 10]);
+                return [4 /*yield*/, api_1.Network.submitEvmTx(btoa_1.default(result))];
+            case 8:
+                submitResult = _a.sent();
+                if (!submitResult.response) {
+                    throw new Error('Could not submit of transactions. No response from the server.');
+                }
+                return [2 /*return*/, submitResult];
+            case 9:
+                err_2 = _a.sent();
+                e = err_2;
+                throw new Error("Evm to Account submit error\". Error - " + e.message);
+            case 10: return [2 /*return*/];
         }
     });
 }); };

@@ -84,11 +84,13 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
+    "@types/btoa": "^1.2.3",
     "atob": "^2.1.2",
     "aws-sdk": "^2.929.0",
     "axios": "^0.21.1",
     "axios-retry": "^3.1.9",
     "bignumber.js": "^9.0.1",
+    "btoa": "^1.2.1",
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
     "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-evm-0.0.4",

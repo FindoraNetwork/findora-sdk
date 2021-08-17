@@ -1,3 +1,5 @@
+import atob from 'atob';
+import btoa from 'btoa';
 import * as Transaction from '../transaction';
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
@@ -5,6 +7,9 @@ import { getAddressPublicAndKey, WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { getFraPublicKey } from '../sdkAsset';
+import { Network } from '../../api';
+import { toWei } from '../../services/bigNumber';
+import { SubmitEvmTxResult } from '../network/types';
 
 export const sendAccountToEvm = async (
   walletInfo: WalletKeypar,
@@ -34,10 +39,56 @@ export const sendAccountToEvm = async (
 export const sendEvmToAccount = async (
   fraAddress: string,
   amount: string,
-  nonce: string,
   ethPrivate: string,
-) => {
+  ethAddress: string,
+): Promise<SubmitEvmTxResult> => {
   const ledger = await getLedger();
   const accountPublickey = ledger.public_key_from_bech32(fraAddress);
-  ledger.transfer_to_utxo_from_account(accountPublickey, BigInt(amount), ethPrivate, BigInt(nonce));
+  const asset = await AssetApi.getAssetDetails(ledger.fra_get_asset_code());
+  const decimals = asset.assetRules.decimals;
+  const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+  let nonce = '';
+
+  try {
+    const result = await Network.getAbciNoce(ethAddress);
+    if (result.response && result.response.result.response.code === 0) {
+      nonce = result.response.result.response.value;
+      nonce = atob(nonce);
+      console.log(nonce);
+    } else {
+      throw new Error('Get nonce error');
+    }
+  } catch (err) {
+    const e: Error = err as Error;
+    throw new Error(`Get nonce error "${ethAddress}". Error - ${e.message}`);
+  }
+
+  let result = '';
+
+  try {
+    result = ledger.transfer_to_utxo_from_account(
+      accountPublickey,
+      BigInt(utxoNumbers),
+      ethPrivate,
+      BigInt(nonce),
+    );
+  } catch (err) {
+    const e: Error = err as Error;
+    throw new Error(`Evm to Account wasm error". Error - ${e.message}`);
+  }
+
+  let submitResult: SubmitEvmTxResult;
+  try {
+    submitResult = await Network.submitEvmTx(btoa(result));
+
+    if (!submitResult.response) {
+      throw new Error('Could not submit of transactions. No response from the server.');
+    }
+
+    return submitResult;
+  } catch (err) {
+    const e: Error = err as Error;
+    throw new Error(`Evm to Account submit error". Error - ${e.message}`);
+  }
 };

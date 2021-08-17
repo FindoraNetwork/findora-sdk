@@ -15,7 +15,7 @@ export interface SdkEnvironmentConfig {
 }
 
 const SdkDefaultEnvironment = {
-  hostUrl: 'https://dev-staging.dev.findora.org',
+  hostUrl: 'https://dev-evm.dev.findora.org',
   queryPort: '8667',
   ledgerPort: '8668',
   submissionPort: '8669',

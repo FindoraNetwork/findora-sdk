@@ -73,7 +73,7 @@ describe('SdkMain', function () {
         }); });
         it('initializes sdk environment with default values', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
-                expect(Sdk_1.default.environment.hostUrl).toEqual('https://dev-staging.dev.findora.org');
+                expect(Sdk_1.default.environment.hostUrl).toEqual('https://dev-evm.dev.findora.org');
                 expect(Sdk_1.default.environment.queryPort).toEqual('8667');
                 expect(Sdk_1.default.environment.ledgerPort).toEqual('8668');
                 expect(Sdk_1.default.environment.submissionPort).toEqual('8669');
@@ -99,7 +99,7 @@ describe('SdkMain', function () {
                 expect(Sdk_1.default.environment.hostUrl).toEqual('foo');
                 expect(Sdk_1.default.environment.queryPort).toEqual('bar');
                 Sdk_1.default.reset();
-                expect(Sdk_1.default.environment.hostUrl).toEqual('https://dev-staging.dev.findora.org');
+                expect(Sdk_1.default.environment.hostUrl).toEqual('https://dev-evm.dev.findora.org');
                 expect(Sdk_1.default.environment.queryPort).toEqual('8667');
                 expect(Sdk_1.default.environment.ledgerPort).toEqual('8668');
                 expect(Sdk_1.default.environment.submissionPort).toEqual('8669');

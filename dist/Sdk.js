@@ -54,7 +54,7 @@ var cache_1 = require("./config/cache");
 var factory_1 = __importDefault(require("./services/cacheStore/factory"));
 var providers_1 = require("./services/cacheStore/providers");
 var SdkDefaultEnvironment = {
-    hostUrl: 'https://dev-staging.dev.findora.org',
+    hostUrl: 'https://dev-evm.dev.findora.org',
     queryPort: '8667',
     ledgerPort: '8668',
     submissionPort: '8669',

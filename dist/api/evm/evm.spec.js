@@ -101,8 +101,24 @@ describe('evm', function () {
             });
         }); });
     });
-    // describe('sendEvmToAccount', () => {
-    //   it('claims the rewards from the validator', async () => {});
-    // });
+    describe('sendEvmToAccount', function () {
+        it('claims the rewards from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var fraAddress, amount, ethPrivate, ethAddress, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
+                        amount = '1';
+                        ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';
+                        ethAddress = '0xA2892dA49B74F069400694E4930aa9D6Db0e67b3';
+                        return [4 /*yield*/, Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress)];
+                    case 1:
+                        result = _a.sent();
+                        console.log(result);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
 });
 //# sourceMappingURL=evm.spec.js.map

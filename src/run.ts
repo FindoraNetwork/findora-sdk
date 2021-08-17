@@ -7,6 +7,7 @@ import { FileCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
+import { Evm } from './api';
 
 dotenv.config();
 
@@ -15,7 +16,8 @@ dotenv.config();
  */
 const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org',
+  hostUrl: 'https://dev-evm.dev.findora.org',
+  // hostUrl: 'https://prod-testnet.prod.findora.org',
   cacheProvider: FileCacheProvider,
   // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
@@ -517,6 +519,14 @@ const myFuncUndelegate = async () => {
   // console.log('unDelegateResHandle!!!', unDelegateResHandle);
 };
 
+const sendEvmToAccount = async () => {
+  const fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
+  const amount = '1';
+  const ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';
+  const ethAddress = '0xA2892dA49B74F069400694E4930aa9D6Db0e67b3';
+  await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
+};
+
 // New
 // getFraAssetCode(); // works
 // getFraBalance(); // works
@@ -532,4 +542,5 @@ const myFuncUndelegate = async () => {
 // transferCustomAssetToMultipleRecepients();
 // getCustomAssetDetails(); // works
 // getTransactionStatus(); // works
-getBlockDetails();
+// getBlockDetails();
+sendEvmToAccount();

@@ -15,3 +15,6 @@ export declare const getBlock: (height: number, config?: Types.NetworkAxiosConfi
 export declare const getHashSwap: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.HashSwapDataResult>;
 export declare const getTxList: (address: string, type: 'to' | 'from', page?: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
 export declare const getTransactionDetails: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxDetailsDataResult>;
+export declare const getAbciNoce: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciNoceResult>;
+export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciInfoResult>;
+export declare const submitEvmTx: (tx: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.SubmitEvmTxResult>;
