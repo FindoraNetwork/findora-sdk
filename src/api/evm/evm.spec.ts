@@ -39,7 +39,7 @@ describe('evm', () => {
           return (fakeTransactionBuilder as unknown) as TransactionBuilder;
         });
       const ledger = await getLedger();
-      const address = ledger.get_coinbase_address();
+      const address = ledger.base64_to_bech32(ledger.get_coinbase_address());
       const assetCode = ledger.fra_get_asset_code();
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;

@@ -82,7 +82,7 @@ describe('evm', function () {
                         return [4 /*yield*/, ledgerWrapper_1.getLedger()];
                     case 1:
                         ledger = _a.sent();
-                        address = ledger.get_coinbase_address();
+                        address = ledger.base64_to_bech32(ledger.get_coinbase_address());
                         assetCode = ledger.fra_get_asset_code();
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
