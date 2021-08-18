@@ -101,9 +101,9 @@ export const getCreatedAssets = async (address: string): Promise<ProcessedIssued
 
   const result = await Network.getIssuedRecords(publickey);
 
-  const { response: recordsResponse } = result;
+  const { response: recordsResponse, error: recordsError } = result;
 
-  if (!recordsResponse) {
+  if (recordsError || !recordsResponse) {
     throw new Error('No issued records were fetched!');
   }
 
