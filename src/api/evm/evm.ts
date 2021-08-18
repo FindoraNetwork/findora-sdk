@@ -1,5 +1,4 @@
-import atob from 'atob';
-import btoa from 'btoa';
+import base64 from 'js-base64';
 import * as Transaction from '../transaction';
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
@@ -54,7 +53,7 @@ export const sendEvmToAccount = async (
     const result = await Network.getAbciNoce(ethAddress);
     if (result.response && result.response.result.response.code === 0) {
       nonce = result.response.result.response.value;
-      nonce = atob(nonce);
+      nonce = base64.decode(nonce);
     } else {
       throw new Error('Get nonce error');
     }
@@ -79,7 +78,7 @@ export const sendEvmToAccount = async (
 
   let submitResult: SubmitEvmTxResult;
   try {
-    submitResult = await Network.submitEvmTx(btoa(result));
+    submitResult = await Network.submitEvmTx(base64.encode(result));
 
     if (!submitResult.response) {
       throw new Error('Could not submit of transactions. No response from the server.');

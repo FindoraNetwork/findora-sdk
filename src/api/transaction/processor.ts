@@ -1,4 +1,4 @@
-import atob from 'atob';
+import Base64 from 'js-base64';
 import _get from 'lodash/get';
 
 import { TxInfo } from '../network/types';
@@ -22,7 +22,7 @@ export const processTxInfoItem = async (txItem: TxInfo): Promise<Types.Processed
   let parsedTx: Types.ParsedTx;
 
   try {
-    parsedTx = JSON.parse(atob(txItem.tx));
+    parsedTx = JSON.parse(Base64.decode(txItem.tx));
   } catch (err) {
     const e: Error = err as Error;
     throw new Error(`Can not parse the tx info from the tx item. Details: "${e.message}"`);

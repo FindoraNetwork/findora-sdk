@@ -59,8 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendEvmToAccount = exports.sendAccountToEvm = void 0;
-var atob_1 = __importDefault(require("atob"));
-var btoa_1 = __importDefault(require("btoa"));
+var js_base64_1 = __importDefault(require("js-base64"));
 var Transaction = __importStar(require("../transaction"));
 var AssetApi = __importStar(require("../sdkAsset"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -110,7 +109,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 result_1 = _a.sent();
                 if (result_1.response && result_1.response.result.response.code === 0) {
                     nonce = result_1.response.result.response.value;
-                    nonce = atob_1.default(nonce);
+                    nonce = js_base64_1.default.decode(nonce);
                 }
                 else {
                     throw new Error('Get nonce error');
@@ -132,7 +131,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 _a.label = 7;
             case 7:
                 _a.trys.push([7, 9, , 10]);
-                return [4 /*yield*/, api_1.Network.submitEvmTx(btoa_1.default(result))];
+                return [4 /*yield*/, api_1.Network.submitEvmTx(js_base64_1.default.encode(result))];
             case 8:
                 submitResult = _a.sent();
                 if (!submitResult.response) {

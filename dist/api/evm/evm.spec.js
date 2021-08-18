@@ -102,7 +102,7 @@ describe('evm', function () {
         }); });
     });
     describe('sendEvmToAccount', function () {
-        it('claims the rewards from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('sendEvmToAccount funds', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fraAddress, amount, ethPrivate, ethAddress, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -114,7 +114,6 @@ describe('evm', function () {
                         return [4 /*yield*/, Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress)];
                     case 1:
                         result = _a.sent();
-                        console.log(result);
                         return [2 /*return*/];
                 }
             });
