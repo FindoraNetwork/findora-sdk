@@ -175,7 +175,7 @@ var processIssuedRecordList = function (issuedRecords) { return __awaiter(void 0
 }); };
 exports.processIssuedRecordList = processIssuedRecordList;
 var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, void 0, function () {
-    var publickey, result, recordsResponse, processedIssuedRecordsList;
+    var publickey, result, recordsResponse, recordsError, processedIssuedRecordsList;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
@@ -184,8 +184,8 @@ var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, Network.getIssuedRecords(publickey)];
             case 2:
                 result = _a.sent();
-                recordsResponse = result.response;
-                if (!recordsResponse) {
+                recordsResponse = result.response, recordsError = result.error;
+                if (recordsError || !recordsResponse) {
                     throw new Error('No issued records were fetched!');
                 }
                 return [4 /*yield*/, exports.processIssuedRecordList(recordsResponse)];
