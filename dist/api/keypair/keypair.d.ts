@@ -6,7 +6,7 @@ export interface LightWalletKeypair {
 export interface WalletKeypar extends LightWalletKeypair {
     keyStore: Uint8Array;
     keypair: XfrKeyPair;
-    privateStr: string;
+    privateStr?: string;
 }
 export declare const getPrivateKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;

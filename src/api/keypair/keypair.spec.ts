@@ -144,7 +144,7 @@ describe('keypair', () => {
       expect(result).toHaveProperty('privateStr');
       expect(result.publickey.length).toEqual(44);
       expect(result.address.length).toEqual(62);
-      expect(result.privateStr.length).toEqual(44);
+      expect(result.privateStr!.length).toEqual(44);
       expect(result.keyStore.length).toEqual(188);
     });
 
