@@ -25,6 +25,7 @@
     "buildAll": "tsc && webpack --mode production",
     "build": "tsc",
     "test": "jest --watch --detectOpenHandles",
+    "jest-coverage": "yarn run jest -- --coverage",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc",
