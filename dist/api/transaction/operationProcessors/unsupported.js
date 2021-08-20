@@ -44,6 +44,8 @@ var processUnsupported = function (op) { return __awaiter(void 0, void 0, void 0
             result: false,
             type: 'unsupported',
             originalOperation: op,
+            from: ['unknonwn'],
+            to: ['unknonwn'],
         };
         return [2 /*return*/, data];
     });
