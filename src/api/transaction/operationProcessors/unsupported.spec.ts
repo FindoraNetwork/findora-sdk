@@ -17,11 +17,13 @@ describe('unsupported (processor)', () => {
       expect(result).toHaveProperty('result');
       expect(result).toHaveProperty('type');
       expect(result).toHaveProperty('originalOperation');
+      expect(result).toHaveProperty('from');
+      expect(result).toHaveProperty('to');
 
       expect(result.result).toEqual(false);
       expect(result.type).toEqual(type);
       expect(result.originalOperation).toBe(payload);
-      expect(Object.keys(result)).toHaveLength(3);
+      expect(Object.keys(result)).toHaveLength(5);
     });
   });
 });

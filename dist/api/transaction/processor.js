@@ -70,7 +70,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processeTxInfoList = exports.processTxInfoItem = void 0;
-var atob_1 = __importDefault(require("atob"));
+var js_base64_1 = __importDefault(require("js-base64"));
 var helpers = __importStar(require("./helpers"));
 var operationProcessors_1 = require("./operationProcessors");
 var processTxOperationItem = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
@@ -97,7 +97,7 @@ var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, voi
         switch (_a.label) {
             case 0:
                 try {
-                    parsedTx = JSON.parse(atob_1.default(txItem.tx));
+                    parsedTx = JSON.parse(js_base64_1.default.decode(txItem.tx));
                 }
                 catch (err) {
                     e = err;
