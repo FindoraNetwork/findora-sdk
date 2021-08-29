@@ -79,7 +79,7 @@ describe('evm', function () {
                             .mockImplementation(function () {
                             return fakeTransactionBuilder;
                         });
-                        return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                        return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                     case 1:
                         ledger = _a.sent();
                         address = ledger.base64_to_bech32(ledger.get_coinbase_address());
