@@ -23,13 +23,15 @@ const readCache = async (filePath: string): Promise<CacheItem> => {
   try {
     fileContent = await readFile(filePath);
   } catch (error) {
-    throw new Error(`could not read file "${filePath}". Error. ${error.message} `);
+    throw new Error(`could not read file "${filePath}". Error. ${(error as Error).message} `);
   }
 
   try {
     cacheData = JSONbig({ useNativeBigInt: true }).parse(fileContent);
   } catch (error) {
-    throw new Error(`could not read parse cache data from  "${fileContent}". Error. ${error.message} `);
+    throw new Error(
+      `could not read parse cache data from  "${fileContent}". Error. ${(error as Error).message} `,
+    );
   }
 
   return cacheData;
@@ -43,19 +45,21 @@ const writeCache = async (filePath: string, data: CacheItem): Promise<boolean> =
   try {
     cacheData = JSONbig({ useNativeBigInt: true }).stringify(data);
   } catch (err) {
-    throw new Error(`can not stringify data for cache, "${err.message}"`);
+    throw new Error(`can not stringify data for cache, "${(err as Error).message}"`);
   }
 
   try {
     createCacheDir(path.parse(filePath).dir);
   } catch (err) {
-    throw new Error(`Failed to create directory, "${err.message}", "dir path: ${path.parse(filePath).dir}"`);
+    throw new Error(
+      `Failed to create directory, "${(err as Error).message}", "dir path: ${path.parse(filePath).dir}"`,
+    );
   }
 
   try {
     result = await writeFile(filePath, cacheData);
   } catch (error) {
-    throw new Error(`can not write cache for "${filePath}", "${error.message}"`);
+    throw new Error(`can not write cache for "${filePath}", "${(error as Error).message}"`);
   }
 
   return result;

@@ -69,7 +69,7 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
     return __generator(this, function (_b) {
         switch (_b.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _b.sent();
                 return [4 /*yield*/, Network.getStateCommitment()];
@@ -93,7 +93,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
     var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
@@ -104,7 +104,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 recieversList.forEach(function (reciver) {
                     var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
                     var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    var utxoNumbers = BigInt(bigNumber_1.toWei(amount, decimals).toString());
+                    var utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
                     var recieverInfoItem = {
                         toPublickey: toPublickey,
                         utxoNumbers: utxoNumbers,
@@ -140,7 +140,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 _a.label = 7;
             case 7:
                 _a.trys.push([7, 9, , 10]);
-                return [4 /*yield*/, exports.getTransactionBuilder()];
+                return [4 /*yield*/, (0, exports.getTransactionBuilder)()];
             case 8:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 10];
@@ -218,11 +218,11 @@ var sendToAddress = function (walletInfo, address, amount, assetCode, assetBlind
     var toWalletInfoLight, recieversInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
+            case 0: return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
             case 1:
                 toWalletInfoLight = _a.sent();
                 recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
-                return [2 /*return*/, exports.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
+                return [2 /*return*/, (0, exports.sendToMany)(walletInfo, recieversInfo, assetCode, assetBlindRules)];
         }
     });
 }); };
@@ -231,10 +231,10 @@ var sendToPublicKey = function (walletInfo, publicKey, amount, assetCode, assetB
     var address;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, keypair_1.getAddressByPublicKey(publicKey)];
+            case 0: return [4 /*yield*/, (0, keypair_1.getAddressByPublicKey)(publicKey)];
             case 1:
                 address = _a.sent();
-                return [2 /*return*/, exports.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
+                return [2 /*return*/, (0, exports.sendToAddress)(walletInfo, address, amount, assetCode, assetBlindRules)];
         }
     });
 }); };
@@ -255,7 +255,7 @@ var getTxList = function (address, type, page) {
                     if (!txList) {
                         throw new Error('Could not get a list of transactions from the server response.');
                     }
-                    return [4 /*yield*/, processor_1.processeTxInfoList(txList)];
+                    return [4 /*yield*/, (0, processor_1.processeTxInfoList)(txList)];
                 case 2:
                     processedTxList = _a.sent();
                     return [2 /*return*/, {
