@@ -1,17 +1,52 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 
+/**
+ * A `light` version of the WalletKeypar, containing only address and publickey
+ *
+ * @param address - FRA wallet address
+ * @param publickey - FRA
+ */
 export interface LightWalletKeypair {
   address: string;
   publickey: string;
 }
 
+/**
+ * A `full`, or **extended** version of the WalletKeypar, containing private key string as well
+ *
+ * @param keyStore - An encrypted keyStore
+ * @param keypair - An instance of {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger } **XfrKeyPair** keypair
+ */
 export interface WalletKeypar extends LightWalletKeypair {
   keyStore: Uint8Array;
   keypair: XfrKeyPair;
   privateStr: string;
 }
 
+/**
+ * Returns a private key
+ *
+ * @remarks
+ * Using a given {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger } **XfrKeyPair** keypair it returns a private key.
+ *
+ * This method is used when user needs to retrieve a private key from the **XfrKeyPair** keypair
+ *
+ * @example
+ *
+ * ```ts
+ * // We use Findora Ledger to generate a new keypair (in demo purposes)
+ * const ledger = await getLedger();
+ * const keypair = ledger.new_keypair();
+ *
+ * // Now, we use `getPrivateKeyStr` to return a provate key of this keypair
+ * const privateStr = await getPrivateKeyStr(keypair);
+ * ```
+ * @param keypair - XfrKeyPair
+ * @returns Private key
+ *
+ * @throws An error returned by Ledger with a prefix added by SDK
+ */
 export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
 
@@ -98,6 +133,33 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
   }
 };
 
+/**
+ * Creates an instance of {@link WalletKeypar} using given private key and password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ * const pkey = 'XXXXXXXXXX';
+ *
+ * // Create a wallet info object using given private key and password
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * ```
+ * @param privateStr - Private key
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const restoreFromPrivateKey = async (privateStr: string, password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 

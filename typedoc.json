@@ -7,6 +7,5 @@
   "name": "Findora Sdk",
   "excludePrivate": true,
   "excludeProtected": true,
-  "media": "img",
   "hideGenerator": true
 }
