@@ -27,10 +27,11 @@
     "test": "jest --watch --detectOpenHandles",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
-    "doc": "typedoc",
+    "doc": "typedoc --out docs src",
     "prepublishOnly": "npm run build",
     "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js --ignore cache/",
+    "jest-coverage": "yarn run jest -- --coverage",
     "start": "concurrently npm:start:*"
   },
   "lint-staged": {
@@ -76,7 +77,7 @@
     "ts-loader": "^8.0.13",
     "ts-node": "^9.1.1",
     "tsconfig-paths-webpack-plugin": "^3.3.0",
-    "typedoc": "^0.20.5",
+    "typedoc": "^0.21.9",
     "typescript": "^4.1.5",
     "webpack": "^5.11.1",
     "webpack-bundle-analyzer": "^4.3.0",
