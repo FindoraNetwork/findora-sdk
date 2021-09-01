@@ -3,6 +3,7 @@
 node_modules
 coverage/
 .idea/
+docs
 .pytest_cache
 yarn.lock
 cache/
