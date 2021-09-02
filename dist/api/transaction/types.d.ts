@@ -77,6 +77,14 @@ export interface DelegationOperation {
     pubkey: string;
     signature: string;
 }
+export interface ConvertAccountOperation {
+    data: {
+        address: {
+            Ethereum: string;
+        };
+    };
+    public: string;
+}
 export interface TxOperation {
     TransferAsset?: TransferAssetOperation;
     IssueAsset?: IssueAssetOperation;
@@ -84,6 +92,7 @@ export interface TxOperation {
     Claim?: ClaimOperation;
     UnDelegation?: UnDelegationOperation;
     Delegation?: DelegationOperation;
+    ConvertAccount?: ConvertAccountOperation;
 }
 export interface ParsedTx {
     body: {
