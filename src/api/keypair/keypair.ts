@@ -24,12 +24,17 @@ export interface LightWalletKeypair {
  * The private key must remain secret while the public key can be safely shared with other users.
  * Users utilize key pairs to interact with the Findora network in a variety of interesting ways.
  *
- * For instance, users can use their private key to sign operations to define, issue, or transfer assets. Users can also
- * use their private keys to access assets that have been sent to them.
+ * For instance, users can use their private key to sign operations to define, issue, or transfer assets. Users can also use their private keys to access assets that have been sent to them.
  *
  * Findora's SDK exposes a key store object that makes it easy for users to manage their keys.
  *
  * To keep private keys secure, the key store is encrypted under a user-provided password.
+ *
+ * The key store contains an encrypted seed that deterministically generates new key pairs.
+ *
+ * Because key generation is deterministic, the key store only needs to encrypt one element of data, the seed!
+ *
+ * The seed is encrypted under a master key (PBKDF2 key) derived from the user-provided password. Because generating the master key is expensive, KeyStore exposes a utility for deriving it. Applications can derive the master key once on load and cache it for the duration of their lifetime.
  */
 export interface WalletKeypar extends LightWalletKeypair {
   keyStore: Uint8Array;
