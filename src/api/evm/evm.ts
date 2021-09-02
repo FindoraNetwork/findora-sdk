@@ -51,10 +51,10 @@ export const sendAccountToEvm = async (
  *  const result = await Evm.sendEvmToAccount(walletInfo.address, amount, ethPrivate, ethAddress);
  * ```
  *
- * @throws 'Get nonce error'
- * @throws 'Evm to Account wasm error'
- * @throws 'Could not submit of transactions. No response from the server'
- * @throws 'Evm to Account submit error'
+ * @throws `Get nonce error`
+ * @throws `Evm to Account wasm error`
+ * @throws `Could not submit of transactions. No response from the server`
+ * @throws `Evm to Account submit error`
  *
  * @returns Result of transaction submission to the network
  */
