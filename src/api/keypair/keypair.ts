@@ -17,6 +17,19 @@ export interface LightWalletKeypair {
  *
  * @param keyStore - An encrypted keyStore
  * @param keypair - An instance of {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger } **XfrKeyPair** keypair
+ *
+ * @remarks
+ * A Findora key pair consists of a private and public key.
+ *
+ * The private key must remain secret while the public key can be safely shared with other users.
+ * Users utilize key pairs to interact with the Findora network in a variety of interesting ways.
+ *
+ * For instance, users can use their private key to sign operations to define, issue, or transfer assets. Users can also
+ * use their private keys to access assets that have been sent to them.
+ *
+ * Findora's SDK exposes a key store object that makes it easy for users to manage their keys.
+ *
+ * To keep private keys secure, the key store is encrypted under a user-provided password.
  */
 export interface WalletKeypar extends LightWalletKeypair {
   keyStore: Uint8Array;
@@ -26,7 +39,7 @@ export interface WalletKeypar extends LightWalletKeypair {
 
 /**
  * Returns a private key
- *
+ * @rem
  * @remarks
  * Using a given {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger } **XfrKeyPair** keypair it returns a private key.
  *
