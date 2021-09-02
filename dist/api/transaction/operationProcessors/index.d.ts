@@ -4,8 +4,9 @@ import { ProcessedIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset } from './transferAsset';
 import { ProcessedUndelegation } from './undelegation';
 import { ProcessedDelegation } from './delegation';
+import { ProcessedClaim } from './claim';
 import { Unsupported } from './unsupported';
-export declare type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | Unsupported;
+export declare type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | Unsupported;
 export declare type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
 export interface TxOperationProcessors {
     [key: string]: ProcessorType;

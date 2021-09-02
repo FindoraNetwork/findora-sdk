@@ -6,6 +6,7 @@ import { ProcessedIssueAsset, processIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset, processTransferAsset } from './transferAsset';
 import { ProcessedUndelegation, processUndelegation } from './undelegation';
 import { ProcessedDelegation, processDelegation } from './delegation';
+import { ProcessedClaim, processClaim } from './claim';
 
 import { processUnsupported, Unsupported } from './unsupported';
 
@@ -15,6 +16,7 @@ export type ProcessedTx =
   | ProcessedIssueAsset
   | ProcessedUndelegation
   | ProcessedDelegation
+  | ProcessedClaim
   | Unsupported;
 
 export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
@@ -41,6 +43,7 @@ export const processorsMap: TxOperationProcessors = {
   TransferAsset: processTransferAsset,
   IssueAsset: processIssueAsset,
   Unsupported: processUnsupported,
-  ProcessUndelegation: processUndelegation,
-  ProcessDelegation: processDelegation,
+  Undelegation: processUndelegation,
+  Delegation: processDelegation,
+  Claim: processClaim,
 };

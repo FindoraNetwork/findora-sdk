@@ -10,6 +10,7 @@ var issueAsset_1 = require("./issueAsset");
 var transferAsset_1 = require("./transferAsset");
 var undelegation_1 = require("./undelegation");
 var delegation_1 = require("./delegation");
+var claim_1 = require("./claim");
 var unsupported_1 = require("./unsupported");
 var getOperationProcessor = function (operationItem, processors) {
     for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {
@@ -26,7 +27,8 @@ exports.processorsMap = {
     TransferAsset: transferAsset_1.processTransferAsset,
     IssueAsset: issueAsset_1.processIssueAsset,
     Unsupported: unsupported_1.processUnsupported,
-    ProcessUndelegation: undelegation_1.processUndelegation,
-    ProcessDelegation: delegation_1.processDelegation,
+    Undelegation: undelegation_1.processUndelegation,
+    Delegation: delegation_1.processDelegation,
+    Claim: claim_1.processClaim,
 };
 //# sourceMappingURL=index.js.map
