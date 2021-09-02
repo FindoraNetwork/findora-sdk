@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -65,71 +54,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.processeTxInfoList = exports.processTxInfoItem = void 0;
-var js_base64_1 = __importDefault(require("js-base64"));
-var helpers = __importStar(require("./helpers"));
-var operationProcessors_1 = require("./operationProcessors");
-var processTxOperationItem = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
-    var dataProcessor, processedData;
+exports.processDelegation = void 0;
+var Keypair = __importStar(require("../../keypair"));
+var processDelegation = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
+    var operation, from, data;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                dataProcessor = operationProcessors_1.getOperationProcessor(operationItem, operationProcessors_1.processorsMap);
-                return [4 /*yield*/, dataProcessor(operationItem)];
+                operation = operationItem.Delegation;
+                return [4 /*yield*/, Keypair.getAddressByPublicKey(operation.pubkey)];
             case 1:
-                processedData = _a.sent();
-                return [2 /*return*/, processedData];
+                from = _a.sent();
+                data = {
+                    delegation: operation,
+                    from: [from],
+                    to: [from],
+                    type: 'delegation',
+                    originalOperation: operationItem,
+                };
+                return [2 /*return*/, data];
         }
     });
 }); };
-var processTxOperationList = function (operationsList) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, Promise.all(operationsList.map(function (operationItem) { return processTxOperationItem(operationItem); }))];
-    });
-}); };
-var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, void 0, function () {
-    var parsedTx, e, time, hash, code, operationsList, processedOperationList, processedUpdatedTxList;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                try {
-                    parsedTx = JSON.parse(js_base64_1.default.decode(txItem.tx));
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Can not parse the tx info from the tx item. Details: \"" + e.message + "\"");
-                }
-                if (!parsedTx) {
-                    throw new Error('parsed tx is empty');
-                }
-                return [4 /*yield*/, helpers.getBlockTime(txItem.height)];
-            case 1:
-                time = _a.sent();
-                hash = txItem.hash;
-                code = txItem.tx_result.code;
-                operationsList = helpers.getTxOperationsList(parsedTx);
-                return [4 /*yield*/, processTxOperationList(operationsList)];
-            case 2:
-                processedOperationList = _a.sent();
-                processedUpdatedTxList = processedOperationList.map(function (txOperation) { return (__assign(__assign({}, txItem), txOperation)); });
-                return [2 /*return*/, {
-                        code: code,
-                        data: processedUpdatedTxList,
-                        hash: hash,
-                        time: time,
-                    }];
-        }
-    });
-}); };
-exports.processTxInfoItem = processTxInfoItem;
-var processeTxInfoList = function (txList) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
-        return [2 /*return*/, Promise.all(txList.map(function (txItem) { return exports.processTxInfoItem(txItem); }))];
-    });
-}); };
-exports.processeTxInfoList = processeTxInfoList;
-//# sourceMappingURL=processor.js.map
+exports.processDelegation = processDelegation;
+//# sourceMappingURL=delegation.js.map

@@ -69,7 +69,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
     var ledger, address, assetCode, assetBlindRules, transactionBuilder;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 address = ledger.base64_to_bech32(ledger.get_coinbase_address());
@@ -91,7 +91,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
     var ledger, accountPublickey, asset, decimals, utxoNumbers, nonce, result_1, err_1, e, result, e, submitResult, err_2, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 accountPublickey = ledger.public_key_from_bech32(fraAddress);
@@ -99,7 +99,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 2:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                utxoNumbers = BigInt(bigNumber_1.toWei(amount, decimals).toString());
                 nonce = '';
                 _a.label = 3;
             case 3:

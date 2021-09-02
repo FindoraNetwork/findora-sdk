@@ -8,12 +8,14 @@ var get_1 = __importDefault(require("lodash/get"));
 var defineAsset_1 = require("./defineAsset");
 var issueAsset_1 = require("./issueAsset");
 var transferAsset_1 = require("./transferAsset");
+var undelegation_1 = require("./undelegation");
+var delegation_1 = require("./delegation");
 var unsupported_1 = require("./unsupported");
 var getOperationProcessor = function (operationItem, processors) {
     for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {
         var el = _a[_i];
         if (el in operationItem) {
-            return (0, get_1.default)(processors, el, processors.Unsupported);
+            return get_1.default(processors, el, processors.Unsupported);
         }
     }
     return processors.Unsupported;
@@ -24,5 +26,7 @@ exports.processorsMap = {
     TransferAsset: transferAsset_1.processTransferAsset,
     IssueAsset: issueAsset_1.processIssueAsset,
     Unsupported: unsupported_1.processUnsupported,
+    ProcessUndelegation: undelegation_1.processUndelegation,
+    ProcessDelegation: delegation_1.processDelegation,
 };
 //# sourceMappingURL=index.js.map

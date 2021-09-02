@@ -86,7 +86,7 @@ describe('defineAsset (processor)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(address);
                         });
-                        return [4 /*yield*/, (0, defineAsset_1.processDefineAsset)(payload)];
+                        return [4 /*yield*/, defineAsset_1.processDefineAsset(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('defineAsset');

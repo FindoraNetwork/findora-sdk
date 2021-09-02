@@ -53,10 +53,37 @@ export interface DefineAssetOperation {
     };
     signature: string;
 }
+export interface ClaimOperation {
+    body: {
+        pu: any;
+        nonce: number[];
+    };
+    pubkey: string;
+    signature: string;
+}
+export interface UnDelegationOperation {
+    body: {
+        pu: any;
+        nonce: number[];
+    };
+    pubkey: string;
+    signature: string;
+}
+export interface DelegationOperation {
+    body: {
+        pu: any;
+        nonce: number[];
+    };
+    pubkey: string;
+    signature: string;
+}
 export interface TxOperation {
     TransferAsset?: TransferAssetOperation;
     IssueAsset?: IssueAssetOperation;
     DefineAsset?: DefineAssetOperation;
+    Claim?: ClaimOperation;
+    UnDelegation?: UnDelegationOperation;
+    Delegation?: DelegationOperation;
 }
 export interface ParsedTx {
     body: {
