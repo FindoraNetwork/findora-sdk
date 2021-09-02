@@ -222,9 +222,9 @@ export const getIssueAssetTransactionBuilder = async (
  * ```
  * @param newAssetRules - A set of _rules_ (options) for the new asset
  *
- * @throws 'Could not create transfer operation'
- * @throws 'Could not get "defineTransactionBuilder"'
- * @throws 'Could not add transfer operation'
+ * @throws `Could not create transfer operation`
+ * @throws `Could not get "defineTransactionBuilder"`
+ * @throws `Could not add transfer operation`
  *
  * @returns An instance of **TransactionBuilder** from {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger }
  */
@@ -298,9 +298,9 @@ export const defineAsset = async (
  * ```
  * @param assetDecimals - This parameter can define how many numbers after the comma would this asset have
  *
- * @throws 'Could not create transfer operation'
- * @throws 'Could not get "issueAssetTransactionBuilder"'
- * @throws 'Could not add transfer operation'
+ * @throws `Could not create transfer operation`
+ * @throws `Could not get "issueAssetTransactionBuilder"`
+ * @throws `Could not add transfer operation`
  *
  * @returns An instance of **TransactionBuilder** from {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger }
  */

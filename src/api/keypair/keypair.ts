@@ -63,7 +63,7 @@ export interface WalletKeypar extends LightWalletKeypair {
  * @param keypair - XfrKeyPair
  * @returns Private key
  *
- * @throws An error returned by Ledger with a prefix added by SDK
+ * @throws `An error returned by Ledger with a prefix added by SDK`
  */
 export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
