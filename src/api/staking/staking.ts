@@ -5,17 +5,17 @@ import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 
 /**
- * Undelegate some staked amount
+ * Undelegate FRA tokens
  *
  * @remarks
- * Using this function, user can initiate (create a transaction builder) an undelegation process
+ * This function allows users to unstake (aka unbond) FRA tokens.
  *
  * @example
  *
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
- *  // Define whether or not user desires to withraw akk the funds
+ *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
  *  const transactionBuilder = await StakingApi.unDelegate(
@@ -88,20 +88,20 @@ export const unDelegate = async (
 };
 
 /**
- * Delegates some funds
+ * Delegates FRA tokens
  *
  * @remarks
- * Using this function, user can delegate some funds to a given validator.
+ * This function allows users to delegate FRA tokens to a validator.
  *
- * In fact, this functionality is almost the same, as `Transaction.sendToAddress` except the fact,
- * that we are adding one more operation to the transaction builder - `add_operation_delegate`
+ * This functionality is nearly identical to Transaction.sendToAddress except
+ * it adds one additional operation to the transaction builder -> add_operation_delegate
  *
  * @example
  *
  * ```ts
  *  const ledger = await getLedger();
  *
- *  // This address is the one, where funds are going to be sent to.
+ *  // This is the address funds are sent to.
  *  // Actual `transfer to validator` process would be handled via added `add_operation_delegate` operation
  *  const delegationTargetAddress = ledger.get_delegation_target_address
  *
@@ -150,10 +150,10 @@ export const delegate = async (
 };
 
 /**
- * Claim delegation rewards
+ * Claim FRA Token Rewards
  *
  * @remarks
- * When user wants to retrive the rewards that are earned by the delegated funds, he could use this function
+ * This function enables users to claim rewards earned from staking FRA tokens.
  *
  * @example
  *
