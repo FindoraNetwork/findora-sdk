@@ -94,7 +94,7 @@ export const unDelegate = async (
  * This function allows users to delegate FRA tokens to a validator.
  *
  * This functionality is nearly identical to Transaction.sendToAddress except
- * it adds one additional operation to the transaction builder -> add_operation_delegate
+ * it adds one additional operation (i.e. add_operation_delegate) to the transaction builder.
  *
  * @example
  *
