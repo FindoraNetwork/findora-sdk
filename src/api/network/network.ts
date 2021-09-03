@@ -171,6 +171,18 @@ export const getOwnerMemo = async (
   return dataResult;
 };
 
+/**
+ * Returns state commitment
+ *
+ * @remarks
+ * An important property of a Findora ledger is the ability to authenticate transactions.
+ * Users can authenticate transactions against a small tag called the state commitment.
+ * The state commitment is a commitment to the current state of the ledger.
+ * The state commitment response is a tuple containing the state commitment and the state commitment version.
+ *
+ *
+ * @returns An instace of StateCommitmentDataResult
+ */
 export const getStateCommitment = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.StateCommitmentDataResult> => {
@@ -237,6 +249,14 @@ export const getIssuedRecords = async (
   return dataResult;
 };
 
+/**
+ * Returns transaction status
+ *
+ * @remarks
+ * Using the transaction handle, user can fetch the status of the transaction from the query server.
+ *
+ * @returns An instace of TransactionStatusDataResult
+ */
 export const getTransactionStatus = async (
   handle: string,
   config?: Types.NetworkAxiosConfig,

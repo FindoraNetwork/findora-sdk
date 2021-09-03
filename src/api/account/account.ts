@@ -42,6 +42,25 @@ export const getAssetBalance = async (
   return createBigNumber(currentBalance);
 };
 
+/**
+ * Get the balance of the specific asset for the given user
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const balance = await Account.getBalance(walletInfo, customAssetCode);
+ * ```
+ *
+ * @throws `No sids were fetched`
+ * @throws `Could not fetch balance`
+ *
+ * @returns Result of transaction submission to the network
+ */
 export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string): Promise<string> => {
   const sidsResult = await Network.getOwnedSids(walletKeypair.publickey);
 
