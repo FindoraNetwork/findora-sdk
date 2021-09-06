@@ -6,6 +6,25 @@ export interface ProcessedIssuedRecord extends TxOutput {
     ownerMemo?: number | null;
 }
 export declare const getAssetBalance: (walletKeypair: WalletKeypar, assetCode: string, sids: number[]) => Promise<BigNumberValue>;
+/**
+ * Get the balance of the specific asset for the given user
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const balance = await Account.getBalance(walletInfo, customAssetCode);
+ * ```
+ *
+ * @throws `No sids were fetched`
+ * @throws `Could not fetch balance`
+ *
+ * @returns Result of transaction submission to the network
+ */
 export declare const getBalance: (walletKeypair: WalletKeypar, assetCode?: string | undefined) => Promise<string>;
 export declare const create: (password: string) => Promise<WalletKeypar>;
 export declare const processIssuedRecordItem: (issuedRecord: IssuedRecord) => Promise<ProcessedIssuedRecord>;

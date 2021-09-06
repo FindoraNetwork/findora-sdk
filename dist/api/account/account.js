@@ -103,6 +103,25 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
     });
 }); };
 exports.getAssetBalance = getAssetBalance;
+/**
+ * Get the balance of the specific asset for the given user
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const balance = await Account.getBalance(walletInfo, customAssetCode);
+ * ```
+ *
+ * @throws `No sids were fetched`
+ * @throws `Could not fetch balance`
+ *
+ * @returns Result of transaction submission to the network
+ */
 var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, balance, err_2, e;
     return __generator(this, function (_a) {

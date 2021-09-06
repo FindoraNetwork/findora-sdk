@@ -58,6 +58,32 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.claim = exports.delegate = exports.unDelegate = void 0;
 var Transaction = __importStar(require("../../api/transaction"));
 var Fee = __importStar(require("../../services/fee"));
+/**
+ * Undelegate FRA tokens
+ *
+ * @remarks
+ * This function allows users to unstake (aka unbond) FRA tokens.
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
+ *  const isFullUnstake = false;
+ *
+ *  const transactionBuilder = await StakingApi.unDelegate(
+ *    walletInfo,
+ *    amount,
+ *    validator,
+ *    isFullUnstake,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
 var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
     if (isFullUnstake === void 0) { isFullUnstake = false; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -114,6 +140,47 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
     });
 };
 exports.unDelegate = unDelegate;
+/**
+ * Delegates FRA tokens
+ *
+ * @remarks
+ * This function allows users to delegate FRA tokens to a validator.
+ *
+ * This functionality is nearly identical to Transaction.sendToAddress except
+ * it adds one additional operation (i.e. add_operation_delegate) to the transaction builder.
+ *
+ * @example
+ *
+ * ```ts
+ *  const ledger = await getLedger();
+ *
+ *  // This is the address funds are sent to.
+ *  // Actual `transfer to validator` process would be handled via added `add_operation_delegate` operation
+ *  const delegationTargetAddress = ledger.get_delegation_target_address
+ *
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await StakingApi.delegate(
+ *    walletInfo,
+ *    delegationTargetAddress,
+ *    amount,
+ *    assetCode,
+ *    validatorAddress,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
 var delegate = function (walletInfo, address, amount, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder;
     return __generator(this, function (_a) {
@@ -127,6 +194,27 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
     });
 }); };
 exports.delegate = delegate;
+/**
+ * Claim FRA Token Rewards
+ *
+ * @remarks
+ * This function enables users to claim rewards earned from staking FRA tokens.
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+ *  const transactionBuilder = await StakingApi.claim(
+ *    walletInfo,
+ *    amount,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
 var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, void 0, function () {
     var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_2, e, e;
     return __generator(this, function (_a) {

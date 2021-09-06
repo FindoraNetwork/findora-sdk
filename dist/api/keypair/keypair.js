@@ -38,6 +38,29 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+/**
+ * Returns a private key
+ * @rem
+ * @remarks
+ * Using a given {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger } **XfrKeyPair** keypair it returns a private key.
+ *
+ * This method is used when user needs to retrieve a private key from the **XfrKeyPair** keypair
+ *
+ * @example
+ *
+ * ```ts
+ * // We use Findora Ledger to generate a new keypair (in demo purposes)
+ * const ledger = await getLedger();
+ * const keypair = ledger.new_keypair();
+ *
+ * // Now, we use `getPrivateKeyStr` to return a provate key of this keypair
+ * const privateStr = await getPrivateKeyStr(keypair);
+ * ```
+ * @param keypair - XfrKeyPair
+ * @returns Private key
+ *
+ * @throws `An error returned by Ledger with a prefix added by SDK`
+ */
 var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, privateStr;
     return __generator(this, function (_a) {
@@ -183,6 +206,33 @@ var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 
     });
 }); };
 exports.getAddressPublicAndKey = getAddressPublicAndKey;
+/**
+ * Creates an instance of {@link WalletKeypar} using given private key and password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ * const pkey = 'XXXXXXXXXX';
+ *
+ * // Create a wallet info object using given private key and password
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * ```
+ * @param privateStr - Private key
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, toSend, keypair, keypairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {

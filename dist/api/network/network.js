@@ -219,6 +219,18 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
     });
 }); };
 exports.getOwnerMemo = getOwnerMemo;
+/**
+ * Returns state commitment
+ *
+ * @remarks
+ * An important property of a Findora ledger is the ability to authenticate transactions.
+ * Users can authenticate transactions against a small tag called the state commitment.
+ * The state commitment is a commitment to the current state of the ledger.
+ * The state commitment response is a tuple containing the state commitment and the state commitment version.
+ *
+ *
+ * @returns An instace of StateCommitmentDataResult
+ */
 var getStateCommitment = function (config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {
@@ -294,6 +306,14 @@ var getIssuedRecords = function (address, config) { return __awaiter(void 0, voi
     });
 }); };
 exports.getIssuedRecords = getIssuedRecords;
+/**
+ * Returns transaction status
+ *
+ * @remarks
+ * Using the transaction handle, user can fetch the status of the transaction from the query server.
+ *
+ * @returns An instace of TransactionStatusDataResult
+ */
 var getTransactionStatus = function (handle, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {

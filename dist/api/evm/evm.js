@@ -87,6 +87,29 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
     });
 }); };
 exports.sendAccountToEvm = sendAccountToEvm;
+/**
+ * Transfer ETH to the user FRA address
+ *
+ * @remarks
+ * To transfer ETH tokens to the FRA address (EVM transfer) user should use this function
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const ethPrivate = 'faXXXX';
+ *  const ethAddress = '0xXXX';
+ *
+ *  const result = await Evm.sendEvmToAccount(walletInfo.address, amount, ethPrivate, ethAddress);
+ * ```
+ *
+ * @throws `Get nonce error`
+ * @throws `Evm to Account wasm error`
+ * @throws `Could not submit of transactions. No response from the server`
+ * @throws `Evm to Account submit error`
+ *
+ * @returns Result of transaction submission to the network
+ */
 var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, accountPublickey, asset, decimals, utxoNumbers, nonce, result_1, err_1, e, result, e, submitResult, err_2, e;
     return __generator(this, function (_a) {
