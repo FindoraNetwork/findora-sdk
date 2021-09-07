@@ -83,7 +83,7 @@ describe('unDelegation (processor)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(address);
                         });
-                        return [4 /*yield*/, undelegation_1.processUndelegation(payload)];
+                        return [4 /*yield*/, (0, undelegation_1.processUndelegation)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('unDelegation');

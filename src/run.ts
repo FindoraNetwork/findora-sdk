@@ -450,12 +450,8 @@ const myFunc18 = async () => {
 
 // s3
 const myFuncS3 = async () => {
-  const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    UTXO_CACHE_BUCKET_NAME,
-    UTXO_CACHE_KEY_NAME,
-  } = process.env;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+    process.env;
   const accessKeyId = AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
@@ -514,9 +510,9 @@ const myFuncUndelegate = async () => {
   const mineWalletInfo = await Keypair.restoreFromPrivateKey(mine, password);
 
   // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
-  // const unDelegateResHandle = await Staking.unDelegate(mineWalletInfo);
+  // const unStakeResHandle = await Staking.unStake(mineWalletInfo);
 
-  // console.log('unDelegateResHandle!!!', unDelegateResHandle);
+  // console.log('unStakeResHandle!!!', unStakeResHandle);
 };
 
 const sendEvmToAccount = async () => {

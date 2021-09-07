@@ -85,7 +85,7 @@ var myDefaultResult = [
     },
 ];
 var defaultUrl = "https://foo.com";
-var server = node_1.setupServer(msw_1.rest.get(defaultUrl, function (_req, res, ctx) {
+var server = (0, node_1.setupServer)(msw_1.rest.get(defaultUrl, function (_req, res, ctx) {
     return res(ctx.json(myDefaultResult));
 }));
 beforeAll(function () { return server.listen(); });
