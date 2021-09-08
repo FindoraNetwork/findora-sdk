@@ -63,7 +63,7 @@ describe('keypair', () => {
     });
 
     it('throws an error if not an instance of XfrKeyPair given', async () => {
-      await expect(getPrivateKeyStr(('FOO' as unknown) as XfrKeyPair)).rejects.toThrowError(
+      await expect(getPrivateKeyStr('FOO' as unknown as XfrKeyPair)).rejects.toThrowError(
         'could not get priv key string',
       );
     });
@@ -78,7 +78,7 @@ describe('keypair', () => {
     });
 
     it('throws an error if not an instance of XfrKeyPair given', async () => {
-      await expect(getPublicKeyStr(('FOO' as unknown) as XfrKeyPair)).rejects.toThrowError(
+      await expect(getPublicKeyStr('FOO' as unknown as XfrKeyPair)).rejects.toThrowError(
         'could not get pub key string',
       );
     });
@@ -94,7 +94,7 @@ describe('keypair', () => {
     });
 
     it('throws an error if not an instance of XfrKeyPair given', async () => {
-      await expect(getAddress(('FOO' as unknown) as XfrKeyPair)).rejects.toThrowError(
+      await expect(getAddress('FOO' as unknown as XfrKeyPair)).rejects.toThrowError(
         'could not get address string',
       );
     });
@@ -144,12 +144,12 @@ describe('keypair', () => {
       expect(result).toHaveProperty('privateStr');
       expect(result.publickey.length).toEqual(44);
       expect(result.address.length).toEqual(62);
-      expect(result.privateStr.length).toEqual(44);
+      expect(result.privateStr!.length).toEqual(44);
       expect(result.keyStore.length).toEqual(188);
     });
 
     it('throws an error if not a valid address key is given', async () => {
-      await expect(createKeypair(([123] as unknown) as string)).rejects.toThrowError(
+      await expect(createKeypair([123] as unknown as string)).rejects.toThrowError(
         'could not create a WalletKeypar',
       );
     });

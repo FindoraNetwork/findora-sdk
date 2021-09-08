@@ -39,7 +39,7 @@ export interface LightWalletKeypair {
 export interface WalletKeypar extends LightWalletKeypair {
   keyStore: Uint8Array;
   keypair: XfrKeyPair;
-  privateStr: string;
+  privateStr?: string;
 }
 
 /**

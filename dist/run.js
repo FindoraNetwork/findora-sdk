@@ -74,7 +74,8 @@ dotenv_1.default.config();
  */
 var sdkEnv = {
     // hostUrl: 'https://dev-staging.dev.findora.org',
-    hostUrl: 'https://dev-evm.dev.findora.org',
+    // hostUrl: 'https://dev-evm.dev.findora.org',
+    hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://prod-testnet.prod.findora.org',
     cacheProvider: providers_1.FileCacheProvider,
     // cacheProvider: MemoryCacheProvider,
@@ -101,7 +102,7 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
  * Get FRA balance
  */
 var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkeyMine, pkeyMine2, pkeyMine3, pkeyMine4, pkey1, pkey2, pkey3, pkey4, pkey6, password, pkey, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
+    var pkeyMine, pkeyMine2, pkeyMine3, pkeyMine4, pkeyLocalFaucet, pkey1, pkey2, pkey3, pkey4, pkey6, password, pkey, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -109,13 +110,14 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
                 pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
                 pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+                pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
                 pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
                 pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
                 pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
                 pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
                 pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
                 password = '123';
-                pkey = pkeyMine2;
+                pkey = pkeyLocalFaucet;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
@@ -694,7 +696,7 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
 }); };
 // New
 // getFraAssetCode(); // works
-// getFraBalance(); // works
+getFraBalance(); // works
 // getCustomAssetBalance(); // works
 // defineCustomAsset(); // works
 // issueCustomAsset(); // works
@@ -708,5 +710,5 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
 // getCustomAssetDetails(); // works
 // getTransactionStatus(); // works
 // getBlockDetails();
-sendEvmToAccount();
+// sendEvmToAccount();
 //# sourceMappingURL=run.js.map

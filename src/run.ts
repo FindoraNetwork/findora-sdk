@@ -16,7 +16,8 @@ dotenv.config();
  */
 const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
-  hostUrl: 'https://dev-evm.dev.findora.org',
+  // hostUrl: 'https://dev-evm.dev.findora.org',
+  hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://prod-testnet.prod.findora.org',
   cacheProvider: FileCacheProvider,
   // cacheProvider: MemoryCacheProvider,
@@ -44,6 +45,7 @@ const getFraBalance = async () => {
   const pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
   const pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  const pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
 
   const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
   const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
@@ -53,7 +55,7 @@ const getFraBalance = async () => {
 
   const password = '123';
 
-  const pkey = pkeyMine2;
+  const pkey = pkeyLocalFaucet;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
@@ -525,7 +527,7 @@ const sendEvmToAccount = async () => {
 
 // New
 // getFraAssetCode(); // works
-// getFraBalance(); // works
+getFraBalance(); // works
 // getCustomAssetBalance(); // works
 // defineCustomAsset(); // works
 // issueCustomAsset(); // works
@@ -539,4 +541,4 @@ const sendEvmToAccount = async () => {
 // getCustomAssetDetails(); // works
 // getTransactionStatus(); // works
 // getBlockDetails();
-sendEvmToAccount();
+// sendEvmToAccount();
