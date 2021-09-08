@@ -55,11 +55,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.claim = exports.delegate = exports.unDelegate = void 0;
+exports.claim = exports.delegate = exports.unStake = void 0;
 var Transaction = __importStar(require("../../api/transaction"));
 var Fee = __importStar(require("../../services/fee"));
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -72,7 +72,7 @@ var Fee = __importStar(require("../../services/fee"));
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -84,7 +84,7 @@ var Fee = __importStar(require("../../services/fee"));
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
+var unStake = function (walletInfo, amount, validator, isFullUnstake) {
     if (isFullUnstake === void 0) { isFullUnstake = false; }
     return __awaiter(void 0, void 0, void 0, function () {
         var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
@@ -125,21 +125,21 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add staking unDelegate operation, Error: \"" + e.message + "\"");
+                        throw new Error("Could not add staking unStake operation, Error: \"" + e.message + "\"");
                     }
                     try {
                         transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add transfer to unDelegate operation, Error: \"" + e.message + "\"");
+                        throw new Error("Could not add transfer to unStake operation, Error: \"" + e.message + "\"");
                     }
                     return [2 /*return*/, transactionBuilder];
             }
         });
     });
 };
-exports.unDelegate = unDelegate;
+exports.unStake = unStake;
 /**
  * Delegates FRA tokens
  *

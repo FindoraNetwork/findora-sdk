@@ -2,7 +2,7 @@ import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -15,7 +15,7 @@ import * as AssetApi from '../sdkAsset';
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -27,7 +27,7 @@ import * as AssetApi from '../sdkAsset';
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const unDelegate: (walletInfo: WalletKeypar, amount: string, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;
+export declare const unStake: (walletInfo: WalletKeypar, amount: string, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;
 /**
  * Delegates FRA tokens
  *

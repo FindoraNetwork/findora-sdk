@@ -83,7 +83,7 @@ describe('delegation (processor)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(address);
                         });
-                        return [4 /*yield*/, delegation_1.processDelegation(payload)];
+                        return [4 /*yield*/, (0, delegation_1.processDelegation)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('delegation');

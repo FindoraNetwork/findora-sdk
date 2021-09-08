@@ -5,7 +5,7 @@ import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -18,7 +18,7 @@ import * as AssetApi from '../sdkAsset';
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -30,7 +30,7 @@ import * as AssetApi from '../sdkAsset';
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export const unDelegate = async (
+export const unStake = async (
   walletInfo: WalletKeypar,
   amount: string,
   validator: string,
@@ -73,7 +73,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not add staking unDelegate operation, Error: "${e.message}"`);
+    throw new Error(`Could not add staking unStake operation, Error: "${e.message}"`);
   }
 
   try {
@@ -81,7 +81,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not add transfer to unDelegate operation, Error: "${e.message}"`);
+    throw new Error(`Could not add transfer to unStake operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;

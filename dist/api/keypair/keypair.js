@@ -65,7 +65,7 @@ var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, voi
     var ledger, privateStr;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -84,7 +84,7 @@ var getPublicKeyStr = function (keypair) { return __awaiter(void 0, void 0, void
     var ledger, publickey;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -106,7 +106,7 @@ var getAddress = function (keypair) { return __awaiter(void 0, void 0, void 0, f
     var ledger, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -125,7 +125,7 @@ var getAddressByPublicKey = function (publicKey) { return __awaiter(void 0, void
     var ledger, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -147,7 +147,7 @@ var getXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, vo
     var ledger, toPublickey;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -169,7 +169,7 @@ var getPublicKeyByXfr = function (publicKey) { return __awaiter(void 0, void 0, 
     var ledger, toPublickey;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -188,7 +188,7 @@ var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 
     var ledger, publickey;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -237,7 +237,7 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
     var ledger, toSend, keypair, keypairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 toSend = "\"" + privateStr + "\"";
@@ -252,10 +252,10 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
                 }
                 keypairStr = ledger.keypair_to_str(keypair);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);
-                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
             case 2:
                 publickey = _a.sent();
-                return [4 /*yield*/, exports.getAddress(keypair)];
+                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
             case 3:
                 address = _a.sent();
                 return [2 /*return*/, {
@@ -273,16 +273,16 @@ var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 
     var ledger, keypair, keyPairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
                 keyPairStr = ledger.keypair_to_str(keypair);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
             case 2:
                 publickey = _a.sent();
-                return [4 /*yield*/, exports.getAddress(keypair)];
+                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
             case 3:
                 address = _a.sent();
                 return [2 /*return*/, {
@@ -300,7 +300,7 @@ var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 
     var ledger, keyPairStr, keypair, encrypted, publickey, address, privateStr, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 _a.label = 2;
@@ -309,13 +309,13 @@ var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 
                 keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
                 keypair = ledger.keypair_from_str(keyPairStr);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
             case 3:
                 publickey = _a.sent();
-                return [4 /*yield*/, exports.getAddress(keypair)];
+                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
             case 4:
                 address = _a.sent();
-                return [4 /*yield*/, exports.getPrivateKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
             case 5:
                 privateStr = _a.sent();
                 return [2 /*return*/, {
@@ -341,7 +341,7 @@ var restoreFromKeystoreString = function (keyStoreString, password) { return __a
                 _a.trys.push([0, 2, , 3]);
                 keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
                 keyStore = new Uint8Array(Object.values(keyStoreObject));
-                return [4 /*yield*/, exports.restoreFromKeystore(keyStore, password)];
+                return [4 /*yield*/, (0, exports.restoreFromKeystore)(keyStore, password)];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
@@ -357,7 +357,7 @@ var createKeypair = function (password) { return __awaiter(void 0, void 0, void 
     var ledger, keypair, keyPairStr, encrypted, privateStr, publickey, address, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 _a.label = 2;
@@ -366,13 +366,13 @@ var createKeypair = function (password) { return __awaiter(void 0, void 0, void 
                 keypair = ledger.new_keypair();
                 keyPairStr = ledger.keypair_to_str(keypair);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-                return [4 /*yield*/, exports.getPrivateKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
             case 3:
                 privateStr = _a.sent();
-                return [4 /*yield*/, exports.getPublicKeyStr(keypair)];
+                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
             case 4:
                 publickey = _a.sent();
-                return [4 /*yield*/, exports.getAddress(keypair)];
+                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
             case 5:
                 address = _a.sent();
                 return [2 /*return*/, {
@@ -396,7 +396,7 @@ var getMnemonic = function (desiredLength, mnemonicLang) {
         var ledger, ledgerMnemonicString, result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
                     try {

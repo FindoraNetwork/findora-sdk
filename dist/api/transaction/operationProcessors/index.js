@@ -17,7 +17,7 @@ var getOperationProcessor = function (operationItem, processors) {
     for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {
         var el = _a[_i];
         if (el in operationItem) {
-            return get_1.default(processors, el, processors.Unsupported);
+            return (0, get_1.default)(processors, el, processors.Unsupported);
         }
     }
     return processors.Unsupported;
