@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var NetworkApi = __importStar(require("../network/network"));
 var helpers = __importStar(require("./helpers"));
-describe('helpers', function () {
+describe('helpers (unit test)', function () {
     describe('getTxListFromResponse', function () {
         it('returns proper list from the data result', function () {
             var txList = [{ foo: 'bar' }];

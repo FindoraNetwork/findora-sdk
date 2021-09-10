@@ -59,7 +59,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Staking = __importStar(require("./staking"));
 var Transaction = __importStar(require("../transaction/transaction"));
 var Fee = __importStar(require("../../services/fee"));
-describe('staking', function () {
+describe('staking (unit test)', function () {
     describe('undelegate', function () {
         it('undelegates all funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegate, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake, result;

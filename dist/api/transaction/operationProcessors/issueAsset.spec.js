@@ -70,7 +70,7 @@ require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../../keypair/keypair"));
 var AssetApi = __importStar(require("../../sdkAsset/sdkAsset"));
 var issueAsset_1 = require("./issueAsset");
-describe('issueAsset (processor)', function () {
+describe('issueAsset (processor) (unit test)', function () {
     describe('processIssueAsset', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var address, code, type, myAsset, myOperation, payload, spyGetAddressByPublicKey, spyGetAssetCode, result;

@@ -20,23 +20,23 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('evm', () => {
+describe('evm (unit test)', () => {
   describe('sendAccountToEvm', () => {
     it('sendAccountToEvm funds', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_operation_convert_account: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
       const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
-        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
       });
 
       const spyAddOperationConvertAccount = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_convert_account')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
       const ledger = await getLedger();
       const address = ledger.base64_to_bech32(ledger.get_coinbase_address());

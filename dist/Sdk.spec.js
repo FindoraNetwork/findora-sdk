@@ -43,7 +43,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 afterEach(function () { return Sdk_1.default.reset(); });
-describe('SdkMain', function () {
+describe('SdkMain (unit test)', function () {
     describe('init', function () {
         it('initializes sdk environment with given values', function () { return __awaiter(void 0, void 0, void 0, function () {
             var sdkEnv;

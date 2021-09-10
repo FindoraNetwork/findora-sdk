@@ -1,0 +1,62 @@
+import * as Integration from './integration';
+
+const extendedExecutionTimeout = 20000;
+
+describe('Findora SDK integration (integration test)', () => {
+  it('Should create a simple transaction to define an asset', async () => {
+    const result = await Integration.defineAssetTransaction();
+    expect(result).toBe(true);
+  });
+  it(
+    'Should define an asset and submit to the network',
+    async () => {
+      const result = await Integration.defineAssetTransactionSubmit();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout,
+  );
+  it(
+    'Should define and issue an asset, with submitting transactions to the network',
+    async () => {
+      const result = await Integration.defineAndIssueAssetTransactionSubmit();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout * 2,
+  );
+  it(
+    'Should define, issue and send asset with transactions submitting',
+    async () => {
+      const result = await Integration.defineIssueAndSendAssetTransactionSubmit();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout * 3,
+  );
+  it(
+    'Should send FRA to the reciever',
+    async () => {
+      const result = await Integration.sendFraTransactionSubmit();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout,
+  );
+  it(
+    'Should send FRA to multiple recievers',
+    async () => {
+      const result = await Integration.sendFraToMultipleReceiversTransactionSubmit();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout,
+  );
+  it('Should get balance for the account', async () => {
+    const result = await Integration.getBalance();
+    expect(result).toBe(true);
+  }, 5000);
+  it(
+    'Should issue and send confidential asset',
+    async () => {
+      const result = await Integration.issueAndSendConfidentialAsset();
+      expect(result).toBe(true);
+    },
+    extendedExecutionTimeout * 3,
+  );
+});

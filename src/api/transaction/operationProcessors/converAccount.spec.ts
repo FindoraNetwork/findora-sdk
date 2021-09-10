@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processConvertAccount } from './converAccount';
 
-describe('converAccount (processor)', () => {
+describe('converAccount (processor) (unit test)', () => {
   describe('processConvertAccount', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';
@@ -18,9 +18,9 @@ describe('converAccount (processor)', () => {
         public: address,
       };
 
-      const payload = ({
+      const payload = {
         ConvertAccount: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

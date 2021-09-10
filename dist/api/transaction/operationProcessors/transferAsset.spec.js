@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../../keypair/keypair"));
 var transferAsset_1 = require("./transferAsset");
-describe('transferAsset (processor)', function () {
+describe('transferAsset (processor) (unit test)', function () {
     describe('processTransferAsset', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var addressFrom, addressTo, type, transfer, myOperation, payload, spyGetAddressByPublicKey, result;

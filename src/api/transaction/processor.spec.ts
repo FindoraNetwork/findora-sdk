@@ -8,27 +8,27 @@ import * as OperationProcessors from './operationProcessors';
 import * as Types from './types';
 import * as Processor from './processor';
 
-describe('processor', () => {
+describe('processor (unit test)', () => {
   const myTime = 'foo';
   const hash = 'barfoo';
   const code = 'foobar';
 
-  const processedDataByProcessor = ({ barfoo: 'foobar' } as unknown) as OperationProcessors.ProcessedTx;
+  const processedDataByProcessor = { barfoo: 'foobar' } as unknown as OperationProcessors.ProcessedTx;
 
   const dataProcessor = async () => {
     return processedDataByProcessor;
   };
 
-  const operationsList = ([{ a: '1' }] as unknown) as Types.TxOperation[];
+  const operationsList = [{ a: '1' }] as unknown as Types.TxOperation[];
 
-  const txItem = ({
+  const txItem = {
     foo: 'bar',
     tx: 'eyJ0eEZvbyI6InR4QmFyIn0=',
     hash,
     tx_result: {
       code,
     },
-  } as unknown) as TxInfo;
+  } as unknown as TxInfo;
 
   describe('processTxInfoItem', () => {
     it('properly processes a given txItem', async () => {
@@ -67,14 +67,14 @@ describe('processor', () => {
     });
 
     it('throws an error if tx in the txItem can not be parsed', async () => {
-      const txItem = ({
+      const txItem = {
         foo: 'bar',
         tx: 'blah',
         hash,
         tx_result: {
           code,
         },
-      } as unknown) as TxInfo;
+      } as unknown as TxInfo;
 
       await expect(Processor.processTxInfoItem(txItem)).rejects.toThrowError(
         'Can not parse the tx info from the tx item',
