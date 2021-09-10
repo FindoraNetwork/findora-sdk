@@ -95,7 +95,7 @@ var server = (0, node_1.setupServer)(msw_1.rest.get(defaultUrl, function (_req, 
 beforeAll(function () { return server.listen(); });
 afterEach(function () { return server.resetHandlers(); });
 afterAll(function () { return server.close(); });
-describe('account', function () {
+describe('account (unit test)', function () {
     var pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
     var password = '123';
     var sids = [454];

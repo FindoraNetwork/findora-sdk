@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -19,8 +19,8 @@ const sdkEnv = {
   // hostUrl: 'https://dev-evm.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://prod-testnet.prod.findora.org',
-  cacheProvider: FileCacheProvider,
-  // cacheProvider: MemoryCacheProvider,
+  // cacheProvider: FileCacheProvider,
+  cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -58,7 +58,7 @@ const getFraBalance = async () => {
   const pkey = pkeyLocalFaucet;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
+  // console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
 
   const fraCode = await Asset.getFraAssetCode();
 

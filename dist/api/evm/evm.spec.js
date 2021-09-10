@@ -59,7 +59,7 @@ require("@testing-library/jest-dom/extend-expect");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Evm = __importStar(require("./evm"));
 var Transaction = __importStar(require("../transaction/transaction"));
-describe('evm', function () {
+describe('evm (unit test)', function () {
     describe('sendAccountToEvm', function () {
         it('sendAccountToEvm funds', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeTransactionBuilder, spyTransactionSendToaddress, spyAddOperationConvertAccount, ledger, address, assetCode, walletInfo, amount, ethAddress, assetBlindRules, result;

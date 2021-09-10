@@ -22,7 +22,7 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('staking', () => {
+describe('staking (unit test)', () => {
   describe('undelegate', () => {
     it('undelegates all funds from the validator', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {

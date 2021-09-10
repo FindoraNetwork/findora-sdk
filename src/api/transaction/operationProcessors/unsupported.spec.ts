@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import { TxOperation } from '../types';
 import { processUnsupported } from './unsupported';
 
-describe('unsupported (processor)', () => {
+describe('unsupported (processor) (unit test)', () => {
   describe('processUnsupported', () => {
     it('returns properly processed data', async () => {
       const type = 'unsupported';

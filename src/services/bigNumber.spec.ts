@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 
 import * as MyBigNumber from './bigNumber';
 
-describe('bigNumber', () => {
+describe('bigNumber (unit test)', () => {
   const num = 1;
   const bigNum = MyBigNumber.create(num);
   describe('toWei', () => {

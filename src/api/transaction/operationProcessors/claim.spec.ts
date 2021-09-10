@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processClaim } from './claim';
 
-describe('claim (processor)', () => {
+describe('claim (processor) (unit test)', () => {
   describe('processClaim', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';
@@ -18,9 +18,9 @@ describe('claim (processor)', () => {
         signature: '',
       };
 
-      const payload = ({
+      const payload = {
         Claim: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

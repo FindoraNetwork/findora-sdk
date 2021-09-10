@@ -12,7 +12,7 @@ import {
   getAddressPublicAndKey,
 } from './keypair';
 
-describe('keypair', () => {
+describe('keypair (unit test)', () => {
   describe('restoreFromPrivateKey', () => {
     const publickey = '1mtO4j3bvRiKlXotdD1q0DQYoxutSgee-f1LQtlq45g=';
     const address = 'fra16e45ac3amw733z540gkhg0t26q6p3gcm449q08hel4959kt2uwvq9svvqh';

@@ -21,7 +21,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var MyBigNumber = __importStar(require("./bigNumber"));
-describe('bigNumber', function () {
+describe('bigNumber (unit test)', function () {
     var num = 1;
     var bigNum = MyBigNumber.create(num);
     describe('toWei', function () {

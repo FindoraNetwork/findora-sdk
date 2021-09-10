@@ -61,7 +61,7 @@ var WebLedger = __importStar(require("./webLedger"));
 var LedgerWrapper = __importStar(require("./ledgerWrapper"));
 var myWebLedger = { foo: 'web' };
 var myNodeLedger = { foo: 'node' };
-describe('ledgerWrapper', function () {
+describe('ledgerWrapper (unit test)', function () {
     describe('getWebLedger', function () {
         it('returns a web ledger', function () { return __awaiter(void 0, void 0, void 0, function () {
             var spyGetLedger, result;

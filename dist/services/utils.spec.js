@@ -60,7 +60,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var fs_1 = __importDefault(require("fs"));
 var Utils = __importStar(require("./utils"));
-describe('utils', function () {
+describe('utils (unit test)', function () {
     describe('uint8arrayToHexStr', function () {
         it('converts Uint8Array to hex string', function () {
             var myInput = new Uint8Array([1, 2, 3]);

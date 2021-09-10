@@ -29,7 +29,7 @@ beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
 
-describe('network', () => {
+describe('network (unit test)', () => {
   const testConfig = {
     headers: {
       testHeader: 'test-value',

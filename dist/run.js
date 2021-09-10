@@ -77,8 +77,8 @@ var sdkEnv = {
     // hostUrl: 'https://dev-evm.dev.findora.org',
     hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://prod-testnet.prod.findora.org',
-    cacheProvider: providers_1.FileCacheProvider,
-    // cacheProvider: MemoryCacheProvider,
+    // cacheProvider: FileCacheProvider,
+    cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
@@ -121,7 +121,6 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 2:
                 fraCode = _a.sent();

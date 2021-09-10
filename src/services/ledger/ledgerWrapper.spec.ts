@@ -4,10 +4,10 @@ import * as WebLedger from './webLedger';
 
 import * as LedgerWrapper from './ledgerWrapper';
 
-const myWebLedger = ({ foo: 'web' } as unknown) as WebLedger.LedgerForWeb;
-const myNodeLedger = ({ foo: 'node' } as unknown) as NodeLedger.LedgerForNode;
+const myWebLedger = { foo: 'web' } as unknown as WebLedger.LedgerForWeb;
+const myNodeLedger = { foo: 'node' } as unknown as NodeLedger.LedgerForNode;
 
-describe('ledgerWrapper', () => {
+describe('ledgerWrapper (unit test)', () => {
   describe('getWebLedger', () => {
     it('returns a web ledger', async () => {
       const spyGetLedger = jest.spyOn(WebLedger, 'default').mockImplementation(() => {

@@ -70,7 +70,7 @@ require("@testing-library/jest-dom/extend-expect");
 var helpers = __importStar(require("./helpers"));
 var OperationProcessors = __importStar(require("./operationProcessors"));
 var Processor = __importStar(require("./processor"));
-describe('processor', function () {
+describe('processor (unit test)', function () {
     var myTime = 'foo';
     var hash = 'barfoo';
     var code = 'foobar';
