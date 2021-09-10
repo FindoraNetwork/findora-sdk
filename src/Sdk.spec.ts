@@ -4,7 +4,7 @@ import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/pr
 
 afterEach(() => Sdk.reset());
 
-describe('SdkMain', () => {
+describe('SdkMain (unit test)', () => {
   describe('init', () => {
     it('initializes sdk environment with given values', async () => {
       const sdkEnv = {
