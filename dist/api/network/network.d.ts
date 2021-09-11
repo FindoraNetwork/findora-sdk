@@ -38,3 +38,5 @@ export declare const getTransactionDetails: (hash: string, config?: Types.Networ
 export declare const getAbciNoce: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciNoceResult>;
 export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciInfoResult>;
 export declare const submitEvmTx: (tx: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.SubmitEvmTxResult>;
+export declare const getValidatorList: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.ValidatorListDataResult>;
+export declare const getDelegateInfo: (publickey: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.DelegateInfoDataResult>;

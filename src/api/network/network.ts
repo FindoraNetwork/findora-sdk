@@ -374,3 +374,24 @@ export const submitEvmTx = async (
 
   return dataResult;
 };
+
+export const getValidatorList = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.ValidatorListDataResult> => {
+  const url = `${getLedgerRoute()}/validator_list`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getDelegateInfo = async (
+  publickey: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.DelegateInfoDataResult> => {
+  const url = `${getLedgerRoute()}/delegation_info/${publickey}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};

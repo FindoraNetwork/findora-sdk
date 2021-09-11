@@ -139,12 +139,52 @@ export interface TxDetailsDataResult extends NetworkAxiosDataResult {
 export declare type HashSwapResponse = {
     result: TxListResponseResult;
 };
+export interface ValidatorItem {
+    addr: string;
+    power: string;
+    commission_rate: number[];
+    accept_delegation: boolean;
+    rank: number;
+    extra: {
+        name: string;
+        desc: string;
+        website: string;
+        logo: string;
+    };
+}
+export interface ValidatorListResponse {
+    threshold: number[];
+    validator_cnt: number;
+    cur_height: number;
+    validators: ValidatorItem[];
+}
+export declare type DelegationBondEntry = [string, string];
+export interface DelegateInfoResponse {
+    bond: string;
+    bond_entries: DelegationBondEntry;
+    unbond: string;
+    rewards: string;
+    return_rate: number[];
+    global_delegation: string;
+    global_staking: string;
+    start_height: number;
+    end_height: number;
+    current_height: number;
+    delegation_rwd_cnt: string;
+    proposer_rwd_cnt: string;
+}
 export interface HashSwapDataResult extends NetworkAxiosDataResult {
     response?: HashSwapResponse;
 }
 export declare type StateCommitmenResponse = [number[], number, string];
 export interface StateCommitmentDataResult extends NetworkAxiosDataResult {
     response?: StateCommitmenResponse;
+}
+export interface ValidatorListDataResult extends NetworkAxiosDataResult {
+    response?: ValidatorListResponse;
+}
+export interface DelegateInfoDataResult extends NetworkAxiosDataResult {
+    response?: DelegateInfoResponse;
 }
 export declare type TransactionData = string;
 export interface ParsedTransactionData {

@@ -900,3 +900,320 @@ export const issueAndSendConfidentialAsset = async () => {
 
   return true;
 };
+
+export const delegateFraTransactionSubmit = async () => {
+  console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
+
+  // send part
+  const Ledger = await getLedger();
+
+  const pkey = mainFaucet;
+
+  const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
+
+  const toWalletInfo = await KeypairApi.createKeypair(password);
+
+  const fraCode = await AssetApi.getFraAssetCode();
+
+  const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const numbersToSend = '1000010';
+  const numbersToDelegate = '1000000';
+
+  const transactionBuilderSend = await TransactionApi.sendToAddress(
+    walletInfo,
+    toWalletInfo.address,
+    numbersToSend,
+    fraCode,
+    assetBlindRules,
+  );
+
+  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ send fra result handle', resultHandleSend);
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  // delegate part
+
+  const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+
+  const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
+
+  const formattedVlidators = await StakingApi.getValidatorList();
+
+  const validatorAddress = formattedVlidators.validators[0].addr;
+
+  const transactionBuilder = await StakingApi.delegate(
+    toWalletInfo,
+    delegationTargetAddress,
+    numbersToDelegate,
+    fraCode,
+    validatorAddress,
+    assetBlindRules,
+  );
+
+  const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
+
+  console.log(
+    '🚀  ~ delegateFraTransactionSubmit ~ Retrieved transaction status response:',
+    transactionStatus,
+  );
+
+  const { response: sendResponse } = transactionStatus;
+
+  if (!sendResponse) {
+    return false;
+  }
+
+  const { Committed } = sendResponse;
+
+  if (!Array.isArray(Committed)) {
+    return false;
+  }
+
+  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+
+  console.log('🚀 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
+
+  if (!txnSID) {
+    console.log(
+      `🚀  ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
+      transactionStatus,
+    );
+    return false;
+  }
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 5 blocks before checking rewards');
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
+
+  const delegateInfo = await StakingApi.getDelegateInfo(walletInfo.address);
+
+  const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+
+  if (!isRewardsAdded) {
+    console.log('🚀  ~ delegateFraTransactionSubmit ~ There is no rewards yet! , delegateInfo', delegateInfo);
+    return false;
+  }
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ accumulated rewards ', delegateInfo.rewards);
+
+  return true;
+};
+
+export const delegateFraTransactionAndClaimRewards = async () => {
+  console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
+
+  const password = '123';
+  const Ledger = await getLedger();
+
+  const pkey = mainFaucet;
+
+  const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
+
+  const toWalletInfo = await KeypairApi.createKeypair(password);
+
+  const fraCode = await AssetApi.getFraAssetCode();
+
+  const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const numbersToSend = '1000010';
+  const numbersToDelegate = '1000000';
+
+  const balanceBeforeSend = await AccountApi.getBalance(toWalletInfo);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend',
+    balanceBeforeSend,
+  );
+
+  const transactionBuilderSend = await TransactionApi.sendToAddress(
+    walletInfo,
+    toWalletInfo.address,
+    numbersToSend,
+    fraCode,
+    assetBlindRules,
+  );
+
+  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+
+  console.log('send fra result handle!!', resultHandleSend);
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const balanceAfterSend = await AccountApi.getBalance(toWalletInfo);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend',
+    balanceAfterSend,
+  );
+
+  // delegate
+
+  const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+
+  const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
+
+  const formattedVlidators = await StakingApi.getValidatorList();
+
+  const validatorAddress = formattedVlidators.validators[0].addr;
+
+  const transactionBuilder = await StakingApi.delegate(
+    toWalletInfo,
+    delegationTargetAddress,
+    numbersToDelegate,
+    fraCode,
+    validatorAddress,
+    assetBlindRules,
+  );
+
+  const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle',
+    resultHandle,
+  );
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
+
+  console.log('Retrieved transaction status response:', transactionStatus);
+
+  const { response: sendResponse } = transactionStatus;
+
+  if (!sendResponse) {
+    return false;
+  }
+
+  const { Committed } = sendResponse;
+
+  if (!Array.isArray(Committed)) {
+    return false;
+  }
+
+  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+
+  console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
+
+  if (!txnSID) {
+    console.log(
+      `🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
+      transactionStatus,
+    );
+    return false;
+  }
+
+  const balanceAfterDelegate = await AccountApi.getBalance(toWalletInfo);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate',
+    balanceAfterDelegate,
+  );
+
+  console.log('waiting for 5 blocks before checking rewards');
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  console.log('checking rewards now');
+
+  const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
+
+  const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+
+  if (!isRewardsAdded) {
+    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
+    return false;
+  }
+
+  console.log('accumulated rewards ', delegateInfo.rewards);
+
+  // claim
+
+  const balanceBefore = await AccountApi.getBalance(toWalletInfo);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim',
+    balanceBefore,
+  );
+
+  const amountToClaim = delegateInfo.rewards;
+
+  const transactionBuilderClaim = await StakingApi.claim(toWalletInfo, amountToClaim);
+
+  const resultHandleClaim = await TransactionApi.submitTransaction(transactionBuilderClaim);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim',
+    resultHandle,
+  );
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const transactionStatusClaim = await NetworkApi.getTransactionStatus(resultHandleClaim);
+
+  console.log('Retrieved transaction status response:', transactionStatusClaim);
+
+  const { response: claimResponse } = transactionStatusClaim;
+
+  if (!claimResponse) {
+    return false;
+  }
+
+  const { Committed: ClaimCommited } = claimResponse;
+
+  if (!Array.isArray(ClaimCommited)) {
+    return false;
+  }
+
+  const txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim',
+    txnSIDClaim,
+  );
+
+  if (!txnSIDClaim) {
+    console.log(
+      `🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
+      transactionStatusClaim,
+    );
+    return false;
+  }
+
+  const balanceAfter = await AccountApi.getBalance(toWalletInfo);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 845 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter',
+    balanceAfter,
+  );
+
+  const isClaimSuccessfull = Number(balanceAfter) > Number(balanceBefore);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 877 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull',
+    isClaimSuccessfull,
+  );
+
+  return isClaimSuccessfull;
+};
