@@ -7,6 +7,13 @@ export interface ProcessedIssuedRecord extends TxOutput {
 }
 export declare const getAssetBalance: (walletKeypair: WalletKeypar, assetCode: string, sids: number[]) => Promise<BigNumberValue>;
 /**
+ * @todo Add unit test
+ * @param walletKeypair
+ * @param assetCode
+ * @returns
+ */
+export declare const getBalanceInWei: (walletKeypair: WalletKeypar, assetCode?: string | undefined) => Promise<BigNumberValue>;
+/**
  * Get the balance of the specific asset for the given user
  *
  * @remarks

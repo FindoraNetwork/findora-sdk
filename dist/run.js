@@ -72,7 +72,7 @@ var api_2 = require("./api");
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 18000;
-var mainFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
+var mainFaucet = 'XXX';
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
@@ -180,7 +180,7 @@ var defineCustomAsset = function () { return __awaiter(void 0, void 0, void 0, f
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkey = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
                 password = '123';
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
@@ -253,12 +253,18 @@ var getValidatorList = function () { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
+/**
+ *         publickey: 'B6fhmHZe9gP4RqhX_UdSedoIENr449oNKf0rM0p5aM0=',
+        address: 'fra1q7n7rxrktmmq87zx4ptl636j08dqsyx6lr3a5rffl54nxjnedrxs0v63wg',
+        keypair: XfrKeyPair { ptr: 2556360 },
+        privateStr: 'cFDDiU-Wq__LPXio47nmRA8ytTil4WPjKiKXwRCJRUY='
+ */
 var getDelegateInfo = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, delegateInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = mainFaucet;
+                pkey = 'VKt39pHEX8RY4doRQGIOf2oP-HGDVaPKAfEhkbdoNKA=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -1236,7 +1242,7 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
 // issueCustomAsset(); // works
 // getStateCommitment(); // works
 // getValidatorList();
-// getDelegateInfo(); // 1
+getDelegateInfo(); // 1
 // getTransferBuilderOperation(); // works
 // createNewKeypair(); // works
 // transferFraToSingleRecepient(); // works
@@ -1246,7 +1252,7 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
 // getCustomAssetDetails(); // works
 // getTransactionStatus(); // works
 // getBlockDetails();
-(0, exports.delegateFraTransactionSubmit)(); // 2
+// delegateFraTransactionSubmit(); // 2
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();

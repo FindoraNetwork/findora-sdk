@@ -43,6 +43,40 @@ export const getAssetBalance = async (
 };
 
 /**
+ * @todo Add unit test
+ * @param walletKeypair
+ * @param assetCode
+ * @returns
+ */
+export const getBalanceInWei = async (
+  walletKeypair: WalletKeypar,
+  assetCode?: string,
+): Promise<BigNumberValue> => {
+  const sidsResult = await Network.getOwnedSids(walletKeypair.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('No sids were fetched!');
+  }
+
+  const fraAssetCode = await getFraAssetCode();
+
+  const assetCodeToUse = assetCode || fraAssetCode;
+
+  try {
+    const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
+
+    // const balance = fromWei(balanceInWei, 6).toFormat(6);
+    return balanceInWei;
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not fetch balance in wei for "${assetCodeToUse}". Error - ${e.message}`);
+  }
+};
+
+/**
  * Get the balance of the specific asset for the given user
  *
  * @remarks
@@ -62,20 +96,21 @@ export const getAssetBalance = async (
  * @returns Result of transaction submission to the network
  */
 export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string): Promise<string> => {
-  const sidsResult = await Network.getOwnedSids(walletKeypair.publickey);
+  // const sidsResult = await Network.getOwnedSids(walletKeypair.publickey);
 
-  const { response: sids } = sidsResult;
+  // const { response: sids } = sidsResult;
 
-  if (!sids) {
-    throw new Error('No sids were fetched!');
-  }
+  // if (!sids) {
+  //   throw new Error('No sids were fetched!');
+  // }
 
   const fraAssetCode = await getFraAssetCode();
 
   const assetCodeToUse = assetCode || fraAssetCode;
 
   try {
-    const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
+    // const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
+    const balanceInWei = await getBalanceInWei(walletKeypair, assetCodeToUse);
 
     const balance = fromWei(balanceInWei, 6).toFormat(6);
     return balance;

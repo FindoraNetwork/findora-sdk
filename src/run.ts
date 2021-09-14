@@ -108,7 +108,8 @@ const getCustomAssetBalance = async () => {
  * Define a custom asset
  */
 const defineCustomAsset = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
 
   const password = '123';
 
@@ -172,9 +173,17 @@ const getValidatorList = async () => {
   console.log('formattedVlidators', formattedVlidators);
 };
 
+/**
+ *         publickey: 'B6fhmHZe9gP4RqhX_UdSedoIENr449oNKf0rM0p5aM0=',
+        address: 'fra1q7n7rxrktmmq87zx4ptl636j08dqsyx6lr3a5rffl54nxjnedrxs0v63wg',
+        keypair: XfrKeyPair { ptr: 2556360 },
+        privateStr: 'cFDDiU-Wq__LPXio47nmRA8ytTil4WPjKiKXwRCJRUY='
+ */
 const getDelegateInfo = async () => {
   // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const pkey = mainFaucet;
+  // const pkey = 'cFDDiU-Wq__LPXio47nmRA8ytTil4WPjKiKXwRCJRUY=';
+  const pkey = 'VKt39pHEX8RY4doRQGIOf2oP-HGDVaPKAfEhkbdoNKA=';
+  // const pkey = mainFaucet;
   const password = '123';
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -1147,7 +1156,7 @@ const sendEvmToAccount = async () => {
 // issueCustomAsset(); // works
 // getStateCommitment(); // works
 // getValidatorList();
-// getDelegateInfo(); // 1
+getDelegateInfo(); // 1
 // getTransferBuilderOperation(); // works
 // createNewKeypair(); // works
 // transferFraToSingleRecepient(); // works
@@ -1157,7 +1166,7 @@ const sendEvmToAccount = async () => {
 // getCustomAssetDetails(); // works
 // getTransactionStatus(); // works
 // getBlockDetails();
-delegateFraTransactionSubmit(); // 2
+// delegateFraTransactionSubmit(); // 2
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();

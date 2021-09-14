@@ -42,9 +42,96 @@ const { mainFaucet, senderOne, senderTwo, receiverOne, receiverTwo } = walletKey
 
 const password = 'yourSecretPassword';
 
-export const keystoreUsage = async () => {
+// w1
+const getTxSid = async (operationName: string, txHandle: string) => {
+  console.log(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
+
+  await sleep(waitingTimeBeforeCheckTxStatus + 1000);
+
+  const transactionStatus = await NetworkApi.getTransactionStatus(txHandle);
+
+  const { response: sendResponse } = transactionStatus;
+
+  if (!sendResponse) {
+    console.log(`🚀 ~ ERROR 1 - ${operationName} ~ transactionStatus`, transactionStatus);
+
+    return false;
+  }
+
+  const { Committed } = sendResponse;
+
+  if (!Array.isArray(Committed)) {
+    console.log(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
+    return false;
+  }
+
+  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+
+  console.log(`🚀 ~ ${operationName} ~ txnSID`, txnSID);
+
+  if (!txnSID) {
+    console.log(
+      `🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `,
+      transactionStatus,
+    );
+    return false;
+  }
   return true;
 };
+
+// w1 from getTxSid
+const sendFromFaucetToAccount = async (
+  walletInfo: KeypairApi.WalletKeypar,
+  toWalletInfo: KeypairApi.WalletKeypar,
+  numbersToSend: string,
+) => {
+  console.log('////////////////  sendFromFaucetToAccount //////////////// ');
+
+  const fraCode = await AssetApi.getFraAssetCode();
+
+  const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const balanceBeforeSend = await AccountApi.getBalance(walletInfo);
+  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSend', balanceBeforeSend);
+
+  const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
+
+  const transactionBuilderSend = await TransactionApi.sendToAddress(
+    walletInfo,
+    toWalletInfo.address,
+    numbersToSend,
+    fraCode,
+    assetBlindRules,
+  );
+
+  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+
+  const isTxSent = await getTxSid('send fra', resultHandleSend);
+
+  if (!isTxSent) {
+    console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
+    return false;
+  }
+
+  const balanceAfterSend = await AccountApi.getBalance(walletInfo);
+  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSend', balanceAfterSend);
+
+  const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
+
+  const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
+  const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
+
+  const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
+  console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
+
+  return isSentSuccessfull;
+};
+
+// export const keystoreUsage = async () => {
+//   return true;
+// };
 
 export const defineAssetTransaction = async () => {
   console.log('////////////////  defineAssetTransaction //////////////// ');
@@ -54,7 +141,7 @@ export const defineAssetTransaction = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ file: integration.ts ~ line 42 ~ defineAssetTransaction ~ assetCode', tokenCode);
+  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
 
   const memo = 'this is a test asset';
 
@@ -84,45 +171,16 @@ export const defineAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ file: integration.ts ~ line 76 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
+  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode);
 
   const handle = await TransactionApi.submitTransaction(assetBuilder);
-  console.log('🚀 ~ file: integration.ts ~ line 81 ~ defineAssetTransactionSubmit ~ handle', handle);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 82 ~ defineAssetTransactionSubmit ~ Retrieving transaction status...',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxSent = await getTxSid('define asset', handle);
 
-  const transactionStatus = await NetworkApi.getTransactionStatus(handle);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 87 ~ defineAssetTransactionSubmit ~ Retrieved transaction status response:',
-    transactionStatus,
-  );
-
-  const { response: defineTransactionResponse } = transactionStatus;
-
-  if (!defineTransactionResponse) {
-    return false;
-  }
-
-  const { Committed } = defineTransactionResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-  console.log('🚀 ~ file: integration.ts ~ line 106 ~ defineAssetTransactionSubmit ~ txnSID', txnSID);
-
-  if (!txnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 105 ~ defineAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handle}. Response was:`,
-      transactionStatus,
-    );
-
+  if (!isTxSent) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit define asset`);
     return false;
   }
 
@@ -137,10 +195,7 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 128 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode',
-    tokenCode,
-  );
+  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetRules = {
     transferable: false,
@@ -153,41 +208,11 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode, memo, assetRules);
 
   const handle = await TransactionApi.submitTransaction(assetBuilder);
-  console.log('🚀 ~ file: integration.ts ~ line 145 ~ defineAndIssueAssetTransactionSubmit ~ handle', handle);
 
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 147 ~ defineAndIssueAssetTransactionSubmit ~ Retrieving transaction status...',
-  );
+  const isTxSent = await getTxSid('define asset', handle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatus = await NetworkApi.getTransactionStatus(handle);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 152 ~ defineAndIssueAssetTransactionSubmit ~ transactionStatus',
-    transactionStatus,
-  );
-
-  const { response: defineTransactionResponse } = transactionStatus;
-
-  if (!defineTransactionResponse) {
-    return false;
-  }
-
-  const { Committed } = defineTransactionResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-
-  console.log('🚀 ~ file: integration.ts ~ line 167 ~ defineAndIssueAssetTransactionSubmit ~ txnSID', txnSID);
-
-  if (!txnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 172 ~ defineAndIssueAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handle}. Response was:`,
-      transactionStatus,
-    );
+  if (!isTxSent) {
+    console.log(`🚀 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset`);
     return false;
   }
 
@@ -198,47 +223,11 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 192 ~ defineAndIssueAssetTransactionSubmit ~ handleIssue',
-    handleIssue,
-  );
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 193 ~ defineAndIssueAssetTransactionSubmit ~ Retrieving transaction status...',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxIssued = await getTxSid('issue', handleIssue);
 
-  const issueTransactionStatus = await NetworkApi.getTransactionStatus(handleIssue);
-
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 200 ~ defineAndIssueAssetTransactionSubmit ~ issueTransactionStatus',
-    issueTransactionStatus,
-  );
-
-  const { response: issueTransactionResponse } = issueTransactionStatus;
-
-  if (!issueTransactionResponse) {
-    return false;
-  }
-
-  const { Committed: IssueCommitted } = issueTransactionResponse;
-
-  if (!Array.isArray(IssueCommitted)) {
-    return false;
-  }
-
-  const issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 216 ~ defineAndIssueAssetTransactionSubmit ~ issueTxnSID',
-    issueTxnSID,
-  );
-
-  if (!issueTxnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 222 ~ defineAndIssueAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handleIssue}. Response was:`,
-      issueTransactionStatus,
-    );
+  if (!isTxIssued) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue`);
     return false;
   }
 
@@ -256,10 +245,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
 
   const tokenCode = await AssetApi.getRandomAssetCode();
 
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 243 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode',
-    tokenCode,
-  );
+  console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetRules = {
     transferable: false,
@@ -272,47 +258,11 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode, memo, assetRules);
 
   const handle = await TransactionApi.submitTransaction(assetBuilder);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 256 ~ defineIssueAndSendAssetTransactionSubmit ~ handle',
-    handle,
-  );
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 257 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status...',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxDefineSent = await getTxSid('define', handle);
 
-  const transactionStatus = await NetworkApi.getTransactionStatus(handle);
-
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 262 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieved transaction status response',
-    transactionStatus,
-  );
-
-  const { response: defineResponse } = transactionStatus;
-
-  if (!defineResponse) {
-    return false;
-  }
-
-  const { Committed } = defineResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 278 ~ defineIssueAndSendAssetTransactionSubmit ~ txnSID',
-    txnSID,
-  );
-
-  if (!txnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 281 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handle}. Response was: `,
-      transactionStatus,
-    );
-
+  if (!isTxDefineSent) {
+    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define`);
     return false;
   }
 
@@ -328,44 +278,11 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   );
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 315 ~ defineIssueAndSendAssetTransactionSubmit ~ handleIssue',
-    handleIssue,
-  );
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 316 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status...',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxIssueSent = await getTxSid('define', handleIssue);
 
-  const issueTransactionStatus = await NetworkApi.getTransactionStatus(handleIssue);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 321 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieved transaction status response:',
-  );
-
-  const { response: issueResponse } = issueTransactionStatus;
-
-  if (!issueResponse) {
-    return false;
-  }
-
-  const { Committed: IssueCommitted } = issueResponse;
-
-  if (!Array.isArray(IssueCommitted)) {
-    return false;
-  }
-
-  const issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 336 ~ defineIssueAndSendAssetTransactionSubmit ~ issueTxnSID',
-    issueTxnSID,
-  );
-
-  if (!issueTxnSID) {
-    console.log(
-      `~ file: integration.ts ~ line 340 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handleIssue}. Response was: `,
-      issueTransactionStatus,
-    );
+  if (!isTxIssueSent) {
+    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue`);
     return false;
   }
 
@@ -380,45 +297,11 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   );
 
   const handleSend = await TransactionApi.submitTransaction(sendTransactionBuilder);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 357 ~ defineIssueAndSendAssetTransactionSubmit ~ handleSend',
-    handleSend,
-  );
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 357 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status..',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxTransferSent = await getTxSid('send', handleSend);
 
-  const sendTransactionStatus = await NetworkApi.getTransactionStatus(handleSend);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 363 ~ defineIssueAndSendAssetTransactionSubmit ~ sendTransactionStatus',
-    sendTransactionStatus,
-  );
-
-  const { response: sendResponse } = sendTransactionStatus;
-
-  if (!sendResponse) {
-    return false;
-  }
-
-  const { Committed: SendCommitted } = sendResponse;
-
-  if (!Array.isArray(SendCommitted)) {
-    return false;
-  }
-
-  const sendTxnSID = SendCommitted && Array.isArray(SendCommitted) ? SendCommitted[0] : null;
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 378 ~ defineIssueAndSendAssetTransactionSubmit ~ sendTxnSID',
-    sendTxnSID,
-  );
-
-  if (!sendTxnSID) {
-    console.log(
-      `"🚀 ~ file: integration.ts ~ line 382 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handleSend}. Response was: `,
-      sendTransactionStatus,
-    );
+  if (!isTxTransferSent) {
+    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -452,37 +335,10 @@ export const sendFraTransactionSubmit = async () => {
 
   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
 
-  console.log('🚀 ~ file: integration.ts ~ line 446 ~ sendFraTransactionSubmit ~ resultHandle', resultHandle);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 446 ~ sendFraTransactionSubmit ~ Retrieving transaction status...',
-  );
+  const isTxSend = await getTxSid('send', resultHandle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
-
-  console.log('Retrieved transaction status response:', transactionStatus);
-
-  const { response: sendResponse } = transactionStatus;
-
-  if (!sendResponse) {
-    return false;
-  }
-
-  const { Committed } = sendResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-  console.log('🚀 ~ file: integration.ts ~ line 472 ~ sendFraTransactionSubmit ~ txnSID', txnSID);
-
-  if (!txnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 477 ~ sendFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
-      transactionStatus,
-    );
+  if (!isTxSend) {
+    console.log(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -535,48 +391,11 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
   );
 
   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 536 ~ sendFraToMultipleReceiversTransactionSubmit ~ resultHandle',
-    resultHandle,
-  );
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 540 ~ sendFraToMultipleReceiversTransactionSubmit ~ Retrieving transaction status...',
-  );
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  const isTxSend = await getTxSid('send', resultHandle);
 
-  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
-
-  console.log('Retrieved transaction status response:', transactionStatus);
-
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 549 ~ sendFraToMultipleReceiversTransactionSubmit ~ transactionStatus',
-    transactionStatus,
-  );
-
-  const { response: sendResponse } = transactionStatus;
-
-  if (!sendResponse) {
-    return false;
-  }
-
-  const { Committed } = sendResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 568 ~ sendFraToMultipleReceiversTransactionSubmit ~ txnSID',
-    txnSID,
-  );
-
-  if (!txnSID) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 574 ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
-      transactionStatus,
-    );
+  if (!isTxSend) {
+    console.log(`🚀  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -645,34 +464,10 @@ export const issueAndSendConfidentialAsset = async () => {
 
   const handle = await TransactionApi.submitTransaction(assetBuilder);
 
-  console.log('Define Asset Transaction handle:', handle);
+  const isTxDefine = await getTxSid('defineAsset', handle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatus = await NetworkApi.getTransactionStatus(handle);
-
-  const { response: defineResponse } = transactionStatus;
-
-  if (!defineResponse) {
-    console.log('ERROR could not get defineResponse, line 657');
-    return false;
-  }
-
-  const { Committed } = defineResponse;
-
-  if (!Array.isArray(Committed)) {
-    console.log('ERROR could not get Commited from defineResponse, line 664');
-
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-
-  if (!txnSID) {
-    console.log(
-      `Could not retrieve the transaction with a handle ${handle}. Response was: `,
-      transactionStatus,
-    );
+  if (!isTxDefine) {
+    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit define`);
     return false;
   }
 
@@ -683,6 +478,13 @@ export const issueAndSendConfidentialAsset = async () => {
   const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
+
+  const isTxIssue = await getTxSid('issue', handleIssue);
+
+  if (!isTxIssue) {
+    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit issue`);
+    return false;
+  }
 
   console.log('Issue Asset with secret amount Transaction handle:', handleIssue);
 
@@ -702,16 +504,6 @@ export const issueAndSendConfidentialAsset = async () => {
 
   if (!Array.isArray(IssueCommitted)) {
     console.log('ERROR could not get Commited from defineResponse, line 705');
-    return false;
-  }
-
-  const issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-
-  if (!issueTxnSID) {
-    console.log(
-      `Could not retrieve the transaction with a handle ${handleIssue}. Response was: `,
-      issueTransactionStatus,
-    );
     return false;
   }
 
@@ -782,13 +574,6 @@ export const issueAndSendConfidentialAsset = async () => {
   const transferAmount = decryptedRecord?.amount;
   const numbersForPeter = bigNumber.fromWei(transferAmount, 6).toFormat(6);
 
-  // const utxoNumbersToTransfer = BigInt(transferAmount);
-
-  // console.log(
-  //   '🚀 ~ file: integration.ts ~ line 853 ~ issueAndSendConfidentialAsset ~ utxoNumbersToTransfer',
-  //   utxoNumbersToTransfer,
-  // );
-
   const assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: true };
 
   const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: numbersForPeter }];
@@ -802,44 +587,12 @@ export const issueAndSendConfidentialAsset = async () => {
 
   const handleSend = await TransactionApi.submitTransaction(sendTransactionBuilder);
 
-  console.log('Send Transaction handle:', handleSend);
+  const isTxSend = await getTxSid('send', handleSend);
 
-  console.log('Retrieving transaction status...');
-
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const sendTransactionStatus = await NetworkApi.getTransactionStatus(handleSend);
-
-  console.log('Retrieved transaction status response:', sendTransactionStatus);
-
-  const { response: sendResponse } = sendTransactionStatus;
-
-  if (!sendResponse) {
-    console.log('ERROR could not get send transaction response', sendTransactionStatus);
+  if (!isTxSend) {
+    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit send`);
     return false;
   }
-
-  const { Committed: SendCommitted } = sendResponse;
-
-  if (!Array.isArray(SendCommitted)) {
-    console.log('ERROR could not get Commited from sendResponse, line 828');
-
-    return false;
-  }
-
-  const sendTxnSID = SendCommitted && Array.isArray(SendCommitted) ? SendCommitted[0] : null;
-
-  console.log(`TxnSID is: ${sendTxnSID}`);
-
-  if (!sendTxnSID) {
-    console.log(
-      `Could not retrieve the transaction with a handle ${handleSend}. Response was: `,
-      sendTransactionStatus,
-    );
-    return false;
-  }
-
-  await sleep(4000);
 
   const bobTxoSidsResult = await NetworkApi.getOwnedSids(toWalletInfo.publickey);
 
@@ -910,38 +663,44 @@ export const delegateFraTransactionSubmit = async () => {
   const pkey = mainFaucet;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
-
   const toWalletInfo = await KeypairApi.createKeypair(password);
 
-  const fraCode = await AssetApi.getFraAssetCode();
+  const numbersToDelegate = '1000000';
+  const numbersToSend = '1000010';
 
+  const fraCode = await AssetApi.getFraAssetCode();
   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  const numbersToSend = '1000010';
-  const numbersToDelegate = '1000000';
+  // const transactionBuilderSend = await TransactionApi.sendToAddress(
+  //   walletInfo,
+  //   toWalletInfo.address,
+  //   numbersToSend,
+  //   fraCode,
+  //   assetBlindRules,
+  // );
 
-  const transactionBuilderSend = await TransactionApi.sendToAddress(
-    walletInfo,
-    toWalletInfo.address,
-    numbersToSend,
-    fraCode,
-    assetBlindRules,
-  );
+  // const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
 
-  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+  // const isTxSent = await getTxSid('send transfer', resultHandleSend);
 
-  console.log('🚀  ~ delegateFraTransactionSubmit ~ send fra result handle', resultHandleSend);
+  // if (!isTxSent) {
+  //   console.log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit transfer`);
+  //   return false;
+  // }
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  // w1 from getTxSid
+  const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
+
+  if (!isFundSuccesfull) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+    return false;
+  }
 
   // delegate part
-
   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
-
   const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
 
   const formattedVlidators = await StakingApi.getValidatorList();
-
   const validatorAddress = formattedVlidators.validators[0].addr;
 
   const transactionBuilder = await StakingApi.delegate(
@@ -954,44 +713,22 @@ export const delegateFraTransactionSubmit = async () => {
   );
 
   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
-  console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
 
-  console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
+  const isTxDelegated = await getTxSid('delegate', resultHandle);
 
+  if (!isTxDelegated) {
+    console.log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit delegation`);
+    return false;
+  }
+
+  console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
+
+  // 10 blocks
   await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
-
-  console.log(
-    '🚀  ~ delegateFraTransactionSubmit ~ Retrieved transaction status response:',
-    transactionStatus,
-  );
-
-  const { response: sendResponse } = transactionStatus;
-
-  if (!sendResponse) {
-    return false;
-  }
-
-  const { Committed } = sendResponse;
-
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
-
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-
-  console.log('🚀 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
-
-  if (!txnSID) {
-    console.log(
-      `🚀  ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
-      transactionStatus,
-    );
-    return false;
-  }
-
-  console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 5 blocks before checking rewards');
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
@@ -1001,7 +738,7 @@ export const delegateFraTransactionSubmit = async () => {
 
   console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
 
-  const delegateInfo = await StakingApi.getDelegateInfo(walletInfo.address);
+  const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
 
   const isRewardsAdded = Number(delegateInfo.rewards) > 0;
 
@@ -1024,53 +761,31 @@ export const delegateFraTransactionAndClaimRewards = async () => {
   const pkey = mainFaucet;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
-
   const toWalletInfo = await KeypairApi.createKeypair(password);
+  console.log(
+    '🚀 ~ file: integration.ts ~ line 1096 ~ delegateFraTransactionAndClaimRewards ~ toWalletInfo',
+    toWalletInfo,
+  );
+
+  const numbersToDelegate = '1000001';
+  const numbersToSend = '1000010';
 
   const fraCode = await AssetApi.getFraAssetCode();
-
   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  const numbersToSend = '1000010';
-  const numbersToDelegate = '1000000';
+  // w1 from getTxSid
+  const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
 
-  const balanceBeforeSend = await AccountApi.getBalance(toWalletInfo);
-
-  console.log(
-    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend',
-    balanceBeforeSend,
-  );
-
-  const transactionBuilderSend = await TransactionApi.sendToAddress(
-    walletInfo,
-    toWalletInfo.address,
-    numbersToSend,
-    fraCode,
-    assetBlindRules,
-  );
-
-  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
-
-  console.log('send fra result handle!!', resultHandleSend);
-
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const balanceAfterSend = await AccountApi.getBalance(toWalletInfo);
-
-  console.log(
-    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend',
-    balanceAfterSend,
-  );
+  if (!isFundSuccesfull) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+    return false;
+  }
 
   // delegate
-
   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
-
   const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
 
   const formattedVlidators = await StakingApi.getValidatorList();
-
   const validatorAddress = formattedVlidators.validators[0].addr;
 
   const transactionBuilder = await StakingApi.delegate(
@@ -1084,136 +799,93 @@ export const delegateFraTransactionAndClaimRewards = async () => {
 
   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
 
-  console.log(
-    '🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle',
-    resultHandle,
-  );
+  // w2
+  const isTxDelegated = await getTxSid('delegate', resultHandle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatus = await NetworkApi.getTransactionStatus(resultHandle);
-
-  console.log('Retrieved transaction status response:', transactionStatus);
-
-  const { response: sendResponse } = transactionStatus;
-
-  if (!sendResponse) {
+  if (!isTxDelegated) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation`);
     return false;
   }
 
-  const { Committed } = sendResponse;
+  console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
 
-  if (!Array.isArray(Committed)) {
-    return false;
-  }
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
-  console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
-  if (!txnSID) {
+  console.log('delegateFraTransactionAndClaimRewards - checking rewards now');
+
+  const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
+
+  const amountToClaim = delegateInfo.rewards;
+
+  const isRewardsAdded = Number(amountToClaim) > 0;
+
+  if (!isRewardsAdded) {
     console.log(
-      `🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
-      transactionStatus,
+      'delegateFraTransactionAndClaimRewards - There is no rewards yet! , delegateInfo',
+      delegateInfo,
     );
     return false;
   }
 
-  const balanceAfterDelegate = await AccountApi.getBalance(toWalletInfo);
-
-  console.log(
-    '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate',
-    balanceAfterDelegate,
-  );
-
-  console.log('waiting for 5 blocks before checking rewards');
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  console.log('checking rewards now');
-
-  const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
-
-  const isRewardsAdded = Number(delegateInfo.rewards) > 0;
-
-  if (!isRewardsAdded) {
-    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
-    return false;
-  }
-
-  console.log('accumulated rewards ', delegateInfo.rewards);
+  console.log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
 
   // claim
+  const balanceBefore = await AccountApi.getBalanceInWei(toWalletInfo);
 
-  const balanceBefore = await AccountApi.getBalance(toWalletInfo);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim',
-    balanceBefore,
-  );
-
-  const amountToClaim = delegateInfo.rewards;
+  console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
 
   const transactionBuilderClaim = await StakingApi.claim(toWalletInfo, amountToClaim);
 
   const resultHandleClaim = await TransactionApi.submitTransaction(transactionBuilderClaim);
 
-  console.log(
-    '🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim',
-    resultHandle,
-  );
+  // w 10
+  const isTxClaimed = await getTxSid('clam', resultHandleClaim);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transactionStatusClaim = await NetworkApi.getTransactionStatus(resultHandleClaim);
-
-  console.log('Retrieved transaction status response:', transactionStatusClaim);
-
-  const { response: claimResponse } = transactionStatusClaim;
-
-  if (!claimResponse) {
+  if (!isTxClaimed) {
+    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim`);
     return false;
   }
 
-  const { Committed: ClaimCommited } = claimResponse;
-
-  if (!Array.isArray(ClaimCommited)) {
-    return false;
-  }
-
-  const txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
-
   console.log(
-    '🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim',
-    txnSIDClaim,
+    'delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking balance of claimed rewards',
   );
 
-  if (!txnSIDClaim) {
-    console.log(
-      `🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `,
-      transactionStatusClaim,
-    );
-    return false;
-  }
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const balanceAfter = await AccountApi.getBalance(toWalletInfo);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 845 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter',
-    balanceAfter,
-  );
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const isClaimSuccessfull = Number(balanceAfter) > Number(balanceBefore);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 877 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull',
-    isClaimSuccessfull,
-  );
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const balanceAfter = await AccountApi.getBalanceInWei(toWalletInfo);
+
+  console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
+
+  const balanceBeforeBN = bigNumber.create(balanceBefore);
+  const balanceAfterBN = bigNumber.create(balanceAfter);
+
+  const isClaimSuccessfull = balanceAfterBN.gte(balanceBeforeBN);
+
+  console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
 
   return isClaimSuccessfull;
 };

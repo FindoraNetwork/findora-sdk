@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = exports.keystoreUsage = void 0;
+exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
 var api_1 = require("./api");
@@ -83,12 +83,88 @@ console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured t
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, senderTwo = walletKeys.senderTwo, receiverOne = walletKeys.receiverOne, receiverTwo = walletKeys.receiverTwo;
 var password = 'yourSecretPassword';
-var keystoreUsage = function () { return __awaiter(void 0, void 0, void 0, function () {
+// w1
+var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, void 0, void 0, function () {
+    var transactionStatus, sendResponse, Committed, txnSID;
     return __generator(this, function (_a) {
-        return [2 /*return*/, true];
+        switch (_a.label) {
+            case 0:
+                console.log("\uD83D\uDE80 ~ " + operationName + " ~ txHandle", txHandle);
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
+            case 2:
+                transactionStatus = _a.sent();
+                sendResponse = transactionStatus.response;
+                if (!sendResponse) {
+                    return [2 /*return*/, false];
+                }
+                Committed = sendResponse.Committed;
+                if (!Array.isArray(Committed)) {
+                    return [2 /*return*/, false];
+                }
+                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+                console.log("\uD83D\uDE80 ~ " + operationName + " ~ txnSID", txnSID);
+                if (!txnSID) {
+                    console.log("\uD83D\uDE80  ~ " + operationName + " ~ Could not retrieve the transaction with a handle " + txHandle + ". Response was: ", transactionStatus);
+                    return [2 /*return*/, false];
+                }
+                return [2 /*return*/, true];
+        }
     });
 }); };
-exports.keystoreUsage = keystoreUsage;
+// w1 from getTxSid
+var sendFromFaucetToAccount = function (walletInfo, toWalletInfo, numbersToSend) { return __awaiter(void 0, void 0, void 0, function () {
+    var fraCode, assetBlindRules, balanceBeforeSend, balanceBeforeSendTo, transactionBuilderSend, resultHandleSend, isTxSent, balanceAfterSend, balanceAfterSendTo, balanceBeforeSendToBN, balanceAfterSendToBN, isSentSuccessfull;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.log('////////////////  sendFromFaucetToAccount //////////////// ');
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 1:
+                fraCode = _a.sent();
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 2:
+                balanceBeforeSend = _a.sent();
+                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSend', balanceBeforeSend);
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 3:
+                balanceBeforeSendTo = _a.sent();
+                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
+            case 4:
+                transactionBuilderSend = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
+            case 5:
+                resultHandleSend = _a.sent();
+                return [4 /*yield*/, getTxSid('send fra', resultHandleSend)];
+            case 6:
+                isTxSent = _a.sent();
+                if (!isTxSent) {
+                    console.log("\uD83D\uDE80 ~ sendFromFaucetToAccount ~ Could not submit transfer");
+                    return [2 /*return*/, false];
+                }
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 7:
+                balanceAfterSend = _a.sent();
+                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSend', balanceAfterSend);
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 8:
+                balanceAfterSendTo = _a.sent();
+                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
+                balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
+                balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
+                isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
+                console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
+                return [2 /*return*/, isSentSuccessfull];
+        }
+    });
+}); };
+// export const keystoreUsage = async () => {
+//   return true;
+// };
 var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
     return __generator(this, function (_a) {
@@ -102,7 +178,7 @@ var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 2:
                 tokenCode = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 42 ~ defineAssetTransaction ~ assetCode', tokenCode);
+                console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
                 memo = 'this is a test asset';
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo)];
             case 3:
@@ -122,7 +198,7 @@ var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void
 }); };
 exports.defineAssetTransaction = defineAssetTransaction;
 var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, assetBuilder, handle, transactionStatus, defineTransactionResponse, Committed, txnSID;
+    var pkey, walletInfo, tokenCode, assetBuilder, handle, isTxSent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -134,34 +210,18 @@ var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 2:
                 tokenCode = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 76 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
+                console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode)];
             case 3:
                 assetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 4:
                 handle = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 81 ~ defineAssetTransactionSubmit ~ handle', handle);
-                console.log('🚀 ~ file: integration.ts ~ line 82 ~ defineAssetTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('define asset', handle)];
             case 5:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handle)];
-            case 6:
-                transactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 87 ~ defineAssetTransactionSubmit ~ Retrieved transaction status response:', transactionStatus);
-                defineTransactionResponse = transactionStatus.response;
-                if (!defineTransactionResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = defineTransactionResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 106 ~ defineAssetTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 105 ~ defineAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handle + ". Response was:", transactionStatus);
+                isTxSent = _a.sent();
+                if (!isTxSent) {
+                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit define asset");
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -170,7 +230,7 @@ var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0
 }); };
 exports.defineAssetTransactionSubmit = defineAssetTransactionSubmit;
 var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, assetRules, memo, assetBuilder, handle, transactionStatus, defineTransactionResponse, Committed, txnSID, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, issueTransactionStatus, issueTransactionResponse, IssueCommitted, issueTxnSID;
+    var pkey, walletInfo, tokenCode, assetRules, memo, assetBuilder, handle, isTxSent, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssued;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -182,7 +242,7 @@ var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 2:
                 tokenCode = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 128 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode);
+                console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode);
                 assetRules = {
                     transferable: false,
                     updatable: true,
@@ -195,67 +255,68 @@ var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 4:
                 handle = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 145 ~ defineAndIssueAssetTransactionSubmit ~ handle', handle);
-                console.log('🚀 ~ file: integration.ts ~ line 147 ~ defineAndIssueAssetTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('define asset', handle)];
             case 5:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handle)];
-            case 6:
-                transactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 152 ~ defineAndIssueAssetTransactionSubmit ~ transactionStatus', transactionStatus);
-                defineTransactionResponse = transactionStatus.response;
-                if (!defineTransactionResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = defineTransactionResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 167 ~ defineAndIssueAssetTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 172 ~ defineAndIssueAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handle + ". Response was:", transactionStatus);
+                isTxSent = _a.sent();
+                if (!isTxSent) {
+                    console.log("\uD83D\uDE80 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset");
                     return [2 /*return*/, false];
                 }
                 inputNumbers = '5';
                 assetBlindRules = { isAmountBlind: false };
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules)];
-            case 7:
+            case 6:
                 issueAssetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 8:
+            case 7:
                 handleIssue = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 192 ~ defineAndIssueAssetTransactionSubmit ~ handleIssue', handleIssue);
-                console.log('🚀 ~ file: integration.ts ~ line 193 ~ defineAndIssueAssetTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handleIssue)];
-            case 10:
-                issueTransactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 200 ~ defineAndIssueAssetTransactionSubmit ~ issueTransactionStatus', issueTransactionStatus);
-                issueTransactionResponse = issueTransactionStatus.response;
-                if (!issueTransactionResponse) {
+                return [4 /*yield*/, getTxSid('issue', handleIssue)];
+            case 8:
+                isTxIssued = _a.sent();
+                if (!isTxIssued) {
+                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue");
                     return [2 /*return*/, false];
                 }
-                IssueCommitted = issueTransactionResponse.Committed;
-                if (!Array.isArray(IssueCommitted)) {
-                    return [2 /*return*/, false];
-                }
-                issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 216 ~ defineAndIssueAssetTransactionSubmit ~ issueTxnSID', issueTxnSID);
-                if (!issueTxnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 222 ~ defineAndIssueAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handleIssue + ". Response was:", issueTransactionStatus);
-                    return [2 /*return*/, false];
-                }
+                // console.log(
+                //   '🚀 ~ file: integration.ts ~ line 192 ~ defineAndIssueAssetTransactionSubmit ~ handleIssue',
+                //   handleIssue,
+                // );
+                // console.log(
+                //   '🚀 ~ file: integration.ts ~ line 193 ~ defineAndIssueAssetTransactionSubmit ~ Retrieving transaction status...',
+                // );
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                // const issueTransactionStatus = await NetworkApi.getTransactionStatus(handleIssue);
+                // console.log(
+                //   '🚀 ~ file: integration.ts ~ line 200 ~ defineAndIssueAssetTransactionSubmit ~ issueTransactionStatus',
+                //   issueTransactionStatus,
+                // );
+                // const { response: issueTransactionResponse } = issueTransactionStatus;
+                // if (!issueTransactionResponse) {
+                //   return false;
+                // }
+                // const { Committed: IssueCommitted } = issueTransactionResponse;
+                // if (!Array.isArray(IssueCommitted)) {
+                //   return false;
+                // }
+                // const issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
+                // console.log(
+                //   '🚀 ~ file: integration.ts ~ line 216 ~ defineAndIssueAssetTransactionSubmit ~ issueTxnSID',
+                //   issueTxnSID,
+                // );
+                // if (!issueTxnSID) {
+                //   console.log(
+                //     `🚀 ~ file: integration.ts ~ line 222 ~ defineAndIssueAssetTransactionSubmit ~ Could not retrieve the transaction with a handle ${handleIssue}. Response was:`,
+                //     issueTransactionStatus,
+                //   );
+                //   return false;
+                // }
                 return [2 /*return*/, true];
         }
     });
 }); };
 exports.defineAndIssueAssetTransactionSubmit = defineAndIssueAssetTransactionSubmit;
 var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkey, walletInfo, toWalletInfo, tokenCode, assetRules, memo, assetBuilder, handle, transactionStatus, defineResponse, Committed, txnSID, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, issueTransactionStatus, issueResponse, IssueCommitted, issueTxnSID, assetBlindRulesForSend, sendTransactionBuilder, handleSend, sendTransactionStatus, sendResponse, SendCommitted, sendTxnSID;
+    var pkey, toPkey, walletInfo, toWalletInfo, tokenCode, assetRules, memo, assetBuilder, handle, isTxDefineSent, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssueSent, assetBlindRulesForSend, sendTransactionBuilder, handleSend, isTxTransferSent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -271,7 +332,7 @@ var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(vo
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 3:
                 tokenCode = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 243 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
+                console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
                 assetRules = {
                     transferable: false,
                     updatable: true,
@@ -284,88 +345,40 @@ var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(vo
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 5:
                 handle = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 256 ~ defineIssueAndSendAssetTransactionSubmit ~ handle', handle);
-                console.log('🚀 ~ file: integration.ts ~ line 257 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('define', handle)];
             case 6:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handle)];
-            case 7:
-                transactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 262 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieved transaction status response', transactionStatus);
-                defineResponse = transactionStatus.response;
-                if (!defineResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = defineResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 278 ~ defineIssueAndSendAssetTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 281 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handle + ". Response was: ", transactionStatus);
+                isTxDefineSent = _a.sent();
+                if (!isTxDefineSent) {
+                    console.log("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define");
                     return [2 /*return*/, false];
                 }
                 inputNumbers = 5;
                 assetBlindRules = { isAmountBlind: false };
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, tokenCode, "" + inputNumbers, assetBlindRules)];
-            case 8:
+            case 7:
                 issueAssetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 9:
+            case 8:
                 handleIssue = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 315 ~ defineIssueAndSendAssetTransactionSubmit ~ handleIssue', handleIssue);
-                console.log('🚀 ~ file: integration.ts ~ line 316 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 10:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handleIssue)];
-            case 11:
-                issueTransactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 321 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieved transaction status response:');
-                issueResponse = issueTransactionStatus.response;
-                if (!issueResponse) {
-                    return [2 /*return*/, false];
-                }
-                IssueCommitted = issueResponse.Committed;
-                if (!Array.isArray(IssueCommitted)) {
-                    return [2 /*return*/, false];
-                }
-                issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 336 ~ defineIssueAndSendAssetTransactionSubmit ~ issueTxnSID', issueTxnSID);
-                if (!issueTxnSID) {
-                    console.log("~ file: integration.ts ~ line 340 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handleIssue + ". Response was: ", issueTransactionStatus);
+                return [4 /*yield*/, getTxSid('define', handleIssue)];
+            case 9:
+                isTxIssueSent = _a.sent();
+                if (!isTxIssueSent) {
+                    console.log("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue");
                     return [2 /*return*/, false];
                 }
                 assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: false };
                 return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + inputNumbers / 2, tokenCode, assetBlindRulesForSend)];
-            case 12:
+            case 10:
                 sendTransactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(sendTransactionBuilder)];
-            case 13:
+            case 11:
                 handleSend = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 357 ~ defineIssueAndSendAssetTransactionSubmit ~ handleSend', handleSend);
-                console.log('🚀 ~ file: integration.ts ~ line 357 ~ defineIssueAndSendAssetTransactionSubmit ~ Retrieving transaction status..');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 14:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handleSend)];
-            case 15:
-                sendTransactionStatus = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 363 ~ defineIssueAndSendAssetTransactionSubmit ~ sendTransactionStatus', sendTransactionStatus);
-                sendResponse = sendTransactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                SendCommitted = sendResponse.Committed;
-                if (!Array.isArray(SendCommitted)) {
-                    return [2 /*return*/, false];
-                }
-                sendTxnSID = SendCommitted && Array.isArray(SendCommitted) ? SendCommitted[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 378 ~ defineIssueAndSendAssetTransactionSubmit ~ sendTxnSID', sendTxnSID);
-                if (!sendTxnSID) {
-                    console.log("\"\uD83D\uDE80 ~ file: integration.ts ~ line 382 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not retrieve the transaction with a handle " + handleSend + ". Response was: ", sendTransactionStatus);
+                return [4 /*yield*/, getTxSid('send', handleSend)];
+            case 12:
+                isTxTransferSent = _a.sent();
+                if (!isTxTransferSent) {
+                    console.log("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -374,7 +387,7 @@ var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(vo
 }); };
 exports.defineIssueAndSendAssetTransactionSubmit = defineIssueAndSendAssetTransactionSubmit;
 var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, toWalletInfo, receiverBalanceBeforeTransfer, assetBlindRules, numbers, assetCode, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, receiverBalanceAfterTransfer, isItRight, peterCheckResult;
+    var pkey, walletInfo, toWalletInfo, receiverBalanceBeforeTransfer, assetBlindRules, numbers, assetCode, transactionBuilder, resultHandle, isTxSend, receiverBalanceAfterTransfer, isItRight, peterCheckResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -400,31 +413,15 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 6:
                 resultHandle = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 446 ~ sendFraTransactionSubmit ~ resultHandle', resultHandle);
-                console.log('🚀 ~ file: integration.ts ~ line 446 ~ sendFraTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('send', resultHandle)];
             case 7:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
-            case 8:
-                transactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 472 ~ sendFraTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ sendFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                isTxSend = _a.sent();
+                if (!isTxSend) {
+                    console.log("\uD83D\uDE80  ~ sendFraTransactionSubmit ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 9:
+            case 8:
                 receiverBalanceAfterTransfer = _a.sent();
                 isItRight = receiverBalanceBeforeTransfer === '0.000000' && receiverBalanceAfterTransfer === '0.100000';
                 peterCheckResult = "Peter balance should be 0.100000 and now it is " + receiverBalanceAfterTransfer + ", so this is \"" + isItRight + "\" ";
@@ -435,7 +432,7 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
 }); };
 exports.sendFraTransactionSubmit = sendFraTransactionSubmit;
 var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, aliceWalletInfo, petereWalletInfo, aliceBalanceBeforeTransfer, peterBalanceBeforeTransfer, assetBlindRules, numbersForAlice, numbersForPeter, assetCode, recieversInfo, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, aliceBalanceAfterTransfer, peterBalanceAfterTransfer, isItRightAlice, isItRightPeter, aliceCheckResult, peterCheckResult;
+    var pkey, walletInfo, aliceWalletInfo, petereWalletInfo, aliceBalanceBeforeTransfer, peterBalanceBeforeTransfer, assetBlindRules, numbersForAlice, numbersForPeter, assetCode, recieversInfo, transactionBuilder, resultHandle, isTxSend, aliceBalanceAfterTransfer, peterBalanceAfterTransfer, isItRightAlice, isItRightPeter, aliceCheckResult, peterCheckResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -472,35 +469,18 @@ var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 8:
                 resultHandle = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 536 ~ sendFraToMultipleReceiversTransactionSubmit ~ resultHandle', resultHandle);
-                console.log('🚀 ~ file: integration.ts ~ line 540 ~ sendFraToMultipleReceiversTransactionSubmit ~ Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('send', resultHandle)];
             case 9:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
-            case 10:
-                transactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatus);
-                console.log('🚀 ~ file: integration.ts ~ line 549 ~ sendFraToMultipleReceiversTransactionSubmit ~ transactionStatus', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: integration.ts ~ line 568 ~ sendFraToMultipleReceiversTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 574 ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                isTxSend = _a.sent();
+                if (!isTxSend) {
+                    console.log("\uD83D\uDE80  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(aliceWalletInfo)];
-            case 11:
+            case 10:
                 aliceBalanceAfterTransfer = _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(petereWalletInfo)];
-            case 12:
+            case 11:
                 peterBalanceAfterTransfer = _a.sent();
                 isItRightAlice = aliceBalanceBeforeTransfer === '0.000000' && aliceBalanceAfterTransfer === '0.100000';
                 isItRightPeter = peterBalanceBeforeTransfer === '0.000000' && peterBalanceAfterTransfer === '0.200000';
@@ -532,7 +512,7 @@ var getBalance = function () { return __awaiter(void 0, void 0, void 0, function
 }); };
 exports.getBalance = getBalance;
 var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var Ledger, pkey, toPkey, walletInfo, toWalletInfo, aliceKeyPair, bobKeyPair, tokenCode, assetRules, memo, assetBuilder, handle, transactionStatus, defineResponse, Committed, txnSID, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, issueTransactionStatus, issueResponse, IssueCommitted, issueTxnSID, confSid, nonConfSid, confUtxoResponse, nonConfUtxoResponse, confUtxo, nonConfUtxo, isNonConfidentialMatches, isConfidentiaExists, ownerMemoDataResult, ownerMemoJson, ownerMemo, assetRecord, decryptedRecord, isDecryptedRecordCorrect, transferAmount, numbersForPeter, assetBlindRulesForSend, recieversInfo, sendTransactionBuilder, handleSend, sendTransactionStatus, sendResponse, SendCommitted, sendTxnSID, bobTxoSidsResult, bobTxoSids, newSid, bobUtxoDataResult, bobUtxoResponse, bobMemoDataResult, bobMemoJson, bobOwnerMemo, bobAssetRecord, bobDecryptedRecord, isBobDecryptedRecordCorrect, isAssetTypeCorrect;
+    var Ledger, pkey, toPkey, walletInfo, toWalletInfo, aliceKeyPair, bobKeyPair, tokenCode, assetRules, memo, assetBuilder, handle, isTxDefine, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssue, issueTransactionStatus, issueResponse, IssueCommitted, confSid, nonConfSid, confUtxoResponse, nonConfUtxoResponse, confUtxo, nonConfUtxo, isNonConfidentialMatches, isConfidentiaExists, ownerMemoDataResult, ownerMemoJson, ownerMemo, assetRecord, decryptedRecord, isDecryptedRecordCorrect, transferAmount, numbersForPeter, assetBlindRulesForSend, recieversInfo, sendTransactionBuilder, handleSend, isTxSend, bobTxoSidsResult, bobTxoSids, newSid, bobUtxoDataResult, bobUtxoResponse, bobMemoDataResult, bobMemoJson, bobOwnerMemo, bobAssetRecord, bobDecryptedRecord, isBobDecryptedRecordCorrect, isAssetTypeCorrect;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -566,36 +546,28 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 6:
                 handle = _a.sent();
-                console.log('Define Asset Transaction handle:', handle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('defineAsset', handle)];
             case 7:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handle)];
-            case 8:
-                transactionStatus = _a.sent();
-                defineResponse = transactionStatus.response;
-                if (!defineResponse) {
-                    console.log('ERROR could not get defineResponse, line 657');
-                    return [2 /*return*/, false];
-                }
-                Committed = defineResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    console.log('ERROR could not get Commited from defineResponse, line 664');
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                if (!txnSID) {
-                    console.log("Could not retrieve the transaction with a handle " + handle + ". Response was: ", transactionStatus);
+                isTxDefine = _a.sent();
+                if (!isTxDefine) {
+                    console.log("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit define");
                     return [2 /*return*/, false];
                 }
                 inputNumbers = '5';
                 assetBlindRules = { isAmountBlind: true };
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules)];
-            case 9:
+            case 8:
                 issueAssetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 10:
+            case 9:
                 handleIssue = _a.sent();
+                return [4 /*yield*/, getTxSid('issue', handleIssue)];
+            case 10:
+                isTxIssue = _a.sent();
+                if (!isTxIssue) {
+                    console.log("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit issue");
+                    return [2 /*return*/, false];
+                }
                 console.log('Issue Asset with secret amount Transaction handle:', handleIssue);
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 11:
@@ -611,11 +583,6 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                 IssueCommitted = issueResponse.Committed;
                 if (!Array.isArray(IssueCommitted)) {
                     console.log('ERROR could not get Commited from defineResponse, line 705');
-                    return [2 /*return*/, false];
-                }
-                issueTxnSID = IssueCommitted && Array.isArray(IssueCommitted) ? IssueCommitted[0] : null;
-                if (!issueTxnSID) {
-                    console.log("Could not retrieve the transaction with a handle " + handleIssue + ". Response was: ", issueTransactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, IssueCommitted[1][0]];
@@ -668,36 +635,15 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(sendTransactionBuilder)];
             case 19:
                 handleSend = _a.sent();
-                console.log('Send Transaction handle:', handleSend);
-                console.log('Retrieving transaction status...');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('send', handleSend)];
             case 20:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handleSend)];
-            case 21:
-                sendTransactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', sendTransactionStatus);
-                sendResponse = sendTransactionStatus.response;
-                if (!sendResponse) {
-                    console.log('ERROR could not get send transaction response', sendTransactionStatus);
+                isTxSend = _a.sent();
+                if (!isTxSend) {
+                    console.log("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
-                SendCommitted = sendResponse.Committed;
-                if (!Array.isArray(SendCommitted)) {
-                    console.log('ERROR could not get Commited from sendResponse, line 828');
-                    return [2 /*return*/, false];
-                }
-                sendTxnSID = SendCommitted && Array.isArray(SendCommitted) ? SendCommitted[0] : null;
-                console.log("TxnSID is: " + sendTxnSID);
-                if (!sendTxnSID) {
-                    console.log("Could not retrieve the transaction with a handle " + handleSend + ". Response was: ", sendTransactionStatus);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, (0, sleep_promise_1.default)(4000)];
-            case 22:
-                _a.sent();
                 return [4 /*yield*/, api_1.Network.getOwnedSids(toWalletInfo.publickey)];
-            case 23:
+            case 21:
                 bobTxoSidsResult = _a.sent();
                 bobTxoSids = bobTxoSidsResult.response;
                 if (!bobTxoSids) {
@@ -706,7 +652,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                 }
                 newSid = bobTxoSids.sort(function (a, b) { return b - a; })[0];
                 return [4 /*yield*/, api_1.Network.getUtxo(newSid)];
-            case 24:
+            case 22:
                 bobUtxoDataResult = _a.sent();
                 bobUtxoResponse = bobUtxoDataResult.response;
                 if (!bobUtxoResponse) {
@@ -714,7 +660,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Network.getOwnerMemo(newSid)];
-            case 25:
+            case 23:
                 bobMemoDataResult = _a.sent();
                 bobMemoJson = bobMemoDataResult.response;
                 if (!bobMemoJson) {
@@ -740,7 +686,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
 }); };
 exports.issueAndSendConfidentialAsset = issueAndSendConfidentialAsset;
 var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, delegateInfo, isRewardsAdded;
+    var Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, isTxSent, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, isTxSubmitted, delegateInfo, isRewardsAdded;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -767,10 +713,13 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
             case 6:
                 resultHandleSend = _a.sent();
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ send fra result handle', resultHandleSend);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('send transfer', resultHandleSend)];
             case 7:
-                _a.sent();
+                isTxSent = _a.sent();
+                if (!isTxSent) {
+                    console.log("\uD83D\uDE80  ~ delegateFraTransactionSubmit ~ Could not submit transfer");
+                    return [2 /*return*/, false];
+                }
                 delegationTargetPublicKey = Ledger.get_delegation_target_address();
                 return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
             case 8:
@@ -785,30 +734,19 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 11:
                 resultHandle = _a.sent();
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, getTxSid('delegate', resultHandle)];
             case 12:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
+                isTxSubmitted = _a.sent();
+                if (!isTxSubmitted) {
+                    console.log("\uD83D\uDE80  ~ delegateFraTransactionSubmit ~ Could not submit delegation");
+                    return [2 /*return*/, false];
+                }
+                console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
+                // 10 blocks
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 13:
-                transactionStatus = _a.sent();
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ Retrieved transaction status response:', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80  ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 5 blocks before checking rewards');
+                // 10 blocks
+                _a.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 14:
                 _a.sent();
@@ -824,9 +762,21 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _a.sent();
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(walletInfo.address)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 19:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 20:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 21:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 22:
+                _a.sent();
+                console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
+                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
+            case 23:
                 delegateInfo = _a.sent();
                 isRewardsAdded = Number(delegateInfo.rewards) > 0;
                 if (!isRewardsAdded) {
@@ -840,7 +790,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
 }); };
 exports.delegateFraTransactionSubmit = delegateFraTransactionSubmit;
 var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, balanceBeforeSend, transactionBuilderSend, resultHandleSend, balanceAfterSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, balanceAfterDelegate, delegateInfo, isRewardsAdded, balanceBefore, amountToClaim, transactionBuilderClaim, resultHandleClaim, transactionStatusClaim, claimResponse, ClaimCommited, txnSIDClaim, balanceAfter, isClaimSuccessfull;
+    var password, Ledger, pkey, walletInfo, toWalletInfo, numbersToDelegate, numbersToSend, fraCode, assetBlindRules, isFundSuccesfull, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, isTxDelegated, delegateInfo, amountToClaim, isRewardsAdded, balanceBefore, transactionBuilderClaim, resultHandleClaim, isTxClaimed, balanceAfter, balanceBeforeBN, balanceAfterBN, isClaimSuccessfull;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -856,77 +806,68 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
             case 3:
                 toWalletInfo = _a.sent();
+                console.log('🚀 ~ file: integration.ts ~ line 1096 ~ delegateFraTransactionAndClaimRewards ~ toWalletInfo', toWalletInfo);
+                numbersToDelegate = '1000001';
+                numbersToSend = '1000010';
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 4:
                 fraCode = _a.sent();
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbersToSend = '1000010';
-                numbersToDelegate = '1000000';
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
+                return [4 /*yield*/, sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend)];
             case 5:
-                balanceBeforeSend = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend', balanceBeforeSend);
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 6:
-                transactionBuilderSend = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 7:
-                resultHandleSend = _a.sent();
-                console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 10:
-                balanceAfterSend = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend', balanceAfterSend);
+                isFundSuccesfull = _a.sent();
+                if (!isFundSuccesfull) {
+                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account");
+                    return [2 /*return*/, false];
+                }
                 delegationTargetPublicKey = Ledger.get_delegation_target_address();
                 return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 11:
+            case 6:
                 delegationTargetAddress = _a.sent();
                 return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 12:
+            case 7:
                 formattedVlidators = _a.sent();
                 validatorAddress = formattedVlidators.validators[0].addr;
                 return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 13:
+            case 8:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 14:
+            case 9:
                 resultHandle = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle', resultHandle);
+                return [4 /*yield*/, getTxSid('delegate', resultHandle)];
+            case 10:
+                isTxDelegated = _a.sent();
+                if (!isTxDelegated) {
+                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation");
+                    return [2 /*return*/, false];
+                }
+                // const balanceAfterDelegate = await AccountApi.getBalance(toWalletInfo);
+                // console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate', balanceAfterDelegate);
+                console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 11:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 12:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 13:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 14:
+                _a.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 15:
                 _a.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 16:
                 _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 17:
-                transactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
-                balanceAfterDelegate = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate', balanceAfterDelegate);
-                console.log('waiting for 5 blocks before checking rewards');
+                _a.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 19:
                 _a.sent();
@@ -936,37 +877,41 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 21:
                 _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 22:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 23:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 24:
-                _a.sent();
-                console.log('checking rewards now');
+                console.log('delegateFraTransactionAndClaimRewards - checking rewards now');
                 return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 25:
+            case 22:
                 delegateInfo = _a.sent();
-                isRewardsAdded = Number(delegateInfo.rewards) > 0;
+                amountToClaim = delegateInfo.rewards;
+                isRewardsAdded = Number(amountToClaim) > 0;
                 if (!isRewardsAdded) {
-                    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
+                    console.log('delegateFraTransactionAndClaimRewards - There is no rewards yet! , delegateInfo', delegateInfo);
                     return [2 /*return*/, false];
                 }
-                console.log('accumulated rewards ', delegateInfo.rewards);
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 26:
+                console.log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 23:
                 balanceBefore = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
-                amountToClaim = delegateInfo.rewards;
+                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
                 return [4 /*yield*/, api_1.Staking.claim(toWalletInfo, amountToClaim)];
-            case 27:
+            case 24:
                 transactionBuilderClaim = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderClaim)];
-            case 28:
+            case 25:
                 resultHandleClaim = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim', resultHandle);
+                return [4 /*yield*/, getTxSid('clam', resultHandleClaim)];
+            case 26:
+                isTxClaimed = _a.sent();
+                if (!isTxClaimed) {
+                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim");
+                    return [2 /*return*/, false];
+                }
+                console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking balance of claimed rewards');
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 27:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 28:
+                _a.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 29:
                 _a.sent();
@@ -982,30 +927,26 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 33:
                 _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleClaim)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 34:
-                transactionStatusClaim = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatusClaim);
-                claimResponse = transactionStatusClaim.response;
-                if (!claimResponse) {
-                    return [2 /*return*/, false];
-                }
-                ClaimCommited = claimResponse.Committed;
-                if (!Array.isArray(ClaimCommited)) {
-                    return [2 /*return*/, false];
-                }
-                txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
-                if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatusClaim);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 35:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 36:
+                _a.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 37:
+                _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 38:
                 balanceAfter = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 845 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
-                isClaimSuccessfull = Number(balanceAfter) > Number(balanceBefore);
-                console.log('🚀 ~ file: run.ts ~ line 877 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
+                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
+                balanceBeforeBN = bigNumber.create(balanceBefore);
+                balanceAfterBN = bigNumber.create(balanceAfter);
+                isClaimSuccessfull = balanceAfterBN.gte(balanceBeforeBN);
+                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
                 return [2 /*return*/, isClaimSuccessfull];
         }
     });
