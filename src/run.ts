@@ -2,6 +2,7 @@ import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import Sdk from './Sdk';
+import * as NetworkTypes from './api/network/types';
 import * as bigNumber from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
@@ -1147,6 +1148,25 @@ const sendEvmToAccount = async () => {
   await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
 };
 
+const ethProtocol = async () => {
+  const url = 'http://127.0.0.1:8545';
+  // const url = 'https://dev-evm.dev.findora.org:8545';
+
+  const methodName = 'eth_getBlockByHash';
+
+  const existingBlockHashToCheck = '0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6';
+  const extraParams = [existingBlockHashToCheck, true];
+  // const expectedValue = '0x04d2';
+
+  const payload = {
+    method: methodName,
+    params: extraParams,
+  };
+
+  const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(url, payload);
+  console.log(`🚀 ~ !file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
+};
+
 // New
 // getFraAssetCode(); // works
 
@@ -1156,7 +1176,7 @@ const sendEvmToAccount = async () => {
 // issueCustomAsset(); // works
 // getStateCommitment(); // works
 // getValidatorList();
-getDelegateInfo(); // 1
+// getDelegateInfo(); // 1
 // getTransferBuilderOperation(); // works
 // createNewKeypair(); // works
 // transferFraToSingleRecepient(); // works
@@ -1170,3 +1190,4 @@ getDelegateInfo(); // 1
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();
+ethProtocol();

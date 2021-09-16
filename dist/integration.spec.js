@@ -97,64 +97,96 @@ describe('Findora SDK integration (integration test)', function () {
         }); }, extendedExecutionTimeout * 2);
     });
     describe('Transfer tokens', function () {
-        // it(
-        //   'Should send FRA to the reciever',
-        //   async () => {
-        //     const result = await Integration.sendFraTransactionSubmit();
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout,
-        // );
-        //   it(
-        //     'Should send FRA to multiple recievers',
-        //     async () => {
-        //       const result = await Integration.sendFraToMultipleReceiversTransactionSubmit();
-        //       expect(result).toBe(true);
-        //     },
-        //     extendedExecutionTimeout,
-        //   );
-        //   it(
-        //     'Should define, issue and send asset with transactions submitting',
-        //     async () => {
-        //       const result = await Integration.defineIssueAndSendAssetTransactionSubmit();
-        //       expect(result).toBe(true);
-        //     },
-        //     extendedExecutionTimeout * 3,
-        //   );
+        it('Should send FRA to the reciever', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.sendFraTransactionSubmit()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should send FRA to multiple recievers', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.sendFraToMultipleReceiversTransactionSubmit()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should define, issue and send asset with transactions submitting', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.defineIssueAndSendAssetTransactionSubmit()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 3);
     });
-    // describe('Confidentiality', () => {
-    //   it(
-    //     'Should issue and send confidential asset',
-    //     async () => {
-    //       const result = await Integration.issueAndSendConfidentialAsset();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout * 3,
-    //   );
-    // });
-    // describe('Account', () => {
-    //   it('Should get balance for the account', async () => {
-    //     const result = await Integration.getBalance();
-    //     expect(result).toBe(true);
-    //   }, 5000);
-    // });
+    describe('Confidentiality', function () {
+        it('Should issue and send confidential asset', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.issueAndSendConfidentialAsset()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 4);
+    });
+    describe('Account', function () {
+        it('Should get balance for the account', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.getBalance()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, 5000);
+    });
     describe('Staking', function () {
-        // it(
-        //   'Should get delegate tokens and see some rewards',
-        //   async () => {
-        //     const result = await Integration.delegateFraTransactionSubmit();
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout * 13,
-        // );
-        // it(
-        //   'Should get delegate tokens and claim the rewards',
-        //   async () => {
-        //     const result = await Integration.delegateFraTransactionAndClaimRewards();
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout * 25,
-        // );
+        it('Should get delegate tokens and see some rewards', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.delegateFraTransactionSubmit()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 13);
+        it('Should get delegate tokens and claim the rewards', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.delegateFraTransactionAndClaimRewards()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 25);
         // it(
         //   'Should get delegate tokens and claim the rewards',
         //   async () => {
