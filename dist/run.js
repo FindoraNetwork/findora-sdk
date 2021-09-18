@@ -1234,6 +1234,28 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
         }
     });
 }); };
+var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var url, methodName, existingBlockHashToCheck, extraParams, payload, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = 'http://127.0.0.1:8545';
+                methodName = 'eth_getBlockByHash';
+                existingBlockHashToCheck = '0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6';
+                extraParams = [existingBlockHashToCheck, true];
+                payload = {
+                    // id: 1,
+                    method: methodName,
+                    params: extraParams,
+                };
+                return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
+            case 1:
+                result = _a.sent();
+                console.log("\uD83D\uDE80 ~ !file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // New
 // getFraAssetCode(); // works
 // getFraBalance(); // works
@@ -1242,7 +1264,7 @@ var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, fu
 // issueCustomAsset(); // works
 // getStateCommitment(); // works
 // getValidatorList();
-getDelegateInfo(); // 1
+// getDelegateInfo(); // 1
 // getTransferBuilderOperation(); // works
 // createNewKeypair(); // works
 // transferFraToSingleRecepient(); // works
@@ -1256,4 +1278,5 @@ getDelegateInfo(); // 1
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();
+ethProtocol();
 //# sourceMappingURL=run.js.map

@@ -395,3 +395,22 @@ export const getDelegateInfo = async (
 
   return dataResult;
 };
+
+export const sendRpcCall = async <T>(
+  url: string,
+  givenPayload: { [key: string]: any },
+  config?: Types.NetworkAxiosConfig,
+): Promise<T> => {
+  const defaultPayload = {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'eth_protocolVersion',
+    params: [],
+  };
+
+  const payload = { ...defaultPayload, ...givenPayload };
+
+  const dataResult = await apiPost(url, payload, { ...config });
+
+  return dataResult as T;
+};

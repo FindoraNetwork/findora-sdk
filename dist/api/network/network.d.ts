@@ -40,3 +40,6 @@ export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConf
 export declare const submitEvmTx: (tx: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.SubmitEvmTxResult>;
 export declare const getValidatorList: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.ValidatorListDataResult>;
 export declare const getDelegateInfo: (publickey: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.DelegateInfoDataResult>;
+export declare const sendRpcCall: <T>(url: string, givenPayload: {
+    [key: string]: any;
+}, config?: Types.NetworkAxiosConfig | undefined) => Promise<T>;

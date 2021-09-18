@@ -291,3 +291,258 @@ export type SubmitEvmTxResponse = {
 export interface SubmitEvmTxResult extends NetworkAxiosDataResult {
   response?: SubmitEvmTxResponse;
 }
+
+// eth_protocolVersion
+export interface EthMainRpcResponse {
+  id: string;
+  jsonrpc: string;
+}
+
+// eth_protocolVersion
+export interface EthProtocolRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthProtocolRpcResult extends NetworkAxiosDataResult {
+  response?: EthProtocolRpcResponse;
+}
+
+// eth_chainId
+export interface EthChainIdRpcResponse extends EthProtocolRpcResponse {
+  result: string;
+}
+
+export interface EthChainIdRpcResult extends NetworkAxiosDataResult {
+  response?: EthChainIdRpcResponse;
+}
+
+// eth_accounts
+
+export interface EthAccountsRpcResponse extends EthMainRpcResponse {
+  result: string[];
+}
+
+export interface EthAccountsRpcResult extends NetworkAxiosDataResult {
+  response?: EthAccountsRpcResponse;
+}
+
+// eth_getBalance
+export interface EthGetBalanceRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetBalanceRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetBalanceRpcResponse;
+}
+
+// eth_sendTransaction
+export interface EthSendTransactionRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthSendTransactionRpcResult extends NetworkAxiosDataResult {
+  response?: EthSendTransactionRpcResponse;
+}
+
+// eth_call
+export interface EthCallRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthCallRpcResult extends NetworkAxiosDataResult {
+  response?: EthCallRpcResponse;
+}
+
+// eth_coinbase
+export interface EthCoinbaseRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthCoinbaseRpcResult extends NetworkAxiosDataResult {
+  response?: EthCoinbaseRpcResponse;
+}
+
+// eth_gasPrice
+export interface EthGasPriceRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGasPriceRpcResult extends NetworkAxiosDataResult {
+  response?: EthGasPriceRpcResponse;
+}
+
+// eth_blockNumber
+export interface EthBlockNumberRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthBlockNumberRpcResult extends NetworkAxiosDataResult {
+  response?: EthBlockNumberRpcResponse;
+}
+
+// eth_getStorageAt
+export interface EthGetStorageAtRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetStorageAtRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetStorageAtRpcResponse;
+}
+
+// eth_getBlockByHash
+export interface EthGetBlockByHashRpcResponse extends EthMainRpcResponse {
+  result: {
+    hash: string;
+    parentHash: string;
+  };
+}
+
+export interface EthGetBlockByHashRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetBlockByHashRpcResponse;
+}
+
+// eth_getBlockByNumber
+export interface EthGetBlockByNumberRpcResponse extends EthMainRpcResponse {
+  result: {
+    hash: string;
+    parentHash: string;
+  };
+}
+
+export interface EthGetBlockByNumberRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetBlockByNumberRpcResponse;
+}
+
+// eth_getTransactionCount
+export interface EthGetTransactionCountRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetTransactionCountRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetTransactionCountRpcResponse;
+}
+
+// eth_getBlockTransactionCountByHash
+export interface EthGetBlockTransactionCountByHashRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetBlockTransactionCountByHashRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetBlockTransactionCountByHashRpcResponse;
+}
+
+// eth_getBlockTransactionCountByNumber
+export interface EthGetBlockTransactionCountByNumberRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetBlockTransactionCountByNumberRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetBlockTransactionCountByNumberRpcResponse;
+}
+
+// eth_getCode
+export interface EthGetCodeRpcResponse extends EthMainRpcResponse {
+  result: string;
+}
+
+export interface EthGetCodeRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetCodeRpcResponse;
+}
+
+// eth_sendRawTransaction
+export interface EthSendRawTransactionRpcResponse extends EthMainRpcResponse {
+  result?: string;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthSendRawTransactionRpcResult extends NetworkAxiosDataResult {
+  response?: EthSendRawTransactionRpcResponse;
+}
+
+// eth_estimateGas
+export interface EthEstimateGasRpcResponse extends EthMainRpcResponse {
+  result?: string;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthEstimateGasRpcResult extends NetworkAxiosDataResult {
+  response?: EthEstimateGasRpcResponse;
+}
+
+export interface EthLightTransaction {
+  hash?: string;
+  transactionHash?: string;
+  blockHash: string;
+  blockNumber: string;
+}
+
+// eth_getTransactionByHash
+export interface EthGetTransactionByHashRpcResponse extends EthMainRpcResponse {
+  result?: EthLightTransaction;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthGetTransactionByHashRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetTransactionByHashRpcResponse;
+}
+
+// eth_getTransactionByBlockHashAndIndex
+export interface EthGetTransactionByBlockHashAndIndexRpcResponse extends EthMainRpcResponse {
+  result?: EthLightTransaction;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthGetTransactionByBlockHashAndIndexRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetTransactionByBlockHashAndIndexRpcResponse;
+}
+
+// eth_getTransactionByBlockNumberAndIndex
+export interface EthGetTransactionByBlockNumberAndIndexRpcResponse extends EthMainRpcResponse {
+  result?: EthLightTransaction;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthGetTransactionByBlockNumberAndIndexRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetTransactionByBlockNumberAndIndexRpcResponse;
+}
+
+// eth_getTransactionReceipt
+export interface EthGetTransactionReceiptRpcResponse extends EthMainRpcResponse {
+  result?: EthLightTransaction;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthGetTransactionReceiptRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetTransactionReceiptRpcResponse;
+}
+
+// eth_getLogs
+export interface EthGetLogsRpcResponse extends EthMainRpcResponse {
+  result?: EthLightTransaction;
+  error?: {
+    message: string;
+    code: number;
+  };
+}
+
+export interface EthGetLogsRpcResult extends NetworkAxiosDataResult {
+  response?: EthGetLogsRpcResponse;
+}
