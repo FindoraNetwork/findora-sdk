@@ -6,5 +6,13 @@
     "receiverOne": "sddDSSDss0k=",
     "receiverTwo": "DDSSCSsdssds="
   },
-  "hostUrl": "http://127.0.0.1"
+  "hostUrl": "http://127.0.0.1",
+  "rpc": {
+    "rpcUrl": "http://127.0.0.1:8545",
+    "ethAccountToCheck": "0xff6246f1011C1F7aD15877fb1232BEda1536b3bC",
+    "ethContractAddressToReceive": "0xCC4e53d92f09C385FD9aEece3c1cd263addDbDE3",
+    "existingBlockNumberToCheck": "0xe",
+    "existingBlockHashToCheck": "0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6",
+    "existingTxHashToCheck": "0x647dc5a7fec839541403f931773736d43d1aa8cdcf759f10f3543ac1ebe6763d"
+  }
 }

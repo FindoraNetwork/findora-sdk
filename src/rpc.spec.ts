@@ -1,25 +1,27 @@
 import '@testing-library/jest-dom/extend-expect';
-import * as Network from './network';
-import * as NetworkTypes from './types';
+import * as Network from './api/network/network';
+import * as NetworkTypes from './api/network/types';
 
-// const rpcUrl = 'http://127.0.0.1:8545';
-const rpcUrl = 'https://dev-evm.dev.findora.org:8545';
+const envConfigFile = process.env.RPC_ENV_NAME ? `../.env_${process.env.RPC_ENV_NAME}` : `../env_example`;
 
-// Sender account, it has to have tokens
-const ethAccountToCheck = '0xff6246f1011C1F7aD15877fb1232BEda1536b3bC';
+const envConfig = require(`${envConfigFile}.json`);
 
-// Store contract address - see `eth_getStorageAt`
-const ethStoreContractAddress = '0xD5153e5fcBCD1dc50dCFa3debB0bD174F20EA8A4';
+const { rpc: rpcParams } = envConfig;
 
-// This should be an existing contract address, which you can send tokens to - see `eth_call` and `eth_sendTransaction`
-const ethContractAddressToReceive = '0xCC4e53d92f09C385FD9aEece3c1cd263addDbDE3';
-
-// This block number has to be from the block `existingBlockHashToCheck`
-const existingBlockNumberToCheck = '0xe';
-// This block hash must be from the block `existingBlockNumberToCheck`
-const existingBlockHashToCheck = '0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6';
-// This tx hash must be from the block `existingBlockNumberToCheck`
-const existingTxHashToCheck = '0x647dc5a7fec839541403f931773736d43d1aa8cdcf759f10f3543ac1ebe6763d';
+const {
+  // RPC endpoint url
+  rpcUrl = 'http://127.0.0.1:8545',
+  // Sender account, it has to have tokens
+  ethAccountToCheck,
+  // This should be an existing contract address, which you can send tokens to - see `eth_call` and `eth_sendTransaction`
+  ethContractAddressToReceive,
+  // This block number has to be from the block `existingBlockHashToCheck`
+  existingBlockNumberToCheck,
+  // This block hash must be from the block `existingBlockNumberToCheck`
+  existingBlockHashToCheck,
+  // This tx hash must be from the block `existingBlockNumberToCheck`
+  existingTxHashToCheck,
+} = rpcParams;
 
 describe('Api Endpoint (rpc test)', () => {
   describe('eth_protocolVersion', () => {
@@ -239,64 +241,6 @@ describe('Api Endpoint (rpc test)', () => {
       expect(typeof response?.result).toEqual('string');
     });
   });
-  describe('eth_getStorageAt', () => {
-    it('Returns the value from a storage position at a given address', async () => {
-      const msgId = 1;
-
-      /**
-       * Example of the Store contract
-       * // SPDX-License-Identifier: GPL-3.0
-
-        pragma solidity >=0.7.0 <0.9.0;
-
-        contract Storage {
-
-          uint256 pos0;
-
-          mapping(address => uint256) pos1;
-
-          constructor() {
-              pos0 = 1234;
-          }
-
-          function store(uint256 num) public {
-              pos1[msg.sender] = num;
-          }
-
-          function retrieve() public view returns (uint256){
-              return pos1[msg.sender];
-          }
-        }
-      */
-
-      // for more details see http://man.hubwiz.com/docset/Ethereum.docset/Contents/Resources/Documents/eth_getStorageAt.html
-
-      // that is what we define during the contract creation - pos0 = 1234;
-      const expectedValue = '0x04d2';
-
-      // ethStoreContractAddress is an Address of the Store contract
-      const extraParams = [ethStoreContractAddress, '0x0', 'latest'];
-
-      const payload = {
-        id: msgId,
-        method: 'eth_getStorageAt',
-        params: extraParams,
-      };
-
-      const result = await Network.sendRpcCall<NetworkTypes.EthGetStorageAtRpcResult>(rpcUrl, payload);
-
-      expect(result).toHaveProperty('response');
-      expect(result).not.toHaveProperty('error');
-
-      const { response } = result;
-
-      expect(response?.id).toEqual(msgId);
-      expect(typeof response?.id).toEqual('number');
-      expect(typeof response?.jsonrpc).toEqual('string');
-      expect(typeof response?.result).toEqual('string');
-      expect(response?.result).toEqual(expectedValue);
-    });
-  });
   describe('eth_getBlockByHash', () => {
     it('Returns information about a block by hash', async () => {
       const msgId = 1;
@@ -436,7 +380,7 @@ describe('Api Endpoint (rpc test)', () => {
     it('Returns code at a given address', async () => {
       const msgId = 1;
 
-      const extraParams = [ethStoreContractAddress, 'latest'];
+      const extraParams = [ethContractAddressToReceive, 'latest'];
 
       const payload = {
         id: msgId,
@@ -564,7 +508,6 @@ describe('Api Endpoint (rpc test)', () => {
       expect(typeof response?.result?.blockHash).toEqual('string');
       expect(typeof response?.result?.blockNumber).toEqual('string');
       expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-      expect(response?.result?.blockHash).toEqual(existingBlockHashToCheck);
     });
   });
   describe('eth_getTransactionByBlockNumberAndIndex', () => {
@@ -593,7 +536,6 @@ describe('Api Endpoint (rpc test)', () => {
       expect(typeof response?.result?.blockHash).toEqual('string');
       expect(typeof response?.result?.blockNumber).toEqual('string');
       expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-      expect(response?.result?.blockHash).toEqual(existingBlockHashToCheck);
     });
   });
   describe('eth_getTransactionReceipt', () => {
@@ -622,7 +564,6 @@ describe('Api Endpoint (rpc test)', () => {
       expect(typeof response?.result?.blockHash).toEqual('string');
       expect(typeof response?.result?.blockNumber).toEqual('string');
       expect(response?.result?.transactionHash).toEqual(existingTxHashToCheck);
-      expect(response?.result?.blockHash).toEqual(existingBlockHashToCheck);
     });
   });
   describe('eth_getLogs', () => {
@@ -631,7 +572,7 @@ describe('Api Endpoint (rpc test)', () => {
 
       const extraParams = [
         {
-          address: ethStoreContractAddress,
+          address: ethContractAddressToReceive,
         },
       ];
 

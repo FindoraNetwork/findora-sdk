@@ -27,7 +27,7 @@
     "test": "jest --watch --detectOpenHandles",
     "test:unit": "jest -t 'unit test'",
     "test:integration": "INTEGRATION_ENV_NAME=local jest  --watch -t 'integration test'",
-    "test:rpc": "INTEGRATION_ENV_NAME=local jest  --watch -t 'rpc test'",
+    "test:rpc": "RPC_ENV_NAME=local jest  --watch -t 'rpc test'",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc --out docs src",
