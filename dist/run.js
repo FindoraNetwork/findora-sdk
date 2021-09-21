@@ -114,7 +114,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
                 pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
                 pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
-                pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
+                pkeyLocalFaucet = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
                 pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
                 pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
                 pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
@@ -1244,7 +1244,6 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 existingBlockHashToCheck = '0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6';
                 extraParams = [existingBlockHashToCheck, true];
                 payload = {
-                    // id: 1,
                     method: methodName,
                     params: extraParams,
                 };
@@ -1258,7 +1257,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
 }); };
 // New
 // getFraAssetCode(); // works
-// getFraBalance(); // works
+getFraBalance(); // works
 // getCustomAssetBalance(); // works
 // defineCustomAsset(); // works
 // issueCustomAsset(); // works
@@ -1278,5 +1277,5 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();
-ethProtocol();
+// ethProtocol();
 //# sourceMappingURL=run.js.map

@@ -50,7 +50,8 @@ const getFraBalance = async () => {
   const pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
   const pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
   const pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
-  const pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
+  // const pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
+  const pkeyLocalFaucet = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
 
   const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
   const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
@@ -1170,7 +1171,7 @@ const ethProtocol = async () => {
 // New
 // getFraAssetCode(); // works
 
-// getFraBalance(); // works
+getFraBalance(); // works
 // getCustomAssetBalance(); // works
 // defineCustomAsset(); // works
 // issueCustomAsset(); // works
@@ -1190,4 +1191,4 @@ const ethProtocol = async () => {
 // delegateFraTransactionAndClaimRewards(); //3
 // unstakeFraTransactionSubmit(); //4
 // sendEvmToAccount();
-ethProtocol();
+// ethProtocol();
