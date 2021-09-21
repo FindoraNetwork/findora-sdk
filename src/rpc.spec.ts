@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
 import * as Network from './api/network/network';
 import * as NetworkTypes from './api/network/types';
+import Web3 from 'web3';
 
 const envConfigFile = process.env.RPC_ENV_NAME ? `../.env_${process.env.RPC_ENV_NAME}` : `../env_example`;
 
@@ -8,20 +9,64 @@ const envConfig = require(`${envConfigFile}.json`);
 
 const { rpc: rpcParams } = envConfig;
 
+// This would be initialized with the data from the setup process
+let existingBlockNumberToCheck = 1;
+// This would be initialized with the data from the setup process
+let existingBlockHashToCheck = '';
+// This would be initialized with the data from the setup process
+let existingTxHashToCheck = '';
+
+const ethContractAddressToReceive = '0xCC4e53d92f09C385FD9aEece3c1cd263addDbDE3';
+
 const {
   // RPC endpoint url
   rpcUrl = 'http://127.0.0.1:8545',
   // Sender account, it has to have tokens
   ethAccountToCheck,
-  // This should be an existing contract address, which you can send tokens to - see `eth_call` and `eth_sendTransaction`
-  ethContractAddressToReceive,
-  // This block number has to be from the block `existingBlockHashToCheck`
-  existingBlockNumberToCheck,
-  // This block hash must be from the block `existingBlockNumberToCheck`
-  existingBlockHashToCheck,
-  // This tx hash must be from the block `existingBlockNumberToCheck`
-  existingTxHashToCheck,
 } = rpcParams;
+
+beforeAll(async (done: any) => {
+  const web3 = new Web3(rpcUrl);
+
+  const transactionObject = {
+    from: ethAccountToCheck,
+    to: ethContractAddressToReceive,
+    value: '1000000000000000',
+  };
+
+  web3.eth
+    .sendTransaction(transactionObject)
+    .once('sending', function (_payload) {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 37 ~ payload', payload);
+    })
+    .once('sent', function (_payload) {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 40 ~ payload', payload);
+    })
+    .once('transactionHash', function (_hash) {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', hash);
+    })
+    .once('receipt', function (_receipt) {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', receipt);
+    })
+    .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', latestBlockHash);
+    })
+    .on('error', function (error) {
+      console.log('🚀 ~ file: rpc.spec.ts ~ line 51 ~ error', error);
+    })
+    .then(function (receipt) {
+      // will be fired once the receipt is mined
+      const { transactionHash, blockHash, blockNumber } = receipt;
+
+      // This block number has to be from the block `existingBlockHashToCheck`
+      existingBlockNumberToCheck = blockNumber;
+      // This block hash must be from the block `existingBlockNumberToCheck`
+      existingBlockHashToCheck = blockHash;
+      // This tx hash must be from the block `existingBlockNumberToCheck`
+      existingTxHashToCheck = transactionHash;
+      done();
+    });
+});
 
 describe('Api Endpoint (rpc test)', () => {
   describe('eth_protocolVersion', () => {

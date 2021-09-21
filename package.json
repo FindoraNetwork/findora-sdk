@@ -27,7 +27,7 @@
     "test": "jest --watch --detectOpenHandles",
     "test:unit": "jest -t 'unit test'",
     "test:integration": "INTEGRATION_ENV_NAME=local jest  --watch -t 'integration test'",
-    "test:rpc": "RPC_ENV_NAME=local jest  --watch -t 'rpc test'",
+    "test:rpc": "RPC_ENV_NAME=local jest --detectOpenHandles  --watch -t 'rpc test' ",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc --out docs src",
@@ -101,6 +101,7 @@
     "lodash": "^4.17.21",
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
-    "util": "^0.12.4"
+    "util": "^0.12.4",
+    "web3": "^1.5.2"
   }
 }
