@@ -106,7 +106,7 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
  * Get FRA balance
  */
 var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkeyMine, pkeyMine2, pkeyMine3, pkeyMine4, pkeyLocalFaucet, pkey1, pkey2, pkey3, pkey4, pkey6, password, pkey, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
+    var pkeyMine, pkeyMine2, pkeyMine3, pkeyMine4, pkeyLocalFaucet, pkey1, pkey2, pkey3, pkey4, pkey6, password, pkey, mString, mm, newWallet, walletInfo, fraCode, sidsResult, sids, balanceInWei, balance;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -121,23 +121,29 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
                 pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
                 password = '1234';
-                console.log('aaa!');
                 pkey = pkeyLocalFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+                mString = 'math drastic little venture uncle slush patch clean sting defy apology jealous creek ship claim lonely emotion answer forest gather shrimp crouch monitor shrimp';
+                mm = mString.split(' ');
+                console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ mm', mm.join(' '));
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
+                newWallet = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ newWallet', newWallet);
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 2:
+            case 3:
                 fraCode = _a.sent();
                 return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 3:
+            case 4:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
                     return [2 /*return*/];
                 }
                 return [4 /*yield*/, api_1.Account.getAssetBalance(walletInfo, fraCode, sids)];
-            case 4:
+            case 5:
                 balanceInWei = _a.sent();
                 balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
                 console.log('\n');
