@@ -1,6 +1,6 @@
 # Integration Guide
 
-Hi. I am Bob. I am a third party developer. I am creating my own wallet and I want to use `Findora FRA` within it, but I have no idea how to do that. 
+Hi. I am Joe. I am a third party developer. I am creating my own wallet and I want to use `Findora FRA` within it, but I have no idea how to do that. 
 
 I wish I could have some integration questions already answered, with given examples of those particular steps what I would need to do. 
 
