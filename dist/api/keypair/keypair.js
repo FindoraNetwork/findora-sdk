@@ -277,13 +277,15 @@ var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 
             case 1:
                 ledger = _a.sent();
                 keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-                keyPairStr = ledger.keypair_to_str(keypair);
+                return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
+            case 2:
+                keyPairStr = _a.sent();
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
                 return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
-            case 2:
+            case 3:
                 publickey = _a.sent();
                 return [4 /*yield*/, (0, exports.getAddress)(keypair)];
-            case 3:
+            case 4:
                 address = _a.sent();
                 return [2 /*return*/, {
                         keyStore: encrypted,

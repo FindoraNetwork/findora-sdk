@@ -1,4 +1,23 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -40,7 +59,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
+var Network = __importStar(require("./api/network/network"));
 var web3_1 = __importDefault(require("web3"));
+var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
 var envConfigFile = process.env.RPC_ENV_NAME ? "../.env_" + process.env.RPC_ENV_NAME : "../env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
@@ -58,8 +79,11 @@ _a = rpcParams.rpcUrl,
 // RPC endpoint url
 rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, 
 // Sender account, it has to have tokens
-ethAccountToCheck = rpcParams.ethAccountToCheck;
-var web3 = new web3_1.default(rpcUrl);
+ethAccountToCheck = rpcParams.ethAccountToCheck, 
+//Sender mnemonic (to be used in web3)
+mnemonic = rpcParams.mnemonic;
+var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl);
+var web3 = new web3_1.default(provider);
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionObject;
     return __generator(this, function (_a) {
@@ -67,470 +91,675 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
             from: ethAccountToCheck,
             to: ethContractAddressToReceive,
             value: '1000000000000000',
-            // port: 8545, // Standard Ethereum port (default: none)
-            // network_id: 523, // Any network (default: none)
             gas: 8000000,
             gasPrice: 700000000000,
-            // disableConfirmationListener: true,
         };
-        done();
+        web3.eth
+            .sendTransaction(transactionObject)
+            .once('sending', function (_payload) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+        })
+            .once('sent', function (_payload) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+        })
+            .once('transactionHash', function (_hash) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+        })
+            .once('receipt', function (_receipt) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+        })
+            .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
+        })
+            .on('error', function (_error) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 51 ~ error', error);
+        })
+            .then(function (receipt) {
+            // console.log('🚀 ~ file: rpc.spec.ts ~ line 60 ~ receipt', receipt);
+            // will be fired once the receipt is mined
+            var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber;
+            // This block number has to be from the block `existingBlockHashToCheck`
+            existingBlockNumberToCheck = blockNumber;
+            // This block hash must be from the block `existingBlockNumberToCheck`
+            existingBlockHashToCheck = blockHash;
+            // This tx hash must be from the block `existingBlockNumberToCheck`
+            existingTxHashToCheck = transactionHash;
+            done();
+        });
         return [2 /*return*/];
     });
-}); });
-var a = web3.eth
-    .signTransaction({
-    from: ethAccountToCheck,
-    gas: 8000000,
-    gasPrice: 700000000000,
-    to: ethContractAddressToReceive,
-    value: '1000000000000000000',
-    data: '',
-})
-    .then(console.log);
-console.log('a', a);
+}); }, extendedExecutionTimeout);
 describe('Api Endpoint (rpc test)', function () {
     describe('eth_protocolVersion', function () {
         it('Returns the current ethereum protocol version', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload;
+            var msgId, payload, result, response;
             return __generator(this, function (_a) {
-                msgId = 2;
-                payload = {
-                    id: msgId,
-                    method: 'eth_protocolVersion',
-                };
-                expect(true).toBe(true);
-                return [2 /*return*/];
+                switch (_a.label) {
+                    case 0:
+                        msgId = 2;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_protocolVersion',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        return [2 /*return*/];
+                }
             });
         }); }, extendedExecutionTimeout);
     });
-    // describe('eth_chainId', () => {
-    //   it('Returns the current chain id', async () => {
-    //     const msgId = 1;
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_chainId',
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthChainIdRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_accounts', () => {
-    //   it('Returns a list of addresses owned by client', async () => {
-    //     const msgId = 1;
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_accounts',
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthAccountsRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(Array.isArray(response?.result)).toEqual(true);
-    //   });
-    // });
-    // describe('eth_getBalance', () => {
-    //   it('Returns the balance of the account of given address', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [ethAccountToCheck, 'latest'];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getBalance',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetBalanceRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_sendTransaction', () => {
-    //   it('Creates new message call transaction or a contract creation, if the data field contains code', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [
-    //       {
-    //         from: ethAccountToCheck,
-    //         to: ethContractAddressToReceive,
-    //         value: 0,
-    //       },
-    //     ];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_sendTransaction',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthSendTransactionRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_call', () => {
-    //   it('Executes a message immediately without creating a transaction', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [
-    //       {
-    //         from: ethAccountToCheck,
-    //         to: ethContractAddressToReceive,
-    //         data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
-    //       },
-    //     ];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_call',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthCallRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_coinbase', () => {
-    //   it('Returns the client coinbase address', async () => {
-    //     const msgId = 1;
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_coinbase',
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthCoinbaseRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_gasPrice', () => {
-    //   it('Returns the current price per gas in wei', async () => {
-    //     const msgId = 1;
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_gasPrice',
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGasPriceRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_blockNumber', () => {
-    //   it('Returns the number of most recent block', async () => {
-    //     const msgId = 1;
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_blockNumber',
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthBlockNumberRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //   });
-    // });
-    // describe('eth_getBlockByHash', () => {
-    //   it('Returns information about a block by hash', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockHashToCheck, true];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getBlockByHash',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.hash).toEqual('string');
-    //     expect(typeof response?.result?.parentHash).toEqual('string');
-    //   });
-    // });
-    // describe('eth_getBlockByNumber', () => {
-    //   it('Returns information about a block by block number.', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockNumberToCheck, true];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getBlockByNumber',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.hash).toEqual('string');
-    //     expect(typeof response?.result?.parentHash).toEqual('string');
-    //   });
-    // });
-    // describe('eth_getTransactionCount', () => {
-    //   it('Returns the number of transactions SENT from an address', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [ethAccountToCheck, 'latest'];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getTransactionCount',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionCountRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //     expect(response?.result).not.toEqual('0x0');
-    //   });
-    // });
-    // describe('eth_getBlockTransactionCountByHash', () => {
-    //   it('Returns the number of transactions in a block from a block matching the given block hash', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockHashToCheck];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getBlockTransactionCountByHash',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //     expect(response?.result).not.toEqual('0x0');
-    //   });
-    // });
-    // describe('eth_getBlockTransactionCountByNumber', () => {
-    //   it('Returns the number of transactions in a block from a block matching the given block number', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockNumberToCheck];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getBlockTransactionCountByNumber',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //     expect(response?.result).not.toEqual('0x0');
-    //   });
-    // });
-    // describe('eth_getCode', () => {
-    //   it('Returns code at a given address', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [ethContractAddressToReceive, 'latest'];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getCode',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetCodeRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.id).toEqual(msgId);
-    //     expect(typeof response?.id).toEqual('number');
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result).toEqual('string');
-    //     expect(response?.result).not.toEqual('0x0');
-    //   });
-    // });
-    // describe('eth_sendRawTransaction', () => {
-    //   it('Creates new message call transaction or a contract creation for signed transactions (negative case)', async () => {
-    //     const msgId = 1;
-    //     const txData = '0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d';
-    //     const extraParams = [txData];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_sendRawTransaction',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthSendRawTransactionRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.error?.message).toEqual('Invalid Signature');
-    //     expect(response?.error?.code).toEqual(-32000);
-    //   });
-    // });
-    // describe('eth_estimateGas', () => {
-    //   it('Generates and returns an estimate of how much gas is necessary to allow the transaction to complete', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [
-    //       {
-    //         from: ethAccountToCheck,
-    //         to: ethContractAddressToReceive,
-    //         data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
-    //       },
-    //     ];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_estimateGas',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthEstimateGasRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(response?.result).toEqual('0x52d4');
-    //   });
-    // });
-    // describe('eth_getTransactionByHash', () => {
-    //   it('Returns the information about a transaction requested by transaction hash', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingTxHashToCheck];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getTransactionByHash',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.blockHash).toEqual('string');
-    //     expect(typeof response?.result?.blockNumber).toEqual('string');
-    //     expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-    //   });
-    // });
-    // describe('eth_getTransactionByBlockHashAndIndex', () => {
-    //   it('Returns information about a transaction by block hash and transaction index position', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockHashToCheck, '0x0'];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getTransactionByBlockHashAndIndex',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.blockHash).toEqual('string');
-    //     expect(typeof response?.result?.blockNumber).toEqual('string');
-    //     expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-    //   });
-    // });
-    // describe('eth_getTransactionByBlockNumberAndIndex', () => {
-    //   it('Returns information about a transaction by block number and transaction index position', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingBlockNumberToCheck, '0x0'];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getTransactionByBlockNumberAndIndex',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.blockHash).toEqual('string');
-    //     expect(typeof response?.result?.blockNumber).toEqual('string');
-    //     expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-    //   });
-    // });
-    // describe('eth_getTransactionReceipt', () => {
-    //   it('Returns the receipt of a transaction by transaction hash', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [existingTxHashToCheck];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getTransactionReceipt',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionReceiptRpcResult>(
-    //       rpcUrl,
-    //       payload,
-    //     );
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(typeof response?.result?.blockHash).toEqual('string');
-    //     expect(typeof response?.result?.blockNumber).toEqual('string');
-    //     expect(response?.result?.transactionHash).toEqual(existingTxHashToCheck);
-    //   });
-    // });
-    // describe('eth_getLogs', () => {
-    //   it('Returns an array of all logs matching a given filter object', async () => {
-    //     const msgId = 1;
-    //     const extraParams = [
-    //       {
-    //         address: ethContractAddressToReceive,
-    //       },
-    //     ];
-    //     const payload = {
-    //       id: msgId,
-    //       method: 'eth_getLogs',
-    //       params: extraParams,
-    //     };
-    //     const result = await Network.sendRpcCall<NetworkTypes.EthGetLogsRpcResult>(rpcUrl, payload);
-    //     expect(result).toHaveProperty('response');
-    //     expect(result).not.toHaveProperty('error');
-    //     const { response } = result;
-    //     expect(typeof response?.jsonrpc).toEqual('string');
-    //     expect(Array.isArray(response?.result)).toEqual(true);
-    //   });
-    // });
+    describe('eth_chainId', function () {
+        it('Returns the current chain id', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_chainId',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_accounts', function () {
+        it('Returns a list of addresses owned by client', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_accounts',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('eth_getBalance', function () {
+        it('Returns the balance of the account of given address', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [ethAccountToCheck, 'latest'];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getBalance',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_sendTransaction', function () {
+        it('Creates new message call transaction or a contract creation, if the data field contains code', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [
+                            {
+                                from: ethAccountToCheck,
+                                to: ethContractAddressToReceive,
+                                value: 0,
+                            },
+                        ];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_sendTransaction',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_call', function () {
+        it('Executes a message immediately without creating a transaction', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [
+                            {
+                                from: ethAccountToCheck,
+                                to: ethContractAddressToReceive,
+                                data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
+                            },
+                        ];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_call',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_coinbase', function () {
+        it('Returns the client coinbase address', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_coinbase',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_gasPrice', function () {
+        it('Returns the current price per gas in wei', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_gasPrice',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_blockNumber', function () {
+        it('Returns the number of most recent block', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        payload = {
+                            id: msgId,
+                            method: 'eth_blockNumber',
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getBlockByHash', function () {
+        it('Returns information about a block by hash', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockHashToCheck, true];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getBlockByHash',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _c.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.parentHash)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getBlockByNumber', function () {
+        it('Returns information about a block by block number.', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockNumberToCheck, true];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getBlockByNumber',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _c.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.parentHash)).toEqual('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getTransactionCount', function () {
+        it('Returns the number of transactions SENT from an address', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [ethAccountToCheck, 'latest'];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getTransactionCount',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getBlockTransactionCountByHash', function () {
+        it('Returns the number of transactions in a block from a block matching the given block hash', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockHashToCheck];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getBlockTransactionCountByHash',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getBlockTransactionCountByNumber', function () {
+        it('Returns the number of transactions in a block from a block matching the given block number', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockNumberToCheck];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getBlockTransactionCountByNumber',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getCode', function () {
+        it('Returns code at a given address', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [ethContractAddressToReceive, 'latest'];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getCode',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_sendRawTransaction', function () {
+        it('Creates new message call transaction or a contract creation for signed transactions (negative case)', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, txData, extraParams, payload, result, response;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        msgId = 1;
+                        txData = '0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d';
+                        extraParams = [txData];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_sendRawTransaction',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _b.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        // expect(response?.error?.code).toEqual(-32000);
+                        expect((_a = response === null || response === void 0 ? void 0 : response.error) === null || _a === void 0 ? void 0 : _a.code).toEqual(-32603);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_estimateGas', function () {
+        it('Generates and returns an estimate of how much gas is necessary to allow the transaction to complete', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [
+                            {
+                                from: ethAccountToCheck,
+                                to: ethContractAddressToReceive,
+                                data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
+                            },
+                        ];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_estimateGas',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(response === null || response === void 0 ? void 0 : response.result).toEqual('0x52d4');
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getTransactionByHash', function () {
+        it('Returns the information about a transaction requested by transaction hash', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingTxHashToCheck];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getTransactionByHash',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _d.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
+                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('eth_getTransactionByBlockHashAndIndex', function () {
+        it('Returns information about a transaction by block hash and transaction index position', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockHashToCheck, '0x0'];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getTransactionByBlockHashAndIndex',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _d.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
+                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getTransactionByBlockNumberAndIndex', function () {
+        it('Returns information about a transaction by block number and transaction index position', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingBlockNumberToCheck, '0x0'];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getTransactionByBlockNumberAndIndex',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _d.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
+                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getTransactionReceipt', function () {
+        it('Returns the receipt of a transaction by transaction hash', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            var _a, _b, _c;
+            return __generator(this, function (_d) {
+                switch (_d.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [existingTxHashToCheck];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getTransactionReceipt',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _d.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
+                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
+                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.transactionHash).toEqual(existingTxHashToCheck);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('eth_getLogs', function () {
+        it('Returns an array of all logs matching a given filter object', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var msgId, extraParams, payload, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        msgId = 1;
+                        extraParams = [
+                            {
+                                address: ethContractAddressToReceive,
+                            },
+                        ];
+                        payload = {
+                            id: msgId,
+                            method: 'eth_getLogs',
+                            params: extraParams,
+                        };
+                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        response = result.response;
+                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
 });
 //# sourceMappingURL=rpc.spec.js.map

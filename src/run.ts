@@ -60,9 +60,18 @@ const getFraBalance = async () => {
   const pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
 
   const password = '1234';
-  console.log('aaa!');
 
   const pkey = pkeyLocalFaucet;
+
+  const mString =
+    'math drastic little venture uncle slush patch clean sting defy apology jealous creek ship claim lonely emotion answer forest gather shrimp crouch monitor shrimp';
+  const mm = mString.split(' ');
+
+  console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ mm', mm.join(' '));
+
+  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+
+  console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ newWallet', newWallet);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   // console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
