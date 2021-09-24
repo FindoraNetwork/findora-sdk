@@ -8,7 +8,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
 
 ## **Findora SDK Setup**
 
-- **1.** **How do I setup the Findora SDK (i.e. this is a required step to use any of the other info in this document)?**
+- **1.** **Setup the Findora SDK (i.e. this is a required step to use any of the other info in this document)?**
 
     ```jsx
     // First, we need to import the findora sdk package
@@ -22,7 +22,9 @@ Developers should be able to integrate Findora features such as sending FRA to a
     // That is it! after that Findora sdk is ready to use! 
     ```
 
-- **2. How to create a Findora wallet?**
+## **Most Commonly used SDK Features**
+
+- **2. Create a Findora wallet**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -35,7 +37,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const walletInfo = await KeypairApi.createKeypair(password);
     ```
 
-- **3. How can I send FRA to another wallet?**
+- **3. Send FRA to another wallet**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -64,7 +66,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
     ```
 
-- **4. How can I send FRA to multiple wallets?**
+- **4. Send FRA to multiple wallets**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -107,7 +109,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
     ```
 
-- **5. I want to create a custom asset, how can I do that?**
+- **5. Create a custom asset**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -133,7 +135,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
 
     ```
 
-- **6. Ok, I have a new asset, but it has no balance! How can I issue some amount of this asset?**
+- **6. Issue Asset (Note: after creating a new asset, it has no balance. You must first "issue" the asset)**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -163,7 +165,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const resultHandle = await TransactionApi.submitTransaction(issueAssetBuilder);
     ```
 
-- **7. How can I send custom asset to another wallet?**
+- **7. Send custom asset to another wallet**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -198,7 +200,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
     ```
 
-- **8. Ok, how to send tokens confidentially?**
+- **8. Send tokens confidentially**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
@@ -252,7 +254,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
 
     ```
 
-- **9. How I can check the balance?**
+- **9. Check token balance**
 
     ```jsx
     // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
