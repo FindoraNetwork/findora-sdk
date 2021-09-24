@@ -131,7 +131,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode);
 
     // Finally, broadcast this transaction to the network
-    const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+    const resultHandle = await TransactionApi.submitTransaction(assetBuilder);
 
     ```
 
