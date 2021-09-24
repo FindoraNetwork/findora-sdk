@@ -1,20 +1,20 @@
 # Integration Guide
 
-Hi. I am Joe. I am a third party developer. I am creating my own wallet and I want to use `Findora FRA` within it, but I have no idea how to do that. 
+This guide will walk 3rd party developers on how to:
+* Setup the `Findora SDK`
+* Use the most commonly used SDK features
 
-I wish I could have some integration questions already answered, with given examples of those particular steps what I would need to do. 
+Developers should be able to integrate Findora features such as sending FRA to another wallet, checking the FRA balance, etc. into their crypto wallet, crypto exchange or Dapp by following this guide.
 
-And I am happy to share with you that I found an exact document I was looking for! Here is that **"HOWTO**" of using something called `Findora SDK` and that appears to be a project that I need to use in my wallet to be able to do anything related to that integration I had mentioned before.
+## **Findora SDK Setup**
 
-## **Findora SDK HOWTO**
-
-- **1.** **How to configure / initialize Findora SDK? (required for any other step)**
+- **1.** **How do I setup the Findora SDK (i.e. this is a required step to use any of the other info in this document)?**
 
     ```jsx
-    // First, we need to import findora sdk package
+    // First, we need to import the findora sdk package
     const findoraSdk = await import('findora-sdk');
 
-    // Before using sdk, we need to configure it, so it knows which server to connect to and so on
+    // Before using the sdk, we need to configure it so it knows which server to connect to 
     const sdkEnv = { hostUrl: 'http://127.0.0.1' };
     const { Sdk } = findoraSdk;
     Sdk.default.init(sdkEnv);
@@ -25,35 +25,33 @@ And I am happy to share with you that I found an exact document I was looking fo
 - **2. How to create a Findora wallet?**
 
     ```jsx
-    // Here we are assuming that SDK has already been imported and configured, 
-    // please see "**1. How to configure / initialize Findora SDK?**"
+    // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
 
-    // To create an account we would use one of Findora SDK API. 
-    // In this example we use Keypair API to create a Findora wallet
+    // To create an account we would use one of the Findora SDK APIs. 
+    // In this example, we use Keypair API to create a Findora wallet
     const { Keypair: KeypairApi } = findoraSdk.Api;
 
-    // This wallet info would be used for any operation related to the SDK, so it is quite important
+    // This wallet info below will be used for any operation related to the SDK
     const walletInfo = await KeypairApi.createKeypair(password);
     ```
 
 - **3. How can I send FRA to another wallet?**
 
     ```jsx
-    // Here we are assuming that SDK has already been imported and configured, 
-    // please see "**1. How to configure / initialize Findora SDK?**"
+    // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
 
     const { Keypair: KeypairApi, Asset: AssetApi, Transaction: TransactionApi  } = findoraSdk.Api;
 
-    // First step is to restore your wallet using a mnemonic phrase, or, alternatively, a private key
+    // First step is to restore your wallet using a mnemonic phrase or, alternatively, a private key
     // a. Restore from mnemonic
     const walletInfo = await KeypairApi.restoreFromMnemonic(yourMnenomic, password);
     // b. Or, alternatively, restore from private key
     const anotherWalletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-    // We are going to use a native FRA asset code, since we are sending FRA
+    // We are going to use a native FRA asset code since we are sending FRA
     const assetCode = await AssetApi.getFraAssetCode();
 
-    // Next, we create an instance of the transaction builder - that is what is going to be broadcasted to the network
+    // Next, we create an instance of the transaction builder - that is what is going to be broadcast to the network
     const transactionBuilder = await TransactionApi.sendToAddress(
       walletInfo,
       address,
@@ -62,19 +60,18 @@ And I am happy to share with you that I found an exact document I was looking fo
       assetBlindRules,
     );
 
-    // Lastly, we are broadcasting this transaction to the network
+    // Finally, we will broadcasting this transaction to the network
     const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
     ```
 
 - **4. How can I send FRA to multiple wallets?**
 
     ```jsx
-    // Here we are assuming that SDK has already been imported and configured, 
-    // please see "**1. How to configure / initialize Findora SDK?**"
+    // Note: The SDK must be setup before you can proceed with the instructions below (i.e. see step #1) 
 
     const { Keypair: KeypairApi, Asset: AssetApi, Transaction: TransactionApi } = findoraSdk.Api;
 
-    // First step is to restore your wallet using a mnemonic phrase, or, alternatively, a private key
+    // The first step is to restore your wallet using a mnemonic phrase, or, alternatively, a private key
     // a. Restore from mnemonic
     const walletInfo = await KeypairApi.restoreFromMnemonic(yourMnenomic, password);
     // b. Or, alternatively, restore from private key
@@ -83,22 +80,22 @@ And I am happy to share with you that I found an exact document I was looking fo
     // We are going to use a native FRA asset code, since we are sending FRA
     const assetCode = await AssetApi.getFraAssetCode();
 
-    // How much of FRA we are sending to each of the receivers
+    // Specify how much FRA to send to each recipient
     const numbersForAlice = '0.1';
     const numbersForPeter = '0.2';
 
-    // We use `getAddressPublicAndKey` helper to prepare an object with an address and public key, 
+    // Use `getAddressPublicAndKey` helper to prepare an object with an address and public key, 
     // as both values would be needed by the transaction api
     const aliceWalletInfo = await KeypairApi.getAddressPublicAndKey(aliceAddress);
     const peterWalletInfo = await KeypairApi.getAddressPublicAndKey(peterAddress);
 
-    // Next, we are preparing receipients data
+    // Prepare the receipient data
     const recieversInfo = [
       { reciverWalletInfo: aliceWalletInfo, amount: numbersForAlice },
       { reciverWalletInfo: peterWalletInfo, amount: numbersForPeter },
     ];
 
-    // Then we create an instance of the transaction builder - that is what is going to be broadcasted to the network
+    // Create an instance of the transaction builder - that is what is going to be broadcast to the network
     const transactionBuilder = await TransactionApi.sendToMany(
       walletInfo,
       recieversInfo,
@@ -106,7 +103,7 @@ And I am happy to share with you that I found an exact document I was looking fo
       assetBlindRules,
     );
 
-    // Lastly, we are broadcasting this transaction to the network
+    // Finally, broadcast this transaction to the network
     const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
     ```
 
