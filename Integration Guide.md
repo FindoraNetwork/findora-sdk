@@ -1,12 +1,12 @@
-# Integration Guide
+# Wallet Integration Guide
 
-This guide will walk 3rd party developers on how to:
-* Setup the `Findora SDK`
-* Use the most commonly used SDK features
+This guide will enable developers to integrate Findora Protocol features into a their wallet and discusses two key parts of this process:
+* Setting Up the `Findora SDK`
+* Using the most commonly called wallet features
 
 Developers should be able to integrate Findora features such as sending FRA to another wallet, checking the FRA balance, etc. into their crypto wallet, crypto exchange or Dapp by following this guide.
 
-## **Findora SDK Setup**
+## **Setting Up the `Findora SDK`**
 
 - **1.** **Setup the Findora SDK (i.e. this is a required step to use any of the other info in this document)?**
 
@@ -22,7 +22,7 @@ Developers should be able to integrate Findora features such as sending FRA to a
     // That is it! after that Findora sdk is ready to use! 
     ```
 
-## **Most Commonly used SDK Features**
+## **Using the most commonly called wallet features**
 
 - **2. Create a Findora wallet**
 
