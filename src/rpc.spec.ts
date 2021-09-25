@@ -45,26 +45,13 @@ beforeAll(async (done: any) => {
 
   web3.eth
     .sendTransaction(transactionObject)
-    .once('sending', function (_payload) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 37 ~ payload', _payload);
-    })
-    .once('sent', function (_payload) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 40 ~ payload', _payload);
-    })
-    .once('transactionHash', function (_hash) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
-    })
-    .once('receipt', function (_receipt) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
-    })
-    .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
-    })
-    .on('error', function (_error) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 51 ~ error', error);
-    })
+    .once('sending', function (_payload) {})
+    .once('sent', function (_payload) {})
+    .once('transactionHash', function (_hash) {})
+    .once('receipt', function (_receipt) {})
+    .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) {})
+    .on('error', function (_error) {})
     .then(function (receipt) {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 60 ~ receipt', receipt);
       // will be fired once the receipt is mined
       const { transactionHash, blockHash, blockNumber } = receipt;
 
@@ -538,7 +525,6 @@ describe('Api Endpoint (rpc test)', () => {
 
         const { response } = result;
 
-        // expect(response?.error?.code).toEqual(-32000);
         expect(response?.error?.code).toEqual(-32603);
       },
       extendedExecutionTimeout,

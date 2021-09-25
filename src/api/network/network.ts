@@ -164,10 +164,8 @@ export const getOwnerMemo = async (
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_owner_memo/${utxoSid}`;
 
-  // console.log('url owner', url);
   const dataResult = await apiGet(url, config);
 
-  // console.log('dataResult owner', dataResult);
   return dataResult;
 };
 

@@ -1,14 +1,16 @@
 {
   "keys": {
-    "mainFaucet": "ZZZ-AB-XXX-hCGtzg=",
-    "senderOne": "hADSDSDSD=",
-    "senderTwo": "FSsfsfsf=",
-    "receiverOne": "sddDSSDss0k=",
-    "receiverTwo": "DDSSCSsdssds="
+    "mainFaucet": "xxx3-EAQ=",
+    "senderOne": "xxxA=",
+    "senderTwo": "xxx0=",
+    "receiverOne": "xxx=",
+    "receiverTwo": "xxxwQ=",
+    "receiverThree": "xxxk="
   },
   "hostUrl": "http://127.0.0.1",
   "rpc": {
     "rpcUrl": "http://127.0.0.1:8545",
-    "ethAccountToCheck": "0xff6246f1011C1F7aD15877fb1232BEda1536b3bC"
+    "ethAccountToCheck": "0xffXXXX",
+    "mnemonic": "XXX XX"
   }
 }

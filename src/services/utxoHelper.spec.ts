@@ -403,13 +403,6 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      // const myAssetType = 'myAssetType';
-
-      // const decryptAssetData = {
-      //   asset_type: myAssetType,
-      //   amount: '2',
-      // };
-
       const LedgerClientAssetRecord = {
         from_json: jest.fn(() => {
           return assetRecord;

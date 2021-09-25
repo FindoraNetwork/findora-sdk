@@ -1,4 +1,3 @@
-// import JSONbig from 'json-bigint';
 import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
