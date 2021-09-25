@@ -213,7 +213,6 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
-                // console.log('dataResult owner', dataResult);
                 return [2 /*return*/, dataResult];
         }
     });

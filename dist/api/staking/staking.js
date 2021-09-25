@@ -71,7 +71,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDelegateInfo = exports.getValidatorList = exports.claim = exports.delegate = exports.unStake = void 0;
 var Transaction = __importStar(require("../../api/transaction"));
-// import { orderBy } from 'lodash-es';
 var orderBy_1 = __importDefault(require("lodash/orderBy"));
 var Fee = __importStar(require("../../services/fee"));
 var keypair_1 = require("../keypair");
