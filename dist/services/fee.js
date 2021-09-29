@@ -86,7 +86,7 @@ var getAssetTracingPolicies = function (asset) { return __awaiter(void 0, void 0
 }); };
 exports.getAssetTracingPolicies = getAssetTracingPolicies;
 var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, isTraceable, tracingPolicies, e_1, transferOp, inputParametersList, inputPromise, _p;
+    var ledger, asset, isTraceable, tracingPolicies, e_1, totalUtxoNumbers, isBlindIsAmount, isBlindIsType, transferOp, inputParametersList, inputAmount, inputPromise, numberToSubmit;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -110,10 +110,14 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                 e_1 = _b.sent();
                 console.log(e_1);
                 return [3 /*break*/, 6];
-            case 6: return [4 /*yield*/, exports.getEmptyTransferBuilder()];
+            case 6:
+                totalUtxoNumbers = BigInt(0);
+                isBlindIsAmount = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isAmountBlind) === true; });
+                isBlindIsType = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isTypeBlind) === true; });
+                return [4 /*yield*/, exports.getEmptyTransferBuilder()];
             case 7:
                 transferOp = _b.sent();
-                inputParametersList = utxoInputs.inputParametersList;
+                inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
                     var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
                     return __generator(this, function (_a) {
@@ -140,11 +144,12 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                 }); });
                 return [4 /*yield*/, Promise.all(inputPromise)];
             case 8:
-                _p = _b.sent();
+                _b.sent();
                 recieversInfo.forEach(function (reciverInfo) {
                     var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey, _a = reciverInfo.assetBlindRules, assetBlindRules = _a === void 0 ? {} : _a;
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
+                    totalUtxoNumbers += BigInt(utxoNumbers.toString());
                     if (isTraceable) {
                         transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
@@ -152,7 +157,18 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                         transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                 });
-                return [2 /*return*/, transferOp];
+                if (!(inputAmount > totalUtxoNumbers)) return [3 /*break*/, 11];
+                numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
+                if (!isTraceable) return [3 /*break*/, 10];
+                return [4 /*yield*/, exports.getAssetTracingPolicies(asset)];
+            case 9:
+                tracingPolicies = _b.sent();
+                transferOp = transferOp.add_output_with_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), tracingPolicies, assetCode, isBlindIsAmount, isBlindIsType);
+                return [3 /*break*/, 11];
+            case 10:
+                transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, isBlindIsAmount, isBlindIsType);
+                _b.label = 11;
+            case 11: return [2 /*return*/, transferOp];
         }
     });
 }); };

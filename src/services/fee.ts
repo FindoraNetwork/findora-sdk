@@ -47,10 +47,12 @@ export const getTransferOperation = async (
       console.log(e);
     }
   }
-
+  let totalUtxoNumbers = BigInt(0);
+  let isBlindIsAmount = recieversInfo.some(item => item.assetBlindRules?.isAmountBlind === true);
+  let isBlindIsType = recieversInfo.some(item => item.assetBlindRules?.isTypeBlind === true);
   let transferOp = await getEmptyTransferBuilder();
 
-  const { inputParametersList } = utxoInputs;
+  const { inputParametersList, inputAmount } = utxoInputs;
 
   const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
     const { txoRef, assetRecord, amount, sid } = inputParameters;
@@ -85,12 +87,14 @@ export const getTransferOperation = async (
     }
   });
 
-  const _p = await Promise.all(inputPromise);
+  await Promise.all(inputPromise);
 
   recieversInfo.forEach(reciverInfo => {
     const { utxoNumbers, toPublickey, assetBlindRules = {} } = reciverInfo;
     const blindIsAmount = assetBlindRules?.isAmountBlind;
     const blindIsType = assetBlindRules?.isTypeBlind;
+
+    totalUtxoNumbers += BigInt(utxoNumbers.toString());
 
     if (isTraceable) {
       transferOp = transferOp.add_output_with_tracing(
@@ -111,6 +115,31 @@ export const getTransferOperation = async (
       );
     }
   });
+
+  // Achieve balance change
+  if (inputAmount > totalUtxoNumbers) {
+    const numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
+
+    if (isTraceable) {
+      tracingPolicies = await getAssetTracingPolicies(asset);
+      transferOp = transferOp.add_output_with_tracing(
+        numberToSubmit,
+        ledger.get_pk_from_keypair(walletInfo.keypair),
+        tracingPolicies,
+        assetCode,
+        isBlindIsAmount,
+        isBlindIsType,
+      );
+    } else {
+      transferOp = transferOp.add_output_no_tracing(
+        numberToSubmit,
+        ledger.get_pk_from_keypair(walletInfo.keypair),
+        assetCode,
+        isBlindIsAmount,
+        isBlindIsType,
+      );
+    }
+  }
 
   return transferOp;
 };
