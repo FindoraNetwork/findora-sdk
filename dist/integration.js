@@ -81,9 +81,8 @@ var sdkEnv = {
 var waitingTimeBeforeCheckTxStatus = 18000;
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
 Sdk_1.default.init(sdkEnv);
-var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, senderTwo = walletKeys.senderTwo, receiverOne = walletKeys.receiverOne, receiverTwo = walletKeys.receiverTwo;
+var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, receiverOne = walletKeys.receiverOne;
 var password = 'yourSecretPassword';
-// w1
 var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionStatus, sendResponse, Committed, txnSID;
     return __generator(this, function (_a) {
@@ -116,9 +115,8 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
         }
     });
 }); };
-// w1 from getTxSid
 var sendFromFaucetToAccount = function (walletInfo, toWalletInfo, numbersToSend) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, assetBlindRules, balanceBeforeSend, balanceBeforeSendTo, transactionBuilderSend, resultHandleSend, isTxSent, balanceAfterSend, balanceAfterSendTo, balanceBeforeSendToBN, balanceAfterSendToBN, isSentSuccessfull;
+    var fraCode, assetBlindRules, balanceBeforeSendTo, transactionBuilderSend, resultHandleSend, isTxSent, balanceAfterSendTo, balanceBeforeSendToBN, balanceAfterSendToBN, isSentSuccessfull;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -127,33 +125,25 @@ var sendFromFaucetToAccount = function (walletInfo, toWalletInfo, numbersToSend)
             case 1:
                 fraCode = _a.sent();
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 2:
-                balanceBeforeSend = _a.sent();
-                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSend', balanceBeforeSend);
                 return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 3:
+            case 2:
                 balanceBeforeSendTo = _a.sent();
                 console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
                 return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 4:
+            case 3:
                 transactionBuilderSend = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 5:
+            case 4:
                 resultHandleSend = _a.sent();
                 return [4 /*yield*/, getTxSid('send fra', resultHandleSend)];
-            case 6:
+            case 5:
                 isTxSent = _a.sent();
                 if (!isTxSent) {
                     console.log("\uD83D\uDE80 ~ sendFromFaucetToAccount ~ Could not submit transfer");
                     return [2 /*return*/, false];
                 }
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 7:
-                balanceAfterSend = _a.sent();
-                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSend', balanceAfterSend);
                 return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 8:
+            case 6:
                 balanceAfterSendTo = _a.sent();
                 console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
                 balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
@@ -164,9 +154,6 @@ var sendFromFaucetToAccount = function (walletInfo, toWalletInfo, numbersToSend)
         }
     });
 }); };
-// export const keystoreUsage = async () => {
-//   return true;
-// };
 var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
     return __generator(this, function (_a) {

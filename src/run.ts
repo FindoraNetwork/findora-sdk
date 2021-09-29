@@ -4,7 +4,7 @@ import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import Sdk from './Sdk';
 import * as NetworkTypes from './api/network/types';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
+import { MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -12,9 +12,8 @@ import { Evm } from './api';
 import sleep from 'sleep-promise';
 
 dotenv.config();
-const waitingTimeBeforeCheckTxStatus = 18000;
 
-const mainFaucet = 'XXX';
+const waitingTimeBeforeCheckTxStatus = 18000;
 
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -29,9 +28,29 @@ const sdkEnv = {
   cachePath: './cache',
 };
 
+/**
+ * This file is a developer "sandbox". You can debug existing methods here, or play with new and so on.
+ * It is executed by running `yarn start` - feel free to play with it and change it.
+ * Examples here might not always be working, again - that is just a sandbox for convenience.
+ */
 Sdk.init(sdkEnv);
 
-const CustomAssetCode = 'W4-AkZy73UGA6z8pUTv4YOjRNuFwD03Bpk0YPJkKPzs=';
+const {
+  CUSTOM_ASSET_CODE = '',
+  PKEY_MINE = '',
+  PKEY_MINE2 = '',
+  PKEY_MINE3 = '',
+  PKEY_LOCAL_FAUCET = '',
+  PLATFORM_ACC_M_STRING = '',
+  M_STRING = '',
+  FRA_ADDRESS = '',
+  ETH_PRIVATE = '',
+  ETH_ADDRESS = '',
+} = process.env;
+
+const mainFaucet = PKEY_LOCAL_FAUCET;
+
+const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 /**
  * A simple example - how to use SDK to get FRA assset code
@@ -46,56 +65,35 @@ const getFraAssetCode = async () => {
  * Get FRA balance
  */
 const getFraBalance = async () => {
-  const pkeyMine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
-  const pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
-  // const pkeyLocalFaucet = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
-  const pkeyLocalFaucet = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
-
-  const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
-  const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
-  const pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
-  const pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
-  const pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
-
   const password = '1234';
 
-  const pkey = pkeyLocalFaucet;
+  const pkey = PKEY_LOCAL_FAUCET;
 
-  const mString =
-    'math drastic little venture uncle slush patch clean sting defy apology jealous creek ship claim lonely emotion answer forest gather shrimp crouch monitor shrimp';
+  const mString = PLATFORM_ACC_M_STRING;
+
   const mm = mString.split(' ');
-
-  console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ mm', mm.join(' '));
 
   const newWallet = await Keypair.restoreFromMnemonic(mm, password);
 
-  console.log('🚀 ~ file: run.ts ~ line 67 ~ getFraBalance ~ newWallet', newWallet);
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  // console.log('🚀 ~ file: run.ts ~ line 55 ~ getFraBalance ~ walletInfo', walletInfo);
-
-  const fraCode = await Asset.getFraAssetCode();
-
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-
-  const { response: sids } = sidsResult;
-
-  if (!sids) {
-    return;
-  }
-
-  const balanceInWei = await Account.getAssetBalance(walletInfo, fraCode, sids);
-
-  const balance = bigNumber.fromWei(balanceInWei, 6).toFormat(6);
+  const balance = await Account.getBalance(faucetWalletInfo);
+  const balanceNew = await Account.getBalance(newWallet);
 
   console.log('\n');
 
-  console.log('walletInfo.address', walletInfo.address);
-  console.log('walletInfo.privateStr', walletInfo.privateStr);
+  console.log('faucetWalletInfo.address', faucetWalletInfo.address);
+  console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+
+  console.log('\n');
+
+  console.log('newWallet.address', newWallet.address);
+  console.log('newWallet.privateStr', newWallet.privateStr);
+
+  console.log('\n');
 
   console.log('balance IS', balance);
+  console.log('balanceNew IS', balanceNew);
   console.log('\n');
   console.log('\n');
 };
@@ -105,7 +103,7 @@ const getFraBalance = async () => {
  */
 const getCustomAssetBalance = async () => {
   const password = '123';
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = PKEY_MINE;
   const customAssetCode = CustomAssetCode;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -119,8 +117,7 @@ const getCustomAssetBalance = async () => {
  * Define a custom asset
  */
 const defineCustomAsset = async () => {
-  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const pkey = 'Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg=';
+  const pkey = PKEY_LOCAL_FAUCET;
 
   const password = '123';
 
@@ -141,7 +138,7 @@ const defineCustomAsset = async () => {
  * Issue custom asset
  */
 const issueCustomAsset = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = PKEY_LOCAL_FAUCET;
   const customAssetCode = CustomAssetCode;
 
   const password = '123';
@@ -166,51 +163,15 @@ const getStateCommitment = async () => {
 };
 
 const getValidatorList = async () => {
-  // const validatorList = await Network.getValidatorList();
-
-  // console.log('validatorList', validatorList);
-  // const { response } = validatorList;
-
-  // if (!response) {
-  //   throw new Error('validators are missing!');
-  // }
-
-  // const { validators } = response;
-
-  // console.log('validators', validators);
-
   const formattedVlidators = await Staking.getValidatorList();
 
   console.log('formattedVlidators', formattedVlidators);
 };
 
-/**
- *         publickey: 'B6fhmHZe9gP4RqhX_UdSedoIENr449oNKf0rM0p5aM0=',
-        address: 'fra1q7n7rxrktmmq87zx4ptl636j08dqsyx6lr3a5rffl54nxjnedrxs0v63wg',
-        keypair: XfrKeyPair { ptr: 2556360 },
-        privateStr: 'cFDDiU-Wq__LPXio47nmRA8ytTil4WPjKiKXwRCJRUY='
- */
 const getDelegateInfo = async () => {
-  // const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  // const pkey = 'cFDDiU-Wq__LPXio47nmRA8ytTil4WPjKiKXwRCJRUY=';
-  const pkey = 'VKt39pHEX8RY4doRQGIOf2oP-HGDVaPKAfEhkbdoNKA=';
-  // const pkey = mainFaucet;
+  const pkey = PKEY_LOCAL_FAUCET;
   const password = '123';
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  // const lightWalletKeypair = await Keypair.getAddressPublicAndKey(walletInfo.address);
-
-  // const delegateInfoDataResult = await Network.getDelegateInfo(lightWalletKeypair.publickey);
-
-  // const { response: delegateInfoResponse } = delegateInfoDataResult;
-
-  // if (!delegateInfoResponse) {
-  //   throw new Error('validators are missing!');
-  // }
-
-  // const { validators } = response;
-
-  // console.log('delegateInfoResponse', delegateInfoResponse);
 
   const delegateInfo = await Staking.getDelegateInfo(walletInfo.address);
   console.log('🚀 ~ file: run.ts ~ line 192 ~ getDelegateInfo ~ delegateInfo', delegateInfo);
@@ -223,7 +184,7 @@ const getTransferBuilderOperation = async () => {
   const ledger = await getLedger();
 
   const password = '123';
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = PKEY_MINE;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -273,9 +234,10 @@ const createNewKeypair = async () => {
  * Send fra to a single recepient
  */
 const transferFraToSingleRecepient = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = PKEY_MINE;
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine2 = PKEY_MINE2;
+
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -304,10 +266,10 @@ const transferFraToSingleRecepient = async () => {
  * Send fra to multiple recepients
  */
 const transferFraToMultipleRecepients = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = PKEY_MINE;
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  const toPkeyMine2 = PKEY_MINE2;
+  const toPkeyMine3 = PKEY_MINE3;
 
   const password = '123';
 
@@ -342,8 +304,8 @@ const transferFraToMultipleRecepients = async () => {
  * Send custom asset to a single recepient
  */
 const transferCustomAssetToSingleRecepient = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = PKEY_MINE;
+  const toPkey = PKEY_MINE2;
   const customAssetCode = CustomAssetCode;
 
   const password = '123';
@@ -372,10 +334,10 @@ const transferCustomAssetToSingleRecepient = async () => {
  * Send custom asset to multiple recepients
  */
 const transferCustomAssetToMultipleRecepients = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = PKEY_MINE;
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  const toPkeyMine2 = PKEY_MINE2;
+  const toPkeyMine3 = PKEY_MINE3;
 
   const password = '123';
 
@@ -419,7 +381,7 @@ const getCustomAssetDetails = async () => {
  * Get transaction status
  */
 const getTransactionStatus = async () => {
-  const h = 'b07040a5d8c9ef6fcb98b95968e6c1f14f77405e851ac8230942e1c305913ea0';
+  const h = 'YOUR_TX_HASH';
 
   const txStatus = await Network.getTransactionStatus(h);
 
@@ -434,7 +396,7 @@ const getBlockDetails = async () => {
 
   const blockDetailsResult = await Network.getBlock(height);
 
-  console.log('blockDetails! :)', JSON.stringify(blockDetailsResult, null, 2));
+  console.log('blockDetails!', JSON.stringify(blockDetailsResult, null, 2));
 
   const { response } = blockDetailsResult;
 
@@ -444,7 +406,7 @@ const getBlockDetails = async () => {
 
 // get tx hash details
 const myFunc14 = async () => {
-  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+  const h = 'YOUR_TX_HASH';
 
   const dataResult = await Network.getHashSwap(h);
 
@@ -455,9 +417,9 @@ const myFunc14 = async () => {
 
 // get tx list hash details
 const myFunc15 = async () => {
-  const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
+  const h = 'YOUR_TX_HASH';
 
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = PKEY_MINE;
 
   const password = '123';
 
@@ -467,20 +429,15 @@ const myFunc15 = async () => {
 
   const { response } = dataResult;
 
-  // console.log('response!', JSON.stringify(response, null, 2));
-
   console.log('response!!!', response);
-  // console.log(response?.result.txs?.[0]);
 };
 
 const myFunc16 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = PKEY_MINE;
 
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const txList = await Transaction.getTxList(walletInfo.address, 'from');
 
@@ -488,37 +445,29 @@ const myFunc16 = async () => {
 };
 
 const myFunc17 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = PKEY_MINE;
 
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const a = await Account.getCreatedAssets(walletInfo.address);
-
-  // const dataResult = await Network.getIssuedRecords(walletInfo.publickey);
-
-  // console.log('dataResult!', dataResult);
+  const assets = await Account.getCreatedAssets(walletInfo.address);
+  console.log('🚀 ~ file: run.ts ~ line 453 ~ myFunc17 ~ assets', assets);
 };
 
 const myFunc18 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = PKEY_MINE;
 
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
   const sids = await Account.getRelatedSids(walletInfo.publickey);
 
   console.log('sids!!', sids);
 };
 
-// s3
+// s3 cache
 const myFuncS3 = async () => {
   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
     process.env;
@@ -549,7 +498,7 @@ const myFuncS3 = async () => {
     console.log('Error!', e.message);
   }
 
-  console.log('readRes :) 5', readRes?.Body?.toString());
+  console.log('readRes :)', readRes?.Body?.toString());
 
   const existingContent = readRes?.Body?.toString('utf8');
 
@@ -570,19 +519,6 @@ const myFuncS3 = async () => {
 
     console.log('Error!', e.message);
   }
-};
-
-const myFuncUndelegate = async () => {
-  const rickey2 = 'glzudSr1lCGmkLjETDeUDCP_hBNkCmXILnPHPCRuI5Y=';
-  const mine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const password = '123';
-
-  const mineWalletInfo = await Keypair.restoreFromPrivateKey(mine, password);
-
-  // const dataResult = await Network.getRelatedSids(walletInfo.publickey);
-  // const unStakeResHandle = await Staking.unStake(mineWalletInfo);
-
-  // console.log('unStakeResHandle!!!', unStakeResHandle);
 };
 
 export const delegateFraTransactionSubmit = async () => {
@@ -619,9 +555,9 @@ export const delegateFraTransactionSubmit = async () => {
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
-  // await sleep(waitingTimeBeforeCheckTxStatus);
-  // await sleep(waitingTimeBeforeCheckTxStatus);
+
   const balanceAfterUnstake = await Account.getBalance(toWalletInfo);
+
   console.log(
     '🚀 ~ file: run.ts ~ line 605 ~ delegateFraTransactionSubmit ~ balanceAfterUnstake',
     balanceAfterUnstake,
@@ -661,7 +597,6 @@ export const delegateFraTransactionSubmit = async () => {
 
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
-  // await sleep(waitingTimeBeforeCheckTxStatus);
 
   const transactionStatus = await Network.getTransactionStatus(resultHandle);
 
@@ -938,18 +873,8 @@ export const unstakeFraTransactionSubmit = async () => {
 
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  // const bb = await Account.getBalance(walletInfo);
-  // console.log('🚀 ~ file: run.ts ~ line 905 ~ unstakeFraTransactionSubmit ~ bb', bb);
-
   const numbersToSend = '1000010';
   const numbersToDelegate = '1000000';
-
-  // const balanceBeforeSend = await Account.getBalance(toWalletInfo);
-
-  // console.log(
-  //   '🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend',
-  //   balanceBeforeSend,
-  // );
 
   const transactionBuilderSend = await Transaction.sendToAddress(
     walletInfo,
@@ -972,7 +897,6 @@ export const unstakeFraTransactionSubmit = async () => {
 
   const transactionStatusSend = await Network.getTransactionStatus(resultHandleSend);
 
-  // return true;
   console.log('Retrieved transaction status response:', transactionStatusSend);
 
   const { response: sendResponse } = transactionStatusSend;
@@ -1151,22 +1075,20 @@ export const unstakeFraTransactionSubmit = async () => {
 };
 
 const sendEvmToAccount = async () => {
-  const fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
+  const fraAddress = FRA_ADDRESS;
   const amount = '1';
-  const ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';
-  const ethAddress = '0xA2892dA49B74F069400694E4930aa9D6Db0e67b3';
+  const ethPrivate = ETH_PRIVATE;
+  const ethAddress = ETH_ADDRESS;
   await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
 };
 
 const ethProtocol = async () => {
   const url = 'http://127.0.0.1:8545';
-  // const url = 'https://dev-evm.dev.findora.org:8545';
 
   const methodName = 'eth_getBlockByHash';
 
-  const existingBlockHashToCheck = '0x41f02ee22758d62ebc1b71df5ad61fd80acceecce9db57b591ff0f47ba8170a6';
+  const existingBlockHashToCheck = 'YOUR_BLOCK';
   const extraParams = [existingBlockHashToCheck, true];
-  // const expectedValue = '0x04d2';
 
   const payload = {
     method: methodName,
@@ -1174,30 +1096,28 @@ const ethProtocol = async () => {
   };
 
   const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(url, payload);
+
   console.log(`🚀 ~ !file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-// New
-// getFraAssetCode(); // works
-
-getFraBalance(); // works
-// getCustomAssetBalance(); // works
-// defineCustomAsset(); // works
-// issueCustomAsset(); // works
-// getStateCommitment(); // works
+getFraBalance();
+// getCustomAssetBalance();
+// defineCustomAsset();
+// issueCustomAsset();
+// getStateCommitment();
 // getValidatorList();
-// getDelegateInfo(); // 1
-// getTransferBuilderOperation(); // works
-// createNewKeypair(); // works
-// transferFraToSingleRecepient(); // works
-// transferFraToMultipleRecepients(); // works
-// transferCustomAssetToSingleRecepient(); // works
+// getDelegateInfo();
+// getTransferBuilderOperation();
+// createNewKeypair();
+// transferFraToSingleRecepient();
+// transferFraToMultipleRecepients();
+// transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();
-// getCustomAssetDetails(); // works
-// getTransactionStatus(); // works
+// getCustomAssetDetails();
+// getTransactionStatus();
 // getBlockDetails();
-// delegateFraTransactionSubmit(); // 2
-// delegateFraTransactionAndClaimRewards(); //3
-// unstakeFraTransactionSubmit(); //4
+// delegateFraTransactionSubmit();
+// delegateFraTransactionAndClaimRewards();
+// unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();

@@ -38,11 +38,10 @@ console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured t
 
 findoraSdk.init(sdkEnv);
 
-const { mainFaucet, senderOne, senderTwo, receiverOne, receiverTwo } = walletKeys;
+const { mainFaucet, senderOne, receiverOne } = walletKeys;
 
 const password = 'yourSecretPassword';
 
-// w1
 const getTxSid = async (operationName: string, txHandle: string) => {
   console.log(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
 
@@ -54,7 +53,6 @@ const getTxSid = async (operationName: string, txHandle: string) => {
 
   if (!sendResponse) {
     console.log(`🚀 ~ ERROR 1 - ${operationName} ~ transactionStatus`, transactionStatus);
-
     return false;
   }
 
@@ -79,7 +77,6 @@ const getTxSid = async (operationName: string, txHandle: string) => {
   return true;
 };
 
-// w1 from getTxSid
 const sendFromFaucetToAccount = async (
   walletInfo: KeypairApi.WalletKeypar,
   toWalletInfo: KeypairApi.WalletKeypar,
@@ -90,9 +87,6 @@ const sendFromFaucetToAccount = async (
   const fraCode = await AssetApi.getFraAssetCode();
 
   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-
-  const balanceBeforeSend = await AccountApi.getBalance(walletInfo);
-  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSend', balanceBeforeSend);
 
   const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
@@ -114,9 +108,6 @@ const sendFromFaucetToAccount = async (
     return false;
   }
 
-  const balanceAfterSend = await AccountApi.getBalance(walletInfo);
-  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSend', balanceAfterSend);
-
   const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
 
@@ -128,10 +119,6 @@ const sendFromFaucetToAccount = async (
 
   return isSentSuccessfull;
 };
-
-// export const keystoreUsage = async () => {
-//   return true;
-// };
 
 export const defineAssetTransaction = async () => {
   console.log('////////////////  defineAssetTransaction //////////////// ');
@@ -317,6 +304,7 @@ export const sendFraTransactionSubmit = async () => {
 
   const toWalletInfo = await KeypairApi.createKeypair(password);
 
+  // @todo - fix it to use AccountApi.getBalanceInWei
   const receiverBalanceBeforeTransfer = await AccountApi.getBalance(toWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
@@ -342,6 +330,7 @@ export const sendFraTransactionSubmit = async () => {
     return false;
   }
 
+  // @todo - fix it to use AccountApi.getBalanceInWei
   const receiverBalanceAfterTransfer = await AccountApi.getBalance(toWalletInfo);
 
   const isItRight =
@@ -367,8 +356,10 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
 
   const petereWalletInfo = await KeypairApi.createKeypair(password);
 
+  // @todo - fix it to use AccountApi.getBalanceInWei
   const aliceBalanceBeforeTransfer = await AccountApi.getBalance(aliceWalletInfo);
 
+  // @todo - fix it to use AccountApi.getBalanceInWei
   const peterBalanceBeforeTransfer = await AccountApi.getBalance(petereWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
@@ -399,6 +390,7 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
     return false;
   }
 
+  // @todo - fix it to use AccountApi.getBalanceInWei
   const aliceBalanceAfterTransfer = await AccountApi.getBalance(aliceWalletInfo);
   const peterBalanceAfterTransfer = await AccountApi.getBalance(petereWalletInfo);
 
@@ -671,24 +663,6 @@ export const delegateFraTransactionSubmit = async () => {
   const fraCode = await AssetApi.getFraAssetCode();
   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  // const transactionBuilderSend = await TransactionApi.sendToAddress(
-  //   walletInfo,
-  //   toWalletInfo.address,
-  //   numbersToSend,
-  //   fraCode,
-  //   assetBlindRules,
-  // );
-
-  // const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
-
-  // const isTxSent = await getTxSid('send transfer', resultHandleSend);
-
-  // if (!isTxSent) {
-  //   console.log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit transfer`);
-  //   return false;
-  // }
-
-  // w1 from getTxSid
   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
 
   if (!isFundSuccesfull) {
@@ -773,7 +747,6 @@ export const delegateFraTransactionAndClaimRewards = async () => {
   const fraCode = await AssetApi.getFraAssetCode();
   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  // w1 from getTxSid
   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
 
   if (!isFundSuccesfull) {

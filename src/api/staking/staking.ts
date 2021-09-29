@@ -1,5 +1,4 @@
 import * as Transaction from '../../api/transaction';
-// import { orderBy } from 'lodash-es';
 import orderBy from 'lodash/orderBy';
 
 import * as Fee from '../../services/fee';
@@ -7,7 +6,7 @@ import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar, getAddressPublicAndKey } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import * as Network from '../network';
-import { BigNumberValue, create as createBigNumber, fromWei } from '../../services/bigNumber';
+import { create as createBigNumber } from '../../services/bigNumber';
 
 /**
  * Unstake FRA tokens

@@ -25,7 +25,7 @@
     "buildAll": "tsc && webpack --mode production",
     "build": "tsc",
     "test": "jest --watch --detectOpenHandles",
-    "test:unit": "jest -t 'unit test'",
+    "test:unit": "jest -t 'unit test' --testPathIgnorePatterns=rpc.spec.ts",
     "test:integration": "INTEGRATION_ENV_NAME=local jest  --watch -t 'integration test'",
     "test:rpc": "RPC_ENV_NAME=local jest --detectOpenHandles  --watch -t 'rpc test' ",
     "prettier": "prettier --write ./src/**/*.ts",

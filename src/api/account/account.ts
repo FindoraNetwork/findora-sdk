@@ -67,7 +67,6 @@ export const getBalanceInWei = async (
   try {
     const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
 
-    // const balance = fromWei(balanceInWei, 6).toFormat(6);
     return balanceInWei;
   } catch (err) {
     const e: Error = err as Error;
@@ -96,20 +95,11 @@ export const getBalanceInWei = async (
  * @returns Result of transaction submission to the network
  */
 export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string): Promise<string> => {
-  // const sidsResult = await Network.getOwnedSids(walletKeypair.publickey);
-
-  // const { response: sids } = sidsResult;
-
-  // if (!sids) {
-  //   throw new Error('No sids were fetched!');
-  // }
-
   const fraAssetCode = await getFraAssetCode();
 
   const assetCodeToUse = assetCode || fraAssetCode;
 
   try {
-    // const balanceInWei = await getAssetBalance(walletKeypair, assetCodeToUse, sids);
     const balanceInWei = await getBalanceInWei(walletKeypair, assetCodeToUse);
 
     const balance = fromWei(balanceInWei, 6).toFormat(6);

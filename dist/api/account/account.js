@@ -130,7 +130,6 @@ var getBalanceInWei = function (walletKeypair, assetCode) { return __awaiter(voi
                 return [4 /*yield*/, (0, exports.getAssetBalance)(walletKeypair, assetCodeToUse, sids)];
             case 4:
                 balanceInWei = _a.sent();
-                // const balance = fromWei(balanceInWei, 6).toFormat(6);
                 return [2 /*return*/, balanceInWei];
             case 5:
                 err_2 = _a.sent();

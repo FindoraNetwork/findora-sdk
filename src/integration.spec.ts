@@ -84,13 +84,5 @@ describe('Findora SDK integration (integration test)', () => {
       },
       extendedExecutionTimeout * 25,
     );
-    // it(
-    //   'Should get delegate tokens and claim the rewards',
-    //   async () => {
-    //     const result = await Integration.unstakeFraTransactionSubmit();
-    //     expect(result).toBe(true);
-    //   },
-    //   extendedExecutionTimeout * 16,
-    // );
   });
 });

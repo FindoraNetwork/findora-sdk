@@ -317,7 +317,6 @@ export interface EthChainIdRpcResult extends NetworkAxiosDataResult {
 }
 
 // eth_accounts
-
 export interface EthAccountsRpcResponse extends EthMainRpcResponse {
   result: string[];
 }
