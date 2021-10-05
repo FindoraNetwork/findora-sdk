@@ -102,7 +102,7 @@ describe('evm (unit test)', function () {
         }); });
     });
     describe('sendEvmToAccount', function () {
-        it('sendEvmToAccount funds', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it.skip('sendEvmToAccount funds', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fraAddress, amount, ethPrivate, ethAddress, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {

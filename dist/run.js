@@ -75,6 +75,7 @@ var waitingTimeBeforeCheckTxStatus = 18000;
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
+    // hostUrl: 'https://prod-mainnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
     hostUrl: 'http://127.0.0.1',
@@ -320,13 +321,17 @@ var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0,
  * Create a wallet info object (a keypair)
  */
 var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, walletInfo;
+    var password, mm, walletInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
+                return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
+                mm = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 2:
                 walletInfo = _a.sent();
                 console.log('new wallet info', walletInfo);
                 return [2 /*return*/];
@@ -1203,7 +1208,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
             case 0:
                 url = 'http://127.0.0.1:8545';
                 methodName = 'eth_getBlockByHash';
-                existingBlockHashToCheck = 'YOUR_BLOCK';
+                existingBlockHashToCheck = '0x1af723767d06ef414e7aa6d7df2745cec9e47c315ed754a68d0a2d5cc2468077';
                 extraParams = [existingBlockHashToCheck, true];
                 payload = {
                     method: methodName,
@@ -1212,7 +1217,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
             case 1:
                 result = _a.sent();
-                console.log("\uD83D\uDE80 ~ !file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
+                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
                 return [2 /*return*/];
         }
     });

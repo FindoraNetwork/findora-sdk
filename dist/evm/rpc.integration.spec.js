@@ -59,10 +59,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var Network = __importStar(require("./api/network/network"));
+var Network = __importStar(require("../api/network/network"));
 var web3_1 = __importDefault(require("web3"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
-var envConfigFile = process.env.RPC_ENV_NAME ? "../.env_" + process.env.RPC_ENV_NAME : "../env_example";
+var sleep_promise_1 = __importDefault(require("sleep-promise"));
+var envConfigFile = process.env.RPC_ENV_NAME
+    ? "../../.env_" + process.env.RPC_ENV_NAME
+    : "../../env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 // This would be initialized with the data from the setup process
@@ -82,6 +85,7 @@ rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a,
 ethAccountToCheck = rpcParams.ethAccountToCheck, 
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
+console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
 var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl);
 var web3 = new web3_1.default(provider);
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
@@ -91,17 +95,44 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
             from: ethAccountToCheck,
             to: ethContractAddressToReceive,
             value: '1000000000000000',
-            gas: 8000000,
+            gas: 1000000,
             gasPrice: 700000000000,
         };
         web3.eth
             .sendTransaction(transactionObject)
-            .once('sending', function (_payload) { })
-            .once('sent', function (_payload) { })
-            .once('transactionHash', function (_hash) { })
-            .once('receipt', function (_receipt) { })
-            .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) { })
-            .on('error', function (_error) { })
+            .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+                return [2 /*return*/];
+            });
+        }); })
+            .once('sent', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+                return [2 /*return*/];
+            });
+        }); })
+            .once('transactionHash', function (_hash) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+                return [2 /*return*/];
+            });
+        }); })
+            .once('receipt', function (_receipt) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+                return [2 /*return*/];
+            });
+        }); })
+            // .on('confirmation', async (_confNumber, _receipt, _latestBlockHash) => {
+            //   done('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
+            // })
+            .on('error', function (_error) { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+                return [2 /*return*/];
+            });
+        }); })
             .then(function (receipt) {
             // will be fired once the receipt is mined
             var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber;
@@ -163,6 +194,7 @@ describe('Api Endpoint (rpc test)', function () {
                         expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, sleep_promise_1.default)(10000);
                         return [2 /*return*/];
                 }
             });
@@ -189,10 +221,11 @@ describe('Api Endpoint (rpc test)', function () {
                         expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
                         expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
+                        (0, sleep_promise_1.default)(10000);
                         return [2 /*return*/];
                 }
             });
-        }); });
+        }); }, extendedExecutionTimeout);
     });
     describe('eth_getBalance', function () {
         it('Returns the balance of the account of given address', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -564,7 +597,7 @@ describe('Api Endpoint (rpc test)', function () {
                         expect(result).toHaveProperty('response');
                         expect(result).not.toHaveProperty('error');
                         response = result.response;
-                        expect((_a = response === null || response === void 0 ? void 0 : response.error) === null || _a === void 0 ? void 0 : _a.code).toEqual(-32603);
+                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.error) === null || _a === void 0 ? void 0 : _a.code)).toEqual('number');
                         return [2 /*return*/];
                 }
             });
@@ -628,7 +661,7 @@ describe('Api Endpoint (rpc test)', function () {
                         return [2 /*return*/];
                 }
             });
-        }); });
+        }); }, extendedExecutionTimeout);
     });
     describe('eth_getTransactionByBlockHashAndIndex', function () {
         it('Returns information about a transaction by block hash and transaction index position', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -748,4 +781,4 @@ describe('Api Endpoint (rpc test)', function () {
         }); }, extendedExecutionTimeout);
     });
 });
-//# sourceMappingURL=rpc.spec.js.map
+//# sourceMappingURL=rpc.integration.spec.js.map
