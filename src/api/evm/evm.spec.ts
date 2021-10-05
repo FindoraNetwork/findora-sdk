@@ -64,7 +64,7 @@ describe('evm (unit test)', () => {
   });
 
   describe('sendEvmToAccount', () => {
-    it('sendEvmToAccount funds', async () => {
+    it.skip('sendEvmToAccount funds', async () => {
       const fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
       const amount = '1';
       const ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';

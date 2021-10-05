@@ -19,6 +19,7 @@ const waitingTimeBeforeCheckTxStatus = 18000;
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
+  // hostUrl: 'https://prod-mainnet.prod.findora.org',
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
@@ -226,7 +227,12 @@ const getTransferBuilderOperation = async () => {
 const createNewKeypair = async () => {
   const password = '123';
 
-  const walletInfo = await Keypair.createKeypair(password);
+  const mm = await Keypair.getMnemonic(24);
+
+  console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
   console.log('new wallet info', walletInfo);
 };
 
@@ -1084,11 +1090,15 @@ const sendEvmToAccount = async () => {
 
 const ethProtocol = async () => {
   const url = 'http://127.0.0.1:8545';
+  // const url = 'https://dev-evm.dev.findora.org:8545';
 
   const methodName = 'eth_getBlockByHash';
-
-  const existingBlockHashToCheck = 'YOUR_BLOCK';
+  const existingBlockHashToCheck = '0x1af723767d06ef414e7aa6d7df2745cec9e47c315ed754a68d0a2d5cc2468077';
   const extraParams = [existingBlockHashToCheck, true];
+
+  // const methodName = 'eth_getTransactionByHash';
+  // const existingTxHashToCheck = '0xe8cc1b8752779446010a8ab8f8a1dad77db4451f1ebd5e08e1a00f911c8db90e';
+  // const extraParams = [existingTxHashToCheck];
 
   const payload = {
     method: methodName,
@@ -1097,7 +1107,7 @@ const ethProtocol = async () => {
 
   const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(url, payload);
 
-  console.log(`🚀 ~ !file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
+  console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
 getFraBalance();
