@@ -19,6 +19,16 @@ const ERROR_INVALID_REQUEST = -32600;
 const ERROR_METHOD_NOT_FOUND = -32601;
 const ERROR_INVALID_PARAMS = -32602;
 
+const assertResultResponse = (result: NetworkTypes.NetworkAxiosDataResult) => {
+  expect(result).toHaveProperty('response');
+  expect(result).not.toHaveProperty('error');
+};
+
+const assertResultError = (result: NetworkTypes.NetworkAxiosDataResult) => {
+  expect(result).not.toHaveProperty('response');
+  expect(result).toHaveProperty('error');
+};
+
 describe('Api Endpoint (rpc test negative)', () => {
   const msgId = 2;
 
@@ -36,8 +46,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'foobar',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -59,12 +68,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -80,12 +84,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getBalance',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -102,8 +101,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'foo',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const { error } = result;
 
@@ -131,8 +129,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -149,8 +146,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: [...extraParams, '0x0'],
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -169,8 +165,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -192,10 +187,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -214,8 +206,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -231,8 +222,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getBlockByHash',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -254,8 +244,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -272,8 +261,8 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
+
         const message = result?.error?.message;
 
         expect(message).toEqual('Request failed with status code 400');
@@ -288,8 +277,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getBlockByNumber',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -311,8 +299,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -328,8 +315,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getTransactionCount',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -346,8 +332,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -368,8 +353,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           { ...payload, method: 'eth_getBlockTransactionCountByHash', params: extraParams },
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -385,8 +369,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           { ...payload, method: 'eth_getBlockTransactionCountByHash', params: 'aaa' },
         );
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -411,8 +394,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -431,8 +413,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -452,8 +433,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -475,8 +455,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -492,8 +471,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getCode',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -510,8 +488,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -533,8 +510,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -550,8 +526,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_sendRawTransaction',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -568,8 +543,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -591,8 +565,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -608,8 +581,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_estimateGas',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -626,8 +598,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -649,8 +620,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -666,8 +636,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getTransactionByHash',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -684,8 +653,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -710,8 +678,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -730,8 +697,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -751,8 +717,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -775,8 +740,7 @@ describe('Api Endpoint (rpc test negative)', () => {
             params: extraParams,
           });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -793,8 +757,7 @@ describe('Api Endpoint (rpc test negative)', () => {
             method: 'eth_getTransactionByBlockNumberAndIndex',
           });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -812,8 +775,7 @@ describe('Api Endpoint (rpc test negative)', () => {
             params: 'aaaa',
           });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -835,8 +797,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -852,8 +813,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           method: 'eth_getTransactionReceipt',
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -870,8 +830,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
@@ -893,8 +852,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -917,8 +875,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
+        assertResultResponse(result);
 
         const code = result?.response?.error?.code;
 
@@ -935,8 +892,7 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        expect(result).not.toHaveProperty('response');
-        expect(result).toHaveProperty('error');
+        assertResultError(result);
 
         const message = result?.error?.message;
 
