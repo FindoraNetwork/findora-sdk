@@ -1,10 +1,13 @@
 import '@testing-library/jest-dom/extend-expect';
-import * as Network from './api/network/network';
-import * as NetworkTypes from './api/network/types';
+import * as Network from '../api/network/network';
+import * as NetworkTypes from '../api/network/types';
 import Web3 from 'web3';
 import HDWalletProvider from 'truffle-hdwallet-provider';
+import sleep from 'sleep-promise';
 
-const envConfigFile = process.env.RPC_ENV_NAME ? `../.env_${process.env.RPC_ENV_NAME}` : `../env_example`;
+const envConfigFile = process.env.RPC_ENV_NAME
+  ? `../../.env_${process.env.RPC_ENV_NAME}`
+  : `../../env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
@@ -29,6 +32,7 @@ const {
   //Sender mnemonic (to be used in web3)
   mnemonic,
 } = rpcParams;
+console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
 
 const provider = new HDWalletProvider(mnemonic, rpcUrl);
 
@@ -39,18 +43,30 @@ beforeAll(async (done: any) => {
     from: ethAccountToCheck,
     to: ethContractAddressToReceive,
     value: '1000000000000000',
-    gas: 8000000,
+    gas: 1000000,
     gasPrice: 700000000000,
   };
 
   web3.eth
     .sendTransaction(transactionObject)
-    .once('sending', function (_payload) {})
-    .once('sent', function (_payload) {})
-    .once('transactionHash', function (_hash) {})
-    .once('receipt', function (_receipt) {})
-    .on('confirmation', function (_confNumber, _receipt, _latestBlockHash) {})
-    .on('error', function (_error) {})
+    .once('sending', async _payload => {
+      console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+    })
+    .once('sent', async _payload => {
+      console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+    })
+    .once('transactionHash', async _hash => {
+      console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+    })
+    .once('receipt', async _receipt => {
+      console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+    })
+    // .on('confirmation', async (_confNumber, _receipt, _latestBlockHash) => {
+    //   done('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
+    // })
+    .on('error', async _error => {
+      console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+    })
     .then(function (receipt) {
       // will be fired once the receipt is mined
       const { transactionHash, blockHash, blockNumber } = receipt;
@@ -110,31 +126,38 @@ describe('Api Endpoint (rpc test)', () => {
         expect(typeof response?.id).toEqual('number');
         expect(typeof response?.jsonrpc).toEqual('string');
         expect(typeof response?.result).toEqual('string');
+
+        sleep(10000);
       },
       extendedExecutionTimeout,
     );
   });
   describe('eth_accounts', () => {
-    it('Returns a list of addresses owned by client', async () => {
-      const msgId = 1;
+    it(
+      'Returns a list of addresses owned by client',
+      async () => {
+        const msgId = 1;
 
-      const payload = {
-        id: msgId,
-        method: 'eth_accounts',
-      };
+        const payload = {
+          id: msgId,
+          method: 'eth_accounts',
+        };
 
-      const result = await Network.sendRpcCall<NetworkTypes.EthAccountsRpcResult>(rpcUrl, payload);
+        const result = await Network.sendRpcCall<NetworkTypes.EthAccountsRpcResult>(rpcUrl, payload);
 
-      expect(result).toHaveProperty('response');
-      expect(result).not.toHaveProperty('error');
+        expect(result).toHaveProperty('response');
+        expect(result).not.toHaveProperty('error');
 
-      const { response } = result;
+        const { response } = result;
 
-      expect(response?.id).toEqual(msgId);
-      expect(typeof response?.id).toEqual('number');
-      expect(typeof response?.jsonrpc).toEqual('string');
-      expect(Array.isArray(response?.result)).toEqual(true);
-    });
+        expect(response?.id).toEqual(msgId);
+        expect(typeof response?.id).toEqual('number');
+        expect(typeof response?.jsonrpc).toEqual('string');
+        expect(Array.isArray(response?.result)).toEqual(true);
+        sleep(10000);
+      },
+      extendedExecutionTimeout,
+    );
   });
   describe('eth_getBalance', () => {
     it(
@@ -525,7 +548,7 @@ describe('Api Endpoint (rpc test)', () => {
 
         const { response } = result;
 
-        expect(response?.error?.code).toEqual(-32603);
+        expect(typeof response?.error?.code).toEqual('number');
       },
       extendedExecutionTimeout,
     );
@@ -563,32 +586,36 @@ describe('Api Endpoint (rpc test)', () => {
     );
   });
   describe('eth_getTransactionByHash', () => {
-    it('Returns the information about a transaction requested by transaction hash', async () => {
-      const msgId = 1;
+    it(
+      'Returns the information about a transaction requested by transaction hash',
+      async () => {
+        const msgId = 1;
 
-      const extraParams = [existingTxHashToCheck];
+        const extraParams = [existingTxHashToCheck];
 
-      const payload = {
-        id: msgId,
-        method: 'eth_getTransactionByHash',
-        params: extraParams,
-      };
+        const payload = {
+          id: msgId,
+          method: 'eth_getTransactionByHash',
+          params: extraParams,
+        };
 
-      const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(
-        rpcUrl,
-        payload,
-      );
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(
+          rpcUrl,
+          payload,
+        );
 
-      expect(result).toHaveProperty('response');
-      expect(result).not.toHaveProperty('error');
+        expect(result).toHaveProperty('response');
+        expect(result).not.toHaveProperty('error');
 
-      const { response } = result;
+        const { response } = result;
 
-      expect(typeof response?.jsonrpc).toEqual('string');
-      expect(typeof response?.result?.blockHash).toEqual('string');
-      expect(typeof response?.result?.blockNumber).toEqual('string');
-      expect(response?.result?.hash).toEqual(existingTxHashToCheck);
-    });
+        expect(typeof response?.jsonrpc).toEqual('string');
+        expect(typeof response?.result?.blockHash).toEqual('string');
+        expect(typeof response?.result?.blockNumber).toEqual('string');
+        expect(response?.result?.hash).toEqual(existingTxHashToCheck);
+      },
+      extendedExecutionTimeout,
+    );
   });
   describe('eth_getTransactionByBlockHashAndIndex', () => {
     it(
