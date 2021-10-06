@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 export interface ResultError {
   message: string;
+  code?: number;
 }
 
 export interface DataResult {
@@ -292,10 +293,15 @@ export interface SubmitEvmTxResult extends NetworkAxiosDataResult {
   response?: SubmitEvmTxResponse;
 }
 
-// eth_protocolVersion
+// eth main
 export interface EthMainRpcResponse {
   id: string;
   jsonrpc: string;
+  error?: {
+    code: number;
+    message: string;
+    data?: any;
+  };
 }
 
 // eth_protocolVersion

@@ -3,10 +3,9 @@ import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 import Web3 from 'web3';
 import HDWalletProvider from 'truffle-hdwallet-provider';
-import sleep from 'sleep-promise';
 
 const envConfigFile = process.env.RPC_ENV_NAME
-  ? `../../.env_${process.env.RPC_ENV_NAME}`
+  ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
   : `../../env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
@@ -61,9 +60,6 @@ beforeAll(async (done: any) => {
     .once('receipt', async _receipt => {
       console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
     })
-    // .on('confirmation', async (_confNumber, _receipt, _latestBlockHash) => {
-    //   done('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
-    // })
     .on('error', async _error => {
       console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
     })
@@ -126,8 +122,6 @@ describe('Api Endpoint (rpc test)', () => {
         expect(typeof response?.id).toEqual('number');
         expect(typeof response?.jsonrpc).toEqual('string');
         expect(typeof response?.result).toEqual('string');
-
-        sleep(10000);
       },
       extendedExecutionTimeout,
     );
@@ -154,7 +148,6 @@ describe('Api Endpoint (rpc test)', () => {
         expect(typeof response?.id).toEqual('number');
         expect(typeof response?.jsonrpc).toEqual('string');
         expect(Array.isArray(response?.result)).toEqual(true);
-        sleep(10000);
       },
       extendedExecutionTimeout,
     );
