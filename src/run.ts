@@ -4,7 +4,7 @@ import { Api } from '.';
 import { Account, Asset, Keypair, Network, Transaction } from './api';
 import Sdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
-import { FileCacheProvider, MemoryCacheProvider, S3CacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -15,8 +15,8 @@ const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
   name: 'prod',
   hostUrl: 'https://prod-mainnet.prod.findora.org',
-  cacheProvider: S3CacheProvider,
-  // cacheProvider: MemoryCacheProvider,
+  // cacheProvider: S3CacheProvider,
+  cacheProvider: MemoryCacheProvider,
   // cacheProvider: S3CacheProvider,
   cachePath: 'cache',
 };
@@ -31,8 +31,7 @@ const myFunc1 = async () => {
 
 // define asset
 const myFunc2 = async () => {
-  // const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXX=';
   const password = '123';
   console.log('pass!', password);
 
@@ -47,8 +46,7 @@ const myFunc2 = async () => {
 
 // get state commitment
 const myFunc3 = async () => {
-  // const address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
-  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+  const address = 'ZZZ';
 
   const sidsResult = await Network.getOwnedSids(address);
 
@@ -73,9 +71,9 @@ const myFunc3 = async () => {
 const myFunc4 = async () => {
   const ledger = await getLedger();
 
-  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+  const address = 'XXX';
 
-  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const pkey = 'XXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -136,9 +134,9 @@ const myFunc4 = async () => {
 
 // get fra balance
 const myFunc5 = async () => {
-  const address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+  const address = 'XXX';
 
-  const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+  const pkey = 'XXXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -176,12 +174,12 @@ const myFunc5 = async () => {
 
 // get custom asset balance
 const myFunc6 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  const customAssetCode = 'XXXXX=';
 
   const balance = await Account.getBalance(walletInfo, customAssetCode);
 
@@ -190,10 +188,7 @@ const myFunc6 = async () => {
 
 // issue custom asset
 const myFunc7 = async () => {
-  // const pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
-  // const customAssetCode = 'aRsWc8P6xFqa88S5DhuWJSYTQfmcDQRuSTsaOxv2GeM=';
-
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXX=';
   const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
   const password = '123';
@@ -219,9 +214,9 @@ const myFunc8 = async () => {
 
 // send fra
 const myFunc9 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXX=';
 
-  const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const toPkey = 'XXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -249,10 +244,10 @@ const myFunc9 = async () => {
 
 // send custom asset
 const myFunc10 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+  const pkey = 'XXX=';
+  const customAssetCode = 'XXXX=';
 
-  const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const toPkey = 'XXXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -304,7 +299,7 @@ const myFunc11 = async () => {
 
 // send custom asset to many
 const myFunc12 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXXX=';
   const customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
 
   const toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
@@ -316,7 +311,6 @@ const myFunc12 = async () => {
   const fraCode = await Asset.getFraAssetCode();
 
   const assetCode = fraCode;
-  // const assetCode = customAssetCode;
 
   const decimals = 6;
 
@@ -367,7 +361,7 @@ const myFunc14 = async () => {
 const myFunc15 = async () => {
   const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
 
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXX=';
 
   const password = '123';
 
@@ -384,8 +378,8 @@ const myFunc15 = async () => {
 };
 
 const myFunc16 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXX=';
+  const toKey = 'XXXX';
 
   const password = '123';
 
@@ -398,8 +392,8 @@ const myFunc16 = async () => {
 };
 
 const myFunc17 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXX=';
+  const toKey = 'XXX';
 
   const password = '123';
 
@@ -414,8 +408,8 @@ const myFunc17 = async () => {
 };
 
 const myFunc18 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXX=';
+  const toKey = 'XXXX';
 
   const password = '123';
 
@@ -429,12 +423,8 @@ const myFunc18 = async () => {
 };
 
 const myFuncS3 = async () => {
-  const {
-    MY_AWS_ACCESS_KEY_ID,
-    MY_AWS_SECRET_ACCESS_KEY,
-    UTXO_CACHE_BUCKET_NAME,
-    UTXO_CACHE_KEY_NAME,
-  } = process.env;
+  const { MY_AWS_ACCESS_KEY_ID, MY_AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+    process.env;
   const accessKeyId = MY_AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = MY_AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
@@ -486,23 +476,15 @@ const myFuncS3 = async () => {
 };
 
 const myFunc19 = async () => {
-  // const lightWallet = {
-  //   address: 'fra1zjfttcnvyv9ypy2d4rcg7t4tw8n88fsdzpggr0y2h827kx5qxmjshwrlx7',
-  // };
-
   const lightWallet = {
     address: 'fra18rfyc9vfyacssmr5x7ku7udyd5j5vmfkfejkycr06e4as8x7n3dqwlrjrc',
   };
 
   const walletInfo = await Keypair.getAddressPublicAndKey(lightWallet.address);
-  // console.log('w11', walletInfo);
 
   const utxoDataCache = await UtxoHelper.getUtxoCacheData();
 
-  // console.log('run utxoDataCache!', utxoDataCache);
   const sids = await Account.getOwnedSids(walletInfo.publickey);
-
-  // console.log('sids!', sids);
 
   const sidsInfo = await Account.getSidsUtxo(walletInfo.address, walletInfo.publickey, sids, utxoDataCache);
 

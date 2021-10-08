@@ -62,11 +62,11 @@ exports.getBlockTime = exports.getTxOperationsList = exports.getTxListFromRespon
 var get_1 = __importDefault(require("lodash/get"));
 var Network = __importStar(require("../network"));
 var getTxListFromResponse = function (result) {
-    return get_1.default(result, 'response.result.txs', null);
+    return (0, get_1.default)(result, 'response.result.txs', null);
 };
 exports.getTxListFromResponse = getTxListFromResponse;
 var getTxOperationsList = function (parsedTx) {
-    return get_1.default(parsedTx, 'body.operations', []);
+    return (0, get_1.default)(parsedTx, 'body.operations', []);
 };
 exports.getTxOperationsList = getTxOperationsList;
 var getBlockTime = function (height) { return __awaiter(void 0, void 0, void 0, function () {

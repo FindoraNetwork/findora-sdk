@@ -62,7 +62,7 @@ export const decryptUtxoItem = async (
   try {
     assetRecord = ledger.ClientAssetRecord.from_json(utxoData.utxo);
   } catch (error) {
-    throw new Error(`Can not get client asset record. Details: "${error.message}"`);
+    throw new Error(`Can not get client asset record. Details: "${(error as Error).message}"`);
   }
 
   let ownerMemo;
@@ -70,7 +70,7 @@ export const decryptUtxoItem = async (
   try {
     ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : null;
   } catch (error) {
-    throw new Error(`Can not decode owner memo. Details: "${error.message}"`);
+    throw new Error(`Can not decode owner memo. Details: "${(error as Error).message}"`);
   }
 
   let decryptAssetData;
@@ -82,7 +82,7 @@ export const decryptUtxoItem = async (
       walletInfo.keypair,
     );
   } catch (error) {
-    throw new Error(`Can not open client asset record to decode. Details: "${error.message}"`);
+    throw new Error(`Can not open client asset record to decode. Details: "${(error as Error).message}"`);
   }
 
   let decryptedAsetType;
@@ -90,7 +90,7 @@ export const decryptUtxoItem = async (
   try {
     decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
   } catch (error) {
-    throw new Error(`Can not decrypt asset type. Details: "${error.message}"`);
+    throw new Error(`Can not decrypt asset type. Details: "${(error as Error).message}"`);
   }
 
   decryptAssetData.asset_type = decryptedAsetType;
@@ -153,7 +153,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   try {
     utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
   } catch (error) {
-    throw new Error(`Error reading the cache, "${error.message}"`);
+    throw new Error(`Error reading the cache, "${(error as Error).message}"`);
   }
 
   for (let i = 0; i < addSids.length; i++) {
@@ -164,7 +164,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
       utxoDataList.push(item);
       cacheDataToSave[`sid_${item.sid}`] = item;
     } catch (error) {
-      console.log(`could not process addUtxo for sid ${sid}, Details: "${error.message}"`);
+      console.log(`could not process addUtxo for sid ${sid}, Details: "${(error as Error).message}"`);
       continue;
     }
   }
@@ -172,7 +172,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   try {
     await Cache.write(fullPathToCacheEntry, cacheDataToSave, Sdk.environment.cacheProvider);
   } catch (err) {
-    console.log(`could not write cache for utxoData, "${err.message}"`);
+    console.log(`could not write cache for utxoData, "${(err as Error).message}"`);
   }
 
   return utxoDataList;
@@ -235,7 +235,7 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
     try {
       assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
     } catch (error) {
-      throw new Error(`Can not get client asset record. Details: "${error.message}"`);
+      throw new Error(`Can not get client asset record. Details: "${(error as Error).message}"`);
     }
 
     let txoRef;

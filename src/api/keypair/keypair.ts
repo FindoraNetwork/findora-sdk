@@ -57,7 +57,7 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
   try {
     keypair = ledger.create_keypair_from_secret(toSend);
   } catch (error) {
-    throw new Error(`could not restore keypair. details: "${error.message}"`);
+    throw new Error(`could not restore keypair. details: "${(error as Error).message}"`);
   }
 
   if (!keypair) {
@@ -117,8 +117,8 @@ export const restoreFromKeystore = async (keyStore: Uint8Array, password: string
       keypair,
       privateStr,
     };
-  } catch (err) {
-    throw new Error(`could not restore keypair from the key string. Details: "${err.message}"`);
+  } catch (error) {
+    throw new Error(`could not restore keypair from the key string. Details: "${(error as Error).message}"`);
   }
 };
 
@@ -133,8 +133,10 @@ export const restoreFromKeystoreString = async (
     const result = await restoreFromKeystore(keyStore, password);
 
     return result;
-  } catch (err) {
-    throw new Error(`could not restore keypair from the key store string. Details: "${err.message}"`);
+  } catch (error) {
+    throw new Error(
+      `could not restore keypair from the key store string. Details: "${(error as Error).message}"`,
+    );
   }
 };
 
