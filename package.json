@@ -30,7 +30,7 @@
     "test:evm:integration:contract": "RPC_ENV_NAME=local jest --detectOpenHandles  --watch Inbox.contract.spec.js ",
     "test:evm:integration:tx": "RPC_ENV_NAME=local jest --detectOpenHandles  --watch Lottery.contract.spec.js ",
     "test:emv:integration:rpc:local": "RPC_ENV_NAME=local jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.spec.ts ",
-    "test:emv:integration:rpc:negative": "RPC_ENV_NAME=rinkeby jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.negative.spec.ts ",
+    "test:emv:integration:rpc:negative": "RPC_ENV_NAME=dev jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.negative.spec.ts ",
     "test:emv:integration:rpc:devnet": "RPC_ENV_NAME=dev jest --detectOpenHandles  --watch -t 'rpc test' rpc.integration.spec.ts ",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
