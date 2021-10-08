@@ -46,33 +46,68 @@ beforeEach(async () => {
   });
 });
 
-// const sendTxToContract = async (localWeb3, account, amount) => {
-//   await contract.methods.enter().send({
-//     from: account,
-//     gas: '1000000',
-//     gasPrice: '500000',
-//     value: web3.utils.toWei(amount, 'ether'),
-//   });
-// };
+const sendTxToContract = async (localWeb3, senderAccount, receiverAccount, amountToSend) => {
+  // await contract.methods.enter().send({
+  //   from: account,
+  //   gas: '1000000',
+  //   gasPrice: '500000',
+  //   value: web3.utils.toWei(amount, 'ether'),
+  // });
 
-// // const txSleepMs = 1000;
+  const value = localWeb3.utils.toWei(amountToSend, 'ether');
 
-// const sendBatchOfTx = async (accountIndex, amount, quantity) => {
-//   const localProvider = new HDWalletProvider(mnemonic, rpcUrl, accountIndex);
+  const transactionObject = {
+    from: senderAccount,
+    to: receiverAccount,
+    value,
+    gas: '1000000',
+    gasPrice: '500000',
+  };
 
-//   const localWeb3 = new Web3(localProvider);
+  await localWeb3.eth
+    .sendTransaction(transactionObject)
+    // .once('sending', async _payload => {
+    //   console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+    // })
+    // .once('sent', async _payload => {
+    //   console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+    // })
+    .once('transactionHash', async _hash => {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+    })
+    .once('receipt', async _receipt => {
+      // console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+    })
+    .on('error', async _error => {
+      console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+    })
+    .then(function (_receipt) {
+      // will be fired once the receipt is mined
+      const { transactionHash, blockHash, blockNumber } = _receipt;
+      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 87 ~ blockNumber', blockNumber);
+      // done();
+    });
+};
 
-//   let sent = 1;
+const sendBatchOfTx = async (sendrAccountIndex, receiverAccount, amountToSend, txQuantity) => {
+  const localProvider = new HDWalletProvider(mnemonic, rpcUrl, sendrAccountIndex);
 
-//   while (sent <= quantity) {
-//     // console.log(`sending tx# ${sent}`);
-//     await sendTxToContract(localWeb3, account, amount);
-//     // console.log(`tx# ${sent} has been sent. waiting for ${txSleepMs} ms`);
-//     sent += 1;
-//   }
+  const localWeb3 = new Web3(localProvider);
 
-//   return sent;
-// };
+  const senderAccount = accounts[sendrAccountIndex];
+
+  let sent = 1;
+
+  while (sent <= txQuantity) {
+    await sendTxToContract(localWeb3, senderAccount, receiverAccount, amountToSend);
+    sent += 1;
+    // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 104 ~ sendBatchOfTx ~ sent', sent);
+
+    await sleep(2000);
+  }
+
+  return sent;
+};
 
 describe('Lottery Contract', () => {
   it('sends money to the winner and resets the players array', async () => {
@@ -111,8 +146,6 @@ describe('Lottery Contract', () => {
         txReceipt = _receipt;
       });
 
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 92 ~ it ~ balanceBefore', balanceBefore);
-
     assert.ok(txHash !== '');
     assert.strictEqual(txReceipt.transactionHash, txHash);
 
@@ -120,16 +153,17 @@ describe('Lottery Contract', () => {
     const balanceDifference = balanceAfter - balanceBefore;
 
     console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 88 ~ it ~ balanceContract', balanceContract);
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 102 ~ it ~ balanceBefore', balanceBefore);
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 82 ~ it ~ balanceAfter', balanceAfter);
+    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 102 ~ it ~ account balanceBefore', balanceBefore);
+    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 82 ~ it ~ account balanceAfter', balanceAfter);
     console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 123 ~ it ~ balanceDifference', balanceDifference);
 
     assert.ok(accounts.length > 0);
+
     assert.ok(balanceDifference > web3.utils.toWei('0.0999', 'ether'));
 
-    // const accountIndex = 3;
+    const accountIndex = 3;
 
-    // await sendBatchOfTx(accountIndex, '0.02', 13);
+    await sendBatchOfTx(accountIndex, accounts[2], '0.02', 13);
 
     console.log('waiting for 2000 ms before final assettion');
 
