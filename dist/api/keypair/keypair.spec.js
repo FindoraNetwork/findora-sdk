@@ -48,7 +48,7 @@ describe('keypair', function () {
             var walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.restoreFromPrivateKey(pkey, password)];
+                    case 0: return [4 /*yield*/, (0, keypair_1.restoreFromPrivateKey)(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         expect(walletInfo).toHaveProperty('keyStore');
@@ -67,7 +67,7 @@ describe('keypair', function () {
         it('throws the error when bad private key is used', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey('123', password)).rejects.toThrow('could not restore keypair. details')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.restoreFromPrivateKey)('123', password)).rejects.toThrow('could not restore keypair. details')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];

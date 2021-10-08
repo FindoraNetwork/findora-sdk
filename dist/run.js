@@ -73,8 +73,8 @@ var sdkEnv = {
     // hostUrl: 'https://dev-staging.dev.findora.org',
     name: 'prod',
     hostUrl: 'https://prod-mainnet.prod.findora.org',
-    cacheProvider: providers_1.S3CacheProvider,
-    // cacheProvider: MemoryCacheProvider,
+    // cacheProvider: S3CacheProvider,
+    cacheProvider: providers_1.MemoryCacheProvider,
     // cacheProvider: S3CacheProvider,
     cachePath: 'cache',
 };
@@ -97,7 +97,7 @@ var myFunc2 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'XXX=';
                 password = '123';
                 console.log('pass!', password);
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
@@ -120,7 +120,7 @@ var myFunc3 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
+                address = 'ZZZ';
                 return [4 /*yield*/, api_1.Network.getOwnedSids(address)];
             case 1:
                 sidsResult = _a.sent();
@@ -147,11 +147,11 @@ var myFunc4 = function () { return __awaiter(void 0, void 0, void 0, function ()
     var ledger, address, pkey, password, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, publicKeyInString, addressInString, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                address = 'XXX';
+                pkey = 'XXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 2:
@@ -205,8 +205,8 @@ var myFunc5 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                address = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk';
-                pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
+                address = 'XXX';
+                pkey = 'XXXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -244,12 +244,12 @@ var myFunc6 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'XXXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
-                customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
+                customAssetCode = 'XXXXX=';
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
             case 2:
                 balance = _a.sent();
@@ -264,7 +264,7 @@ var myFunc7 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'XXXX=';
                 customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -301,8 +301,8 @@ var myFunc9 = function () { return __awaiter(void 0, void 0, void 0, function ()
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkey = 'XXX=';
+                toPkey = 'XXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -330,9 +330,9 @@ var myFunc10 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
-                toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+                pkey = 'XXX=';
+                customAssetCode = 'XXXX=';
+                toPkey = 'XXXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -381,7 +381,7 @@ var myFunc12 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'XXXXX=';
                 customAssetCode = 'R_WbJ22P5lufAoOlF3kjI3Jgt6va8Afo3G6rZ_4Vjdg=';
                 toPkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
                 password = '123';
@@ -450,7 +450,7 @@ var myFunc15 = function () { return __awaiter(void 0, void 0, void 0, function (
         switch (_a.label) {
             case 0:
                 h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+                pkey = 'XXXX=';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -470,8 +470,8 @@ var myFunc16 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+                pkey = 'XXX=';
+                toKey = 'XXXX';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -492,8 +492,8 @@ var myFunc17 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+                pkey = 'XXX=';
+                toKey = 'XXX';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -513,8 +513,8 @@ var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-                toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+                pkey = 'XXX=';
+                toKey = 'XXXX';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:

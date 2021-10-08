@@ -66,7 +66,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, tota
     var ledger, blindIsAmount, blindIsType, transferOp, inputParametersList, inputAmount, numberToSubmit;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
@@ -96,7 +96,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
     var ledger, sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
@@ -106,13 +106,13 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                 if (!sids) {
                     throw new Error('no sids were fetched!');
                 }
-                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
             case 3:
                 utxoDataList = _a.sent();
                 minimalFee = ledger.fra_get_minimal_fee();
                 fraAssetCode = ledger.fra_get_asset_code();
-                sendUtxoList = utxoHelper_1.getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
-                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
             case 4:
                 utxoInputsInfo = _a.sent();
                 toPublickey = ledger.fra_get_dest_pubkey();
@@ -122,7 +122,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                         toPublickey: toPublickey,
                     },
                 ];
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, minimalFee, fraAssetCode, assetBlindRules)];
+                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, minimalFee, fraAssetCode, assetBlindRules)];
             case 5:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
@@ -144,14 +144,14 @@ var buildTransferOperation = function (walletInfo, recieversInfo, assetCode, ass
                 totalUtxoNumbers = recieversInfo.reduce(function (acc, receiver) {
                     return BigInt(Number(receiver.utxoNumbers) + Number(acc));
                 }, BigInt(0));
-                return [4 /*yield*/, utxoHelper_1.addUtxo(walletInfo, sids)];
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
             case 2:
                 utxoDataList = _a.sent();
-                sendUtxoList = utxoHelper_1.getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
-                return [4 /*yield*/, utxoHelper_1.addUtxoInputs(sendUtxoList)];
+                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(assetCode, totalUtxoNumbers, utxoDataList);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
             case 3:
                 utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, exports.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, totalUtxoNumbers, assetCode, assetBlindRules)];
+                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, totalUtxoNumbers, assetCode, assetBlindRules)];
             case 4:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];

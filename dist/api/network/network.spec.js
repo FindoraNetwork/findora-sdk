@@ -55,7 +55,7 @@ var myDefaultResult = [
     },
 ];
 var defaultUrl = "https://foo.com";
-var server = node_1.setupServer(msw_1.rest.get(defaultUrl, function (_req, res, ctx) {
+var server = (0, node_1.setupServer)(msw_1.rest.get(defaultUrl, function (_req, res, ctx) {
     return res(ctx.json(myDefaultResult));
 }));
 beforeAll(function () { return server.listen(); });
@@ -81,7 +81,7 @@ describe('network', function () {
             var dataResult, response;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, network_1.apiGet(defaultUrl, testConfig)];
+                    case 0: return [4 /*yield*/, (0, network_1.apiGet)(defaultUrl, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -100,7 +100,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(defaultUrl, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.apiGet(defaultUrl, testConfig)];
+                        return [4 /*yield*/, (0, network_1.apiGet)(defaultUrl, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -121,7 +121,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(defaultUrl, function (_req, res, ctx) {
                             return res(ctx.json(myHandle));
                         }));
-                        return [4 /*yield*/, network_1.apiPost(defaultUrl, data, testConfig)];
+                        return [4 /*yield*/, (0, network_1.apiPost)(defaultUrl, data, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -140,7 +140,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(defaultUrl, function (_req, res, ctx) {
                             return res(ctx.json(myHandle));
                         }));
-                        return [4 /*yield*/, network_1.apiPost(defaultUrl, undefined, testConfig)];
+                        return [4 /*yield*/, (0, network_1.apiPost)(defaultUrl, undefined, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -158,7 +158,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(defaultUrl, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.apiPost(defaultUrl, data, testConfig)];
+                        return [4 /*yield*/, (0, network_1.apiPost)(defaultUrl, data, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -180,7 +180,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(mySids));
                         }));
-                        return [4 /*yield*/, network_1.getOwnedSids(address, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnedSids)(address, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -199,7 +199,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.getOwnedSids(address, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnedSids)(address, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -216,7 +216,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network_1.getOwnedSids(address, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnedSids)(address, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -244,7 +244,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(myUtxoResponse));
                         }));
-                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getUtxo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -265,7 +265,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getUtxo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -282,7 +282,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network_1.getUtxo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getUtxo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -311,7 +311,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(myResponse));
                         }));
-                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnerMemo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -333,7 +333,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnerMemo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -350,7 +350,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network_1.getOwnerMemo(sid, testConfig)];
+                        return [4 /*yield*/, (0, network_1.getOwnerMemo)(sid, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -371,7 +371,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(myResponse));
                         }));
-                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                        return [4 /*yield*/, (0, network_1.getStateCommitment)(testConfig)];
                     case 1:
                         dataResult = _b.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -393,7 +393,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                        return [4 /*yield*/, (0, network_1.getStateCommitment)(testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -410,7 +410,7 @@ describe('network', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network_1.getStateCommitment(testConfig)];
+                        return [4 /*yield*/, (0, network_1.getStateCommitment)(testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -422,17 +422,17 @@ describe('network', function () {
     });
     describe('getSubmitTransactionData', function () {
         it('return empty tx data with no data given to the input', function () {
-            var txData = network_1.getSubmitTransactionData();
+            var txData = (0, network_1.getSubmitTransactionData)();
             expect(txData).toStrictEqual({ response: undefined });
         });
         it('return empty tx data with empty string given to the input', function () {
             var givenData = '';
-            var txData = network_1.getSubmitTransactionData(givenData);
+            var txData = (0, network_1.getSubmitTransactionData)(givenData);
             expect(txData).toStrictEqual({ response: undefined });
         });
         it('return given string parsed as number', function () {
             var givenData = '1234';
-            var txData = network_1.getSubmitTransactionData(givenData);
+            var txData = (0, network_1.getSubmitTransactionData)(givenData);
             expect(txData).toStrictEqual({ response: 1234 });
         });
         it('return given stringified object properly parsed', function () {
@@ -440,19 +440,19 @@ describe('network', function () {
                 foo: 'bar',
                 barfoo: 123,
             };
-            var txData = network_1.getSubmitTransactionData(JSON.stringify(givenData));
+            var txData = (0, network_1.getSubmitTransactionData)(JSON.stringify(givenData));
             expect(txData).toEqual({ response: givenData });
         });
         it('return properly formatted error', function () {
             var givenData = '124343hh s';
-            var txData = network_1.getSubmitTransactionData(givenData);
+            var txData = (0, network_1.getSubmitTransactionData)(givenData);
             expect(txData).not.toHaveProperty('response');
             expect(txData).toHaveProperty('error');
             expect(txData.error.message).toContain("Can't submit transaction. Can't parse transaction data.");
         });
         it('return properly formatted error for mailformed json', function () {
             var givenData = '{f:1}';
-            var txData = network_1.getSubmitTransactionData(givenData);
+            var txData = (0, network_1.getSubmitTransactionData)(givenData);
             expect(txData).not.toHaveProperty('response');
             expect(txData).toHaveProperty('error');
             expect(txData.error.message).toContain("Can't submit transaction. Can't parse transaction data.");
@@ -462,7 +462,7 @@ describe('network', function () {
                 foo: 'bar',
                 barfoo: 123434343434343435343434343434242342342432,
             };
-            var txData = network_1.getSubmitTransactionData(JSON.stringify(givenData));
+            var txData = (0, network_1.getSubmitTransactionData)(JSON.stringify(givenData));
             var barfoo = txData.response.barfoo;
             expect(barfoo instanceof bignumber_js_1.default).toEqual(true);
         });
@@ -480,7 +480,7 @@ describe('network', function () {
                             var foo = _req.body.foo;
                             return res(ctx.json(foo));
                         }));
-                        return [4 /*yield*/, network_1.submitTransaction(JSON.stringify(myData), testConfig)];
+                        return [4 /*yield*/, (0, network_1.submitTransaction)(JSON.stringify(myData), testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -499,7 +499,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(url, function (_req, res, ctx) {
                             return res(ctx.json(myResponse));
                         }));
-                        return [4 /*yield*/, network_1.submitTransaction(undefined, testConfig)];
+                        return [4 /*yield*/, (0, network_1.submitTransaction)(undefined, testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -516,7 +516,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network_1.submitTransaction('', testConfig)];
+                        return [4 /*yield*/, (0, network_1.submitTransaction)('', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -533,7 +533,7 @@ describe('network', function () {
                         server.use(msw_1.rest.post(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network_1.submitTransaction('', testConfig)];
+                        return [4 /*yield*/, (0, network_1.submitTransaction)('', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');

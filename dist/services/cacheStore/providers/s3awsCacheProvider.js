@@ -83,7 +83,7 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
                     throw new Error("could not read file \"" + filePath + "\".s3 response body is empty");
                 }
                 try {
-                    cacheData = json_bigint_1.default({ useNativeBigInt: true }).parse(fileContent);
+                    cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).parse(fileContent);
                 }
                 catch (error) {
                     e = error;
@@ -100,7 +100,7 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
             case 0:
                 console.log("Writing s3 cache to \"" + cacheBucketName + "/" + filePath + "\"");
                 try {
-                    cacheData = json_bigint_1.default({ useNativeBigInt: true }).stringify(data);
+                    cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).stringify(data);
                 }
                 catch (error) {
                     e = error;
