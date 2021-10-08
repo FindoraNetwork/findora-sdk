@@ -12,10 +12,8 @@ const envConfigFile = process.env.RPC_ENV_NAME
 
 const envConfig = require(`${envConfigFile}.json`);
 
-// const extendedExecutionTimeout = 40000;
-
 const { rpc: rpcParams } = envConfig;
-const { rpcUrl = 'http://127.0.0.1:8545', ethAccountToCheck, mnemonic } = rpcParams;
+const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
 const provider = new HDWalletProvider(mnemonic, rpcUrl);
 
@@ -46,14 +44,7 @@ beforeEach(async () => {
   });
 });
 
-const sendTxToContract = async (localWeb3, senderAccount, receiverAccount, amountToSend) => {
-  // await contract.methods.enter().send({
-  //   from: account,
-  //   gas: '1000000',
-  //   gasPrice: '500000',
-  //   value: web3.utils.toWei(amount, 'ether'),
-  // });
-
+const sendTxToAccount = async (localWeb3, senderAccount, receiverAccount, amountToSend) => {
   const value = localWeb3.utils.toWei(amountToSend, 'ether');
 
   const transactionObject = {
@@ -66,26 +57,13 @@ const sendTxToContract = async (localWeb3, senderAccount, receiverAccount, amoun
 
   await localWeb3.eth
     .sendTransaction(transactionObject)
-    // .once('sending', async _payload => {
-    //   console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
-    // })
-    // .once('sent', async _payload => {
-    //   console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
-    // })
-    .once('transactionHash', async _hash => {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
-    })
-    .once('receipt', async _receipt => {
-      // console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
-    })
     .on('error', async _error => {
       console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
     })
     .then(function (_receipt) {
       // will be fired once the receipt is mined
-      const { transactionHash, blockHash, blockNumber } = _receipt;
+      const { blockNumber } = _receipt;
       console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 87 ~ blockNumber', blockNumber);
-      // done();
     });
 };
 
@@ -99,18 +77,16 @@ const sendBatchOfTx = async (sendrAccountIndex, receiverAccount, amountToSend, t
   let sent = 1;
 
   while (sent <= txQuantity) {
-    await sendTxToContract(localWeb3, senderAccount, receiverAccount, amountToSend);
+    await sendTxToAccount(localWeb3, senderAccount, receiverAccount, amountToSend);
     sent += 1;
-    // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 104 ~ sendBatchOfTx ~ sent', sent);
-
     await sleep(2000);
   }
 
   return sent;
 };
 
-describe('Lottery Contract', () => {
-  it('sends money to the winner and resets the players array', async () => {
+describe('Send a transaction and check the balances and confirmations', () => {
+  it('sends money to the contract and receives it back, verifies the sender balance and confirmations', async () => {
     let numberOfConfirmations = 0;
     let txReceipt = {};
     let txHash = '';
@@ -134,15 +110,12 @@ describe('Lottery Contract', () => {
         from: accounts[0],
       })
       .on('transactionHash', function (_hash) {
-        // console.log('on transactionHash: ', _hash);
         txHash = _hash;
       })
       .on('confirmation', function (_confirmationNumber, _receipt) {
-        // console.log('on confirmation: ', _confirmationNumber, _receipt);
         numberOfConfirmations += 1;
       })
       .on('receipt', function (_receipt) {
-        // console.log('on receipt: ', _receipt);
         txReceipt = _receipt;
       });
 
