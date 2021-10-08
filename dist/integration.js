@@ -66,7 +66,7 @@ var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var providers_1 = require("./services/cacheStore/providers");
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../.env_" + process.env.INTEGRATION_ENV_NAME
+    ? "../.env_integration_" + process.env.INTEGRATION_ENV_NAME
     : "../env_example";
 var envConfig = require(envConfigFile + ".json");
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;

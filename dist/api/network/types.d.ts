@@ -1,5 +1,6 @@
 export interface ResultError {
     message: string;
+    code?: number;
 }
 export interface DataResult {
     response?: any;
@@ -247,6 +248,11 @@ export interface SubmitEvmTxResult extends NetworkAxiosDataResult {
 export interface EthMainRpcResponse {
     id: string;
     jsonrpc: string;
+    error?: {
+        code: number;
+        message: string;
+        data?: any;
+    };
 }
 export interface EthProtocolRpcResponse extends EthMainRpcResponse {
     result: string;

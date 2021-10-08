@@ -139,8 +139,8 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 console.log('newWallet.address', newWallet.address);
                 console.log('newWallet.privateStr', newWallet.privateStr);
                 console.log('\n');
-                console.log('balance IS', balance);
-                console.log('balanceNew IS', balanceNew);
+                console.log('balance from restored from pkey IS', balance);
+                console.log('balance from restored using mnemonic IS', balanceNew);
                 console.log('\n');
                 console.log('\n');
                 return [2 /*return*/];
@@ -334,6 +334,39 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 2:
                 walletInfo = _a.sent();
                 console.log('new wallet info', walletInfo);
+                return [2 /*return*/];
+        }
+    });
+}); };
+/**
+ * Send fra to a single address
+ */
+var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, destAddress, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                pkey = PKEY_MINE;
+                destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.getAddressPublicAndKey(destAddress)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 3:
+                fraCode = _a.sent();
+                assetCode = fraCode;
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.01', assetCode, assetBlindRules)];
+            case 4:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 5:
+                resultHandle = _a.sent();
+                console.log('send fra result handle!!', resultHandle);
                 return [2 /*return*/];
         }
     });
@@ -1222,7 +1255,8 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-getFraBalance();
+// getFraBalance();
+// transferFraToSingleAddress();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1230,7 +1264,7 @@ getFraBalance();
 // getValidatorList();
 // getDelegateInfo();
 // getTransferBuilderOperation();
-// createNewKeypair();
+createNewKeypair();
 // transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();

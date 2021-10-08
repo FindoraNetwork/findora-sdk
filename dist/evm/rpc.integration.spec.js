@@ -62,9 +62,8 @@ require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var web3_1 = __importDefault(require("web3"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
-var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../.env_" + process.env.RPC_ENV_NAME
+    ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
@@ -124,9 +123,6 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                 return [2 /*return*/];
             });
         }); })
-            // .on('confirmation', async (_confNumber, _receipt, _latestBlockHash) => {
-            //   done('🚀 ~ file: rpc.spec.ts ~ line 48 ~ latestBlockHash', _latestBlockHash);
-            // })
             .on('error', function (_error) { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
@@ -194,7 +190,6 @@ describe('Api Endpoint (rpc test)', function () {
                         expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
-                        (0, sleep_promise_1.default)(10000);
                         return [2 /*return*/];
                 }
             });
@@ -221,7 +216,6 @@ describe('Api Endpoint (rpc test)', function () {
                         expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
                         expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
                         expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
-                        (0, sleep_promise_1.default)(10000);
                         return [2 /*return*/];
                 }
             });
