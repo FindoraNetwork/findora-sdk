@@ -40,16 +40,7 @@ const getFraAssetCode = async () => {
  * Get FRA balance
  */
 const getFraBalance = async () => {
-  const pkeyMine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const pkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const pkeyMine3 = 'KUAxjaf4NWbxM714pEKRdOf5vLD-ECl4PuT1pgH-m0k=';
-  const pkeyMine4 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
-
-  const pkey1 = 'p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=';
-  const pkey2 = 'ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=';
-  const pkey3 = '2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=';
-  const pkey4 = 'o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=';
-  const pkey6 = 'gOGMwUJN8Tq33LwIdWHmkfcbYesg7Us_S58WEgJaRYc=';
+  const pkeyMine2 = 'XXX=';
 
   const password = '123';
 
@@ -87,7 +78,7 @@ const getFraBalance = async () => {
  */
 const getCustomAssetBalance = async () => {
   const password = '123';
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
   const customAssetCode = CustomAssetCode;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -101,7 +92,7 @@ const getCustomAssetBalance = async () => {
  * Define a custom asset
  */
 const defineCustomAsset = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
 
   const password = '123';
 
@@ -122,7 +113,7 @@ const defineCustomAsset = async () => {
  * Issue custom asset
  */
 const issueCustomAsset = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
   const customAssetCode = CustomAssetCode;
 
   const password = '123';
@@ -153,7 +144,7 @@ const getTransferBuilderOperation = async () => {
   const ledger = await getLedger();
 
   const password = '123';
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXXXX=';
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -203,9 +194,9 @@ const createNewKeypair = async () => {
  * Send fra to a single recepient
  */
 const transferFraToSingleRecepient = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const toPkeyMine2 = 'XXXXXX=';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -234,10 +225,10 @@ const transferFraToSingleRecepient = async () => {
  * Send fra to multiple recepients
  */
 const transferFraToMultipleRecepients = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  const toPkeyMine2 = 'XXXXXX=';
+  const toPkeyMine3 = 'XXXXXX=';
 
   const password = '123';
 
@@ -272,8 +263,8 @@ const transferFraToMultipleRecepients = async () => {
  * Send custom asset to a single recepient
  */
 const transferCustomAssetToSingleRecepient = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
-  const toPkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXXXXX=';
+  const toPkey = 'XXXXXX=';
   const customAssetCode = CustomAssetCode;
 
   const password = '123';
@@ -302,10 +293,10 @@ const transferCustomAssetToSingleRecepient = async () => {
  * Send custom asset to multiple recepients
  */
 const transferCustomAssetToMultipleRecepients = async () => {
-  const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const pkey = 'XXXXXXX=';
 
-  const toPkeyMine2 = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toPkeyMine3 = 'lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=';
+  const toPkeyMine2 = 'XXXXXX=';
+  const toPkeyMine3 = 'XXXXXX=';
 
   const password = '123';
 
@@ -387,7 +378,7 @@ const myFunc14 = async () => {
 const myFunc15 = async () => {
   const h = 'bfcde17f7e8f0acb746d4efcbd61ed2490ea4e2909922cebec15a6308bab47c2';
 
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
+  const pkey = 'XXXXXX=';
 
   const password = '123';
 
@@ -404,8 +395,8 @@ const myFunc15 = async () => {
 };
 
 const myFunc16 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXXXXX=';
+  const toKey = 'XXXXXXX';
 
   const password = '123';
 
@@ -418,8 +409,8 @@ const myFunc16 = async () => {
 };
 
 const myFunc17 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXXXXX=';
+  const toKey = 'XXXXXXX';
 
   const password = '123';
 
@@ -434,8 +425,8 @@ const myFunc17 = async () => {
 };
 
 const myFunc18 = async () => {
-  const pkey = 'han9zoCsVi5zISyft_KWDVTwakAX30WgKYHrLPEhsF0=';
-  const toKey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA';
+  const pkey = 'XXXXXX=';
+  const toKey = 'XXXXXXX';
 
   const password = '123';
 
@@ -450,12 +441,8 @@ const myFunc18 = async () => {
 
 // s3
 const myFuncS3 = async () => {
-  const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    UTXO_CACHE_BUCKET_NAME,
-    UTXO_CACHE_KEY_NAME,
-  } = process.env;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+    process.env;
   const accessKeyId = AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
@@ -507,8 +494,8 @@ const myFuncS3 = async () => {
 };
 
 const myFuncUndelegate = async () => {
-  const rickey2 = 'glzudSr1lCGmkLjETDeUDCP_hBNkCmXILnPHPCRuI5Y=';
-  const mine = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
+  const rickey2 = 'xxxXXX=';
+  const mine = 'XXXXXXX=';
   const password = '123';
 
   const mineWalletInfo = await Keypair.restoreFromPrivateKey(mine, password);
@@ -520,10 +507,10 @@ const myFuncUndelegate = async () => {
 };
 
 const sendEvmToAccount = async () => {
-  const fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
+  const fraAddress = 'fra';
   const amount = '1';
-  const ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';
-  const ethAddress = '0xA2892dA49B74F069400694E4930aa9D6Db0e67b3';
+  const ethPrivate = 'fa';
+  const ethAddress = 'XXXX';
   await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
 };
 
