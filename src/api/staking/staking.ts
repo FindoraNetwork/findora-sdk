@@ -150,7 +150,11 @@ export const delegate = async (
     assetBlindRules,
   );
 
-  transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+  transactionBuilder = transactionBuilder.add_operation_delegate(
+    walletInfo.keypair,
+    BigInt(amount),
+    validator,
+  );
 
   return transactionBuilder;
 };
