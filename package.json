@@ -71,6 +71,7 @@
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-prettier": "^3.1.3",
     "eslint-plugin-simple-import-sort": "^5.0.1",
+    "ganache-cli": "6.12.2",
     "husky": "^4.3.6",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
@@ -78,6 +79,7 @@
     "nodemon": "^2.0.7",
     "path-browserify": "^1.0.1",
     "prettier": "^2.2.1",
+    "solc": "0.4.17",
     "stream-browserify": "^3.0.0",
     "truffle-hdwallet-provider": "0.0.3",
     "ts-jest": "^26.4.4",
@@ -89,9 +91,7 @@
     "typescript-json-schema": "^0.50.1",
     "webpack": "^5.11.1",
     "webpack-bundle-analyzer": "^4.3.0",
-    "webpack-cli": "^4.3.0",
-    "ganache-cli": "6.12.2",
-    "solc": "0.4.17"
+    "webpack-cli": "^4.3.0"
   },
   "dependencies": {
     "@types/btoa": "^1.2.3",
@@ -101,7 +101,7 @@
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
-    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-simon-v0.2.100",
+    "findora-wallet-wasm": "git+ssh://git@github.com:FindoraNetwork/wasm-js-bindings.git#test-simon-v0.2.099",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
