@@ -1,11 +1,15 @@
 import * as Transaction from '../../api/transaction';
+import orderBy from 'lodash/orderBy';
+
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { WalletKeypar } from '../keypair';
+import { WalletKeypar, getAddressPublicAndKey } from '../keypair';
 import * as AssetApi from '../sdkAsset';
+import * as Network from '../network';
+import { create as createBigNumber } from '../../services/bigNumber';
 
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -18,7 +22,7 @@ import * as AssetApi from '../sdkAsset';
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -30,7 +34,7 @@ import * as AssetApi from '../sdkAsset';
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export const unDelegate = async (
+export const unStake = async (
   walletInfo: WalletKeypar,
   amount: string,
   validator: string,
@@ -73,7 +77,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not add staking unDelegate operation, Error: "${e.message}"`);
+    throw new Error(`Could not add staking unStake operation, Error: "${e.message}"`);
   }
 
   try {
@@ -81,7 +85,7 @@ export const unDelegate = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not add transfer to unDelegate operation, Error: "${e.message}"`);
+    throw new Error(`Could not add transfer to unStake operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;
@@ -103,7 +107,9 @@ export const unDelegate = async (
  *
  *  // This is the address funds are sent to.
  *  // Actual `transfer to validator` process would be handled via added `add_operation_delegate` operation
- *  const delegationTargetAddress = ledger.get_delegation_target_address
+ *
+ *   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+ *   const delegationTargetAddress = await Keypair.getAddressByPublicKey(delegationTargetPublicKey);
  *
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
@@ -206,4 +212,110 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
   }
 
   return transactionBuilder;
+};
+
+/**
+ * @todo Add unit test
+ * @param commissionRate
+ * @returns
+ */
+const calculateComissionRate = (validatorAddress: string, commissionRate: number[]) => {
+  if (!Array.isArray(commissionRate)) {
+    return '0';
+  }
+
+  if (commissionRate.length !== 2) {
+    return '0';
+  }
+
+  const [rate, divideBy] = commissionRate;
+
+  try {
+    const commissionRateView = createBigNumber(rate).div(divideBy).times(100).toString();
+
+    return commissionRateView;
+  } catch (error) {
+    console.log(
+      `Could not calculate comission rate for validator "${validatorAddress}". Error: "${
+        (error as Error).message
+      }"`,
+    );
+    return '0';
+  }
+};
+
+/**
+ * @returns
+ * @todo add unit test
+ */
+export const getValidatorList = async () => {
+  const { response: validatorListResponse, error } = await Network.getValidatorList();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!validatorListResponse) {
+    throw new Error('Could not receive response from get validators call');
+  }
+
+  const { validators } = validatorListResponse;
+
+  try {
+    if (!validators.length) {
+      throw new Error('Validators list is empty!');
+    }
+
+    const validatorsFormatted = validators.map((item, _index) => {
+      const commission_rate_view = calculateComissionRate(item.addr, item.commission_rate);
+      return { ...item, commission_rate_view };
+    });
+
+    const validatorsOrdered = orderBy(
+      validatorsFormatted,
+      _order => {
+        return Number(_order.commission_rate_view);
+      },
+      ['desc'],
+    );
+
+    return { validators: validatorsOrdered };
+  } catch (err) {
+    throw new Error(`Could not get validators list', "${(err as Error).message}"`);
+  }
+};
+
+/**
+ * @returns
+ * @todo add unit test
+ */
+export const getDelegateInfo = async (address: string) => {
+  try {
+    const lightWalletKeypair = await getAddressPublicAndKey(address);
+
+    const delegateInfoDataResult = await Network.getDelegateInfo(lightWalletKeypair.publickey);
+
+    const { response: delegateInfoResponse } = delegateInfoDataResult;
+
+    if (!delegateInfoResponse) {
+      throw new Error('Delegator info response is missing!');
+    }
+
+    const validatorListInfo = await getValidatorList();
+
+    if (!delegateInfoResponse.bond_entries?.length) {
+      return delegateInfoResponse;
+    }
+
+    const bond_entries = delegateInfoResponse.bond_entries.map(item => {
+      const extra =
+        validatorListInfo.validators.find(_validator => _validator.addr === item[0])?.extra ?? null;
+
+      return { addr: item[0], amount: item[1], extra };
+    });
+
+    return { ...delegateInfoResponse, bond_entries };
+  } catch (err) {
+    throw new Error(`Could not get delegation info', "${(err as Error).message}"`);
+  }
 };

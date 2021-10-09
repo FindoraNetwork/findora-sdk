@@ -1,10 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import * as Evm from './evm';
 import * as Transaction from '../transaction/transaction';
-import * as Fee from '../../services/fee';
 import * as KeypairApi from '../keypair/keypair';
 
 interface TransferOpBuilderLight {
@@ -20,7 +19,7 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('evm', () => {
+describe('evm (unit test)', () => {
   describe('sendAccountToEvm', () => {
     it('sendAccountToEvm funds', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
@@ -65,13 +64,12 @@ describe('evm', () => {
   });
 
   describe('sendEvmToAccount', () => {
-    it('sendEvmToAccount funds', async () => {
+    it.skip('sendEvmToAccount funds', async () => {
       const fraAddress = 'fra1d2yetp5ljdwn0zfhusvshgt4d3nyk4j3e0w2stqzlsnv8ra4whmsfzqfga';
       const amount = '1';
       const ethPrivate = 'fa6a6e57595d7e9c227e769deaf7822fcb6176cac573d73979b2c9ce808e6275';
       const ethAddress = '0xa2892da49b74f069400694e4930aa9d6db0e67b3';
       const result = await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
-      // console.log(result);
     });
   });
 });

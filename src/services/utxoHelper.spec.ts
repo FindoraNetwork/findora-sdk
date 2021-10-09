@@ -9,7 +9,7 @@ import Cache from './cacheStore/factory';
 
 import * as NodeLedger from './ledger/nodeLedger';
 
-describe('utxoHelper', () => {
+describe('utxoHelper (unit test)', () => {
   describe('decryptUtxoItem', () => {
     it('successfully decrypts an utxo item', async () => {
       const assetRecord = {
@@ -402,13 +402,6 @@ describe('utxoHelper', () => {
           return ownerMemo;
         }),
       };
-
-      // const myAssetType = 'myAssetType';
-
-      // const decryptAssetData = {
-      //   asset_type: myAssetType,
-      //   amount: '2',
-      // };
 
       const LedgerClientAssetRecord = {
         from_json: jest.fn(() => {

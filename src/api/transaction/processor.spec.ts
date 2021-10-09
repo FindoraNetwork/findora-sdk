@@ -8,7 +8,7 @@ import * as OperationProcessors from './operationProcessors';
 import * as Types from './types';
 import * as Processor from './processor';
 
-describe('processor', () => {
+describe('processor (unit test)', () => {
   const myTime = 'foo';
   const hash = 'barfoo';
   const code = 'foobar';

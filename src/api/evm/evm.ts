@@ -1,11 +1,9 @@
 import base64 from 'js-base64';
 import * as Transaction from '../transaction';
-import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { getAddressPublicAndKey, WalletKeypar } from '../keypair';
+import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { getFraPublicKey } from '../sdkAsset';
 import { Network } from '../../api';
 import { toWei } from '../../services/bigNumber';
 import { SubmitEvmTxResult } from '../network/types';

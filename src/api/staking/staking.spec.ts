@@ -22,7 +22,7 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('staking', () => {
+describe('staking (unit test)', () => {
   describe('undelegate', () => {
     it('undelegates all funds from the validator', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
@@ -89,7 +89,7 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = true;
 
-      const result = await Staking.unDelegate(walletInfo, amount, validator, isFullUnstake);
+      const result = await Staking.unStake(walletInfo, amount, validator, isFullUnstake);
 
       expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
       expect(spyTransactionGetTransactionBuilder).toHaveBeenCalled();
@@ -170,7 +170,7 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = false;
 
-      const result = await Staking.unDelegate(walletInfo, amount, validator, isFullUnstake);
+      const result = await Staking.unStake(walletInfo, amount, validator, isFullUnstake);
 
       expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
       expect(spyTransactionGetTransactionBuilder).toHaveBeenCalled();
@@ -211,7 +211,7 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = false;
 
-      await expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
+      await expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
         'Could not create transfer operation with fee',
       );
 
@@ -249,14 +249,14 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = false;
 
-      await expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
+      await expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
         'Could not get "stakingTransactionBuilder"',
       );
 
       spyBuildTransferOperationWithFee.mockRestore();
       spyTransactionGetTransactionBuilder.mockRestore();
     });
-    it('throws an error when could not add staking unDelegate operation', async () => {
+    it('throws an error when could not add staking unStake operation', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         new: jest.fn(() => {
           return fakeTransactionBuilder;
@@ -309,15 +309,15 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = false;
 
-      await expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
-        'Could not add staking unDelegate operation',
+      await expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
+        'Could not add staking unStake operation',
       );
 
       spyBuildTransferOperationWithFee.mockRestore();
       spyTransactionGetTransactionBuilder.mockRestore();
       spyAddOperationUndelegatePartially.mockRestore();
     });
-    it('throws an error when could not add transfer to unDelegate operation', async () => {
+    it('throws an error when could not add transfer to unStake operation', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         new: jest.fn(() => {
           return fakeTransactionBuilder;
@@ -376,8 +376,8 @@ describe('staking', () => {
       const validator = 'myValidaotrAddress';
       const isFullUnstake = false;
 
-      await expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
-        'Could not add transfer to unDelegate operation',
+      await expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow(
+        'Could not add transfer to unStake operation',
       );
 
       spyBuildTransferOperationWithFee.mockRestore();

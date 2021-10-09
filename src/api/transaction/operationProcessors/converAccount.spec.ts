@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processConvertAccount } from './converAccount';
 
-describe('converAccount (processor)', () => {
+describe('converAccount (processor) (unit test)', () => {
   describe('processConvertAccount', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';

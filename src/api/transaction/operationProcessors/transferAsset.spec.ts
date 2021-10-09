@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processTransferAsset } from './transferAsset';
 
-describe('transferAsset (processor)', () => {
+describe('transferAsset (processor) (unit test)', () => {
   describe('processTransferAsset', () => {
     it('returns properly processed data', async () => {
       const addressFrom = 'barfooFrom';

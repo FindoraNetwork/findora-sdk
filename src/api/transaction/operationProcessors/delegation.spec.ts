@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processDelegation } from './delegation';
 
-describe('delegation (processor)', () => {
+describe('delegation (processor) (unit test)', () => {
   describe('processDelegation', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';

@@ -1,0 +1,16 @@
+{
+  "keys": {
+    "mainFaucet": "xxx3-EAQ=",
+    "senderOne": "xxxA=",
+    "senderTwo": "xxx0=",
+    "receiverOne": "xxx=",
+    "receiverTwo": "xxxwQ=",
+    "receiverThree": "xxxk="
+  },
+  "hostUrl": "http://127.0.0.1",
+  "rpc": {
+    "rpcUrl": "http://127.0.0.1:8545",
+    "ethAccountToCheck": "0xffXXXX",
+    "mnemonic": "XXX XX"
+  }
+}

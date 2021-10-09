@@ -7,7 +7,7 @@ import * as helpers from './helpers';
 import { ParsedTx } from './types';
 import { TxListDataResult } from '../network/types';
 
-describe('helpers', () => {
+describe('helpers (unit test)', () => {
   describe('getTxListFromResponse', () => {
     it('returns proper list from the data result', () => {
       const txList = [{ foo: 'bar' }];

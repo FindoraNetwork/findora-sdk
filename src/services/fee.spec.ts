@@ -17,7 +17,7 @@ interface TransferOpBuilderLight {
   new?: () => TransferOpBuilderLight;
 }
 
-describe('fee', () => {
+describe('fee (unit test)', () => {
   const pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
 
   const password = '123';

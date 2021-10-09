@@ -34,6 +34,7 @@ module.exports = {
     'simple-import-sort/sort': 'warn',
     '@typescript-eslint/array-type': ['warn', { default: 'array-simple' }],
     '@typescript-eslint/await-thenable': 'warn',
+    '@typescript-eslint/no-var-requires': 'warn',
     '@typescript-eslint/ban-types': 'warn',
     '@typescript-eslint/explicit-function-return-type': ['warn', { allowExpressions: true }],
     '@typescript-eslint/explicit-member-accessibility': 'warn',

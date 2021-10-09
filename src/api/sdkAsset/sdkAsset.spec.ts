@@ -43,7 +43,7 @@ interface PubParamsLight {
   new?: () => string;
 }
 
-describe('sdkAsset', () => {
+describe('sdkAsset (unit test)', () => {
   describe('getFraAssetCode', () => {
     it('returns an fra asset code', async () => {
       const fraAssetCode = 'AA';

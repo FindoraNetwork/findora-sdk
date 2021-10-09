@@ -12,7 +12,7 @@ import {
   getAddressPublicAndKey,
 } from './keypair';
 
-describe('keypair', () => {
+describe('keypair (unit test)', () => {
   describe('restoreFromPrivateKey', () => {
     const publickey = '1mtO4j3bvRiKlXotdD1q0DQYoxutSgee-f1LQtlq45g=';
     const address = 'fra16e45ac3amw733z540gkhg0t26q6p3gcm449q08hel4959kt2uwvq9svvqh';
@@ -144,7 +144,7 @@ describe('keypair', () => {
       expect(result).toHaveProperty('privateStr');
       expect(result.publickey.length).toEqual(44);
       expect(result.address.length).toEqual(62);
-      expect(result.privateStr.length).toEqual(44);
+      expect(result.privateStr!.length).toEqual(44);
       expect(result.keyStore.length).toEqual(188);
     });
 

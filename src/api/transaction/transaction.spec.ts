@@ -24,7 +24,7 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('transaction', () => {
+describe('transaction (unit test)', () => {
   describe('getTransactionBuilder', () => {
     it('returns transaction builder instance', async () => {
       const fakeOpBuilder: TransferOpBuilderLight = {
