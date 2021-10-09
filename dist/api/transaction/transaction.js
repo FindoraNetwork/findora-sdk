@@ -168,6 +168,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
             case 5: return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
             case 6:
                 transferOperationBuilder = _a.sent();
+                console.log(transferOperationBuilder.create().transaction());
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
                 }
