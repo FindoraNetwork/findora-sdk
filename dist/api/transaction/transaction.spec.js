@@ -64,7 +64,7 @@ var helpers = __importStar(require("./helpers"));
 var Processor = __importStar(require("./processor"));
 var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var Transaction = __importStar(require("./transaction"));
-describe('transaction', function () {
+describe('transaction (unit test)', function () {
     describe('getTransactionBuilder', function () {
         it('returns transaction builder instance', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeOpBuilder, myLedger, height, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, spyNew, result;

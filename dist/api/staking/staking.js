@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -54,12 +65,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.claim = exports.delegate = exports.unDelegate = void 0;
+exports.getDelegateInfo = exports.getValidatorList = exports.claim = exports.delegate = exports.unStake = void 0;
 var Transaction = __importStar(require("../../api/transaction"));
+var orderBy_1 = __importDefault(require("lodash/orderBy"));
 var Fee = __importStar(require("../../services/fee"));
+var keypair_1 = require("../keypair");
+var Network = __importStar(require("../network"));
+var bigNumber_1 = require("../../services/bigNumber");
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -72,7 +90,7 @@ var Fee = __importStar(require("../../services/fee"));
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -84,7 +102,7 @@ var Fee = __importStar(require("../../services/fee"));
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
+var unStake = function (walletInfo, amount, validator, isFullUnstake) {
     if (isFullUnstake === void 0) { isFullUnstake = false; }
     return __awaiter(void 0, void 0, void 0, function () {
         var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
@@ -125,21 +143,21 @@ var unDelegate = function (walletInfo, amount, validator, isFullUnstake) {
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add staking unDelegate operation, Error: \"" + e.message + "\"");
+                        throw new Error("Could not add staking unStake operation, Error: \"" + e.message + "\"");
                     }
                     try {
                         transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add transfer to unDelegate operation, Error: \"" + e.message + "\"");
+                        throw new Error("Could not add transfer to unStake operation, Error: \"" + e.message + "\"");
                     }
                     return [2 /*return*/, transactionBuilder];
             }
         });
     });
 };
-exports.unDelegate = unDelegate;
+exports.unStake = unStake;
 /**
  * Delegates FRA tokens
  *
@@ -156,7 +174,9 @@ exports.unDelegate = unDelegate;
  *
  *  // This is the address funds are sent to.
  *  // Actual `transfer to validator` process would be handled via added `add_operation_delegate` operation
- *  const delegationTargetAddress = ledger.get_delegation_target_address
+ *
+ *   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+ *   const delegationTargetAddress = await Keypair.getAddressByPublicKey(delegationTargetPublicKey);
  *
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
@@ -188,7 +208,7 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
             case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
             case 1:
                 transactionBuilder = _a.sent();
-                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, BigInt(amount), validator);
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -258,4 +278,106 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.claim = claim;
+/**
+ * @todo Add unit test
+ * @param commissionRate
+ * @returns
+ */
+var calculateComissionRate = function (validatorAddress, commissionRate) {
+    if (!Array.isArray(commissionRate)) {
+        return '0';
+    }
+    if (commissionRate.length !== 2) {
+        return '0';
+    }
+    var rate = commissionRate[0], divideBy = commissionRate[1];
+    try {
+        var commissionRateView = bigNumber_1.create(rate).div(divideBy).times(100).toString();
+        return commissionRateView;
+    }
+    catch (error) {
+        console.log("Could not calculate comission rate for validator \"" + validatorAddress + "\". Error: \"" + error.message + "\"");
+        return '0';
+    }
+};
+/**
+ * @returns
+ * @todo add unit test
+ */
+var getValidatorList = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, validatorListResponse, error, validators, validatorsFormatted, validatorsOrdered;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, Network.getValidatorList()];
+            case 1:
+                _a = _b.sent(), validatorListResponse = _a.response, error = _a.error;
+                if (error) {
+                    throw new Error(error.message);
+                }
+                if (!validatorListResponse) {
+                    throw new Error('Could not receive response from get validators call');
+                }
+                validators = validatorListResponse.validators;
+                try {
+                    if (!validators.length) {
+                        throw new Error('Validators list is empty!');
+                    }
+                    validatorsFormatted = validators.map(function (item, _index) {
+                        var commission_rate_view = calculateComissionRate(item.addr, item.commission_rate);
+                        return __assign(__assign({}, item), { commission_rate_view: commission_rate_view });
+                    });
+                    validatorsOrdered = orderBy_1.default(validatorsFormatted, function (_order) {
+                        return Number(_order.commission_rate_view);
+                    }, ['desc']);
+                    return [2 /*return*/, { validators: validatorsOrdered }];
+                }
+                catch (err) {
+                    throw new Error("Could not get validators list', \"" + err.message + "\"");
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getValidatorList = getValidatorList;
+/**
+ * @returns
+ * @todo add unit test
+ */
+var getDelegateInfo = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var lightWalletKeypair, delegateInfoDataResult, delegateInfoResponse, validatorListInfo_1, bond_entries, err_1;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                _b.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
+            case 1:
+                lightWalletKeypair = _b.sent();
+                return [4 /*yield*/, Network.getDelegateInfo(lightWalletKeypair.publickey)];
+            case 2:
+                delegateInfoDataResult = _b.sent();
+                delegateInfoResponse = delegateInfoDataResult.response;
+                if (!delegateInfoResponse) {
+                    throw new Error('Delegator info response is missing!');
+                }
+                return [4 /*yield*/, exports.getValidatorList()];
+            case 3:
+                validatorListInfo_1 = _b.sent();
+                if (!((_a = delegateInfoResponse.bond_entries) === null || _a === void 0 ? void 0 : _a.length)) {
+                    return [2 /*return*/, delegateInfoResponse];
+                }
+                bond_entries = delegateInfoResponse.bond_entries.map(function (item) {
+                    var _a, _b;
+                    var extra = (_b = (_a = validatorListInfo_1.validators.find(function (_validator) { return _validator.addr === item[0]; })) === null || _a === void 0 ? void 0 : _a.extra) !== null && _b !== void 0 ? _b : null;
+                    return { addr: item[0], amount: item[1], extra: extra };
+                });
+                return [2 /*return*/, __assign(__assign({}, delegateInfoResponse), { bond_entries: bond_entries })];
+            case 4:
+                err_1 = _b.sent();
+                throw new Error("Could not get delegation info', \"" + err_1.message + "\"");
+            case 5: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getDelegateInfo = getDelegateInfo;
 //# sourceMappingURL=staking.js.map

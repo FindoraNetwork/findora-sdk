@@ -45,7 +45,7 @@ var fakeLedger = {
 jest.mock('../../services/ledger/ledgerWrapper', function () { return ({
     getLedger: jest.fn(function () { return Promise.resolve(fakeLedger); }),
 }); });
-describe('keypair', function () {
+describe('keypair (unit test)', function () {
     describe('restoreFromPrivateKey', function () {
         var pkey = 'Y6umoUmBJRPYJU5n_Y9bHuhoHm6aDMsxDI9FLJzOEXc=';
         var password = '345';

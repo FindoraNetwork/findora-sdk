@@ -7,25 +7,25 @@ import * as helpers from './helpers';
 import { ParsedTx } from './types';
 import { TxListDataResult } from '../network/types';
 
-describe('helpers', () => {
+describe('helpers (unit test)', () => {
   describe('getTxListFromResponse', () => {
     it('returns proper list from the data result', () => {
       const txList = [{ foo: 'bar' }];
-      const payload = ({
+      const payload = {
         response: {
           result: {
             txs: txList,
           },
         },
-      } as unknown) as TxListDataResult;
+      } as unknown as TxListDataResult;
 
       const result = helpers.getTxListFromResponse(payload);
       expect(result).toBe(txList);
     });
     it('returns null from data result if tx list is no found', () => {
-      const payload = ({
+      const payload = {
         bar: 'foo',
-      } as unknown) as TxListDataResult;
+      } as unknown as TxListDataResult;
 
       const result = helpers.getTxListFromResponse(payload);
       expect(result).toBe(null);
@@ -34,19 +34,19 @@ describe('helpers', () => {
   describe('getTxOperationsList', () => {
     it('returns proper list from the parsed tx', () => {
       const txList = [{ foo: 'bar' }];
-      const payload = ({
+      const payload = {
         body: {
           operations: txList,
         },
-      } as unknown) as ParsedTx;
+      } as unknown as ParsedTx;
 
       const result = helpers.getTxOperationsList(payload);
       expect(result).toBe(txList);
     });
     it('returns an empty array from parsed tx if operations are notfound', () => {
-      const payload = ({
+      const payload = {
         bar: 'foo',
-      } as unknown) as ParsedTx;
+      } as unknown as ParsedTx;
 
       const result = helpers.getTxOperationsList(payload);
       expect(Array.isArray(result)).toBe(true);
@@ -66,11 +66,11 @@ describe('helpers', () => {
       };
 
       const spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(() => {
-        return Promise.resolve(({
+        return Promise.resolve({
           response: {
             result: block,
           },
-        } as unknown) as NetworkTypes.BlockDetailsDataResult);
+        } as unknown as NetworkTypes.BlockDetailsDataResult);
       });
 
       const result = await helpers.getBlockTime(height);
@@ -86,11 +86,11 @@ describe('helpers', () => {
       };
 
       const spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(() => {
-        return Promise.resolve(({
+        return Promise.resolve({
           response: {
             result: block,
           },
-        } as unknown) as NetworkTypes.BlockDetailsDataResult);
+        } as unknown as NetworkTypes.BlockDetailsDataResult);
       });
 
       const result = await helpers.getBlockTime(height);

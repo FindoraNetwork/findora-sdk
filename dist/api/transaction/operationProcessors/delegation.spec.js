@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../../keypair/keypair"));
 var delegation_1 = require("./delegation");
-describe('delegation (processor)', function () {
+describe('delegation (processor) (unit test)', function () {
     describe('processDelegation', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var address, type, myOperation, payload, spyGetAddressByPublicKey, result;

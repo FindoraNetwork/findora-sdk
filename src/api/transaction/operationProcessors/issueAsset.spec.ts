@@ -5,7 +5,7 @@ import * as AssetApi from '../../sdkAsset/sdkAsset';
 import { TxOperation } from '../types';
 import { processIssueAsset } from './issueAsset';
 
-describe('issueAsset (processor)', () => {
+describe('issueAsset (processor) (unit test)', () => {
   describe('processIssueAsset', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';
@@ -25,9 +25,9 @@ describe('issueAsset (processor)', () => {
         },
       };
 
-      const payload = ({
+      const payload = {
         IssueAsset: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

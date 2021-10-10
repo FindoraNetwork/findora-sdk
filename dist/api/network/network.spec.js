@@ -91,7 +91,7 @@ var server = node_1.setupServer(msw_1.rest.get(defaultUrl, function (_req, res, 
 beforeAll(function () { return server.listen(); });
 afterEach(function () { return server.resetHandlers(); });
 afterAll(function () { return server.close(); });
-describe('network', function () {
+describe('network (unit test)', function () {
     var testConfig = {
         headers: {
             testHeader: 'test-value',

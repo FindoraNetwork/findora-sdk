@@ -2,7 +2,7 @@ import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 /**
- * Undelegate FRA tokens
+ * Unstake FRA tokens
  *
  * @remarks
  * This function allows users to unstake (aka unbond) FRA tokens.
@@ -15,7 +15,7 @@ import * as AssetApi from '../sdkAsset';
  *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
  *  const isFullUnstake = false;
  *
- *  const transactionBuilder = await StakingApi.unDelegate(
+ *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
@@ -27,7 +27,7 @@ import * as AssetApi from '../sdkAsset';
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const unDelegate: (walletInfo: WalletKeypar, amount: string, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;
+export declare const unStake: (walletInfo: WalletKeypar, amount: string, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;
 /**
  * Delegates FRA tokens
  *
@@ -44,7 +44,9 @@ export declare const unDelegate: (walletInfo: WalletKeypar, amount: string, vali
  *
  *  // This is the address funds are sent to.
  *  // Actual `transfer to validator` process would be handled via added `add_operation_delegate` operation
- *  const delegationTargetAddress = ledger.get_delegation_target_address
+ *
+ *   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+ *   const delegationTargetAddress = await Keypair.getAddressByPublicKey(delegationTargetPublicKey);
  *
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
@@ -92,3 +94,50 @@ export declare const delegate: (walletInfo: WalletKeypar, address: string, amoun
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 export declare const claim: (walletInfo: WalletKeypar, amount: string) => Promise<TransactionBuilder>;
+/**
+ * @returns
+ * @todo add unit test
+ */
+export declare const getValidatorList: () => Promise<{
+    validators: {
+        commission_rate_view: string;
+        addr: string;
+        power: string;
+        commission_rate: number[];
+        accept_delegation: boolean;
+        rank: number;
+        extra: {
+            name: string;
+            desc: string;
+            website: string;
+            logo: string;
+        };
+    }[];
+}>;
+/**
+ * @returns
+ * @todo add unit test
+ */
+export declare const getDelegateInfo: (address: string) => Promise<import("../network/types").DelegateInfoResponse | {
+    bond_entries: {
+        addr: string;
+        amount: string;
+        extra: {
+            name: string;
+            desc: string;
+            website: string;
+            logo: string;
+        } | null;
+    }[];
+    bond: string;
+    unbond: string;
+    rewards: string;
+    return_rate: number[];
+    global_delegation: string;
+    global_staking: string;
+    start_height: number;
+    end_height: number;
+    current_height: number;
+    delegation_rwd_cnt: string;
+    proposer_rwd_cnt: string;
+}>;

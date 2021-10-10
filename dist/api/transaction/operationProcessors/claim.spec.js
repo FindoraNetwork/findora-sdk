@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../../keypair/keypair"));
 var claim_1 = require("./claim");
-describe('claim (processor)', function () {
+describe('claim (processor) (unit test)', function () {
     describe('processClaim', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var address, type, myOperation, payload, spyGetAddressByPublicKey, result;

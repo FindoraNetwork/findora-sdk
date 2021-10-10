@@ -65,7 +65,7 @@ var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var NodeLedger = __importStar(require("./ledger/nodeLedger"));
-describe('utxoHelper', function () {
+describe('utxoHelper (unit test)', function () {
     describe('decryptUtxoItem', function () {
         it('successfully decrypts an utxo item', function () { return __awaiter(void 0, void 0, void 0, function () {
             var assetRecord, ownerMemo, myAssetType, decryptAssetData, decryptedAsetType, LedgerClientAssetRecord, LedgerOwnerMemo, myLedger, spyGetLedger, spyLedgerClientAssetRecordFromJson, spyLedgerOwnerMemoFromJson, spyLedgerOpenClientAssetRecord, spyLedgerAssetTypeFromJsvalue, memoDataResult, spyGetOwnerMemo, sid, walletInfo, utxoData, memoData, result;

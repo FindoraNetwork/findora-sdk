@@ -59,7 +59,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Staking = __importStar(require("./staking"));
 var Transaction = __importStar(require("../transaction/transaction"));
 var Fee = __importStar(require("../../services/fee"));
-describe('staking', function () {
+describe('staking (unit test)', function () {
     describe('undelegate', function () {
         it('undelegates all funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegate, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake, result;
@@ -121,7 +121,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = true;
-                        return [4 /*yield*/, Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)];
+                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator, isFullUnstake)];
                     case 1:
                         result = _a.sent();
                         expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
@@ -199,7 +199,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = false;
-                        return [4 /*yield*/, Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)];
+                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator, isFullUnstake)];
                     case 1:
                         result = _a.sent();
                         expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
@@ -239,7 +239,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not create transfer operation with fee')];
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not create transfer operation with fee')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
@@ -278,7 +278,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
@@ -287,7 +287,7 @@ describe('staking', function () {
                 }
             });
         }); });
-        it('throws an error when could not add staking unDelegate operation', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('throws an error when could not add staking unStake operation', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, walletInfo, amount, validator, isFullUnstake;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -337,7 +337,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add staking unDelegate operation')];
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add staking unStake operation')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
@@ -347,7 +347,7 @@ describe('staking', function () {
                 }
             });
         }); });
-        it('throws an error when could not add transfer to unDelegate operation', function () { return __awaiter(void 0, void 0, void 0, function () {
+        it('throws an error when could not add transfer to unStake operation', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake;
             return __generator(this, function (_a) {
                 switch (_a.label) {
@@ -402,7 +402,7 @@ describe('staking', function () {
                         amount = '2';
                         validator = 'myValidaotrAddress';
                         isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unDelegate(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add transfer to unDelegate operation')];
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add transfer to unStake operation')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();

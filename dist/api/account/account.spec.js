@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -61,7 +72,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var msw_1 = require("msw");
 var node_1 = require("msw/node");
-var Keypair = __importStar(require("../../api/keypair"));
+var Keypair = __importStar(require("../../api/keypair/keypair"));
+var SdkAssetApi = __importStar(require("../../api/sdkAsset/sdkAsset"));
+var NetworkApi = __importStar(require("../../api/network/network"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber = __importStar(require("../../services/bigNumber"));
 var providers_1 = require("../../services/cacheStore/providers");
@@ -82,7 +95,7 @@ var server = node_1.setupServer(msw_1.rest.get(defaultUrl, function (_req, res, 
 beforeAll(function () { return server.listen(); });
 afterEach(function () { return server.resetHandlers(); });
 afterAll(function () { return server.close(); });
-describe('account', function () {
+describe('account (unit test)', function () {
     var pkey = '8yQCMZzFRdjm5QK1cYDiBa6yICrE5mt37xl9n8V9MXE=';
     var password = '123';
     var sids = [454];
@@ -337,6 +350,277 @@ describe('account', function () {
                         return [4 /*yield*/, expect(Account.getBalance(walletInfo, 'myAssetCode')).rejects.toThrowError('Could not fetch balance for')];
                     case 2:
                         _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('create', function () {
+        it('creates a keypair', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myFakeKeyPair, spyCreateKeypair, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myFakeKeyPair = { foo: 'bar' };
+                        spyCreateKeypair = jest.spyOn(Keypair, 'createKeypair');
+                        spyCreateKeypair.mockImplementation(function () {
+                            return Promise.resolve(myFakeKeyPair);
+                        });
+                        return [4 /*yield*/, Account.create('123')];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(myFakeKeyPair);
+                        spyCreateKeypair.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if it can not create a keypair', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var spyCreateKeypair;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        spyCreateKeypair = jest.spyOn(Keypair, 'createKeypair');
+                        spyCreateKeypair.mockImplementation(function () {
+                            throw new Error('abc boom');
+                        });
+                        return [4 /*yield*/, expect(Account.create('123')).rejects.toThrow('Could not create a new account')];
+                    case 1:
+                        _a.sent();
+                        spyCreateKeypair.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('processIssuedRecordItem', function () {
+        it('processes an issued record item', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myAssetCodeHere, spyGetAssetCode, txRecord, ownerMemo, issuedRecord, result, expected;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myAssetCodeHere = 'abcd';
+                        spyGetAssetCode = jest.spyOn(SdkAssetApi, 'getAssetCode');
+                        spyGetAssetCode.mockImplementation(function () {
+                            return Promise.resolve(myAssetCodeHere);
+                        });
+                        txRecord = {
+                            foo: 'bar',
+                            record: {
+                                asset_type: { NonConfidential: '123' },
+                            },
+                        };
+                        ownerMemo = 'myOwnerMemo';
+                        issuedRecord = [txRecord, ownerMemo];
+                        return [4 /*yield*/, Account.processIssuedRecordItem(issuedRecord)];
+                    case 1:
+                        result = _a.sent();
+                        expected = __assign(__assign({}, txRecord), { code: myAssetCodeHere, ownerMemo: ownerMemo });
+                        expect(result).toStrictEqual(expected);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('processIssuedRecordList', function () {
+        it('processes an issued record item', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myAssetCodeHere, spyGetAssetCode, txRecord, ownerMemo, issuedRecord, result, expected;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        myAssetCodeHere = 'abcd';
+                        spyGetAssetCode = jest.spyOn(SdkAssetApi, 'getAssetCode');
+                        spyGetAssetCode.mockImplementation(function () {
+                            return Promise.resolve(myAssetCodeHere);
+                        });
+                        txRecord = {
+                            foo: 'bar',
+                            record: {
+                                asset_type: { NonConfidential: '123' },
+                            },
+                        };
+                        ownerMemo = 'myOwnerMemo';
+                        issuedRecord = [txRecord, ownerMemo];
+                        return [4 /*yield*/, Account.processIssuedRecordList([issuedRecord])];
+                    case 1:
+                        result = _a.sent();
+                        expected = __assign(__assign({}, txRecord), { code: myAssetCodeHere, ownerMemo: ownerMemo });
+                        expect(result).toStrictEqual([expected]);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getCreatedAssets', function () {
+        it('returns a list of created assets', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var publickey, address, myLightWallet, spyGetAddressPublicAndKey, recordsResponse, myIssuedRecordResult, spyGetIssuedRecords, processedIssuedRecordsList, spyProcessIssuedRecordList, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        publickey = 'myPublickey';
+                        address = 'myAddress';
+                        myLightWallet = {
+                            address: address,
+                            publickey: publickey,
+                        };
+                        spyGetAddressPublicAndKey = jest.spyOn(Keypair, 'getAddressPublicAndKey');
+                        spyGetAddressPublicAndKey.mockImplementation(function () {
+                            return Promise.resolve(myLightWallet);
+                        });
+                        recordsResponse = { foo: 'bar' };
+                        myIssuedRecordResult = {
+                            response: recordsResponse,
+                        };
+                        spyGetIssuedRecords = jest.spyOn(NetworkApi, 'getIssuedRecords');
+                        spyGetIssuedRecords.mockImplementation(function () {
+                            return Promise.resolve(myIssuedRecordResult);
+                        });
+                        processedIssuedRecordsList = [
+                            {
+                                bar: 'foo',
+                            },
+                        ];
+                        spyProcessIssuedRecordList = jest.spyOn(Account, 'processIssuedRecordList');
+                        spyProcessIssuedRecordList.mockImplementation(function () {
+                            return Promise.resolve(processedIssuedRecordsList);
+                        });
+                        return [4 /*yield*/, Account.getCreatedAssets(address)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(processedIssuedRecordsList);
+                        spyGetAddressPublicAndKey.mockRestore();
+                        spyGetIssuedRecords.mockRestore();
+                        spyProcessIssuedRecordList.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if it could not get a list of issued records', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var publickey, address, myLightWallet, spyGetAddressPublicAndKey, spyGetIssuedRecords;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        publickey = 'myPublickey';
+                        address = 'myAddress';
+                        myLightWallet = {
+                            address: address,
+                            publickey: publickey,
+                        };
+                        spyGetAddressPublicAndKey = jest.spyOn(Keypair, 'getAddressPublicAndKey');
+                        spyGetAddressPublicAndKey.mockImplementation(function () {
+                            return Promise.resolve(myLightWallet);
+                        });
+                        spyGetIssuedRecords = jest.spyOn(NetworkApi, 'getIssuedRecords');
+                        spyGetIssuedRecords.mockImplementation(function () {
+                            throw new Error('boom');
+                        });
+                        return [4 /*yield*/, expect(Account.getCreatedAssets(address)).rejects.toThrow('boom')];
+                    case 1:
+                        _a.sent();
+                        spyGetAddressPublicAndKey.mockRestore();
+                        spyGetIssuedRecords.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if there is an error in the issued records result', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var publickey, address, myLightWallet, spyGetAddressPublicAndKey, myIssuedRecordResult, spyGetIssuedRecords;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        publickey = 'myPublickey';
+                        address = 'myAddress';
+                        myLightWallet = {
+                            address: address,
+                            publickey: publickey,
+                        };
+                        spyGetAddressPublicAndKey = jest.spyOn(Keypair, 'getAddressPublicAndKey');
+                        spyGetAddressPublicAndKey.mockImplementation(function () {
+                            return Promise.resolve(myLightWallet);
+                        });
+                        myIssuedRecordResult = {
+                            error: new Error('gimps'),
+                        };
+                        spyGetIssuedRecords = jest.spyOn(NetworkApi, 'getIssuedRecords');
+                        spyGetIssuedRecords.mockImplementation(function () {
+                            return Promise.resolve(myIssuedRecordResult);
+                        });
+                        return [4 /*yield*/, expect(Account.getCreatedAssets(address)).rejects.toThrow('No issued records were fetched')];
+                    case 1:
+                        _a.sent();
+                        spyGetAddressPublicAndKey.mockRestore();
+                        spyGetIssuedRecords.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if there is no response in the issued records result', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var publickey, address, myLightWallet, spyGetAddressPublicAndKey, myIssuedRecordResult, spyGetIssuedRecords;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        publickey = 'myPublickey';
+                        address = 'myAddress';
+                        myLightWallet = {
+                            address: address,
+                            publickey: publickey,
+                        };
+                        spyGetAddressPublicAndKey = jest.spyOn(Keypair, 'getAddressPublicAndKey');
+                        spyGetAddressPublicAndKey.mockImplementation(function () {
+                            return Promise.resolve(myLightWallet);
+                        });
+                        myIssuedRecordResult = {};
+                        spyGetIssuedRecords = jest.spyOn(NetworkApi, 'getIssuedRecords');
+                        spyGetIssuedRecords.mockImplementation(function () {
+                            return Promise.resolve(myIssuedRecordResult);
+                        });
+                        return [4 /*yield*/, expect(Account.getCreatedAssets(address)).rejects.toThrow('No issued records were fetched')];
+                    case 1:
+                        _a.sent();
+                        spyGetAddressPublicAndKey.mockRestore();
+                        spyGetIssuedRecords.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getRelatedSids', function () {
+        it('returns a list of related sids', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var address, relatedSids, myResult, spyGetRelatedSids, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        address = 'myAddress';
+                        relatedSids = [1, 2, 3];
+                        myResult = { response: relatedSids };
+                        spyGetRelatedSids = jest.spyOn(NetworkApi, 'getRelatedSids');
+                        spyGetRelatedSids.mockImplementation(function () {
+                            return Promise.resolve(myResult);
+                        });
+                        return [4 /*yield*/, Account.getRelatedSids(address)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(relatedSids);
+                        spyGetRelatedSids.mockRestore();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throws an error if no related sids were fetched', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var address, myResult, spyGetRelatedSids;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        address = 'myAddress';
+                        myResult = {};
+                        spyGetRelatedSids = jest.spyOn(NetworkApi, 'getRelatedSids');
+                        spyGetRelatedSids.mockImplementation(function () {
+                            return Promise.resolve(myResult);
+                        });
+                        return [4 /*yield*/, expect(Account.getRelatedSids(address)).rejects.toThrow('No related sids were fetched')];
+                    case 1:
+                        _a.sent();
+                        spyGetRelatedSids.mockRestore();
                         return [2 /*return*/];
                 }
             });

@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -213,7 +213,6 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
                 return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
-                // console.log('dataResult owner', dataResult);
                 return [2 /*return*/, dataResult];
         }
     });
@@ -463,4 +462,52 @@ var submitEvmTx = function (tx, config) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.submitEvmTx = submitEvmTx;
+var getValidatorList = function (config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getLedgerRoute() + "/validator_list";
+                return [4 /*yield*/, exports.apiGet(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getValidatorList = getValidatorList;
+var getDelegateInfo = function (publickey, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getLedgerRoute() + "/delegation_info/" + publickey;
+                return [4 /*yield*/, exports.apiGet(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getDelegateInfo = getDelegateInfo;
+var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var defaultPayload, payload, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                defaultPayload = {
+                    id: 1,
+                    jsonrpc: '2.0',
+                    method: 'eth_protocolVersion',
+                    params: [],
+                };
+                payload = __assign(__assign({}, defaultPayload), givenPayload);
+                return [4 /*yield*/, exports.apiPost(url, payload, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.sendRpcCall = sendRpcCall;
 //# sourceMappingURL=network.js.map

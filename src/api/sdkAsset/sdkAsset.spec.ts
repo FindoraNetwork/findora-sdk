@@ -43,17 +43,17 @@ interface PubParamsLight {
   new?: () => string;
 }
 
-describe('sdkAsset', () => {
+describe('sdkAsset (unit test)', () => {
   describe('getFraAssetCode', () => {
     it('returns an fra asset code', async () => {
       const fraAssetCode = 'AA';
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         fra_get_asset_code: jest.fn(() => {
           return fraAssetCode;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -71,12 +71,12 @@ describe('sdkAsset', () => {
     it('returns an fra minimal fee', async () => {
       const fraMinimalFee = BigInt(2);
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         fra_get_minimal_fee: jest.fn(() => {
           return fraMinimalFee;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -94,12 +94,12 @@ describe('sdkAsset', () => {
     it('returns an fra public key', async () => {
       const fraPublicKey = 'myPub';
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         fra_get_dest_pubkey: jest.fn(() => {
           return fraPublicKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -119,12 +119,12 @@ describe('sdkAsset', () => {
 
       const val = [1, 2];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         asset_type_from_jsvalue: jest.fn(() => {
           return decryptedAsetType;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -164,10 +164,10 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         AssetRules: fakeLedgerAssetRules,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -197,7 +197,7 @@ describe('sdkAsset', () => {
   });
   describe('getAssetRules', () => {
     it('returns default asset rules if no new asset rules are given', async () => {
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
@@ -210,7 +210,7 @@ describe('sdkAsset', () => {
         set_decimals: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetRules);
@@ -224,7 +224,7 @@ describe('sdkAsset', () => {
     });
 
     it('returns asset rules with max units set', async () => {
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
@@ -243,26 +243,26 @@ describe('sdkAsset', () => {
         add_tracing_policy: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
-      const fakeLedgerAssetTracerKeyPair = ({
+      const fakeLedgerAssetTracerKeyPair = {
         new: jest.fn(() => {
           return fakeLedgerAssetTracerKeyPair;
         }),
-      } as unknown) as LedgerAssetTracerKeyPair;
+      } as unknown as LedgerAssetTracerKeyPair;
 
-      const fakeLedgerTracingPolicy = ({
+      const fakeLedgerTracingPolicy = {
         new_with_tracing: jest.fn(() => {
           return fakeLedgerTracingPolicy;
         }),
-      } as unknown) as LedgerTracingPolicy;
+      } as unknown as LedgerTracingPolicy;
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         AssetRules: fakeLedgerAssetRules,
         AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
         TracingPolicy: fakeLedgerTracingPolicy,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const maxNumbers = '10000000';
 
@@ -296,7 +296,7 @@ describe('sdkAsset', () => {
     });
 
     it('returns asset rules without max units set and setter is not called', async () => {
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
@@ -315,26 +315,26 @@ describe('sdkAsset', () => {
         add_tracing_policy: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
-      const fakeLedgerAssetTracerKeyPair = ({
+      const fakeLedgerAssetTracerKeyPair = {
         new: jest.fn(() => {
           return fakeLedgerAssetTracerKeyPair;
         }),
-      } as unknown) as LedgerAssetTracerKeyPair;
+      } as unknown as LedgerAssetTracerKeyPair;
 
-      const fakeLedgerTracingPolicy = ({
+      const fakeLedgerTracingPolicy = {
         new_with_tracing: jest.fn(() => {
           return fakeLedgerTracingPolicy;
         }),
-      } as unknown) as LedgerTracingPolicy;
+      } as unknown as LedgerTracingPolicy;
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         AssetRules: fakeLedgerAssetRules,
         AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
         TracingPolicy: fakeLedgerTracingPolicy,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const newAssetRules = {
         transferable: true,
@@ -365,7 +365,7 @@ describe('sdkAsset', () => {
     });
 
     it('returns asset rules with tracing policy', async () => {
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
@@ -384,7 +384,7 @@ describe('sdkAsset', () => {
         add_tracing_policy: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const trackingKey = 'myTrackingKey';
 
@@ -402,12 +402,12 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         AssetRules: fakeLedgerAssetRules,
         AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
         TracingPolicy: fakeLedgerTracingPolicy,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const newAssetRules = {
         transferable: true,
@@ -444,7 +444,7 @@ describe('sdkAsset', () => {
     });
 
     it('returns asset rules without tracing policy and tracing method was not called', async () => {
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
@@ -463,7 +463,7 @@ describe('sdkAsset', () => {
         add_tracing_policy: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const trackingKey = 'myTrackingKey';
 
@@ -481,12 +481,12 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         AssetRules: fakeLedgerAssetRules,
         AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
         TracingPolicy: fakeLedgerTracingPolicy,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const newAssetRules = {
         transferable: true,
@@ -535,10 +535,10 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeOpBuilder,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const height = 15;
 
@@ -556,15 +556,15 @@ describe('sdkAsset', () => {
       const spyNew = jest.spyOn(fakeOpBuilder, 'new');
       const spyAddOperationCreateAsset = jest.spyOn(fakeOpBuilder, 'add_operation_create_asset');
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
-      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
 
       const result = await SdkAsset.getDefineAssetTransactionBuilder(
@@ -592,9 +592,9 @@ describe('sdkAsset', () => {
     });
 
     it('throws an error if state commitment result contains an error', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {
         error: new Error('myStateCommitementResult error'),
@@ -608,15 +608,15 @@ describe('sdkAsset', () => {
         return Promise.resolve(myLedger);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
-      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
 
       await expect(
@@ -628,9 +628,9 @@ describe('sdkAsset', () => {
     });
 
     it('throws an error if state commitment result does not contain a response', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {};
 
@@ -642,15 +642,15 @@ describe('sdkAsset', () => {
         return Promise.resolve(myLedger);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
-      const assetRules = ({ foo: 'bar' } as unknown) as LedgerAssetRules;
+      const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
 
       await expect(
@@ -681,11 +681,11 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeOpBuilder,
         PublicParams: fakePubParams,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const height = 15;
 
@@ -706,11 +706,11 @@ describe('sdkAsset', () => {
       const spyNew = jest.spyOn(fakeOpBuilder, 'new');
       const spyAddBasicIssueAsset = jest.spyOn(fakeOpBuilder, 'add_basic_issue_asset');
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
@@ -750,9 +750,9 @@ describe('sdkAsset', () => {
     });
 
     it('throws an error if state commitment result contains an error', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {
         error: new Error('myStateCommitementResult error'),
@@ -766,11 +766,11 @@ describe('sdkAsset', () => {
         return Promise.resolve(myLedger);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
@@ -793,9 +793,9 @@ describe('sdkAsset', () => {
     });
 
     it('throws an error if state commitment result does not contain a response', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {};
 
@@ -807,11 +807,11 @@ describe('sdkAsset', () => {
         return Promise.resolve(myLedger);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const walletKeypair = walletInfo.keypair as XfrKeyPair;
       const assetName = 'abc';
@@ -849,15 +849,15 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -868,26 +868,26 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetDefineAssetTransactionBuilder = jest
         .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
       const assetMemo = 'memo';
@@ -929,11 +929,11 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetRules);
@@ -942,14 +942,14 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
       const assetMemo = 'memo';
@@ -977,11 +977,11 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetRules);
@@ -990,7 +990,7 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetDefineAssetTransactionBuilder = jest
@@ -999,11 +999,11 @@ describe('sdkAsset', () => {
           throw new Error('boom');
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
       const assetMemo = 'memo';
@@ -1032,15 +1032,15 @@ describe('sdkAsset', () => {
         }),
       };
 
-      const fakeLedgerAssetRules = ({
+      const fakeLedgerAssetRules = {
         new: jest.fn(() => {
           return fakeLedgerAssetRules;
         }),
-      } as unknown) as LedgerAssetRules;
+      } as unknown as LedgerAssetRules;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -1051,13 +1051,13 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetDefineAssetTransactionBuilder = jest
         .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest
@@ -1066,11 +1066,11 @@ describe('sdkAsset', () => {
           throw new Error('boom');
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
       const assetMemo = 'memo';
@@ -1103,15 +1103,15 @@ describe('sdkAsset', () => {
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -1122,26 +1122,26 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetIssueAssetTransactionBuilder = jest
         .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
 
@@ -1195,15 +1195,15 @@ describe('sdkAsset', () => {
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -1214,26 +1214,26 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetIssueAssetTransactionBuilder = jest
         .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
 
@@ -1276,11 +1276,11 @@ describe('sdkAsset', () => {
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
@@ -1289,14 +1289,14 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
 
@@ -1334,11 +1334,11 @@ describe('sdkAsset', () => {
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
@@ -1347,7 +1347,7 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetIssueAssetTransactionBuilder = jest
@@ -1356,11 +1356,11 @@ describe('sdkAsset', () => {
           throw new Error('bdnd');
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
 
@@ -1399,15 +1399,15 @@ describe('sdkAsset', () => {
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -1418,13 +1418,13 @@ describe('sdkAsset', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetIssueAssetTransactionBuilder = jest
         .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest
@@ -1433,11 +1433,11 @@ describe('sdkAsset', () => {
           throw new Error('bad');
         });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const assetName = 'acb';
 

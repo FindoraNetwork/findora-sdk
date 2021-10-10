@@ -58,7 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var KeypairApi = __importStar(require("../../keypair/keypair"));
 var converAccount_1 = require("./converAccount");
-describe('converAccount (processor)', function () {
+describe('converAccount (processor) (unit test)', function () {
     describe('processConvertAccount', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var address, type, myOperation, payload, spyGetAddressByPublicKey, result;

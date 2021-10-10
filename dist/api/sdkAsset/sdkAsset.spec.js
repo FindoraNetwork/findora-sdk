@@ -74,7 +74,7 @@ var SdkAsset = __importStar(require("./sdkAsset"));
 var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var asset_1 = require("../../config/asset");
 var NetworkApi = __importStar(require("../network/network"));
-describe('sdkAsset', function () {
+describe('sdkAsset (unit test)', function () {
     describe('getFraAssetCode', function () {
         it('returns an fra asset code', function () { return __awaiter(void 0, void 0, void 0, function () {
             var fraAssetCode, myLedger, spyGetLedger, result;

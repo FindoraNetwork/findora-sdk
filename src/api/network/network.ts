@@ -164,10 +164,8 @@ export const getOwnerMemo = async (
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_owner_memo/${utxoSid}`;
 
-  // console.log('url owner', url);
   const dataResult = await apiGet(url, config);
 
-  // console.log('dataResult owner', dataResult);
   return dataResult;
 };
 
@@ -373,4 +371,44 @@ export const submitEvmTx = async (
   const dataResult = await apiPost(url, params, { ...config });
 
   return dataResult;
+};
+
+export const getValidatorList = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.ValidatorListDataResult> => {
+  const url = `${getLedgerRoute()}/validator_list`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getDelegateInfo = async (
+  publickey: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.DelegateInfoDataResult> => {
+  const url = `${getLedgerRoute()}/delegation_info/${publickey}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const sendRpcCall = async <T>(
+  url: string,
+  givenPayload: { [key: string]: any },
+  config?: Types.NetworkAxiosConfig,
+): Promise<T> => {
+  const defaultPayload = {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'eth_protocolVersion',
+    params: [],
+  };
+
+  const payload = { ...defaultPayload, ...givenPayload };
+
+  const dataResult = await apiPost(url, payload, { ...config });
+
+  return dataResult as T;
 };

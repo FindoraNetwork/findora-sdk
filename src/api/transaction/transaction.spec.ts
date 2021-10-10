@@ -24,7 +24,7 @@ interface TransferOpBuilderLight {
   transaction?: () => string;
 }
 
-describe('transaction', () => {
+describe('transaction (unit test)', () => {
   describe('getTransactionBuilder', () => {
     it('returns transaction builder instance', async () => {
       const fakeOpBuilder: TransferOpBuilderLight = {
@@ -33,10 +33,10 @@ describe('transaction', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeOpBuilder,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const height = 15;
 
@@ -66,9 +66,9 @@ describe('transaction', () => {
       spyGetStateCommitment.mockReset();
     });
     it('throws an error if state commitment result contains an error', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {
         error: new Error('foo bar'),
@@ -88,9 +88,9 @@ describe('transaction', () => {
       spyGetStateCommitment.mockReset();
     });
     it('throws an error if state commitment result does not contain a response', async () => {
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const myStateCommitementResult = {};
 
@@ -141,14 +141,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -158,7 +158,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -183,13 +183,13 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyGetTransactionBuilder = jest
         .spyOn(Transaction, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -257,14 +257,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -274,7 +274,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -299,7 +299,7 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       await expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow(
@@ -342,14 +342,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -359,7 +359,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -384,7 +384,7 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyGetTransactionBuilder = jest
@@ -434,14 +434,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -451,7 +451,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -476,13 +476,13 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyGetTransactionBuilder = jest
         .spyOn(Transaction, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -543,14 +543,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -560,7 +560,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -585,19 +585,19 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetTransactionBuilder = jest
         .spyOn(Transaction, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -680,14 +680,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -697,7 +697,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -722,19 +722,19 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetTransactionBuilder = jest
         .spyOn(Transaction, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -796,14 +796,14 @@ describe('transaction', () => {
 
       const minimalFee = BigInt(2);
 
-      const toPublickey = ('mockedToPublickey' as unknown) as XfrPublicKey;
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const toWalletInfo = { publickey: receiverPubKey } as KeypairApi.WalletKeypar;
 
       const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         TransactionBuilder: fakeTransactionBuilder,
         TransferOperationBuilder: fakeTransferOperationBuilder,
@@ -813,7 +813,7 @@ describe('transaction', () => {
         public_key_from_base64: jest.fn(() => {
           return receiverPubKey;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const assetDetails = {
         assetRules: {
@@ -838,19 +838,19 @@ describe('transaction', () => {
       });
 
       const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
-        return Promise.resolve((fakeTransferOperationBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeTransferOperationBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyGetTransactionBuilder = jest
         .spyOn(Transaction, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -885,11 +885,11 @@ describe('transaction', () => {
         foo: 'bar',
       };
 
-      const fakeTransactionBuilder = ({
+      const fakeTransactionBuilder = {
         transaction: jest.fn(() => {
           return submitData;
         }),
-      } as unknown) as TransactionBuilder;
+      } as unknown as TransactionBuilder;
 
       const submitResult = {
         response: myHandle,
@@ -912,11 +912,11 @@ describe('transaction', () => {
         foo: 'bar',
       };
 
-      const fakeTransactionBuilder = ({
+      const fakeTransactionBuilder = {
         transaction: jest.fn(() => {
           return submitData;
         }),
-      } as unknown) as TransactionBuilder;
+      } as unknown as TransactionBuilder;
 
       const spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(() => {
         throw new Error('foo');
@@ -933,11 +933,11 @@ describe('transaction', () => {
         foo: 'bar',
       };
 
-      const fakeTransactionBuilder = ({
+      const fakeTransactionBuilder = {
         transaction: jest.fn(() => {
           return submitData;
         }),
-      } as unknown) as TransactionBuilder;
+      } as unknown as TransactionBuilder;
 
       const submitResult = {
         error: new Error('barfoo'),
@@ -958,11 +958,11 @@ describe('transaction', () => {
         foo: 'bar',
       };
 
-      const fakeTransactionBuilder = ({
+      const fakeTransactionBuilder = {
         transaction: jest.fn(() => {
           return submitData;
         }),
-      } as unknown) as TransactionBuilder;
+      } as unknown as TransactionBuilder;
 
       const submitResult = {
         response: undefined,
@@ -1005,7 +1005,7 @@ describe('transaction', () => {
         });
 
       const spySendToAddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
-        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
       });
 
       const result = await Transaction.sendToPublicKey(
@@ -1056,7 +1056,7 @@ describe('transaction', () => {
         });
 
       const spySendToMany = jest.spyOn(Transaction, 'sendToMany').mockImplementation(() => {
-        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
       });
 
       const result = await Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
@@ -1078,25 +1078,25 @@ describe('transaction', () => {
 
       const totalTxQuantity = 5;
 
-      const dataResult = ({
+      const dataResult = {
         response: {
           result: {
             total_count: totalTxQuantity,
           },
         },
-      } as unknown) as NetworkTypes.TxListDataResult;
+      } as unknown as NetworkTypes.TxListDataResult;
 
-      const txList = ([
+      const txList = [
         {
           foo: 'bar',
         },
-      ] as unknown) as NetworkTypes.TxInfo[];
+      ] as unknown as NetworkTypes.TxInfo[];
 
-      const processedTxList = ([
+      const processedTxList = [
         {
           bar: 'foo',
         },
-      ] as unknown) as ProcessedTxInfo[];
+      ] as unknown as ProcessedTxInfo[];
 
       const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
         return Promise.resolve(dataResult);
@@ -1129,7 +1129,7 @@ describe('transaction', () => {
       const type = 'to';
       const page = 2;
 
-      const dataResult = ({} as unknown) as NetworkTypes.TxListDataResult;
+      const dataResult = {} as unknown as NetworkTypes.TxListDataResult;
 
       const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
         return Promise.resolve(dataResult);
@@ -1148,15 +1148,15 @@ describe('transaction', () => {
 
       const totalTxQuantity = 5;
 
-      const dataResult = ({
+      const dataResult = {
         response: {
           result: {
             total_count: totalTxQuantity,
           },
         },
-      } as unknown) as NetworkTypes.TxListDataResult;
+      } as unknown as NetworkTypes.TxListDataResult;
 
-      const txList = (undefined as unknown) as NetworkTypes.TxInfo[];
+      const txList = undefined as unknown as NetworkTypes.TxInfo[];
 
       const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
         return Promise.resolve(dataResult);

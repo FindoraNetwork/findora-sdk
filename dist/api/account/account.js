@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getAssetBalance = void 0;
+exports.getRelatedSids = exports.getCreatedAssets = exports.processIssuedRecordList = exports.processIssuedRecordItem = exports.create = exports.getBalance = exports.getBalanceInWei = exports.getAssetBalance = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var keypair_1 = require("../keypair");
@@ -104,26 +104,13 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
 }); };
 exports.getAssetBalance = getAssetBalance;
 /**
- * Get the balance of the specific asset for the given user
- *
- * @remarks
- * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
- *
- * @example
- *
- * ```ts
- *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
- *
- *  const balance = await Account.getBalance(walletInfo, customAssetCode);
- * ```
- *
- * @throws `No sids were fetched`
- * @throws `Could not fetch balance`
- *
- * @returns Result of transaction submission to the network
+ * @todo Add unit test
+ * @param walletKeypair
+ * @param assetCode
+ * @returns
  */
-var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, balance, err_2, e;
+var getBalanceInWei = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var sidsResult, sids, fraAssetCode, assetCodeToUse, balanceInWei, err_2, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Network.getOwnedSids(walletKeypair.publickey)];
@@ -143,19 +130,62 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
                 return [4 /*yield*/, exports.getAssetBalance(walletKeypair, assetCodeToUse, sids)];
             case 4:
                 balanceInWei = _a.sent();
-                balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
-                return [2 /*return*/, balance];
+                return [2 /*return*/, balanceInWei];
             case 5:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + e.message);
+                throw new Error("Could not fetch balance in wei for \"" + assetCodeToUse + "\". Error - " + e.message);
             case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.getBalanceInWei = getBalanceInWei;
+/**
+ * Get the balance of the specific asset for the given user
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const balance = await Account.getBalance(walletInfo, customAssetCode);
+ * ```
+ *
+ * @throws `No sids were fetched`
+ * @throws `Could not fetch balance`
+ *
+ * @returns Result of transaction submission to the network
+ */
+var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var fraAssetCode, assetCodeToUse, balanceInWei, balance, err_3, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, sdkAsset_1.getFraAssetCode()];
+            case 1:
+                fraAssetCode = _a.sent();
+                assetCodeToUse = assetCode || fraAssetCode;
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, exports.getBalanceInWei(walletKeypair, assetCodeToUse)];
+            case 3:
+                balanceInWei = _a.sent();
+                balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
+                return [2 /*return*/, balance];
+            case 4:
+                err_3 = _a.sent();
+                e = err_3;
+                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + e.message);
+            case 5: return [2 /*return*/];
         }
     });
 }); };
 exports.getBalance = getBalance;
 var create = function (password) { return __awaiter(void 0, void 0, void 0, function () {
-    var walletKeyPair, err_3, e;
+    var walletKeyPair, err_4, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -165,8 +195,8 @@ var create = function (password) { return __awaiter(void 0, void 0, void 0, func
                 walletKeyPair = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                err_3 = _a.sent();
-                e = err_3;
+                err_4 = _a.sent();
+                e = err_4;
                 throw new Error("Could not create a new account. \"" + e.message + "\"");
             case 3: return [2 /*return*/, walletKeyPair];
         }

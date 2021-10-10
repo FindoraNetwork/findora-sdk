@@ -38,7 +38,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var unsupported_1 = require("./unsupported");
-describe('unsupported (processor)', function () {
+describe('unsupported (processor) (unit test)', function () {
     describe('processUnsupported', function () {
         it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var type, payload, result;
@@ -55,10 +55,12 @@ describe('unsupported (processor)', function () {
                         expect(result).toHaveProperty('result');
                         expect(result).toHaveProperty('type');
                         expect(result).toHaveProperty('originalOperation');
+                        expect(result).toHaveProperty('from');
+                        expect(result).toHaveProperty('to');
                         expect(result.result).toEqual(false);
                         expect(result.type).toEqual(type);
                         expect(result.originalOperation).toBe(payload);
-                        expect(Object.keys(result)).toHaveLength(3);
+                        expect(Object.keys(result)).toHaveLength(5);
                         return [2 /*return*/];
                 }
             });

@@ -4,7 +4,7 @@ import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
 import { processUndelegation } from './undelegation';
 
-describe('unDelegation (processor)', () => {
+describe('unDelegation (processor) (unit test)', () => {
   describe('processDelegation', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';
@@ -18,9 +18,9 @@ describe('unDelegation (processor)', () => {
         signature: '',
       };
 
-      const payload = ({
+      const payload = {
         UnDelegation: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')
