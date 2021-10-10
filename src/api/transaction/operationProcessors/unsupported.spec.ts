@@ -8,9 +8,9 @@ describe('unsupported (processor) (unit test)', () => {
     it('returns properly processed data', async () => {
       const type = 'unsupported';
 
-      const payload = ({
+      const payload = {
         foo: 'bar',
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const result = await processUnsupported(payload);
 

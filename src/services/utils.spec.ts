@@ -34,7 +34,7 @@ describe('utils (unit test)', () => {
         callback(new Error(errorMsg));
       };
 
-      spyWriteFile.mockImplementation((myWriteFile as unknown) as myWriteFileType);
+      spyWriteFile.mockImplementation(myWriteFile as unknown as myWriteFileType);
 
       await expect(Utils.writeFile(filePath, cacheData)).rejects.toThrow(errorMsg);
 
@@ -55,7 +55,7 @@ describe('utils (unit test)', () => {
         callback(null);
       };
 
-      spyWriteFile.mockImplementation((myWriteFile as unknown) as myWriteFileType);
+      spyWriteFile.mockImplementation(myWriteFile as unknown as myWriteFileType);
 
       const result = await Utils.writeFile(filePath, cacheData);
 
@@ -88,7 +88,7 @@ describe('utils (unit test)', () => {
         callback(new Error(errorMsg), cacheData);
       };
 
-      spyReadFile.mockImplementation((myReadFile as unknown) as myReadFileType);
+      spyReadFile.mockImplementation(myReadFile as unknown as myReadFileType);
 
       await expect(Utils.readFile(filePath)).rejects.toThrow(errorMsg);
 
@@ -108,7 +108,7 @@ describe('utils (unit test)', () => {
         callback(null, cacheData);
       };
 
-      spyReadFile.mockImplementation((myReadFile as unknown) as myReadFileType);
+      spyReadFile.mockImplementation(myReadFile as unknown as myReadFileType);
 
       const result = await Utils.readFile(filePath);
 
@@ -139,7 +139,7 @@ describe('utils (unit test)', () => {
 
       const spyMkdirSync = jest
         .spyOn(fs, 'mkdirSync')
-        .mockImplementation((myMkdirSync as unknown) as myMkdirSyncType);
+        .mockImplementation(myMkdirSync as unknown as myMkdirSyncType);
 
       const result = Utils.createCacheDir(dirPath);
 

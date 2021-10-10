@@ -4,8 +4,8 @@ import * as WebLedger from './webLedger';
 
 import * as LedgerWrapper from './ledgerWrapper';
 
-const myWebLedger = ({ foo: 'web' } as unknown) as WebLedger.LedgerForWeb;
-const myNodeLedger = ({ foo: 'node' } as unknown) as NodeLedger.LedgerForNode;
+const myWebLedger = { foo: 'web' } as unknown as WebLedger.LedgerForWeb;
+const myNodeLedger = { foo: 'node' } as unknown as NodeLedger.LedgerForNode;
 
 describe('ledgerWrapper (unit test)', () => {
   describe('getWebLedger', () => {

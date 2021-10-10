@@ -51,38 +51,8 @@ describe('account (unit test)', () => {
 
   const nonConfidentialAssetType = {
     NonConfidential: [
-      164,
-      219,
-      150,
-      105,
-      103,
-      223,
-      148,
-      3,
-      154,
-      18,
-      158,
-      146,
-      195,
-      186,
-      148,
-      245,
-      191,
-      206,
-      45,
-      215,
-      251,
-      136,
-      179,
-      245,
-      227,
-      140,
-      98,
-      176,
-      190,
-      60,
-      175,
-      224,
+      164, 219, 150, 105, 103, 223, 148, 3, 154, 18, 158, 146, 195, 186, 148, 245, 191, 206, 45, 215, 251,
+      136, 179, 245, 227, 140, 98, 176, 190, 60, 175, 224,
     ],
   };
 
@@ -275,7 +245,7 @@ describe('account (unit test)', () => {
 
   describe('create', () => {
     it('creates a keypair', async () => {
-      const myFakeKeyPair = ({ foo: 'bar' } as unknown) as Keypair.WalletKeypar;
+      const myFakeKeyPair = { foo: 'bar' } as unknown as Keypair.WalletKeypar;
 
       const spyCreateKeypair = jest.spyOn(Keypair, 'createKeypair');
       spyCreateKeypair.mockImplementation(() => {
@@ -314,7 +284,7 @@ describe('account (unit test)', () => {
       };
       const ownerMemo = 'myOwnerMemo';
 
-      const issuedRecord = ([txRecord, ownerMemo] as unknown) as NetworkTypes.IssuedRecord;
+      const issuedRecord = [txRecord, ownerMemo] as unknown as NetworkTypes.IssuedRecord;
 
       const result = await Account.processIssuedRecordItem(issuedRecord);
 
@@ -345,7 +315,7 @@ describe('account (unit test)', () => {
       };
       const ownerMemo = 'myOwnerMemo';
 
-      const issuedRecord = ([txRecord, ownerMemo] as unknown) as NetworkTypes.IssuedRecord;
+      const issuedRecord = [txRecord, ownerMemo] as unknown as NetworkTypes.IssuedRecord;
 
       const result = await Account.processIssuedRecordList([issuedRecord]);
 
@@ -374,7 +344,7 @@ describe('account (unit test)', () => {
         return Promise.resolve(myLightWallet);
       });
 
-      const recordsResponse = ({ foo: 'bar' } as unknown) as NetworkTypes.IssuedRecordResponse;
+      const recordsResponse = { foo: 'bar' } as unknown as NetworkTypes.IssuedRecordResponse;
 
       const myIssuedRecordResult = {
         response: recordsResponse,
@@ -386,9 +356,9 @@ describe('account (unit test)', () => {
       });
 
       const processedIssuedRecordsList = [
-        ({
+        {
           bar: 'foo',
-        } as unknown) as Account.ProcessedIssuedRecord,
+        } as unknown as Account.ProcessedIssuedRecord,
       ];
 
       const spyProcessIssuedRecordList = jest.spyOn(Account, 'processIssuedRecordList');

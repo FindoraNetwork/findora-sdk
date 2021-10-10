@@ -22,9 +22,9 @@ describe('transferAsset (processor) (unit test)', () => {
         },
       };
 
-      const payload = ({
+      const payload = {
         TransferAsset: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

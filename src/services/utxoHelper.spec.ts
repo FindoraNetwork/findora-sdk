@@ -44,7 +44,7 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         OwnerMemo: LedgerOwnerMemo,
@@ -54,7 +54,7 @@ describe('utxoHelper (unit test)', () => {
         asset_type_from_jsvalue: jest.fn(() => {
           return decryptedAsetType;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -65,9 +65,9 @@ describe('utxoHelper (unit test)', () => {
       const spyLedgerOpenClientAssetRecord = jest.spyOn(myLedger, 'open_client_asset_record');
       const spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: { foofoo: 'barbar' },
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -75,21 +75,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       const result = await UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData);
 
@@ -146,7 +146,7 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         OwnerMemo: LedgerOwnerMemo,
@@ -156,7 +156,7 @@ describe('utxoHelper (unit test)', () => {
         asset_type_from_jsvalue: jest.fn(() => {
           return decryptedAsetType;
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -167,9 +167,9 @@ describe('utxoHelper (unit test)', () => {
       const spyLedgerOpenClientAssetRecord = jest.spyOn(myLedger, 'open_client_asset_record');
       const spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: undefined,
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -177,21 +177,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       const result = await UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData);
 
@@ -223,10 +223,10 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -236,21 +236,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       await expect(UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData)).rejects.toThrow(
         'Can not get client asset record',
@@ -273,10 +273,10 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -284,9 +284,9 @@ describe('utxoHelper (unit test)', () => {
 
       const spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         error: new Error('foo'),
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -294,21 +294,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       await expect(UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData)).rejects.toThrow(
         'Could not fetch memo data for sid',
@@ -339,11 +339,11 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         OwnerMemo: LedgerOwnerMemo,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -352,9 +352,9 @@ describe('utxoHelper (unit test)', () => {
       const spyLedgerClientAssetRecordFromJson = jest.spyOn(LedgerClientAssetRecord, 'from_json');
       const spyLedgerOwnerMemoFromJson = jest.spyOn(LedgerOwnerMemo, 'from_json');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: { foofoo: 'barbar' },
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -362,21 +362,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       await expect(UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData)).rejects.toThrow(
         'Can not decode owner memo',
@@ -415,14 +415,14 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         OwnerMemo: LedgerOwnerMemo,
         open_client_asset_record: jest.fn(() => {
           throw new Error('boom');
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -432,9 +432,9 @@ describe('utxoHelper (unit test)', () => {
       const spyLedgerOwnerMemoFromJson = jest.spyOn(LedgerOwnerMemo, 'from_json');
       const spyLedgerOpenClientAssetRecord = jest.spyOn(myLedger, 'open_client_asset_record');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: { foofoo: 'barbar' },
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -442,21 +442,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       await expect(UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData)).rejects.toThrow(
         'Can not open client asset record to decode',
@@ -505,7 +505,7 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         OwnerMemo: LedgerOwnerMemo,
@@ -515,7 +515,7 @@ describe('utxoHelper (unit test)', () => {
         asset_type_from_jsvalue: jest.fn(() => {
           throw new Error('boom');
         }),
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -526,9 +526,9 @@ describe('utxoHelper (unit test)', () => {
       const spyLedgerOpenClientAssetRecord = jest.spyOn(myLedger, 'open_client_asset_record');
       const spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: { foofoo: 'barbar' },
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
@@ -536,21 +536,21 @@ describe('utxoHelper (unit test)', () => {
 
       const sid = 123;
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const utxoData = ({
+      const utxoData = {
         utxo: {
           utxoKey: 'utxoVal',
         },
-      } as unknown) as NetworkTypes.UtxoResponse;
+      } as unknown as NetworkTypes.UtxoResponse;
 
-      const memoData = ({
+      const memoData = {
         bar: 'foo',
-      } as unknown) as NetworkTypes.OwnedMemoResponse;
+      } as unknown as NetworkTypes.OwnedMemoResponse;
 
       await expect(UtxoHelper.decryptUtxoItem(sid, walletInfo, utxoData, memoData)).rejects.toThrow(
         'Can not decrypt asset type',
@@ -579,9 +579,9 @@ describe('utxoHelper (unit test)', () => {
         myKey: 'myValue',
       };
 
-      const utxoDataResult = ({
+      const utxoDataResult = {
         response: utxoData,
-      } as unknown) as NetworkTypes.UtxoDataResult;
+      } as unknown as NetworkTypes.UtxoDataResult;
 
       const spyGetUtxo = jest.spyOn(NetworkApi, 'getUtxo').mockImplementation(() => {
         return Promise.resolve(utxoDataResult);
@@ -589,27 +589,27 @@ describe('utxoHelper (unit test)', () => {
 
       const memoData = { foofoo: 'barbar' };
 
-      const memoDataResult = ({
+      const memoDataResult = {
         response: memoData,
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
       });
 
-      const item = ({
+      const item = {
         myKeyUtxo: 'myValueUtxo',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const spyDecryptUtxoItem = jest.spyOn(UtxoHelper, 'decryptUtxoItem').mockImplementation(() => {
         return Promise.resolve(item);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const result = await UtxoHelper.getUtxoItem(sid, walletInfo);
 
@@ -628,13 +628,13 @@ describe('utxoHelper (unit test)', () => {
 
       const spyGetUtxo = jest.spyOn(NetworkApi, 'getUtxo');
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
-      const cachedItem = ({ foo: 'bar ' } as unknown) as UtxoHelper.AddUtxoItem;
+      const cachedItem = { foo: 'bar ' } as unknown as UtxoHelper.AddUtxoItem;
 
       const result = await UtxoHelper.getUtxoItem(sid, walletInfo, cachedItem);
 
@@ -646,19 +646,19 @@ describe('utxoHelper (unit test)', () => {
     it('throws an error if failed to fetch utxo data and got error in the result', async () => {
       const sid = 123;
 
-      const utxoDataResult = ({
+      const utxoDataResult = {
         error: new Error('foo'),
-      } as unknown) as NetworkTypes.UtxoDataResult;
+      } as unknown as NetworkTypes.UtxoDataResult;
 
       const spyGetUtxo = jest.spyOn(NetworkApi, 'getUtxo').mockImplementation(() => {
         return Promise.resolve(utxoDataResult);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       await expect(UtxoHelper.getUtxoItem(sid, walletInfo)).rejects.toThrow(
         'Could not fetch utxo data for sid',
@@ -669,17 +669,17 @@ describe('utxoHelper (unit test)', () => {
     it('throws an error if failed to fetch utxo data and got no response', async () => {
       const sid = 123;
 
-      const utxoDataResult = ({} as unknown) as NetworkTypes.UtxoDataResult;
+      const utxoDataResult = {} as unknown as NetworkTypes.UtxoDataResult;
 
       const spyGetUtxo = jest.spyOn(NetworkApi, 'getUtxo').mockImplementation(() => {
         return Promise.resolve(utxoDataResult);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       await expect(UtxoHelper.getUtxoItem(sid, walletInfo)).rejects.toThrow(
         'Could not fetch utxo data for sid',
@@ -694,27 +694,27 @@ describe('utxoHelper (unit test)', () => {
         myKey: 'myValue',
       };
 
-      const utxoDataResult = ({
+      const utxoDataResult = {
         response: utxoData,
-      } as unknown) as NetworkTypes.UtxoDataResult;
+      } as unknown as NetworkTypes.UtxoDataResult;
 
       const spyGetUtxo = jest.spyOn(NetworkApi, 'getUtxo').mockImplementation(() => {
         return Promise.resolve(utxoDataResult);
       });
 
-      const memoDataResult = ({
+      const memoDataResult = {
         error: new Error('foo'),
-      } as unknown) as NetworkTypes.OwnerMemoDataResult;
+      } as unknown as NetworkTypes.OwnerMemoDataResult;
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
         return Promise.resolve(memoDataResult);
       });
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       await expect(UtxoHelper.getUtxoItem(sid, walletInfo)).rejects.toThrow(
         'Could not fetch memo data for sid',
@@ -737,9 +737,9 @@ describe('utxoHelper (unit test)', () => {
         return Promise.resolve(utxoDataCache);
       });
 
-      const item = ({
+      const item = {
         sid: 1,
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const spyGetUtxoItem = jest.spyOn(UtxoHelper, 'getUtxoItem').mockImplementation(() => {
         return Promise.resolve(item);
@@ -747,11 +747,11 @@ describe('utxoHelper (unit test)', () => {
 
       const addSids = [1];
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const cacheDataToSave = {
         sid_1: item,
@@ -786,11 +786,11 @@ describe('utxoHelper (unit test)', () => {
 
       const addSids = [1];
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const fullPathToCacheEntry = `${Sdk.environment.cachePath}/${CACHE_ENTRIES.UTXO_DATA}_${walletInfo.address}.json`;
 
@@ -815,9 +815,9 @@ describe('utxoHelper (unit test)', () => {
         return Promise.resolve(utxoDataCache);
       });
 
-      const item = ({
+      const item = {
         sid: 2,
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const spyGetUtxoItem = jest
         .spyOn(UtxoHelper, 'getUtxoItem')
@@ -830,11 +830,11 @@ describe('utxoHelper (unit test)', () => {
 
       const addSids = [1, 2];
 
-      const walletInfo = ({
+      const walletInfo = {
         publickey: 'senderPub',
         keypair: 'senderKeypair',
         address: 'myAddress',
-      } as unknown) as KeypairApi.WalletKeypar;
+      } as unknown as KeypairApi.WalletKeypar;
 
       const cacheDataToSave = {
         sid_2: item,
@@ -871,7 +871,7 @@ describe('utxoHelper (unit test)', () => {
 
       const amount = BigInt(4);
 
-      const myItem1 = ({
+      const myItem1 = {
         sid: 1,
         body: {
           asset_type: myCode,
@@ -880,9 +880,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo1: 'bar1' },
         ownerMemo: { bar1: 'foo1' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem2 = ({
+      const myItem2 = {
         sid: 3,
         body: {
           asset_type: myCode,
@@ -891,7 +891,7 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo2: 'bar2' },
         ownerMemo: { bar2: 'foo2' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const utxoDataList = [myItem1, myItem2];
 
@@ -914,7 +914,7 @@ describe('utxoHelper (unit test)', () => {
 
       const amount = BigInt(4);
 
-      const myItem1 = ({
+      const myItem1 = {
         sid: 1,
         body: {
           asset_type: myCode,
@@ -923,9 +923,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo1: 'bar1' },
         ownerMemo: { bar1: 'foo1' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem2 = ({
+      const myItem2 = {
         sid: 3,
         body: {
           asset_type: myCode,
@@ -934,7 +934,7 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo2: 'bar2' },
         ownerMemo: { bar2: 'foo2' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const utxoDataList = [myItem1, myItem2];
 
@@ -956,7 +956,7 @@ describe('utxoHelper (unit test)', () => {
       const myCode = 'code1';
       const amount = BigInt(4);
 
-      const myItem1 = ({
+      const myItem1 = {
         sid: 1,
         body: {
           asset_type: myCode,
@@ -965,9 +965,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo1: 'bar1' },
         ownerMemo: { bar1: 'foo1' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem2 = ({
+      const myItem2 = {
         sid: 2,
         body: {
           asset_type: myCode,
@@ -976,9 +976,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo2: 'bar2' },
         ownerMemo: { bar2: 'foo2' },
         memoData: 'myMemoData2',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem3 = ({
+      const myItem3 = {
         sid: 1,
         body: {
           asset_type: myCode,
@@ -987,9 +987,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo3: 'bar3' },
         ownerMemo: { bar3: 'foo3' },
         memoData: 'myMemoData3',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem4 = ({
+      const myItem4 = {
         sid: 4,
         body: {
           asset_type: myCode,
@@ -998,7 +998,7 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo4: 'bar4' },
         ownerMemo: { bar4: 'foo4' },
         memoData: 'myMemoData4',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const utxoDataList = [myItem1, myItem2, myItem3, myItem4];
 
@@ -1017,7 +1017,7 @@ describe('utxoHelper (unit test)', () => {
 
       const amount = BigInt(4);
 
-      const notMyItem = ({
+      const notMyItem = {
         sid: 2,
         body: {
           asset_type: 'boo',
@@ -1026,7 +1026,7 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo2: 'bar2' },
         ownerMemo: { bar2: 'foo2' },
         memoData: 'myMemoData2',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const utxoDataList = [notMyItem];
 
@@ -1039,7 +1039,7 @@ describe('utxoHelper (unit test)', () => {
 
       const amount = BigInt(0);
 
-      const myItem1 = ({
+      const myItem1 = {
         sid: 1,
         body: {
           asset_type: myCode,
@@ -1048,9 +1048,9 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo1: 'bar1' },
         ownerMemo: { bar1: 'foo1' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
-      const myItem2 = ({
+      const myItem2 = {
         sid: 3,
         body: {
           asset_type: myCode,
@@ -1059,7 +1059,7 @@ describe('utxoHelper (unit test)', () => {
         utxo: { foo2: 'bar2' },
         ownerMemo: { bar2: 'foo2' },
         memoData: 'myMemoData1',
-      } as unknown) as UtxoHelper.AddUtxoItem;
+      } as unknown as UtxoHelper.AddUtxoItem;
 
       const utxoDataList = [myItem1, myItem2];
 
@@ -1077,23 +1077,23 @@ describe('utxoHelper (unit test)', () => {
       const originAmountOne = 20;
       const originAmountTwo = 5;
 
-      const utxoOutputItemOne = ({
+      const utxoOutputItemOne = {
         amount: BigInt(amountOne),
         originAmount: BigInt(originAmountOne),
         sid: 1,
         utxo: { foo: 'bar1' },
         ownerMemo: { bar: 'foo1' },
         memoData: 'myMem1o',
-      } as unknown) as UtxoHelper.UtxoOutputItem;
+      } as unknown as UtxoHelper.UtxoOutputItem;
 
-      const utxoOutputItemTwo = ({
+      const utxoOutputItemTwo = {
         amount: BigInt(amountTwo),
         originAmount: BigInt(originAmountTwo),
         sid: 2,
         utxo: { foo: 'bar2' },
         ownerMemo: { bar: 'foo2' },
         memoData: 'myMemo2',
-      } as unknown) as UtxoHelper.UtxoOutputItem;
+      } as unknown as UtxoHelper.UtxoOutputItem;
 
       const utxoSids = [utxoOutputItemOne, utxoOutputItemTwo];
 
@@ -1114,11 +1114,11 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         TxoRef: LedgerTxoRef,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -1168,14 +1168,14 @@ describe('utxoHelper (unit test)', () => {
 
       const originAmountOne = 20;
 
-      const utxoOutputItemOne = ({
+      const utxoOutputItemOne = {
         amount: BigInt(amountOne),
         originAmount: BigInt(originAmountOne),
         sid: 1,
         utxo: { foo: 'bar1' },
         ownerMemo: { bar: 'foo1' },
         memoData: 'myMem1o',
-      } as unknown) as UtxoHelper.UtxoOutputItem;
+      } as unknown as UtxoHelper.UtxoOutputItem;
 
       const utxoSids = [utxoOutputItemOne];
 
@@ -1192,11 +1192,11 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         TxoRef: LedgerTxoRef,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
@@ -1217,14 +1217,14 @@ describe('utxoHelper (unit test)', () => {
 
       const originAmountOne = 20;
 
-      const utxoOutputItemOne = ({
+      const utxoOutputItemOne = {
         amount: BigInt(amountOne),
         originAmount: BigInt(originAmountOne),
         sid: 1,
         utxo: { foo: 'bar1' },
         ownerMemo: { bar: 'foo1' },
         memoData: 'myMem1o',
-      } as unknown) as UtxoHelper.UtxoOutputItem;
+      } as unknown as UtxoHelper.UtxoOutputItem;
 
       const utxoSids = [utxoOutputItemOne];
 
@@ -1244,11 +1244,11 @@ describe('utxoHelper (unit test)', () => {
         }),
       };
 
-      const myLedger = ({
+      const myLedger = {
         foo: 'node',
         ClientAssetRecord: LedgerClientAssetRecord,
         TxoRef: LedgerTxoRef,
-      } as unknown) as NodeLedger.LedgerForNode;
+      } as unknown as NodeLedger.LedgerForNode;
 
       const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
         return Promise.resolve(myLedger);
