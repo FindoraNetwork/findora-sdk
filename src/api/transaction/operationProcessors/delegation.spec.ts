@@ -18,9 +18,9 @@ describe('delegation (processor) (unit test)', () => {
         signature: '',
       };
 
-      const payload = ({
+      const payload = {
         Delegation: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

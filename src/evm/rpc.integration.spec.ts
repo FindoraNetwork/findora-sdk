@@ -624,10 +624,11 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          payload,
-        );
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+            rpcUrl,
+            payload,
+          );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');
@@ -656,10 +657,11 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          payload,
-        );
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+            rpcUrl,
+            payload,
+          );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');

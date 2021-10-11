@@ -18,9 +18,9 @@ describe('claim (processor) (unit test)', () => {
         signature: '',
       };
 
-      const payload = ({
+      const payload = {
         Claim: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')

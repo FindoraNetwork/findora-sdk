@@ -33,9 +33,9 @@ describe('fee (unit test)', () => {
         }),
       };
 
-      const fakedLedger = ({
+      const fakedLedger = {
         TransferOperationBuilder: fakeOpBuilder,
-      } as unknown) as LedgerForNode;
+      } as unknown as LedgerForNode;
 
       const spyLedger = jest
         .spyOn(Ledger, 'getLedger')
@@ -64,15 +64,15 @@ describe('fee (unit test)', () => {
         }),
       };
 
-      const fakedLedger = ({
+      const fakedLedger = {
         AssetType: fakeAssetType,
-      } as unknown) as LedgerForNode;
+      } as unknown as LedgerForNode;
 
       const spyLedger = jest
         .spyOn(Ledger, 'getLedger')
         .mockImplementation(jest.fn(() => Promise.resolve(fakedLedger)));
 
-      const asset = ({ foo: 1 } as unknown) as FindoraWallet.IAsset;
+      const asset = { foo: 1 } as unknown as FindoraWallet.IAsset;
       const res = await Fee.getAssetTracingPolicies(asset);
       expect(res).toBe(tPol);
 
@@ -123,11 +123,11 @@ describe('fee (unit test)', () => {
         .mockImplementation(jest.fn(() => Promise.resolve(mockedAssetNonTracing)));
 
       const spyGetEmptyTransferBuilder = jest.spyOn(Fee, 'getEmptyTransferBuilder').mockImplementation(() => {
-        return Promise.resolve((fakeOpBuilder as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeOpBuilder as unknown as TransferOperationBuilder);
       });
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
-        return Promise.resolve(({ response: null } as unknown) as NetworkTypes.OwnerMemoDataResult);
+        return Promise.resolve({ response: null } as unknown as NetworkTypes.OwnerMemoDataResult);
       });
 
       const spyInputNoTracing = jest.spyOn(fakeOpBuilder, 'add_input_no_tracing');
@@ -136,16 +136,16 @@ describe('fee (unit test)', () => {
       const spyOutputWithTracing = jest.spyOn(fakeOpBuilder, 'add_output_with_tracing');
 
       const spyGetAssetTracingPolicies = jest.spyOn(Fee, 'getAssetTracingPolicies').mockImplementation(() => {
-        return Promise.resolve((undefined as unknown) as TracingPolicies);
+        return Promise.resolve(undefined as unknown as TracingPolicies);
       });
 
       const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
       const toPublickey = await KeypairApi.getXfrPublicKeyByBase64(walletInfo.publickey);
 
-      const utxoInputsInfo = ({
+      const utxoInputsInfo = {
         inputParametersList: [{ txoRef: 1, assetRecord: 3, amount: 4, sid: 5 }],
-      } as unknown) as UtxoHelper.UtxoInputsInfo;
+      } as unknown as UtxoHelper.UtxoInputsInfo;
 
       const assetBlindRules = { isAmountBlind: false, isTypeBlind: false };
 
@@ -219,11 +219,11 @@ describe('fee (unit test)', () => {
         .mockImplementation(jest.fn(() => Promise.resolve(mockedAssetTracing)));
 
       const spyGetEmptyTransferBuilder = jest.spyOn(Fee, 'getEmptyTransferBuilder').mockImplementation(() => {
-        return Promise.resolve((fakeOpBuilderTwo as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeOpBuilderTwo as unknown as TransferOperationBuilder);
       });
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
-        return Promise.resolve(({ response: null } as unknown) as NetworkTypes.OwnerMemoDataResult);
+        return Promise.resolve({ response: null } as unknown as NetworkTypes.OwnerMemoDataResult);
       });
 
       const spyInputNoTracing = jest.spyOn(fakeOpBuilderTwo, 'add_input_no_tracing');
@@ -232,16 +232,16 @@ describe('fee (unit test)', () => {
       const spyOutputWithTracing = jest.spyOn(fakeOpBuilderTwo, 'add_output_with_tracing');
 
       const spyGetAssetTracingPolicies = jest.spyOn(Fee, 'getAssetTracingPolicies').mockImplementation(() => {
-        return Promise.resolve(([1, 2] as unknown) as TracingPolicies);
+        return Promise.resolve([1, 2] as unknown as TracingPolicies);
       });
 
       const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
       const toPublickey = await KeypairApi.getXfrPublicKeyByBase64(walletInfo.publickey);
 
-      const utxoInputsInfo = ({
+      const utxoInputsInfo = {
         inputParametersList: [{ txoRef: 1, assetRecord: 3, amount: 4, sid: 5 }],
-      } as unknown) as UtxoHelper.UtxoInputsInfo;
+      } as unknown as UtxoHelper.UtxoInputsInfo;
 
       const assetBlindRules = { isAmountBlind: false, isTypeBlind: false };
 
@@ -315,13 +315,13 @@ describe('fee (unit test)', () => {
         .mockImplementation(jest.fn(() => Promise.resolve(mockedAssetTracing)));
 
       const spyGetEmptyTransferBuilder = jest.spyOn(Fee, 'getEmptyTransferBuilder').mockImplementation(() => {
-        return Promise.resolve((fakeOpBuilderTwo as unknown) as TransferOperationBuilder);
+        return Promise.resolve(fakeOpBuilderTwo as unknown as TransferOperationBuilder);
       });
 
       const spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo').mockImplementation(() => {
-        return Promise.resolve(({
+        return Promise.resolve({
           error: { message: 'foobar' },
-        } as unknown) as NetworkTypes.OwnerMemoDataResult);
+        } as unknown as NetworkTypes.OwnerMemoDataResult);
       });
 
       const spyInputNoTracing = jest.spyOn(fakeOpBuilderTwo, 'add_input_no_tracing');
@@ -330,16 +330,16 @@ describe('fee (unit test)', () => {
       const spyOutputWithTracing = jest.spyOn(fakeOpBuilderTwo, 'add_output_with_tracing');
 
       const spyGetAssetTracingPolicies = jest.spyOn(Fee, 'getAssetTracingPolicies').mockImplementation(() => {
-        return Promise.resolve(([1, 2] as unknown) as TracingPolicies);
+        return Promise.resolve([1, 2] as unknown as TracingPolicies);
       });
 
       const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
       const toPublickey = await KeypairApi.getXfrPublicKeyByBase64(walletInfo.publickey);
 
-      const utxoInputsInfo = ({
+      const utxoInputsInfo = {
         inputParametersList: [{ txoRef: 1, assetRecord: 3, amount: 4, sid: 5 }],
-      } as unknown) as UtxoHelper.UtxoInputsInfo;
+      } as unknown as UtxoHelper.UtxoInputsInfo;
 
       const assetBlindRules = { isAmountBlind: false, isTypeBlind: false };
 
@@ -377,19 +377,19 @@ describe('fee (unit test)', () => {
   describe('buildTransferOperationWithFee ', () => {
     it('builds a transfer operation succesfully', async () => {
       const sidsResult = { response: [1, 2, 3] } as NetworkTypes.OwnedSidsDataResult;
-      const utxoDataList = ([{ foo: 'bar' }] as unknown) as UtxoHelper.AddUtxoItem[];
+      const utxoDataList = [{ foo: 'bar' }] as unknown as UtxoHelper.AddUtxoItem[];
 
       const minimalFee = BigInt(1);
 
       const fraAssetCode = 'fra';
 
-      const sendUtxoList = ([{ bar: 1 }] as unknown) as UtxoHelper.UtxoOutputItem[];
+      const sendUtxoList = [{ bar: 1 }] as unknown as UtxoHelper.UtxoOutputItem[];
 
-      const utxoInputsInfo = (2 as unknown) as UtxoHelper.UtxoInputsInfo;
+      const utxoInputsInfo = 2 as unknown as UtxoHelper.UtxoInputsInfo;
 
-      const toPublickey = (1 as unknown) as XfrPublicKey;
+      const toPublickey = 1 as unknown as XfrPublicKey;
 
-      const transferOperationBuilder = ({ foo: 'bar' } as unknown) as TransferOperationBuilder;
+      const transferOperationBuilder = { foo: 'bar' } as unknown as TransferOperationBuilder;
 
       const spyGetOwnedSids = jest.spyOn(NetworkApi, 'getOwnedSids').mockImplementation(() => {
         return Promise.resolve(sidsResult);
@@ -474,19 +474,19 @@ describe('fee (unit test)', () => {
   describe('buildTransferOperation', () => {
     it('builds a transfer operation succesfully', async () => {
       const sidsResult = { response: [1, 2, 3] } as NetworkTypes.OwnedSidsDataResult;
-      const utxoDataList = ([{ foo: 'bar' }] as unknown) as UtxoHelper.AddUtxoItem[];
+      const utxoDataList = [{ foo: 'bar' }] as unknown as UtxoHelper.AddUtxoItem[];
 
       const minimalFee = BigInt(1);
 
       const fraAssetCode = 'fra';
 
-      const sendUtxoList = ([{ bar: 1 }] as unknown) as UtxoHelper.UtxoOutputItem[];
+      const sendUtxoList = [{ bar: 1 }] as unknown as UtxoHelper.UtxoOutputItem[];
 
-      const utxoInputsInfo = (2 as unknown) as UtxoHelper.UtxoInputsInfo;
+      const utxoInputsInfo = 2 as unknown as UtxoHelper.UtxoInputsInfo;
 
-      const toPublickey = (1 as unknown) as XfrPublicKey;
+      const toPublickey = 1 as unknown as XfrPublicKey;
 
-      const transferOperationBuilder = ({ foo: 'bar' } as unknown) as TransferOperationBuilder;
+      const transferOperationBuilder = { foo: 'bar' } as unknown as TransferOperationBuilder;
 
       const spyGetOwnedSids = jest.spyOn(NetworkApi, 'getOwnedSids').mockImplementation(() => {
         return Promise.resolve(sidsResult);
@@ -562,7 +562,7 @@ describe('fee (unit test)', () => {
 
       const minimalFee = BigInt(1);
 
-      const toPublickey = (1 as unknown) as XfrPublicKey;
+      const toPublickey = 1 as unknown as XfrPublicKey;
       const spyGetOwnedSids = jest.spyOn(NetworkApi, 'getOwnedSids').mockImplementation(() => {
         return Promise.resolve(sidsResult);
       });

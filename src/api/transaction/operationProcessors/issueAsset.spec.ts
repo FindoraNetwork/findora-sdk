@@ -25,9 +25,9 @@ describe('issueAsset (processor) (unit test)', () => {
         },
       };
 
-      const payload = ({
+      const payload = {
         IssueAsset: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')
