@@ -74,6 +74,7 @@ var Transaction = __importStar(require("../../api/transaction"));
 var orderBy_1 = __importDefault(require("lodash/orderBy"));
 var Fee = __importStar(require("../../services/fee"));
 var keypair_1 = require("../keypair");
+var AssetApi = __importStar(require("../sdkAsset"));
 var Network = __importStar(require("../network"));
 var bigNumber_1 = require("../../services/bigNumber");
 /**
@@ -202,13 +203,18 @@ exports.unStake = unStake;
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var delegate = function (walletInfo, address, amount, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder;
+    var transactionBuilder, asset, decimals, delegateAmount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
             case 1:
                 transactionBuilder = _a.sent();
-                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, BigInt(amount), validator);
+                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
+            case 2:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                delegateAmount = BigInt(bigNumber_1.toWei(amount, decimals).toString());
+                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
                 return [2 /*return*/, transactionBuilder];
         }
     });
