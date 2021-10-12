@@ -86,7 +86,7 @@ var getAssetTracingPolicies = function (asset) { return __awaiter(void 0, void 0
 }); };
 exports.getAssetTracingPolicies = getAssetTracingPolicies;
 var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, isTraceable, tracingPolicies, e_1, totalUtxoNumbers, isBlindIsAmount, isBlindIsType, transferOp, inputParametersList, inputAmount, inputPromise, numberToSubmit;
+    var ledger, asset, isTraceable, tracingPolicies, e_1, isBlindIsAmount, isBlindIsType, transferOp, utxoNumbers, inputParametersList, inputAmount, inputPromise, numberToSubmit;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -111,12 +111,12 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                 console.log(e_1);
                 return [3 /*break*/, 6];
             case 6:
-                totalUtxoNumbers = BigInt(0);
                 isBlindIsAmount = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isAmountBlind) === true; });
                 isBlindIsType = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isTypeBlind) === true; });
                 return [4 /*yield*/, exports.getEmptyTransferBuilder()];
             case 7:
                 transferOp = _b.sent();
+                utxoNumbers = BigInt(0);
                 inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
                     var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
@@ -131,6 +131,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                 if (memoError) {
                                     throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                                 }
+                                utxoNumbers = utxoNumbers + BigInt(amount.toString());
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
                                 if (isTraceable) {
                                     transferOp = transferOp.add_input_with_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), tracingPolicies, walletInfo.keypair, amount);
@@ -149,7 +150,6 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey, _a = reciverInfo.assetBlindRules, assetBlindRules = _a === void 0 ? {} : _a;
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
-                    totalUtxoNumbers += BigInt(utxoNumbers.toString());
                     if (isTraceable) {
                         transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
@@ -157,8 +157,8 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                         transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                 });
-                if (!(inputAmount > totalUtxoNumbers)) return [3 /*break*/, 11];
-                numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
+                if (!(inputAmount > utxoNumbers)) return [3 /*break*/, 11];
+                numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
                 if (!isTraceable) return [3 /*break*/, 10];
                 return [4 /*yield*/, exports.getAssetTracingPolicies(asset)];
             case 9:

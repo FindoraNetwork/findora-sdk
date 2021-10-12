@@ -347,6 +347,7 @@ var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0:
                 pkey = PKEY_MINE;
+                console.log(pkey);
                 toPkeyMine2 = PKEY_MINE2;
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -371,6 +372,7 @@ var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0
         }
     });
 }); };
+transferFraToSingleRecepient();
 /**
  * Send fra to multiple recepients
  */
@@ -1222,7 +1224,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-getFraBalance();
+// getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1231,7 +1233,7 @@ getFraBalance();
 // getDelegateInfo();
 // getTransferBuilderOperation();
 // createNewKeypair();
-// transferFraToSingleRecepient();
+transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

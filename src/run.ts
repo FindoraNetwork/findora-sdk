@@ -241,7 +241,7 @@ const createNewKeypair = async () => {
  */
 const transferFraToSingleRecepient = async () => {
   const pkey = PKEY_MINE;
-
+  console.log(pkey);
   const toPkeyMine2 = PKEY_MINE2;
 
   const password = '123';
@@ -267,6 +267,8 @@ const transferFraToSingleRecepient = async () => {
 
   console.log('send fra result handle!!', resultHandle);
 };
+
+transferFraToSingleRecepient();
 
 /**
  * Send fra to multiple recepients
@@ -475,8 +477,12 @@ const myFunc18 = async () => {
 
 // s3 cache
 const myFuncS3 = async () => {
-  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
-    process.env;
+  const {
+    AWS_ACCESS_KEY_ID,
+    AWS_SECRET_ACCESS_KEY,
+    UTXO_CACHE_BUCKET_NAME,
+    UTXO_CACHE_KEY_NAME,
+  } = process.env;
   const accessKeyId = AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
@@ -1110,7 +1116,7 @@ const ethProtocol = async () => {
   console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-getFraBalance();
+// getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1119,7 +1125,7 @@ getFraBalance();
 // getDelegateInfo();
 // getTransferBuilderOperation();
 // createNewKeypair();
-// transferFraToSingleRecepient();
+transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

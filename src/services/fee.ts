@@ -47,10 +47,11 @@ export const getTransferOperation = async (
       console.log(e);
     }
   }
-  let totalUtxoNumbers = BigInt(0);
+
   let isBlindIsAmount = recieversInfo.some(item => item.assetBlindRules?.isAmountBlind === true);
   let isBlindIsType = recieversInfo.some(item => item.assetBlindRules?.isTypeBlind === true);
   let transferOp = await getEmptyTransferBuilder();
+  let utxoNumbers = BigInt(0);
 
   const { inputParametersList, inputAmount } = utxoInputs;
 
@@ -65,6 +66,7 @@ export const getTransferOperation = async (
       throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
     }
 
+    utxoNumbers = utxoNumbers + BigInt(amount.toString());
     const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
 
     if (isTraceable) {
@@ -94,8 +96,6 @@ export const getTransferOperation = async (
     const blindIsAmount = assetBlindRules?.isAmountBlind;
     const blindIsType = assetBlindRules?.isTypeBlind;
 
-    totalUtxoNumbers += BigInt(utxoNumbers.toString());
-
     if (isTraceable) {
       transferOp = transferOp.add_output_with_tracing(
         utxoNumbers,
@@ -116,12 +116,12 @@ export const getTransferOperation = async (
     }
   });
 
-  // Achieve balance change
-  if (inputAmount > totalUtxoNumbers) {
-    const numberToSubmit = BigInt(Number(inputAmount) - Number(totalUtxoNumbers));
+  if (inputAmount > utxoNumbers) {
+    const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
 
     if (isTraceable) {
       tracingPolicies = await getAssetTracingPolicies(asset);
+
       transferOp = transferOp.add_output_with_tracing(
         numberToSubmit,
         ledger.get_pk_from_keypair(walletInfo.keypair),
