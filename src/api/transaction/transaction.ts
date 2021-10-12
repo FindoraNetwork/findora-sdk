@@ -121,8 +121,6 @@ export const sendToMany = async (
 
   let receivedTransferOperation;
 
-  console.log(transferOperationBuilder.create().transaction());
-
   try {
     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
   } catch (error) {
