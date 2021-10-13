@@ -31,7 +31,7 @@ const {
   //Sender mnemonic (to be used in web3)
   mnemonic,
 } = rpcParams;
-console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
+console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 
 const provider = new HDWalletProvider(mnemonic, rpcUrl);
 
