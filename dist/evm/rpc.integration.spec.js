@@ -84,7 +84,7 @@ rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a,
 ethAccountToCheck = rpcParams.ethAccountToCheck, 
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
-console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
+console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl);
 var web3 = new web3_1.default(provider);
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
