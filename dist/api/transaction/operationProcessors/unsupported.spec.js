@@ -49,7 +49,7 @@ describe('unsupported (processor) (unit test)', function () {
                         payload = {
                             foo: 'bar',
                         };
-                        return [4 /*yield*/, (0, unsupported_1.processUnsupported)(payload)];
+                        return [4 /*yield*/, unsupported_1.processUnsupported(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('result');

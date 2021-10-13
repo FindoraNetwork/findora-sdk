@@ -79,7 +79,7 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
     var ledger, assetRecord, err, memoDataResult, myMemoData, memoError, ownerMemo, err, decryptAssetData, error_1, err, decryptedAsetType, err, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 try {
@@ -160,7 +160,7 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
                 if (memoError) {
                     throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                 }
-                return [4 /*yield*/, (0, exports.decryptUtxoItem)(sid, walletInfo, utxoData, memoData)];
+                return [4 /*yield*/, exports.decryptUtxoItem(sid, walletInfo, utxoData, memoData)];
             case 3:
                 item = _a.sent();
                 return [2 /*return*/, item];
@@ -204,7 +204,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.label = 6;
             case 6:
                 _a.trys.push([6, 8, , 9]);
-                return [4 /*yield*/, (0, exports.getUtxoItem)(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
+                return [4 /*yield*/, exports.getUtxoItem(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
             case 7:
                 item = _a.sent();
                 utxoDataList.push(item);
@@ -277,7 +277,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
     var ledger, inputAmount, inputParametersList, i, item, assetRecord, err, txoRef, err, inputParameters, res;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 inputAmount = BigInt(0);

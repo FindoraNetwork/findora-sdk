@@ -48,9 +48,12 @@ export const getTransferOperation = async (
     }
   }
 
+  let isBlindIsAmount = recieversInfo.some(item => item.assetBlindRules?.isAmountBlind === true);
+  let isBlindIsType = recieversInfo.some(item => item.assetBlindRules?.isTypeBlind === true);
   let transferOp = await getEmptyTransferBuilder();
+  let utxoNumbers = BigInt(0);
 
-  const { inputParametersList } = utxoInputs;
+  const { inputParametersList, inputAmount } = utxoInputs;
 
   const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
     const { txoRef, assetRecord, amount, sid } = inputParameters;
@@ -63,6 +66,7 @@ export const getTransferOperation = async (
       throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
     }
 
+    utxoNumbers = utxoNumbers + BigInt(amount.toString());
     const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
 
     if (isTraceable) {
@@ -85,7 +89,7 @@ export const getTransferOperation = async (
     }
   });
 
-  const _p = await Promise.all(inputPromise);
+  await Promise.all(inputPromise);
 
   recieversInfo.forEach(reciverInfo => {
     const { utxoNumbers, toPublickey, assetBlindRules = {} } = reciverInfo;
@@ -111,6 +115,31 @@ export const getTransferOperation = async (
       );
     }
   });
+
+  if (inputAmount > utxoNumbers) {
+    const numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
+
+    if (isTraceable) {
+      tracingPolicies = await getAssetTracingPolicies(asset);
+
+      transferOp = transferOp.add_output_with_tracing(
+        numberToSubmit,
+        ledger.get_pk_from_keypair(walletInfo.keypair),
+        tracingPolicies,
+        assetCode,
+        isBlindIsAmount,
+        isBlindIsType,
+      );
+    } else {
+      transferOp = transferOp.add_output_no_tracing(
+        numberToSubmit,
+        ledger.get_pk_from_keypair(walletInfo.keypair),
+        assetCode,
+        isBlindIsAmount,
+        isBlindIsType,
+      );
+    }
+  }
 
   return transferOp;
 };

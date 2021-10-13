@@ -48,7 +48,7 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
     var myLedger;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, webLedger_1.default)()];
+            case 0: return [4 /*yield*/, webLedger_1.default()];
             case 1:
                 myLedger = _a.sent();
                 return [2 /*return*/, myLedger];
@@ -60,7 +60,7 @@ var getNodeLedger = function () { return __awaiter(void 0, void 0, void 0, funct
     var myLedger;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, nodeLedger_1.default)()];
+            case 0: return [4 /*yield*/, nodeLedger_1.default()];
             case 1:
                 myLedger = _a.sent();
                 return [2 /*return*/, myLedger];
@@ -71,11 +71,11 @@ exports.getNodeLedger = getNodeLedger;
 var getLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
     var isNodeEnv;
     return __generator(this, function (_a) {
-        isNodeEnv = (0, exports.isItNodeEnv)();
+        isNodeEnv = exports.isItNodeEnv();
         if (isNodeEnv) {
-            return [2 /*return*/, (0, exports.getNodeLedger)()];
+            return [2 /*return*/, exports.getNodeLedger()];
         }
-        return [2 /*return*/, (0, exports.getWebLedger)()];
+        return [2 /*return*/, exports.getWebLedger()];
     });
 }); };
 exports.getLedger = getLedger;

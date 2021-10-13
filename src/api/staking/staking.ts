@@ -6,7 +6,7 @@ import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar, getAddressPublicAndKey } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import * as Network from '../network';
-import { create as createBigNumber } from '../../services/bigNumber';
+import { create as createBigNumber, toWei } from '../../services/bigNumber';
 
 /**
  * Unstake FRA tokens
@@ -150,7 +150,15 @@ export const delegate = async (
     assetBlindRules,
   );
 
-  transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const delegateAmount = BigInt(toWei(amount, decimals).toString());
+
+  transactionBuilder = transactionBuilder.add_operation_delegate(
+    walletInfo.keypair,
+    delegateAmount,
+    validator,
+  );
 
   return transactionBuilder;
 };

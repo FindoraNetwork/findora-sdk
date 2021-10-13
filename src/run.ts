@@ -274,7 +274,7 @@ const transferFraToSingleAddress = async () => {
  */
 const transferFraToSingleRecepient = async () => {
   const pkey = PKEY_MINE;
-
+  console.log(pkey);
   const toPkeyMine2 = PKEY_MINE2;
 
   const password = '123';
@@ -300,6 +300,8 @@ const transferFraToSingleRecepient = async () => {
 
   console.log('send fra result handle!!', resultHandle);
 };
+
+transferFraToSingleRecepient();
 
 /**
  * Send fra to multiple recepients
@@ -1144,7 +1146,6 @@ const ethProtocol = async () => {
 };
 
 // getFraBalance();
-// transferFraToSingleAddress();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1152,8 +1153,8 @@ const ethProtocol = async () => {
 // getValidatorList();
 // getDelegateInfo();
 // getTransferBuilderOperation();
-createNewKeypair();
-// transferFraToSingleRecepient();
+// createNewKeypair();
+transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

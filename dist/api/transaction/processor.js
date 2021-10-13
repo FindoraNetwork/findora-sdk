@@ -78,7 +78,7 @@ var processTxOperationItem = function (operationItem) { return __awaiter(void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                dataProcessor = (0, operationProcessors_1.getOperationProcessor)(operationItem, operationProcessors_1.processorsMap);
+                dataProcessor = operationProcessors_1.getOperationProcessor(operationItem, operationProcessors_1.processorsMap);
                 return [4 /*yield*/, dataProcessor(operationItem)];
             case 1:
                 processedData = _a.sent();
@@ -128,7 +128,7 @@ var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, voi
 exports.processTxInfoItem = processTxInfoItem;
 var processeTxInfoList = function (txList) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, Promise.all(txList.map(function (txItem) { return (0, exports.processTxInfoItem)(txItem); }))];
+        return [2 /*return*/, Promise.all(txList.map(function (txItem) { return exports.processTxInfoItem(txItem); }))];
     });
 }); };
 exports.processeTxInfoList = processeTxInfoList;

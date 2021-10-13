@@ -78,7 +78,7 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletKeypair, sids)];
+                return [4 /*yield*/, utxoHelper_1.addUtxo(walletKeypair, sids)];
             case 1:
                 utxoDataList = _a.sent();
                 return [3 /*break*/, 3];
@@ -88,17 +88,17 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
                 throw new Error("Could not get list of addUtxo, Details: \"" + e.message + "\"");
             case 3:
                 if (!utxoDataList.length) {
-                    return [2 /*return*/, (0, bigNumber_1.create)(0)];
+                    return [2 /*return*/, bigNumber_1.create(0)];
                 }
                 filteredUtxoList = utxoDataList.filter(function (row) { var _a; return ((_a = row === null || row === void 0 ? void 0 : row.body) === null || _a === void 0 ? void 0 : _a.asset_type) === assetCode; });
                 if (!filteredUtxoList.length) {
-                    return [2 /*return*/, (0, bigNumber_1.create)(0)];
+                    return [2 /*return*/, bigNumber_1.create(0)];
                 }
                 currentBalance = filteredUtxoList.reduce(function (acc, currentUtxoItem) {
                     var _a;
                     return acc + Number(((_a = currentUtxoItem.body) === null || _a === void 0 ? void 0 : _a.amount) || 0);
                 }, 0);
-                return [2 /*return*/, (0, bigNumber_1.create)(currentBalance)];
+                return [2 /*return*/, bigNumber_1.create(currentBalance)];
         }
     });
 }); };
@@ -120,14 +120,14 @@ var getBalanceInWei = function (walletKeypair, assetCode) { return __awaiter(voi
                 if (!sids) {
                     throw new Error('No sids were fetched!');
                 }
-                return [4 /*yield*/, (0, sdkAsset_1.getFraAssetCode)()];
+                return [4 /*yield*/, sdkAsset_1.getFraAssetCode()];
             case 2:
                 fraAssetCode = _a.sent();
                 assetCodeToUse = assetCode || fraAssetCode;
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, (0, exports.getAssetBalance)(walletKeypair, assetCodeToUse, sids)];
+                return [4 /*yield*/, exports.getAssetBalance(walletKeypair, assetCodeToUse, sids)];
             case 4:
                 balanceInWei = _a.sent();
                 return [2 /*return*/, balanceInWei];
@@ -163,17 +163,17 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
     var fraAssetCode, assetCodeToUse, balanceInWei, balance, err_3, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, sdkAsset_1.getFraAssetCode)()];
+            case 0: return [4 /*yield*/, sdkAsset_1.getFraAssetCode()];
             case 1:
                 fraAssetCode = _a.sent();
                 assetCodeToUse = assetCode || fraAssetCode;
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, (0, exports.getBalanceInWei)(walletKeypair, assetCodeToUse)];
+                return [4 /*yield*/, exports.getBalanceInWei(walletKeypair, assetCodeToUse)];
             case 3:
                 balanceInWei = _a.sent();
-                balance = (0, bigNumber_1.fromWei)(balanceInWei, 6).toFormat(6);
+                balance = bigNumber_1.fromWei(balanceInWei, 6).toFormat(6);
                 return [2 /*return*/, balance];
             case 4:
                 err_3 = _a.sent();
@@ -190,7 +190,7 @@ var create = function (password) { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, keypair_1.createKeypair)(password)];
+                return [4 /*yield*/, keypair_1.createKeypair(password)];
             case 1:
                 walletKeyPair = _a.sent();
                 return [3 /*break*/, 3];
@@ -209,7 +209,7 @@ var processIssuedRecordItem = function (issuedRecord) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 txRecord = issuedRecord[0], ownerMemo = issuedRecord[1];
-                return [4 /*yield*/, (0, sdkAsset_1.getAssetCode)(txRecord.record.asset_type.NonConfidential)];
+                return [4 /*yield*/, sdkAsset_1.getAssetCode(txRecord.record.asset_type.NonConfidential)];
             case 1:
                 assetCode = _a.sent();
                 return [2 /*return*/, __assign(__assign({}, txRecord), { code: assetCode, ownerMemo: ownerMemo })];
@@ -219,7 +219,7 @@ var processIssuedRecordItem = function (issuedRecord) { return __awaiter(void 0,
 exports.processIssuedRecordItem = processIssuedRecordItem;
 var processIssuedRecordList = function (issuedRecords) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        return [2 /*return*/, Promise.all(issuedRecords.map(function (issuedRecord) { return (0, exports.processIssuedRecordItem)(issuedRecord); }))];
+        return [2 /*return*/, Promise.all(issuedRecords.map(function (issuedRecord) { return exports.processIssuedRecordItem(issuedRecord); }))];
     });
 }); };
 exports.processIssuedRecordList = processIssuedRecordList;
@@ -227,7 +227,7 @@ var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, voi
     var publickey, result, recordsResponse, processedIssuedRecordsList;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
+            case 0: return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
             case 1:
                 publickey = (_a.sent()).publickey;
                 return [4 /*yield*/, Network.getIssuedRecords(publickey)];
@@ -237,7 +237,7 @@ var getCreatedAssets = function (address) { return __awaiter(void 0, void 0, voi
                 if (!recordsResponse) {
                     throw new Error('No issued records were fetched!');
                 }
-                return [4 /*yield*/, (0, exports.processIssuedRecordList)(recordsResponse)];
+                return [4 /*yield*/, exports.processIssuedRecordList(recordsResponse)];
             case 3:
                 processedIssuedRecordsList = _a.sent();
                 return [2 /*return*/, processedIssuedRecordsList];
