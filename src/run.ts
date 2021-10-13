@@ -93,8 +93,8 @@ const getFraBalance = async () => {
 
   console.log('\n');
 
-  console.log('balance IS', balance);
-  console.log('balanceNew IS', balanceNew);
+  console.log('balance from restored from pkey IS', balance);
+  console.log('balance from restored using mnemonic IS', balanceNew);
   console.log('\n');
   console.log('\n');
 };
@@ -234,6 +234,39 @@ const createNewKeypair = async () => {
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
   console.log('new wallet info', walletInfo);
+};
+
+/**
+ * Send fra to a single address
+ */
+const transferFraToSingleAddress = async () => {
+  const pkey = PKEY_MINE;
+
+  // const toPkeyMine2 = PKEY_MINE2;
+  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
+  const password = '123';
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  const toWalletInfo = await Keypair.getAddressPublicAndKey(destAddress);
+
+  const fraCode = await Asset.getFraAssetCode();
+
+  const assetCode = fraCode;
+
+  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const transactionBuilder = await Transaction.sendToAddress(
+    walletInfo,
+    toWalletInfo.address,
+    '0.01',
+    assetCode,
+    assetBlindRules,
+  );
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('send fra result handle!!', resultHandle);
 };
 
 /**
@@ -477,12 +510,8 @@ const myFunc18 = async () => {
 
 // s3 cache
 const myFuncS3 = async () => {
-  const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    UTXO_CACHE_BUCKET_NAME,
-    UTXO_CACHE_KEY_NAME,
-  } = process.env;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+    process.env;
   const accessKeyId = AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
