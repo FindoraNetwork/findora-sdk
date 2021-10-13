@@ -323,37 +323,37 @@ export const getTransactionDetails = async (
   return dataResult;
 };
 
-export const getAbciNoce = async (
-  data: string,
-  config?: Types.NetworkAxiosConfig,
-): Promise<Types.AbciNoceResult> => {
-  const ledger = await getLedger();
-  const ethAddressJson = ledger.get_serialized_address(data);
-  const url = `${getExplorerApiRoute()}/abci_query`;
-  const params = {
-    path: '"module/account/nonce"',
-    data: `"${ethAddressJson}"`,
-    prove: false,
-  };
-  const dataResult = await apiGet(url, { ...config, params });
-  return dataResult;
-};
+// export const getAbciNoce = async (
+//   data: string,
+//   config?: Types.NetworkAxiosConfig,
+// ): Promise<Types.AbciNoceResult> => {
+//   const ledger = await getLedger();
+//   const ethAddressJson = ledger.get_serialized_address(data);
+//   const url = `${getExplorerApiRoute()}/abci_query`;
+//   const params = {
+//     path: '"module/account/nonce"',
+//     data: `"${ethAddressJson}"`,
+//     prove: false,
+//   };
+//   const dataResult = await apiGet(url, { ...config, params });
+//   return dataResult;
+// };
 
-export const getAbciInfo = async (
-  data: string,
-  config?: Types.NetworkAxiosConfig,
-): Promise<Types.AbciInfoResult> => {
-  const ledger = await getLedger();
-  const ethAddressJson = ledger.get_serialized_address(data);
-  const url = `${getExplorerApiRoute()}/abci_query`;
-  const params = {
-    path: '"module/account/info"',
-    data: `"${ethAddressJson}"`,
-    prove: false,
-  };
-  const dataResult = await apiGet(url, { ...config, params });
-  return dataResult;
-};
+// export const getAbciInfo = async (
+//   data: string,
+//   config?: Types.NetworkAxiosConfig,
+// ): Promise<Types.AbciInfoResult> => {
+//   const ledger = await getLedger();
+//   const ethAddressJson = ledger.get_serialized_address(data);
+//   const url = `${getExplorerApiRoute()}/abci_query`;
+//   const params = {
+//     path: '"module/account/info"',
+//     data: `"${ethAddressJson}"`,
+//     prove: false,
+//   };
+//   const dataResult = await apiGet(url, { ...config, params });
+//   return dataResult;
+// };
 
 export const submitEvmTx = async (
   tx: string,

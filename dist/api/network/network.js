@@ -50,10 +50,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var _axios = axios_1.default.create({});
 _axios.defaults.transformResponse = [
@@ -396,50 +395,36 @@ var getTransactionDetails = function (hash, config) { return __awaiter(void 0, v
     });
 }); };
 exports.getTransactionDetails = getTransactionDetails;
-var getAbciNoce = function (data, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, ethAddressJson, url, params, dataResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _a.sent();
-                ethAddressJson = ledger.get_serialized_address(data);
-                url = getExplorerApiRoute() + "/abci_query";
-                params = {
-                    path: '"module/account/nonce"',
-                    data: "\"" + ethAddressJson + "\"",
-                    prove: false,
-                };
-                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
-            case 2:
-                dataResult = _a.sent();
-                return [2 /*return*/, dataResult];
-        }
-    });
-}); };
-exports.getAbciNoce = getAbciNoce;
-var getAbciInfo = function (data, config) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, ethAddressJson, url, params, dataResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                ledger = _a.sent();
-                ethAddressJson = ledger.get_serialized_address(data);
-                url = getExplorerApiRoute() + "/abci_query";
-                params = {
-                    path: '"module/account/info"',
-                    data: "\"" + ethAddressJson + "\"",
-                    prove: false,
-                };
-                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
-            case 2:
-                dataResult = _a.sent();
-                return [2 /*return*/, dataResult];
-        }
-    });
-}); };
-exports.getAbciInfo = getAbciInfo;
+// export const getAbciNoce = async (
+//   data: string,
+//   config?: Types.NetworkAxiosConfig,
+// ): Promise<Types.AbciNoceResult> => {
+//   const ledger = await getLedger();
+//   const ethAddressJson = ledger.get_serialized_address(data);
+//   const url = `${getExplorerApiRoute()}/abci_query`;
+//   const params = {
+//     path: '"module/account/nonce"',
+//     data: `"${ethAddressJson}"`,
+//     prove: false,
+//   };
+//   const dataResult = await apiGet(url, { ...config, params });
+//   return dataResult;
+// };
+// export const getAbciInfo = async (
+//   data: string,
+//   config?: Types.NetworkAxiosConfig,
+// ): Promise<Types.AbciInfoResult> => {
+//   const ledger = await getLedger();
+//   const ethAddressJson = ledger.get_serialized_address(data);
+//   const url = `${getExplorerApiRoute()}/abci_query`;
+//   const params = {
+//     path: '"module/account/info"',
+//     data: `"${ethAddressJson}"`,
+//     prove: false,
+//   };
+//   const dataResult = await apiGet(url, { ...config, params });
+//   return dataResult;
+// };
 var submitEvmTx = function (tx, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, params, dataResult;
     return __generator(this, function (_a) {
