@@ -102,7 +102,7 @@ describe('issueAsset (processor) (unit test)', function () {
                         spyGetAssetCode = jest.spyOn(AssetApi, 'getAssetCode').mockImplementation(function () {
                             return Promise.resolve(code);
                         });
-                        return [4 /*yield*/, issueAsset_1.processIssueAsset(payload)];
+                        return [4 /*yield*/, (0, issueAsset_1.processIssueAsset)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('issueAsset');

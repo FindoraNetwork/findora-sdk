@@ -83,7 +83,7 @@ describe('claim (processor) (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(address);
                         });
-                        return [4 /*yield*/, claim_1.processClaim(payload)];
+                        return [4 /*yield*/, (0, claim_1.processClaim)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('claim');
