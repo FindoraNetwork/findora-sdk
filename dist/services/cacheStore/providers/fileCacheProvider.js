@@ -63,7 +63,7 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, utils_1.readFile(filePath)];
+                return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
             case 2:
                 fileContent = _a.sent();
                 return [3 /*break*/, 4];
@@ -72,7 +72,7 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
                 throw new Error("could not read file \"" + filePath + "\". Error. " + error_1.message + " ");
             case 4:
                 try {
-                    cacheData = json_bigint_1.default({ useNativeBigInt: true }).parse(fileContent);
+                    cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).parse(fileContent);
                 }
                 catch (error) {
                     throw new Error("could not read parse cache data from  \"" + fileContent + "\". Error. " + error.message + " ");
@@ -88,13 +88,13 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
             case 0:
                 console.log("Writing file cache to \"" + filePath + "\"");
                 try {
-                    cacheData = json_bigint_1.default({ useNativeBigInt: true }).stringify(data);
+                    cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).stringify(data);
                 }
                 catch (err) {
                     throw new Error("can not stringify data for cache, \"" + err.message + "\"");
                 }
                 try {
-                    utils_1.createCacheDir(path_1.default.parse(filePath).dir);
+                    (0, utils_1.createCacheDir)(path_1.default.parse(filePath).dir);
                 }
                 catch (err) {
                     throw new Error("Failed to create directory, \"" + err.message + "\", \"dir path: " + path_1.default.parse(filePath).dir + "\"");
@@ -102,7 +102,7 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, utils_1.writeFile(filePath, cacheData)];
+                return [4 /*yield*/, (0, utils_1.writeFile)(filePath, cacheData)];
             case 2:
                 result = _a.sent();
                 return [3 /*break*/, 4];
