@@ -17,24 +17,28 @@ const { rpcUrl = 'http://127.0.0.1:8545', ethAccountToCheck, mnemonic } = rpcPar
 const extendedExecutionTimeout = 40000;
 
 let inbox;
+let accounts;
+
+const getPayloadWithGas = from => ({
+  gas: '1000000',
+  gasPrice: '500000',
+  from,
+});
 
 describe('Inbox (contract test)', () => {
   const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
 
   const web3 = new Web3(provider);
 
-  beforeEach(async done => {
+  beforeEach(async () => {
+    accounts = await web3.eth.getAccounts();
+
     inbox = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({
         data: bytecode,
         arguments: ['Hi there'],
       })
-      .send({
-        from: ethAccountToCheck,
-        gas: 1000000,
-        gasPrice: 700000000000,
-      });
-    done();
+      .send(getPayloadWithGas(accounts[0]));
   }, extendedExecutionTimeout);
 
   it('deploys a contract successfully', () => {
@@ -45,11 +49,7 @@ describe('Inbox (contract test)', () => {
     expect(message).toEqual('Hi there');
   });
   it('updates a message with a given value', async () => {
-    await inbox.methods.setMessage('New Message').send({
-      from: ethAccountToCheck,
-      gas: 1000000,
-      gasPrice: 700000000000,
-    });
+    await inbox.methods.setMessage('New Message').send(getPayloadWithGas(accounts[0]));
 
     const currentMessage = await inbox.methods.message().call();
     expect(currentMessage).toEqual('New Message');
