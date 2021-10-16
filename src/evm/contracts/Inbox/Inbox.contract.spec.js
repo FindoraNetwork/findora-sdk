@@ -1,33 +1,28 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 const assert = require('assert');
 const Web3 = require('web3');
-const contract = require('./compile');
-const HDWalletProvider = require('truffle-hdwallet-provider');
+const { interface, bytecode } = require('./compile');
+
+const HDWalletProvider = require('@truffle/hdwallet-provider');
+
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../../../.env_rpc_${process.env.RPC_ENV_NAME}`
   : `../../../../env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
-const extendedExecutionTimeout = 40000;
-
 const { rpc: rpcParams } = envConfig;
-const {
-  // RPC endpoint url
-  rpcUrl = 'http://127.0.0.1:8545',
-  // Sender account, it has to have tokens
-  ethAccountToCheck,
-  //Sender mnemonic (to be used in web3)
-  mnemonic,
-} = rpcParams;
+const { rpcUrl = 'http://127.0.0.1:8545', ethAccountToCheck, mnemonic } = rpcParams;
 
-const { interface, bytecode } = contract;
+const extendedExecutionTimeout = 40000;
 
 let inbox;
 
 describe('Inbox (contract test)', () => {
-  const provider = new HDWalletProvider(mnemonic, rpcUrl);
+  const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
 
   const web3 = new Web3(provider);
+
   beforeEach(async done => {
     inbox = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({
@@ -55,6 +50,7 @@ describe('Inbox (contract test)', () => {
       gas: 1000000,
       gasPrice: 700000000000,
     });
+
     const currentMessage = await inbox.methods.message().call();
     expect(currentMessage).toEqual('New Message');
   });
