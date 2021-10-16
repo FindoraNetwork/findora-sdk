@@ -6,5 +6,3 @@ export declare const sendFraTransactionSubmit: () => Promise<boolean>;
 export declare const sendFraToMultipleReceiversTransactionSubmit: () => Promise<boolean>;
 export declare const getBalance: () => Promise<boolean>;
 export declare const issueAndSendConfidentialAsset: () => Promise<boolean>;
-export declare const delegateFraTransactionSubmit: () => Promise<boolean>;
-export declare const delegateFraTransactionAndClaimRewards: () => Promise<boolean>;

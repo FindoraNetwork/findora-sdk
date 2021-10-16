@@ -70,6 +70,7 @@ const getFraBalance = async () => {
   const password = '1234';
 
   const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = PKEY_MINE2;
 
   const mString = PLATFORM_ACC_M_STRING;
 
@@ -274,8 +275,8 @@ const transferFraToSingleAddress = async () => {
  * Send fra to a single recepient
  */
 const transferFraToSingleRecepient = async () => {
-  const pkey = PKEY_MINE;
-  console.log(pkey);
+  const pkey = PKEY_LOCAL_FAUCET;
+
   const toPkeyMine2 = PKEY_MINE2;
 
   const password = '123';
@@ -301,8 +302,6 @@ const transferFraToSingleRecepient = async () => {
 
   console.log('send fra result handle!!', resultHandle);
 };
-
-transferFraToSingleRecepient();
 
 /**
  * Send fra to multiple recepients
