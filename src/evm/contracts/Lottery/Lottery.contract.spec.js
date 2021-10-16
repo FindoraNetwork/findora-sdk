@@ -3,7 +3,7 @@ const assert = require('assert');
 const Web3 = require('web3');
 const { interface, bytecode } = require('./compile');
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const sleep = require('sleep-promise');
 
@@ -65,8 +65,6 @@ const sendBatchOfTx = async (senderAccount, receiverAccount, amountToSend, txQua
 describe('Send a transaction and check the balances and confirmations', () => {
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
-
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 14 ~ beforeEach ~ accounts', accounts);
 
     contract = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({ data: bytecode })

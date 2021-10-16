@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/extend-expect';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 import Web3 from 'web3';
-import HDWalletProvider from '@truffle/hdwallet-provider';
+import HDWalletProvider from 'truffle-hdwallet-provider';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`

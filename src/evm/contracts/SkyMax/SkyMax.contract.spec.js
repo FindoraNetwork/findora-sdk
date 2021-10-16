@@ -7,7 +7,7 @@ const { interface, bytecode } = require('./compile');
 // const ganacheProvider = ganache.provider();
 // const web3 = new Web3(ganacheProvider);
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../../../.env_rpc_${process.env.RPC_ENV_NAME}`

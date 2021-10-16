@@ -78,7 +78,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'https://dev-mainnetmock.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org',
     // cacheProvider: FileCacheProvider,
     cacheProvider: providers_1.MemoryCacheProvider,
@@ -1257,7 +1258,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-// getFraBalance();
+getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1266,7 +1267,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
 // getDelegateInfo();
 // getTransferBuilderOperation();
 // createNewKeypair();
-transferFraToSingleRecepient();
+// transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

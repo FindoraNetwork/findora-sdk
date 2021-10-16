@@ -3,7 +3,7 @@ const assert = require('assert');
 const Web3 = require('web3');
 const { interface, bytecode } = require('./compile');
 
-const HDWalletProvider = require('@truffle/hdwallet-provider');
+const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../../../.env_rpc_${process.env.RPC_ENV_NAME}`

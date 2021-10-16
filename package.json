@@ -63,7 +63,6 @@
   "devDependencies": {
     "@testing-library/jest-dom": "^5.11.10",
     "@testing-library/user-event": "^13.1.5",
-    "@truffle/hdwallet-provider": "1.5.1",
     "@types/jest": "^26.0.14",
     "@types/json-bigint": "^1.0.0",
     "@types/lodash": "^4.14.170",
@@ -90,7 +89,7 @@
     "prettier": "^2.2.1",
     "solc": "0.4.17",
     "stream-browserify": "^3.0.0",
-    "truffle-hdwallet-provider": "0.0.3",
+    "truffle-hdwallet-provider": "1.0.17",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.13",
     "ts-node": "^9.1.1",
