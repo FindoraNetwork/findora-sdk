@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 const assert = require('assert');
-// const ganache = require('ganache-cli');
 const Web3 = require('web3');
-const sleep = require('sleep-promise');
-const Network = require('../../../api/network/network');
+const { interface, bytecode } = require('./compile');
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
+
+const sleep = require('sleep-promise');
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../../../.env_rpc_${process.env.RPC_ENV_NAME}`
@@ -15,47 +16,29 @@ const envConfig = require(`${envConfigFile}.json`);
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
-const provider = new HDWalletProvider(mnemonic, rpcUrl);
+const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
 
-const { interface, bytecode } = require('./compile');
-
-// const web3 = new Web3(ganache.provider());
 const web3 = new Web3(provider);
 
 let accounts;
 let contract;
 
-beforeEach(async () => {
-  const payload = {
-    id: 1,
-    method: 'eth_accounts',
-  };
-
-  const result = await Network.sendRpcCall(rpcUrl, payload);
-
-  accounts = result.response.result;
-
-  console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 14 ~ beforeEach ~ accounts', accounts);
-
-  contract = await new web3.eth.Contract(JSON.parse(interface)).deploy({ data: bytecode }).send({
-    from: accounts[0],
-    gas: '1000000',
-    gasPrice: '500000',
-  });
+const getPayloadWithGas = from => ({
+  gas: '1000000',
+  gasPrice: '500000',
+  from,
 });
 
-const sendTxToAccount = async (localWeb3, senderAccount, receiverAccount, amountToSend) => {
-  const value = localWeb3.utils.toWei(amountToSend, 'ether');
+const sendTxToAccount = async (senderAccount, receiverAccount, amountToSend) => {
+  const value = web3.utils.toWei(amountToSend, 'ether');
 
   const transactionObject = {
-    from: senderAccount,
+    ...getPayloadWithGas(senderAccount),
     to: receiverAccount,
     value,
-    gas: '1000000',
-    gasPrice: '500000',
   };
 
-  await localWeb3.eth
+  await web3.eth
     .sendTransaction(transactionObject)
     .on('error', async _error => {
       console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
@@ -67,17 +50,11 @@ const sendTxToAccount = async (localWeb3, senderAccount, receiverAccount, amount
     });
 };
 
-const sendBatchOfTx = async (sendrAccountIndex, receiverAccount, amountToSend, txQuantity) => {
-  const localProvider = new HDWalletProvider(mnemonic, rpcUrl, sendrAccountIndex);
-
-  const localWeb3 = new Web3(localProvider);
-
-  const senderAccount = accounts[sendrAccountIndex];
-
+const sendBatchOfTx = async (senderAccount, receiverAccount, amountToSend, txQuantity) => {
   let sent = 1;
 
   while (sent <= txQuantity) {
-    await sendTxToAccount(localWeb3, senderAccount, receiverAccount, amountToSend);
+    await sendTxToAccount(senderAccount, receiverAccount, amountToSend);
     sent += 1;
     await sleep(2000);
   }
@@ -86,29 +63,33 @@ const sendBatchOfTx = async (sendrAccountIndex, receiverAccount, amountToSend, t
 };
 
 describe('Send a transaction and check the balances and confirmations', () => {
+  beforeEach(async () => {
+    accounts = await web3.eth.getAccounts();
+
+    contract = await new web3.eth.Contract(JSON.parse(interface))
+      .deploy({ data: bytecode })
+      .send(getPayloadWithGas(accounts[0]));
+  });
+
   it('sends money to the contract and receives it back, verifies the sender balance and confirmations', async () => {
     let numberOfConfirmations = 0;
     let txReceipt = {};
     let txHash = '';
 
     await contract.methods.enter().send({
-      from: accounts[0],
-      gas: '1000000',
-      gasPrice: '500000',
+      ...getPayloadWithGas(accounts[0]),
       value: web3.utils.toWei('0.1', 'ether'),
     });
 
     const balanceContract = await web3.eth.getBalance(contract.options.address);
 
+    assert.ok(balanceContract > 0);
+
     const balanceBefore = await web3.eth.getBalance(accounts[0]);
 
     await contract.methods
       .pickWinner()
-      .send({
-        gas: '1000000',
-        gasPrice: '500000',
-        from: accounts[0],
-      })
+      .send(getPayloadWithGas(accounts[0]))
       .on('transactionHash', function (_hash) {
         txHash = _hash;
       })
@@ -125,18 +106,14 @@ describe('Send a transaction and check the balances and confirmations', () => {
     const balanceAfter = await web3.eth.getBalance(accounts[0]);
     const balanceDifference = balanceAfter - balanceBefore;
 
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 88 ~ it ~ balanceContract', balanceContract);
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 102 ~ it ~ account balanceBefore', balanceBefore);
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 82 ~ it ~ account balanceAfter', balanceAfter);
-    console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 123 ~ it ~ balanceDifference', balanceDifference);
-
     assert.ok(accounts.length > 0);
 
     assert.ok(balanceDifference > web3.utils.toWei('0.0999', 'ether'));
 
-    const accountIndex = 3;
+    const fromAddress = accounts[3];
+    const toAddress = accounts[2];
 
-    await sendBatchOfTx(accountIndex, accounts[2], '0.02', 13);
+    await sendBatchOfTx(fromAddress, toAddress, '0.02', 13);
 
     console.log('waiting for 2000 ms before final assettion');
 

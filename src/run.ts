@@ -22,7 +22,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'https://dev-mainnetmock.dev.findora.org',
   // hostUrl: 'https://prod-testnet.prod.findora.org',
   // cacheProvider: FileCacheProvider,
   cacheProvider: MemoryCacheProvider,
@@ -69,6 +70,7 @@ const getFraBalance = async () => {
   const password = '1234';
 
   const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = PKEY_MINE2;
 
   const mString = PLATFORM_ACC_M_STRING;
 
@@ -273,8 +275,8 @@ const transferFraToSingleAddress = async () => {
  * Send fra to a single recepient
  */
 const transferFraToSingleRecepient = async () => {
-  const pkey = PKEY_MINE;
-  console.log(pkey);
+  const pkey = PKEY_LOCAL_FAUCET;
+
   const toPkeyMine2 = PKEY_MINE2;
 
   const password = '123';
@@ -300,8 +302,6 @@ const transferFraToSingleRecepient = async () => {
 
   console.log('send fra result handle!!', resultHandle);
 };
-
-transferFraToSingleRecepient();
 
 /**
  * Send fra to multiple recepients
@@ -1145,7 +1145,7 @@ const ethProtocol = async () => {
   console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-// getFraBalance();
+getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
@@ -1154,7 +1154,7 @@ const ethProtocol = async () => {
 // getDelegateInfo();
 // getTransferBuilderOperation();
 // createNewKeypair();
-transferFraToSingleRecepient();
+// transferFraToSingleRecepient();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

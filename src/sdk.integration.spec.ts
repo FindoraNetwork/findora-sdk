@@ -1,13 +1,17 @@
 import * as Integration from './integration';
 
-const extendedExecutionTimeout = 20000;
+const extendedExecutionTimeout = 60000;
 
 describe('Findora SDK integration (integration test)', () => {
   describe('Custom Assets', () => {
-    it('Should create a simple transaction to define an asset', async () => {
-      const result = await Integration.defineAssetTransaction();
-      expect(result).toBe(true);
-    });
+    it(
+      'Should create a simple transaction to define an asset',
+      async () => {
+        const result = await Integration.defineAssetTransaction();
+        expect(result).toBe(true);
+      },
+      extendedExecutionTimeout,
+    );
     it(
       'Should define an asset and submit to the network',
       async () => {
@@ -67,22 +71,22 @@ describe('Findora SDK integration (integration test)', () => {
       expect(result).toBe(true);
     }, 5000);
   });
-  describe('Staking', () => {
-    it(
-      'Should get delegate tokens and see some rewards',
-      async () => {
-        const result = await Integration.delegateFraTransactionSubmit();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 13,
-    );
-    it(
-      'Should get delegate tokens and claim the rewards',
-      async () => {
-        const result = await Integration.delegateFraTransactionAndClaimRewards();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 25,
-    );
-  });
+  // describe('Staking', () => {
+  //   it(
+  //     'Should get delegate tokens and see some rewards',
+  //     async () => {
+  //       const result = await Integration.delegateFraTransactionSubmit();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 13,
+  //   );
+  //   it(
+  //     'Should get delegate tokens and claim the rewards',
+  //     async () => {
+  //       const result = await Integration.delegateFraTransactionAndClaimRewards();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 25,
+  //   );
+  // });
 });
