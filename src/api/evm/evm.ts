@@ -20,6 +20,7 @@ export const sendAccountToEvm = async (
     isAmountBlind: false,
     isTypeBlind: false,
   };
+
   let transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     address,
@@ -28,7 +29,13 @@ export const sendAccountToEvm = async (
     assetBlindRules,
   );
 
-  transactionBuilder = transactionBuilder.add_operation_convert_account(walletInfo.keypair, ethAddress);
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const convertAmount = BigInt(toWei(amount, decimals).toString());
+
+  transactionBuilder = transactionBuilder
+    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
+    .sign(walletInfo.keypair);
 
   return transactionBuilder;
 };

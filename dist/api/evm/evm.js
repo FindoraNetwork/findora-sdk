@@ -66,7 +66,7 @@ var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var api_1 = require("../../api");
 var bigNumber_1 = require("../../services/bigNumber");
 var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address, assetCode, assetBlindRules, transactionBuilder;
+    var ledger, address, assetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
@@ -81,7 +81,14 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
                 return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
             case 2:
                 transactionBuilder = _a.sent();
-                transactionBuilder = transactionBuilder.add_operation_convert_account(walletInfo.keypair, ethAddress);
+                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
+            case 3:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                convertAmount = BigInt(bigNumber_1.toWei(amount, decimals).toString());
+                transactionBuilder = transactionBuilder
+                    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
+                    .sign(walletInfo.keypair);
                 return [2 /*return*/, transactionBuilder];
         }
     });
