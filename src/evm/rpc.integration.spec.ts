@@ -21,8 +21,6 @@ let existingTxHashToCheck = '';
 
 const extendedExecutionTimeout = 20000;
 
-const ethContractAddressToReceive = '0xCC4e53d92f09C385FD9aEece3c1cd263addDbDE3';
-
 const {
   // RPC endpoint url
   rpcUrl = 'http://127.0.0.1:8545',
@@ -31,19 +29,27 @@ const {
   //Sender mnemonic (to be used in web3)
   mnemonic,
 } = rpcParams;
-console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
+console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 
 const provider = new HDWalletProvider(mnemonic, rpcUrl);
 
 const web3 = new Web3(provider);
 
+let accounts: string[];
+
+const getPayloadWithGas = (from: string) => ({
+  gas: '1000000',
+  gasPrice: '500000',
+  from,
+});
+
 beforeAll(async (done: any) => {
+  accounts = await web3.eth.getAccounts();
+
   const transactionObject = {
-    from: ethAccountToCheck,
-    to: ethContractAddressToReceive,
-    value: '1000000000000000',
-    gas: 1000000,
-    gasPrice: 700000000000,
+    ...getPayloadWithGas(accounts[0]),
+    to: accounts[1],
+    value: web3.utils.toWei('0.1', 'ether'),
   };
 
   web3.eth
@@ -189,8 +195,8 @@ describe('Api Endpoint (rpc test)', () => {
 
         const extraParams = [
           {
-            from: ethAccountToCheck,
-            to: ethContractAddressToReceive,
+            from: accounts[0],
+            to: accounts[1],
             value: 0,
           },
         ];
@@ -223,8 +229,8 @@ describe('Api Endpoint (rpc test)', () => {
 
         const extraParams = [
           {
-            from: ethAccountToCheck,
-            to: ethContractAddressToReceive,
+            from: accounts[0],
+            to: accounts[1],
             data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
           },
         ];
@@ -393,7 +399,7 @@ describe('Api Endpoint (rpc test)', () => {
       async () => {
         const msgId = 1;
 
-        const extraParams = [ethAccountToCheck, 'latest'];
+        const extraParams = [accounts[0], 'latest'];
 
         const payload = {
           id: msgId,
@@ -492,7 +498,7 @@ describe('Api Endpoint (rpc test)', () => {
       async () => {
         const msgId = 1;
 
-        const extraParams = [ethContractAddressToReceive, 'latest'];
+        const extraParams = [accounts[1], 'latest'];
 
         const payload = {
           id: msgId,
@@ -554,8 +560,8 @@ describe('Api Endpoint (rpc test)', () => {
 
         const extraParams = [
           {
-            from: ethAccountToCheck,
-            to: ethContractAddressToReceive,
+            from: accounts[0],
+            to: accounts[1],
             data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
           },
         ];
@@ -624,11 +630,10 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-            rpcUrl,
-            payload,
-          );
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+          rpcUrl,
+          payload,
+        );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');
@@ -657,11 +662,10 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-            rpcUrl,
-            payload,
-          );
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+          rpcUrl,
+          payload,
+        );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');
@@ -716,7 +720,7 @@ describe('Api Endpoint (rpc test)', () => {
 
         const extraParams = [
           {
-            address: ethContractAddressToReceive,
+            address: accounts[0],
           },
         ];
 

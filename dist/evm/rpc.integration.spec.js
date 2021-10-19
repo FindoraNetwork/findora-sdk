@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -74,7 +85,6 @@ var existingBlockHashToCheck = '';
 // This would be initialized with the data from the setup process
 var existingTxHashToCheck = '';
 var extendedExecutionTimeout = 20000;
-var ethContractAddressToReceive = '0xCC4e53d92f09C385FD9aEece3c1cd263addDbDE3';
 var 
 // RPC endpoint url
 _a = rpcParams.rpcUrl, 
@@ -84,63 +94,68 @@ rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a,
 ethAccountToCheck = rpcParams.ethAccountToCheck, 
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
-console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 34 ~ rpcParams', rpcParams);
+console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl);
 var web3 = new web3_1.default(provider);
+var accounts;
+var getPayloadWithGas = function (from) { return ({
+    gas: '1000000',
+    gasPrice: '500000',
+    from: from,
+}); };
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionObject;
     return __generator(this, function (_a) {
-        transactionObject = {
-            from: ethAccountToCheck,
-            to: ethContractAddressToReceive,
-            value: '1000000000000000',
-            gas: 1000000,
-            gasPrice: 700000000000,
-        };
-        web3.eth
-            .sendTransaction(transactionObject)
-            .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, web3.eth.getAccounts()];
+            case 1:
+                accounts = _a.sent();
+                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
+                web3.eth
+                    .sendTransaction(transactionObject)
+                    .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .once('sent', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .once('transactionHash', function (_hash) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .once('receipt', function (_receipt) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .on('error', function (_error) { return __awaiter(void 0, void 0, void 0, function () {
+                    return __generator(this, function (_a) {
+                        console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+                        return [2 /*return*/];
+                    });
+                }); })
+                    .then(function (receipt) {
+                    // will be fired once the receipt is mined
+                    var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber;
+                    // This block number has to be from the block `existingBlockHashToCheck`
+                    existingBlockNumberToCheck = blockNumber;
+                    // This block hash must be from the block `existingBlockNumberToCheck`
+                    existingBlockHashToCheck = blockHash;
+                    // This tx hash must be from the block `existingBlockNumberToCheck`
+                    existingTxHashToCheck = transactionHash;
+                    done();
+                });
                 return [2 /*return*/];
-            });
-        }); })
-            .once('sent', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
-                return [2 /*return*/];
-            });
-        }); })
-            .once('transactionHash', function (_hash) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
-                return [2 /*return*/];
-            });
-        }); })
-            .once('receipt', function (_receipt) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
-                return [2 /*return*/];
-            });
-        }); })
-            .on('error', function (_error) { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
-                return [2 /*return*/];
-            });
-        }); })
-            .then(function (receipt) {
-            // will be fired once the receipt is mined
-            var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber;
-            // This block number has to be from the block `existingBlockHashToCheck`
-            existingBlockNumberToCheck = blockNumber;
-            // This block hash must be from the block `existingBlockNumberToCheck`
-            existingBlockHashToCheck = blockHash;
-            // This tx hash must be from the block `existingBlockNumberToCheck`
-            existingTxHashToCheck = transactionHash;
-            done();
-        });
-        return [2 /*return*/];
+        }
     });
 }); }, extendedExecutionTimeout);
 describe('Api Endpoint (rpc test)', function () {
@@ -258,8 +273,8 @@ describe('Api Endpoint (rpc test)', function () {
                         msgId = 1;
                         extraParams = [
                             {
-                                from: ethAccountToCheck,
-                                to: ethContractAddressToReceive,
+                                from: accounts[0],
+                                to: accounts[1],
                                 value: 0,
                             },
                         ];
@@ -291,8 +306,8 @@ describe('Api Endpoint (rpc test)', function () {
                         msgId = 1;
                         extraParams = [
                             {
-                                from: ethAccountToCheck,
-                                to: ethContractAddressToReceive,
+                                from: accounts[0],
+                                to: accounts[1],
                                 data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
                             },
                         ];
@@ -461,7 +476,7 @@ describe('Api Endpoint (rpc test)', function () {
                 switch (_a.label) {
                     case 0:
                         msgId = 1;
-                        extraParams = [ethAccountToCheck, 'latest'];
+                        extraParams = [accounts[0], 'latest'];
                         payload = {
                             id: msgId,
                             method: 'eth_getTransactionCount',
@@ -548,7 +563,7 @@ describe('Api Endpoint (rpc test)', function () {
                 switch (_a.label) {
                     case 0:
                         msgId = 1;
-                        extraParams = [ethContractAddressToReceive, 'latest'];
+                        extraParams = [accounts[1], 'latest'];
                         payload = {
                             id: msgId,
                             method: 'eth_getCode',
@@ -606,8 +621,8 @@ describe('Api Endpoint (rpc test)', function () {
                         msgId = 1;
                         extraParams = [
                             {
-                                from: ethAccountToCheck,
-                                to: ethContractAddressToReceive,
+                                from: accounts[0],
+                                to: accounts[1],
                                 data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
                             },
                         ];
@@ -753,7 +768,7 @@ describe('Api Endpoint (rpc test)', function () {
                         msgId = 1;
                         extraParams = [
                             {
-                                address: ethContractAddressToReceive,
+                                address: accounts[0],
                             },
                         ];
                         payload = {

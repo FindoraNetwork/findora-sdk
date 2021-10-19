@@ -10,7 +10,6 @@
   "hostUrl": "http://127.0.0.1",
   "rpc": {
     "rpcUrl": "http://127.0.0.1:8545",
-    "ethAccountToCheck": "0xffXXXX",
     "mnemonic": "XXX XX"
   }
 }

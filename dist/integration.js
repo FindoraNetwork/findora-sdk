@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
+exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
 var api_1 = require("./api");
@@ -78,7 +78,7 @@ var sdkEnv = {
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
-var waitingTimeBeforeCheckTxStatus = 18000;
+var waitingTimeBeforeCheckTxStatus = 19000;
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, receiverOne = walletKeys.receiverOne;
@@ -89,7 +89,7 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
         switch (_a.label) {
             case 0:
                 console.log("\uD83D\uDE80 ~ " + operationName + " ~ txHandle", txHandle);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus + 1000)];
+                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
             case 1:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
@@ -210,7 +210,7 @@ var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0
             case 5:
                 isTxSent = _a.sent();
                 if (!isTxSent) {
-                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit define asset");
+                    console.log("\uD83D\uDE80 ~ defineAssetTransactionSubmit ~ Could not submit define asset");
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -641,263 +641,158 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
     });
 }); };
 exports.issueAndSendConfidentialAsset = issueAndSendConfidentialAsset;
-var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var Ledger, pkey, walletInfo, toWalletInfo, numbersToDelegate, numbersToSend, fraCode, assetBlindRules, isFundSuccesfull, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, isTxDelegated, delegateInfo, isRewardsAdded;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
-                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                numbersToDelegate = '1000000';
-                numbersToSend = '1000010';
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend)];
-            case 5:
-                isFundSuccesfull = _a.sent();
-                if (!isFundSuccesfull) {
-                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account");
-                    return [2 /*return*/, false];
-                }
-                delegationTargetPublicKey = Ledger.get_delegation_target_address();
-                return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 6:
-                delegationTargetAddress = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 7:
-                formattedVlidators = _a.sent();
-                validatorAddress = formattedVlidators.validators[0].addr;
-                return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 8:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 9:
-                resultHandle = _a.sent();
-                return [4 /*yield*/, getTxSid('delegate', resultHandle)];
-            case 10:
-                isTxDelegated = _a.sent();
-                if (!isTxDelegated) {
-                    console.log("\uD83D\uDE80  ~ delegateFraTransactionSubmit ~ Could not submit delegation");
-                    return [2 /*return*/, false];
-                }
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
-                // 10 blocks
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 11:
-                // 10 blocks
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 12:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 13:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 14:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 15:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 16:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 17:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 19:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 20:
-                _a.sent();
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 21:
-                delegateInfo = _a.sent();
-                isRewardsAdded = Number(delegateInfo.rewards) > 0;
-                if (!isRewardsAdded) {
-                    console.log('🚀  ~ delegateFraTransactionSubmit ~ There is no rewards yet! , delegateInfo', delegateInfo);
-                    return [2 /*return*/, false];
-                }
-                console.log('🚀  ~ delegateFraTransactionSubmit ~ accumulated rewards ', delegateInfo.rewards);
-                return [2 /*return*/, true];
-        }
-    });
-}); };
-exports.delegateFraTransactionSubmit = delegateFraTransactionSubmit;
-var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, numbersToDelegate, numbersToSend, fraCode, assetBlindRules, isFundSuccesfull, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, isTxDelegated, delegateInfo, amountToClaim, isRewardsAdded, balanceBefore, transactionBuilderClaim, resultHandleClaim, isTxClaimed, balanceAfter, balanceBeforeBN, balanceAfterBN, isClaimSuccessfull;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
-                password = '123';
-                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                console.log('🚀 ~ file: integration.ts ~ line 1096 ~ delegateFraTransactionAndClaimRewards ~ toWalletInfo', toWalletInfo);
-                numbersToDelegate = '1000001';
-                numbersToSend = '1000010';
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend)];
-            case 5:
-                isFundSuccesfull = _a.sent();
-                if (!isFundSuccesfull) {
-                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account");
-                    return [2 /*return*/, false];
-                }
-                delegationTargetPublicKey = Ledger.get_delegation_target_address();
-                return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 6:
-                delegationTargetAddress = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 7:
-                formattedVlidators = _a.sent();
-                validatorAddress = formattedVlidators.validators[0].addr;
-                return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 8:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 9:
-                resultHandle = _a.sent();
-                return [4 /*yield*/, getTxSid('delegate', resultHandle)];
-            case 10:
-                isTxDelegated = _a.sent();
-                if (!isTxDelegated) {
-                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation");
-                    return [2 /*return*/, false];
-                }
-                console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 11:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 12:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 13:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 14:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 15:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 16:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 17:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 19:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 20:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 21:
-                _a.sent();
-                console.log('delegateFraTransactionAndClaimRewards - checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 22:
-                delegateInfo = _a.sent();
-                amountToClaim = delegateInfo.rewards;
-                isRewardsAdded = Number(amountToClaim) > 0;
-                if (!isRewardsAdded) {
-                    console.log('delegateFraTransactionAndClaimRewards - There is no rewards yet! , delegateInfo', delegateInfo);
-                    return [2 /*return*/, false];
-                }
-                console.log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 23:
-                balanceBefore = _a.sent();
-                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
-                return [4 /*yield*/, api_1.Staking.claim(toWalletInfo, amountToClaim)];
-            case 24:
-                transactionBuilderClaim = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderClaim)];
-            case 25:
-                resultHandleClaim = _a.sent();
-                return [4 /*yield*/, getTxSid('clam', resultHandleClaim)];
-            case 26:
-                isTxClaimed = _a.sent();
-                if (!isTxClaimed) {
-                    console.log("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim");
-                    return [2 /*return*/, false];
-                }
-                console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking balance of claimed rewards');
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 27:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 28:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 29:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 30:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 31:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 32:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 33:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 34:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 35:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 36:
-                _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
-            case 37:
-                _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 38:
-                balanceAfter = _a.sent();
-                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
-                balanceBeforeBN = bigNumber.create(balanceBefore);
-                balanceAfterBN = bigNumber.create(balanceAfter);
-                isClaimSuccessfull = balanceAfterBN.gte(balanceBeforeBN);
-                console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
-                return [2 /*return*/, isClaimSuccessfull];
-        }
-    });
-}); };
-exports.delegateFraTransactionAndClaimRewards = delegateFraTransactionAndClaimRewards;
+// export const delegateFraTransactionSubmit = async () => {
+//   console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
+//   // send part
+//   const Ledger = await getLedger();
+//   const pkey = mainFaucet;
+//   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
+//   const toWalletInfo = await KeypairApi.createKeypair(password);
+//   const numbersToDelegate = '1000000';
+//   const numbersToSend = '1000010';
+//   const fraCode = await AssetApi.getFraAssetCode();
+//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+//   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
+//   if (!isFundSuccesfull) {
+//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+//     return false;
+//   }
+//   // delegate part
+//   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+//   const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
+//   const formattedVlidators = await StakingApi.getValidatorList();
+//   const validatorAddress = formattedVlidators.validators[0].addr;
+//   const transactionBuilder = await StakingApi.delegate(
+//     toWalletInfo,
+//     delegationTargetAddress,
+//     numbersToDelegate,
+//     fraCode,
+//     validatorAddress,
+//     assetBlindRules,
+//   );
+//   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+//   const isTxDelegated = await getTxSid('delegate', resultHandle);
+//   if (!isTxDelegated) {
+//     console.log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit delegation`);
+//     return false;
+//   }
+//   console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
+//   // 10 blocks
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
+//   const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
+//   const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+//   if (!isRewardsAdded) {
+//     console.log('🚀  ~ delegateFraTransactionSubmit ~ There is no rewards yet! , delegateInfo', delegateInfo);
+//     return false;
+//   }
+//   console.log('🚀  ~ delegateFraTransactionSubmit ~ accumulated rewards ', delegateInfo.rewards);
+//   return true;
+// };
+// export const delegateFraTransactionAndClaimRewards = async () => {
+//   console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
+//   const password = '123';
+//   const Ledger = await getLedger();
+//   const pkey = mainFaucet;
+//   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
+//   const toWalletInfo = await KeypairApi.createKeypair(password);
+//   console.log(
+//     '🚀 ~ file: integration.ts ~ line 1096 ~ delegateFraTransactionAndClaimRewards ~ toWalletInfo',
+//     toWalletInfo,
+//   );
+//   const numbersToDelegate = '1000001';
+//   const numbersToSend = '1000010';
+//   const fraCode = await AssetApi.getFraAssetCode();
+//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+//   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
+//   if (!isFundSuccesfull) {
+//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+//     return false;
+//   }
+//   // delegate
+//   const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+//   const delegationTargetAddress = await KeypairApi.getAddressByPublicKey(delegationTargetPublicKey);
+//   const formattedVlidators = await StakingApi.getValidatorList();
+//   const validatorAddress = formattedVlidators.validators[0].addr;
+//   const transactionBuilder = await StakingApi.delegate(
+//     toWalletInfo,
+//     delegationTargetAddress,
+//     numbersToDelegate,
+//     fraCode,
+//     validatorAddress,
+//     assetBlindRules,
+//   );
+//   const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+//   // w2
+//   const isTxDelegated = await getTxSid('delegate', resultHandle);
+//   if (!isTxDelegated) {
+//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation`);
+//     return false;
+//   }
+//   console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   console.log('delegateFraTransactionAndClaimRewards - checking rewards now');
+//   const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
+//   const amountToClaim = delegateInfo.rewards;
+//   const isRewardsAdded = Number(amountToClaim) > 0;
+//   if (!isRewardsAdded) {
+//     console.log(
+//       'delegateFraTransactionAndClaimRewards - There is no rewards yet! , delegateInfo',
+//       delegateInfo,
+//     );
+//     return false;
+//   }
+//   console.log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
+//   // claim
+//   const balanceBefore = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
+//   const transactionBuilderClaim = await StakingApi.claim(toWalletInfo, amountToClaim);
+//   const resultHandleClaim = await TransactionApi.submitTransaction(transactionBuilderClaim);
+//   // w 10
+//   const isTxClaimed = await getTxSid('clam', resultHandleClaim);
+//   if (!isTxClaimed) {
+//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim`);
+//     return false;
+//   }
+//   console.log(
+//     'delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking balance of claimed rewards',
+//   );
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   await sleep(waitingTimeBeforeCheckTxStatus);
+//   const balanceAfter = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
+//   const balanceBeforeBN = bigNumber.create(balanceBefore);
+//   const balanceAfterBN = bigNumber.create(balanceAfter);
+//   const isClaimSuccessfull = balanceAfterBN.gte(balanceBeforeBN);
+//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
+//   return isClaimSuccessfull;
+// };
 //# sourceMappingURL=integration.js.map

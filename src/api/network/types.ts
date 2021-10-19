@@ -394,12 +394,15 @@ export interface EthGetStorageAtRpcResult extends NetworkAxiosDataResult {
   response?: EthGetStorageAtRpcResponse;
 }
 
+export interface EthRpcBlock {
+  hash: string;
+  parentHash: string;
+  number: string;
+}
+
 // eth_getBlockByHash
 export interface EthGetBlockByHashRpcResponse extends EthMainRpcResponse {
-  result: {
-    hash: string;
-    parentHash: string;
-  };
+  result: EthRpcBlock;
 }
 
 export interface EthGetBlockByHashRpcResult extends NetworkAxiosDataResult {
@@ -408,10 +411,7 @@ export interface EthGetBlockByHashRpcResult extends NetworkAxiosDataResult {
 
 // eth_getBlockByNumber
 export interface EthGetBlockByNumberRpcResponse extends EthMainRpcResponse {
-  result: {
-    hash: string;
-    parentHash: string;
-  };
+  result: EthRpcBlock;
 }
 
 export interface EthGetBlockByNumberRpcResult extends NetworkAxiosDataResult {

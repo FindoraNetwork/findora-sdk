@@ -5,6 +5,7 @@ import * as Staking from './staking';
 import * as Transaction from '../transaction/transaction';
 import * as Fee from '../../services/fee';
 import * as KeypairApi from '../keypair/keypair';
+import * as SdkAsset from '../sdkAsset/sdkAsset';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;
@@ -404,6 +405,18 @@ describe('staking (unit test)', () => {
           return (fakeTransactionBuilder as unknown) as TransactionBuilder;
         });
 
+      const decimals = 6;
+
+      const fakeLedgerAssetDetails = ({
+        assetRules: {
+          decimals,
+        },
+      } as unknown) as FindoraWallet.IAsset;
+
+      const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+        return Promise.resolve(fakeLedgerAssetDetails);
+      });
+
       const address = 'myAddress';
       const assetCode = 'myAssetCode';
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -421,6 +434,7 @@ describe('staking (unit test)', () => {
         assetBlindRules,
       );
 
+      expect(spyGetAssetDetails).toHaveBeenCalledWith(assetCode);
       expect(spyTransactionSendToaddress).toHaveBeenCalledWith(
         walletInfo,
         address,
@@ -435,6 +449,8 @@ describe('staking (unit test)', () => {
         validator,
       );
       expect(result).toBe(fakeTransactionBuilder);
+
+      spyGetAssetDetails.mockRestore();
 
       spyTransactionSendToaddress.mockRestore();
       spyAddOperationDelegate.mockRestore();

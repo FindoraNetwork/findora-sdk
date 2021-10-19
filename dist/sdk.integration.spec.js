@@ -56,7 +56,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Integration = __importStar(require("./integration"));
-var extendedExecutionTimeout = 20000;
+var extendedExecutionTimeout = 60000;
 describe('Findora SDK integration (integration test)', function () {
     describe('Custom Assets', function () {
         it('Should create a simple transaction to define an asset', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -70,7 +70,7 @@ describe('Findora SDK integration (integration test)', function () {
                         return [2 /*return*/];
                 }
             });
-        }); });
+        }); }, extendedExecutionTimeout);
         it('Should define an asset and submit to the network', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
@@ -162,31 +162,23 @@ describe('Findora SDK integration (integration test)', function () {
             });
         }); }, 5000);
     });
-    describe('Staking', function () {
-        it('Should get delegate tokens and see some rewards', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.delegateFraTransactionSubmit()];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout * 13);
-        it('Should get delegate tokens and claim the rewards', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.delegateFraTransactionAndClaimRewards()];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout * 25);
-    });
+    // describe('Staking', () => {
+    //   it(
+    //     'Should get delegate tokens and see some rewards',
+    //     async () => {
+    //       const result = await Integration.delegateFraTransactionSubmit();
+    //       expect(result).toBe(true);
+    //     },
+    //     extendedExecutionTimeout * 13,
+    //   );
+    //   it(
+    //     'Should get delegate tokens and claim the rewards',
+    //     async () => {
+    //       const result = await Integration.delegateFraTransactionAndClaimRewards();
+    //       expect(result).toBe(true);
+    //     },
+    //     extendedExecutionTimeout * 25,
+    //   );
+    // });
 });
-//# sourceMappingURL=integration.spec.js.map
+//# sourceMappingURL=sdk.integration.spec.js.map

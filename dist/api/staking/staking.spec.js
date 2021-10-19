@@ -59,6 +59,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Staking = __importStar(require("./staking"));
 var Transaction = __importStar(require("../transaction/transaction"));
 var Fee = __importStar(require("../../services/fee"));
+var SdkAsset = __importStar(require("../sdkAsset/sdkAsset"));
 describe('staking (unit test)', function () {
     describe('undelegate', function () {
         it('undelegates all funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -416,7 +417,7 @@ describe('staking (unit test)', function () {
     });
     describe('delegate', function () {
         it('delegates funds', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, spyTransactionSendToaddress, spyAddOperationDelegate, address, assetCode, walletInfo, amount, validator, assetBlindRules, result;
+            var fakeTransactionBuilder, spyTransactionSendToaddress, spyAddOperationDelegate, decimals, fakeLedgerAssetDetails, spyGetAssetDetails, address, assetCode, walletInfo, amount, validator, assetBlindRules, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -433,6 +434,15 @@ describe('staking (unit test)', function () {
                             .mockImplementation(function () {
                             return fakeTransactionBuilder;
                         });
+                        decimals = 6;
+                        fakeLedgerAssetDetails = {
+                            assetRules: {
+                                decimals: decimals,
+                            },
+                        };
+                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
+                            return Promise.resolve(fakeLedgerAssetDetails);
+                        });
                         address = 'myAddress';
                         assetCode = 'myAssetCode';
                         walletInfo = { publickey: 'senderPub' };
@@ -442,9 +452,11 @@ describe('staking (unit test)', function () {
                         return [4 /*yield*/, Staking.delegate(walletInfo, address, amount, assetCode, validator, assetBlindRules)];
                     case 1:
                         result = _a.sent();
+                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetCode);
                         expect(spyTransactionSendToaddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
                         expect(spyAddOperationDelegate).toHaveBeenCalledWith(walletInfo.keypair, BigInt(amount) * BigInt(Math.pow(10, 6)), validator);
                         expect(result).toBe(fakeTransactionBuilder);
+                        spyGetAssetDetails.mockRestore();
                         spyTransactionSendToaddress.mockRestore();
                         spyAddOperationDelegate.mockRestore();
                         return [2 /*return*/];
