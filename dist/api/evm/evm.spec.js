@@ -92,7 +92,7 @@ describe('evm (unit test)', function () {
                     case 2:
                         result = _a.sent();
                         expect(spyTransactionSendToaddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
-                        expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(walletInfo.keypair, ethAddress);
+                        expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(walletInfo.keypair, ethAddress, BigInt(amount) * BigInt(Math.pow(10, 6)));
                         expect(result).toBe(fakeTransactionBuilder);
                         spyTransactionSendToaddress.mockRestore();
                         spyAddOperationConvertAccount.mockRestore();

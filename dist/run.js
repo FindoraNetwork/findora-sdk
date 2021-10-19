@@ -67,7 +67,7 @@ var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var api_2 = require("./api");
+// import { Evm } from './api';
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 18000;
@@ -1190,17 +1190,11 @@ exports.unstakeFraTransactionSubmit = unstakeFraTransactionSubmit;
 var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
     var fraAddress, amount, ethPrivate, ethAddress;
     return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                fraAddress = FRA_ADDRESS;
-                amount = '1';
-                ethPrivate = ETH_PRIVATE;
-                ethAddress = ETH_ADDRESS;
-                return [4 /*yield*/, api_2.Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress)];
-            case 1:
-                _a.sent();
-                return [2 /*return*/];
-        }
+        fraAddress = FRA_ADDRESS;
+        amount = '1';
+        ethPrivate = ETH_PRIVATE;
+        ethAddress = ETH_ADDRESS;
+        return [2 /*return*/];
     });
 }); };
 var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, function () {

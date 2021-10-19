@@ -443,7 +443,7 @@ describe('staking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(spyTransactionSendToaddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
-                        expect(spyAddOperationDelegate).toHaveBeenCalledWith(walletInfo.keypair, validator);
+                        expect(spyAddOperationDelegate).toHaveBeenCalledWith(walletInfo.keypair, BigInt(amount) * BigInt(Math.pow(10, 6)), validator);
                         expect(result).toBe(fakeTransactionBuilder);
                         spyTransactionSendToaddress.mockRestore();
                         spyAddOperationDelegate.mockRestore();

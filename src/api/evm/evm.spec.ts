@@ -24,18 +24,18 @@ describe('evm (unit test)', () => {
     it('sendAccountToEvm funds', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_operation_convert_account: jest.fn(() => {
-          return fakeTransactionBuilder as unknown as TransactionBuilder;
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
         }),
       };
 
       const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
-        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
+        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
       });
 
       const spyAddOperationConvertAccount = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_convert_account')
         .mockImplementation(() => {
-          return fakeTransactionBuilder as unknown as TransactionBuilder;
+          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
         });
       const ledger = await getLedger();
       const address = ledger.base64_to_bech32(ledger.get_coinbase_address());
@@ -55,7 +55,11 @@ describe('evm (unit test)', () => {
         assetCode,
         assetBlindRules,
       );
-      expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(walletInfo.keypair, ethAddress);
+      expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(
+        walletInfo.keypair,
+        ethAddress,
+        BigInt(amount) * BigInt(10 ** 6),
+      );
       expect(result).toBe(fakeTransactionBuilder);
 
       spyTransactionSendToaddress.mockRestore();

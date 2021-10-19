@@ -8,7 +8,7 @@ import { MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
-import { Evm } from './api';
+// import { Evm } from './api';
 import sleep from 'sleep-promise';
 
 dotenv.config();
@@ -1091,7 +1091,7 @@ const sendEvmToAccount = async () => {
   const amount = '1';
   const ethPrivate = ETH_PRIVATE;
   const ethAddress = ETH_ADDRESS;
-  await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
+  // await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
 };
 
 const ethProtocol = async () => {
