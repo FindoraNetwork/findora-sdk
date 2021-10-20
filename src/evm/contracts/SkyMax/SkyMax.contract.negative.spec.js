@@ -14,10 +14,6 @@ const envConfig = require(`${envConfigFile}.json`);
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
-const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
-
-const web3 = new Web3(provider);
-
 let accounts;
 let contract;
 
@@ -28,6 +24,10 @@ const getPayloadWithGas = from => ({
 });
 
 describe('SkyMax Contract (contract test negative)', () => {
+  const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
+
+  const web3 = new Web3(provider);
+
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
 
