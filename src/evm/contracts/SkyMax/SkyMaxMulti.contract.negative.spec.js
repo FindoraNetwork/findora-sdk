@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 const assert = require('assert');
 const Web3 = require('web3');
-const { interface, bytecode } = require('./compile');
+const { interface: interfaceD, bytecode: bytecodeD } = require('./compileDeployed');
+const { interface: interfaceE, bytecode: bytecodeE } = require('./compileExisting');
 
 const HDWalletProvider = require('truffle-hdwallet-provider');
 
@@ -15,7 +16,8 @@ const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
 let accounts;
-let contract;
+let contractDeployed;
+let contractExisting;
 
 const getPayloadWithGas = from => ({
   gas: '1000000',
@@ -23,7 +25,7 @@ const getPayloadWithGas = from => ({
   from,
 });
 
-describe('SkyMax Contract (contract test negative)', () => {
+describe('SkyMaxMulti Contract (contract test negative)', () => {
   const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
 
   const web3 = new Web3(provider);
@@ -31,8 +33,12 @@ describe('SkyMax Contract (contract test negative)', () => {
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
 
-    contract = await new web3.eth.Contract(JSON.parse(interface))
-      .deploy({ data: bytecode, arguments: ['Hi there'] })
+    contractDeployed = await new web3.eth.Contract(JSON.parse(interfaceD))
+      .deploy({ data: bytecodeD, arguments: [123] })
+      .send(getPayloadWithGas(accounts[0]));
+
+    contractExisting = await new web3.eth.Contract(JSON.parse(interfaceE))
+      .deploy({ data: bytecodeE, arguments: [contractDeployed.options.address] })
       .send(getPayloadWithGas(accounts[0]));
   });
 
@@ -40,7 +46,7 @@ describe('SkyMax Contract (contract test negative)', () => {
     let errorMessage = '';
 
     try {
-      await contract.methods.enter().send({
+      await contractExisting.methods.enter_Signature().send({
         ...getPayloadWithGas(accounts[0]),
         value: 'aaaaaa',
       });
@@ -54,7 +60,7 @@ describe('SkyMax Contract (contract test negative)', () => {
     let errorMessage = '';
 
     try {
-      await contract.methods.setMessage().send(getPayloadWithGas(accounts[0]));
+      await contractExisting.methods.setA_Signature().send(getPayloadWithGas(accounts[0]));
     } catch (err) {
       errorMessage = err.message;
     }
@@ -65,13 +71,13 @@ describe('SkyMax Contract (contract test negative)', () => {
     let errorMessage = '';
 
     try {
-      await contract.methods.setMessage().send(getPayloadWithGas(accounts[0]));
+      await contractExisting.methods.setA_Signature().send(getPayloadWithGas(accounts[0]));
     } catch (err) {
       errorMessage = err.message;
     }
     assert.ok(errorMessage);
 
-    const currentMessage = await contract.methods.message().call();
-    expect(currentMessage).toEqual('Hi there');
+    const currentMessage = await contractDeployed.methods.a().call();
+    expect(currentMessage).toEqual('123');
   });
 });
