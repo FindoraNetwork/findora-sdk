@@ -95,7 +95,7 @@ ethAccountToCheck = rpcParams.ethAccountToCheck,
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
-var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl);
+var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
 var web3 = new web3_1.default(provider);
 var accounts;
 var getPayloadWithGas = function (from) { return ({
@@ -110,7 +110,7 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
             case 0: return [4 /*yield*/, web3.eth.getAccounts()];
             case 1:
                 accounts = _a.sent();
-                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
+                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether'), gasPrice: '10000000001' });
                 web3.eth
                     .sendTransaction(transactionObject)
                     .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {

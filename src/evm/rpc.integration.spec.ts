@@ -31,7 +31,7 @@ const {
 } = rpcParams;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 
-const provider = new HDWalletProvider(mnemonic, rpcUrl);
+const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
 const web3 = new Web3(provider);
 
@@ -45,11 +45,11 @@ const getPayloadWithGas = (from: string) => ({
 
 beforeAll(async (done: any) => {
   accounts = await web3.eth.getAccounts();
-
   const transactionObject = {
     ...getPayloadWithGas(accounts[0]),
     to: accounts[1],
     value: web3.utils.toWei('0.1', 'ether'),
+    gasPrice: '10000000001',
   };
 
   web3.eth
