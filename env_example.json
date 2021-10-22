@@ -1,15 +1,15 @@
 {
   "keys": {
-    "mainFaucet": "p-9UpNFzuyptVhdMrNj2tyQqFrYaC5lqBvWrEsSKc-g=",
-    "senderOne": "ZbGRFBqZC_wD4SBfAbxqh17BG-y-jTbkeLNs06FUHJY=",
-    "senderTwo": "2p2Pmy9VOsgVQfnt4pz77Cfr-JWM8IC97VIHt8ATvBE=",
-    "receiverOne": "o9xuRVejhJ5iLCTkqfjyWfoCDmJPB4clklfyozCw5Xg=",
-    "receiverTwo": "lr4eDDnOHPo8DsLL12bQtzTZkdz4kcB6CSs8RgD0sVk=",
-    "receiverThree": "Ew9fMaryTL44ZXnEhcF7hQ-AB-fxgaC8vyCH-hCGtzg="
+    "mainFaucet": "xxx3-EAQ=",
+    "senderOne": "xxxA=",
+    "senderTwo": "xxx0=",
+    "receiverOne": "xxx=",
+    "receiverTwo": "xxxwQ=",
+    "receiverThree": "xxxk="
   },
-  "hostUrl": "https://dev-qa02.dev.findora.org",
+  "hostUrl": "http://127.0.0.1",
   "rpc": {
     "rpcUrl": "http://127.0.0.1:8545",
-    "mnemonic": ""
+    "mnemonic": "XXX XX"
   }
 }

@@ -213,7 +213,7 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
             case 2:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                delegateAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                delegateAmount = BigInt(bigNumber_1.toWei(amount, decimals).toString());
                 transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
                 return [2 /*return*/, transactionBuilder];
         }
@@ -298,7 +298,7 @@ var calculateComissionRate = function (validatorAddress, commissionRate) {
     }
     var rate = commissionRate[0], divideBy = commissionRate[1];
     try {
-        var commissionRateView = (0, bigNumber_1.create)(rate).div(divideBy).times(100).toString();
+        var commissionRateView = bigNumber_1.create(rate).div(divideBy).times(100).toString();
         return commissionRateView;
     }
     catch (error) {
@@ -332,7 +332,7 @@ var getValidatorList = function () { return __awaiter(void 0, void 0, void 0, fu
                         var commission_rate_view = calculateComissionRate(item.addr, item.commission_rate);
                         return __assign(__assign({}, item), { commission_rate_view: commission_rate_view });
                     });
-                    validatorsOrdered = (0, orderBy_1.default)(validatorsFormatted, function (_order) {
+                    validatorsOrdered = orderBy_1.default(validatorsFormatted, function (_order) {
                         return Number(_order.commission_rate_view);
                     }, ['desc']);
                     return [2 /*return*/, { validators: validatorsOrdered }];
@@ -356,7 +356,7 @@ var getDelegateInfo = function (address) { return __awaiter(void 0, void 0, void
         switch (_b.label) {
             case 0:
                 _b.trys.push([0, 4, , 5]);
-                return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
+                return [4 /*yield*/, keypair_1.getAddressPublicAndKey(address)];
             case 1:
                 lightWalletKeypair = _b.sent();
                 return [4 /*yield*/, Network.getDelegateInfo(lightWalletKeypair.publickey)];
@@ -366,7 +366,7 @@ var getDelegateInfo = function (address) { return __awaiter(void 0, void 0, void
                 if (!delegateInfoResponse) {
                     throw new Error('Delegator info response is missing!');
                 }
-                return [4 /*yield*/, (0, exports.getValidatorList)()];
+                return [4 /*yield*/, exports.getValidatorList()];
             case 3:
                 validatorListInfo_1 = _b.sent();
                 if (!((_a = delegateInfoResponse.bond_entries) === null || _a === void 0 ? void 0 : _a.length)) {

@@ -65,21 +65,17 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
-    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
-        if (ar || !(i in from)) {
-            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
-            ar[i] = from[i];
-        }
-    }
-    return to.concat(ar || Array.prototype.slice.call(from));
+var __spreadArray = (this && this.__spreadArray) || function (to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
-    : "../../env_example";
+    : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var extendedExecutionTimeout = 20000;
@@ -195,7 +191,7 @@ describe('Api Endpoint (rpc test negative)', function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: __spreadArray(__spreadArray([], extraParams, true), ['0x0'], false) }))];
+                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: __spreadArray(__spreadArray([], extraParams), ['0x0']) }))];
                     case 1:
                         result = _b.sent();
                         assertResultError(result);

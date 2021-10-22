@@ -17,7 +17,7 @@ import { MemoryCacheProvider } from './services/cacheStore/providers';
 
 const envConfigFile = process.env.INTEGRATION_ENV_NAME
   ? `../.env_integration_${process.env.INTEGRATION_ENV_NAME}`
-  : `../env_example`;
+  : `../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 

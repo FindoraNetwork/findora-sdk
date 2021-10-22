@@ -67,7 +67,7 @@ var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var providers_1 = require("./services/cacheStore/providers");
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
     ? "../.env_integration_" + process.env.INTEGRATION_ENV_NAME
-    : "../env_example";
+    : "../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 /**
@@ -89,7 +89,7 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
         switch (_a.label) {
             case 0:
                 console.log("\uD83D\uDE80 ~ " + operationName + " ~ txHandle", txHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
             case 1:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
@@ -473,7 +473,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
         switch (_a.label) {
             case 0:
                 console.log('////////////////  issueAndSendConfidentialAsset //////////////// ');
-                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 Ledger = _a.sent();
                 pkey = mainFaucet;
@@ -525,7 +525,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
                     return [2 /*return*/, false];
                 }
                 console.log('Issue Asset with secret amount Transaction handle:', handleIssue);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
             case 11:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(handleIssue)];

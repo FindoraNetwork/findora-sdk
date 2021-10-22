@@ -92,7 +92,7 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
     var ledger, assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.fra_get_asset_code();
@@ -105,7 +105,7 @@ var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, funct
     var ledger, fee;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 fee = ledger.fra_get_minimal_fee();
@@ -118,7 +118,7 @@ var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, fun
     var ledger, key;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 key = ledger.fra_get_dest_pubkey();
@@ -131,7 +131,7 @@ var getAssetCode = function (val) { return __awaiter(void 0, void 0, void 0, fun
     var ledger, decryptedAsetType;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 decryptedAsetType = ledger.asset_type_from_jsvalue(val);
@@ -157,7 +157,7 @@ var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, 
     var ledger, assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.random_asset_type();
@@ -170,7 +170,7 @@ var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0
     var ledger, defaultTransferable, defaultUpdatable, defaultDecimals, assetRules;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 defaultTransferable = asset_1.DEFAULT_ASSET_RULES.transferable;
@@ -191,11 +191,11 @@ var getAssetRules = function (newAssetRules) { return __awaiter(void 0, void 0, 
         switch (_a.label) {
             case 0:
                 if (!!newAssetRules) return [3 /*break*/, 2];
-                return [4 /*yield*/, (0, exports.getDefaultAssetRules)()];
+                return [4 /*yield*/, exports.getDefaultAssetRules()];
             case 1:
                 defaultAssetRules = _a.sent();
                 return [2 /*return*/, defaultAssetRules];
-            case 2: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 2: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 3:
                 ledger = _a.sent();
                 transferable = newAssetRules.transferable, updatable = newAssetRules.updatable, decimals = newAssetRules.decimals, traceable = newAssetRules.traceable, maxNumbers = newAssetRules.maxNumbers;
@@ -222,7 +222,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
         var ledger, _a, stateCommitment, error, _, height, blockCount, definitionTransaction;
         return __generator(this, function (_b) {
             switch (_b.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
                 case 1:
                     ledger = _b.sent();
                     return [4 /*yield*/, Network.getStateCommitment()];
@@ -247,7 +247,7 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
     var ledger, _a, stateCommitment, error, _, height, blockCount, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
     return __generator(this, function (_b) {
         switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _b.sent();
                 return [4 /*yield*/, Network.getStateCommitment()];
@@ -261,7 +261,7 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
-                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
+                utxoNumbers = BigInt(bigNumber_1.toWei(amountToIssue, assetDecimals).toString());
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                 zeiParams = ledger.PublicParams.new();
                 definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, !!blindIsAmount, zeiParams);
@@ -302,7 +302,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
     var assetRules, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, err_1, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, exports.getAssetRules)(newAssetRules)];
+            case 0: return [4 /*yield*/, exports.getAssetRules(newAssetRules)];
             case 1:
                 assetRules = _a.sent();
                 return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
@@ -318,7 +318,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, (0, exports.getDefineAssetTransactionBuilder)(walletInfo.keypair, assetName, assetRules, assetMemo)];
+                return [4 /*yield*/, exports.getDefineAssetTransactionBuilder(walletInfo.keypair, assetName, assetRules, assetMemo)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 6];
@@ -373,7 +373,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
     var asset, decimals, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, err_2, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, exports.getAssetDetails)(assetName)];
+            case 0: return [4 /*yield*/, exports.getAssetDetails(assetName)];
             case 1:
                 asset = _a.sent();
                 decimals = assetDecimals || asset.assetRules.decimals;
@@ -390,7 +390,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 _a.label = 3;
             case 3:
                 _a.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, (0, exports.getIssueAssetTransactionBuilder)(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals)];
+                return [4 /*yield*/, exports.getIssueAssetTransactionBuilder(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 6];
@@ -434,7 +434,7 @@ var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, vo
                     throw new Error("Could not get asset details - asset result is missing");
                 }
                 asset = assetResult.properties;
-                return [4 /*yield*/, (0, keypair_1.getAddressByPublicKey)(asset.issuer.key)];
+                return [4 /*yield*/, keypair_1.getAddressByPublicKey(asset.issuer.key)];
             case 4:
                 issuerAddress = _a.sent();
                 assetDetails = {

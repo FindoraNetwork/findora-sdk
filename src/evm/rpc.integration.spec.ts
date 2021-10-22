@@ -6,7 +6,7 @@ import HDWalletProvider from 'truffle-hdwallet-provider';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
-  : `../../env_example`;
+  : `../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
@@ -39,7 +39,7 @@ let accounts: string[];
 
 const getPayloadWithGas = (from: string) => ({
   gas: '1000000',
-  gasPrice: '500000',
+  gasPrice: '10000000001',
   from,
 });
 
@@ -49,7 +49,6 @@ beforeAll(async (done: any) => {
     ...getPayloadWithGas(accounts[0]),
     to: accounts[1],
     value: web3.utils.toWei('0.1', 'ether'),
-    gasPrice: '10000000001',
   };
 
   web3.eth

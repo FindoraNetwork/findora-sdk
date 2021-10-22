@@ -59,7 +59,7 @@ var _axios = axios_1.default.create({});
 _axios.defaults.transformResponse = [
     function (data) {
         try {
-            return (0, json_bigint_1.default)({ useNativeBigInt: true }).parse(data);
+            return json_bigint_1.default({ useNativeBigInt: true }).parse(data);
         }
         catch (_) {
             return data;
@@ -148,7 +148,7 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/get_owned_utxos/" + address;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 response = dataResult.response, error = dataResult.error;
@@ -172,7 +172,7 @@ var getRelatedSids = function (address, config) { return __awaiter(void 0, void 
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/get_related_txns/" + address;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 response = dataResult.response, error = dataResult.error;
@@ -196,7 +196,7 @@ var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/utxo_sid/" + utxoSid;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -210,7 +210,7 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/get_owner_memo/" + utxoSid;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -236,7 +236,7 @@ var getStateCommitment = function (config) { return __awaiter(void 0, void 0, vo
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/global_state";
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -265,11 +265,11 @@ var submitTransaction = function (data, config) { return __awaiter(void 0, void 
         switch (_b.label) {
             case 0:
                 url = getSubmitRoute() + "/submit_transaction";
-                _a = (0, exports.getSubmitTransactionData)(data), txData = _a.response, error = _a.error;
+                _a = exports.getSubmitTransactionData(data), txData = _a.response, error = _a.error;
                 if (error) {
                     return [2 /*return*/, { error: error }];
                 }
-                return [4 /*yield*/, (0, exports.apiPost)(url, txData, config)];
+                return [4 /*yield*/, exports.apiPost(url, txData, config)];
             case 1:
                 dataResult = _b.sent();
                 return [2 /*return*/, dataResult];
@@ -283,7 +283,7 @@ var getAssetToken = function (assetCode, config) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/asset_token/" + assetCode;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -297,7 +297,7 @@ var getIssuedRecords = function (address, config) { return __awaiter(void 0, voi
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/get_issued_records/" + address;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -319,7 +319,7 @@ var getTransactionStatus = function (handle, config) { return __awaiter(void 0, 
         switch (_a.label) {
             case 0:
                 url = getSubmitRoute() + "/txn_status/" + handle;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -333,7 +333,7 @@ var getBlock = function (height, config) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 url = getExplorerApiRoute() + "/block";
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { height: height } }))];
+                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: { height: height } }))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -347,7 +347,7 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
         switch (_a.label) {
             case 0:
                 url = getExplorerApiRoute() + "/tx_search";
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { query: "\"tx.prehash='" + hash + "'\"" } }))];
+                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: { query: "\"tx.prehash='" + hash + "'\"" } }))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -370,7 +370,7 @@ var getTxList = function (address, type, page, config) {
                         per_page: 10,
                         order_by: '"desc"',
                     };
-                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                    return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
                     return [2 /*return*/, dataResult];
@@ -388,7 +388,7 @@ var getTransactionDetails = function (hash, config) { return __awaiter(void 0, v
                     hash: "0x" + hash,
                 };
                 url = getExplorerApiRoute() + "/tx";
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -400,7 +400,7 @@ var getAbciNoce = function (data, config) { return __awaiter(void 0, void 0, voi
     var ledger, ethAddressJson, url, params, dataResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 ethAddressJson = ledger.get_serialized_address(data);
@@ -410,7 +410,7 @@ var getAbciNoce = function (data, config) { return __awaiter(void 0, void 0, voi
                     data: "\"" + ethAddressJson + "\"",
                     prove: false,
                 };
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
             case 2:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -422,7 +422,7 @@ var getAbciInfo = function (data, config) { return __awaiter(void 0, void 0, voi
     var ledger, ethAddressJson, url, params, dataResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
             case 1:
                 ledger = _a.sent();
                 ethAddressJson = ledger.get_serialized_address(data);
@@ -432,7 +432,7 @@ var getAbciInfo = function (data, config) { return __awaiter(void 0, void 0, voi
                     data: "\"" + ethAddressJson + "\"",
                     prove: false,
                 };
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                return [4 /*yield*/, exports.apiGet(url, __assign(__assign({}, config), { params: params }))];
             case 2:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -454,7 +454,7 @@ var submitEvmTx = function (tx, config) { return __awaiter(void 0, void 0, void 
                         tx: tx,
                     },
                 };
-                return [4 /*yield*/, (0, exports.apiPost)(url, params, __assign({}, config))];
+                return [4 /*yield*/, exports.apiPost(url, params, __assign({}, config))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -468,7 +468,7 @@ var getValidatorList = function (config) { return __awaiter(void 0, void 0, void
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/validator_list";
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -482,7 +482,7 @@ var getDelegateInfo = function (publickey, config) { return __awaiter(void 0, vo
         switch (_a.label) {
             case 0:
                 url = getLedgerRoute() + "/delegation_info/" + publickey;
-                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+                return [4 /*yield*/, exports.apiGet(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -502,7 +502,7 @@ var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0
                     params: [],
                 };
                 payload = __assign(__assign({}, defaultPayload), givenPayload);
-                return [4 /*yield*/, (0, exports.apiPost)(url, payload, __assign({}, config))];
+                return [4 /*yield*/, exports.apiPost(url, payload, __assign({}, config))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];

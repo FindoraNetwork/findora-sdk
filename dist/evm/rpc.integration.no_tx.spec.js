@@ -59,7 +59,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
-    : "../../env_example";
+    : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var extendedExecutionTimeout = 20000;

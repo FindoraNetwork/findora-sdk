@@ -11,7 +11,7 @@ const HDWalletProvider = require('truffle-hdwallet-provider');
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../../../.env_rpc_${process.env.RPC_ENV_NAME}`
-  : `../../../../env_example`;
+  : `../../../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
@@ -23,12 +23,12 @@ let contract;
 
 const getPayloadWithGas = from => ({
   gas: '1000000',
-  gasPrice: '500000',
+  gasPrice: '10000000001',
   from,
 });
 
 describe('SkyMax Contract (contract test)', () => {
-  const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, 5);
+  const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
   const web3 = new Web3(provider);
 

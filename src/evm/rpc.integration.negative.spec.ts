@@ -4,7 +4,7 @@ import * as NetworkTypes from '../api/network/types';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
-  : `../../env_example`;
+  : `../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
@@ -733,12 +733,14 @@ describe('Api Endpoint (rpc test negative)', () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+          rpcUrl,
+          {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
             params: extraParams,
-          });
+          },
+        );
 
         assertResultResponse(result);
 
@@ -751,11 +753,13 @@ describe('Api Endpoint (rpc test negative)', () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+          rpcUrl,
+          {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
-          });
+          },
+        );
 
         assertResultResponse(result);
 
@@ -768,12 +772,14 @@ describe('Api Endpoint (rpc test negative)', () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
+        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+          rpcUrl,
+          {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
             params: 'aaaa',
-          });
+          },
+        );
 
         assertResultError(result);
 

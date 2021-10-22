@@ -26,6 +26,9 @@ describe('evm (unit test)', () => {
         add_operation_convert_account: jest.fn(() => {
           return (fakeTransactionBuilder as unknown) as TransactionBuilder;
         }),
+        sign: jest.fn(() => {
+          return (fakeTransactionBuilder as unknown) as TransferOpBuilderLight;
+        }),
       };
 
       const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {

@@ -75,7 +75,7 @@ var web3_1 = __importDefault(require("web3"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
-    : "../../env_example";
+    : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 // This would be initialized with the data from the setup process
@@ -100,7 +100,7 @@ var web3 = new web3_1.default(provider);
 var accounts;
 var getPayloadWithGas = function (from) { return ({
     gas: '1000000',
-    gasPrice: '500000',
+    gasPrice: '10000000001',
     from: from,
 }); };
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
@@ -110,7 +110,7 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
             case 0: return [4 /*yield*/, web3.eth.getAccounts()];
             case 1:
                 accounts = _a.sent();
-                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether'), gasPrice: '10000000001' });
+                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
                 web3.eth
                     .sendTransaction(transactionObject)
                     .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {

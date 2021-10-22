@@ -4,7 +4,7 @@ import * as NetworkTypes from '../api/network/types';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
-  : `../../env_example`;
+  : `../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
