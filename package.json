@@ -28,7 +28,7 @@
     "test:sdk:unit": "jest -t '(unit test)' --testPathIgnorePatterns=\\contract\\|integration",
     "test:sdk:integration": " jest  --detectOpenHandles sdk.integration.spec.ts",
     "test:sdk:integration:mocknet": "INTEGRATION_ENV_NAME=mocknet yarn test:sdk:integration",
-    "test:evm:integration:contract": "RPC_ENV_NAME=local jest --detectOpenHandles  contract",
+    "test:evm:integration:contract": "RPC_ENV_NAME=local jest --detectOpenHandles contract",
     "test:emv:integration:rpc": "jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.spec.ts ",
     "test:emv:integration:rpc:local": "RPC_ENV_NAME=local yarn test:emv:integration:rpc",
     "test:emv:integration:rpc:devnet": "RPC_ENV_NAME=dev yarn test:emv:integration:rpc ",
