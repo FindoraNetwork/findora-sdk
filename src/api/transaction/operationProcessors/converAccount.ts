@@ -12,8 +12,9 @@ export interface ProcessedConvertAccount {
 export const processConvertAccount = async (operationItem: TxOperation): Promise<ProcessedConvertAccount> => {
   const operation = operationItem.ConvertAccount!;
 
-  const from = await Keypair.getAddressByPublicKey(operation.public);
-  const to = operation.data.address.Ethereum;
+  const from = await Keypair.getAddressByPublicKey(operation.signer);
+
+  const to = operation.data.receiver.Ethereum;
 
   const data = {
     convertAccount: operation,

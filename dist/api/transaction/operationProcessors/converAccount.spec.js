@@ -69,11 +69,11 @@ describe('converAccount (processor) (unit test)', function () {
                         type = 'convertAccount';
                         myOperation = {
                             data: {
-                                address: {
+                                receiver: {
                                     Ethereum: address,
                                 },
                             },
-                            public: address,
+                            signer: address,
                         };
                         payload = {
                             ConvertAccount: myOperation,

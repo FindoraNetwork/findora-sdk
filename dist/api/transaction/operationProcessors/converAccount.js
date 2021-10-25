@@ -63,10 +63,10 @@ var processConvertAccount = function (operationItem) { return __awaiter(void 0, 
         switch (_a.label) {
             case 0:
                 operation = operationItem.ConvertAccount;
-                return [4 /*yield*/, Keypair.getAddressByPublicKey(operation.public)];
+                return [4 /*yield*/, Keypair.getAddressByPublicKey(operation.signer)];
             case 1:
                 from = _a.sent();
-                to = operation.data.address.Ethereum;
+                to = operation.data.receiver.Ethereum;
                 data = {
                     convertAccount: operation,
                     from: [from],

@@ -79,11 +79,12 @@ export interface DelegationOperation {
 }
 export interface ConvertAccountOperation {
     data: {
-        address: {
+        receiver: {
             Ethereum: string;
         };
     };
-    public: string;
+    value: string;
+    signer: string;
 }
 export interface TxOperation {
     TransferAsset?: TransferAssetOperation;
