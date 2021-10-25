@@ -81,7 +81,7 @@ export const sendEvmToAccount = async (
     const result = await Network.getAbciNoce(ethAddress);
     if (result.response && result.response.result.response.code === 0) {
       nonce = result.response.result.response.value;
-      nonce = base64.decode(nonce);
+      nonce = base64.atob(nonce);
       nonce = JSON.parse(nonce);
     } else {
       throw new Error('Get nonce error');

@@ -139,7 +139,8 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 result_1 = _a.sent();
                 if (result_1.response && result_1.response.result.response.code === 0) {
                     nonce = result_1.response.result.response.value;
-                    nonce = js_base64_1.default.decode(nonce);
+                    nonce = js_base64_1.default.atob(nonce);
+                    nonce = JSON.parse(nonce);
                 }
                 else {
                     throw new Error('Get nonce error');
