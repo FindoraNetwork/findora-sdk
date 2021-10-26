@@ -10,17 +10,15 @@ describe('converAccount (processor) (unit test)', () => {
       const address = 'barfoo';
       const type = 'convertAccount';
       const myOperation = {
-        data: {
-          receiver: {
-            Ethereum: address,
-          },
+        receiver: {
+          Ethereum: address,
         },
         signer: address,
       };
 
-      const payload = ({
+      const payload = {
         ConvertAccount: myOperation,
-      } as unknown) as TxOperation;
+      } as unknown as TxOperation;
 
       const spyGetAddressByPublicKey = jest
         .spyOn(KeypairApi, 'getAddressByPublicKey')
