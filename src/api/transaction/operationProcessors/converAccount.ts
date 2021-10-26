@@ -14,7 +14,7 @@ export const processConvertAccount = async (operationItem: TxOperation): Promise
 
   const from = await Keypair.getAddressByPublicKey(operation.signer);
 
-  const to = operation.data.receiver.Ethereum;
+  const to = operation.receiver.Ethereum;
 
   const data = {
     convertAccount: operation,

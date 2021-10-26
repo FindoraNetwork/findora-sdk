@@ -78,10 +78,8 @@ export interface DelegationOperation {
     signature: string;
 }
 export interface ConvertAccountOperation {
-    data: {
-        receiver: {
-            Ethereum: string;
-        };
+    receiver: {
+        Ethereum: string;
     };
     value: string;
     signer: string;
