@@ -36,6 +36,7 @@
     "test:emv:integration:rpc:negative:devnet": "RPC_ENV_NAME=dev yarn test:emv:integration:rpc:negative",
     "test:emv:integration:rpc:negative:mocknet": "RPC_ENV_NAME=mocknet yarn test:emv:integration:rpc:negative",
     "test:emv:integration:rpc:negative:rinkeby": "RPC_ENV_NAME=rinkeby yarn test:emv:integration:rpc:negative",
+    "test:emv:integration:rpc:negative:moonbeam": "RPC_ENV_NAME=moonbeam yarn test:emv:integration:rpc:negative",
     "test:emv:integration:rpc:no_tx": "jest --detectOpenHandles  --watch -t 'rpc test' rpc.integration.no_tx.spec.ts ",
     "test:emv:integration:rpc:no_tx:local": "RPC_ENV_NAME=local yarn test:emv:integration:rpc:no_tx",
     "test:emv:integration:rpc:no_tx:devnet": "RPC_ENV_NAME=dev yarn test:emv:integration:rpc:no_tx",

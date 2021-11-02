@@ -14,7 +14,7 @@ const extendedExecutionTimeout = 20000;
 
 const { rpcUrl = 'http://127.0.0.1:8545' } = rpcParams;
 
-//Rinkeby compatible
+//moonbeam (polkadot) compatible
 const ERROR_INVALID_REQUEST = -32600;
 const ERROR_METHOD_NOT_FOUND = -32601;
 const ERROR_INVALID_PARAMS = -32602;
@@ -24,12 +24,7 @@ const assertResultResponse = (result: NetworkTypes.NetworkAxiosDataResult) => {
   expect(result).not.toHaveProperty('error');
 };
 
-const assertResultError = (result: NetworkTypes.NetworkAxiosDataResult) => {
-  expect(result).not.toHaveProperty('response');
-  expect(result).toHaveProperty('error');
-};
-
-describe('Api Endpoint (rpc test negative)', () => {
+describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
   const msgId = 2;
 
   const payload = {
@@ -101,11 +96,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'foo',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const { error } = result;
+        const code = result?.response?.error?.code;
 
-        expect(error?.message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -146,11 +141,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: [...extraParams, '0x0'],
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 403');
+        expect(code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -165,11 +160,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: extraParams,
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -261,11 +256,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -332,11 +327,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -369,11 +364,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           { ...payload, method: 'eth_getBlockTransactionCountByHash', params: 'aaa' },
         );
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -433,11 +428,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -488,11 +483,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -543,11 +538,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -598,11 +593,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -653,11 +648,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -717,11 +712,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           },
         );
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -733,14 +728,12 @@ describe('Api Endpoint (rpc test negative)', () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          {
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
             params: extraParams,
-          },
-        );
+          });
 
         assertResultResponse(result);
 
@@ -753,13 +746,11 @@ describe('Api Endpoint (rpc test negative)', () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          {
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
-          },
-        );
+          });
 
         assertResultResponse(result);
 
@@ -772,20 +763,18 @@ describe('Api Endpoint (rpc test negative)', () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          {
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
             ...payload,
             method: 'eth_getTransactionByBlockNumberAndIndex',
             params: 'aaaa',
-          },
-        );
+          });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -836,11 +825,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -862,7 +851,7 @@ describe('Api Endpoint (rpc test negative)', () => {
 
         const code = result?.response?.error?.code;
 
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -885,7 +874,7 @@ describe('Api Endpoint (rpc test negative)', () => {
 
         const code = result?.response?.error?.code;
 
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -898,11 +887,11 @@ describe('Api Endpoint (rpc test negative)', () => {
           params: 'aaaa',
         });
 
-        assertResultError(result);
+        assertResultResponse(result);
 
-        const message = result?.error?.message;
+        const code = result?.response?.error?.code;
 
-        expect(message).toEqual('Request failed with status code 400');
+        expect(code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
