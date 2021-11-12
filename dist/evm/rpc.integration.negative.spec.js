@@ -65,10 +65,14 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __spreadArray = (this && this.__spreadArray) || function (to, from) {
-    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
-        to[j] = from[i];
-    return to;
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
@@ -80,7 +84,7 @@ var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var extendedExecutionTimeout = 20000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
-//Rinkeby compatible
+//moonbeam (polkadot) compatible
 var ERROR_INVALID_REQUEST = -32600;
 var ERROR_METHOD_NOT_FOUND = -32601;
 var ERROR_INVALID_PARAMS = -32602;
@@ -88,11 +92,7 @@ var assertResultResponse = function (result) {
     expect(result).toHaveProperty('response');
     expect(result).not.toHaveProperty('error');
 };
-var assertResultError = function (result) {
-    expect(result).not.toHaveProperty('response');
-    expect(result).toHaveProperty('error');
-};
-describe('Api Endpoint (rpc test negative)', function () {
+describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () {
     var msgId = 2;
     var payload = {
         id: msgId,
@@ -149,15 +149,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when params payload format is invalid', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, error;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBalance', params: 'foo' }))];
                     case 1:
-                        result = _a.sent();
-                        assertResultError(result);
-                        error = result.error;
-                        expect(error === null || error === void 0 ? void 0 : error.message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -187,33 +188,33 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when required parameter is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: __spreadArray(__spreadArray([], extraParams), ['0x0']) }))];
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
+                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: __spreadArray(__spreadArray([], extraParams, true), ['0x0'], false) }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 403');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var extraParams, result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
                         extraParams = 'foo';
                         return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: extraParams }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -289,16 +290,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error for the wrong format of the payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByNumber', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -353,16 +354,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionCount', params: 'aaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -387,16 +388,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByHash', params: 'aaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -436,16 +437,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByNumber', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -485,16 +486,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getCode', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -534,16 +535,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_sendRawTransaction', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -583,16 +584,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_estimateGas', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -632,16 +633,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByHash', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -681,16 +682,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockHashAndIndex', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -730,16 +731,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockNumberAndIndex', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -779,16 +780,16 @@ describe('Api Endpoint (rpc test negative)', function () {
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionReceipt', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -807,7 +808,7 @@ describe('Api Endpoint (rpc test negative)', function () {
                         result = _c.sent();
                         assertResultResponse(result);
                         code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect(code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
@@ -828,22 +829,22 @@ describe('Api Endpoint (rpc test negative)', function () {
                         result = _c.sent();
                         assertResultResponse(result);
                         code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect(code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, message;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var result, code;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getLogs', params: 'aaaa' }))];
                     case 1:
-                        result = _b.sent();
-                        assertResultError(result);
-                        message = (_a = result === null || result === void 0 ? void 0 : result.error) === null || _a === void 0 ? void 0 : _a.message;
-                        expect(message).toEqual('Request failed with status code 400');
+                        result = _c.sent();
+                        assertResultResponse(result);
+                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
+                        expect(code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });

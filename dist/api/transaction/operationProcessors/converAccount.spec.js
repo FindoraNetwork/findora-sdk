@@ -81,7 +81,7 @@ describe('converAccount (processor) (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(address);
                         });
-                        return [4 /*yield*/, converAccount_1.processConvertAccount(payload)];
+                        return [4 /*yield*/, (0, converAccount_1.processConvertAccount)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('convertAccount');

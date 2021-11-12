@@ -88,7 +88,7 @@ describe('transferAsset (processor) (unit test)', function () {
                             .mockImplementationOnce(function () {
                             return Promise.resolve(addressTo);
                         });
-                        return [4 /*yield*/, transferAsset_1.processTransferAsset(payload)];
+                        return [4 /*yield*/, (0, transferAsset_1.processTransferAsset)(payload)];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('transferAsset');
