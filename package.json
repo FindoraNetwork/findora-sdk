@@ -47,8 +47,11 @@
     "prepublishOnly": "npm run build",
     "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js --ignore cache/",
+    "cli:build": "tsc",
+    "cli:run": "nodemon dist/cli.js --ignore cache/ \"$npm_config\"",
     "jest-coverage": "yarn run jest -- --coverage",
-    "start": "concurrently npm:start:*"
+    "start": "concurrently npm:start:*",
+    "cli": "yarn cli:build && yarn cli:run \"$npm_config\""
   },
   "lint-staged": {
     "./src/**/*.ts": [
@@ -68,6 +71,7 @@
     "@types/jest": "^26.0.14",
     "@types/json-bigint": "^1.0.0",
     "@types/lodash": "^4.14.170",
+    "@types/minimist": "^1.2.2",
     "@types/node": "^14.14.17",
     "@types/readable-stream": "^2.3.9",
     "@types/tmp": "^0.2.0",
@@ -116,6 +120,7 @@
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
+    "minimist": "^1.2.5",
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "util": "^0.12.4",
