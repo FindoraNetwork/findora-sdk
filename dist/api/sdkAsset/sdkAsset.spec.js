@@ -734,7 +734,7 @@ describe('sdkAsset (unit test)', function () {
                         expect(result).toBe(fakeOpBuilder);
                         expect(spyGetLedger).toBeCalled();
                         expect(spyNew).toHaveBeenCalledWith(BigInt(height));
-                        utxoNumbers = BigInt(bigNumber_1.toWei(amountToIssue, assetDecimals).toString());
+                        utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
                         expect(spyAddBasicIssueAsset).toHaveBeenCalledWith(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, false, 'myParams');
                         spyGetStateCommitment.mockReset();
                         spyGetLedger.mockRestore();

@@ -24,8 +24,6 @@ const extendedExecutionTimeout = 20000;
 const {
   // RPC endpoint url
   rpcUrl = 'http://127.0.0.1:8545',
-  // Sender account, it has to have tokens
-  ethAccountToCheck,
   //Sender mnemonic (to be used in web3)
   mnemonic,
 } = rpcParams;
@@ -82,7 +80,7 @@ beforeAll(async (done: any) => {
     });
 }, extendedExecutionTimeout);
 
-describe('Api Endpoint (rpc test)', () => {
+describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
   describe('eth_protocolVersion', () => {
     it(
       'Returns the current ethereum protocol version',
@@ -163,7 +161,7 @@ describe('Api Endpoint (rpc test)', () => {
       async () => {
         const msgId = 1;
 
-        const extraParams = [ethAccountToCheck, 'latest'];
+        const extraParams = [accounts[0], 'latest'];
 
         const payload = {
           id: msgId,
@@ -629,10 +627,11 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          payload,
-        );
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+            rpcUrl,
+            payload,
+          );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');
@@ -661,10 +660,11 @@ describe('Api Endpoint (rpc test)', () => {
           params: extraParams,
         };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-          rpcUrl,
-          payload,
-        );
+        const result =
+          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
+            rpcUrl,
+            payload,
+          );
 
         expect(result).toHaveProperty('response');
         expect(result).not.toHaveProperty('error');

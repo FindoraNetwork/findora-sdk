@@ -25,7 +25,7 @@ const getPayloadWithGas = from => ({
   from,
 });
 
-describe('Inbox (contract test)', () => {
+describe(`Inbox (contract test) "${rpcUrl}"`, () => {
   const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
   const web3 = new Web3(provider);
@@ -41,17 +41,29 @@ describe('Inbox (contract test)', () => {
       .send(getPayloadWithGas(accounts[0]));
   }, extendedExecutionTimeout);
 
-  it('deploys a contract successfully', () => {
-    assert.ok(inbox.options.address);
-  });
-  it('deploys a contract with a default assigned message', async () => {
-    const message = await inbox.methods.message().call();
-    expect(message).toEqual('Hi there');
-  });
-  it('updates a message with a given value', async () => {
-    await inbox.methods.setMessage('New Message').send(getPayloadWithGas(accounts[0]));
+  it(
+    'deploys a contract successfully',
+    () => {
+      assert.ok(inbox.options.address);
+    },
+    extendedExecutionTimeout,
+  );
+  it(
+    'deploys a contract with a default assigned message',
+    async () => {
+      const message = await inbox.methods.message().call();
+      expect(message).toEqual('Hi there');
+    },
+    extendedExecutionTimeout,
+  );
+  it(
+    'updates a message with a given value',
+    async () => {
+      await inbox.methods.setMessage('New Message').send(getPayloadWithGas(accounts[0]));
 
-    const currentMessage = await inbox.methods.message().call();
-    expect(currentMessage).toEqual('New Message');
-  });
+      const currentMessage = await inbox.methods.message().call();
+      expect(currentMessage).toEqual('New Message');
+    },
+    extendedExecutionTimeout,
+  );
 });

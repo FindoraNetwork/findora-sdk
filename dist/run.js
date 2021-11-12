@@ -79,8 +79,8 @@ var sdkEnv = {
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
     // hostUrl: 'http://127.0.0.1',
-    hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org',
+    // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
+    hostUrl: 'https://prod-forge.prod.findora.org',
     // cacheProvider: FileCacheProvider,
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
@@ -276,7 +276,7 @@ var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0,
     var ledger, password, pkey, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 password = '123';
@@ -727,7 +727,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
             case 0:
                 console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
                 password = '123';
-                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 Ledger = _a.sent();
                 pkey = mainFaucet;
@@ -750,13 +750,13 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
             case 6:
                 resultHandleSend = _a.sent();
                 console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 7:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 8:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 9:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -780,10 +780,10 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 resultHandle = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
                 console.log('🚀 ~ file: integration.ts ~ line 601 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 15:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 16:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
@@ -805,22 +805,22 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 19:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 20:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 21:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 22:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 23:
                 _a.sent();
                 console.log('checking rewards now');
@@ -845,7 +845,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
             case 0:
                 console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
                 password = '123';
-                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 Ledger = _a.sent();
                 pkey = mainFaucet;
@@ -872,10 +872,10 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
             case 7:
                 resultHandleSend = _a.sent();
                 console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 8:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 9:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -897,16 +897,16 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
             case 14:
                 resultHandle = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle', resultHandle);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 15:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 16:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 17:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
@@ -932,22 +932,22 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 balanceAfterDelegate = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate', balanceAfterDelegate);
                 console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 21:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 22:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 23:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 24:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 25:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 26:
                 _a.sent();
                 console.log('checking rewards now');
@@ -972,22 +972,22 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
             case 30:
                 resultHandleClaim = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim', resultHandle);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 31:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 32:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 33:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 34:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 35:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 36:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleClaim)];
@@ -1026,7 +1026,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
             case 0:
                 console.log('////////////////  unstakeFraTransactionSubmit //////////////// ');
                 password = '123';
-                return [4 /*yield*/, ledgerWrapper_1.getLedger()];
+                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 Ledger = _a.sent();
                 pkey = mainFaucet;
@@ -1049,22 +1049,22 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
             case 6:
                 resultHandleSend = _a.sent();
                 console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 7:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 8:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 9:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 10:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 11:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 12:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleSend)];
@@ -1106,22 +1106,22 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 resultHandleDelegate = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
                 console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 19:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 20:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 21:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 22:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 23:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 24:
                 _a.sent();
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleDelegate)];
@@ -1143,25 +1143,25 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 26:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 27:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 28:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 29:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 30:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 31:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 32:
                 _a.sent();
                 console.log('checking rewards now');
@@ -1187,25 +1187,25 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 resultHandleUnstake = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandle', resultHandleUnstake);
                 console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleUnstake', resultHandleUnstake);
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 37:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 38:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 39:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 40:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 41:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 42:
                 _a.sent();
-                return [4 /*yield*/, sleep_promise_1.default(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 43:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1250,7 +1250,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-// getFraBalance();
+getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();

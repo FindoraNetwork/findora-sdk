@@ -48,7 +48,7 @@ describe('keypair (unit test)', function () {
             var walletInfo;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.restoreFromPrivateKey(pkey, password)];
+                    case 0: return [4 /*yield*/, (0, keypair_1.restoreFromPrivateKey)(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
                         expect(walletInfo).toHaveProperty('keyStore');
@@ -67,7 +67,7 @@ describe('keypair (unit test)', function () {
         it('throws the error when bad private key is used', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.restoreFromPrivateKey('123', password)).rejects.toThrow('could not restore keypair. Keypair is empty')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.restoreFromPrivateKey)('123', password)).rejects.toThrow('could not restore keypair. Keypair is empty')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -80,7 +80,7 @@ describe('keypair (unit test)', function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.getMnemonic(24)];
+                    case 0: return [4 /*yield*/, (0, keypair_1.getMnemonic)(24)];
                     case 1:
                         result = _a.sent();
                         expect(result.length).toEqual(24);
@@ -91,7 +91,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if an unsupported lang is submitted', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getMnemonic(24, 'FOO')).rejects.toThrowError('could not generate custom mnemonic. Details are')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getMnemonic)(24, 'FOO')).rejects.toThrowError('could not generate custom mnemonic. Details are')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -104,10 +104,10 @@ describe('keypair (unit test)', function () {
             var kp, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         kp = _a.sent();
-                        return [4 /*yield*/, keypair_1.getPrivateKeyStr(kp.keypair)];
+                        return [4 /*yield*/, (0, keypair_1.getPrivateKeyStr)(kp.keypair)];
                     case 2:
                         result = _a.sent();
                         expect(result.length).toEqual(44);
@@ -119,7 +119,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getPrivateKeyStr('FOO')).rejects.toThrowError('could not get priv key string')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getPrivateKeyStr)('FOO')).rejects.toThrowError('could not get priv key string')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -132,10 +132,10 @@ describe('keypair (unit test)', function () {
             var kp, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         kp = _a.sent();
-                        return [4 /*yield*/, keypair_1.getPublicKeyStr(kp.keypair)];
+                        return [4 /*yield*/, (0, keypair_1.getPublicKeyStr)(kp.keypair)];
                     case 2:
                         result = _a.sent();
                         expect(result.length).toEqual(44);
@@ -147,7 +147,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getPublicKeyStr('FOO')).rejects.toThrowError('could not get pub key string')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getPublicKeyStr)('FOO')).rejects.toThrowError('could not get pub key string')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -160,10 +160,10 @@ describe('keypair (unit test)', function () {
             var kp, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         kp = _a.sent();
-                        return [4 /*yield*/, keypair_1.getAddress(kp.keypair)];
+                        return [4 /*yield*/, (0, keypair_1.getAddress)(kp.keypair)];
                     case 2:
                         result = _a.sent();
                         expect(result.length).toEqual(62);
@@ -175,7 +175,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not an instance of XfrKeyPair given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getAddress('FOO')).rejects.toThrowError('could not get address string')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getAddress)('FOO')).rejects.toThrowError('could not get address string')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -188,10 +188,10 @@ describe('keypair (unit test)', function () {
             var kp, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         kp = _a.sent();
-                        return [4 /*yield*/, keypair_1.getAddressByPublicKey(kp.publickey)];
+                        return [4 /*yield*/, (0, keypair_1.getAddressByPublicKey)(kp.publickey)];
                     case 2:
                         result = _a.sent();
                         expect(result).toEqual(kp.address);
@@ -204,7 +204,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getAddressByPublicKey('aa')).rejects.toThrowError('could not get address by public key')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getAddressByPublicKey)('aa')).rejects.toThrowError('could not get address by public key')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -217,10 +217,10 @@ describe('keypair (unit test)', function () {
             var kp, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         kp = _a.sent();
-                        return [4 /*yield*/, keypair_1.getAddressPublicAndKey(kp.address)];
+                        return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(kp.address)];
                     case 2:
                         result = _a.sent();
                         expect(result).toHaveProperty('address');
@@ -234,7 +234,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not a valid address key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.getAddressPublicAndKey('aa')).rejects.toThrowError('could not create a LightWalletKeypair')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getAddressPublicAndKey)('aa')).rejects.toThrowError('could not create a LightWalletKeypair')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -247,7 +247,7 @@ describe('keypair (unit test)', function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, keypair_1.createKeypair('123')];
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveProperty('keyStore');
@@ -266,7 +266,7 @@ describe('keypair (unit test)', function () {
         it('throws an error if not a valid address key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect(keypair_1.createKeypair([123])).rejects.toThrowError('could not create a WalletKeypar')];
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.createKeypair)([123])).rejects.toThrowError('could not create a WalletKeypar')];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
