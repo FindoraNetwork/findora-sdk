@@ -13,6 +13,8 @@ const envConfigFile = process.env.RPC_ENV_NAME
 
 const envConfig = require(`${envConfigFile}.json`);
 
+const extendedExecutionTimeout = 180000;
+
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
@@ -25,7 +27,7 @@ let contract;
 
 const getPayloadWithGas = from => ({
   gas: '1000000',
-  gasPrice: '10000000001',
+  gasPrice: '10000000000',
   from,
 });
 
@@ -62,68 +64,75 @@ const sendBatchOfTx = async (senderAccount, receiverAccount, amountToSend, txQua
   return sent;
 };
 
-describe('Send a transaction and check the balances and confirmations', () => {
+describe(`Send a transaction and check the balances and confirmations "${rpcUrl}"`, () => {
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
 
     contract = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({ data: bytecode })
       .send(getPayloadWithGas(accounts[0]));
-  });
+  }, extendedExecutionTimeout);
 
-  it('sends money to the contract and receives it back, verifies the sender balance and confirmations', async () => {
-    let numberOfConfirmations = 0;
-    let txReceipt = {};
-    let txHash = '';
+  it(
+    'sends money to the contract and receives it back, verifies the sender balance and confirmations',
+    async () => {
+      let numberOfConfirmations = 0;
+      let txReceipt = {};
+      let txHash = '';
 
-    await contract.methods.enter().send({
-      ...getPayloadWithGas(accounts[0]),
-      value: web3.utils.toWei('0.1', 'ether'),
-    });
-
-    const balanceContract = await web3.eth.getBalance(contract.options.address);
-
-    assert.ok(balanceContract > 0);
-
-    const balanceBefore = await web3.eth.getBalance(accounts[0]);
-
-    await contract.methods
-      .pickWinner()
-      .send(getPayloadWithGas(accounts[0]))
-      .on('transactionHash', function (_hash) {
-        txHash = _hash;
-      })
-      .on('confirmation', function (_confirmationNumber, _receipt) {
-        numberOfConfirmations += 1;
-      })
-      .on('receipt', function (_receipt) {
-        txReceipt = _receipt;
+      await contract.methods.enter().send({
+        ...getPayloadWithGas(accounts[0]),
+        value: web3.utils.toWei('0.1', 'ether'),
       });
 
-    assert.ok(txHash !== '');
-    assert.strictEqual(txReceipt.transactionHash, txHash);
+      const balanceContract = await web3.eth.getBalance(contract.options.address);
 
-    const balanceAfter = await web3.eth.getBalance(accounts[0]);
-    const balanceDifference = balanceAfter - balanceBefore;
+      assert.ok(balanceContract > 0);
 
-    assert.ok(accounts.length > 0);
+      const balanceBefore = await web3.eth.getBalance(accounts[0]);
+      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 93 ~ balanceBefore', balanceBefore);
 
-    assert.ok(balanceDifference > web3.utils.toWei('0.0999', 'ether'));
+      await contract.methods
+        .pickWinner()
+        .send(getPayloadWithGas(accounts[0]))
+        .on('transactionHash', function (_hash) {
+          txHash = _hash;
+        })
+        .on('confirmation', function (_confirmationNumber, _receipt) {
+          numberOfConfirmations += 1;
+        })
+        .on('receipt', function (_receipt) {
+          txReceipt = _receipt;
+        });
 
-    const fromAddress = accounts[3];
-    const toAddress = accounts[2];
+      assert.ok(txHash !== '');
+      assert.strictEqual(txReceipt.transactionHash, txHash);
 
-    await sendBatchOfTx(fromAddress, toAddress, '0.02', 13);
+      const balanceAfter = await web3.eth.getBalance(accounts[0]);
+      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 112 ~ balanceAfter', balanceAfter);
+      const balanceDifference = balanceAfter - balanceBefore;
+      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 114 ~ balanceDifference', balanceDifference);
 
-    console.log('waiting for 2000 ms before final assettion');
+      assert.ok(accounts.length > 0);
 
-    await sleep(2000);
+      assert.ok(balanceDifference > web3.utils.toWei('0.099', 'ether'));
 
-    console.log(
-      '🚀 ~ file: Lottery.contract.spec.js ~ line 70 ~ numberOfConfirmations',
-      numberOfConfirmations,
-    );
+      const fromAddress = accounts[3];
+      const toAddress = accounts[2];
 
-    assert.ok(numberOfConfirmations >= 12);
-  }, 150000);
+      await sendBatchOfTx(fromAddress, toAddress, '0.02', 13);
+
+      console.log('waiting for 2000 ms before final assettion');
+
+      await sleep(2000);
+
+      console.log(
+        '🚀 ~ file: Lottery.contract.spec.js ~ line 70 ~ numberOfConfirmations',
+        numberOfConfirmations,
+      );
+
+      assert.ok(numberOfConfirmations >= 12);
+    },
+    extendedExecutionTimeout,
+  );
 });

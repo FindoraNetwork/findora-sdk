@@ -23,8 +23,8 @@ const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
-  hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org',
+  // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
+  hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
   // cacheProvider: FileCacheProvider,
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
@@ -510,12 +510,8 @@ const myFunc18 = async () => {
 
 // s3 cache
 const myFuncS3 = async () => {
-  const {
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY,
-    UTXO_CACHE_BUCKET_NAME,
-    UTXO_CACHE_KEY_NAME,
-  } = process.env;
+  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+    process.env;
   const accessKeyId = AWS_ACCESS_KEY_ID || '';
   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
@@ -1149,7 +1145,7 @@ const ethProtocol = async () => {
   console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-// getFraBalance();
+getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
