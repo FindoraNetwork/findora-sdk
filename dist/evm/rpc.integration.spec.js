@@ -90,8 +90,6 @@ var
 _a = rpcParams.rpcUrl, 
 // RPC endpoint url
 rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, 
-// Sender account, it has to have tokens
-ethAccountToCheck = rpcParams.ethAccountToCheck, 
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
@@ -158,7 +156,7 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); }, extendedExecutionTimeout);
-describe('Api Endpoint (rpc test)', function () {
+describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_protocolVersion', function () {
         it('Returns the current ethereum protocol version', function () { return __awaiter(void 0, void 0, void 0, function () {
             var msgId, payload, result, response;
@@ -243,7 +241,7 @@ describe('Api Endpoint (rpc test)', function () {
                 switch (_a.label) {
                     case 0:
                         msgId = 1;
-                        extraParams = [ethAccountToCheck, 'latest'];
+                        extraParams = [accounts[0], 'latest'];
                         payload = {
                             id: msgId,
                             method: 'eth_getBalance',

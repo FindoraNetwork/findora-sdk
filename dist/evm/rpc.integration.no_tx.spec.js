@@ -66,7 +66,7 @@ var extendedExecutionTimeout = 20000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var existingBlockNumberToCheck = 4;
-describe('Api Endpoint (rpc test)', function () {
+describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_getBlockByNumber', function () {
         it('Returns information about a block by block number and verifies its parent block information', function () { return __awaiter(void 0, void 0, void 0, function () {
             var msgId, extraParams, payload, result, response, parentBlockHash, payloadForParentBlock, parentResult, parentResponse;
