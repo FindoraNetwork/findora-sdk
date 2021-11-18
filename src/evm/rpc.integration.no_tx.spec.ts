@@ -17,7 +17,7 @@ console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 
 const existingBlockNumberToCheck = 4;
 
-describe('Api Endpoint (rpc test)', () => {
+describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
   describe('eth_getBlockByNumber', () => {
     it(
       'Returns information about a block by block number and verifies its parent block information',
