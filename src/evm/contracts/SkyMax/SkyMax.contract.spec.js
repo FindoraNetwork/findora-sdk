@@ -19,6 +19,7 @@ const extendedExecutionTimeout = 180000;
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
+let networkId;
 let accounts;
 let contract;
 
@@ -26,6 +27,7 @@ const getPayloadWithGas = from => ({
   gas: '1000000',
   gasPrice: '10000000000',
   from,
+  chainId: networkId,
 });
 
 describe(`SkyMax Contract (contract test) "${rpcUrl}"`, () => {
@@ -34,7 +36,9 @@ describe(`SkyMax Contract (contract test) "${rpcUrl}"`, () => {
   const web3 = new Web3(provider);
 
   beforeEach(async () => {
+    networkId = await web3.eth.net.getId();
     accounts = await web3.eth.getAccounts();
+
     console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 38 ~ beforeEach ~ accounts', accounts);
 
     contract = await new web3.eth.Contract(JSON.parse(interface))

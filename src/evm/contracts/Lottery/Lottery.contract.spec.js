@@ -22,6 +22,7 @@ const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
 const web3 = new Web3(provider);
 
+let networkId;
 let accounts;
 let contract;
 
@@ -29,6 +30,7 @@ const getPayloadWithGas = from => ({
   gas: '1000000',
   gasPrice: '10000000000',
   from,
+  chainId: networkId,
 });
 
 const sendTxToAccount = async (senderAccount, receiverAccount, amountToSend) => {
@@ -67,6 +69,7 @@ const sendBatchOfTx = async (senderAccount, receiverAccount, amountToSend, txQua
 describe(`Send a transaction and check the balances and confirmations "${rpcUrl}"`, () => {
   beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
+    networkId = await web3.eth.net.getId();
 
     contract = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({ data: bytecode })

@@ -18,11 +18,13 @@ const extendedExecutionTimeout = 40000;
 
 let inbox;
 let accounts;
+let networkId;
 
 const getPayloadWithGas = from => ({
   gas: '1000000',
   gasPrice: '10000000001',
   from,
+  chainId: networkId,
 });
 
 describe(`Inbox (contract test) "${rpcUrl}"`, () => {
@@ -31,6 +33,7 @@ describe(`Inbox (contract test) "${rpcUrl}"`, () => {
   const web3 = new Web3(provider);
 
   beforeEach(async () => {
+    networkId = await web3.eth.net.getId();
     accounts = await web3.eth.getAccounts();
 
     inbox = await new web3.eth.Contract(JSON.parse(interface))
