@@ -84,7 +84,7 @@ var existingBlockNumberToCheck = 1;
 var existingBlockHashToCheck = '';
 // This would be initialized with the data from the setup process
 var existingTxHashToCheck = '';
-var extendedExecutionTimeout = 20000;
+var extendedExecutionTimeout = 180000;
 var 
 // RPC endpoint url
 _a = rpcParams.rpcUrl, 

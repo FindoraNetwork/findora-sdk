@@ -62,7 +62,7 @@ var envConfigFile = process.env.RPC_ENV_NAME
     : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
-var extendedExecutionTimeout = 20000;
+var extendedExecutionTimeout = 180000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var existingBlockNumberToCheck = 4;
