@@ -10,7 +10,7 @@ const envConfig = require(`${envConfigFile}.json`);
 
 const { rpc: rpcParams } = envConfig;
 
-const extendedExecutionTimeout = 20000;
+const extendedExecutionTimeout = 180000;
 
 const { rpcUrl = 'http://127.0.0.1:8545' } = rpcParams;
 

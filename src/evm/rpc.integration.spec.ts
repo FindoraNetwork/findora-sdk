@@ -19,7 +19,7 @@ let existingBlockHashToCheck = '';
 // This would be initialized with the data from the setup process
 let existingTxHashToCheck = '';
 
-const extendedExecutionTimeout = 20000;
+const extendedExecutionTimeout = 180000;
 
 const {
   // RPC endpoint url
@@ -33,16 +33,20 @@ const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
 const web3 = new Web3(provider);
 
+let networkId: number;
 let accounts: string[];
 
 const getPayloadWithGas = (from: string) => ({
   gas: '1000000',
   gasPrice: '10000000001',
   from,
+  chainId: networkId,
 });
 
 beforeAll(async (done: any) => {
   accounts = await web3.eth.getAccounts();
+  networkId = await web3.eth.net.getId();
+
   const transactionObject = {
     ...getPayloadWithGas(accounts[0]),
     to: accounts[1],
