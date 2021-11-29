@@ -23,10 +23,12 @@ const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
-  hostUrl: 'https://dev-qa02.dev.findora.org',
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
-  // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
   // cacheProvider: FileCacheProvider,
+  // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -37,6 +39,8 @@ const sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk.init(sdkEnv);
+
+console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 const {
   CUSTOM_ASSET_CODE = '',
@@ -87,12 +91,12 @@ const getFraBalance = async () => {
   console.log('\n');
 
   console.log('faucetWalletInfo.address', faucetWalletInfo.address);
-  console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+  // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
 
   console.log('newWallet.address', newWallet.address);
-  console.log('newWallet.privateStr', newWallet.privateStr);
+  // console.log('newWallet.privateStr', newWallet.privateStr);
 
   console.log('\n');
 

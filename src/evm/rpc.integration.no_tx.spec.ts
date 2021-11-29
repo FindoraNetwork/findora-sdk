@@ -2,6 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 
+import { assertBasicResult, assertResultResponse, getRpcPayload } from './testHelpers';
+
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
   : `../../.env_example`;
@@ -17,52 +19,45 @@ console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 
 const existingBlockNumberToCheck = 4;
 
+const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
+
+  const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+
+  assertResultResponse(result);
+  assertBasicResult<N>(result, msgId);
+
+  return result;
+};
+
 describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
   describe('eth_getBlockByNumber', () => {
     it(
       'Returns information about a block by block number and verifies its parent block information',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockNumberToCheck, true];
-        const payload = {
-          id: msgId,
-          method: 'eth_getBlockByNumber',
-          params: extraParams,
-        };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(response?.result.number).toEqual('0x4');
-        expect(typeof response?.result?.parentHash).toEqual('string');
-
-        const parentBlockHash = response?.result?.parentHash;
-
-        const payloadForParentBlock = {
-          id: 2,
-          method: 'eth_getBlockByHash',
-          params: [parentBlockHash, true],
-        };
-
-        const parentResult = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(
-          rpcUrl,
-          payloadForParentBlock,
+        const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
+          2,
+          'eth_getBlockByNumber',
+          extraParams,
         );
 
-        expect(parentResult).toHaveProperty('response');
-        expect(parentResult).not.toHaveProperty('error');
+        expect(result?.response?.result.number).toEqual('0x4');
+        expect(typeof result?.response?.result?.parentHash).toEqual('string');
 
-        const { response: parentResponse } = parentResult;
+        const parentBlockHash = result?.response?.result?.parentHash;
 
-        expect(parentResponse?.id).toEqual(2);
-        expect(parentResponse?.result.number).toEqual('0x3');
-        expect(parentResponse?.result.hash).toEqual(parentBlockHash);
+        const parentExtraParams = [parentBlockHash, true];
+
+        const parentResult = await getTestResult<
+          NetworkTypes.EthGetBlockByHashRpcResult,
+          typeof parentExtraParams
+        >(3, 'eth_getBlockByHash', parentExtraParams);
+
+        expect(parentResult?.response?.id).toEqual(3);
+        expect(parentResult?.response?.result.number).toEqual('0x3');
+        expect(parentResult?.response?.result.hash).toEqual(parentBlockHash);
       },
       extendedExecutionTimeout,
     );
