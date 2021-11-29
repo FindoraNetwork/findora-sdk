@@ -79,10 +79,12 @@ var sdkEnv = {
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
     // hostUrl: 'http://127.0.0.1',
-    hostUrl: 'https://dev-qa02.dev.findora.org',
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
-    // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-forge.prod.findora.org',
     // cacheProvider: FileCacheProvider,
+    // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -92,6 +94,7 @@ var sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk_1.default.init(sdkEnv);
+console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.PLATFORM_ACC_M_STRING, PLATFORM_ACC_M_STRING = _g === void 0 ? '' : _g, _h = _a.M_STRING, M_STRING = _h === void 0 ? '' : _h, _j = _a.FRA_ADDRESS, FRA_ADDRESS = _j === void 0 ? '' : _j, _k = _a.ETH_PRIVATE, ETH_PRIVATE = _k === void 0 ? '' : _k, _l = _a.ETH_ADDRESS, ETH_ADDRESS = _l === void 0 ? '' : _l;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -136,10 +139,10 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 balanceNew = _a.sent();
                 console.log('\n');
                 console.log('faucetWalletInfo.address', faucetWalletInfo.address);
-                console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+                // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
                 console.log('\n');
                 console.log('newWallet.address', newWallet.address);
-                console.log('newWallet.privateStr', newWallet.privateStr);
+                // console.log('newWallet.privateStr', newWallet.privateStr);
                 console.log('\n');
                 console.log('balance from restored from pkey IS', balance);
                 console.log('balance from restored using mnemonic IS', balanceNew);

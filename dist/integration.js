@@ -80,6 +80,7 @@ var sdkEnv = {
 };
 var waitingTimeBeforeCheckTxStatus = 19000;
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
+console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, receiverOne = walletKeys.receiverOne;
 var password = 'yourSecretPassword';

@@ -73,6 +73,7 @@ require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var web3_1 = __importDefault(require("web3"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
+var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../.env_example";
@@ -95,11 +96,22 @@ mnemonic = rpcParams.mnemonic;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
 var web3 = new web3_1.default(provider);
+var networkId;
 var accounts;
-var getPayloadWithGas = function (from) { return ({
-    gas: '1000000',
-    gasPrice: '10000000001',
-    from: from,
+var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+            case 1:
+                result = _a.sent();
+                (0, testHelpers_1.assertResultResponse)(result);
+                (0, testHelpers_1.assertBasicResult)(result, msgId);
+                return [2 /*return*/, result];
+        }
+    });
 }); };
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionObject;
@@ -108,7 +120,10 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
             case 0: return [4 /*yield*/, web3.eth.getAccounts()];
             case 1:
                 accounts = _a.sent();
-                transactionObject = __assign(__assign({}, getPayloadWithGas(accounts[0])), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
+                return [4 /*yield*/, web3.eth.net.getId()];
+            case 2:
+                networkId = _a.sent();
+                transactionObject = __assign(__assign({}, (0, testHelpers_1.getPayloadWithGas)(accounts[0], networkId)), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
                 web3.eth
                     .sendTransaction(transactionObject)
                     .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
@@ -159,24 +174,13 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
 describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_protocolVersion', function () {
         it('Returns the current ethereum protocol version', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        msgId = 2;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_protocolVersion',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_protocolVersion')];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'number');
                         return [2 /*return*/];
                 }
             });
@@ -184,25 +188,13 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_chainId', function () {
         it('Returns the current chain id', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        msgId = 1;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_chainId',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_chainId')];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -210,25 +202,14 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_accounts', function () {
         it('Returns a list of addresses owned by client', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        msgId = 1;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_accounts',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+            var result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_accounts')];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
+                        result = _b.sent();
+                        expect(Array.isArray((_a = result.response) === null || _a === void 0 ? void 0 : _a.result)).toEqual(true);
                         return [2 /*return*/];
                 }
             });
@@ -236,27 +217,15 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getBalance', function () {
         it('Returns the balance of the account of given address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
+            var extraParams, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [accounts[0], 'latest'];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBalance',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -264,11 +233,10 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_sendTransaction', function () {
         it('Creates new message call transaction or a contract creation, if the data field contains code', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
+            var extraParams, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -276,20 +244,10 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                                 value: 0,
                             },
                         ];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_sendTransaction',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_sendTransaction', extraParams)];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'undefined');
                         return [2 /*return*/];
                 }
             });
@@ -297,11 +255,10 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_call', function () {
         it('Executes a message immediately without creating a transaction', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
+            var extraParams, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -309,21 +266,10 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                                 data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
                             },
                         ];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_call',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(3, 'eth_call', extraParams)];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -331,25 +277,13 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_coinbase', function () {
         it('Returns the client coinbase address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        msgId = 1;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_coinbase',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_coinbase')];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -357,25 +291,13 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_gasPrice', function () {
         it('Returns the current price per gas in wei', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        msgId = 1;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_gasPrice',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_gasPrice')];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -383,25 +305,13 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_blockNumber', function () {
         it('Returns the number of most recent block', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, payload, result, response;
+            var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0:
-                        msgId = 1;
-                        payload = {
-                            id: msgId,
-                            method: 'eth_blockNumber',
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
                     case 1:
                         result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
+                        (0, testHelpers_1.assertResultType)(result, 'string');
                         return [2 /*return*/];
                 }
             });
@@ -409,29 +319,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getBlockByHash', function () {
         it('Returns information about a block by hash', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockHashToCheck, true];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBlockByHash',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash', extraParams)];
                     case 1:
-                        result = _c.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.parentHash)).toEqual('string');
+                        result = _e.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.hash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.parentHash)).toEqual('string');
                         return [2 /*return*/];
                 }
             });
@@ -439,29 +337,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getBlockByNumber', function () {
         it('Returns information about a block by block number.', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d;
+            return __generator(this, function (_e) {
+                switch (_e.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockNumberToCheck, true];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBlockByNumber',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockByNumber', extraParams)];
                     case 1:
-                        result = _c.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.parentHash)).toEqual('string');
+                        result = _e.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.hash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.parentHash)).toEqual('string');
                         return [2 /*return*/];
                 }
             });
@@ -469,28 +355,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getTransactionCount', function () {
         it('Returns the number of transactions SENT from an address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [accounts[0], 'latest'];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getTransactionCount',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getTransactionCount', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
-                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        result = _b.sent();
+                        (0, testHelpers_1.assertResultType)(result, 'string');
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).not.toEqual('0x0');
                         return [2 /*return*/];
                 }
             });
@@ -498,28 +373,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getBlockTransactionCountByHash', function () {
         it('Returns the number of transactions in a block from a block matching the given block hash', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockHashToCheck];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBlockTransactionCountByHash',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
-                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        result = _b.sent();
+                        (0, testHelpers_1.assertResultType)(result, 'string');
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).not.toEqual('0x0');
                         return [2 /*return*/];
                 }
             });
@@ -527,28 +391,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getBlockTransactionCountByNumber', function () {
         it('Returns the number of transactions in a block from a block matching the given block number', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockNumberToCheck];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBlockTransactionCountByNumber',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
-                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        result = _b.sent();
+                        (0, testHelpers_1.assertResultType)(result, 'string');
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).not.toEqual('0x0');
                         return [2 /*return*/];
                 }
             });
@@ -556,28 +409,17 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getCode', function () {
         it('Returns code at a given address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [accounts[1], 'latest'];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getCode',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getCode', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.id)).toEqual('number');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.result)).toEqual('string');
-                        expect(response === null || response === void 0 ? void 0 : response.result).not.toEqual('0x0');
+                        result = _b.sent();
+                        (0, testHelpers_1.assertResultType)(result, 'string');
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).not.toEqual('0x0');
                         return [2 /*return*/];
                 }
             });
@@ -585,26 +427,16 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_sendRawTransaction', function () {
         it('Creates new message call transaction or a contract creation for signed transactions (negative case)', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, txData, extraParams, payload, result, response;
-            var _a;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var extraParams, result;
+            var _a, _b;
+            return __generator(this, function (_c) {
+                switch (_c.label) {
                     case 0:
-                        msgId = 1;
-                        txData = '0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d';
-                        extraParams = [txData];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_sendRawTransaction',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        extraParams = ['0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d'];
+                        return [4 /*yield*/, getTestResult(2, 'eth_sendRawTransaction', extraParams)];
                     case 1:
-                        result = _b.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.error) === null || _a === void 0 ? void 0 : _a.code)).toEqual('number');
+                        result = _c.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code)).toEqual('number');
                         return [2 /*return*/];
                 }
             });
@@ -612,11 +444,11 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_estimateGas', function () {
         it('Generates and returns an estimate of how much gas is necessary to allow the transaction to complete', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -624,18 +456,10 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                                 data: '0x6ffa1caa0000000000000000000000000000000000000000000000000000000000000005',
                             },
                         ];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_estimateGas',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(3, 'eth_estimateGas', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.result).toEqual('0x52d4');
+                        result = _b.sent();
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).toEqual('0x52d4');
                         return [2 /*return*/];
                 }
             });
@@ -643,28 +467,18 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getTransactionByHash', function () {
         it('Returns the information about a transaction requested by transaction hash', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d, _e, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingTxHashToCheck];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getTransactionByHash',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByHash', extraParams)];
                     case 1:
-                        result = _d.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
-                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        result = _g.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
+                        expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
                         return [2 /*return*/];
                 }
             });
@@ -672,28 +486,18 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getTransactionByBlockHashAndIndex', function () {
         it('Returns information about a transaction by block hash and transaction index position', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d, _e, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockHashToCheck, '0x0'];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getTransactionByBlockHashAndIndex',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
-                        result = _d.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
-                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        result = _g.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
+                        expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
                         return [2 /*return*/];
                 }
             });
@@ -701,28 +505,18 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getTransactionByBlockNumberAndIndex', function () {
         it('Returns information about a transaction by block number and transaction index position', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d, _e, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockNumberToCheck, '0x0'];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getTransactionByBlockNumberAndIndex',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
-                        result = _d.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
-                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.hash).toEqual(existingTxHashToCheck);
+                        result = _g.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
+                        expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
                         return [2 /*return*/];
                 }
             });
@@ -730,28 +524,18 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getTransactionReceipt', function () {
         it('Returns the receipt of a transaction by transaction hash', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            var _a, _b, _c;
-            return __generator(this, function (_d) {
-                switch (_d.label) {
+            var extraParams, result;
+            var _a, _b, _c, _d, _e, _f;
+            return __generator(this, function (_g) {
+                switch (_g.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingTxHashToCheck];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getTransactionReceipt',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
-                        result = _d.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.blockHash)).toEqual('string');
-                        expect(typeof ((_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.blockNumber)).toEqual('string');
-                        expect((_c = response === null || response === void 0 ? void 0 : response.result) === null || _c === void 0 ? void 0 : _c.transactionHash).toEqual(existingTxHashToCheck);
+                        result = _g.sent();
+                        expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
+                        expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
+                        expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.transactionHash).toEqual(existingTxHashToCheck);
                         return [2 /*return*/];
                 }
             });
@@ -759,29 +543,20 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     });
     describe('eth_getLogs', function () {
         it('Returns an array of all logs matching a given filter object', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var extraParams, result;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [
                             {
                                 address: accounts[0],
                             },
                         ];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getLogs',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getLogs', extraParams)];
                     case 1:
-                        result = _a.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(typeof (response === null || response === void 0 ? void 0 : response.jsonrpc)).toEqual('string');
-                        expect(Array.isArray(response === null || response === void 0 ? void 0 : response.result)).toEqual(true);
+                        result = _b.sent();
+                        expect(Array.isArray((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result)).toEqual(true);
                         return [2 /*return*/];
                 }
             });

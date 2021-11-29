@@ -57,6 +57,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
+var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../.env_example";
@@ -66,45 +67,43 @@ var extendedExecutionTimeout = 180000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
 var existingBlockNumberToCheck = 4;
+var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+            case 1:
+                result = _a.sent();
+                (0, testHelpers_1.assertResultResponse)(result);
+                (0, testHelpers_1.assertBasicResult)(result, msgId);
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_getBlockByNumber', function () {
         it('Returns information about a block by block number and verifies its parent block information', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var msgId, extraParams, payload, result, response, parentBlockHash, payloadForParentBlock, parentResult, parentResponse;
-            var _a, _b;
-            return __generator(this, function (_c) {
-                switch (_c.label) {
+            var extraParams, result, parentBlockHash, parentExtraParams, parentResult;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            return __generator(this, function (_j) {
+                switch (_j.label) {
                     case 0:
-                        msgId = 1;
                         extraParams = [existingBlockNumberToCheck, true];
-                        payload = {
-                            id: msgId,
-                            method: 'eth_getBlockByNumber',
-                            params: extraParams,
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber', extraParams)];
                     case 1:
-                        result = _c.sent();
-                        expect(result).toHaveProperty('response');
-                        expect(result).not.toHaveProperty('error');
-                        response = result.response;
-                        expect(response === null || response === void 0 ? void 0 : response.id).toEqual(msgId);
-                        expect(response === null || response === void 0 ? void 0 : response.result.number).toEqual('0x4');
-                        expect(typeof ((_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.parentHash)).toEqual('string');
-                        parentBlockHash = (_b = response === null || response === void 0 ? void 0 : response.result) === null || _b === void 0 ? void 0 : _b.parentHash;
-                        payloadForParentBlock = {
-                            id: 2,
-                            method: 'eth_getBlockByHash',
-                            params: [parentBlockHash, true],
-                        };
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payloadForParentBlock)];
+                        result = _j.sent();
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result.number).toEqual('0x4');
+                        expect(typeof ((_c = (_b = result === null || result === void 0 ? void 0 : result.response) === null || _b === void 0 ? void 0 : _b.result) === null || _c === void 0 ? void 0 : _c.parentHash)).toEqual('string');
+                        parentBlockHash = (_e = (_d = result === null || result === void 0 ? void 0 : result.response) === null || _d === void 0 ? void 0 : _d.result) === null || _e === void 0 ? void 0 : _e.parentHash;
+                        parentExtraParams = [parentBlockHash, true];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getBlockByHash', parentExtraParams)];
                     case 2:
-                        parentResult = _c.sent();
-                        expect(parentResult).toHaveProperty('response');
-                        expect(parentResult).not.toHaveProperty('error');
-                        parentResponse = parentResult.response;
-                        expect(parentResponse === null || parentResponse === void 0 ? void 0 : parentResponse.id).toEqual(2);
-                        expect(parentResponse === null || parentResponse === void 0 ? void 0 : parentResponse.result.number).toEqual('0x3');
-                        expect(parentResponse === null || parentResponse === void 0 ? void 0 : parentResponse.result.hash).toEqual(parentBlockHash);
+                        parentResult = _j.sent();
+                        expect((_f = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _f === void 0 ? void 0 : _f.id).toEqual(3);
+                        expect((_g = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _g === void 0 ? void 0 : _g.result.number).toEqual('0x3');
+                        expect((_h = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _h === void 0 ? void 0 : _h.result.hash).toEqual(parentBlockHash);
                         return [2 /*return*/];
                 }
             });
