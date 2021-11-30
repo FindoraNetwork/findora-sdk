@@ -36,6 +36,8 @@ const waitingTimeBeforeCheckTxStatus = 19000;
 
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
 
+console.log(`Connecting to "${sdkEnv.hostUrl}"`);
+
 findoraSdk.init(sdkEnv);
 
 const { mainFaucet, senderOne, receiverOne } = walletKeys;

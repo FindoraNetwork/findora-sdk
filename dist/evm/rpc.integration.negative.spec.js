@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -77,6 +66,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
+var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../.env_example";
@@ -88,10 +78,20 @@ var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a
 var ERROR_INVALID_REQUEST = -32600;
 var ERROR_METHOD_NOT_FOUND = -32601;
 var ERROR_INVALID_PARAMS = -32602;
-var assertResultResponse = function (result) {
-    expect(result).toHaveProperty('response');
-    expect(result).not.toHaveProperty('error');
-};
+var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+            case 1:
+                result = _a.sent();
+                (0, testHelpers_1.assertResultResponse)(result);
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () {
     var msgId = 2;
     var payload = {
@@ -100,16 +100,14 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     };
     describe('notSupportedMethod', function () {
         it('Returns a proper error code when requested method was not found', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'foobar' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'foobar')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_METHOD_NOT_FOUND);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_METHOD_NOT_FOUND);
                         return [2 /*return*/];
                 }
             });
@@ -117,48 +115,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getBalance', function () {
         it('Returns a proper error code when address in given payload is invalid', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['wrong_address', 'latest'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBalance', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code when params payload is missing', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBalance' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBalance')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when params payload format is invalid', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBalance', params: 'foo' }))];
+                    case 0:
+                        extraParams = 'foo';
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -173,48 +167,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             },
         ];
         it('Returns a proper error code for missing required parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: extraParams }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_call', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when required parameter is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraExtraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: __spreadArray(__spreadArray([], extraParams, true), ['0x0'], false) }))];
+                    case 0:
+                        extraExtraParams = __spreadArray(__spreadArray([], extraParams, true), ['0x0'], false);
+                        return [4 /*yield*/, getTestResult(2, 'eth_call', extraExtraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = 'foo';
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_call', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(2, 'eth_call', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -222,50 +212,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getBlockByHash', function () {
         it('Returns a proper error code for invalid parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['0x0', true];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByHash', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getBlockByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for missing parameters', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['0x0', true];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByHash', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(4, 'eth_getBlockByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for the missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByHash' }))];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
@@ -273,48 +257,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getBlockByNumber', function () {
         it('Returns a proper error code for the wrong parameter in the payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa', true];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByNumber', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockByNumber', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error for the wrong format of the payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByNumber', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaaa';
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for the missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockByNumber' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
@@ -322,48 +302,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getTransactionCount', function () {
         it('Returns a proper error code when a wrong address is given', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['0x0', 'latest'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionCount', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code when no payload is given', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionCount' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionCount', params: 'aaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -371,33 +347,31 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getBlockTransactionCountByHash', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['0x0'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByHash', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByHash', params: 'aaa' }))];
+                    case 0:
+                        extraParams = 'aaaa';
+                        return [4 /*yield*/, getTestResult(3, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -405,48 +379,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getBlockTransactionCountByNumber', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByNumber', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByNumber' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBlockTransactionCountByHash')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getBlockTransactionCountByNumber', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -454,48 +424,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getCode', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getCode', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getCode', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getCode' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getCode')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getCode', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(1, 'eth_getCode', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -503,48 +469,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_sendRawTransaction', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_sendRawTransaction', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_sendRawTransaction', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_sendRawTransaction' }))];
+                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_sendRawTransaction')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_sendRawTransaction', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaaaa';
+                        return [4 /*yield*/, getTestResult(1, 'eth_sendRawTransaction', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -552,48 +514,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_estimateGas', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_estimateGas', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_estimateGas', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_estimateGas' }))];
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_estimateGas')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_estimateGas', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaaa';
+                        return [4 /*yield*/, getTestResult(1, 'eth_estimateGas', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -601,48 +559,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getTransactionByHash', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByHash', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByHash' }))];
+                    case 0: return [4 /*yield*/, getTestResult(4, 'eth_getTransactionByHash')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByHash', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaaa';
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByHash', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -650,48 +604,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getTransactionByBlockHashAndIndex', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockHashAndIndex', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockHashAndIndex' }))];
+                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockHashAndIndex', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -699,48 +649,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getTransactionByBlockNumberAndIndex', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockNumberAndIndex', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockNumberAndIndex' }))];
+                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionByBlockNumberAndIndex', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -748,48 +694,44 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getTransactionReceipt', function () {
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['aaa'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionReceipt', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a missing payload', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionReceipt' }))];
+                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt')];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getTransactionReceipt', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });
@@ -797,24 +739,22 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
     });
     describe('eth_getLogs', function () {
         it('Returns a proper error code for a wrong payload format parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
                         extraParams = ['0x0x0'];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getLogs', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(1, 'eth_getLogs', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns a proper error code for a wrong payload parameter', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
@@ -824,27 +764,25 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
                                 address: '0x0',
                             },
                         ];
-                        return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getLogs', params: extraParams }))];
+                        return [4 /*yield*/, getTestResult(4, 'eth_getLogs', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_PARAMS);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
                         return [2 /*return*/];
                 }
             });
         }); }, extendedExecutionTimeout);
         it('Returns an error when payload format is incorrect', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result, code;
+            var extraParams, result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, Network.sendRpcCall(rpcUrl, __assign(__assign({}, payload), { method: 'eth_getLogs', params: 'aaaa' }))];
+                    case 0:
+                        extraParams = 'aaa';
+                        return [4 /*yield*/, getTestResult(3, 'eth_getLogs', extraParams)];
                     case 1:
                         result = _c.sent();
-                        assertResultResponse(result);
-                        code = (_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code;
-                        expect(code).toEqual(ERROR_INVALID_REQUEST);
+                        expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_REQUEST);
                         return [2 /*return*/];
                 }
             });

@@ -2,6 +2,8 @@ import '@testing-library/jest-dom/extend-expect';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 
+import { assertResultResponse, getRpcPayload } from './testHelpers';
+
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
   : `../../.env_example`;
@@ -19,9 +21,14 @@ const ERROR_INVALID_REQUEST = -32600;
 const ERROR_METHOD_NOT_FOUND = -32601;
 const ERROR_INVALID_PARAMS = -32602;
 
-const assertResultResponse = (result: NetworkTypes.NetworkAxiosDataResult) => {
-  expect(result).toHaveProperty('response');
-  expect(result).not.toHaveProperty('error');
+const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
+
+  const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+
+  assertResultResponse(result);
+
+  return result;
 };
 
 describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
@@ -36,16 +43,9 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code when requested method was not found',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthProtocolRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'foobar',
-        });
+        const result = await getTestResult<NetworkTypes.EthProtocolRpcResult, void>(2, 'foobar');
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_METHOD_NOT_FOUND);
+        expect(result?.response?.error?.code).toEqual(ERROR_METHOD_NOT_FOUND);
       },
       extendedExecutionTimeout,
     );
@@ -57,50 +57,37 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['wrong_address', 'latest'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBalanceRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBalance',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
+          2,
+          'eth_getBalance',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code when params payload is missing',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBalanceRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBalance',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, void>(2, 'eth_getBalance');
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when params payload format is invalid',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBalanceRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBalance',
-          params: 'foo',
-        });
+        const extraParams = 'foo';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
+          2,
+          'eth_getBalance',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -118,34 +105,28 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for missing required parameter',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthCallRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_call',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraParams>(
+          2,
+          'eth_call',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when required parameter is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthCallRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_call',
-          params: [...extraParams, '0x0'],
-        });
+        const extraExtraParams = [...extraParams, '0x0'];
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraExtraParams>(
+          2,
+          'eth_call',
+          extraExtraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -154,17 +135,13 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = 'foo';
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthCallRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_call',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraParams>(
+          2,
+          'eth_call',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -176,17 +153,13 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['0x0', true];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByHash',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
+          3,
+          'eth_getBlockByHash',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -195,33 +168,25 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['0x0', true];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByHash',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
+          4,
+          'eth_getBlockByHash',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for the missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByHash',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, void>(
+          1,
+          'eth_getBlockByHash',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -233,50 +198,40 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa', true];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByNumber',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
+          1,
+          'eth_getBlockByNumber',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error for the wrong format of the payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByNumber',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
+          2,
+          'eth_getBlockByNumber',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for the missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getBlockByNumber',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, void>(
+          2,
+          'eth_getBlockByNumber',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -288,50 +243,40 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['0x0', 'latest'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionCountRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionCount',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
+          2,
+          'eth_getTransactionCount',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code when no payload is given',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionCountRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionCount',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, void>(
+          2,
+          'eth_getTransactionCount',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionCountRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionCount',
-          params: 'aaa',
-        });
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
+          2,
+          'eth_getTransactionCount',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -343,32 +288,26 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['0x0'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult>(
-          rpcUrl,
-          { ...payload, method: 'eth_getBlockTransactionCountByHash', params: extraParams },
-        );
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByHashRpcResult,
+          typeof extraParams
+        >(3, 'eth_getBlockTransactionCountByHash', extraParams);
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult>(
-          rpcUrl,
-          { ...payload, method: 'eth_getBlockTransactionCountByHash', params: 'aaa' },
-        );
+        const extraParams = 'aaaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByHashRpcResult,
+          typeof extraParams
+        >(3, 'eth_getBlockTransactionCountByHash', extraParams);
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -380,59 +319,38 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getBlockTransactionCountByNumber',
-            params: extraParams,
-          },
-        );
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByHashRpcResult,
+          typeof extraParams
+        >(1, 'eth_getBlockTransactionCountByNumber', extraParams);
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getBlockTransactionCountByNumber',
-          },
+        const result = await getTestResult<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult, void>(
+          2,
+          'eth_getBlockTransactionCountByHash',
         );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getBlockTransactionCountByNumber',
-            params: 'aaaa',
-          },
-        );
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByHashRpcResult,
+          typeof extraParams
+        >(1, 'eth_getBlockTransactionCountByNumber', extraParams);
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -444,50 +362,37 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetCodeRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getCode',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
+          3,
+          'eth_getCode',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetCodeRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getCode',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, void>(2, 'eth_getCode');
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetCodeRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getCode',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
+          1,
+          'eth_getCode',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -499,50 +404,39 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthSendRawTransactionRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_sendRawTransaction',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
+          1,
+          'eth_sendRawTransaction',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthSendRawTransactionRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_sendRawTransaction',
-        });
+        const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, void>(
+          2,
+          'eth_sendRawTransaction',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthSendRawTransactionRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_sendRawTransaction',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaaaa';
+        const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
+          1,
+          'eth_sendRawTransaction',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -554,50 +448,37 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthEstimateGasRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_estimateGas',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, typeof extraParams>(
+          1,
+          'eth_estimateGas',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthEstimateGasRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_estimateGas',
-        });
+        const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, void>(1, 'eth_estimateGas');
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthEstimateGasRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_estimateGas',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, typeof extraParams>(
+          1,
+          'eth_estimateGas',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -609,50 +490,40 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionByHash',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
+          1,
+          'eth_getTransactionByHash',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionByHash',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, void>(
+          4,
+          'eth_getTransactionByHash',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionByHash',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
+          2,
+          'eth_getTransactionByHash',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -664,59 +535,38 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getTransactionByBlockHashAndIndex',
-            params: extraParams,
-          },
-        );
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult,
+          typeof extraParams
+        >(1, 'eth_getTransactionByBlockHashAndIndex', extraParams);
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getTransactionByBlockHashAndIndex',
-          },
+        const result = await getTestResult<NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult, void>(
+          3,
+          'eth_getTransactionByBlockHashAndIndex',
         );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult>(
-          rpcUrl,
-          {
-            ...payload,
-            method: 'eth_getTransactionByBlockHashAndIndex',
-            params: 'aaaa',
-          },
-        );
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult,
+          typeof extraParams
+        >(2, 'eth_getTransactionByBlockHashAndIndex', extraParams);
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -728,53 +578,38 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
-            ...payload,
-            method: 'eth_getTransactionByBlockNumberAndIndex',
-            params: extraParams,
-          });
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,
+          typeof extraParams
+        >(2, 'eth_getTransactionByBlockNumberAndIndex', extraParams);
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
-            ...payload,
-            method: 'eth_getTransactionByBlockNumberAndIndex',
-          });
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,
+          void
+        >(3, 'eth_getTransactionByBlockNumberAndIndex');
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(rpcUrl, {
-            ...payload,
-            method: 'eth_getTransactionByBlockNumberAndIndex',
-            params: 'aaaa',
-          });
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,
+          typeof extraParams
+        >(1, 'eth_getTransactionByBlockNumberAndIndex', extraParams);
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -786,50 +621,38 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['aaa'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionReceiptRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionReceipt',
-          params: extraParams,
-        });
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionReceiptRpcResult,
+          typeof extraParams
+        >(3, 'eth_getTransactionReceipt', extraParams);
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns a proper error code for a missing payload',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionReceiptRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionReceipt',
-        });
+        const result = await getTestResult<NetworkTypes.EthGetTransactionReceiptRpcResult, void>(
+          3,
+          'eth_getTransactionReceipt',
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionReceiptRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getTransactionReceipt',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionReceiptRpcResult,
+          typeof extraParams
+        >(3, 'eth_getTransactionReceipt', extraParams);
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );
@@ -841,17 +664,13 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
       async () => {
         const extraParams = ['0x0x0'];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetLogsRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getLogs',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
+          1,
+          'eth_getLogs',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
@@ -864,34 +683,28 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
           },
         ];
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetLogsRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getLogs',
-          params: extraParams,
-        });
+        const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
+          4,
+          'eth_getLogs',
+          extraParams,
+        );
 
-        assertResultResponse(result);
-
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_PARAMS);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
       },
       extendedExecutionTimeout,
     );
     it(
       'Returns an error when payload format is incorrect',
       async () => {
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetLogsRpcResult>(rpcUrl, {
-          ...payload,
-          method: 'eth_getLogs',
-          params: 'aaaa',
-        });
+        const extraParams = 'aaa';
 
-        assertResultResponse(result);
+        const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
+          3,
+          'eth_getLogs',
+          extraParams,
+        );
 
-        const code = result?.response?.error?.code;
-
-        expect(code).toEqual(ERROR_INVALID_REQUEST);
+        expect(result?.response?.error?.code).toEqual(ERROR_INVALID_REQUEST);
       },
       extendedExecutionTimeout,
     );

@@ -1,8 +1,8 @@
 import * as Integration from './integration';
 
-const extendedExecutionTimeout = 60000;
+const extendedExecutionTimeout = 180000;
 
-describe('Findora SDK integration (integration test)', () => {
+describe(`Findora SDK integration (integration test)`, () => {
   describe('Custom Assets', () => {
     it(
       'Should create a simple transaction to define an asset',

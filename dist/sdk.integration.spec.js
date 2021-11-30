@@ -56,8 +56,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var Integration = __importStar(require("./integration"));
-var extendedExecutionTimeout = 60000;
-describe('Findora SDK integration (integration test)', function () {
+var extendedExecutionTimeout = 180000;
+describe("Findora SDK integration (integration test)", function () {
     describe('Custom Assets', function () {
         it('Should create a simple transaction to define an asset', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;

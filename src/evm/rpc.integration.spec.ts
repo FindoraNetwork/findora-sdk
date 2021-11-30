@@ -4,6 +4,14 @@ import * as NetworkTypes from '../api/network/types';
 import Web3 from 'web3';
 import HDWalletProvider from 'truffle-hdwallet-provider';
 
+import {
+  assertBasicResult,
+  getPayloadWithGas,
+  assertResultType,
+  assertResultResponse,
+  getRpcPayload,
+} from './testHelpers';
+
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
   : `../../.env_example`;
@@ -36,19 +44,23 @@ const web3 = new Web3(provider);
 let networkId: number;
 let accounts: string[];
 
-const getPayloadWithGas = (from: string) => ({
-  gas: '1000000',
-  gasPrice: '10000000001',
-  from,
-  chainId: networkId,
-});
+const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
+
+  const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+
+  assertResultResponse(result);
+  assertBasicResult<N>(result, msgId);
+
+  return result;
+};
 
 beforeAll(async (done: any) => {
   accounts = await web3.eth.getAccounts();
   networkId = await web3.eth.net.getId();
 
   const transactionObject = {
-    ...getPayloadWithGas(accounts[0]),
+    ...getPayloadWithGas(accounts[0], networkId),
     to: accounts[1],
     value: web3.utils.toWei('0.1', 'ether'),
   };
@@ -89,21 +101,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the current ethereum protocol version',
       async () => {
-        const msgId = 2;
-        const payload = {
-          id: msgId,
-          method: 'eth_protocolVersion',
-        };
-        const result = await Network.sendRpcCall<NetworkTypes.EthProtocolRpcResult>(rpcUrl, payload);
+        const result = await getTestResult<NetworkTypes.EthProtocolRpcResult, void>(2, 'eth_protocolVersion');
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
+        assertResultType(result, 'number');
       },
       extendedExecutionTimeout,
     );
@@ -112,23 +112,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the current chain id',
       async () => {
-        const msgId = 1;
-        const payload = {
-          id: msgId,
-          method: 'eth_chainId',
-        };
+        const result = await getTestResult<NetworkTypes.EthChainIdRpcResult, void>(1, 'eth_chainId');
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthChainIdRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -137,24 +123,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns a list of addresses owned by client',
       async () => {
-        const msgId = 1;
+        const result = await getTestResult<NetworkTypes.EthAccountsRpcResult, void>(1, 'eth_accounts');
 
-        const payload = {
-          id: msgId,
-          method: 'eth_accounts',
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthAccountsRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(Array.isArray(response?.result)).toEqual(true);
+        expect(Array.isArray(result.response?.result)).toEqual(true);
       },
       extendedExecutionTimeout,
     );
@@ -163,27 +134,15 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the balance of the account of given address',
       async () => {
-        const msgId = 1;
-
         const extraParams = [accounts[0], 'latest'];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getBalance',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
+          2,
+          'eth_getBalance',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBalanceRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -192,8 +151,6 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Creates new message call transaction or a contract creation, if the data field contains code',
       async () => {
-        const msgId = 1;
-
         const extraParams = [
           {
             from: accounts[0],
@@ -202,22 +159,13 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           },
         ];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_sendTransaction',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthSendTransactionRpcResult, typeof extraParams>(
+          1,
+          'eth_sendTransaction',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthSendTransactionRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
+        assertResultType(result, 'undefined');
       },
       extendedExecutionTimeout,
     );
@@ -226,8 +174,6 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Executes a message immediately without creating a transaction',
       async () => {
-        const msgId = 1;
-
         const extraParams = [
           {
             from: accounts[0],
@@ -236,23 +182,13 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           },
         ];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_call',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraParams>(
+          3,
+          'eth_call',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthCallRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -261,24 +197,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the client coinbase address',
       async () => {
-        const msgId = 1;
+        const result = await getTestResult<NetworkTypes.EthCoinbaseRpcResult, void>(1, 'eth_coinbase');
 
-        const payload = {
-          id: msgId,
-          method: 'eth_coinbase',
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthCoinbaseRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -287,24 +208,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the current price per gas in wei',
       async () => {
-        const msgId = 1;
+        const result = await getTestResult<NetworkTypes.EthGasPriceRpcResult, void>(1, 'eth_gasPrice');
 
-        const payload = {
-          id: msgId,
-          method: 'eth_gasPrice',
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthGasPriceRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -313,24 +219,9 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of most recent block',
       async () => {
-        const msgId = 1;
+        const result = await getTestResult<NetworkTypes.EthBlockNumberRpcResult, void>(1, 'eth_blockNumber');
 
-        const payload = {
-          id: msgId,
-          method: 'eth_blockNumber',
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthBlockNumberRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
+        assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
     );
@@ -339,28 +230,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a block by hash',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockHashToCheck, true];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getBlockByHash',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
+          1,
+          'eth_getBlockByHash',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByHashRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.hash).toEqual('string');
-        expect(typeof response?.result?.parentHash).toEqual('string');
+        expect(typeof result?.response?.result?.hash).toEqual('string');
+        expect(typeof result?.response?.result?.parentHash).toEqual('string');
       },
       extendedExecutionTimeout,
     );
@@ -369,27 +248,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a block by block number.',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockNumberToCheck, true];
-        const payload = {
-          id: msgId,
-          method: 'eth_getBlockByNumber',
-          params: extraParams,
-        };
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockByNumberRpcResult>(rpcUrl, payload);
+        const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
+          1,
+          'eth_getBlockByNumber',
+          extraParams,
+        );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.hash).toEqual('string');
-        expect(typeof response?.result?.parentHash).toEqual('string');
+        expect(typeof result?.response?.result?.hash).toEqual('string');
+        expect(typeof result?.response?.result?.parentHash).toEqual('string');
       },
       extendedExecutionTimeout,
     );
@@ -398,31 +266,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions SENT from an address',
       async () => {
-        const msgId = 1;
-
         const extraParams = [accounts[0], 'latest'];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getTransactionCount',
-          params: extraParams,
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionCountRpcResult>(
-          rpcUrl,
-          payload,
+        const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
+          1,
+          'eth_getTransactionCount',
+          extraParams,
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
-        expect(response?.result).not.toEqual('0x0');
+        assertResultType(result, 'string');
+        expect(result?.response?.result).not.toEqual('0x0');
       },
       extendedExecutionTimeout,
     );
@@ -431,31 +284,15 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions in a block from a block matching the given block hash',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockHashToCheck];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getBlockTransactionCountByHash',
-          params: extraParams,
-        };
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByHashRpcResult,
+          typeof extraParams
+        >(1, 'eth_getBlockTransactionCountByHash', extraParams);
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult>(
-          rpcUrl,
-          payload,
-        );
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
-        expect(response?.result).not.toEqual('0x0');
+        assertResultType(result, 'string');
+        expect(result?.response?.result).not.toEqual('0x0');
       },
       extendedExecutionTimeout,
     );
@@ -464,31 +301,15 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions in a block from a block matching the given block number',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockNumberToCheck];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getBlockTransactionCountByNumber',
-          params: extraParams,
-        };
+        const result = await getTestResult<
+          NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult,
+          typeof extraParams
+        >(2, 'eth_getBlockTransactionCountByNumber', extraParams);
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetBlockTransactionCountByNumberRpcResult>(
-          rpcUrl,
-          payload,
-        );
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
-        expect(response?.result).not.toEqual('0x0');
+        assertResultType(result, 'string');
+        expect(result?.response?.result).not.toEqual('0x0');
       },
       extendedExecutionTimeout,
     );
@@ -497,28 +318,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns code at a given address',
       async () => {
-        const msgId = 1;
-
         const extraParams = [accounts[1], 'latest'];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getCode',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
+          2,
+          'eth_getCode',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetCodeRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.id).toEqual(msgId);
-        expect(typeof response?.id).toEqual('number');
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result).toEqual('string');
-        expect(response?.result).not.toEqual('0x0');
+        assertResultType(result, 'string');
+        expect(result?.response?.result).not.toEqual('0x0');
       },
       extendedExecutionTimeout,
     );
@@ -527,28 +336,15 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Creates new message call transaction or a contract creation for signed transactions (negative case)',
       async () => {
-        const msgId = 1;
+        const extraParams = ['0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d'];
 
-        const txData = '0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d';
-        const extraParams = [txData];
-
-        const payload = {
-          id: msgId,
-          method: 'eth_sendRawTransaction',
-          params: extraParams,
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthSendRawTransactionRpcResult>(
-          rpcUrl,
-          payload,
+        const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
+          2,
+          'eth_sendRawTransaction',
+          extraParams,
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.error?.code).toEqual('number');
+        expect(typeof result?.response?.error?.code).toEqual('number');
       },
       extendedExecutionTimeout,
     );
@@ -557,8 +353,6 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Generates and returns an estimate of how much gas is necessary to allow the transaction to complete',
       async () => {
-        const msgId = 1;
-
         const extraParams = [
           {
             from: accounts[0],
@@ -567,20 +361,13 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           },
         ];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_estimateGas',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, typeof extraParams>(
+          3,
+          'eth_estimateGas',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthEstimateGasRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(response?.result).toEqual('0x52d4');
+        expect(result?.response?.result).toEqual('0x52d4');
       },
       extendedExecutionTimeout,
     );
@@ -589,30 +376,17 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the information about a transaction requested by transaction hash',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingTxHashToCheck];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getTransactionByHash',
-          params: extraParams,
-        };
-
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionByHashRpcResult>(
-          rpcUrl,
-          payload,
+        const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
+          3,
+          'eth_getTransactionByHash',
+          extraParams,
         );
 
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.blockHash).toEqual('string');
-        expect(typeof response?.result?.blockNumber).toEqual('string');
-        expect(response?.result?.hash).toEqual(existingTxHashToCheck);
+        expect(typeof result?.response?.result?.blockHash).toEqual('string');
+        expect(typeof result?.response?.result?.blockNumber).toEqual('string');
+        expect(result?.response?.result?.hash).toEqual(existingTxHashToCheck);
       },
       extendedExecutionTimeout,
     );
@@ -621,31 +395,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block hash and transaction index position',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockHashToCheck, '0x0'];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getTransactionByBlockHashAndIndex',
-          params: extraParams,
-        };
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult,
+          typeof extraParams
+        >(3, 'eth_getTransactionByBlockHashAndIndex', extraParams);
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-            rpcUrl,
-            payload,
-          );
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.blockHash).toEqual('string');
-        expect(typeof response?.result?.blockNumber).toEqual('string');
-        expect(response?.result?.hash).toEqual(existingTxHashToCheck);
+        expect(typeof result?.response?.result?.blockHash).toEqual('string');
+        expect(typeof result?.response?.result?.blockNumber).toEqual('string');
+        expect(result?.response?.result?.hash).toEqual(existingTxHashToCheck);
       },
       extendedExecutionTimeout,
     );
@@ -654,31 +413,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block number and transaction index position',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingBlockNumberToCheck, '0x0'];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getTransactionByBlockNumberAndIndex',
-          params: extraParams,
-        };
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,
+          typeof extraParams
+        >(3, 'eth_getTransactionByBlockNumberAndIndex', extraParams);
 
-        const result =
-          await Network.sendRpcCall<NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult>(
-            rpcUrl,
-            payload,
-          );
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.blockHash).toEqual('string');
-        expect(typeof response?.result?.blockNumber).toEqual('string');
-        expect(response?.result?.hash).toEqual(existingTxHashToCheck);
+        expect(typeof result?.response?.result?.blockHash).toEqual('string');
+        expect(typeof result?.response?.result?.blockNumber).toEqual('string');
+        expect(result?.response?.result?.hash).toEqual(existingTxHashToCheck);
       },
       extendedExecutionTimeout,
     );
@@ -687,30 +431,16 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the receipt of a transaction by transaction hash',
       async () => {
-        const msgId = 1;
-
         const extraParams = [existingTxHashToCheck];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getTransactionReceipt',
-          params: extraParams,
-        };
+        const result = await getTestResult<
+          NetworkTypes.EthGetTransactionReceiptRpcResult,
+          typeof extraParams
+        >(1, 'eth_getTransactionReceipt', extraParams);
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetTransactionReceiptRpcResult>(
-          rpcUrl,
-          payload,
-        );
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(typeof response?.result?.blockHash).toEqual('string');
-        expect(typeof response?.result?.blockNumber).toEqual('string');
-        expect(response?.result?.transactionHash).toEqual(existingTxHashToCheck);
+        expect(typeof result?.response?.result?.blockHash).toEqual('string');
+        expect(typeof result?.response?.result?.blockNumber).toEqual('string');
+        expect(result?.response?.result?.transactionHash).toEqual(existingTxHashToCheck);
       },
       extendedExecutionTimeout,
     );
@@ -719,29 +449,19 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns an array of all logs matching a given filter object',
       async () => {
-        const msgId = 1;
-
         const extraParams = [
           {
             address: accounts[0],
           },
         ];
 
-        const payload = {
-          id: msgId,
-          method: 'eth_getLogs',
-          params: extraParams,
-        };
+        const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
+          1,
+          'eth_getLogs',
+          extraParams,
+        );
 
-        const result = await Network.sendRpcCall<NetworkTypes.EthGetLogsRpcResult>(rpcUrl, payload);
-
-        expect(result).toHaveProperty('response');
-        expect(result).not.toHaveProperty('error');
-
-        const { response } = result;
-
-        expect(typeof response?.jsonrpc).toEqual('string');
-        expect(Array.isArray(response?.result)).toEqual(true);
+        expect(Array.isArray(result?.response?.result)).toEqual(true);
       },
       extendedExecutionTimeout,
     );
