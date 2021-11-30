@@ -125,7 +125,7 @@ describe(`Send a transaction and check the balances and confirmations "${rpcUrl}
 
       await sendBatchOfTx(fromAddress, toAddress, '0.02', 13);
 
-      console.log('waiting for 2000 ms before final assettion');
+      // console.log('waiting for 2000 ms before final assettion');
 
       await sleep(2000);
 

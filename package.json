@@ -42,6 +42,8 @@
     "test:evm:integration:rpc:no_tx:local": "RPC_ENV_NAME=local yarn test:evm:integration:rpc:no_tx",
     "test:evm:integration:rpc:no_tx:devnet": "RPC_ENV_NAME=dev yarn test:evm:integration:rpc:no_tx",
     "test:evm:integration:rpc:no_tx:mocknet": "RPC_ENV_NAME=mocknet yarn test:evm:integration:rpc:no_tx",
+    "test:evm:integration:all": "yarn test:evm:integration:rpc; yarn test:evm:integration:rpc:negative; yarn test:evm:integration:rpc:no_tx; yarn test:evm:integration:contract",
+    "test:evm:integration:all:devnet": "RPC_ENV_NAME=dev yarn test:evm:integration:all",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc --out docs src",
