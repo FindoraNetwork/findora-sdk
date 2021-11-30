@@ -85,6 +85,7 @@ var existingBlockNumberToCheck = 1;
 var existingBlockHashToCheck = '';
 // This would be initialized with the data from the setup process
 var existingTxHashToCheck = '';
+var existingTransactionIndex = 0;
 var extendedExecutionTimeout = 180000;
 var 
 // RPC endpoint url
@@ -123,6 +124,7 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, web3.eth.net.getId()];
             case 2:
                 networkId = _a.sent();
+                console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 63 ~ beforeAll ~ networkId', networkId);
                 transactionObject = __assign(__assign({}, (0, testHelpers_1.getPayloadWithGas)(accounts[0], networkId)), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
                 web3.eth
                     .sendTransaction(transactionObject)
@@ -158,13 +160,14 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                 }); })
                     .then(function (receipt) {
                     // will be fired once the receipt is mined
-                    var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber;
+                    var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber, transactionIndex = receipt.transactionIndex;
                     // This block number has to be from the block `existingBlockHashToCheck`
                     existingBlockNumberToCheck = blockNumber;
                     // This block hash must be from the block `existingBlockNumberToCheck`
                     existingBlockHashToCheck = blockHash;
                     // This tx hash must be from the block `existingBlockNumberToCheck`
                     existingTxHashToCheck = transactionHash;
+                    existingTransactionIndex = transactionIndex;
                     done();
                 });
                 return [2 /*return*/];
@@ -328,6 +331,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash', extraParams)];
                     case 1:
                         result = _e.sent();
+                        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 240 ~  eth_getBlockByHash result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.hash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.parentHash)).toEqual('string');
                         return [2 /*return*/];
@@ -491,10 +495,11 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
-                        extraParams = [existingBlockHashToCheck, '0x0'];
+                        extraParams = [existingBlockHashToCheck, existingTransactionIndex];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
                         result = _g.sent();
+                        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 401 ~ eth_getTransactionByBlockHashAndIndex result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
                         expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
@@ -510,7 +515,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
-                        extraParams = [existingBlockNumberToCheck, '0x0'];
+                        extraParams = [existingBlockNumberToCheck, existingTransactionIndex];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
                         result = _g.sent();

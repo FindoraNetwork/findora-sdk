@@ -49,8 +49,8 @@ const sendTxToAccount = async (senderAccount, receiverAccount, amountToSend) => 
     })
     .then(function (_receipt) {
       // will be fired once the receipt is mined
-      const { blockNumber } = _receipt;
-      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 87 ~ blockNumber', blockNumber);
+      // const { blockNumber } = _receipt;
+      // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 87 ~ blockNumber', blockNumber);
     });
 };
 
@@ -93,7 +93,7 @@ describe(`Send a transaction and check the balances and confirmations "${rpcUrl}
       assert.ok(balanceContract > 0);
 
       const balanceBefore = await web3.eth.getBalance(accounts[0]);
-      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 93 ~ balanceBefore', balanceBefore);
+      // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 93 ~ balanceBefore', balanceBefore);
 
       await contract.methods
         .pickWinner()
@@ -112,9 +112,9 @@ describe(`Send a transaction and check the balances and confirmations "${rpcUrl}
       assert.strictEqual(txReceipt.transactionHash, txHash);
 
       const balanceAfter = await web3.eth.getBalance(accounts[0]);
-      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 112 ~ balanceAfter', balanceAfter);
+      // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 112 ~ balanceAfter', balanceAfter);
       const balanceDifference = balanceAfter - balanceBefore;
-      console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 114 ~ balanceDifference', balanceDifference);
+      // console.log('🚀 ~ file: Lottery.contract.spec.js ~ line 114 ~ balanceDifference', balanceDifference);
 
       assert.ok(accounts.length > 0);
 
@@ -129,10 +129,10 @@ describe(`Send a transaction and check the balances and confirmations "${rpcUrl}
 
       await sleep(2000);
 
-      console.log(
-        '🚀 ~ file: Lottery.contract.spec.js ~ line 70 ~ numberOfConfirmations',
-        numberOfConfirmations,
-      );
+      // console.log(
+      //   '🚀 ~ file: Lottery.contract.spec.js ~ line 70 ~ numberOfConfirmations',
+      //   numberOfConfirmations,
+      // );
 
       assert.ok(numberOfConfirmations >= 12);
     },

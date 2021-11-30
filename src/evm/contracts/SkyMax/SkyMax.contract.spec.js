@@ -218,7 +218,7 @@ describe(`SkyMax Contract (contract test) "${rpcUrl}"`, () => {
       expect(contractEvents.length).toEqual(2);
 
       const [firstLogItem, secondLogItem] = contractEvents;
-      console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 217 ~ contractEvents', contractEvents);
+      // console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 217 ~ contractEvents', contractEvents);
 
       const {
         transactionHash: firstTxHash,
