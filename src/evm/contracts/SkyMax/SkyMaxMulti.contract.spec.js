@@ -12,7 +12,7 @@ const envConfigFile = process.env.RPC_ENV_NAME
 
 const envConfig = require(`${envConfigFile}.json`);
 
-const extendedExecutionTimeout = 180000;
+const extendedExecutionTimeout = 600000;
 
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
@@ -224,7 +224,7 @@ describe(`SkyMaxMulti Contract (contract test) "${rpcUrl}"`, () => {
       expect(contractEvents.length).toEqual(2);
 
       const [firstLogItem, secondLogItem] = contractEvents;
-      console.log('🚀 ~ file: SkyMaxMulti.contract.spec.js ~ line 224 ~ contractEvents', contractEvents);
+      // console.log('🚀 ~ file: SkyMaxMulti.contract.spec.js ~ line 224 ~ contractEvents', contractEvents);
 
       const {
         transactionHash: firstTxHash,
