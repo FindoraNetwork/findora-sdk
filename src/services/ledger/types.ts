@@ -10,4 +10,5 @@ export {
   XfrPublicKey,
   AssetTracerKeyPair,
   TracingPolicy,
+  AnonKeys,
 } from 'findora-wallet-wasm/web/wasm';
