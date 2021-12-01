@@ -14,7 +14,7 @@ const envConfigFile = process.env.RPC_ENV_NAME
   : `../../../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
-const extendedExecutionTimeout = 180000;
+const extendedExecutionTimeout = 600000;
 
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
@@ -39,7 +39,7 @@ describe(`SkyMax Contract (contract test) "${rpcUrl}"`, () => {
     networkId = await web3.eth.net.getId();
     accounts = await web3.eth.getAccounts();
 
-    console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 38 ~ beforeEach ~ accounts', accounts);
+    // console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 38 ~ beforeEach ~ accounts', accounts);
 
     contract = await new web3.eth.Contract(JSON.parse(interface))
       .deploy({ data: bytecode, arguments: ['Hi there'] })
@@ -218,7 +218,7 @@ describe(`SkyMax Contract (contract test) "${rpcUrl}"`, () => {
       expect(contractEvents.length).toEqual(2);
 
       const [firstLogItem, secondLogItem] = contractEvents;
-      console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 217 ~ contractEvents', contractEvents);
+      // console.log('🚀 ~ file: SkyMax.contract.spec.js ~ line 217 ~ contractEvents', contractEvents);
 
       const {
         transactionHash: firstTxHash,

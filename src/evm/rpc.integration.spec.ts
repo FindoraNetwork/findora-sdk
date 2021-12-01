@@ -27,6 +27,8 @@ let existingBlockHashToCheck = '';
 // This would be initialized with the data from the setup process
 let existingTxHashToCheck = '';
 
+let existingTransactionIndex = 0;
+
 const extendedExecutionTimeout = 180000;
 
 const {
@@ -59,6 +61,8 @@ beforeAll(async (done: any) => {
   accounts = await web3.eth.getAccounts();
   networkId = await web3.eth.net.getId();
 
+  console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 63 ~ beforeAll ~ networkId', networkId);
+
   const transactionObject = {
     ...getPayloadWithGas(accounts[0], networkId),
     to: accounts[1],
@@ -84,7 +88,7 @@ beforeAll(async (done: any) => {
     })
     .then(function (receipt) {
       // will be fired once the receipt is mined
-      const { transactionHash, blockHash, blockNumber } = receipt;
+      const { transactionHash, blockHash, blockNumber, transactionIndex } = receipt;
 
       // This block number has to be from the block `existingBlockHashToCheck`
       existingBlockNumberToCheck = blockNumber;
@@ -92,6 +96,9 @@ beforeAll(async (done: any) => {
       existingBlockHashToCheck = blockHash;
       // This tx hash must be from the block `existingBlockNumberToCheck`
       existingTxHashToCheck = transactionHash;
+
+      existingTransactionIndex = transactionIndex;
+
       done();
     });
 }, extendedExecutionTimeout);
@@ -237,6 +244,8 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           'eth_getBlockByHash',
           extraParams,
         );
+
+        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 240 ~  eth_getBlockByHash result', result);
 
         expect(typeof result?.response?.result?.hash).toEqual('string');
         expect(typeof result?.response?.result?.parentHash).toEqual('string');
@@ -395,12 +404,17 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block hash and transaction index position',
       async () => {
-        const extraParams = [existingBlockHashToCheck, '0x0'];
+        const extraParams = [existingBlockHashToCheck, existingTransactionIndex];
 
         const result = await getTestResult<
           NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult,
           typeof extraParams
         >(3, 'eth_getTransactionByBlockHashAndIndex', extraParams);
+
+        console.log(
+          '🚀 ~ file: rpc.integration.spec.ts ~ line 401 ~ eth_getTransactionByBlockHashAndIndex result',
+          result,
+        );
 
         expect(typeof result?.response?.result?.blockHash).toEqual('string');
         expect(typeof result?.response?.result?.blockNumber).toEqual('string');
@@ -413,7 +427,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block number and transaction index position',
       async () => {
-        const extraParams = [existingBlockNumberToCheck, '0x0'];
+        const extraParams = [existingBlockNumberToCheck, existingTransactionIndex];
 
         const result = await getTestResult<
           NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,

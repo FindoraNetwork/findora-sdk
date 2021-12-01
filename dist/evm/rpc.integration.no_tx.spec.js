@@ -66,7 +66,6 @@ var rpcParams = envConfig.rpc;
 var extendedExecutionTimeout = 180000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
-var existingBlockNumberToCheck = 4;
 var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, result;
     return __generator(this, function (_a) {
@@ -82,28 +81,36 @@ var getTestResult = function (msgId, method, extraParams) { return __awaiter(voi
         }
     });
 }); };
-describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
+describe("Api Endpoint (rpc test no tx) for \"" + rpcUrl + "\"", function () {
     describe('eth_getBlockByNumber', function () {
         it('Returns information about a block by block number and verifies its parent block information', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var extraParams, result, parentBlockHash, parentExtraParams, parentResult;
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            return __generator(this, function (_j) {
-                switch (_j.label) {
-                    case 0:
-                        extraParams = [existingBlockNumberToCheck, true];
-                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber', extraParams)];
+            var lastBlockResult, lastBlockResponse, existingBlockNumberToCheck, extraParams, result, parentBlockHash, parentExtraParams, parentResult;
+            var _a, _b, _c, _d, _e, _f, _g;
+            return __generator(this, function (_h) {
+                switch (_h.label) {
+                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
                     case 1:
-                        result = _j.sent();
-                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result.number).toEqual('0x4');
+                        lastBlockResult = _h.sent();
+                        lastBlockResponse = lastBlockResult.response;
+                        if (!lastBlockResponse) {
+                            console.log('lastBlockResult', lastBlockResult);
+                            throw new Error('Could not fetch last block data');
+                        }
+                        existingBlockNumberToCheck = parseInt(lastBlockResponse.result, 16);
+                        extraParams = [existingBlockNumberToCheck, true];
+                        return [4 /*yield*/, getTestResult(1312, 'eth_getBlockByNumber', extraParams)];
+                    case 2:
+                        result = _h.sent();
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result.number).toEqual(lastBlockResponse.result);
                         expect(typeof ((_c = (_b = result === null || result === void 0 ? void 0 : result.response) === null || _b === void 0 ? void 0 : _b.result) === null || _c === void 0 ? void 0 : _c.parentHash)).toEqual('string');
                         parentBlockHash = (_e = (_d = result === null || result === void 0 ? void 0 : result.response) === null || _d === void 0 ? void 0 : _d.result) === null || _e === void 0 ? void 0 : _e.parentHash;
                         parentExtraParams = [parentBlockHash, true];
                         return [4 /*yield*/, getTestResult(3, 'eth_getBlockByHash', parentExtraParams)];
-                    case 2:
-                        parentResult = _j.sent();
+                    case 3:
+                        parentResult = _h.sent();
                         expect((_f = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _f === void 0 ? void 0 : _f.id).toEqual(3);
-                        expect((_g = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _g === void 0 ? void 0 : _g.result.number).toEqual('0x3');
-                        expect((_h = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _h === void 0 ? void 0 : _h.result.hash).toEqual(parentBlockHash);
+                        expect(parseInt(parentResult.response.result.number, 16)).toEqual(existingBlockNumberToCheck - 1);
+                        expect((_g = parentResult === null || parentResult === void 0 ? void 0 : parentResult.response) === null || _g === void 0 ? void 0 : _g.result.hash).toEqual(parentBlockHash);
                         return [2 /*return*/];
                 }
             });
