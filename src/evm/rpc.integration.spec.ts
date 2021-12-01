@@ -1,15 +1,18 @@
 import '@testing-library/jest-dom/extend-expect';
+import HDWalletProvider from 'truffle-hdwallet-provider';
+import Web3 from 'web3';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
-import Web3 from 'web3';
-import HDWalletProvider from 'truffle-hdwallet-provider';
-
 import {
+  afterAllLog,
+  afterEachLog,
   assertBasicResult,
-  getPayloadWithGas,
-  assertResultType,
   assertResultResponse,
+  assertResultType,
+  getPayloadWithGas,
   getRpcPayload,
+  setCurrentTestName,
+  timeLog,
 } from './testHelpers';
 
 const envConfigFile = process.env.RPC_ENV_NAME
@@ -37,7 +40,8 @@ const {
   //Sender mnemonic (to be used in web3)
   mnemonic,
 } = rpcParams;
-console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
+
+timeLog('Connecting to', rpcParams.rpcUrl);
 
 const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
 
@@ -46,22 +50,14 @@ const web3 = new Web3(provider);
 let networkId: number;
 let accounts: string[];
 
-const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
-  const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
-
-  const result = await Network.sendRpcCall<N>(rpcUrl, payload);
-
-  assertResultResponse(result);
-  assertBasicResult<N>(result, msgId);
-
-  return result;
-};
-
 beforeAll(async (done: any) => {
-  accounts = await web3.eth.getAccounts();
-  networkId = await web3.eth.net.getId();
+  setCurrentTestName('before all hook');
 
-  console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 63 ~ beforeAll ~ networkId', networkId);
+  accounts = await web3.eth.getAccounts();
+  timeLog('To get accounts');
+
+  networkId = await web3.eth.net.getId();
+  timeLog('To get chain id');
 
   const transactionObject = {
     ...getPayloadWithGas(accounts[0], networkId),
@@ -72,21 +68,23 @@ beforeAll(async (done: any) => {
   web3.eth
     .sendTransaction(transactionObject)
     .once('sending', async _payload => {
-      console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+      timeLog('Once sending', _payload);
     })
     .once('sent', async _payload => {
-      console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+      timeLog('Once sent', _payload);
     })
     .once('transactionHash', async _hash => {
-      console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+      timeLog('Once transactionHash', _hash);
     })
     .once('receipt', async _receipt => {
-      console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+      timeLog('Once receipt', _receipt);
     })
     .on('error', async _error => {
-      console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+      timeLog('Once error', _error);
     })
     .then(function (receipt) {
+      timeLog('Once the receipt is mined', receipt);
+
       // will be fired once the receipt is mined
       const { transactionHash, blockHash, blockNumber, transactionIndex } = receipt;
 
@@ -103,11 +101,28 @@ beforeAll(async (done: any) => {
     });
 }, extendedExecutionTimeout);
 
+afterAll(afterAllLog);
+afterEach(afterEachLog);
+
+const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
+
+  timeLog(`Before network call`);
+  const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+  timeLog(`After network call`);
+
+  assertResultResponse(result);
+  assertBasicResult<N>(result, msgId);
+
+  return result;
+};
+
 describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
   describe('eth_protocolVersion', () => {
     it(
       'Returns the current ethereum protocol version',
       async () => {
+        setCurrentTestName('eth_protocolVersion');
         const result = await getTestResult<NetworkTypes.EthProtocolRpcResult, void>(2, 'eth_protocolVersion');
 
         assertResultType(result, 'number');
@@ -119,6 +134,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the current chain id',
       async () => {
+        setCurrentTestName('eth_chainId');
         const result = await getTestResult<NetworkTypes.EthChainIdRpcResult, void>(1, 'eth_chainId');
 
         assertResultType(result, 'string');
@@ -130,6 +146,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns a list of addresses owned by client',
       async () => {
+        setCurrentTestName('eth_accounts');
         const result = await getTestResult<NetworkTypes.EthAccountsRpcResult, void>(1, 'eth_accounts');
 
         expect(Array.isArray(result.response?.result)).toEqual(true);
@@ -141,6 +158,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the balance of the account of given address',
       async () => {
+        setCurrentTestName('eth_getBalance');
         const extraParams = [accounts[0], 'latest'];
 
         const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
@@ -158,6 +176,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Creates new message call transaction or a contract creation, if the data field contains code',
       async () => {
+        setCurrentTestName('eth_sendTransaction');
         const extraParams = [
           {
             from: accounts[0],
@@ -181,6 +200,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Executes a message immediately without creating a transaction',
       async () => {
+        setCurrentTestName('eth_call');
         const extraParams = [
           {
             from: accounts[0],
@@ -204,6 +224,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the client coinbase address',
       async () => {
+        setCurrentTestName('eth_coinbase');
         const result = await getTestResult<NetworkTypes.EthCoinbaseRpcResult, void>(1, 'eth_coinbase');
 
         assertResultType(result, 'string');
@@ -215,6 +236,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the current price per gas in wei',
       async () => {
+        setCurrentTestName('eth_gasPrice');
         const result = await getTestResult<NetworkTypes.EthGasPriceRpcResult, void>(1, 'eth_gasPrice');
 
         assertResultType(result, 'string');
@@ -226,8 +248,8 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of most recent block',
       async () => {
+        setCurrentTestName('eth_blockNumber');
         const result = await getTestResult<NetworkTypes.EthBlockNumberRpcResult, void>(1, 'eth_blockNumber');
-
         assertResultType(result, 'string');
       },
       extendedExecutionTimeout,
@@ -237,6 +259,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a block by hash',
       async () => {
+        setCurrentTestName('eth_getBlockByHash');
         const extraParams = [existingBlockHashToCheck, true];
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
@@ -245,7 +268,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           extraParams,
         );
 
-        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 240 ~  eth_getBlockByHash result', result);
+        timeLog('eth_getBlockByHash result', result);
 
         expect(typeof result?.response?.result?.hash).toEqual('string');
         expect(typeof result?.response?.result?.parentHash).toEqual('string');
@@ -257,6 +280,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a block by block number.',
       async () => {
+        setCurrentTestName('eth_getBlockByNumber');
         const extraParams = [existingBlockNumberToCheck, true];
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
@@ -275,6 +299,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions SENT from an address',
       async () => {
+        setCurrentTestName('eth_getTransactionCount');
         const extraParams = [accounts[0], 'latest'];
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
@@ -293,6 +318,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions in a block from a block matching the given block hash',
       async () => {
+        setCurrentTestName('eth_getBlockTransactionCountByHash');
         const extraParams = [existingBlockHashToCheck];
 
         const result = await getTestResult<
@@ -310,6 +336,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the number of transactions in a block from a block matching the given block number',
       async () => {
+        setCurrentTestName('eth_getBlockTransactionCountByNumber');
         const extraParams = [existingBlockNumberToCheck];
 
         const result = await getTestResult<
@@ -327,6 +354,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns code at a given address',
       async () => {
+        setCurrentTestName('eth_getCode');
         const extraParams = [accounts[1], 'latest'];
 
         const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
@@ -345,6 +373,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Creates new message call transaction or a contract creation for signed transactions (negative case)',
       async () => {
+        setCurrentTestName('eth_sendRawTransaction');
         const extraParams = ['0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d'];
 
         const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
@@ -362,6 +391,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Generates and returns an estimate of how much gas is necessary to allow the transaction to complete',
       async () => {
+        setCurrentTestName('eth_estimateGas');
         const extraParams = [
           {
             from: accounts[0],
@@ -385,6 +415,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the information about a transaction requested by transaction hash',
       async () => {
+        setCurrentTestName('eth_getTransactionByHash');
         const extraParams = [existingTxHashToCheck];
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
@@ -404,6 +435,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block hash and transaction index position',
       async () => {
+        setCurrentTestName('eth_getTransactionByBlockHashAndIndex');
         const extraParams = [existingBlockHashToCheck, existingTransactionIndex];
 
         const result = await getTestResult<
@@ -411,10 +443,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           typeof extraParams
         >(3, 'eth_getTransactionByBlockHashAndIndex', extraParams);
 
-        console.log(
-          '🚀 ~ file: rpc.integration.spec.ts ~ line 401 ~ eth_getTransactionByBlockHashAndIndex result',
-          result,
-        );
+        timeLog('eth_getTransactionByBlockHashAndIndex result', result);
 
         expect(typeof result?.response?.result?.blockHash).toEqual('string');
         expect(typeof result?.response?.result?.blockNumber).toEqual('string');
@@ -427,6 +456,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a transaction by block number and transaction index position',
       async () => {
+        setCurrentTestName('eth_getTransactionByBlockNumberAndIndex');
         const extraParams = [existingBlockNumberToCheck, existingTransactionIndex];
 
         const result = await getTestResult<
@@ -445,6 +475,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns the receipt of a transaction by transaction hash',
       async () => {
+        setCurrentTestName('eth_getTransactionReceipt');
         const extraParams = [existingTxHashToCheck];
 
         const result = await getTestResult<
@@ -463,6 +494,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
     it(
       'Returns an array of all logs matching a given filter object',
       async () => {
+        setCurrentTestName('eth_getLogs');
         const extraParams = [
           {
             address: accounts[0],
