@@ -84,7 +84,7 @@ export const timeLog = (label?: string, data?: SuperSimpleObject | string | numb
   const lastLog = data === false ? '' : `took ${msToTime(sinceLastOperation)} `;
   const totalTime = `-> Total run time ${msToTime(sinceStart)}`;
   const formattedExtra = extraData ? `with data - ${extraData} ` : '';
-  const formattedTestName = currentTestName ? `Test '${currentTestName}' -> ` : '';
+  const formattedTestName = currentTestName ? `Test "${currentTestName}" -> ` : '';
 
   logsCount += 1;
 
@@ -106,7 +106,7 @@ export const setCurrentTestName = (testName: string) => {
 };
 
 export const afterEachLog = () => {
-  const msg = `Test '${currentTestName}' is finished`;
+  const msg = `Test "${currentTestName}" is finished`;
   setCurrentTestName('');
   timeLog(msg, false);
 };
