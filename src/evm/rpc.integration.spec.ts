@@ -25,7 +25,7 @@ const envConfig = require(`${envConfigFile}.json`);
 const { rpc: rpcParams } = envConfig;
 const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
-const extendedExecutionTimeout = 180000;
+const extendedExecutionTimeout = 600000;
 
 let existingBlockNumberToCheck = 1;
 let existingBlockHashToCheck = '';
@@ -99,7 +99,7 @@ const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: 
 
   timeStart();
   const result = await Network.sendRpcCall<N>(rpcUrl, payload);
-  timeLog(`RPC Network call`);
+  timeLog(`RPC Network call to "${method}"`);
 
   assertResultResponse(result);
   assertBasicResult<N>(result, msgId);

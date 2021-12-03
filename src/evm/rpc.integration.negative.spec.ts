@@ -1,8 +1,15 @@
 import '@testing-library/jest-dom/extend-expect';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
-
-import { assertResultResponse, getRpcPayload } from './testHelpers';
+import {
+  afterAllLog,
+  afterEachLog,
+  assertResultResponse,
+  getRpcPayload,
+  setCurrentTestName,
+  timeLog,
+  timeStart,
+} from './testHelpers';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
@@ -11,20 +18,27 @@ const envConfigFile = process.env.RPC_ENV_NAME
 const envConfig = require(`${envConfigFile}.json`);
 
 const { rpc: rpcParams } = envConfig;
-
-const extendedExecutionTimeout = 180000;
-
 const { rpcUrl = 'http://127.0.0.1:8545' } = rpcParams;
+
+const extendedExecutionTimeout = 600000;
 
 //moonbeam (polkadot) compatible
 const ERROR_INVALID_REQUEST = -32600;
 const ERROR_METHOD_NOT_FOUND = -32601;
 const ERROR_INVALID_PARAMS = -32602;
 
+timeStart();
+timeLog('Connecting to the server', rpcParams.rpcUrl);
+
+afterAll(afterAllLog);
+afterEach(afterEachLog);
+
 const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
   const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
 
+  timeStart();
   const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+  timeLog(`Send an RPC call for "${method}"`);
 
   assertResultResponse(result);
 
@@ -32,17 +46,12 @@ const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: 
 };
 
 describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
-  const msgId = 2;
-
-  const payload = {
-    id: msgId,
-    method: '',
-  };
-
   describe('notSupportedMethod', () => {
     it(
       'Returns a proper error code when requested method was not found',
       async () => {
+        setCurrentTestName('Returns a proper error code when requested method was not found');
+
         const result = await getTestResult<NetworkTypes.EthProtocolRpcResult, void>(2, 'foobar');
 
         expect(result?.response?.error?.code).toEqual(ERROR_METHOD_NOT_FOUND);
@@ -55,6 +64,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code when address in given payload is invalid',
       async () => {
+        setCurrentTestName('Returns a proper error code when address in given payload is invalid');
+
         const extraParams = ['wrong_address', 'latest'];
 
         const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
@@ -70,6 +81,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code when params payload is missing',
       async () => {
+        setCurrentTestName('Returns a proper error code when params payload is missing');
+
         const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, void>(2, 'eth_getBalance');
 
         expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
@@ -79,6 +92,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when params payload format is invalid',
       async () => {
+        setCurrentTestName('Returns an error when params payload format is invalid');
+
         const extraParams = 'foo';
 
         const result = await getTestResult<NetworkTypes.EthGetBalanceRpcResult, typeof extraParams>(
@@ -105,6 +120,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for missing required parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for missing required parameter');
+
         const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraParams>(
           2,
           'eth_call',
@@ -118,6 +135,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when required parameter is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when required parameter is incorrect');
+
         const extraExtraParams = [...extraParams, '0x0'];
 
         const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraExtraParams>(
@@ -133,6 +152,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'foo';
 
         const result = await getTestResult<NetworkTypes.EthCallRpcResult, typeof extraParams>(
@@ -151,6 +172,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for invalid parameters',
       async () => {
+        setCurrentTestName('Returns a proper error code for invalid parameters');
+
         const extraParams = ['0x0', true];
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
@@ -166,6 +189,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for missing parameters',
       async () => {
+        setCurrentTestName('Returns a proper error code for missing parameters');
+
         const extraParams = ['0x0', true];
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, typeof extraParams>(
@@ -181,6 +206,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for the missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for the missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetBlockByHashRpcResult, void>(
           1,
           'eth_getBlockByHash',
@@ -196,6 +223,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for the wrong parameter in the payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for the wrong parameter in the payload');
+
         const extraParams = ['aaa', true];
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
@@ -211,6 +240,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error for the wrong format of the payload',
       async () => {
+        setCurrentTestName('Returns an error for the wrong format of the payload');
+
         const extraParams = 'aaaa';
 
         const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, typeof extraParams>(
@@ -226,6 +257,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for the missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for the missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetBlockByNumberRpcResult, void>(
           2,
           'eth_getBlockByNumber',
@@ -241,6 +274,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code when a wrong address is given',
       async () => {
+        setCurrentTestName('Returns a proper error code when a wrong address is given');
+
         const extraParams = ['0x0', 'latest'];
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
@@ -256,6 +291,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code when no payload is given',
       async () => {
+        setCurrentTestName('Returns a proper error code when no payload is given');
+
         const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, void>(
           2,
           'eth_getTransactionCount',
@@ -268,6 +305,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionCountRpcResult, typeof extraParams>(
@@ -286,6 +325,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['0x0'];
 
         const result = await getTestResult<
@@ -300,6 +341,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = 'aaaa';
 
         const result = await getTestResult<
@@ -317,6 +360,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<
@@ -331,6 +376,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetBlockTransactionCountByHashRpcResult, void>(
           2,
           'eth_getBlockTransactionCountByHash',
@@ -343,6 +390,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<
@@ -360,6 +409,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
@@ -375,6 +426,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, void>(2, 'eth_getCode');
 
         expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
@@ -384,6 +437,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<NetworkTypes.EthGetCodeRpcResult, typeof extraParams>(
@@ -402,6 +457,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
@@ -417,6 +474,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, void>(
           2,
           'eth_sendRawTransaction',
@@ -429,6 +488,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaaaa';
         const result = await getTestResult<NetworkTypes.EthSendRawTransactionRpcResult, typeof extraParams>(
           1,
@@ -446,6 +507,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, typeof extraParams>(
@@ -461,6 +524,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, void>(1, 'eth_estimateGas');
 
         expect(result?.response?.error?.code).toEqual(ERROR_INVALID_PARAMS);
@@ -470,6 +535,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaaa';
 
         const result = await getTestResult<NetworkTypes.EthEstimateGasRpcResult, typeof extraParams>(
@@ -488,6 +555,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
@@ -503,6 +572,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, void>(
           4,
           'eth_getTransactionByHash',
@@ -515,6 +586,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaaa';
 
         const result = await getTestResult<NetworkTypes.EthGetTransactionByHashRpcResult, typeof extraParams>(
@@ -533,6 +606,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<
@@ -547,6 +622,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetTransactionByBlockHashAndIndexRpcResult, void>(
           3,
           'eth_getTransactionByBlockHashAndIndex',
@@ -559,6 +636,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<
@@ -576,6 +655,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<
@@ -590,6 +671,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<
           NetworkTypes.EthGetTransactionByBlockNumberAndIndexRpcResult,
           void
@@ -602,6 +685,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<
@@ -619,6 +704,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = ['aaa'];
 
         const result = await getTestResult<
@@ -633,6 +720,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a missing payload',
       async () => {
+        setCurrentTestName('Returns a proper error code for a missing payload');
+
         const result = await getTestResult<NetworkTypes.EthGetTransactionReceiptRpcResult, void>(
           3,
           'eth_getTransactionReceipt',
@@ -645,6 +734,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<
@@ -662,6 +753,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload format parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload format parameter');
+
         const extraParams = ['0x0x0'];
 
         const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
@@ -677,6 +770,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns a proper error code for a wrong payload parameter',
       async () => {
+        setCurrentTestName('Returns a proper error code for a wrong payload parameter');
+
         const extraParams = [
           {
             address: '0x0',
@@ -696,6 +791,8 @@ describe(`Api Endpoint (rpc test negative) for "${rpcUrl}"`, () => {
     it(
       'Returns an error when payload format is incorrect',
       async () => {
+        setCurrentTestName('Returns an error when payload format is incorrect');
+
         const extraParams = 'aaa';
 
         const result = await getTestResult<NetworkTypes.EthGetLogsRpcResult, typeof extraParams>(
