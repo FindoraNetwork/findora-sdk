@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import solc from 'solc';
 
-const contractName = 'Inbox';
+const contractName = 'Existing';
 
 const contractPath = path.resolve(__dirname, './', `${contractName}.sol`);
 const source = fs.readFileSync(contractPath, 'utf8');

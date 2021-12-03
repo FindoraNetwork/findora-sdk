@@ -13,6 +13,7 @@ import {
   getRpcPayload,
   setCurrentTestName,
   timeLog,
+  timeStart,
 } from './testHelpers';
 
 const envConfigFile = process.env.RPC_ENV_NAME
@@ -22,42 +23,31 @@ const envConfigFile = process.env.RPC_ENV_NAME
 const envConfig = require(`${envConfigFile}.json`);
 
 const { rpc: rpcParams } = envConfig;
-
-// This would be initialized with the data from the setup process
-let existingBlockNumberToCheck = 1;
-// This would be initialized with the data from the setup process
-let existingBlockHashToCheck = '';
-// This would be initialized with the data from the setup process
-let existingTxHashToCheck = '';
-
-let existingTransactionIndex = 0;
+const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
 
 const extendedExecutionTimeout = 180000;
 
-const {
-  // RPC endpoint url
-  rpcUrl = 'http://127.0.0.1:8545',
-  //Sender mnemonic (to be used in web3)
-  mnemonic,
-} = rpcParams;
-
-timeLog('Connecting to', rpcParams.rpcUrl);
-
-const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
-
-const web3 = new Web3(provider);
+let existingBlockNumberToCheck = 1;
+let existingBlockHashToCheck = '';
+let existingTxHashToCheck = '';
+let existingTransactionIndex = 0;
 
 let networkId: number;
 let accounts: string[];
 
+timeStart();
+const provider = new HDWalletProvider(mnemonic, rpcUrl, 0, mnemonic.length);
+const web3 = new Web3(provider);
+timeLog('Connecting to the server', rpcParams.rpcUrl);
+
+afterAll(afterAllLog);
+afterEach(afterEachLog);
+
 beforeAll(async (done: any) => {
-  setCurrentTestName('before all hook');
+  setCurrentTestName('');
 
   accounts = await web3.eth.getAccounts();
-  timeLog('To get accounts');
-
   networkId = await web3.eth.net.getId();
-  timeLog('To get chain id');
 
   const transactionObject = {
     ...getPayloadWithGas(accounts[0], networkId),
@@ -65,19 +55,21 @@ beforeAll(async (done: any) => {
     value: web3.utils.toWei('0.1', 'ether'),
   };
 
+  timeStart();
+
   web3.eth
     .sendTransaction(transactionObject)
     .once('sending', async _payload => {
-      timeLog('Once sending', _payload);
+      // timeLog('Once sending', _payload);
     })
     .once('sent', async _payload => {
-      timeLog('Once sent', _payload);
+      // timeLog('Once sent', _payload);
     })
     .once('transactionHash', async _hash => {
       timeLog('Once transactionHash', _hash);
     })
     .once('receipt', async _receipt => {
-      timeLog('Once receipt', _receipt);
+      // timeLog('Once receipt', _receipt);
     })
     .on('error', async _error => {
       timeLog('Once error', _error);
@@ -98,18 +90,16 @@ beforeAll(async (done: any) => {
       existingTransactionIndex = transactionIndex;
 
       done();
+      // timeLog('Send an initial transaction');
     });
 }, extendedExecutionTimeout);
-
-afterAll(afterAllLog);
-afterEach(afterEachLog);
 
 const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
   const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
 
-  timeLog(`Before network call`);
+  timeStart();
   const result = await Network.sendRpcCall<N>(rpcUrl, payload);
-  timeLog(`After network call`);
+  timeLog(`RPC Network call`);
 
   assertResultResponse(result);
   assertBasicResult<N>(result, msgId);
@@ -267,8 +257,6 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           'eth_getBlockByHash',
           extraParams,
         );
-
-        timeLog('eth_getBlockByHash result', result);
 
         expect(typeof result?.response?.result?.hash).toEqual('string');
         expect(typeof result?.response?.result?.parentHash).toEqual('string');
@@ -443,7 +431,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           typeof extraParams
         >(3, 'eth_getTransactionByBlockHashAndIndex', extraParams);
 
-        timeLog('eth_getTransactionByBlockHashAndIndex result', result);
+        // timeLog('eth_getTransactionByBlockHashAndIndex result', result);
 
         expect(typeof result?.response?.result?.blockHash).toEqual('string');
         expect(typeof result?.response?.result?.blockNumber).toEqual('string');
