@@ -1,9 +1,8 @@
 import dotenv from 'dotenv';
+import minimist from 'minimist';
 import { Asset, Keypair, Transaction } from './api';
 import Sdk from './Sdk';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
-
-import minimist from 'minimist';
 
 dotenv.config();
 
@@ -11,13 +10,7 @@ dotenv.config();
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
-  // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://dev-staging.dev.findora.org',
-  // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
-  // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org',
-  hostUrl: 'https://prod-forge.prod.findora.org',
+  hostUrl: 'https://dev-qa02.dev.findora.org',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -26,7 +19,17 @@ Sdk.init(sdkEnv);
 
 const { PKEY_LOCAL_FAUCET = '' } = process.env;
 
-const errorMsgFund = 'please run as "yarn fund --address=fraXXX --amountToFund=1 "';
+const COMMANDS = {
+  FUND: 'fund',
+  CREATE_WALLET: 'createWallet',
+  RESTORE_WALLET: 'restoreWallet',
+};
+
+const ERROR_MESSAGES = {
+  [COMMANDS.FUND]: 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
+  [COMMANDS.CREATE_WALLET]: 'please run as "yarn cli createWallet"',
+  [COMMANDS.RESTORE_WALLET]: `please run as "yarn cli runRestoreWallet --mnemonicString='XXX ... ... XXX'"`,
+};
 
 const now = () => new Date().toLocaleString();
 
@@ -38,7 +41,9 @@ const log = (message: string, ...rest: any) => {
 };
 
 const showHelp = () => {
-  log(errorMsgFund);
+  for (const prop in ERROR_MESSAGES) {
+    log(ERROR_MESSAGES[prop]);
+  }
 };
 
 const runFund = async (address: string, amountToFund: string) => {
@@ -54,26 +59,60 @@ const runFund = async (address: string, amountToFund: string) => {
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
-  console.log('send fra result handle', resultHandle);
+  log('send fra result handle', resultHandle);
+};
+
+const runCreateWallet = async () => {
+  const password = '123';
+
+  const mm = await Keypair.getMnemonic(24);
+
+  log(`🚀 ~ new mnemonic: "${mm.join(' ')}"`);
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
+  log('🚀 ~ new wallet info: ', walletInfo);
+};
+
+const runRestoreWallet = async (mnemonicString: string) => {
+  const password = '123';
+  log(`🚀 ~ mnemonic to be used: "${mnemonicString}"`);
+
+  const mm = mnemonicString.split(' ');
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
+  log('🚀 ~ restored wallet info: ', walletInfo);
 };
 
 const main = async () => {
   const argv = minimist(process.argv.slice(4));
   const [command] = argv._;
-  const { address, amountToFund } = argv;
+  const { address, amountToFund, mnemonicString } = argv;
 
-  // console.log('🚀 ~ file: cli.ts ~ line 44 ~ fundAddress ~ argv', argv);
-  // console.log('🚀 ~ file: cli.ts ~ line 47 ~ fundAddress ~ command', command);
-  // console.log('🚀 ~ file: fund.ts ~ line 47 ~ fundAddress ~ address', address);
+  if (!command) {
+    showHelp();
+    return;
+  }
 
   switch (command) {
-    case 'fund':
+    case COMMANDS.FUND:
       if (!address) {
-        log(errorMsgFund);
+        log(ERROR_MESSAGES[COMMANDS.FUND]);
         break;
       }
 
       runFund(address, amountToFund);
+      break;
+    case COMMANDS.CREATE_WALLET:
+      runCreateWallet();
+      break;
+    case COMMANDS.RESTORE_WALLET:
+      if (!mnemonicString) {
+        log(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
+        break;
+      }
+      runRestoreWallet(mnemonicString);
       break;
 
     default:
