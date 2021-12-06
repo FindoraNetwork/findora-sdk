@@ -1,8 +1,16 @@
 import '@testing-library/jest-dom/extend-expect';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
-
-import { assertBasicResult, assertResultResponse, getRpcPayload } from './testHelpers';
+import {
+  afterAllLog,
+  afterEachLog,
+  assertBasicResult,
+  assertResultResponse,
+  getRpcPayload,
+  setCurrentTestName,
+  timeLog,
+  timeStart,
+} from './testHelpers';
 
 const envConfigFile = process.env.RPC_ENV_NAME
   ? `../../.env_rpc_${process.env.RPC_ENV_NAME}`
@@ -12,15 +20,18 @@ const envConfig = require(`${envConfigFile}.json`);
 
 const { rpc: rpcParams } = envConfig;
 
-const extendedExecutionTimeout = 180000;
-
+const extendedExecutionTimeout = 600000;
 const { rpcUrl = 'http://127.0.0.1:8545' } = rpcParams;
-console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
+
+afterAll(afterAllLog);
+afterEach(afterEachLog);
 
 const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
   const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
 
+  timeStart();
   const result = await Network.sendRpcCall<N>(rpcUrl, payload);
+  timeLog(`Send an RPC call for "${method}"`);
 
   assertResultResponse(result);
   assertBasicResult<N>(result, msgId);
@@ -33,6 +44,10 @@ describe(`Api Endpoint (rpc test no tx) for "${rpcUrl}"`, () => {
     it(
       'Returns information about a block by block number and verifies its parent block information',
       async () => {
+        setCurrentTestName(
+          'Returns information about a block by block number and verifies its parent block information',
+        );
+
         const lastBlockResult = await getTestResult<NetworkTypes.EthBlockNumberRpcResult, void>(
           1,
           'eth_blockNumber',

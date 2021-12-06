@@ -70,9 +70,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var Network = __importStar(require("../api/network/network"));
-var web3_1 = __importDefault(require("web3"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
+var web3_1 = __importDefault(require("web3"));
+var Network = __importStar(require("../api/network/network"));
 var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
     ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
@@ -94,71 +94,60 @@ _a = rpcParams.rpcUrl,
 rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, 
 //Sender mnemonic (to be used in web3)
 mnemonic = rpcParams.mnemonic;
-console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
+(0, testHelpers_1.timeLog)('Connecting to', rpcParams.rpcUrl);
 var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
 var web3 = new web3_1.default(provider);
 var networkId;
 var accounts;
-var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
-    var payload, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
-                return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
-            case 1:
-                result = _a.sent();
-                (0, testHelpers_1.assertResultResponse)(result);
-                (0, testHelpers_1.assertBasicResult)(result, msgId);
-                return [2 /*return*/, result];
-        }
-    });
-}); };
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionObject;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, web3.eth.getAccounts()];
+            case 0:
+                (0, testHelpers_1.setCurrentTestName)('before all hook');
+                return [4 /*yield*/, web3.eth.getAccounts()];
             case 1:
                 accounts = _a.sent();
+                (0, testHelpers_1.timeLog)('To get accounts');
                 return [4 /*yield*/, web3.eth.net.getId()];
             case 2:
                 networkId = _a.sent();
-                console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 63 ~ beforeAll ~ networkId', networkId);
+                (0, testHelpers_1.timeLog)('To get chain id');
                 transactionObject = __assign(__assign({}, (0, testHelpers_1.getPayloadWithGas)(accounts[0], networkId)), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
                 web3.eth
                     .sendTransaction(transactionObject)
                     .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        console.log('🚀 ~ IT IS SENDING file: rpc.spec.ts ~ line 37 ~ payload', _payload);
+                        (0, testHelpers_1.timeLog)('Once sending', _payload);
                         return [2 /*return*/];
                     });
                 }); })
                     .once('sent', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        console.log('🚀 ~ IT IS SENT file: rpc.spec.ts ~ line 40 ~ payload', _payload);
+                        (0, testHelpers_1.timeLog)('Once sent', _payload);
                         return [2 /*return*/];
                     });
                 }); })
                     .once('transactionHash', function (_hash) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        console.log('🚀 ~ file: rpc.spec.ts ~ line 44 ~ hash', _hash);
+                        (0, testHelpers_1.timeLog)('Once transactionHash', _hash);
                         return [2 /*return*/];
                     });
                 }); })
                     .once('receipt', function (_receipt) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        console.log('🚀 ~ file: rpc.spec.ts ~ line 45 ~ receipt', _receipt);
+                        (0, testHelpers_1.timeLog)('Once receipt', _receipt);
                         return [2 /*return*/];
                     });
                 }); })
                     .on('error', function (_error) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        console.log('🚀 ~ ERROR file: rpc.spec.ts ~ line 51 ~ error', _error);
+                        (0, testHelpers_1.timeLog)('Once error', _error);
                         return [2 /*return*/];
                     });
                 }); })
                     .then(function (receipt) {
+                    (0, testHelpers_1.timeLog)('Once the receipt is mined', receipt);
                     // will be fired once the receipt is mined
                     var transactionHash = receipt.transactionHash, blockHash = receipt.blockHash, blockNumber = receipt.blockNumber, transactionIndex = receipt.transactionIndex;
                     // This block number has to be from the block `existingBlockHashToCheck`
@@ -174,13 +163,34 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
         }
     });
 }); }, extendedExecutionTimeout);
+afterAll(testHelpers_1.afterAllLog);
+afterEach(testHelpers_1.afterEachLog);
+var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                (0, testHelpers_1.timeLog)("Before network call");
+                return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
+            case 1:
+                result = _a.sent();
+                (0, testHelpers_1.timeLog)("After network call");
+                (0, testHelpers_1.assertResultResponse)(result);
+                (0, testHelpers_1.assertBasicResult)(result, msgId);
+                return [2 /*return*/, result];
+        }
+    });
+}); };
 describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_protocolVersion', function () {
         it('Returns the current ethereum protocol version', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_protocolVersion')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_protocolVersion');
+                        return [4 /*yield*/, getTestResult(2, 'eth_protocolVersion')];
                     case 1:
                         result = _a.sent();
                         (0, testHelpers_1.assertResultType)(result, 'number');
@@ -194,7 +204,9 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_chainId')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_chainId');
+                        return [4 /*yield*/, getTestResult(1, 'eth_chainId')];
                     case 1:
                         result = _a.sent();
                         (0, testHelpers_1.assertResultType)(result, 'string');
@@ -209,7 +221,9 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             var _a;
             return __generator(this, function (_b) {
                 switch (_b.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_accounts')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_accounts');
+                        return [4 /*yield*/, getTestResult(1, 'eth_accounts')];
                     case 1:
                         result = _b.sent();
                         expect(Array.isArray((_a = result.response) === null || _a === void 0 ? void 0 : _a.result)).toEqual(true);
@@ -224,6 +238,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getBalance');
                         extraParams = [accounts[0], 'latest'];
                         return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
@@ -240,6 +255,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_sendTransaction');
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -262,6 +278,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_call');
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -283,7 +300,9 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_coinbase')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_coinbase');
+                        return [4 /*yield*/, getTestResult(1, 'eth_coinbase')];
                     case 1:
                         result = _a.sent();
                         (0, testHelpers_1.assertResultType)(result, 'string');
@@ -297,7 +316,9 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_gasPrice')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_gasPrice');
+                        return [4 /*yield*/, getTestResult(1, 'eth_gasPrice')];
                     case 1:
                         result = _a.sent();
                         (0, testHelpers_1.assertResultType)(result, 'string');
@@ -311,7 +332,9 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_blockNumber');
+                        return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
                     case 1:
                         result = _a.sent();
                         (0, testHelpers_1.assertResultType)(result, 'string');
@@ -327,11 +350,12 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getBlockByHash');
                         extraParams = [existingBlockHashToCheck, true];
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash', extraParams)];
                     case 1:
                         result = _e.sent();
-                        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 240 ~  eth_getBlockByHash result', result);
+                        (0, testHelpers_1.timeLog)('eth_getBlockByHash result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.hash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.parentHash)).toEqual('string');
                         return [2 /*return*/];
@@ -346,6 +370,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_e) {
                 switch (_e.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getBlockByNumber');
                         extraParams = [existingBlockNumberToCheck, true];
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockByNumber', extraParams)];
                     case 1:
@@ -364,6 +389,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getTransactionCount');
                         extraParams = [accounts[0], 'latest'];
                         return [4 /*yield*/, getTestResult(1, 'eth_getTransactionCount', extraParams)];
                     case 1:
@@ -382,6 +408,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getBlockTransactionCountByHash');
                         extraParams = [existingBlockHashToCheck];
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
@@ -400,6 +427,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getBlockTransactionCountByNumber');
                         extraParams = [existingBlockNumberToCheck];
                         return [4 /*yield*/, getTestResult(2, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
@@ -418,6 +446,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getCode');
                         extraParams = [accounts[1], 'latest'];
                         return [4 /*yield*/, getTestResult(2, 'eth_getCode', extraParams)];
                     case 1:
@@ -436,6 +465,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_sendRawTransaction');
                         extraParams = ['0xa25ed3bfffc6fe42766a5246eb83a634c08b3f4a64433517605332639363398d'];
                         return [4 /*yield*/, getTestResult(2, 'eth_sendRawTransaction', extraParams)];
                     case 1:
@@ -453,6 +483,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_estimateGas');
                         extraParams = [
                             {
                                 from: accounts[0],
@@ -476,6 +507,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getTransactionByHash');
                         extraParams = [existingTxHashToCheck];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByHash', extraParams)];
                     case 1:
@@ -495,11 +527,12 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getTransactionByBlockHashAndIndex');
                         extraParams = [existingBlockHashToCheck, existingTransactionIndex];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
                         result = _g.sent();
-                        console.log('🚀 ~ file: rpc.integration.spec.ts ~ line 401 ~ eth_getTransactionByBlockHashAndIndex result', result);
+                        (0, testHelpers_1.timeLog)('eth_getTransactionByBlockHashAndIndex result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
                         expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
@@ -515,6 +548,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getTransactionByBlockNumberAndIndex');
                         extraParams = [existingBlockNumberToCheck, existingTransactionIndex];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
@@ -534,6 +568,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_g) {
                 switch (_g.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getTransactionReceipt');
                         extraParams = [existingTxHashToCheck];
                         return [4 /*yield*/, getTestResult(1, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
@@ -553,6 +588,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('eth_getLogs');
                         extraParams = [
                             {
                                 address: accounts[0],
