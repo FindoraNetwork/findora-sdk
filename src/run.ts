@@ -1,15 +1,13 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
+import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
-import Sdk from './Sdk';
 import * as NetworkTypes from './api/network/types';
-import * as bigNumber from './services/bigNumber';
+import Sdk from './Sdk';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
-// import { Evm } from './api';
-import sleep from 'sleep-promise';
 
 dotenv.config();
 
@@ -48,6 +46,7 @@ const {
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
+  ENG_PKEY = '',
   PLATFORM_ACC_M_STRING = '',
   M_STRING = '',
   FRA_ADDRESS = '',
@@ -75,7 +74,7 @@ const getFraBalance = async () => {
   const password = '1234';
 
   const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = PKEY_MINE2;
+  // const pkey = ENG_PKEY;
 
   const mString = PLATFORM_ACC_M_STRING;
 
@@ -90,12 +89,12 @@ const getFraBalance = async () => {
 
   console.log('\n');
 
-  console.log('faucetWalletInfo.address', faucetWalletInfo.address);
+  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
   // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
 
-  console.log('newWallet.address', newWallet.address);
+  console.log('newWallet.address (from mnenmonic)', newWallet.address);
   // console.log('newWallet.privateStr', newWallet.privateStr);
 
   console.log('\n');

@@ -79,52 +79,43 @@ var envConfigFile = process.env.RPC_ENV_NAME
     : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
-// This would be initialized with the data from the setup process
+var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
+var extendedExecutionTimeout = 600000;
 var existingBlockNumberToCheck = 1;
-// This would be initialized with the data from the setup process
 var existingBlockHashToCheck = '';
-// This would be initialized with the data from the setup process
 var existingTxHashToCheck = '';
 var existingTransactionIndex = 0;
-var extendedExecutionTimeout = 180000;
-var 
-// RPC endpoint url
-_a = rpcParams.rpcUrl, 
-// RPC endpoint url
-rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, 
-//Sender mnemonic (to be used in web3)
-mnemonic = rpcParams.mnemonic;
-(0, testHelpers_1.timeLog)('Connecting to', rpcParams.rpcUrl);
-var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
-var web3 = new web3_1.default(provider);
 var networkId;
 var accounts;
+(0, testHelpers_1.timeStart)();
+var provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
+var web3 = new web3_1.default(provider);
+(0, testHelpers_1.timeLog)('Connecting to the server', rpcParams.rpcUrl);
+afterAll(testHelpers_1.afterAllLog);
+afterEach(testHelpers_1.afterEachLog);
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionObject;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                (0, testHelpers_1.setCurrentTestName)('before all hook');
+                (0, testHelpers_1.setCurrentTestName)('');
                 return [4 /*yield*/, web3.eth.getAccounts()];
             case 1:
                 accounts = _a.sent();
-                (0, testHelpers_1.timeLog)('To get accounts');
                 return [4 /*yield*/, web3.eth.net.getId()];
             case 2:
                 networkId = _a.sent();
-                (0, testHelpers_1.timeLog)('To get chain id');
                 transactionObject = __assign(__assign({}, (0, testHelpers_1.getPayloadWithGas)(accounts[0], networkId)), { to: accounts[1], value: web3.utils.toWei('0.1', 'ether') });
+                (0, testHelpers_1.timeStart)();
                 web3.eth
                     .sendTransaction(transactionObject)
                     .once('sending', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        (0, testHelpers_1.timeLog)('Once sending', _payload);
                         return [2 /*return*/];
                     });
                 }); })
                     .once('sent', function (_payload) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        (0, testHelpers_1.timeLog)('Once sent', _payload);
                         return [2 /*return*/];
                     });
                 }); })
@@ -136,7 +127,6 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                 }); })
                     .once('receipt', function (_receipt) { return __awaiter(void 0, void 0, void 0, function () {
                     return __generator(this, function (_a) {
-                        (0, testHelpers_1.timeLog)('Once receipt', _receipt);
                         return [2 /*return*/];
                     });
                 }); })
@@ -158,24 +148,23 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                     existingTxHashToCheck = transactionHash;
                     existingTransactionIndex = transactionIndex;
                     done();
+                    // timeLog('Send an initial transaction');
                 });
                 return [2 /*return*/];
         }
     });
 }); }, extendedExecutionTimeout);
-afterAll(testHelpers_1.afterAllLog);
-afterEach(testHelpers_1.afterEachLog);
 var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
-                (0, testHelpers_1.timeLog)("Before network call");
+                (0, testHelpers_1.timeStart)();
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
-                (0, testHelpers_1.timeLog)("After network call");
+                (0, testHelpers_1.timeLog)("RPC Network call to \"" + method + "\"");
                 (0, testHelpers_1.assertResultResponse)(result);
                 (0, testHelpers_1.assertBasicResult)(result, msgId);
                 return [2 /*return*/, result];
@@ -355,7 +344,6 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash', extraParams)];
                     case 1:
                         result = _e.sent();
-                        (0, testHelpers_1.timeLog)('eth_getBlockByHash result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.hash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.parentHash)).toEqual('string');
                         return [2 /*return*/];
@@ -532,7 +520,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
                         result = _g.sent();
-                        (0, testHelpers_1.timeLog)('eth_getTransactionByBlockHashAndIndex result', result);
+                        // timeLog('eth_getTransactionByBlockHashAndIndex result', result);
                         expect(typeof ((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result) === null || _b === void 0 ? void 0 : _b.blockHash)).toEqual('string');
                         expect(typeof ((_d = (_c = result === null || result === void 0 ? void 0 : result.response) === null || _c === void 0 ? void 0 : _c.result) === null || _d === void 0 ? void 0 : _d.blockNumber)).toEqual('string');
                         expect((_f = (_e = result === null || result === void 0 ? void 0 : result.response) === null || _e === void 0 ? void 0 : _e.result) === null || _f === void 0 ? void 0 : _f.hash).toEqual(existingTxHashToCheck);
