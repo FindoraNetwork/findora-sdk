@@ -28,7 +28,7 @@ const COMMANDS = {
 const ERROR_MESSAGES = {
   [COMMANDS.FUND]: 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
   [COMMANDS.CREATE_WALLET]: 'please run as "yarn cli createWallet"',
-  [COMMANDS.RESTORE_WALLET]: `please run as "yarn cli runRestoreWallet --mnemonicString='XXX ... ... XXX'"`,
+  [COMMANDS.RESTORE_WALLET]: `please run as "yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'"`,
 };
 
 const now = () => new Date().toLocaleString();

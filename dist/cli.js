@@ -64,7 +64,7 @@ var COMMANDS = {
 var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
     _a[COMMANDS.CREATE_WALLET] = 'please run as "yarn cli createWallet"',
-    _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli runRestoreWallet --mnemonicString='XXX ... ... XXX'\"",
+    _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
     _a);
 var now = function () { return new Date().toLocaleString(); };
 var log = function (message) {
