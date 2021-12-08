@@ -61,14 +61,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
+var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-// import { Evm } from './api';
-var sleep_promise_1 = __importDefault(require("sleep-promise"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 18000;
 /**
@@ -95,7 +94,7 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
-var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.PLATFORM_ACC_M_STRING, PLATFORM_ACC_M_STRING = _g === void 0 ? '' : _g, _h = _a.M_STRING, M_STRING = _h === void 0 ? '' : _h, _j = _a.FRA_ADDRESS, FRA_ADDRESS = _j === void 0 ? '' : _j, _k = _a.ETH_PRIVATE, ETH_PRIVATE = _k === void 0 ? '' : _k, _l = _a.ETH_ADDRESS, ETH_ADDRESS = _l === void 0 ? '' : _l;
+var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.ENG_PKEY, ENG_PKEY = _g === void 0 ? '' : _g, _h = _a.PLATFORM_ACC_M_STRING, PLATFORM_ACC_M_STRING = _h === void 0 ? '' : _h, _j = _a.M_STRING, M_STRING = _j === void 0 ? '' : _j, _k = _a.FRA_ADDRESS, FRA_ADDRESS = _k === void 0 ? '' : _k, _l = _a.ETH_PRIVATE, ETH_PRIVATE = _l === void 0 ? '' : _l, _m = _a.ETH_ADDRESS, ETH_ADDRESS = _m === void 0 ? '' : _m;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 /**
@@ -138,10 +137,10 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
             case 4:
                 balanceNew = _a.sent();
                 console.log('\n');
-                console.log('faucetWalletInfo.address', faucetWalletInfo.address);
+                console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
                 // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
                 console.log('\n');
-                console.log('newWallet.address', newWallet.address);
+                console.log('newWallet.address (from mnenmonic)', newWallet.address);
                 // console.log('newWallet.privateStr', newWallet.privateStr);
                 console.log('\n');
                 console.log('balance from restored from pkey IS', balance);

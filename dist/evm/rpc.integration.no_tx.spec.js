@@ -63,18 +63,21 @@ var envConfigFile = process.env.RPC_ENV_NAME
     : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
-var extendedExecutionTimeout = 180000;
+var extendedExecutionTimeout = 600000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
-console.log('🚀 ~ rpcParams.rpcUrl', rpcParams.rpcUrl);
+afterAll(testHelpers_1.afterAllLog);
+afterEach(testHelpers_1.afterEachLog);
 var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                (0, testHelpers_1.timeStart)();
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
+                (0, testHelpers_1.timeLog)("Send an RPC call for \"" + method + "\"");
                 (0, testHelpers_1.assertResultResponse)(result);
                 (0, testHelpers_1.assertBasicResult)(result, msgId);
                 return [2 /*return*/, result];
@@ -88,7 +91,9 @@ describe("Api Endpoint (rpc test no tx) for \"" + rpcUrl + "\"", function () {
             var _a, _b, _c, _d, _e, _f, _g;
             return __generator(this, function (_h) {
                 switch (_h.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns information about a block by block number and verifies its parent block information');
+                        return [4 /*yield*/, getTestResult(1, 'eth_blockNumber')];
                     case 1:
                         lastBlockResult = _h.sent();
                         lastBlockResponse = lastBlockResult.response;

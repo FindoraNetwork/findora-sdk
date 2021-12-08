@@ -38,30 +38,34 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv_1 = __importDefault(require("dotenv"));
+var minimist_1 = __importDefault(require("minimist"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
-var minimist_1 = __importDefault(require("minimist"));
 dotenv_1.default.config();
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://dev-staging.dev.findora.org',
-    // hostUrl: 'https://dev-evm.dev.findora.org',
-    // hostUrl: 'http://127.0.0.1',
-    // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org',
-    hostUrl: 'https://prod-forge.prod.findora.org',
+    hostUrl: 'https://dev-qa02.dev.findora.org',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
 Sdk_1.default.init(sdkEnv);
-var _a = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _a === void 0 ? '' : _a;
-var errorMsgFund = 'please run as "yarn fund --address=fraXXX --amountToFund=1 "';
+var _b = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _b === void 0 ? '' : _b;
+var COMMANDS = {
+    FUND: 'fund',
+    CREATE_WALLET: 'createWallet',
+    RESTORE_WALLET: 'restoreWallet',
+};
+var ERROR_MESSAGES = (_a = {},
+    _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
+    _a[COMMANDS.CREATE_WALLET] = 'please run as "yarn cli createWallet"',
+    _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli runRestoreWallet --mnemonicString='XXX ... ... XXX'\"",
+    _a);
 var now = function () { return new Date().toLocaleString(); };
 var log = function (message) {
     var rest = [];
@@ -71,7 +75,9 @@ var log = function (message) {
     console.log("\"" + now() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
 };
 var showHelp = function () {
-    log(errorMsgFund);
+    for (var prop in ERROR_MESSAGES) {
+        log(ERROR_MESSAGES[prop]);
+    }
 };
 var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, assetCode, transactionBuilder, resultHandle;
@@ -92,27 +98,72 @@ var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 4:
                 resultHandle = _a.sent();
-                console.log('send fra result handle', resultHandle);
+                log('send fra result handle', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, mm, walletInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
+            case 1:
+                mm = _a.sent();
+                log("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 2:
+                walletInfo = _a.sent();
+                log('🚀 ~ new wallet info: ', walletInfo);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var runRestoreWallet = function (mnemonicString) { return __awaiter(void 0, void 0, void 0, function () {
+    var password, mm, walletInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                log("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
+                mm = mnemonicString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                walletInfo = _a.sent();
+                log('🚀 ~ restored wallet info: ', walletInfo);
                 return [2 /*return*/];
         }
     });
 }); };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund;
+    var argv, command, address, amountToFund, mnemonicString;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund;
-        // console.log('🚀 ~ file: cli.ts ~ line 44 ~ fundAddress ~ argv', argv);
-        // console.log('🚀 ~ file: cli.ts ~ line 47 ~ fundAddress ~ command', command);
-        // console.log('🚀 ~ file: fund.ts ~ line 47 ~ fundAddress ~ address', address);
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString;
+        if (!command) {
+            showHelp();
+            return [2 /*return*/];
+        }
         switch (command) {
-            case 'fund':
+            case COMMANDS.FUND:
                 if (!address) {
-                    log(errorMsgFund);
+                    log(ERROR_MESSAGES[COMMANDS.FUND]);
                     break;
                 }
                 runFund(address, amountToFund);
+                break;
+            case COMMANDS.CREATE_WALLET:
+                runCreateWallet();
+                break;
+            case COMMANDS.RESTORE_WALLET:
+                if (!mnemonicString) {
+                    log(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
+                    break;
+                }
+                runRestoreWallet(mnemonicString);
                 break;
             default:
                 showHelp();

@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.afterAllLog = exports.afterEachLog = exports.setCurrentTestName = exports.timeLog = exports.msToTime = exports.assertResultType = exports.assertBasicResult = exports.assertResultResponse = exports.getPayloadWithGas = exports.getRpcPayload = void 0;
+exports.afterAllLog = exports.afterEachLog = exports.setCurrentTestName = exports.timeStart = exports.timeLog = exports.msToTime = exports.assertResultType = exports.assertBasicResult = exports.assertResultResponse = exports.getPayloadWithGas = exports.getRpcPayload = void 0;
 var getRpcPayload = function (msgId, method, extraParams) {
     var payload = {
         id: msgId,
@@ -11,7 +11,7 @@ var getRpcPayload = function (msgId, method, extraParams) {
 };
 exports.getRpcPayload = getRpcPayload;
 var getPayloadWithGas = function (from, givenChainId) { return ({
-    gas: '1000000',
+    gas: 1000000,
     gasPrice: '10000000001',
     from: from,
     chainId: givenChainId,
@@ -37,6 +37,8 @@ exports.assertResultType = assertResultType;
 var currentTestName = '';
 var start = Date.now();
 var lastOperation = Date.now();
+var logsCount = 0;
+var testLogs = [];
 var msToTime = function (s) {
     var sTime = s;
     var ms = sTime % 1000;
@@ -45,35 +47,47 @@ var msToTime = function (s) {
     sTime = (sTime - secs) / 60;
     var mins = sTime % 60;
     var hrs = (sTime - mins) / 60;
-    var formattedHours = hrs > 0 ? hrs + ":" : '';
-    var formattedMinutes = mins > 0 ? mins + ":" : '';
+    var formattedHours = hrs > 0 ? hrs + "h " : '';
+    var formattedMinutes = mins > 0 ? mins + "m " : '';
     var formattedSeconds = secs > 0 ? secs + "." + ms + "s" : ms + "ms";
     var result = "" + formattedHours + formattedMinutes + formattedSeconds;
     return result;
 };
 exports.msToTime = msToTime;
-var testLogs = [];
 var timeLog = function (label, data) {
     var currentTime = Date.now();
-    var extraData = typeof data === 'object' ? JSON.stringify(data, null, 2) : data;
+    var extraData = typeof data === 'object' ? JSON.stringify(data, null, 2) : data === false ? '' : data;
     var sinceStart = currentTime - start;
     var sinceLastOperation = currentTime - lastOperation;
-    var messageToLog = testLogs.length + 1 + ". " + (currentTestName ? "\"" + currentTestName + "\"" : '') + " Last log " + (0, exports.msToTime)(sinceLastOperation) + " ago. Total is " + (0, exports.msToTime)(sinceStart) + (label ? " - \"" + label + "\" " : '') + (extraData ? "- " + extraData : '');
+    var formattedLabel = label ? label + " " : '';
+    var lastLog = data === false ? '' : "took " + (0, exports.msToTime)(sinceLastOperation) + " ";
+    var totalTime = "-> Total run time " + (0, exports.msToTime)(sinceStart);
+    var formattedExtra = extraData ? "with data - " + extraData + " " : '';
+    var formattedTestName = currentTestName ? "Test \"" + currentTestName + "\" -> " : '';
+    logsCount += 1;
+    var messageToLog = logsCount + ". " + formattedTestName + formattedLabel + formattedExtra + lastLog + totalTime;
     testLogs.push(messageToLog);
     lastOperation = currentTime;
 };
 exports.timeLog = timeLog;
+var timeStart = function () {
+    var currentTime = Date.now();
+    lastOperation = currentTime;
+};
+exports.timeStart = timeStart;
 var setCurrentTestName = function (testName) {
     currentTestName = testName;
 };
 exports.setCurrentTestName = setCurrentTestName;
 var afterEachLog = function () {
-    (0, exports.timeLog)("After one test case");
+    var msg = "Test \"" + currentTestName + "\" is finished";
+    (0, exports.setCurrentTestName)('');
+    (0, exports.timeLog)(msg, false);
 };
 exports.afterEachLog = afterEachLog;
 var afterAllLog = function () {
-    (0, exports.setCurrentTestName)('after all hook');
-    (0, exports.timeLog)('After all tests');
+    (0, exports.setCurrentTestName)('');
+    (0, exports.timeLog)('All tests are finished', false);
     console.log('testLogs', testLogs);
 };
 exports.afterAllLog = afterAllLog;

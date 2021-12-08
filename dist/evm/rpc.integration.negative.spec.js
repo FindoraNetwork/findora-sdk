@@ -72,39 +72,42 @@ var envConfigFile = process.env.RPC_ENV_NAME
     : "../../.env_example";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
-var extendedExecutionTimeout = 180000;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
+var extendedExecutionTimeout = 600000;
 //moonbeam (polkadot) compatible
 var ERROR_INVALID_REQUEST = -32600;
 var ERROR_METHOD_NOT_FOUND = -32601;
 var ERROR_INVALID_PARAMS = -32602;
+(0, testHelpers_1.timeStart)();
+(0, testHelpers_1.timeLog)('Connecting to the server', rpcParams.rpcUrl);
+afterAll(testHelpers_1.afterAllLog);
+afterEach(testHelpers_1.afterEachLog);
 var getTestResult = function (msgId, method, extraParams) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 payload = (0, testHelpers_1.getRpcPayload)(msgId, method, extraParams);
+                (0, testHelpers_1.timeStart)();
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
+                (0, testHelpers_1.timeLog)("Send an RPC call for \"" + method + "\"");
                 (0, testHelpers_1.assertResultResponse)(result);
                 return [2 /*return*/, result];
         }
     });
 }); };
 describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () {
-    var msgId = 2;
-    var payload = {
-        id: msgId,
-        method: '',
-    };
     describe('notSupportedMethod', function () {
         it('Returns a proper error code when requested method was not found', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'foobar')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code when requested method was not found');
+                        return [4 /*yield*/, getTestResult(2, 'foobar')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_METHOD_NOT_FOUND);
@@ -120,6 +123,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code when address in given payload is invalid');
                         extraParams = ['wrong_address', 'latest'];
                         return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
@@ -134,7 +138,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBalance')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code when params payload is missing');
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBalance')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -148,6 +154,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when params payload format is invalid');
                         extraParams = 'foo';
                         return [4 /*yield*/, getTestResult(2, 'eth_getBalance', extraParams)];
                     case 1:
@@ -171,7 +178,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_call', extraParams)];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for missing required parameter');
+                        return [4 /*yield*/, getTestResult(2, 'eth_call', extraParams)];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -185,6 +194,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when required parameter is incorrect');
                         extraExtraParams = __spreadArray(__spreadArray([], extraParams, true), ['0x0'], false);
                         return [4 /*yield*/, getTestResult(2, 'eth_call', extraExtraParams)];
                     case 1:
@@ -200,6 +210,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'foo';
                         return [4 /*yield*/, getTestResult(2, 'eth_call', extraParams)];
                     case 1:
@@ -217,6 +228,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for invalid parameters');
                         extraParams = ['0x0', true];
                         return [4 /*yield*/, getTestResult(3, 'eth_getBlockByHash', extraParams)];
                     case 1:
@@ -232,6 +244,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for missing parameters');
                         extraParams = ['0x0', true];
                         return [4 /*yield*/, getTestResult(4, 'eth_getBlockByHash', extraParams)];
                     case 1:
@@ -246,7 +259,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for the missing payload');
+                        return [4 /*yield*/, getTestResult(1, 'eth_getBlockByHash')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -262,6 +277,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for the wrong parameter in the payload');
                         extraParams = ['aaa', true];
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockByNumber', extraParams)];
                     case 1:
@@ -277,6 +293,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error for the wrong format of the payload');
                         extraParams = 'aaaa';
                         return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber', extraParams)];
                     case 1:
@@ -291,7 +308,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for the missing payload');
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockByNumber')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -307,6 +326,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code when a wrong address is given');
                         extraParams = ['0x0', 'latest'];
                         return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount', extraParams)];
                     case 1:
@@ -321,7 +341,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code when no payload is given');
+                        return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -335,6 +357,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(2, 'eth_getTransactionCount', extraParams)];
                     case 1:
@@ -352,6 +375,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['0x0'];
                         return [4 /*yield*/, getTestResult(3, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
@@ -367,6 +391,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = 'aaaa';
                         return [4 /*yield*/, getTestResult(3, 'eth_getBlockTransactionCountByHash', extraParams)];
                     case 1:
@@ -384,6 +409,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
@@ -398,7 +424,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getBlockTransactionCountByHash')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(2, 'eth_getBlockTransactionCountByHash')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -412,6 +440,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(1, 'eth_getBlockTransactionCountByNumber', extraParams)];
                     case 1:
@@ -429,6 +458,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(3, 'eth_getCode', extraParams)];
                     case 1:
@@ -443,7 +473,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_getCode')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(2, 'eth_getCode')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -457,6 +489,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(1, 'eth_getCode', extraParams)];
                     case 1:
@@ -474,6 +507,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(1, 'eth_sendRawTransaction', extraParams)];
                     case 1:
@@ -488,7 +522,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(2, 'eth_sendRawTransaction')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(2, 'eth_sendRawTransaction')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -502,6 +538,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaaaa';
                         return [4 /*yield*/, getTestResult(1, 'eth_sendRawTransaction', extraParams)];
                     case 1:
@@ -519,6 +556,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(1, 'eth_estimateGas', extraParams)];
                     case 1:
@@ -533,7 +571,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(1, 'eth_estimateGas')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(1, 'eth_estimateGas')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -547,6 +587,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaaa';
                         return [4 /*yield*/, getTestResult(1, 'eth_estimateGas', extraParams)];
                     case 1:
@@ -564,6 +605,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByHash', extraParams)];
                     case 1:
@@ -578,7 +620,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(4, 'eth_getTransactionByHash')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(4, 'eth_getTransactionByHash')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -592,6 +636,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaaa';
                         return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByHash', extraParams)];
                     case 1:
@@ -609,6 +654,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
@@ -623,7 +669,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockHashAndIndex')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -637,6 +685,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByBlockHashAndIndex', extraParams)];
                     case 1:
@@ -654,6 +703,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(2, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
@@ -668,7 +718,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionByBlockNumberAndIndex')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -682,6 +734,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(1, 'eth_getTransactionByBlockNumberAndIndex', extraParams)];
                     case 1:
@@ -699,6 +752,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = ['aaa'];
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
@@ -713,7 +767,9 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             var _a, _b;
             return __generator(this, function (_c) {
                 switch (_c.label) {
-                    case 0: return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt')];
+                    case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a missing payload');
+                        return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt')];
                     case 1:
                         result = _c.sent();
                         expect((_b = (_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.error) === null || _b === void 0 ? void 0 : _b.code).toEqual(ERROR_INVALID_PARAMS);
@@ -727,6 +783,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(3, 'eth_getTransactionReceipt', extraParams)];
                     case 1:
@@ -744,6 +801,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload format parameter');
                         extraParams = ['0x0x0'];
                         return [4 /*yield*/, getTestResult(1, 'eth_getLogs', extraParams)];
                     case 1:
@@ -759,6 +817,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns a proper error code for a wrong payload parameter');
                         extraParams = [
                             {
                                 address: '0x0',
@@ -778,6 +837,7 @@ describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () 
             return __generator(this, function (_c) {
                 switch (_c.label) {
                     case 0:
+                        (0, testHelpers_1.setCurrentTestName)('Returns an error when payload format is incorrect');
                         extraParams = 'aaa';
                         return [4 /*yield*/, getTestResult(3, 'eth_getLogs', extraParams)];
                     case 1:
