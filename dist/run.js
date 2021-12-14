@@ -82,8 +82,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
     // cacheProvider: FileCacheProvider,
-    hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-    // hostUrl: 'https://dev-qa02.dev.findora.org',
+    // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
+    hostUrl: 'https://dev-qa01.dev.findora.org',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -121,7 +121,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '1234';
-                pkey = PKEY_LOCAL_FAUCET;
+                pkey = PKEY_MINE;
                 mString = PLATFORM_ACC_M_STRING;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];

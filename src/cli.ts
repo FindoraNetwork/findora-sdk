@@ -10,7 +10,7 @@ dotenv.config();
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
-  hostUrl: 'https://dev-qa02.dev.findora.org',
+  hostUrl: 'https://dev-qa01.dev.findora.org',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -97,7 +97,7 @@ const main = async () => {
 
   switch (command) {
     case COMMANDS.FUND:
-      if (!address) {
+      if (!address || !amountToFund) {
         log(ERROR_MESSAGES[COMMANDS.FUND]);
         break;
       }

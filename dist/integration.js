@@ -59,12 +59,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
+var sleep_promise_1 = __importDefault(require("sleep-promise"));
+var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
-var api_1 = require("./api");
-var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
-var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var providers_1 = require("./services/cacheStore/providers");
+var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
     ? "../.env_integration_" + process.env.INTEGRATION_ENV_NAME
     : "../.env_example";
@@ -116,45 +116,37 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
         }
     });
 }); };
-var sendFromFaucetToAccount = function (walletInfo, toWalletInfo, numbersToSend) { return __awaiter(void 0, void 0, void 0, function () {
-    var fraCode, assetBlindRules, balanceBeforeSendTo, transactionBuilderSend, resultHandleSend, isTxSent, balanceAfterSendTo, balanceBeforeSendToBN, balanceAfterSendToBN, isSentSuccessfull;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  sendFromFaucetToAccount //////////////// ');
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 1:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 2:
-                balanceBeforeSendTo = _a.sent();
-                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 3:
-                transactionBuilderSend = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 4:
-                resultHandleSend = _a.sent();
-                return [4 /*yield*/, getTxSid('send fra', resultHandleSend)];
-            case 5:
-                isTxSent = _a.sent();
-                if (!isTxSent) {
-                    console.log("\uD83D\uDE80 ~ sendFromFaucetToAccount ~ Could not submit transfer");
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 6:
-                balanceAfterSendTo = _a.sent();
-                console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
-                balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
-                balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
-                isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
-                console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
-                return [2 /*return*/, isSentSuccessfull];
-        }
-    });
-}); };
+// const sendFromFaucetToAccount = async (
+//   walletInfo: KeypairApi.WalletKeypar,
+//   toWalletInfo: KeypairApi.WalletKeypar,
+//   numbersToSend: string,
+// ) => {
+//   console.log('////////////////  sendFromFaucetToAccount //////////////// ');
+//   const fraCode = await AssetApi.getFraAssetCode();
+//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+//   const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
+//   const transactionBuilderSend = await TransactionApi.sendToAddress(
+//     walletInfo,
+//     toWalletInfo.address,
+//     numbersToSend,
+//     fraCode,
+//     assetBlindRules,
+//   );
+//   const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+//   const isTxSent = await getTxSid('send fra', resultHandleSend);
+//   if (!isTxSent) {
+//     console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
+//     return false;
+//   }
+//   const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
+//   const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
+//   const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
+//   const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
+//   console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
+//   return isSentSuccessfull;
+// };
 var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
     return __generator(this, function (_a) {

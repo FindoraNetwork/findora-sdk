@@ -25,8 +25,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
   // cacheProvider: FileCacheProvider,
-  hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  // hostUrl: 'https://dev-qa02.dev.findora.org',
+  // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
+  hostUrl: 'https://dev-qa01.dev.findora.org',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -73,8 +73,9 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '1234';
 
-  const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = ENG_PKEY;
+  // const pkey = PKEY_LOCAL_FAUCET;
+  const pkey = PKEY_MINE;
+  // const pkey = PKEY_MINE3;
 
   const mString = PLATFORM_ACC_M_STRING;
 
