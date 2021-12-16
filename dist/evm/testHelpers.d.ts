@@ -1,3 +1,4 @@
+import * as bigNumber from '../services/bigNumber';
 export interface SuperSimpleObject {
     [key: string]: any;
 }
@@ -27,3 +28,5 @@ export declare const timeStart: () => void;
 export declare const setCurrentTestName: (testName: string) => void;
 export declare const afterEachLog: () => void;
 export declare const afterAllLog: () => void;
+export declare const isNumberChangedBy: (numberBefore: bigNumber.BigNumberValue, numberAfter: bigNumber.BigNumberValue, expectedDifference: string, decimals?: 6 | undefined) => boolean;
+export declare const formatFromWei: (numberToFormat: bigNumber.BigNumberValue) => string;

@@ -1,6 +1,26 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.afterAllLog = exports.afterEachLog = exports.setCurrentTestName = exports.timeStart = exports.timeLog = exports.msToTime = exports.assertResultType = exports.assertBasicResult = exports.assertResultResponse = exports.getPayloadWithGas = exports.getRpcPayload = void 0;
+exports.formatFromWei = exports.isNumberChangedBy = exports.afterAllLog = exports.afterEachLog = exports.setCurrentTestName = exports.timeStart = exports.timeLog = exports.msToTime = exports.assertResultType = exports.assertBasicResult = exports.assertResultResponse = exports.getPayloadWithGas = exports.getRpcPayload = void 0;
+var bigNumber = __importStar(require("../services/bigNumber"));
 var getRpcPayload = function (msgId, method, extraParams) {
     var payload = {
         id: msgId,
@@ -91,4 +111,17 @@ var afterAllLog = function () {
     console.log('testLogs', testLogs);
 };
 exports.afterAllLog = afterAllLog;
+var isNumberChangedBy = function (numberBefore, numberAfter, expectedDifference, decimals) {
+    var differenceInWei = bigNumber.toWei(expectedDifference, decimals).toString();
+    var numberBeforeBN = bigNumber.create(numberBefore);
+    var numberAfterBN = bigNumber.create(numberAfter);
+    var expectedAfterChangeBN = bigNumber.plus(numberBeforeBN, differenceInWei);
+    var isChangedSuccessfully = numberAfterBN.eq(expectedAfterChangeBN);
+    return isChangedSuccessfully;
+};
+exports.isNumberChangedBy = isNumberChangedBy;
+var formatFromWei = function (numberToFormat) {
+    return bigNumber.fromWei(numberToFormat, 6).toFormat(6).toString();
+};
+exports.formatFromWei = formatFromWei;
 //# sourceMappingURL=testHelpers.js.map

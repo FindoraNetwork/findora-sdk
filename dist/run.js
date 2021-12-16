@@ -79,11 +79,11 @@ var sdkEnv = {
     // hostUrl: 'https://dev-evm.dev.findora.org',
     // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-    hostUrl: 'https://dev-qa01.dev.findora.org',
+    // hostUrl: 'https://dev-qa01.dev.findora.org',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -94,7 +94,7 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
-var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.ENG_PKEY, ENG_PKEY = _g === void 0 ? '' : _g, _h = _a.PLATFORM_ACC_M_STRING, PLATFORM_ACC_M_STRING = _h === void 0 ? '' : _h, _j = _a.M_STRING, M_STRING = _j === void 0 ? '' : _j, _k = _a.FRA_ADDRESS, FRA_ADDRESS = _k === void 0 ? '' : _k, _l = _a.ETH_PRIVATE, ETH_PRIVATE = _l === void 0 ? '' : _l, _m = _a.ETH_ADDRESS, ETH_ADDRESS = _m === void 0 ? '' : _m;
+var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.ENG_PKEY, ENG_PKEY = _g === void 0 ? '' : _g, _h = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _h === void 0 ? '' : _h, _j = _a.M_STRING, M_STRING = _j === void 0 ? '' : _j, _k = _a.FRA_ADDRESS, FRA_ADDRESS = _k === void 0 ? '' : _k, _l = _a.ETH_PRIVATE, ETH_PRIVATE = _l === void 0 ? '' : _l, _m = _a.ETH_ADDRESS, ETH_ADDRESS = _m === void 0 ? '' : _m;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 /**
@@ -121,8 +121,8 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '1234';
-                pkey = PKEY_MINE;
-                mString = PLATFORM_ACC_M_STRING;
+                pkey = PKEY_LOCAL_FAUCET;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
@@ -138,10 +138,10 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 balanceNew = _a.sent();
                 console.log('\n');
                 console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
-                // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+                console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
                 console.log('\n');
                 console.log('newWallet.address (from mnenmonic)', newWallet.address);
-                // console.log('newWallet.privateStr', newWallet.privateStr);
+                console.log('newWallet.privateStr', newWallet.privateStr);
                 console.log('\n');
                 console.log('balance from restored from pkey IS', balance);
                 console.log('balance from restored using mnemonic IS', balanceNew);

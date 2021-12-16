@@ -6,6 +6,7 @@ import {
   Network as NetworkApi,
   Transaction as TransactionApi,
 } from './api';
+import { formatFromWei, isNumberChangedBy } from './evm/testHelpers';
 import findoraSdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
@@ -302,8 +303,7 @@ export const sendFraTransactionSubmit = async () => {
 
   const toWalletInfo = await KeypairApi.createKeypair(password);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const receiverBalanceBeforeTransfer = await AccountApi.getBalance(toWalletInfo);
+  const receiverBalanceBeforeTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -328,13 +328,13 @@ export const sendFraTransactionSubmit = async () => {
     return false;
   }
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const receiverBalanceAfterTransfer = await AccountApi.getBalance(toWalletInfo);
+  const receiverBalanceAfterTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
 
-  const isItRight =
-    receiverBalanceBeforeTransfer === '0.000000' && receiverBalanceAfterTransfer === '0.100000';
+  const isItRight = isNumberChangedBy(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
 
-  const peterCheckResult = `Peter balance should be 0.100000 and now it is ${receiverBalanceAfterTransfer}, so this is "${isItRight}" `;
+  const peterCheckResult = `Peter balance should be 0.100000 and now it is ${formatFromWei(
+    receiverBalanceAfterTransfer,
+  )}, so this is "${isItRight}" `;
 
   console.log(
     '🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult',
@@ -354,11 +354,9 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
 
   const petereWalletInfo = await KeypairApi.createKeypair(password);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const aliceBalanceBeforeTransfer = await AccountApi.getBalance(aliceWalletInfo);
+  const aliceBalanceBeforeTransfer = await AccountApi.getBalanceInWei(aliceWalletInfo);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const peterBalanceBeforeTransfer = await AccountApi.getBalance(petereWalletInfo);
+  const peterBalanceBeforeTransfer = await AccountApi.getBalanceInWei(petereWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -388,17 +386,27 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
     return false;
   }
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const aliceBalanceAfterTransfer = await AccountApi.getBalance(aliceWalletInfo);
-  const peterBalanceAfterTransfer = await AccountApi.getBalance(petereWalletInfo);
+  const aliceBalanceAfterTransfer = await AccountApi.getBalanceInWei(aliceWalletInfo);
+  const peterBalanceAfterTransfer = await AccountApi.getBalanceInWei(petereWalletInfo);
 
-  const isItRightAlice =
-    aliceBalanceBeforeTransfer === '0.000000' && aliceBalanceAfterTransfer === '0.100000';
-  const isItRightPeter =
-    peterBalanceBeforeTransfer === '0.000000' && peterBalanceAfterTransfer === '0.200000';
+  const isItRightAlice = isNumberChangedBy(
+    aliceBalanceBeforeTransfer,
+    aliceBalanceAfterTransfer,
+    numbersForAlice,
+  );
 
-  const aliceCheckResult = `Alice balance should be 0.100000 and now it is ${aliceBalanceAfterTransfer}, so this is "${isItRightAlice}" `;
-  const peterCheckResult = `Peter balance should be 0.200000 and now it is ${peterBalanceAfterTransfer}, so this is "${isItRightPeter}" `;
+  const isItRightPeter = isNumberChangedBy(
+    peterBalanceBeforeTransfer,
+    peterBalanceAfterTransfer,
+    numbersForPeter,
+  );
+
+  const aliceCheckResult = `Alice balance should be 0.100000 and now it is ${formatFromWei(
+    aliceBalanceAfterTransfer,
+  )}, so this is "${isItRightAlice}" `;
+  const peterCheckResult = `Peter balance should be 0.200000 and now it is ${formatFromWei(
+    peterBalanceAfterTransfer,
+  )}, so this is "${isItRightPeter}" `;
 
   console.log(
     '🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult',
