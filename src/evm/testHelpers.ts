@@ -1,3 +1,5 @@
+import * as bigNumber from '../services/bigNumber';
+
 export interface SuperSimpleObject {
   [key: string]: any;
 }
@@ -116,3 +118,24 @@ export const afterAllLog = () => {
   timeLog('All tests are finished', false);
   console.log('testLogs', testLogs);
 };
+
+export const isNumberChangedBy = (
+  numberBefore: bigNumber.BigNumberValue,
+  numberAfter: bigNumber.BigNumberValue,
+  expectedDifference: string,
+  decimals?: 6,
+) => {
+  const differenceInWei = bigNumber.toWei(expectedDifference, decimals).toString();
+
+  const numberBeforeBN = bigNumber.create(numberBefore);
+  const numberAfterBN = bigNumber.create(numberAfter);
+
+  const expectedAfterChangeBN = bigNumber.plus(numberBeforeBN, differenceInWei);
+
+  const isChangedSuccessfully = numberAfterBN.eq(expectedAfterChangeBN);
+
+  return isChangedSuccessfully;
+};
+
+export const formatFromWei = (numberToFormat: bigNumber.BigNumberValue) =>
+  bigNumber.fromWei(numberToFormat, 6).toFormat(6).toString();

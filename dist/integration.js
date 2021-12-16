@@ -61,6 +61,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
+var testHelpers_1 = require("./evm/testHelpers");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber = __importStar(require("./services/bigNumber"));
 var providers_1 = require("./services/cacheStore/providers");
@@ -348,7 +349,7 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
                 return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
             case 2:
                 toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
             case 3:
                 receiverBalanceBeforeTransfer = _a.sent();
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
@@ -369,11 +370,11 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
                     console.log("\uD83D\uDE80  ~ sendFraTransactionSubmit ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
             case 8:
                 receiverBalanceAfterTransfer = _a.sent();
-                isItRight = receiverBalanceBeforeTransfer === '0.000000' && receiverBalanceAfterTransfer === '0.100000';
-                peterCheckResult = "Peter balance should be 0.100000 and now it is " + receiverBalanceAfterTransfer + ", so this is \"" + isItRight + "\" ";
+                isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
+                peterCheckResult = "Peter balance should be 0.100000 and now it is " + (0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer) + ", so this is \"" + isItRight + "\" ";
                 console.log('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
                 return [2 /*return*/, isItRight];
         }
@@ -396,10 +397,10 @@ var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter
                 return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
             case 3:
                 petereWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(aliceWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(aliceWalletInfo)];
             case 4:
                 aliceBalanceBeforeTransfer = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(petereWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(petereWalletInfo)];
             case 5:
                 peterBalanceBeforeTransfer = _a.sent();
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
@@ -425,16 +426,16 @@ var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter
                     console.log("\uD83D\uDE80  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send");
                     return [2 /*return*/, false];
                 }
-                return [4 /*yield*/, api_1.Account.getBalance(aliceWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(aliceWalletInfo)];
             case 10:
                 aliceBalanceAfterTransfer = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(petereWalletInfo)];
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(petereWalletInfo)];
             case 11:
                 peterBalanceAfterTransfer = _a.sent();
-                isItRightAlice = aliceBalanceBeforeTransfer === '0.000000' && aliceBalanceAfterTransfer === '0.100000';
-                isItRightPeter = peterBalanceBeforeTransfer === '0.000000' && peterBalanceAfterTransfer === '0.200000';
-                aliceCheckResult = "Alice balance should be 0.100000 and now it is " + aliceBalanceAfterTransfer + ", so this is \"" + isItRightAlice + "\" ";
-                peterCheckResult = "Peter balance should be 0.200000 and now it is " + peterBalanceAfterTransfer + ", so this is \"" + isItRightPeter + "\" ";
+                isItRightAlice = (0, testHelpers_1.isNumberChangedBy)(aliceBalanceBeforeTransfer, aliceBalanceAfterTransfer, numbersForAlice);
+                isItRightPeter = (0, testHelpers_1.isNumberChangedBy)(peterBalanceBeforeTransfer, peterBalanceAfterTransfer, numbersForPeter);
+                aliceCheckResult = "Alice balance should be 0.100000 and now it is " + (0, testHelpers_1.formatFromWei)(aliceBalanceAfterTransfer) + ", so this is \"" + isItRightAlice + "\" ";
+                peterCheckResult = "Peter balance should be 0.200000 and now it is " + (0, testHelpers_1.formatFromWei)(peterBalanceAfterTransfer) + ", so this is \"" + isItRightPeter + "\" ";
                 console.log('🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult', aliceCheckResult);
                 console.log('🚀 ~ file: integration.ts ~ line 602 ~ sendFraToMultipleReceiversTransactionSubmit ~ peterCheckResult', peterCheckResult);
                 return [2 /*return*/, isItRightAlice && isItRightPeter];
