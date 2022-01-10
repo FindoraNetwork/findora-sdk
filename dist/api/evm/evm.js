@@ -87,7 +87,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
                 decimals = asset.assetRules.decimals;
                 convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
                 transactionBuilder = transactionBuilder
-                    .add_operation_convert_account(walletInfo.keypair, ethAddress)
+                    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
                     .sign(walletInfo.keypair);
                 return [2 /*return*/, transactionBuilder];
         }

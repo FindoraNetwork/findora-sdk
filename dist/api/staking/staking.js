@@ -214,7 +214,7 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
                 delegateAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, validator);
+                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
                 return [2 /*return*/, transactionBuilder];
         }
     });
