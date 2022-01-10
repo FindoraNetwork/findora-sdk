@@ -1,8 +1,7 @@
 import axios from 'axios';
 import JSONbig from 'json-bigint';
-import { getLedger } from '../../services/ledger/ledgerWrapper';
-
 import Sdk from '../../Sdk';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
 import * as Types from './types';
 
 const _axios = axios.create({});

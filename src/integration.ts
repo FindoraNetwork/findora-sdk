@@ -1,19 +1,16 @@
-import findoraSdk from './Sdk';
-import * as bigNumber from './services/bigNumber';
-
+import sleep from 'sleep-promise';
 import {
   Account as AccountApi,
   Asset as AssetApi,
   Keypair as KeypairApi,
   Network as NetworkApi,
-  Staking as StakingApi,
   Transaction as TransactionApi,
 } from './api';
-
-import { getLedger } from './services/ledger/ledgerWrapper';
-import sleep from 'sleep-promise';
-
+import { formatFromWei, isNumberChangedBy } from './evm/testHelpers';
+import findoraSdk from './Sdk';
+import * as bigNumber from './services/bigNumber';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
+import { getLedger } from './services/ledger/ledgerWrapper';
 
 const envConfigFile = process.env.INTEGRATION_ENV_NAME
   ? `../.env_integration_${process.env.INTEGRATION_ENV_NAME}`
@@ -79,48 +76,48 @@ const getTxSid = async (operationName: string, txHandle: string) => {
   return true;
 };
 
-const sendFromFaucetToAccount = async (
-  walletInfo: KeypairApi.WalletKeypar,
-  toWalletInfo: KeypairApi.WalletKeypar,
-  numbersToSend: string,
-) => {
-  console.log('////////////////  sendFromFaucetToAccount //////////////// ');
+// const sendFromFaucetToAccount = async (
+//   walletInfo: KeypairApi.WalletKeypar,
+//   toWalletInfo: KeypairApi.WalletKeypar,
+//   numbersToSend: string,
+// ) => {
+//   console.log('////////////////  sendFromFaucetToAccount //////////////// ');
 
-  const fraCode = await AssetApi.getFraAssetCode();
+//   const fraCode = await AssetApi.getFraAssetCode();
 
-  const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
+//   const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
 
-  const transactionBuilderSend = await TransactionApi.sendToAddress(
-    walletInfo,
-    toWalletInfo.address,
-    numbersToSend,
-    fraCode,
-    assetBlindRules,
-  );
+//   const transactionBuilderSend = await TransactionApi.sendToAddress(
+//     walletInfo,
+//     toWalletInfo.address,
+//     numbersToSend,
+//     fraCode,
+//     assetBlindRules,
+//   );
 
-  const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
+//   const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
 
-  const isTxSent = await getTxSid('send fra', resultHandleSend);
+//   const isTxSent = await getTxSid('send fra', resultHandleSend);
 
-  if (!isTxSent) {
-    console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
-    return false;
-  }
+//   if (!isTxSent) {
+//     console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
+//     return false;
+//   }
 
-  const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-  console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
+//   const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
+//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
 
-  const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
-  const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
+//   const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
+//   const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
 
-  const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
-  console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
+//   const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
+//   console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
 
-  return isSentSuccessfull;
-};
+//   return isSentSuccessfull;
+// };
 
 export const defineAssetTransaction = async () => {
   console.log('////////////////  defineAssetTransaction //////////////// ');
@@ -306,8 +303,7 @@ export const sendFraTransactionSubmit = async () => {
 
   const toWalletInfo = await KeypairApi.createKeypair(password);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const receiverBalanceBeforeTransfer = await AccountApi.getBalance(toWalletInfo);
+  const receiverBalanceBeforeTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -332,13 +328,13 @@ export const sendFraTransactionSubmit = async () => {
     return false;
   }
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const receiverBalanceAfterTransfer = await AccountApi.getBalance(toWalletInfo);
+  const receiverBalanceAfterTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
 
-  const isItRight =
-    receiverBalanceBeforeTransfer === '0.000000' && receiverBalanceAfterTransfer === '0.100000';
+  const isItRight = isNumberChangedBy(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
 
-  const peterCheckResult = `Peter balance should be 0.100000 and now it is ${receiverBalanceAfterTransfer}, so this is "${isItRight}" `;
+  const peterCheckResult = `Peter balance should be 0.100000 and now it is ${formatFromWei(
+    receiverBalanceAfterTransfer,
+  )}, so this is "${isItRight}" `;
 
   console.log(
     '🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult',
@@ -358,11 +354,9 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
 
   const petereWalletInfo = await KeypairApi.createKeypair(password);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const aliceBalanceBeforeTransfer = await AccountApi.getBalance(aliceWalletInfo);
+  const aliceBalanceBeforeTransfer = await AccountApi.getBalanceInWei(aliceWalletInfo);
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const peterBalanceBeforeTransfer = await AccountApi.getBalance(petereWalletInfo);
+  const peterBalanceBeforeTransfer = await AccountApi.getBalanceInWei(petereWalletInfo);
 
   const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
@@ -392,17 +386,27 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
     return false;
   }
 
-  // @todo - fix it to use AccountApi.getBalanceInWei
-  const aliceBalanceAfterTransfer = await AccountApi.getBalance(aliceWalletInfo);
-  const peterBalanceAfterTransfer = await AccountApi.getBalance(petereWalletInfo);
+  const aliceBalanceAfterTransfer = await AccountApi.getBalanceInWei(aliceWalletInfo);
+  const peterBalanceAfterTransfer = await AccountApi.getBalanceInWei(petereWalletInfo);
 
-  const isItRightAlice =
-    aliceBalanceBeforeTransfer === '0.000000' && aliceBalanceAfterTransfer === '0.100000';
-  const isItRightPeter =
-    peterBalanceBeforeTransfer === '0.000000' && peterBalanceAfterTransfer === '0.200000';
+  const isItRightAlice = isNumberChangedBy(
+    aliceBalanceBeforeTransfer,
+    aliceBalanceAfterTransfer,
+    numbersForAlice,
+  );
 
-  const aliceCheckResult = `Alice balance should be 0.100000 and now it is ${aliceBalanceAfterTransfer}, so this is "${isItRightAlice}" `;
-  const peterCheckResult = `Peter balance should be 0.200000 and now it is ${peterBalanceAfterTransfer}, so this is "${isItRightPeter}" `;
+  const isItRightPeter = isNumberChangedBy(
+    peterBalanceBeforeTransfer,
+    peterBalanceAfterTransfer,
+    numbersForPeter,
+  );
+
+  const aliceCheckResult = `Alice balance should be 0.100000 and now it is ${formatFromWei(
+    aliceBalanceAfterTransfer,
+  )}, so this is "${isItRightAlice}" `;
+  const peterCheckResult = `Peter balance should be 0.200000 and now it is ${formatFromWei(
+    peterBalanceAfterTransfer,
+  )}, so this is "${isItRightPeter}" `;
 
   console.log(
     '🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult',

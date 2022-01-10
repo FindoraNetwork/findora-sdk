@@ -1,13 +1,13 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
+import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
-import Sdk from './Sdk';
 import * as NetworkTypes from './api/network/types';
+import Sdk from './Sdk';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
-import sleep from 'sleep-promise';
 
 dotenv.config();
 
@@ -19,10 +19,12 @@ const waitingTimeBeforeCheckTxStatus = 18000;
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
   // hostUrl: 'http://127.0.0.1',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
+  hostUrl: 'https://prod-testnet.prod.findora.org', // balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // anvil balance!
+  // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  hostUrl: 'https://dev-qa02.dev.findora.org',
+  // hostUrl: 'https://dev-qa01.dev.findora.org',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -42,7 +44,8 @@ const {
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
-  PLATFORM_ACC_M_STRING = '',
+  ENG_PKEY = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING = '',
   M_STRING = '',
   FRA_ADDRESS = '',
   ETH_PRIVATE = '',
@@ -69,9 +72,12 @@ const getFraBalance = async () => {
   const password = '1234';
 
   const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = PKEY_MINE2;
+  // const pkey = PKEY_MINE;
+  // const pkey = PKEY_MINE3;
 
-  const mString = PLATFORM_ACC_M_STRING;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+  // const mString = M_STRING;
+  // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');
 
@@ -84,13 +90,13 @@ const getFraBalance = async () => {
 
   console.log('\n');
 
-  console.log('faucetWalletInfo.address', faucetWalletInfo.address);
-  // console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+  console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
 
-  console.log('newWallet.address', newWallet.address);
-  // console.log('newWallet.privateStr', newWallet.privateStr);
+  console.log('newWallet.address (from mnenmonic)', newWallet.address);
+  console.log('newWallet.privateStr', newWallet.privateStr);
 
   console.log('\n');
 
