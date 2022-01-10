@@ -55,7 +55,8 @@
     "cli:run": "nodemon dist/cli.js --ignore cache/ \"$npm_config\"",
     "jest-coverage": "yarn run jest -- --coverage",
     "start": "concurrently npm:start:*",
-    "cli": "yarn cli:build && yarn cli:run \"$npm_config\""
+    "cli": "yarn cli:build && yarn cli:run \"$npm_config\"",
+    "update-wasm": "yarn upgrade findora-wallet-wasm"
   },
   "lint-staged": {
     "./src/**/*.ts": [
