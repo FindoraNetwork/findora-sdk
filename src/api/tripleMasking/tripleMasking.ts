@@ -5,8 +5,9 @@ export const genAnonKeys = async (): Promise<string> => {
   const ledger = await getLedger();
 
   try {
-    const anonKeys: AnonKeys = ledger.gen_anon_keys();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
+    // uncomment for triple masking
+    // const anonKeys: AnonKeys = ledger.gen_anon_keys();
+    // console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
     return 'as';
   } catch (err) {
     throw new Error(`could not get anon keys, "${err}" `);

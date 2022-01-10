@@ -39,15 +39,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.genAnonKeys = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, anonKeys;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    anonKeys = ledger.gen_anon_keys();
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
+                    // uncomment for triple masking
+                    // const anonKeys: AnonKeys = ledger.gen_anon_keys();
+                    // console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
                     return [2 /*return*/, 'as'];
                 }
                 catch (err) {
