@@ -39,22 +39,37 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.genAnonKeys = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger;
+    var ledger, anonKeys, axfrPublicKey, axfrSecretKey, decKey, encKey, formattedAnonKeys, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                try {
-                    // uncomment for triple masking
-                    // const anonKeys: AnonKeys = ledger.gen_anon_keys();
-                    // console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
-                    return [2 /*return*/, 'as'];
-                }
-                catch (err) {
-                    throw new Error("could not get anon keys, \"" + err + "\" ");
-                }
-                return [2 /*return*/];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, ledger.gen_anon_keys()];
+            case 3:
+                anonKeys = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
+                axfrPublicKey = anonKeys.axfr_public_key;
+                axfrSecretKey = anonKeys.axfr_secret_key;
+                decKey = anonKeys.dec_key;
+                encKey = anonKeys.enc_key;
+                formattedAnonKeys = {
+                    axfrPublicKey: axfrPublicKey,
+                    axfrSecretKey: axfrSecretKey,
+                    decKey: decKey,
+                    encKey: encKey,
+                };
+                return [2 /*return*/, {
+                        keysInstance: anonKeys,
+                        formatted: formattedAnonKeys,
+                    }];
+            case 4:
+                err_1 = _a.sent();
+                throw new Error("could not get anon keys, \"" + err_1 + "\" ");
+            case 5: return [2 /*return*/];
         }
     });
 }); };

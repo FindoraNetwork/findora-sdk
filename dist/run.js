@@ -1252,15 +1252,31 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var keys;
-    return __generator(this, function (_a) {
-        keys = api_1.TripleMasking.genAnonKeys();
-        console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keys', keys);
-        return [2 /*return*/];
+    var _a, formatted, keysInstance, axfrPublicKey, axfrSecretKey, decKey, encKey, myAnonKeys;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
+            case 1:
+                _a = _b.sent(), formatted = _a.formatted, keysInstance = _a.keysInstance;
+                axfrPublicKey = keysInstance.axfr_public_key;
+                axfrSecretKey = keysInstance.axfr_secret_key;
+                decKey = keysInstance.dec_key;
+                encKey = keysInstance.enc_key;
+                myAnonKeys = {
+                    axfrPublicKey: axfrPublicKey,
+                    axfrSecretKey: axfrSecretKey,
+                    decKey: decKey,
+                    encKey: encKey,
+                };
+                console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keysInstance', keysInstance);
+                console.log('myAnonKeys', myAnonKeys);
+                console.log('formatted', formatted);
+                return [2 /*return*/];
+        }
     });
 }); };
-// getAnonKeys();
-getFraBalance();
+getAnonKeys();
+// getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();

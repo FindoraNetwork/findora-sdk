@@ -1151,12 +1151,27 @@ const ethProtocol = async () => {
 };
 
 const getAnonKeys = async () => {
-  const keys = TripleMasking.genAnonKeys();
-  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keys', keys);
+  const { formatted, keysInstance } = await TripleMasking.genAnonKeys();
+
+  const axfrPublicKey = keysInstance.axfr_public_key;
+  const axfrSecretKey = keysInstance.axfr_secret_key;
+  const decKey = keysInstance.dec_key;
+  const encKey = keysInstance.enc_key;
+
+  const myAnonKeys = {
+    axfrPublicKey,
+    axfrSecretKey,
+    decKey,
+    encKey,
+  };
+
+  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keysInstance', keysInstance);
+  console.log('myAnonKeys', myAnonKeys);
+  console.log('formatted', formatted);
 };
 
-// getAnonKeys();
-getFraBalance();
+getAnonKeys();
+// getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();
