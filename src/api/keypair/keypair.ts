@@ -1,5 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import { AXfrPubKey, XfrKeyPair, XfrPublicKey, XPublicKey } from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -133,6 +133,32 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
     return toPublickey;
   } catch (err) {
     throw new Error(`could not get base64 public key by xfr, "${err}" `);
+  }
+};
+
+/**
+ * @todo Add unit test
+ */
+export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
+  const ledger = await getLedger();
+  try {
+    const toPublickey = ledger.axfr_pubkey_from_string(publicKey);
+    return toPublickey;
+  } catch (err) {
+    throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
+  }
+};
+
+/**
+ * @todo Add unit test
+ */
+export const getXPublicKeyByBase64 = async (publicKey: string): Promise<XPublicKey> => {
+  const ledger = await getLedger();
+  try {
+    const toPublickey = ledger.x_pubkey_from_string(publicKey);
+    return toPublickey;
+  } catch (err) {
+    throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
   }
 };
 

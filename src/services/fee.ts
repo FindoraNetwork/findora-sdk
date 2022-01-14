@@ -218,3 +218,49 @@ export const buildTransferOperation = async (
 
   return transferOperationBuilder;
 };
+
+// interface preparedOperation {
+//   walletInfo: WalletKeypar;
+//   utxoInputs: UtxoInputsInfo;
+//   recieversInfo: ReciverInfo[];
+//   assetCode: string;
+// }
+
+//combine it with buildTransferOperation and buildTransferOperationWithFee
+// export const buildOperation = async (
+//   walletInfo: WalletKeypar,
+//   recieversInfo: ReciverInfo[],
+//   assetCode: string,
+// ): Promise<preparedOperation> => {
+//   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+//   const { response: sids } = sidsResult;
+
+//   if (!sids) {
+//     throw new Error('No sids were fetched');
+//   }
+
+//   const totalUtxoNumbers = recieversInfo.reduce((acc, receiver) => {
+//     return BigInt(Number(receiver.utxoNumbers) + Number(acc));
+//   }, BigInt(0));
+
+//   const utxoDataList = await addUtxo(walletInfo, sids);
+
+//   const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
+
+//   const utxoInputs = await addUtxoInputs(sendUtxoList);
+
+//   // const transferOperationBuilder = await getTransferOperation(
+//   //   walletInfo,
+//   //   utxoInputsInfo,
+//   //   recieversInfo,
+//   //   assetCode,
+//   // );
+
+//   return {
+//     walletInfo,
+//     utxoInputs,
+//     recieversInfo,
+//     assetCode,
+//   };
+// };
