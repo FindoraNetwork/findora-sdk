@@ -1,17 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AnonKeys = exports.TracingPolicy = exports.AssetTracerKeyPair = exports.XfrPublicKey = exports.XfrKeyPair = exports.TxoRef = exports.TransferOperationBuilder = exports.TransactionBuilder = exports.TracingPolicies = exports.OwnerMemo = exports.ClientAssetRecord = exports.AssetRules = void 0;
+exports.XPublicKey = exports.XfrPublicKey = exports.XfrKeyPair = exports.TxoRef = exports.TransferOperationBuilder = exports.TransactionBuilder = exports.TracingPolicy = exports.TracingPolicies = exports.OwnerMemo = exports.ClientAssetRecord = exports.AXfrPubKey = exports.AXfrKeyPair = exports.AssetTracerKeyPair = exports.AssetRules = exports.AnonKeys = void 0;
 var wasm_1 = require("findora-wallet-wasm/web/wasm");
+Object.defineProperty(exports, "AnonKeys", { enumerable: true, get: function () { return wasm_1.AnonKeys; } });
 Object.defineProperty(exports, "AssetRules", { enumerable: true, get: function () { return wasm_1.AssetRules; } });
+Object.defineProperty(exports, "AssetTracerKeyPair", { enumerable: true, get: function () { return wasm_1.AssetTracerKeyPair; } });
+Object.defineProperty(exports, "AXfrKeyPair", { enumerable: true, get: function () { return wasm_1.AXfrKeyPair; } });
+Object.defineProperty(exports, "AXfrPubKey", { enumerable: true, get: function () { return wasm_1.AXfrPubKey; } });
 Object.defineProperty(exports, "ClientAssetRecord", { enumerable: true, get: function () { return wasm_1.ClientAssetRecord; } });
 Object.defineProperty(exports, "OwnerMemo", { enumerable: true, get: function () { return wasm_1.OwnerMemo; } });
 Object.defineProperty(exports, "TracingPolicies", { enumerable: true, get: function () { return wasm_1.TracingPolicies; } });
+Object.defineProperty(exports, "TracingPolicy", { enumerable: true, get: function () { return wasm_1.TracingPolicy; } });
 Object.defineProperty(exports, "TransactionBuilder", { enumerable: true, get: function () { return wasm_1.TransactionBuilder; } });
 Object.defineProperty(exports, "TransferOperationBuilder", { enumerable: true, get: function () { return wasm_1.TransferOperationBuilder; } });
 Object.defineProperty(exports, "TxoRef", { enumerable: true, get: function () { return wasm_1.TxoRef; } });
 Object.defineProperty(exports, "XfrKeyPair", { enumerable: true, get: function () { return wasm_1.XfrKeyPair; } });
 Object.defineProperty(exports, "XfrPublicKey", { enumerable: true, get: function () { return wasm_1.XfrPublicKey; } });
-Object.defineProperty(exports, "AssetTracerKeyPair", { enumerable: true, get: function () { return wasm_1.AssetTracerKeyPair; } });
-Object.defineProperty(exports, "TracingPolicy", { enumerable: true, get: function () { return wasm_1.TracingPolicy; } });
-Object.defineProperty(exports, "AnonKeys", { enumerable: true, get: function () { return wasm_1.AnonKeys; } });
+Object.defineProperty(exports, "XPublicKey", { enumerable: true, get: function () { return wasm_1.XPublicKey; } });
 //# sourceMappingURL=types.js.map

@@ -36,8 +36,11 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genAnonKeys = void 0;
+exports.barToAbar = exports.genAnonKeys = void 0;
+var api_1 = require("../../api");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var utxoHelper_1 = require("../../services/utxoHelper");
+var transaction_1 = require("../transaction");
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, anonKeys, axfrPublicKey, axfrSecretKey, decKey, encKey, formattedAnonKeys, err_1;
     return __generator(this, function (_a) {
@@ -51,7 +54,6 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, ledger.gen_anon_keys()];
             case 3:
                 anonKeys = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 10 ~ genAnonKeys ~ anonKeys', anonKeys);
                 axfrPublicKey = anonKeys.axfr_public_key;
                 axfrSecretKey = anonKeys.axfr_secret_key;
                 decKey = anonKeys.dec_key;
@@ -74,4 +76,80 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.genAnonKeys = genAnonKeys;
+var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_1, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_2, randomizers;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
+            case 2:
+                transactionBuilder = _a.sent();
+                _a.label = 3;
+            case 3:
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [sid])];
+            case 4:
+                utxoDataList = _a.sent();
+                utxoItem = utxoDataList[0];
+                item = utxoItem;
+                return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
+                throw new Error("could not fetch utxo for sid " + sid);
+            case 6: return [4 /*yield*/, api_1.Network.getOwnerMemo(sid)];
+            case 7:
+                memoDataResult = _a.sent();
+                myMemoData = memoDataResult.response, memoError = memoDataResult.error;
+                if (memoError) {
+                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                }
+                try {
+                    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+                    assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+                }
+                catch (error) {
+                    throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error.message);
+                }
+                _a.label = 8;
+            case 8:
+                _a.trys.push([8, 11, , 12]);
+                return [4 /*yield*/, api_1.Keypair.getAXfrPublicKeyByBase64(anonKeys.formatted.axfrPublicKey)];
+            case 9:
+                axfrPublicKey = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.getXPublicKeyByBase64(anonKeys.formatted.encKey)];
+            case 10:
+                encKey = _a.sent();
+                return [3 /*break*/, 12];
+            case 11:
+                error_2 = _a.sent();
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_2.message);
+            case 12:
+                try {
+                    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), encKey);
+                }
+                catch (error) {
+                    throw new Error("Could not add bar to abar operation\", Error - " + error.message);
+                }
+                try {
+                    randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
+                }
+                catch (err) {
+                    throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
+                }
+                if (!randomizers) {
+                    throw new Error("list of randomizers strings is empty ");
+                }
+                try {
+                    anonKeys.keysInstance.free();
+                }
+                catch (error) {
+                    throw new Error("could not get release the anonymous keys instance  \"" + error.message + "\" ");
+                }
+                return [2 /*return*/, { transactionBuilder: transactionBuilder, randomizers: randomizers }];
+        }
+    });
+}); };
+exports.barToAbar = barToAbar;
 //# sourceMappingURL=tripleMasking.js.map
