@@ -1,5 +1,6 @@
+import { CacheItem } from '../../services/cacheStore/types';
 import { AnonKeys, TransactionBuilder } from '../../services/ledger/types';
-import { WalletKeypar } from '../keypair';
+import * as Keypair from '../keypair';
 interface FormattedAnonKeys {
     axfrPublicKey: string;
     axfrSecretKey: string;
@@ -8,12 +9,13 @@ interface FormattedAnonKeys {
 }
 export interface BarToAbarResult {
     transactionBuilder: TransactionBuilder;
-    randomizers: string[];
+    barToAbarData: CacheItem;
 }
 export interface AnonKeysResponse {
     keysInstance: AnonKeys;
     formatted: FormattedAnonKeys;
 }
 export declare const genAnonKeys: () => Promise<AnonKeysResponse>;
-export declare const barToAbar: (walletInfo: WalletKeypar, sid: number, anonKeys: AnonKeysResponse) => Promise<BarToAbarResult>;
+export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, randomizers: string[], anonKeys: AnonKeysResponse) => Promise<CacheItem>;
+export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: AnonKeysResponse) => Promise<BarToAbarResult>;
 export {};

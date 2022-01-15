@@ -79,10 +79,10 @@ var sdkEnv = {
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-    // cacheProvider: FileCacheProvider,
+    cacheProvider: providers_1.FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    cacheProvider: providers_1.MemoryCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
 };
 /**
@@ -1276,7 +1276,7 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, randomizers, resultHandle;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, resultHandle;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1300,11 +1300,10 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
             case 3:
                 anonKeys = _b.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1187!! ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
             case 4:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, randomizers = _a.randomizers;
-                console.log('🚀 ~ file: run.ts ~ line 1187 ~ randomizers', randomizers);
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();
