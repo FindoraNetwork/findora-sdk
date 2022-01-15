@@ -4,7 +4,7 @@ import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
-import { MemoryCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -18,14 +18,14 @@ const waitingTimeBeforeCheckTxStatus = 18000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-  // cacheProvider: FileCacheProvider,
+  cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
-  cacheProvider: MemoryCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -41,10 +41,12 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
   ENG_PKEY = '',
+  PKEY_LOCAL_TRIPLE_MASKING = '',
   PKEY_LOCAL_FAUCET_MNEMONIC_STRING = '',
   M_STRING = '',
   FRA_ADDRESS = '',
@@ -71,12 +73,12 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '1234';
 
-  const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = PKEY_MINE;
+  // const pkey = PKEY_LOCAL_FAUCET;
+  const pkey = PKEY_MINE;
   // const pkey = PKEY_MINE3;
 
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  // const mString = M_STRING;
+  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');
@@ -1170,7 +1172,42 @@ const getAnonKeys = async () => {
   console.log('formatted', formatted);
 };
 
-getAnonKeys();
+const barToAbar = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('no sids!');
+  }
+
+  const sortedSids = sids.sort((a, b) => b - a);
+
+  const [sid] = sortedSids;
+
+  if (!sid) {
+    throw new Error('sid is empty. send more transfers to this address!');
+  }
+
+  const anonKeys = await TripleMasking.genAnonKeys();
+
+  const { transactionBuilder, barToAbarData } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
+
+  console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('send bar to abar result handle!!', resultHandle);
+};
+
+// getAnonKeys();
+barToAbar();
 // getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();

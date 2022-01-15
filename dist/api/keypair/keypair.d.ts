@@ -1,4 +1,4 @@
-import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import { AXfrPubKey, XfrKeyPair, XfrPublicKey, XPublicKey } from '../../services/ledger/types';
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
  *
@@ -73,6 +73,14 @@ export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<Xfr
  * @todo Add unit test
  */
 export declare const getPublicKeyByXfr: (publicKey: XfrPublicKey) => Promise<string>;
+/**
+ * @todo Add unit test
+ */
+export declare const getAXfrPublicKeyByBase64: (publicKey: string) => Promise<AXfrPubKey>;
+/**
+ * @todo Add unit test
+ */
+export declare const getXPublicKeyByBase64: (publicKey: string) => Promise<XPublicKey>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.

@@ -75,14 +75,14 @@ var waitingTimeBeforeCheckTxStatus = 18000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
-    hostUrl: 'https://prod-testnet.prod.findora.org',
+    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-    // cacheProvider: FileCacheProvider,
+    cacheProvider: providers_1.FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    cacheProvider: providers_1.MemoryCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
 };
 /**
@@ -92,7 +92,7 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
-var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_MINE2, PKEY_MINE2 = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE3, PKEY_MINE3 = _e === void 0 ? '' : _e, _f = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _f === void 0 ? '' : _f, _g = _a.ENG_PKEY, ENG_PKEY = _g === void 0 ? '' : _g, _h = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _h === void 0 ? '' : _h, _j = _a.M_STRING, M_STRING = _j === void 0 ? '' : _j, _k = _a.FRA_ADDRESS, FRA_ADDRESS = _k === void 0 ? '' : _k, _l = _a.ETH_PRIVATE, ETH_PRIVATE = _l === void 0 ? '' : _l, _m = _a.ETH_ADDRESS, ETH_ADDRESS = _m === void 0 ? '' : _m;
+var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 /**
@@ -119,8 +119,8 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '1234';
-                pkey = PKEY_LOCAL_FAUCET;
-                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+                pkey = PKEY_MINE;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
@@ -1275,7 +1275,45 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-getAnonKeys();
+var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, resultHandle;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                password = '1234';
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _b.sent();
+                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
+            case 2:
+                sidsResult = _b.sent();
+                sids = sidsResult.response;
+                if (!sids) {
+                    throw new Error('no sids!');
+                }
+                sortedSids = sids.sort(function (a, b) { return b - a; });
+                sid = sortedSids[0];
+                if (!sid) {
+                    throw new Error('sid is empty. send more transfers to this address!');
+                }
+                return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
+            case 3:
+                anonKeys = _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
+            case 4:
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 5:
+                resultHandle = _b.sent();
+                console.log('send bar to abar result handle!!', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// getAnonKeys();
+barToAbar();
 // getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
