@@ -4,7 +4,7 @@ import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
-import { MemoryCacheProvider } from './services/cacheStore/providers';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
@@ -22,10 +22,10 @@ const sdkEnv = {
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-  // cacheProvider: FileCacheProvider,
+  cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
-  cacheProvider: MemoryCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -1197,11 +1197,9 @@ const barToAbar = async () => {
 
   const anonKeys = await TripleMasking.genAnonKeys();
 
-  console.log('🚀 ~ file: run.ts ~ line 1187!! ~ barToAbar ~ anonKeys', anonKeys);
+  const { transactionBuilder, barToAbarData } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
 
-  const { transactionBuilder, randomizers } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
-
-  console.log('🚀 ~ file: run.ts ~ line 1187 ~ randomizers', randomizers);
+  console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 

@@ -1,8 +1,12 @@
-import { Keypair, Network } from '../../api';
+import { CACHE_ENTRIES } from '../../config/cache';
+import Sdk from '../../Sdk';
+import Cache from '../../services/cacheStore/factory';
+import { CacheItem } from '../../services/cacheStore/types';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { AnonKeys, TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
-import { WalletKeypar } from '../keypair';
+import * as Keypair from '../keypair';
+import * as Network from '../network';
 import { getTransactionBuilder } from '../transaction';
 
 interface FormattedAnonKeys {
@@ -14,7 +18,7 @@ interface FormattedAnonKeys {
 
 export interface BarToAbarResult {
   transactionBuilder: TransactionBuilder;
-  randomizers: string[];
+  barToAbarData: CacheItem;
 }
 
 // we return both, the keys and the instance of the object, as it contains `free` method, which would release the pointer
@@ -50,8 +54,54 @@ export const genAnonKeys = async (): Promise<AnonKeysResponse> => {
   }
 };
 
+export const saveBarToAbarToCache = async (
+  walletInfo: Keypair.WalletKeypar,
+  sid: number,
+  randomizers: string[],
+  anonKeys: AnonKeysResponse,
+) => {
+  const cacheEntryName = `${CACHE_ENTRIES.BAR_TO_ABAR}_${walletInfo.address}`;
+  const cacheDataToSave: CacheItem = {};
+
+  let fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
+
+  try {
+    if (window && window?.document) {
+      fullPathToCacheEntry = cacheEntryName;
+    }
+  } catch (error) {
+    console.log('for browser mode a default fullPathToCacheEntry was used');
+  }
+
+  let abarDataCache = {};
+
+  try {
+    abarDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
+  } catch (error) {
+    console.log(`Error reading the abarDataCache for ${walletInfo.address}. Creating an empty object now`);
+  }
+
+  cacheDataToSave[`sid_${sid}`] = {
+    anonKeysFormatted: anonKeys.formatted,
+    randomizers,
+  };
+
+  try {
+    await Cache.write(
+      fullPathToCacheEntry,
+      { ...abarDataCache, ...cacheDataToSave },
+      Sdk.environment.cacheProvider,
+    );
+  } catch (error) {
+    const err: Error = error as Error;
+    console.log(`Could not write cache for abarDataCache, "${err.message}"`);
+  }
+
+  return cacheDataToSave;
+};
+
 export const barToAbar = async (
-  walletInfo: WalletKeypar,
+  walletInfo: Keypair.WalletKeypar,
   sid: number,
   anonKeys: AnonKeysResponse,
 ): Promise<BarToAbarResult> => {
@@ -113,7 +163,7 @@ export const barToAbar = async (
     throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
   }
 
-  let randomizers;
+  let randomizers: { randomizers: string[] };
 
   try {
     randomizers = transactionBuilder?.get_randomizers();
@@ -121,7 +171,7 @@ export const barToAbar = async (
     throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
   }
 
-  if (!randomizers) {
+  if (!randomizers?.randomizers?.length) {
     throw new Error(`list of randomizers strings is empty `);
   }
 
@@ -131,5 +181,13 @@ export const barToAbar = async (
     throw new Error(`could not get release the anonymous keys instance  "${(error as Error).message}" `);
   }
 
-  return { transactionBuilder, randomizers };
+  let barToAbarData;
+
+  try {
+    barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
+  } catch (error) {
+    throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
+  }
+
+  return { transactionBuilder, barToAbarData };
 };
