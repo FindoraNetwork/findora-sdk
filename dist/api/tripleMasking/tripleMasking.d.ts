@@ -1,21 +1,8 @@
-import { CacheItem } from '../../services/cacheStore/types';
 import { AnonKeys, TransactionBuilder } from '../../services/ledger/types';
 import * as Keypair from '../keypair';
-interface FormattedAnonKeys {
-    axfrPublicKey: string;
-    axfrSecretKey: string;
-    decKey: string;
-    encKey: string;
-}
-export interface BarToAbarResult {
-    transactionBuilder: TransactionBuilder;
-    barToAbarData: CacheItem;
-}
-export interface AnonKeysResponse {
-    keysInstance: AnonKeys;
-    formatted: FormattedAnonKeys;
-}
-export declare const genAnonKeys: () => Promise<AnonKeysResponse>;
-export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, randomizers: string[], anonKeys: AnonKeysResponse) => Promise<CacheItem>;
-export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: AnonKeysResponse) => Promise<BarToAbarResult>;
-export {};
+export declare const genAnonKeys: () => Promise<FindoraWallet.AnonKeysResponse<AnonKeys>>;
+export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, randomizers: string[], anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>) => Promise<FindoraWallet.BarToAbarData>;
+export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
+export declare const getOwnedAbars: (formattedAxfrPublicKey: string, givenRandomizer: string) => Promise<{
+    randomizedPubKey: import("findora-wallet-wasm/nodejs").AXfrPubKey | import("findora-wallet-wasm/bundler").AXfrPubKey;
+}>;

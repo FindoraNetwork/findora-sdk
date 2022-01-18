@@ -119,7 +119,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '1234';
-                pkey = PKEY_MINE;
+                pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1276,7 +1276,7 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, resultHandle;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, randomizedPubKey, randomizedPubKeyTwo;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1302,12 +1302,23 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 anonKeys = _b.sent();
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
             case 4:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();
                 console.log('send bar to abar result handle!!', resultHandle);
+                formattedAxfrPublicKey = barToAbarData.anonKeysFormatted.axfrPublicKey;
+                givenRandomizer = barToAbarData.randomizers[0];
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 6:
+                randomizedPubKey = _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 7:
+                randomizedPubKeyTwo = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKey', randomizedPubKey);
+                console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKeyTwo', randomizedPubKeyTwo);
                 return [2 /*return*/];
         }
     });

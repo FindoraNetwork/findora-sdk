@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.barToAbar = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getOwnedAbars = exports.barToAbar = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
@@ -114,13 +114,21 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
 }); };
 exports.genAnonKeys = genAnonKeys;
 var saveBarToAbarToCache = function (walletInfo, sid, randomizers, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var cacheEntryName, cacheDataToSave, fullPathToCacheEntry, abarDataCache, error_1, error_2, err;
+    var cacheEntryName, cacheDataToSave, fullPathToCacheEntry, abarDataCache, error_1, barToAbarData, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 cacheEntryName = cache_1.CACHE_ENTRIES.BAR_TO_ABAR + "_" + walletInfo.address;
                 cacheDataToSave = {};
                 fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
+                try {
+                    if (window && (window === null || window === void 0 ? void 0 : window.document)) {
+                        fullPathToCacheEntry = cacheEntryName;
+                    }
+                }
+                catch (error) {
+                    console.log('for browser mode a default fullPathToCacheEntry was used');
+                }
                 abarDataCache = {};
                 _a.label = 1;
             case 1:
@@ -134,10 +142,11 @@ var saveBarToAbarToCache = function (walletInfo, sid, randomizers, anonKeys) { r
                 console.log("Error reading the abarDataCache for " + walletInfo.address + ". Creating an empty object now");
                 return [3 /*break*/, 4];
             case 4:
-                cacheDataToSave["sid_" + sid] = {
+                barToAbarData = {
                     anonKeysFormatted: anonKeys.formatted,
                     randomizers: randomizers,
                 };
+                cacheDataToSave["sid_" + sid] = barToAbarData;
                 _a.label = 5;
             case 5:
                 _a.trys.push([5, 7, , 8]);
@@ -150,7 +159,7 @@ var saveBarToAbarToCache = function (walletInfo, sid, randomizers, anonKeys) { r
                 err = error_2;
                 console.log("Could not write cache for abarDataCache, \"" + err.message + "\"");
                 return [3 /*break*/, 8];
-            case 8: return [2 /*return*/, cacheDataToSave];
+            case 8: return [2 /*return*/, barToAbarData];
         }
     });
 }); };
@@ -237,9 +246,26 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
             case 15:
                 error_5 = _b.sent();
                 throw new Error("Could not save cache for bar to abar. Details: " + error_5.message);
-            case 16: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData }];
+            case 16: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });
 }); };
 exports.barToAbar = barToAbar;
+var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, axfrPublicKey, randomizedPubKey;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey)];
+            case 2:
+                axfrPublicKey = _a.sent();
+                randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
+                console.log('randomizedPubKey', randomizedPubKey);
+                return [2 /*return*/, { randomizedPubKey: randomizedPubKey }];
+        }
+    });
+}); };
+exports.getOwnedAbars = getOwnedAbars;
 //# sourceMappingURL=tripleMasking.js.map

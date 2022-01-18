@@ -9,25 +9,7 @@ import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getTransactionBuilder } from '../transaction';
 
-interface FormattedAnonKeys {
-  axfrPublicKey: string;
-  axfrSecretKey: string;
-  decKey: string;
-  encKey: string;
-}
-
-export interface BarToAbarResult {
-  transactionBuilder: TransactionBuilder;
-  barToAbarData: CacheItem;
-}
-
-// we return both, the keys and the instance of the object, as it contains `free` method, which would release the pointer
-export interface AnonKeysResponse {
-  keysInstance: AnonKeys;
-  formatted: FormattedAnonKeys;
-}
-
-export const genAnonKeys = async (): Promise<AnonKeysResponse> => {
+export const genAnonKeys = async (): Promise<FindoraWallet.AnonKeysResponse<AnonKeys>> => {
   const ledger = await getLedger();
 
   try {
@@ -58,8 +40,8 @@ export const saveBarToAbarToCache = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
   randomizers: string[],
-  anonKeys: AnonKeysResponse,
-) => {
+  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
+): Promise<FindoraWallet.BarToAbarData> => {
   const cacheEntryName = `${CACHE_ENTRIES.BAR_TO_ABAR}_${walletInfo.address}`;
   const cacheDataToSave: CacheItem = {};
 
@@ -81,10 +63,12 @@ export const saveBarToAbarToCache = async (
     console.log(`Error reading the abarDataCache for ${walletInfo.address}. Creating an empty object now`);
   }
 
-  cacheDataToSave[`sid_${sid}`] = {
+  const barToAbarData = {
     anonKeysFormatted: anonKeys.formatted,
     randomizers,
   };
+
+  cacheDataToSave[`sid_${sid}`] = barToAbarData;
 
   try {
     await Cache.write(
@@ -97,14 +81,14 @@ export const saveBarToAbarToCache = async (
     console.log(`Could not write cache for abarDataCache, "${err.message}"`);
   }
 
-  return cacheDataToSave;
+  return barToAbarData;
 };
 
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
-  anonKeys: AnonKeysResponse,
-): Promise<BarToAbarResult> => {
+  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
+): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
   let transactionBuilder = await getTransactionBuilder();
 
@@ -181,7 +165,7 @@ export const barToAbar = async (
     throw new Error(`could not get release the anonymous keys instance  "${(error as Error).message}" `);
   }
 
-  let barToAbarData;
+  let barToAbarData: FindoraWallet.BarToAbarData;
 
   try {
     barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
@@ -189,5 +173,16 @@ export const barToAbar = async (
     throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
   }
 
-  return { transactionBuilder, barToAbarData };
+  return { transactionBuilder, barToAbarData, sid: `${sid}` };
+};
+
+export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomizer: string) => {
+  const ledger = await getLedger();
+
+  const axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey);
+  const randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
+
+  console.log('randomizedPubKey', randomizedPubKey);
+
+  return { randomizedPubKey };
 };

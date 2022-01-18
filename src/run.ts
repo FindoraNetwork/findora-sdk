@@ -73,8 +73,8 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '1234';
 
-  // const pkey = PKEY_LOCAL_FAUCET;
-  const pkey = PKEY_MINE;
+  const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = PKEY_MINE;
   // const pkey = PKEY_MINE3;
 
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
@@ -1197,13 +1197,26 @@ const barToAbar = async () => {
 
   const anonKeys = await TripleMasking.genAnonKeys();
 
-  const { transactionBuilder, barToAbarData } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sid: usedSid,
+  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
 
   console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+  console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
   console.log('send bar to abar result handle!!', resultHandle);
+
+  const { axfrPublicKey: formattedAxfrPublicKey } = barToAbarData.anonKeysFormatted;
+  const [givenRandomizer] = barToAbarData.randomizers;
+  const randomizedPubKey = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  const randomizedPubKeyTwo = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+
+  console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKey', randomizedPubKey);
+  console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKeyTwo', randomizedPubKeyTwo);
 };
 
 // getAnonKeys();
