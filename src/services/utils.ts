@@ -27,3 +27,12 @@ export const readFile = (filePath: string): Promise<string> => {
 export const createCacheDir = (dirPath: string) => {
   return fs.mkdirSync(dirPath, { recursive: true });
 };
+
+export const now = () => new Date().toLocaleString();
+
+export const log = (message: string, ...rest: any) => {
+  console.log(
+    `"${now()}" - ${message}`,
+    (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '',
+  );
+};

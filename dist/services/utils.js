@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
 exports.uint8arrayToHexStr = uint8arrayToHexStr;
@@ -71,4 +71,14 @@ var createCacheDir = function (dirPath) {
     return fs_1.default.mkdirSync(dirPath, { recursive: true });
 };
 exports.createCacheDir = createCacheDir;
+var now = function () { return new Date().toLocaleString(); };
+exports.now = now;
+var log = function (message) {
+    var rest = [];
+    for (var _i = 1; _i < arguments.length; _i++) {
+        rest[_i - 1] = arguments[_i];
+    }
+    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
+};
+exports.log = log;
 //# sourceMappingURL=utils.js.map

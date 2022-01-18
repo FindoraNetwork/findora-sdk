@@ -42,9 +42,11 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv_1 = __importDefault(require("dotenv"));
 var minimist_1 = __importDefault(require("minimist"));
+var neat_csv_1 = __importDefault(require("neat-csv"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
+var utils_1 = require("./services/utils");
 dotenv_1.default.config();
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -60,23 +62,24 @@ var COMMANDS = {
     FUND: 'fund',
     CREATE_WALLET: 'createWallet',
     RESTORE_WALLET: 'restoreWallet',
+    BATCH_SEND_ERC20: 'batchSendErc20',
 };
 var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
     _a[COMMANDS.CREATE_WALLET] = 'please run as "yarn cli createWallet"',
     _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
+    _a[COMMANDS.BATCH_SEND_ERC20] = "please run as \"yarn cli batchSendErc20 --filePath=\"./file.csv\"",
     _a);
-var now = function () { return new Date().toLocaleString(); };
-var log = function (message) {
-    var rest = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        rest[_i - 1] = arguments[_i];
-    }
-    console.log("\"" + now() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
-};
+// const now = () => new Date().toLocaleString();
+// const log = (message: string, ...rest: any) => {
+//   console.log(
+//     `"${now()}" - ${message}`,
+//     (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '',
+//   );
+// };
 var showHelp = function () {
     for (var prop in ERROR_MESSAGES) {
-        log(ERROR_MESSAGES[prop]);
+        (0, utils_1.log)(ERROR_MESSAGES[prop]);
     }
 };
 var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0, void 0, function () {
@@ -98,7 +101,35 @@ var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 4:
                 resultHandle = _a.sent();
-                log('send fra result handle', resultHandle);
+                (0, utils_1.log)('send fra result handle', resultHandle);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, parsedListOfRecievers, err_1, error_1;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
+            case 1:
+                data = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                err_1 = _a.sent();
+                throw Error('Could not read file "file.csv" ');
+            case 3:
+                _a.trys.push([3, 5, , 6]);
+                return [4 /*yield*/, (0, neat_csv_1.default)(data)];
+            case 4:
+                parsedListOfRecievers = _a.sent();
+                return [3 /*break*/, 6];
+            case 5:
+                error_1 = _a.sent();
+                throw Error('Could not parse file "file.csv" ');
+            case 6:
+                (0, utils_1.log)('parsedListOfRecievers', parsedListOfRecievers);
                 return [2 /*return*/];
         }
     });
@@ -112,11 +143,11 @@ var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, fun
                 return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                log("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
+                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 2:
                 walletInfo = _a.sent();
-                log('🚀 ~ new wallet info: ', walletInfo);
+                (0, utils_1.log)('🚀 ~ new wallet info: ', walletInfo);
                 return [2 /*return*/];
         }
     });
@@ -127,22 +158,22 @@ var runRestoreWallet = function (mnemonicString) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 password = '123';
-                log("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
+                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
                 mm = mnemonicString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
                 walletInfo = _a.sent();
-                log('🚀 ~ restored wallet info: ', walletInfo);
+                (0, utils_1.log)('🚀 ~ restored wallet info: ', walletInfo);
                 return [2 /*return*/];
         }
     });
 }); };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString;
+    var argv, command, address, amountToFund, mnemonicString, filePath;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString;
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath;
         if (!command) {
             showHelp();
             return [2 /*return*/];
@@ -150,7 +181,7 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
         switch (command) {
             case COMMANDS.FUND:
                 if (!address || !amountToFund) {
-                    log(ERROR_MESSAGES[COMMANDS.FUND]);
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.FUND]);
                     break;
                 }
                 runFund(address, amountToFund);
@@ -160,10 +191,17 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 break;
             case COMMANDS.RESTORE_WALLET:
                 if (!mnemonicString) {
-                    log(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
                     break;
                 }
                 runRestoreWallet(mnemonicString);
+                break;
+            case COMMANDS.BATCH_SEND_ERC20:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_SEND_ERC20]);
+                    break;
+                }
+                runBatchSendERC20(filePath);
                 break;
             default:
                 showHelp();
