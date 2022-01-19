@@ -74,7 +74,6 @@ var sdkEnv = {
 Sdk_1.default.init(sdkEnv);
 var _b = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _b === void 0 ? '' : _b;
 var RPC_ENV_NAME = 'mocknet';
-console.log('🚀 ~ file: cli.ts ~ line 38 ~ RPC_ENV_NAME', RPC_ENV_NAME);
 var envConfigFile = "../.env_rpc_" + RPC_ENV_NAME;
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
