@@ -1,15 +1,16 @@
 import '@testing-library/jest-dom/extend-expect';
 import { XfrKeyPair } from '../../services/ledger/types';
-
 import {
-  restoreFromPrivateKey,
-  getMnemonic,
   createKeypair,
-  getPrivateKeyStr,
-  getPublicKeyStr,
   getAddress,
   getAddressByPublicKey,
   getAddressPublicAndKey,
+  getAXfrPublicKeyByBase64,
+  getMnemonic,
+  getPrivateKeyStr,
+  getPublicKeyStr,
+  getXPublicKeyByBase64,
+  restoreFromPrivateKey,
 } from './keypair';
 
 describe('keypair (unit test)', () => {
@@ -152,6 +153,38 @@ describe('keypair (unit test)', () => {
       await expect(createKeypair([123] as unknown as string)).rejects.toThrowError(
         'could not create a WalletKeypar',
       );
+    });
+  });
+
+  describe('getAXfrPublicKeyByBase64', () => {
+    it('throws an error if not a valid public key is given', async () => {
+      await expect(getAXfrPublicKeyByBase64('aa')).rejects.toThrowError(
+        'could not get AXfrPubKey by base64 public key, ',
+      );
+    });
+
+    it('get AXfrPubKey by base64 public key', async () => {
+      const kp = await createKeypair('123');
+      // const result = await getAXfrPublicKeyByBase64('U4One4jJ9Lo0vyWG-0sZSRS2Pzuyt4hMLyrBjSb9yh0=');
+      const result = await getAXfrPublicKeyByBase64(kp.publickey);
+      expect(result).toHaveProperty('free');
+      expect(typeof result.free).toBe('function');
+    });
+  });
+
+  describe('getXPublicKeyByBase64', () => {
+    it('throws an error if not a valid public key is given', async () => {
+      await expect(getXPublicKeyByBase64('aa')).rejects.toThrowError(
+        `could not get XPublicKey by base64 public key, "`,
+      );
+    });
+
+    it('get XPublicKey by base64 public key', async () => {
+      const kp = await createKeypair('123');
+      // const result = await getXPublicKeyByBase64('U4One4jJ9Lo0vyWG-0sZSRS2Pzuyt4hMLyrBjSb9yh0=');
+      const result = await getXPublicKeyByBase64(kp.publickey);
+      expect(result).toHaveProperty('free');
+      expect(typeof result.free).toBe('function');
     });
   });
 });
