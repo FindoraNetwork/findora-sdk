@@ -49,54 +49,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
-var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-var dotenv_1 = __importDefault(require("dotenv"));
-var minimist_1 = __importDefault(require("minimist"));
+exports.runBatchSendERC20 = void 0;
 var neat_csv_1 = __importDefault(require("neat-csv"));
 var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-provider"));
 var web3_1 = __importDefault(require("web3"));
-var api_1 = require("./api");
-var testHelpers_1 = require("./evm/testHelpers");
-var Sdk_1 = __importDefault(require("./Sdk"));
-var providers_1 = require("./services/cacheStore/providers");
-var utils_1 = require("./services/utils");
-dotenv_1.default.config();
-/**
- * Prior to using SDK we have to initialize its environment configuration
- */
-var sdkEnv = {
-    // hostUrl: 'https://dev-qa01.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
-    cacheProvider: providers_1.MemoryCacheProvider,
-    cachePath: './cache',
-};
-Sdk_1.default.init(sdkEnv);
-var _b = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _b === void 0 ? '' : _b;
+var testHelpers_1 = require("../../evm/testHelpers");
+var utils_1 = require("../../services/utils");
 var RPC_ENV_NAME = 'mocknet';
-var envConfigFile = "../.env_rpc_" + RPC_ENV_NAME;
+var envConfigFile = "../../../.env_rpc_" + RPC_ENV_NAME;
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
-var _c = rpcParams.rpcUrl, rpcUrl = _c === void 0 ? 'http://127.0.0.1:8545' : _c, mnemonic = rpcParams.mnemonic;
+var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
 var networkId;
 var accounts;
-var COMMANDS = {
-    FUND: 'fund',
-    CREATE_WALLET: 'createWallet',
-    RESTORE_WALLET: 'restoreWallet',
-    BATCH_SEND_ERC20: 'batchSendErc20',
-};
-var ERROR_MESSAGES = (_a = {},
-    _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
-    _a[COMMANDS.CREATE_WALLET] = 'please run as "yarn cli createWallet"',
-    _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
-    _a[COMMANDS.BATCH_SEND_ERC20] = "please run as \"yarn cli batchSendErc20 --filePath=\"./file.csv\"",
-    _a);
-var showHelp = function () {
-    for (var prop in ERROR_MESSAGES) {
-        (0, utils_1.log)(ERROR_MESSAGES[prop]);
-    }
-};
 var isCsvValid = function (parsedListOfRecievers) {
     for (var i = 0; i < parsedListOfRecievers.length; i += 1) {
         var currentReciever = parsedListOfRecievers[i];
@@ -141,30 +107,6 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
                 error_1 = _a.sent();
                 throw new Error("can not write result log for \"" + resultFilePath + "\", \"" + error_1.message + "\"");
             case 4: return [2 /*return*/];
-        }
-    });
-}); };
-var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, assetCode, transactionBuilder, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_LOCAL_FAUCET;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 2:
-                assetCode = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, address, amountToFund, assetCode)];
-            case 3:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 4:
-                resultHandle = _a.sent();
-                (0, utils_1.log)('send fra result handle', resultHandle);
-                return [2 /*return*/];
         }
     });
 }); };
@@ -278,80 +220,5 @@ var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, v
         }
     });
 }); };
-var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, mm, walletInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
-            case 1:
-                mm = _a.sent();
-                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
-            case 2:
-                walletInfo = _a.sent();
-                (0, utils_1.log)('🚀 ~ new wallet info: ', walletInfo);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var runRestoreWallet = function (mnemonicString) { return __awaiter(void 0, void 0, void 0, function () {
-    var password, mm, walletInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '123';
-                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
-                mm = mnemonicString.split(' ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
-            case 1:
-                walletInfo = _a.sent();
-                (0, utils_1.log)('🚀 ~ restored wallet info: ', walletInfo);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString, filePath;
-    return __generator(this, function (_a) {
-        argv = (0, minimist_1.default)(process.argv.slice(4));
-        command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath;
-        if (!command) {
-            showHelp();
-            return [2 /*return*/];
-        }
-        switch (command) {
-            case COMMANDS.FUND:
-                if (!address || !amountToFund) {
-                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.FUND]);
-                    break;
-                }
-                runFund(address, amountToFund);
-                break;
-            case COMMANDS.CREATE_WALLET:
-                runCreateWallet();
-                break;
-            case COMMANDS.RESTORE_WALLET:
-                if (!mnemonicString) {
-                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
-                    break;
-                }
-                runRestoreWallet(mnemonicString);
-                break;
-            case COMMANDS.BATCH_SEND_ERC20:
-                if (!filePath) {
-                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_SEND_ERC20]);
-                    break;
-                }
-                runBatchSendERC20(filePath);
-                break;
-            default:
-                showHelp();
-        }
-        return [2 /*return*/];
-    });
-}); };
-main();
-//# sourceMappingURL=cli.js.map
+exports.runBatchSendERC20 = runBatchSendERC20;
+//# sourceMappingURL=batchSendErc20.js.map
