@@ -35,50 +35,27 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
-var fs_1 = __importDefault(require("fs"));
-var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
-exports.uint8arrayToHexStr = uint8arrayToHexStr;
-var writeFile = function (filePath, cacheData) { return __awaiter(void 0, void 0, void 0, function () {
+exports.runCreateWallet = void 0;
+var api_1 = require("../../api");
+var utils_1 = require("../../services/utils");
+var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, mm, walletInfo;
     return __generator(this, function (_a) {
-        return [2 /*return*/, new Promise(function (resolve, reject) {
-                fs_1.default.writeFile(filePath, cacheData, 'utf8', function (err) {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve(true);
-                });
-            })];
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
+            case 1:
+                mm = _a.sent();
+                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 2:
+                walletInfo = _a.sent();
+                (0, utils_1.log)('🚀 ~ new wallet info: ', walletInfo);
+                return [2 /*return*/];
+        }
     });
 }); };
-exports.writeFile = writeFile;
-var readFile = function (filePath) {
-    return new Promise(function (resolve, reject) {
-        fs_1.default.readFile(filePath, 'utf8', function (err, data) {
-            if (err) {
-                reject(err);
-            }
-            resolve(data);
-        });
-    });
-};
-exports.readFile = readFile;
-var createCacheDir = function (dirPath) {
-    return fs_1.default.mkdirSync(dirPath, { recursive: true });
-};
-exports.createCacheDir = createCacheDir;
-var now = function () { return new Date().toLocaleString(); };
-exports.now = now;
-var log = function (message) {
-    var rest = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        rest[_i - 1] = arguments[_i];
-    }
-    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
-};
-exports.log = log;
-//# sourceMappingURL=utils.js.map
+exports.runCreateWallet = runCreateWallet;
+//# sourceMappingURL=createWallet.js.map
