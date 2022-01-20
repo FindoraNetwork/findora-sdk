@@ -69,7 +69,7 @@ var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
-var waitingTimeBeforeCheckTxStatus = 18000;
+var waitingTimeBeforeCheckTxStatus = 19000;
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
@@ -1276,7 +1276,7 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, randomizedPubKey, randomizedPubKeyTwo;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1311,14 +1311,16 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 console.log('send bar to abar result handle!!', resultHandle);
                 formattedAxfrPublicKey = barToAbarData.anonKeysFormatted.axfrPublicKey;
                 givenRandomizer = barToAbarData.randomizers[0];
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 6:
-                randomizedPubKey = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+                _b.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 7:
-                randomizedPubKeyTwo = _b.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKey', randomizedPubKey);
-                console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKeyTwo', randomizedPubKeyTwo);
+                _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 8:
+                ownedAbarsResponse = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
                 return [2 /*return*/];
         }
     });

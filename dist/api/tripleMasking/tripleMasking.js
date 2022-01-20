@@ -252,18 +252,39 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
 }); };
 exports.barToAbar = barToAbar;
 var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, axfrPublicKey, randomizedPubKey;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var ledger, axfrPublicKey, randomizedPubKey, _a, ownedAbarsResponse, error, result;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _a.sent();
+                ledger = _b.sent();
                 return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey)];
             case 2:
-                axfrPublicKey = _a.sent();
+                axfrPublicKey = _b.sent();
                 randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
                 console.log('randomizedPubKey', randomizedPubKey);
-                return [2 /*return*/, { randomizedPubKey: randomizedPubKey }];
+                return [4 /*yield*/, Network.getOwnedAbars(randomizedPubKey)];
+            case 3:
+                _a = _b.sent(), ownedAbarsResponse = _a.response, error = _a.error;
+                if (error) {
+                    throw new Error(error.message);
+                }
+                if (!ownedAbarsResponse) {
+                    throw new Error('Could not receive response from get ownedAbars call');
+                }
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 196 ~ getOwnedAbars ~ ownedAbarsResponse', ownedAbarsResponse);
+                result = ownedAbarsResponse.map(function (ownedAbarItem) {
+                    var atxoSid = ownedAbarItem[0], ownedAbar = ownedAbarItem[1];
+                    return {
+                        atxoSid: atxoSid,
+                        ownedAbar: __assign({}, ownedAbar),
+                    };
+                });
+                // const [firstOwnedAbarItem] = ownedAbarsResponse;
+                // const [atxoSid, ownedAbar] = firstOwnedAbarItem;
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ atxoSid', atxoSid);
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ ownedAbar', ownedAbar);
+                return [2 /*return*/, result];
         }
     });
 }); };
