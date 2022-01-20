@@ -411,3 +411,14 @@ export const sendRpcCall = async <T>(
 
   return dataResult as T;
 };
+
+export const getOwnedAbars = async (
+  randomizedPubKey: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnedAbarsDataResult> => {
+  const url = `${getQueryRoute()}/owned_abars/${randomizedPubKey}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};

@@ -11,7 +11,7 @@ import * as UtxoHelper from './services/utxoHelper';
 
 dotenv.config();
 
-const waitingTimeBeforeCheckTxStatus = 18000;
+const waitingTimeBeforeCheckTxStatus = 19000;
 
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -1212,11 +1212,12 @@ const barToAbar = async () => {
 
   const { axfrPublicKey: formattedAxfrPublicKey } = barToAbarData.anonKeysFormatted;
   const [givenRandomizer] = barToAbarData.randomizers;
-  const randomizedPubKey = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
-  const randomizedPubKeyTwo = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
 
-  console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKey', randomizedPubKey);
-  console.log('🚀 ~ file: run.ts ~ line 1217 ~ barToAbar ~ randomizedPubKeyTwo', randomizedPubKeyTwo);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
 };
 
 // getAnonKeys();

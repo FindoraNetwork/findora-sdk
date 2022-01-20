@@ -184,5 +184,40 @@ export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomi
 
   console.log('randomizedPubKey', randomizedPubKey);
 
-  return { randomizedPubKey };
+  const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(randomizedPubKey);
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!ownedAbarsResponse) {
+    throw new Error('Could not receive response from get ownedAbars call');
+  }
+
+  console.log(
+    '🚀 ~ file: tripleMasking.ts ~ line 196 ~ getOwnedAbars ~ ownedAbarsResponse',
+    ownedAbarsResponse,
+  );
+
+  const result = ownedAbarsResponse.map(ownedAbarItem => {
+    const [atxoSid, ownedAbar] = ownedAbarItem;
+
+    return {
+      atxoSid,
+      ownedAbar: { ...ownedAbar },
+    };
+  });
+
+  // const [firstOwnedAbarItem] = ownedAbarsResponse;
+
+  // const [atxoSid, ownedAbar] = firstOwnedAbarItem;
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ atxoSid', atxoSid);
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ ownedAbar', ownedAbar);
+
+  return result;
+  // return {
+  //   AXFRPubKey ,
+  //   Randomiser,
+  //   DerPubkey,
+  // };
 };
