@@ -1,9 +1,15 @@
 import * as NodeLedger from '../../services/ledger/nodeLedger';
-import { AXfrKeyPair, TransactionBuilder, XPublicKey } from '../../services/ledger/types';
+import {
+  AnonKeys,
+  AXfrKeyPair,
+  AXfrPubKey,
+  TransactionBuilder,
+  XPublicKey,
+} from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
-import { OwnerMemoDataResult } from '../network/types';
+import { OwnedAbar, OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
 import * as TransactionApi from '../transaction/transaction';
 import * as TripleMasking from './tripleMasking';
 
@@ -34,7 +40,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let ownerMemoDataResult: OwnerMemoDataResult;
-    let anonKeys: TripleMasking.AnonKeysResponse;
+    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
 
     let clientAssetRecord: ClientAssetRecordLight;
     let ownerMemo: OwnerMemoLight;
@@ -395,6 +401,78 @@ describe('triple masking (unit test)', () => {
 
       expect(result.transactionBuilder).toBe(transactionBuilder);
       expect(result.barToAbarData).toBe(barToAbarData);
+    });
+  });
+  describe('getOwnedAbars', () => {
+    let nodeLedger: NodeLedger.LedgerForNode;
+    let randomizeAxfrPubkey: string;
+    let axfrPublicKey: AXfrPubKey;
+    let formattedAxfrPublicKey: string;
+    let givenRandomizer: string;
+    let ownedAbars: OwnedAbarsDataResult;
+    let atxoSid: number;
+    let ownedAbar: OwnedAbar;
+
+    let spyGetLedger: jest.SpyInstance;
+    let spyGetAXfrPublicKeyByBase64: jest.SpyInstance;
+    let spyRandomizeAxfrPubkey: jest.SpyInstance;
+    let spyGetOwnedAbars: jest.SpyInstance;
+    beforeEach(() => {
+      formattedAxfrPublicKey = '';
+      givenRandomizer = '';
+      randomizeAxfrPubkey = 'randomize_axfr_pubkey';
+      nodeLedger = {
+        randomize_axfr_pubkey: jest.fn(() => {}),
+      } as unknown as NodeLedger.LedgerForNode;
+      axfrPublicKey = {
+        free: jest.fn(() => {}),
+      };
+      atxoSid = 1;
+      ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+      ownedAbars = {
+        response: [[atxoSid, ownedAbar]],
+      };
+
+      spyGetLedger = jest.spyOn(NodeLedger, 'default');
+      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
+      spyRandomizeAxfrPubkey = jest.spyOn(nodeLedger, 'randomize_axfr_pubkey');
+      spyGetOwnedAbars = jest.spyOn(NetworkApi, 'getOwnedAbars');
+    });
+    it('throw an error if receive error response from get ownedAbars call', async () => {
+      const errorMsg = 'error';
+      ownedAbars.error = new Error(errorMsg);
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+        ownedAbars.error.message,
+      );
+    });
+
+    it('throw an error if not receive response from get ownedAbars call', async () => {
+      ownedAbars.response = undefined;
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+        'Could not receive response from get ownedAbars call',
+      );
+    });
+
+    it('return atxoSid and ownedAbar successfully', async () => {
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('atxoSid', atxoSid);
+      expect(result[0]).toHaveProperty('ownedAbar', ownedAbar);
+      expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
+      expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
+      expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);
     });
   });
 });
