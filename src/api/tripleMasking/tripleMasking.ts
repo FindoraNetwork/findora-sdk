@@ -182,8 +182,6 @@ export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomi
   const axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey);
   const randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
 
-  console.log('randomizedPubKey', randomizedPubKey);
-
   const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(randomizedPubKey);
 
   if (error) {
@@ -194,11 +192,6 @@ export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomi
     throw new Error('Could not receive response from get ownedAbars call');
   }
 
-  console.log(
-    '🚀 ~ file: tripleMasking.ts ~ line 196 ~ getOwnedAbars ~ ownedAbarsResponse',
-    ownedAbarsResponse,
-  );
-
   const result = ownedAbarsResponse.map(ownedAbarItem => {
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
@@ -208,16 +201,5 @@ export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomi
     };
   });
 
-  // const [firstOwnedAbarItem] = ownedAbarsResponse;
-
-  // const [atxoSid, ownedAbar] = firstOwnedAbarItem;
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ atxoSid', atxoSid);
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 203 ~ getOwnedAbars ~ ownedAbar', ownedAbar);
-
   return result;
-  // return {
-  //   AXFRPubKey ,
-  //   Randomiser,
-  //   DerPubkey,
-  // };
 };
