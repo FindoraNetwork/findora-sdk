@@ -69,7 +69,7 @@ var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
-var waitingTimeBeforeCheckTxStatus = 18000;
+var waitingTimeBeforeCheckTxStatus = 19000;
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
@@ -119,7 +119,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '1234';
-                pkey = PKEY_MINE;
+                pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1276,7 +1276,7 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, resultHandle;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1302,12 +1302,25 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 anonKeys = _b.sent();
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
             case 4:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();
                 console.log('send bar to abar result handle!!', resultHandle);
+                formattedAxfrPublicKey = barToAbarData.anonKeysFormatted.axfrPublicKey;
+                givenRandomizer = barToAbarData.randomizers[0];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 6:
+                _b.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 7:
+                _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 8:
+                ownedAbarsResponse = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
                 return [2 /*return*/];
         }
     });

@@ -55,4 +55,26 @@ declare namespace FindoraWallet {
     keypair?: any;
     privateKey?: string;
   }
+
+  interface FormattedAnonKeys {
+    axfrPublicKey: string;
+    axfrSecretKey: string;
+    decKey: string;
+    encKey: string;
+  }
+
+  export interface BarToAbarData {
+    anonKeysFormatted: FormattedAnonKeys;
+    randomizers: string[];
+  }
+  export interface BarToAbarResult<T> {
+    transactionBuilder: T;
+    barToAbarData: BarToAbarData;
+    sid: string;
+  }
+
+  export interface AnonKeysResponse<T> {
+    keysInstance: T;
+    formatted: FormattedAnonKeys;
+  }
 }
