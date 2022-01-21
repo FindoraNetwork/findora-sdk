@@ -1,3 +1,4 @@
+import Cache from '../../services/cacheStore/factory';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
 import {
   AnonKeys,
@@ -484,7 +485,7 @@ describe('triple masking (unit test)', () => {
     let spyGenAnonLeys: jest.SpyInstance;
     beforeEach(() => {
       anonKeys = {
-        free: jest.fn(() => {}),
+        free: jest.fn(() => { }),
         axfr_public_key: 'axfr_public_key',
         axfr_secret_key: 'axfr_secret_key',
         dec_key: 'dec_key',
@@ -517,6 +518,73 @@ describe('triple masking (unit test)', () => {
         decKey: anonKeys.dec_key,
         encKey: anonKeys.enc_key,
       });
+    });
+  });
+
+  describe('saveBarToAbarToCache', () => {
+    let sid: number;
+    let walletInfo: KeypairApi.WalletKeypar;
+    let randomizers: string[];
+    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
+
+    let spyConsoleLog: jest.SpyInstance;
+    let spyCacheRead: jest.SpyInstance;
+    let spyCacheWrite: jest.SpyInstance;
+    beforeEach(() => {
+      sid = 1;
+      walletInfo = {
+        address: 'test_address',
+      } as unknown as KeypairApi.WalletKeypar;
+      randomizers = ['1', '2', '3'];
+      anonKeys = {
+        formatted: {
+          axfrPublicKey: 'axfrPublicKey',
+          axfrSecretKey: 'axfrSecretKey',
+          decKey: 'decKey',
+          encKey: 'encKey',
+        },
+      } as unknown as FindoraWallet.AnonKeysResponse<AnonKeys>;
+      spyConsoleLog = jest.spyOn(console, 'log');
+      spyCacheRead = jest.spyOn(Cache, 'read');
+      spyCacheWrite = jest.spyOn(Cache, 'write');
+    });
+
+    it('return a instance of BarToAbarData and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
+    });
+
+    it('return a instance of BarToAbarData and print `Error reading the abarDataCache for $address`', async () => {
+      const cacheReadError = new Error('cacheRead error');
+      spyCacheRead.mockImplementationOnce(() => Promise.reject(cacheReadError));
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Error reading the abarDataCache for ${walletInfo.address}. Creating an empty object now`,
+      );
+    });
+
+    it('return a instance of BarToAbarData and print `Could not write cache for abarDataCache`', async () => {
+      const cacheWriteError = new Error('cacheWrite error');
+      spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Could not write cache for abarDataCache, "${cacheWriteError.message}"`,
+      );
     });
   });
 });
