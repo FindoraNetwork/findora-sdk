@@ -39,46 +39,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
-var fs_1 = __importDefault(require("fs"));
-var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
-exports.uint8arrayToHexStr = uint8arrayToHexStr;
-var writeFile = function (filePath, cacheData) { return __awaiter(void 0, void 0, void 0, function () {
+exports.runFund = void 0;
+var dotenv_1 = __importDefault(require("dotenv"));
+var api_1 = require("../../api");
+var utils_1 = require("../../services/utils");
+dotenv_1.default.config();
+var _a = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _a === void 0 ? '' : _a;
+var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, password, walletInfo, assetCode, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
-        return [2 /*return*/, new Promise(function (resolve, reject) {
-                fs_1.default.writeFile(filePath, cacheData, 'utf8', function (err) {
-                    if (err) {
-                        reject(err);
-                    }
-                    resolve(true);
-                });
-            })];
+        switch (_a.label) {
+            case 0:
+                pkey = PKEY_LOCAL_FAUCET;
+                password = '123';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 2:
+                assetCode = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, address, amountToFund, assetCode)];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 4:
+                resultHandle = _a.sent();
+                (0, utils_1.log)('send fra result handle', resultHandle);
+                return [2 /*return*/];
+        }
     });
 }); };
-exports.writeFile = writeFile;
-var readFile = function (filePath) {
-    return new Promise(function (resolve, reject) {
-        fs_1.default.readFile(filePath, 'utf8', function (err, data) {
-            if (err) {
-                reject(err);
-            }
-            resolve(data);
-        });
-    });
-};
-exports.readFile = readFile;
-var createCacheDir = function (dirPath) {
-    return fs_1.default.mkdirSync(dirPath, { recursive: true });
-};
-exports.createCacheDir = createCacheDir;
-var now = function () { return new Date().toLocaleString(); };
-exports.now = now;
-var log = function (message) {
-    var rest = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        rest[_i - 1] = arguments[_i];
-    }
-    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
-};
-exports.log = log;
-//# sourceMappingURL=utils.js.map
+exports.runFund = runFund;
+//# sourceMappingURL=fund.js.map

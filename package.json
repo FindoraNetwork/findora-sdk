@@ -52,7 +52,7 @@
     "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js --ignore cache/",
     "cli:build": "tsc",
-    "cli:run": "nodemon dist/cli.js --ignore cache/ \"$npm_config\"",
+    "cli:run": "nodemon dist/cli/cli.js --ignore cache/ \"$npm_config\"",
     "jest-coverage": "yarn run jest -- --coverage",
     "start": "concurrently npm:start:*",
     "cli": "yarn cli:build && yarn cli:run \"$npm_config\"",
@@ -129,6 +129,7 @@
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "util": "^0.12.4",
-    "web3": "^1.5.2"
+    "web3": "^1.5.2",
+    "neat-csv": "^6.0.1"
   }
 }
