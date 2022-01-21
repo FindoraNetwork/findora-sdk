@@ -1,9 +1,16 @@
+import Cache from '../../services/cacheStore/factory';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
-import { AXfrKeyPair, TransactionBuilder, XPublicKey } from '../../services/ledger/types';
+import {
+  AnonKeys,
+  AXfrKeyPair,
+  AXfrPubKey,
+  TransactionBuilder,
+  XPublicKey
+} from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
-import { OwnerMemoDataResult } from '../network/types';
+import { OwnedAbar, OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
 import * as TransactionApi from '../transaction/transaction';
 import * as TripleMasking from './tripleMasking';
 
@@ -34,7 +41,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let ownerMemoDataResult: OwnerMemoDataResult;
-    let anonKeys: TripleMasking.AnonKeysResponse;
+    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
 
     let clientAssetRecord: ClientAssetRecordLight;
     let ownerMemo: OwnerMemoLight;
@@ -395,6 +402,189 @@ describe('triple masking (unit test)', () => {
 
       expect(result.transactionBuilder).toBe(transactionBuilder);
       expect(result.barToAbarData).toBe(barToAbarData);
+    });
+  });
+  describe('getOwnedAbars', () => {
+    let nodeLedger: NodeLedger.LedgerForNode;
+    let randomizeAxfrPubkey: string;
+    let axfrPublicKey: AXfrPubKey;
+    let formattedAxfrPublicKey: string;
+    let givenRandomizer: string;
+    let ownedAbars: OwnedAbarsDataResult;
+    let atxoSid: number;
+    let ownedAbar: OwnedAbar;
+
+    let spyGetLedger: jest.SpyInstance;
+    let spyGetAXfrPublicKeyByBase64: jest.SpyInstance;
+    let spyRandomizeAxfrPubkey: jest.SpyInstance;
+    let spyGetOwnedAbars: jest.SpyInstance;
+    beforeEach(() => {
+      formattedAxfrPublicKey = '';
+      givenRandomizer = '';
+      randomizeAxfrPubkey = 'randomize_axfr_pubkey';
+      nodeLedger = {
+        randomize_axfr_pubkey: jest.fn(() => { }),
+      } as unknown as NodeLedger.LedgerForNode;
+      axfrPublicKey = {
+        free: jest.fn(() => { }),
+      };
+      atxoSid = 1;
+      ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+      ownedAbars = {
+        response: [[atxoSid, ownedAbar]],
+      };
+
+      spyGetLedger = jest.spyOn(NodeLedger, 'default');
+      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
+      spyRandomizeAxfrPubkey = jest.spyOn(nodeLedger, 'randomize_axfr_pubkey');
+      spyGetOwnedAbars = jest.spyOn(NetworkApi, 'getOwnedAbars');
+    });
+    it('throw an error if receive error response from get ownedAbars call', async () => {
+      const errorMsg = 'error';
+      ownedAbars.error = new Error(errorMsg);
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+        ownedAbars.error.message,
+      );
+    });
+
+    it('throw an error if not receive response from get ownedAbars call', async () => {
+      ownedAbars.response = undefined;
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+        'Could not receive response from get ownedAbars call',
+      );
+    });
+
+    it('return atxoSid and ownedAbar successfully', async () => {
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
+      spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
+      spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
+      const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+      expect(result).toHaveLength(1);
+      expect(result[0]).toHaveProperty('atxoSid', atxoSid);
+      expect(result[0]).toHaveProperty('ownedAbar', ownedAbar);
+      expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
+      expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
+      expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);
+    });
+  });
+
+  describe('genAnonKeys', () => {
+    let nodeLedger: NodeLedger.LedgerForNode;
+    let anonKeys: AnonKeys;
+
+    let spyGetLedger: jest.SpyInstance;
+    let spyGenAnonLeys: jest.SpyInstance;
+    beforeEach(() => {
+      anonKeys = {
+        free: jest.fn(() => { }),
+        axfr_public_key: 'axfr_public_key',
+        axfr_secret_key: 'axfr_secret_key',
+        dec_key: 'dec_key',
+        enc_key: 'enc_key',
+      };
+      nodeLedger = {
+        foo: 'node',
+        gen_anon_keys: jest.fn(() => anonKeys),
+      } as unknown as NodeLedger.LedgerForNode;
+
+      spyGetLedger = jest.spyOn(NodeLedger, 'default');
+      spyGenAnonLeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+    });
+
+    it('throw an error if could not get the anonKeys', async () => {
+      const genAnonKeysError = new Error('genAnonKeys error');
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGenAnonLeys.mockImplementationOnce(() => Promise.reject(genAnonKeysError));
+      await expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message);
+    });
+
+    it('creates an instance of a AnonKeys', async () => {
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGenAnonLeys.mockImplementationOnce(() => Promise.resolve(anonKeys));
+      const result = await TripleMasking.genAnonKeys();
+      expect(result.keysInstance).toBe(anonKeys);
+      expect(result.formatted).toMatchObject({
+        axfrPublicKey: anonKeys.axfr_public_key,
+        axfrSecretKey: anonKeys.axfr_secret_key,
+        decKey: anonKeys.dec_key,
+        encKey: anonKeys.enc_key,
+      });
+    });
+  });
+
+  describe('saveBarToAbarToCache', () => {
+    let sid: number;
+    let walletInfo: KeypairApi.WalletKeypar;
+    let randomizers: string[];
+    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
+
+    let spyConsoleLog: jest.SpyInstance;
+    let spyCacheRead: jest.SpyInstance;
+    let spyCacheWrite: jest.SpyInstance;
+    beforeEach(() => {
+      sid = 1;
+      walletInfo = {
+        address: 'test_address',
+      } as unknown as KeypairApi.WalletKeypar;
+      randomizers = ['1', '2', '3'];
+      anonKeys = {
+        formatted: {
+          axfrPublicKey: 'axfrPublicKey',
+          axfrSecretKey: 'axfrSecretKey',
+          decKey: 'decKey',
+          encKey: 'encKey',
+        },
+      } as unknown as FindoraWallet.AnonKeysResponse<AnonKeys>;
+      spyConsoleLog = jest.spyOn(console, 'log');
+      spyCacheRead = jest.spyOn(Cache, 'read');
+      spyCacheWrite = jest.spyOn(Cache, 'write');
+    });
+
+    it('return a instance of BarToAbarData and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
+    });
+
+    it('return a instance of BarToAbarData and print `Error reading the abarDataCache for $address`', async () => {
+      const cacheReadError = new Error('cacheRead error');
+      spyCacheRead.mockImplementationOnce(() => Promise.reject(cacheReadError));
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Error reading the abarDataCache for ${walletInfo.address}. Creating an empty object now`,
+      );
+    });
+
+    it('return a instance of BarToAbarData and print `Could not write cache for abarDataCache`', async () => {
+      const cacheWriteError = new Error('cacheWrite error');
+      spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      expect(result).toMatchObject({
+        anonKeysFormatted: anonKeys.formatted,
+        randomizers,
+      });
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Could not write cache for abarDataCache, "${cacheWriteError.message}"`,
+      );
     });
   });
 });
