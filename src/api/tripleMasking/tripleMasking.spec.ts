@@ -4,7 +4,7 @@ import {
   AXfrKeyPair,
   AXfrPubKey,
   TransactionBuilder,
-  XPublicKey,
+  XPublicKey
 } from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
@@ -422,10 +422,10 @@ describe('triple masking (unit test)', () => {
       givenRandomizer = '';
       randomizeAxfrPubkey = 'randomize_axfr_pubkey';
       nodeLedger = {
-        randomize_axfr_pubkey: jest.fn(() => {}),
+        randomize_axfr_pubkey: jest.fn(() => { }),
       } as unknown as NodeLedger.LedgerForNode;
       axfrPublicKey = {
-        free: jest.fn(() => {}),
+        free: jest.fn(() => { }),
       };
       atxoSid = 1;
       ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
@@ -473,6 +473,50 @@ describe('triple masking (unit test)', () => {
       expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
       expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
       expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);
+    });
+  });
+
+  describe('genAnonKeys', () => {
+    let nodeLedger: NodeLedger.LedgerForNode;
+    let anonKeys: AnonKeys;
+
+    let spyGetLedger: jest.SpyInstance;
+    let spyGenAnonLeys: jest.SpyInstance;
+    beforeEach(() => {
+      anonKeys = {
+        free: jest.fn(() => {}),
+        axfr_public_key: 'axfr_public_key',
+        axfr_secret_key: 'axfr_secret_key',
+        dec_key: 'dec_key',
+        enc_key: 'enc_key',
+      };
+      nodeLedger = {
+        foo: 'node',
+        gen_anon_keys: jest.fn(() => anonKeys),
+      } as unknown as NodeLedger.LedgerForNode;
+
+      spyGetLedger = jest.spyOn(NodeLedger, 'default');
+      spyGenAnonLeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+    });
+
+    it('throw an error if could not get the anonKeys', async () => {
+      const genAnonKeysError = new Error('genAnonKeys error');
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGenAnonLeys.mockImplementationOnce(() => Promise.reject(genAnonKeysError));
+      await expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message);
+    });
+
+    it('creates an instance of a AnonKeys', async () => {
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGenAnonLeys.mockImplementationOnce(() => Promise.resolve(anonKeys));
+      const result = await TripleMasking.genAnonKeys();
+      expect(result.keysInstance).toBe(anonKeys);
+      expect(result.formatted).toMatchObject({
+        axfrPublicKey: anonKeys.axfr_public_key,
+        axfrSecretKey: anonKeys.axfr_secret_key,
+        decKey: anonKeys.dec_key,
+        encKey: anonKeys.enc_key,
+      });
     });
   });
 });
