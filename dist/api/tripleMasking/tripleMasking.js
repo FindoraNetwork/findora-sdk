@@ -273,10 +273,14 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
                 }
                 result = ownedAbarsResponse.map(function (ownedAbarItem) {
                     var atxoSid = ownedAbarItem[0], ownedAbar = ownedAbarItem[1];
-                    return {
-                        atxoSid: atxoSid,
-                        ownedAbar: __assign({}, ownedAbar),
+                    var abar = {
+                        randomizer: givenRandomizer,
+                        abarData: {
+                            atxoSid: atxoSid + '',
+                            ownedAbar: __assign({}, ownedAbar),
+                        },
                     };
+                    return abar;
                 });
                 return [2 /*return*/, result];
         }

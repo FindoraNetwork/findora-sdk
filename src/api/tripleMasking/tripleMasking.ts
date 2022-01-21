@@ -176,7 +176,10 @@ export const barToAbar = async (
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
 };
 
-export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomizer: string) => {
+export const getOwnedAbars = async (
+  formattedAxfrPublicKey: string,
+  givenRandomizer: string,
+): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const ledger = await getLedger();
 
   const axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey);
@@ -195,10 +198,14 @@ export const getOwnedAbars = async (formattedAxfrPublicKey: string, givenRandomi
   const result = ownedAbarsResponse.map(ownedAbarItem => {
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
-    return {
-      atxoSid,
-      ownedAbar: { ...ownedAbar },
+    const abar = {
+      randomizer: givenRandomizer,
+      abarData: {
+        atxoSid: atxoSid + '',
+        ownedAbar: { ...ownedAbar },
+      },
     };
+    return abar;
   });
 
   return result;

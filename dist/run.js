@@ -75,9 +75,9 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
-    hostUrl: 'https://prod-testnet.prod.findora.org',
+    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     cacheProvider: providers_1.FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
@@ -118,7 +118,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                password = '1234';
+                password = '12345';
                 pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
@@ -1326,8 +1326,8 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 // getAnonKeys();
-// barToAbar();
-getFraBalance();
+barToAbar();
+// getFraBalance();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();

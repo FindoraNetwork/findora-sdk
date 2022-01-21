@@ -60,14 +60,9 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
   response?: UtxoResponse;
 }
 
-export interface OwnedAbar {
-  amount_type_commitment: string;
-  public_key: string;
-}
+export type OwnedResponseAbarItem = [number, FindoraWallet.OwnedAbar];
 
-export type OwnedAbarItem = [number, OwnedAbar];
-
-export type OwnedAbarsResponse = OwnedAbarItem[];
+export type OwnedAbarsResponse = OwnedResponseAbarItem[];
 
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
   response?: OwnedAbarsResponse;
