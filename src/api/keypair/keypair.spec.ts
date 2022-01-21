@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import { XfrKeyPair } from '../../services/ledger/types';
+import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 import {
   createKeypair,
   getAddress,
@@ -8,7 +8,9 @@ import {
   getAXfrPublicKeyByBase64,
   getMnemonic,
   getPrivateKeyStr,
+  getPublicKeyByXfr,
   getPublicKeyStr,
+  getXfrPublicKeyByBase64,
   getXPublicKeyByBase64,
   restoreFromPrivateKey,
 } from './keypair';
@@ -181,10 +183,40 @@ describe('keypair (unit test)', () => {
 
     it('get XPublicKey by base64 public key', async () => {
       const kp = await createKeypair('123');
-      // const result = await getXPublicKeyByBase64('U4One4jJ9Lo0vyWG-0sZSRS2Pzuyt4hMLyrBjSb9yh0=');
       const result = await getXPublicKeyByBase64(kp.publickey);
       expect(result).toHaveProperty('free');
       expect(typeof result.free).toBe('function');
+    });
+  });
+
+  describe('getXfrPublicKeyByBase64', () => {
+    it('throws an error if not a valid public key is given', async () => {
+      await expect(getXfrPublicKeyByBase64('aa')).rejects.toThrowError(
+        `could not get xfr public key by base64, "`,
+      );
+    });
+
+    it('get XfrPublicKey by base64', async () => {
+      const kp = await createKeypair('123');
+      const result = await getXfrPublicKeyByBase64(kp.publickey);
+      expect(result).toHaveProperty('free');
+      expect(typeof result.free).toBe('function');
+    });
+  });
+
+  describe('getPublicKeyByXfr', () => {
+    it('throws an error if not a valid public key is given', async () => {
+      const toPublickey = 'mockedToPublickey' as unknown as XfrPublicKey;
+      await expect(getPublicKeyByXfr(toPublickey)).rejects.toThrowError(
+        `could not get base64 public key by xfr, "`,
+      );
+    });
+
+    it('get publicKey by xfr', async () => {
+      const kp = await createKeypair('123');
+      const toPublickey = await getXfrPublicKeyByBase64(kp.publickey);
+      const result = await getPublicKeyByXfr(toPublickey);
+      expect(typeof result).toBe('string');
     });
   });
 });
