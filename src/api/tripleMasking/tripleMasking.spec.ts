@@ -597,4 +597,57 @@ describe('triple masking (unit test)', () => {
       );
     });
   });
+
+  describe('saveOwnedAbarsToCache', () => {
+    let walletInfo: KeypairApi.WalletKeypar;
+
+    let spyConsoleLog: jest.SpyInstance;
+    let spyCacheRead: jest.SpyInstance;
+    let spyCacheWrite: jest.SpyInstance;
+    let ownedAbars: FindoraWallet.OwnedAbarItem[];
+
+    let atxoSid: number;
+    let ownedAbar: FindoraWallet.OwnedAbar;
+    let givenRandomizer: string;
+
+    beforeEach(() => {
+      walletInfo = {
+        address: 'test_address',
+      } as unknown as KeypairApi.WalletKeypar;
+
+      atxoSid = 1;
+      ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+
+      ownedAbars = [
+        {
+          randomizer: givenRandomizer,
+          abarData: {
+            atxoSid: atxoSid + '',
+            ownedAbar: { ...ownedAbar },
+          },
+        },
+      ];
+      spyConsoleLog = jest.spyOn(console, 'log');
+      spyCacheRead = jest.spyOn(Cache, 'read');
+      spyCacheWrite = jest.spyOn(Cache, 'write');
+    });
+
+    it('return true and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
+      const result = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars);
+      expect(result).toBe(true);
+
+      expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
+    });
+
+    it('return false and print `Could not write cache for ownedAbarsCache`', async () => {
+      const cacheWriteError = new Error('cacheWrite error');
+      spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
+      const result = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars);
+      expect(result).toBe(false);
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Could not write cache for ownedAbarsCache, "${cacheWriteError.message}"`,
+      );
+    });
+  });
 });

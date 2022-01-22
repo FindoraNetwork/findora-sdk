@@ -36,15 +36,7 @@ export const genAnonKeys = async (): Promise<FindoraWallet.AnonKeysResponse<Anon
   }
 };
 
-export const saveBarToAbarToCache = async (
-  walletInfo: Keypair.WalletKeypar,
-  sid: number,
-  randomizers: string[],
-  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
-): Promise<FindoraWallet.BarToAbarData> => {
-  const cacheEntryName = `${CACHE_ENTRIES.BAR_TO_ABAR}_${walletInfo.address}`;
-  const cacheDataToSave: CacheItem = {};
-
+const resolvePathToCacheEntry = (cacheEntryName: string) => {
   let fullPathToCacheEntry = `${Sdk.environment.cachePath}/${cacheEntryName}.json`;
 
   try {
@@ -54,6 +46,21 @@ export const saveBarToAbarToCache = async (
   } catch (error) {
     console.log('for browser mode a default fullPathToCacheEntry was used');
   }
+
+  return fullPathToCacheEntry;
+};
+
+export const saveBarToAbarToCache = async (
+  walletInfo: Keypair.WalletKeypar,
+  sid: number,
+  randomizers: string[],
+  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
+): Promise<FindoraWallet.BarToAbarData> => {
+  const cacheDataToSave: CacheItem = {};
+
+  const cacheEntryName = `${CACHE_ENTRIES.BAR_TO_ABAR}_${walletInfo.address}`;
+
+  const fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
 
   let abarDataCache = {};
 
@@ -82,6 +89,28 @@ export const saveBarToAbarToCache = async (
   }
 
   return barToAbarData;
+};
+
+export const saveOwnedAbarsToCache = async (
+  walletInfo: Keypair.WalletKeypar,
+  ownedAbars: FindoraWallet.OwnedAbarItem[],
+  savePath?: string,
+): Promise<boolean> => {
+  const cacheEntryName = `${CACHE_ENTRIES.OWNED_ABARS}_${walletInfo.address}`;
+
+  const fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
+
+  const resolvedFullPathToCacheEntry = savePath || fullPathToCacheEntry;
+
+  try {
+    await Cache.write(resolvedFullPathToCacheEntry, ownedAbars, Sdk.environment.cacheProvider);
+  } catch (error) {
+    const err: Error = error as Error;
+    console.log(`Could not write cache for ownedAbarsCache, "${err.message}"`);
+    return false;
+  }
+
+  return true;
 };
 
 export const barToAbar = async (
