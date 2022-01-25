@@ -5,5 +5,6 @@ exports.CACHE_ENTRIES = void 0;
 exports.CACHE_ENTRIES = {
     UTXO_DATA: 'utxoDataCache',
     BAR_TO_ABAR: 'barToAbarCache',
+    OWNED_ABARS: 'ownedAbarsCache',
 };
 //# sourceMappingURL=cache.js.map

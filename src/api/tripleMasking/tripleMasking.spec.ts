@@ -5,12 +5,12 @@ import {
   AXfrKeyPair,
   AXfrPubKey,
   TransactionBuilder,
-  XPublicKey
+  XPublicKey,
 } from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
-import { OwnedAbar, OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
+import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
 import * as TransactionApi from '../transaction/transaction';
 import * as TripleMasking from './tripleMasking';
 
@@ -412,7 +412,8 @@ describe('triple masking (unit test)', () => {
     let givenRandomizer: string;
     let ownedAbars: OwnedAbarsDataResult;
     let atxoSid: number;
-    let ownedAbar: OwnedAbar;
+    let ownedAbar: FindoraWallet.OwnedAbar;
+    let abarData: FindoraWallet.OwnedAbarData;
 
     let spyGetLedger: jest.SpyInstance;
     let spyGetAXfrPublicKeyByBase64: jest.SpyInstance;
@@ -423,13 +424,19 @@ describe('triple masking (unit test)', () => {
       givenRandomizer = '';
       randomizeAxfrPubkey = 'randomize_axfr_pubkey';
       nodeLedger = {
-        randomize_axfr_pubkey: jest.fn(() => { }),
+        randomize_axfr_pubkey: jest.fn(() => {}),
       } as unknown as NodeLedger.LedgerForNode;
       axfrPublicKey = {
-        free: jest.fn(() => { }),
+        free: jest.fn(() => {}),
       };
       atxoSid = 1;
       ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+
+      abarData = {
+        atxoSid: atxoSid + '',
+        ownedAbar,
+      };
+
       ownedAbars = {
         response: [[atxoSid, ownedAbar]],
       };
@@ -469,8 +476,11 @@ describe('triple masking (unit test)', () => {
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
       const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
       expect(result).toHaveLength(1);
-      expect(result[0]).toHaveProperty('atxoSid', atxoSid);
-      expect(result[0]).toHaveProperty('ownedAbar', ownedAbar);
+      const [abar] = result;
+      expect(abar).toHaveProperty('randomizer', givenRandomizer);
+      expect(abar).toHaveProperty('abarData', abarData);
+      expect(abar.abarData).toHaveProperty('atxoSid', `${atxoSid}`);
+      expect(abar.abarData).toHaveProperty('ownedAbar', ownedAbar);
       expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
       expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
       expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);
@@ -485,7 +495,7 @@ describe('triple masking (unit test)', () => {
     let spyGenAnonLeys: jest.SpyInstance;
     beforeEach(() => {
       anonKeys = {
-        free: jest.fn(() => { }),
+        free: jest.fn(() => {}),
         axfr_public_key: 'axfr_public_key',
         axfr_secret_key: 'axfr_secret_key',
         dec_key: 'dec_key',
@@ -584,6 +594,59 @@ describe('triple masking (unit test)', () => {
 
       expect(spyConsoleLog).toHaveBeenCalledWith(
         `Could not write cache for abarDataCache, "${cacheWriteError.message}"`,
+      );
+    });
+  });
+
+  describe('saveOwnedAbarsToCache', () => {
+    let walletInfo: KeypairApi.WalletKeypar;
+
+    let spyConsoleLog: jest.SpyInstance;
+    let spyCacheRead: jest.SpyInstance;
+    let spyCacheWrite: jest.SpyInstance;
+    let ownedAbars: FindoraWallet.OwnedAbarItem[];
+
+    let atxoSid: number;
+    let ownedAbar: FindoraWallet.OwnedAbar;
+    let givenRandomizer: string;
+
+    beforeEach(() => {
+      walletInfo = {
+        address: 'test_address',
+      } as unknown as KeypairApi.WalletKeypar;
+
+      atxoSid = 1;
+      ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+
+      ownedAbars = [
+        {
+          randomizer: givenRandomizer,
+          abarData: {
+            atxoSid: atxoSid + '',
+            ownedAbar: { ...ownedAbar },
+          },
+        },
+      ];
+      spyConsoleLog = jest.spyOn(console, 'log');
+      spyCacheRead = jest.spyOn(Cache, 'read');
+      spyCacheWrite = jest.spyOn(Cache, 'write');
+    });
+
+    it('return true and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
+      const result = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars);
+      expect(result).toBe(true);
+
+      expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
+    });
+
+    it('return false and print `Could not write cache for ownedAbarsCache`', async () => {
+      const cacheWriteError = new Error('cacheWrite error');
+      spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
+      const result = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars);
+      expect(result).toBe(false);
+
+      expect(spyConsoleLog).toHaveBeenCalledWith(
+        `Could not write cache for ownedAbarsCache, "${cacheWriteError.message}"`,
       );
     });
   });

@@ -492,6 +492,7 @@ describe('triple masking (unit test)', function () {
         var ownedAbars;
         var atxoSid;
         var ownedAbar;
+        var abarData;
         var spyGetLedger;
         var spyGetAXfrPublicKeyByBase64;
         var spyRandomizeAxfrPubkey;
@@ -508,6 +509,10 @@ describe('triple masking (unit test)', function () {
             };
             atxoSid = 1;
             ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+            abarData = {
+                atxoSid: atxoSid + '',
+                ownedAbar: ownedAbar,
+            };
             ownedAbars = {
                 response: [[atxoSid, ownedAbar]],
             };
@@ -541,7 +546,7 @@ describe('triple masking (unit test)', function () {
             });
         }); });
         it('return atxoSid and ownedAbar successfully', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
+            var result, abar;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -553,8 +558,11 @@ describe('triple masking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(result).toHaveLength(1);
-                        expect(result[0]).toHaveProperty('atxoSid', atxoSid);
-                        expect(result[0]).toHaveProperty('ownedAbar', ownedAbar);
+                        abar = result[0];
+                        expect(abar).toHaveProperty('randomizer', givenRandomizer);
+                        expect(abar).toHaveProperty('abarData', abarData);
+                        expect(abar.abarData).toHaveProperty('atxoSid', "" + atxoSid);
+                        expect(abar.abarData).toHaveProperty('ownedAbar', ownedAbar);
                         expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
                         expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
                         expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);

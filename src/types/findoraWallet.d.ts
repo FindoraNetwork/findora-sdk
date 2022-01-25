@@ -77,4 +77,18 @@ declare namespace FindoraWallet {
     keysInstance: T;
     formatted: FormattedAnonKeys;
   }
+
+  export interface OwnedAbar {
+    amount_type_commitment: string;
+    public_key: string;
+  }
+
+  export interface OwnedAbarData {
+    atxoSid: string;
+    ownedAbar: OwnedAbar;
+  }
+  export interface OwnedAbarItem {
+    randomizer: string;
+    abarData: OwnedAbarData;
+  }
 }

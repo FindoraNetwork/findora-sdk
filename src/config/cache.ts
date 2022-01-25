@@ -2,4 +2,5 @@
 export const CACHE_ENTRIES = {
   UTXO_DATA: 'utxoDataCache',
   BAR_TO_ABAR: 'barToAbarCache',
+  OWNED_ABARS: 'ownedAbarsCache',
 };

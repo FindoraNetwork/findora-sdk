@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOwnedAbars = exports.barToAbar = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getOwnedAbars = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
@@ -113,22 +113,26 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.genAnonKeys = genAnonKeys;
+var resolvePathToCacheEntry = function (cacheEntryName) {
+    var fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
+    try {
+        if (window && (window === null || window === void 0 ? void 0 : window.document)) {
+            fullPathToCacheEntry = cacheEntryName;
+        }
+    }
+    catch (error) {
+        console.log('for browser mode a default fullPathToCacheEntry was used');
+    }
+    return fullPathToCacheEntry;
+};
 var saveBarToAbarToCache = function (walletInfo, sid, randomizers, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var cacheEntryName, cacheDataToSave, fullPathToCacheEntry, abarDataCache, error_1, barToAbarData, error_2, err;
+    var cacheDataToSave, cacheEntryName, fullPathToCacheEntry, abarDataCache, error_1, barToAbarData, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                cacheEntryName = cache_1.CACHE_ENTRIES.BAR_TO_ABAR + "_" + walletInfo.address;
                 cacheDataToSave = {};
-                fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
-                try {
-                    if (window && (window === null || window === void 0 ? void 0 : window.document)) {
-                        fullPathToCacheEntry = cacheEntryName;
-                    }
-                }
-                catch (error) {
-                    console.log('for browser mode a default fullPathToCacheEntry was used');
-                }
+                cacheEntryName = cache_1.CACHE_ENTRIES.BAR_TO_ABAR + "_" + walletInfo.address;
+                fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
                 abarDataCache = {};
                 _a.label = 1;
             case 1:
@@ -164,8 +168,33 @@ var saveBarToAbarToCache = function (walletInfo, sid, randomizers, anonKeys) { r
     });
 }); };
 exports.saveBarToAbarToCache = saveBarToAbarToCache;
+var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return __awaiter(void 0, void 0, void 0, function () {
+    var cacheEntryName, fullPathToCacheEntry, resolvedFullPathToCacheEntry, error_3, err;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                cacheEntryName = cache_1.CACHE_ENTRIES.OWNED_ABARS + "_" + walletInfo.address;
+                fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
+                resolvedFullPathToCacheEntry = savePath || fullPathToCacheEntry;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, factory_1.default.write(resolvedFullPathToCacheEntry, ownedAbars, Sdk_1.default.environment.cacheProvider)];
+            case 2:
+                _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                error_3 = _a.sent();
+                err = error_3;
+                console.log("Could not write cache for ownedAbarsCache, \"" + err.message + "\"");
+                return [2 /*return*/, false];
+            case 4: return [2 /*return*/, true];
+        }
+    });
+}); };
+exports.saveOwnedAbarsToCache = saveOwnedAbarsToCache;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_3, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_4, randomizers, barToAbarData, error_5;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_4, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_5, randomizers, barToAbarData, error_6;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -185,7 +214,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 item = utxoItem;
                 return [3 /*break*/, 6];
             case 5:
-                error_3 = _b.sent();
+                error_4 = _b.sent();
                 throw new Error("could not fetch utxo for sid " + sid);
             case 6: return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 7:
@@ -212,8 +241,8 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 encKey = _b.sent();
                 return [3 /*break*/, 12];
             case 11:
-                error_4 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_4.message);
+                error_5 = _b.sent();
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_5.message);
             case 12:
                 try {
                     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), encKey);
@@ -244,8 +273,8 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 barToAbarData = _b.sent();
                 return [3 /*break*/, 16];
             case 15:
-                error_5 = _b.sent();
-                throw new Error("Could not save cache for bar to abar. Details: " + error_5.message);
+                error_6 = _b.sent();
+                throw new Error("Could not save cache for bar to abar. Details: " + error_6.message);
             case 16: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });
@@ -273,10 +302,14 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
                 }
                 result = ownedAbarsResponse.map(function (ownedAbarItem) {
                     var atxoSid = ownedAbarItem[0], ownedAbar = ownedAbarItem[1];
-                    return {
-                        atxoSid: atxoSid,
-                        ownedAbar: __assign({}, ownedAbar),
+                    var abar = {
+                        randomizer: givenRandomizer,
+                        abarData: {
+                            atxoSid: atxoSid + '',
+                            ownedAbar: __assign({}, ownedAbar),
+                        },
                     };
+                    return abar;
                 });
                 return [2 /*return*/, result];
         }

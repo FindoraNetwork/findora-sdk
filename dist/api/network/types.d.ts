@@ -48,12 +48,8 @@ export declare type UtxoResponse = {
 export interface UtxoDataResult extends NetworkAxiosDataResult {
     response?: UtxoResponse;
 }
-export interface OwnedAbar {
-    amount_type_commitment: string;
-    public_key: string;
-}
-export declare type OwnedAbarItem = [number, OwnedAbar];
-export declare type OwnedAbarsResponse = OwnedAbarItem[];
+export declare type OwnedResponseAbarItem = [number, FindoraWallet.OwnedAbar];
+export declare type OwnedAbarsResponse = OwnedResponseAbarItem[];
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
     response?: OwnedAbarsResponse;
 }
