@@ -56,8 +56,7 @@ var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-prov
 var web3_1 = __importDefault(require("web3"));
 var testHelpers_1 = require("../../evm/testHelpers");
 var utils_1 = require("../../services/utils");
-var RPC_ENV_NAME = 'mocknet';
-var envConfigFile = "../../../.env_rpc_" + RPC_ENV_NAME;
+var envConfigFile = "../../../.env_erc_distribution";
 var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;

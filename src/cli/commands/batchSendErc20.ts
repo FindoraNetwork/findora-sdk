@@ -4,9 +4,7 @@ import Web3 from 'web3';
 import { getPayloadWithGas, timeLog } from '../../evm/testHelpers';
 import { log, now, readFile, writeFile } from '../../services/utils';
 
-const RPC_ENV_NAME = 'mocknet';
-
-const envConfigFile = `../../../.env_rpc_${RPC_ENV_NAME}`;
+const envConfigFile = `../../../.env_erc_distribution`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
