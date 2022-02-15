@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -704,6 +715,64 @@ describe('triple masking (unit test)', function () {
                             randomizers: randomizers,
                         });
                         expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for abarDataCache, \"" + cacheWriteError.message + "\"");
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('saveOwnedAbarsToCache', function () {
+        var walletInfo;
+        var spyConsoleLog;
+        var spyCacheRead;
+        var spyCacheWrite;
+        var ownedAbars;
+        var atxoSid;
+        var ownedAbar;
+        var givenRandomizer;
+        beforeEach(function () {
+            walletInfo = {
+                address: 'test_address',
+            };
+            atxoSid = 1;
+            ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+            ownedAbars = [
+                {
+                    randomizer: givenRandomizer,
+                    abarData: {
+                        atxoSid: atxoSid + '',
+                        ownedAbar: __assign({}, ownedAbar),
+                    },
+                },
+            ];
+            spyConsoleLog = jest.spyOn(console, 'log');
+            spyCacheRead = jest.spyOn(factory_1.default, 'read');
+            spyCacheWrite = jest.spyOn(factory_1.default, 'write');
+        });
+        it('return true and print `for browser mode a default fullPathToCacheEntry was used`', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('return false and print `Could not write cache for ownedAbarsCache`', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var cacheWriteError, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        cacheWriteError = new Error('cacheWrite error');
+                        spyCacheWrite.mockImplementationOnce(function () { return Promise.reject(cacheWriteError); });
+                        return [4 /*yield*/, TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbars)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(false);
+                        expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for ownedAbarsCache, \"" + cacheWriteError.message + "\"");
                         return [2 /*return*/];
                 }
             });
