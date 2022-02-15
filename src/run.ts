@@ -79,8 +79,8 @@ const getFraBalance = async () => {
   // const pkey = PKEY_MINE;
   // const pkey = PKEY_MINE3;
 
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');
@@ -1225,9 +1225,84 @@ const barToAbar = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
 };
 
-// getAnonKeys();
-barToAbar();
+export const ff = async (ownedAbarItem: FindoraWallet.OwnedAbarItem) => {
+  const { randomizer, abarData } = ownedAbarItem;
+
+  const { atxoSid, ownedAbar } = abarData;
+};
+
+const validateUnspent = async () => {
+  const givenRandomizer = 'CET85ePaJJxWBJmnvx3nLZ4t9eQkp8Upo1txNGPtmBM4';
+
+  const formattedAxfrPublicKey = 'lo0FgemRDMhZh-hgBsYGpkc44uZ6P9XxnuXYGgLapM8=';
+  const axfrSecretKey =
+    'TM0Z6vWOCxuxsJXo7Ar_pQaB0uHNojYie3r9ed4rpwaWjQWB6ZEMyFmH6GAGxgamRzji5no_1fGe5dgaAtqkzw==';
+
+  const decKey = '8NaSJETAwrffIQ7hAL1I4wBDY94hCR13bdH9SjM7Z3Q=';
+
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
+    JSON.stringify(ownedAbarsResponse, null, 2),
+  );
+
+  const [ownedAbarItem] = ownedAbarsResponse;
+
+  const { abarData } = ownedAbarItem;
+
+  const { atxoSid, ownedAbar } = abarData;
+
+  const hash = await TripleMasking.genNullifierHash(
+    parseInt(atxoSid),
+    ownedAbar,
+    axfrSecretKey,
+    decKey,
+    givenRandomizer,
+  );
+  console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+  // ownedAbarsResponse.map(ownedAbarItem => ff(ownedAbarItem));
+  // const atxoSid = 2;
+
+  // const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+
+  // // 1
+  // const { response: abarOwnerMemo } = abarOwnerMemoResult;
+
+  // // ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+
+  // console.log('🚀 ~ file: run.ts ~ line 1232 ~ validateUnspent ~ abarOwnerMemo', abarOwnerMemo);
+
+  // const savedKeyPair = {
+  //   axfrPublicKey: 'AIoo9i4g1NeKb_GTp8tCydq-pd6FQBWYYryZMhvfhuw=',
+  //   axfrSecretKey: 'OeCkOQ6dZkWRfHmDkNM0pK_MyfrtE354i-RAPmS1AgYAiij2LiDU14pv8ZOny0LJ2r6l3oVAFZhivJkyG9-G7A==',
+  //   decKey: 'qLxtBbi8clwER5HVCgCa9mnDbO2UjL4AkUSrzV5VJmk=',
+  //   encKey: 'DMhwqAI9ZXmJkDbAe6RcMMa1c44KkJW4GhUXR5NhX0Q=',
+  // };
+
+  // const randomizer = 'EAGvtWZzj93jnExhd7e75YwKp1ZdAt5SakuPj3mff3G5';
+
+  // // 2
+  // const aXfrKeyPair = await Keypair.getAXfrKeyPair(savedKeyPair.axfrSecretKey);
+
+  // console.log('🚀 ~ file: run.ts ~ line 1242 ~ validateUnspent ~ aXfrKeyPair', aXfrKeyPair);
+
+  // // 3
+  // const randomizeAxfrKeypair = await Keypair.getRandomizeAxfrKeypair(aXfrKeyPair, randomizer);
+
+  // console.log('🚀 ~ file: run.ts ~ line 1253 ~ validateUnspent ~ randomizeAxfrKeypair', randomizeAxfrKeypair);
+
+  // // 4
+  // const decKey = savedKeyPair.decKey;
+
+  // // 5
+  // const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
+  // console.log('🚀 ~ file: run.ts ~ line 1263 ~ validateUnspent ~ mTLeafInfoResult', mTLeafInfoResult);
+};
+
 // getFraBalance();
+// getAnonKeys();
+// barToAbar();
+validateUnspent();
 // getCustomAssetBalance();
 // defineCustomAsset();
 // issueCustomAsset();

@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOwnedAbars = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.genNullifierHash = exports.getOwnedAbars = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
@@ -316,4 +316,71 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
     });
 }); };
 exports.getOwnedAbars = getOwnedAbars;
+var genNullifierHash = function (atxoSid, ownedAbar, axfrSecretKey, decKey, randomizer) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, aXfrKeyPair, randomizeAxfrKeypairString, randomizeAxfrKeypair, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, secretDecKey, myMTLeafInfo, myOwnedAbar, hash;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
+            case 2:
+                abarOwnerMemoResult = _a.sent();
+                myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
+                if (memoError) {
+                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
+                }
+                try {
+                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+                }
+                catch (error) {
+                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
+                }
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 287 ~ will call getAXfrKeyPair with axfrSecretKey ', axfrSecretKey);
+                return [4 /*yield*/, Keypair.getAXfrKeyPair(axfrSecretKey)];
+            case 3:
+                aXfrKeyPair = _a.sent();
+                return [4 /*yield*/, Keypair.getRandomizeAxfrKeypair(aXfrKeyPair, randomizer)];
+            case 4:
+                randomizeAxfrKeypairString = _a.sent();
+                return [4 /*yield*/, Keypair.getAXfrKeyPair(randomizeAxfrKeypairString)];
+            case 5:
+                randomizeAxfrKeypair = _a.sent();
+                return [4 /*yield*/, Network.getMTLeafInfo(atxoSid)];
+            case 6:
+                mTLeafInfoResult = _a.sent();
+                mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
+                if (mTLeafInfoError) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
+                }
+                if (!mTLeafInfo) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
+                }
+                secretDecKey = ledger.x_secretkey_from_string(decKey);
+                try {
+                    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
+                }
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 314 ~ myMTLeafInfo', myMTLeafInfo);
+                try {
+                    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error.message);
+                }
+                console.log('!!!before call gen_nullifier_hash  myOwnedAbar', myOwnedAbar);
+                console.log('!!!before call gen_nullifier_hash  abarOwnerMemo', abarOwnerMemo);
+                console.log('!!!before call gen_nullifier_hash  aXfrKeyPair', aXfrKeyPair);
+                console.log('!!!before call gen_nullifier_hash  randomizeAxfrKeypair', randomizeAxfrKeypair);
+                console.log('!!!before call gen_nullifier_hash  secretDecKey', secretDecKey);
+                console.log('!!!before call gen_nullifier_hash  myMTLeafInfo', myMTLeafInfo);
+                hash = ledger.gen_nullifier_hash(myOwnedAbar, abarOwnerMemo, aXfrKeyPair, randomizeAxfrKeypair, secretDecKey, myMTLeafInfo);
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 311 ~ hash', hash);
+                return [2 /*return*/, hash];
+        }
+    });
+}); };
+exports.genNullifierHash = genNullifierHash;
 //# sourceMappingURL=tripleMasking.js.map

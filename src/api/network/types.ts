@@ -42,6 +42,26 @@ export interface OwnerMemoDataResult extends NetworkAxiosDataResult {
   response?: OwnedMemoResponse;
 }
 
+export type MTleafNode = {
+  siblings1: string;
+  siblings2: string;
+  is_left_child: number;
+  is_right_child: number;
+};
+
+export type MTLeafInfoResponse = {
+  uid: string;
+  root_version: string;
+  root: string;
+  path: {
+    nodes: MTleafNode[];
+  };
+};
+
+export interface MTLeafInfoDataResult extends NetworkAxiosDataResult {
+  response?: MTLeafInfoResponse;
+}
+
 export interface LedgerUtxo {
   id?: number | null | undefined;
   record: any;

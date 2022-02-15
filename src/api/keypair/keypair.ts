@@ -1,5 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AXfrPubKey, XfrKeyPair, XfrPublicKey, XPublicKey } from '../../services/ledger/types';
+import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey, XPublicKey } from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -146,6 +146,28 @@ export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrP
     return toPublickey;
   } catch (err) {
     throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
+  }
+};
+
+export const getAXfrKeyPair = async (savedKeyPair: string): Promise<AXfrKeyPair> => {
+  const ledger = await getLedger();
+  try {
+    const aXfrKeyPair = ledger.axfr_keypair_from_string(savedKeyPair);
+    return aXfrKeyPair;
+  } catch (err) {
+    throw new Error(`could not get AXfrKeyPair from the string, "${err}" `);
+  }
+};
+export const getRandomizeAxfrKeypair = async (
+  aXfrKeyPair: AXfrKeyPair,
+  randomizer: string,
+): Promise<string> => {
+  const ledger = await getLedger();
+  try {
+    const randomizedAXfrKeyPair = ledger.randomize_axfr_keypair(aXfrKeyPair, randomizer);
+    return randomizedAXfrKeyPair;
+  } catch (err) {
+    throw new Error(`could not get randomized string from the AXfrKeyPair, "${err}" `);
   }
 };
 

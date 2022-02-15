@@ -3,7 +3,16 @@ import Sdk from '../../Sdk';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AnonKeys, TransactionBuilder } from '../../services/ledger/types';
+import {
+  AnonBlindAssetRecord,
+  AnonKeys,
+  AXfrKeyPair,
+  AXfrPubKey,
+  TransactionBuilder,
+  XfrKeyPair,
+  XfrPublicKey,
+  XPublicKey,
+} from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
@@ -176,6 +185,12 @@ export const barToAbar = async (
     throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
   }
 
+  // try {
+  //   transactionBuilder = transactionBuilder.add_fee_relative_auto(walletInfo.keypair);
+  // } catch (error) {
+  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  // }
+
   let randomizers: { randomizers: string[] };
 
   try {
@@ -238,4 +253,97 @@ export const getOwnedAbars = async (
   });
 
   return result;
+};
+
+export const genNullifierHash = async (
+  atxoSid: number,
+  ownedAbar: FindoraWallet.OwnedAbar,
+
+  axfrSecretKey: string,
+  decKey: string,
+  randomizer: string,
+) => {
+  const ledger = await getLedger();
+
+  const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+
+  const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+  }
+
+  // 1
+  let abarOwnerMemo;
+
+  try {
+    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+  } catch (error) {
+    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+  }
+
+  console.log(
+    '🚀 ~ file: tripleMasking.ts ~ line 287 ~ will call getAXfrKeyPair with axfrSecretKey ',
+    axfrSecretKey,
+  );
+  // 2
+  const aXfrKeyPair = await Keypair.getAXfrKeyPair(axfrSecretKey);
+
+  // 3
+  const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(aXfrKeyPair, randomizer);
+  const randomizeAxfrKeypair = await Keypair.getAXfrKeyPair(randomizeAxfrKeypairString);
+
+  // 5
+  const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
+
+  const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
+
+  if (mTLeafInfoError) {
+    throw new Error(
+      `Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - ${mTLeafInfoError.message}`,
+    );
+  }
+
+  if (!mTLeafInfo) {
+    throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
+  }
+
+  // 4
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
+
+  let myMTLeafInfo;
+
+  try {
+    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+  } catch (error) {
+    throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
+  }
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 314 ~ myMTLeafInfo', myMTLeafInfo);
+
+  let myOwnedAbar;
+
+  try {
+    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+  } catch (error) {
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+  }
+
+  console.log('!!!before call gen_nullifier_hash  myOwnedAbar', myOwnedAbar);
+  console.log('!!!before call gen_nullifier_hash  abarOwnerMemo', abarOwnerMemo);
+  console.log('!!!before call gen_nullifier_hash  aXfrKeyPair', aXfrKeyPair);
+  console.log('!!!before call gen_nullifier_hash  randomizeAxfrKeypair', randomizeAxfrKeypair);
+  console.log('!!!before call gen_nullifier_hash  secretDecKey', secretDecKey);
+  console.log('!!!before call gen_nullifier_hash  myMTLeafInfo', myMTLeafInfo);
+
+  const hash = ledger.gen_nullifier_hash(
+    myOwnedAbar,
+    abarOwnerMemo,
+    aXfrKeyPair,
+    randomizeAxfrKeypair,
+    secretDecKey,
+    myMTLeafInfo,
+  );
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 311 ~ hash', hash);
+
+  return hash;
 };
