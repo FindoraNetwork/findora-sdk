@@ -8,7 +8,7 @@ import * as CliCommands from './commands';
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',

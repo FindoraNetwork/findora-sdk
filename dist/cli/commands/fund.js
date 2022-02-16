@@ -44,7 +44,7 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
 dotenv_1.default.config();
-var _a = process.env.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _a === void 0 ? '' : _a;
+var _a = process.env, _b = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _b === void 0 ? '' : _b, _c = _a.ENG_PKEY, ENG_PKEY = _c === void 0 ? '' : _c;
 var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, assetCode, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
