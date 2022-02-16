@@ -168,6 +168,28 @@ export const getOwnerMemo = async (
   return dataResult;
 };
 
+export const getAbarOwnerMemo = async (
+  atxoSid: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnerMemoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_memo/${atxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getMTLeafInfo = async (
+  atxoSid: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.MTLeafInfoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_proof/${atxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
 /**
  * Returns state commitment
  *
@@ -417,6 +439,17 @@ export const getOwnedAbars = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnedAbarsDataResult> => {
   const url = `${getQueryRoute()}/owned_abars/${randomizedPubKey}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const checkNullifierHashSpent = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.CheckNullifierHashSpentDataResult> => {
+  const url = `${getQueryRoute()}/check_nullifier_hash/${hash}`;
 
   const dataResult = await apiGet(url, config);
 

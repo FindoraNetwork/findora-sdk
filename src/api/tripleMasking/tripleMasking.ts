@@ -3,7 +3,16 @@ import Sdk from '../../Sdk';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AnonKeys, TransactionBuilder } from '../../services/ledger/types';
+import {
+  AnonBlindAssetRecord,
+  AnonKeys,
+  AXfrKeyPair,
+  AXfrPubKey,
+  TransactionBuilder,
+  XfrKeyPair,
+  XfrPublicKey,
+  XPublicKey,
+} from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
@@ -176,6 +185,12 @@ export const barToAbar = async (
     throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
   }
 
+  // try {
+  //   transactionBuilder = transactionBuilder.add_fee_relative_auto(walletInfo.keypair);
+  // } catch (error) {
+  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  // }
+
   let randomizers: { randomizers: string[] };
 
   try {
@@ -238,4 +253,104 @@ export const getOwnedAbars = async (
   });
 
   return result;
+};
+
+export const isNullifierHashSpent = async (hash: string) => {
+  const checkSpentResult = await Network.checkNullifierHashSpent(hash);
+  console.log('🚀 ~ file: run.ts ~ line 1267 ~ validateUnspent ~ checkSpentResult', checkSpentResult);
+
+  const { response: checkSpentResponse, error: checkSpentError } = checkSpentResult;
+
+  if (checkSpentError) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - ${checkSpentError.message}`);
+  }
+
+  if (checkSpentResponse === undefined) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - Response is undefined`);
+  }
+
+  return checkSpentResponse;
+};
+
+export const genNullifierHash = async (
+  atxoSid: number,
+  ownedAbar: FindoraWallet.OwnedAbar,
+  axfrSecretKey: string,
+  decKey: string,
+  randomizer: string,
+) => {
+  const ledger = await getLedger();
+
+  const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+
+  const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+  }
+
+  let abarOwnerMemo;
+
+  try {
+    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+  } catch (error) {
+    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+  }
+
+  const aXfrKeyPairForRandomizing = await Keypair.getAXfrKeyPair(axfrSecretKey);
+  const aXfrKeyPair = await Keypair.getAXfrKeyPair(axfrSecretKey);
+
+  const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(
+    aXfrKeyPairForRandomizing,
+    randomizer,
+  );
+
+  const randomizeAxfrKeypair = await Keypair.getAXfrKeyPair(randomizeAxfrKeypairString);
+
+  const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
+
+  const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
+
+  if (mTLeafInfoError) {
+    throw new Error(
+      `Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - ${mTLeafInfoError.message}`,
+    );
+  }
+
+  if (!mTLeafInfo) {
+    throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
+  }
+
+  let myMTLeafInfo;
+
+  try {
+    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+  } catch (error) {
+    throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
+  }
+
+  let myOwnedAbar;
+
+  try {
+    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+  } catch (error) {
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+  }
+
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
+
+  try {
+    const hash = ledger.gen_nullifier_hash(
+      myOwnedAbar,
+      abarOwnerMemo,
+      aXfrKeyPair,
+      randomizeAxfrKeypair,
+      secretDecKey,
+      myMTLeafInfo,
+    );
+
+    return hash;
+  } catch (err) {
+    throw new Error(`Could not get nullifier hash", Error - ${(err as Error).message}`);
+  }
 };

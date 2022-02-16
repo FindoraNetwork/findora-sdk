@@ -80,8 +80,8 @@ const getFraBalance = async () => {
   // const pkey = PKEY_MINE3;
   const pkey = ENG_PKEY;
 
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');
@@ -1226,10 +1226,48 @@ const barToAbar = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
 };
 
-// getAnonKeys();
-barToAbar();
+const validateUnspent = async () => {
+  const givenRandomizer = '9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX';
+
+  const formattedAxfrPublicKey = 'uTkQi6dckgOIzkhOd2NLBopJdH-0_Ma0W5UdGpmBp-k=';
+
+  const axfrSecretKey =
+    'wO2iJHLyC2i9qUVsltbwT0rp5WQQNvQlQ0rpeV1Gowu5ORCLp1ySA4jOSE53Y0sGikl0f7T8xrRblR0amYGn6Q==';
+
+  const decKey = '4G3XniesXhVAHGnFrUj71Xhs4WjoOS3viv4ZKB07ZWU=';
+
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
+    JSON.stringify(ownedAbarsResponse, null, 2),
+  );
+
+  const [ownedAbarItem] = ownedAbarsResponse;
+
+  const { abarData } = ownedAbarItem;
+
+  const { atxoSid, ownedAbar } = abarData;
+
+  const hash = await TripleMasking.genNullifierHash(
+    parseInt(atxoSid),
+    ownedAbar,
+    axfrSecretKey,
+    decKey,
+    givenRandomizer,
+  );
+  console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+
+  const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
+
+  console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
+};
+
 // getFraBalance();
-// getCustomAssetBalance();
+// getAnonKeys();
+// barToAbar();
+validateUnspent();
+// getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();
 // getStateCommitment();

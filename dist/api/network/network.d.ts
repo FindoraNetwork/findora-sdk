@@ -5,6 +5,8 @@ export declare const getOwnedSids: (address: string, config?: Types.NetworkAxios
 export declare const getRelatedSids: (address: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedSidsDataResult>;
 export declare const getUtxo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.UtxoDataResult>;
 export declare const getOwnerMemo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
+export declare const getAbarOwnerMemo: (atxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
+export declare const getMTLeafInfo: (atxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.MTLeafInfoDataResult>;
 /**
  * Returns state commitment
  *
@@ -44,3 +46,4 @@ export declare const sendRpcCall: <T>(url: string, givenPayload: {
     [key: string]: any;
 }, config?: Types.NetworkAxiosConfig | undefined) => Promise<T>;
 export declare const getOwnedAbars: (randomizedPubKey: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
+export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.CheckNullifierHashSpentDataResult>;

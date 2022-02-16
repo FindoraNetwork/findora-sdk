@@ -120,8 +120,8 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '12345';
-                pkey = ENG_PKEY;
-                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+                pkey = PKEY_LOCAL_FAUCET;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
@@ -1330,10 +1330,39 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-// getAnonKeys();
-barToAbar();
+var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var givenRandomizer, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                givenRandomizer = '9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX';
+                formattedAxfrPublicKey = 'uTkQi6dckgOIzkhOd2NLBopJdH-0_Ma0W5UdGpmBp-k=';
+                axfrSecretKey = 'wO2iJHLyC2i9qUVsltbwT0rp5WQQNvQlQ0rpeV1Gowu5ORCLp1ySA4jOSE53Y0sGikl0f7T8xrRblR0amYGn6Q==';
+                decKey = '4G3XniesXhVAHGnFrUj71Xhs4WjoOS3viv4ZKB07ZWU=';
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 1:
+                ownedAbarsResponse = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
+                ownedAbarItem = ownedAbarsResponse[0];
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(parseInt(atxoSid), ownedAbar, axfrSecretKey, decKey, givenRandomizer)];
+            case 2:
+                hash = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
+            case 3:
+                isNullifierHashSpent = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // getFraBalance();
-// getCustomAssetBalance();
+// getAnonKeys();
+// barToAbar();
+validateUnspent();
+// getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();
 // getStateCommitment();

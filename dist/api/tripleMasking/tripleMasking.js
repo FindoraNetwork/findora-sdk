@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOwnedAbars = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.genNullifierHash = exports.isNullifierHashSpent = exports.getOwnedAbars = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
@@ -316,4 +316,91 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
     });
 }); };
 exports.getOwnedAbars = getOwnedAbars;
+var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, void 0, function () {
+    var checkSpentResult, checkSpentResponse, checkSpentError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Network.checkNullifierHashSpent(hash)];
+            case 1:
+                checkSpentResult = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1267 ~ validateUnspent ~ checkSpentResult', checkSpentResult);
+                checkSpentResponse = checkSpentResult.response, checkSpentError = checkSpentResult.error;
+                if (checkSpentError) {
+                    throw new Error("Could not check if hash \"" + hash + " is spent\", Error - " + checkSpentError.message);
+                }
+                if (checkSpentResponse === undefined) {
+                    throw new Error("Could not check if hash \"" + hash + " is spent\", Error - Response is undefined");
+                }
+                return [2 /*return*/, checkSpentResponse];
+        }
+    });
+}); };
+exports.isNullifierHashSpent = isNullifierHashSpent;
+var genNullifierHash = function (atxoSid, ownedAbar, axfrSecretKey, decKey, randomizer) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, aXfrKeyPairForRandomizing, aXfrKeyPair, randomizeAxfrKeypairString, randomizeAxfrKeypair, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, myOwnedAbar, secretDecKey, hash;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
+            case 2:
+                abarOwnerMemoResult = _a.sent();
+                myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
+                if (memoError) {
+                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
+                }
+                try {
+                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+                }
+                catch (error) {
+                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
+                }
+                return [4 /*yield*/, Keypair.getAXfrKeyPair(axfrSecretKey)];
+            case 3:
+                aXfrKeyPairForRandomizing = _a.sent();
+                return [4 /*yield*/, Keypair.getAXfrKeyPair(axfrSecretKey)];
+            case 4:
+                aXfrKeyPair = _a.sent();
+                return [4 /*yield*/, Keypair.getRandomizeAxfrKeypair(aXfrKeyPairForRandomizing, randomizer)];
+            case 5:
+                randomizeAxfrKeypairString = _a.sent();
+                return [4 /*yield*/, Keypair.getAXfrKeyPair(randomizeAxfrKeypairString)];
+            case 6:
+                randomizeAxfrKeypair = _a.sent();
+                return [4 /*yield*/, Network.getMTLeafInfo(atxoSid)];
+            case 7:
+                mTLeafInfoResult = _a.sent();
+                mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
+                if (mTLeafInfoError) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
+                }
+                if (!mTLeafInfo) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
+                }
+                try {
+                    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
+                }
+                try {
+                    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error.message);
+                }
+                secretDecKey = ledger.x_secretkey_from_string(decKey);
+                try {
+                    hash = ledger.gen_nullifier_hash(myOwnedAbar, abarOwnerMemo, aXfrKeyPair, randomizeAxfrKeypair, secretDecKey, myMTLeafInfo);
+                    return [2 /*return*/, hash];
+                }
+                catch (err) {
+                    throw new Error("Could not get nullifier hash\", Error - " + err.message);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.genNullifierHash = genNullifierHash;
 //# sourceMappingURL=tripleMasking.js.map
