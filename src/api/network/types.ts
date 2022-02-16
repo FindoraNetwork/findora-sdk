@@ -88,6 +88,10 @@ export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
   response?: OwnedAbarsResponse;
 }
 
+export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResult {
+  response?: boolean;
+}
+
 export type AssetTokenResponse = {
   properties: FindoraWallet.IPureAsset;
 };

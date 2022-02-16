@@ -444,3 +444,14 @@ export const getOwnedAbars = async (
 
   return dataResult;
 };
+
+export const checkNullifierHashSpent = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.CheckNullifierHashSpentDataResult> => {
+  const url = `${getQueryRoute()}/check_nullifier_hash/${hash}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};

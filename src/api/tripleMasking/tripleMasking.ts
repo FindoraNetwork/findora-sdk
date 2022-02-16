@@ -255,10 +255,26 @@ export const getOwnedAbars = async (
   return result;
 };
 
+export const isNullifierHashSpent = async (hash: string) => {
+  const checkSpentResult = await Network.checkNullifierHashSpent(hash);
+  console.log('🚀 ~ file: run.ts ~ line 1267 ~ validateUnspent ~ checkSpentResult', checkSpentResult);
+
+  const { response: checkSpentResponse, error: checkSpentError } = checkSpentResult;
+
+  if (checkSpentError) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - ${checkSpentError.message}`);
+  }
+
+  if (checkSpentResponse === undefined) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - Response is undefined`);
+  }
+
+  return checkSpentResponse;
+};
+
 export const genNullifierHash = async (
   atxoSid: number,
   ownedAbar: FindoraWallet.OwnedAbar,
-
   axfrSecretKey: string,
   decKey: string,
   randomizer: string,
@@ -273,7 +289,6 @@ export const genNullifierHash = async (
     throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
   }
 
-  // 1
   let abarOwnerMemo;
 
   try {
@@ -282,18 +297,16 @@ export const genNullifierHash = async (
     throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
   }
 
-  console.log(
-    '🚀 ~ file: tripleMasking.ts ~ line 287 ~ will call getAXfrKeyPair with axfrSecretKey ',
-    axfrSecretKey,
-  );
-  // 2
+  const aXfrKeyPairForRandomizing = await Keypair.getAXfrKeyPair(axfrSecretKey);
   const aXfrKeyPair = await Keypair.getAXfrKeyPair(axfrSecretKey);
 
-  // 3
-  const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(aXfrKeyPair, randomizer);
+  const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(
+    aXfrKeyPairForRandomizing,
+    randomizer,
+  );
+
   const randomizeAxfrKeypair = await Keypair.getAXfrKeyPair(randomizeAxfrKeypairString);
 
-  // 5
   const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
 
   const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
@@ -308,9 +321,6 @@ export const genNullifierHash = async (
     throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
   }
 
-  // 4
-  const secretDecKey = ledger.x_secretkey_from_string(decKey);
-
   let myMTLeafInfo;
 
   try {
@@ -318,7 +328,6 @@ export const genNullifierHash = async (
   } catch (error) {
     throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
   }
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 314 ~ myMTLeafInfo', myMTLeafInfo);
 
   let myOwnedAbar;
 
@@ -328,22 +337,20 @@ export const genNullifierHash = async (
     throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
   }
 
-  console.log('!!!before call gen_nullifier_hash  myOwnedAbar', myOwnedAbar);
-  console.log('!!!before call gen_nullifier_hash  abarOwnerMemo', abarOwnerMemo);
-  console.log('!!!before call gen_nullifier_hash  aXfrKeyPair', aXfrKeyPair);
-  console.log('!!!before call gen_nullifier_hash  randomizeAxfrKeypair', randomizeAxfrKeypair);
-  console.log('!!!before call gen_nullifier_hash  secretDecKey', secretDecKey);
-  console.log('!!!before call gen_nullifier_hash  myMTLeafInfo', myMTLeafInfo);
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
 
-  const hash = ledger.gen_nullifier_hash(
-    myOwnedAbar,
-    abarOwnerMemo,
-    aXfrKeyPair,
-    randomizeAxfrKeypair,
-    secretDecKey,
-    myMTLeafInfo,
-  );
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 311 ~ hash', hash);
+  try {
+    const hash = ledger.gen_nullifier_hash(
+      myOwnedAbar,
+      abarOwnerMemo,
+      aXfrKeyPair,
+      randomizeAxfrKeypair,
+      secretDecKey,
+      myMTLeafInfo,
+    );
 
-  return hash;
+    return hash;
+  } catch (err) {
+    throw new Error(`Could not get nullifier hash", Error - ${(err as Error).message}`);
+  }
 };

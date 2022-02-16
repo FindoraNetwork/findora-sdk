@@ -70,6 +70,9 @@ export declare type OwnedAbarsResponse = OwnedResponseAbarItem[];
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
     response?: OwnedAbarsResponse;
 }
+export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResult {
+    response?: boolean;
+}
 export declare type AssetTokenResponse = {
     properties: FindoraWallet.IPureAsset;
 };

@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ff = exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
+exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
@@ -1330,24 +1330,15 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-var ff = function (ownedAbarItem) { return __awaiter(void 0, void 0, void 0, function () {
-    var randomizer, abarData, atxoSid, ownedAbar;
-    return __generator(this, function (_a) {
-        randomizer = ownedAbarItem.randomizer, abarData = ownedAbarItem.abarData;
-        atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-        return [2 /*return*/];
-    });
-}); };
-exports.ff = ff;
 var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var givenRandomizer, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
+    var givenRandomizer, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                givenRandomizer = 'CET85ePaJJxWBJmnvx3nLZ4t9eQkp8Upo1txNGPtmBM4';
-                formattedAxfrPublicKey = 'lo0FgemRDMhZh-hgBsYGpkc44uZ6P9XxnuXYGgLapM8=';
-                axfrSecretKey = 'TM0Z6vWOCxuxsJXo7Ar_pQaB0uHNojYie3r9ed4rpwaWjQWB6ZEMyFmH6GAGxgamRzji5no_1fGe5dgaAtqkzw==';
-                decKey = '8NaSJETAwrffIQ7hAL1I4wBDY94hCR13bdH9SjM7Z3Q=';
+                givenRandomizer = '9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX';
+                formattedAxfrPublicKey = 'uTkQi6dckgOIzkhOd2NLBopJdH-0_Ma0W5UdGpmBp-k=';
+                axfrSecretKey = 'wO2iJHLyC2i9qUVsltbwT0rp5WQQNvQlQ0rpeV1Gowu5ORCLp1ySA4jOSE53Y0sGikl0f7T8xrRblR0amYGn6Q==';
+                decKey = '4G3XniesXhVAHGnFrUj71Xhs4WjoOS3viv4ZKB07ZWU=';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
             case 1:
                 ownedAbarsResponse = _a.sent();
@@ -1359,6 +1350,10 @@ var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, fun
             case 2:
                 hash = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
+            case 3:
+                isNullifierHashSpent = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
                 return [2 /*return*/];
         }
     });
@@ -1367,7 +1362,7 @@ var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, fun
 // getAnonKeys();
 // barToAbar();
 validateUnspent();
-// getCustomAssetBalance();
+// getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();
 // getStateCommitment();
