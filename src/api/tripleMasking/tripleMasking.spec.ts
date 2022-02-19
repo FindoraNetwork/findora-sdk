@@ -465,6 +465,7 @@ describe('triple masking (unit test)', () => {
     beforeEach(() => {
       anonKeys = {
         free: jest.fn(() => {}),
+        to_json: jest.fn(() => {}),
         axfr_public_key: 'axfr_public_key',
         axfr_secret_key: 'axfr_secret_key',
         dec_key: 'dec_key',
