@@ -24,7 +24,7 @@ const sdkEnv = {
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-  // cacheProvider: FileCacheProvider,
+  cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
   // cacheProvider: MemoryCacheProvider,
@@ -59,6 +59,19 @@ const {
 const mainFaucet = PKEY_LOCAL_FAUCET;
 
 const CustomAssetCode = CUSTOM_ASSET_CODE;
+
+const myAbarAnonKeys = {
+  axfrPublicKey: '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=',
+  axfrSecretKey: 'z4atlAssg_PcVa05__EXB5VbT2GJF3mS8AuCUa2OfQn4Z2P-G6UzNY94LbcbdEb4eOhbItPZac8AHlywQaRuaA==',
+  decKey: '0Js-MFSVJipTNL-y09zkSBaks14WLK-SfAUTTfsUInE=',
+  encKey: 'dim3EW9_PnClrNuVpKen4DZ0v-RwsVLSUtZy7PXCOCc=',
+};
+
+const myGivenRandomizersList = [
+  'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
+  'DtJx2dVmXXiDaQS7G6xpNeUhEwH7EsuimLUf1Tqd78LH',
+  '9kpQwq1UqqonX73HgreJcvXEj9SxN5mh55AhBdsSXnhZ',
+];
 
 /**
  * A simple example - how to use SDK to get FRA assset code
@@ -1156,23 +1169,9 @@ const ethProtocol = async () => {
 };
 
 const getAnonKeys = async () => {
-  const { formatted, keysInstance } = await TripleMasking.genAnonKeys();
+  const myAnonKeys = await TripleMasking.genAnonKeys();
 
-  const axfrPublicKey = keysInstance.axfr_public_key;
-  const axfrSecretKey = keysInstance.axfr_secret_key;
-  const decKey = keysInstance.dec_key;
-  const encKey = keysInstance.enc_key;
-
-  const myAnonKeys = {
-    axfrPublicKey,
-    axfrSecretKey,
-    decKey,
-    encKey,
-  };
-
-  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keysInstance', keysInstance);
-  console.log('myAnonKeys', myAnonKeys);
-  console.log('formatted', formatted);
+  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
 };
 
 const barToAbar = async () => {
@@ -1191,14 +1190,20 @@ const barToAbar = async () => {
   }
 
   const sortedSids = sids.sort((a, b) => b - a);
+  console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
-  const [sid] = sortedSids;
+  const [sid_] = sortedSids;
 
-  if (!sid) {
-    throw new Error('sid is empty. send more transfers to this address!');
-  }
+  // if (!sid) {
+  //   throw new Error('sid is empty. send more transfers to this address!');
+  // }
 
-  const anonKeys = await TripleMasking.genAnonKeys();
+  // return;
+  const sid = 10;
+
+  const anonKeys = { ...myAbarAnonKeys };
+
+  console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
 
   const {
     transactionBuilder,
@@ -1227,14 +1232,15 @@ const barToAbar = async () => {
 };
 
 const validateUnspent = async () => {
-  const givenRandomizer = '9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX';
+  const anonKeys = { ...myAbarAnonKeys };
 
-  const formattedAxfrPublicKey = 'uTkQi6dckgOIzkhOd2NLBopJdH-0_Ma0W5UdGpmBp-k=';
+  const givenRandomizer = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
 
-  const axfrSecretKey =
-    'wO2iJHLyC2i9qUVsltbwT0rp5WQQNvQlQ0rpeV1Gowu5ORCLp1ySA4jOSE53Y0sGikl0f7T8xrRblR0amYGn6Q==';
+  const formattedAxfrPublicKey = anonKeys.axfrPublicKey;
 
-  const decKey = '4G3XniesXhVAHGnFrUj71Xhs4WjoOS3viv4ZKB07ZWU=';
+  const axfrSecretKey = anonKeys.axfrSecretKey;
+
+  const decKey = anonKeys.decKey;
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
 
@@ -1263,10 +1269,35 @@ const validateUnspent = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
 };
 
+const getUnspentAbars = async () => {
+  const anonKeys = { ...myAbarAnonKeys };
+
+  const givenRandomizersList = myGivenRandomizersList;
+  // const givenRandomizersList = ['5VoNtFWTXsTVwiYB8h3FykCJJG8h4ve5dwQ2ZymKqyPE'];
+
+  const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenRandomizersList);
+  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
+};
+
+const getAbarBalance = async () => {
+  const anonKeys = { ...myAbarAnonKeys };
+
+  // const givenRandomizersList = myGivenRandomizersList; //
+  const givenRandomizersList = [
+    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
+    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+  ];
+
+  const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
+  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+};
+
 // getFraBalance();
 // getAnonKeys();
 // barToAbar();
-validateUnspent();
+// getUnspentAbars();
+getAbarBalance();
+// validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();

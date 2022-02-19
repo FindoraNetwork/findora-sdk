@@ -87,8 +87,46 @@ declare namespace FindoraWallet {
     atxoSid: string;
     ownedAbar: OwnedAbar;
   }
+
   export interface OwnedAbarItem {
+    axfrPublicKey: string;
     randomizer: string;
     abarData: OwnedAbarData;
+  }
+
+  export type MTleafNode = {
+    siblings1: string;
+    siblings2: string;
+    is_left_child: number;
+    is_right_child: number;
+  };
+
+  export interface OpenedAbar {
+    amount: string;
+    asset_type: number[];
+    blind: string;
+    pub_key: string;
+    key_rand_factor: string;
+    owner_memo: {
+      blind_share: string;
+      lock: {
+        ciphertext: string;
+        ephemeral_public_key: string;
+      };
+    };
+    mt_leaf_info: {
+      path: {
+        nodes: MTleafNode[];
+      };
+      root: string;
+      root_version: string;
+      uid: string;
+    };
+  }
+
+  export interface OpenedAbarInfo {
+    abar: OpenedAbar;
+    amount: string;
+    assetType: string;
   }
 }

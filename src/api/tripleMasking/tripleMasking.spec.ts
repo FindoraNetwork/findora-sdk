@@ -41,7 +41,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let ownerMemoDataResult: OwnerMemoDataResult;
-    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
+    let anonKeys: FindoraWallet.FormattedAnonKeys;
 
     let clientAssetRecord: ClientAssetRecordLight;
     let ownerMemo: OwnerMemoLight;
@@ -65,7 +65,6 @@ describe('triple masking (unit test)', () => {
     let spyGetXPublicKeyByBase64: jest.SpyInstance;
     let spyAddOperationBarToAbar: jest.SpyInstance;
     let spyGetRandomizers: jest.SpyInstance;
-    let spyKeysInstanceFree: jest.SpyInstance;
     let spySaveBarToAbarToCache: jest.SpyInstance;
 
     beforeEach(() => {
@@ -76,19 +75,10 @@ describe('triple masking (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
       anonKeys = {
-        keysInstance: {
-          free: jest.fn(() => {}),
-          axfr_public_key: 'axfr_public_key',
-          axfr_secret_key: 'axfr_secret_key',
-          dec_key: 'dec_key',
-          enc_key: 'enc_key',
-        },
-        formatted: {
-          axfrPublicKey: 'axfrPublicKey',
-          axfrSecretKey: 'axfrSecretKey',
-          decKey: 'decKey',
-          encKey: 'encKey',
-        },
+        axfrPublicKey: 'axfrPublicKey',
+        axfrSecretKey: 'axfrSecretKey',
+        decKey: 'decKey',
+        encKey: 'encKey',
       };
 
       clientAssetRecord = {
@@ -144,7 +134,6 @@ describe('triple masking (unit test)', () => {
       spyGetXPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getXPublicKeyByBase64');
       spyAddOperationBarToAbar = jest.spyOn(transactionBuilder, 'add_operation_bar_to_abar');
       spyGetRandomizers = jest.spyOn(transactionBuilder, 'get_randomizers');
-      spyKeysInstanceFree = jest.spyOn(anonKeys.keysInstance, 'free');
       spySaveBarToAbarToCache = jest.spyOn(TripleMasking, 'saveBarToAbarToCache');
     });
 
@@ -313,29 +302,6 @@ describe('triple masking (unit test)', () => {
       );
     });
 
-    it('throw an error if could not get release the anonymous keys instance. [anonKeys.keysInstance.free]', async () => {
-      const keysInstanceFreeError = new Error('keysInstanceFreeError error');
-      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
-      spyGetTransactionBuilder.mockImplementationOnce(() =>
-        Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
-      );
-      spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
-      spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
-      spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
-      spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
-      spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
-      spyGetRandomizers.mockImplementationOnce(() => randomizers);
-      spyKeysInstanceFree.mockImplementationOnce(() => {
-        throw keysInstanceFreeError;
-      });
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys)).rejects.toThrow(
-        `could not get release the anonymous keys instance  "${keysInstanceFreeError.message}" `,
-      );
-    });
-
     it('throw an error if could not save cache for bar to abar. [TripleMasking.saveBarToAbarToCache]', async () => {
       const saveBarToAbarToCacheError = new Error('saveBarToAbarToCacheError error');
       spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
@@ -381,8 +347,8 @@ describe('triple masking (unit test)', () => {
       expect(spyGetOwnerMemo).toHaveBeenCalledWith(sid);
       expect(spyLedgerOwnerMemoFromJson).toHaveBeenCalledWith(ownerMemoDataResult.response);
       expect(spyLedgerClientAssetRecordFromJson).toHaveBeenCalledWith(myUtxo[0].utxo);
-      expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.formatted.axfrPublicKey);
-      expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.formatted.encKey);
+      expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrPublicKey);
+      expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
       expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(
         walletInfo.keypair,
         returnAxfrPublicKey,
@@ -392,7 +358,6 @@ describe('triple masking (unit test)', () => {
         returnEncKey,
       );
       expect(spyGetRandomizers).toHaveBeenCalled();
-      expect(spyKeysInstanceFree).toHaveBeenCalled();
       expect(spySaveBarToAbarToCache).toHaveBeenCalledWith(
         walletInfo,
         sid,
@@ -477,6 +442,7 @@ describe('triple masking (unit test)', () => {
       const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
       expect(result).toHaveLength(1);
       const [abar] = result;
+      expect(abar).toHaveProperty('axfrPublicKey', formattedAxfrPublicKey);
       expect(abar).toHaveProperty('randomizer', givenRandomizer);
       expect(abar).toHaveProperty('abarData', abarData);
       expect(abar.abarData).toHaveProperty('atxoSid', `${atxoSid}`);
@@ -490,9 +456,12 @@ describe('triple masking (unit test)', () => {
   describe('genAnonKeys', () => {
     let nodeLedger: NodeLedger.LedgerForNode;
     let anonKeys: AnonKeys;
+    let formattedAnonKeys: FindoraWallet.FormattedAnonKeys;
 
     let spyGetLedger: jest.SpyInstance;
-    let spyGenAnonLeys: jest.SpyInstance;
+    let spyGenAnonKeys: jest.SpyInstance;
+    let spyKeysInstanceFree: jest.SpyInstance;
+
     beforeEach(() => {
       anonKeys = {
         free: jest.fn(() => {}),
@@ -501,33 +470,48 @@ describe('triple masking (unit test)', () => {
         dec_key: 'dec_key',
         enc_key: 'enc_key',
       };
+      formattedAnonKeys = {
+        axfrPublicKey: anonKeys.axfr_public_key,
+        axfrSecretKey: anonKeys.axfr_secret_key,
+        decKey: anonKeys.dec_key,
+        encKey: anonKeys.enc_key,
+      };
       nodeLedger = {
         foo: 'node',
         gen_anon_keys: jest.fn(() => anonKeys),
       } as unknown as NodeLedger.LedgerForNode;
 
       spyGetLedger = jest.spyOn(NodeLedger, 'default');
-      spyGenAnonLeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+      spyGenAnonKeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+      spyKeysInstanceFree = jest.spyOn(anonKeys, 'free');
     });
 
     it('throw an error if could not get the anonKeys', async () => {
       const genAnonKeysError = new Error('genAnonKeys error');
       spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
-      spyGenAnonLeys.mockImplementationOnce(() => Promise.reject(genAnonKeysError));
+      spyGenAnonKeys.mockImplementationOnce(() => Promise.reject(genAnonKeysError));
+      await expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message);
+    });
+
+    it('throw an error if could not get release the anonymous keys instance. [anonKeys.free]', async () => {
+      const genAnonKeysError = new Error('genAnonKeys error');
+      const keysInstanceFreeError = new Error('keysInstanceFreeError error');
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+
+      spyGenAnonKeys.mockImplementationOnce(() => Promise.reject(genAnonKeysError));
+      spyKeysInstanceFree.mockImplementationOnce(() => {
+        throw keysInstanceFreeError;
+      });
+
       await expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message);
     });
 
     it('creates an instance of a AnonKeys', async () => {
       spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
-      spyGenAnonLeys.mockImplementationOnce(() => Promise.resolve(anonKeys));
+      spyGenAnonKeys.mockImplementationOnce(() => Promise.resolve(anonKeys));
       const result = await TripleMasking.genAnonKeys();
-      expect(result.keysInstance).toBe(anonKeys);
-      expect(result.formatted).toMatchObject({
-        axfrPublicKey: anonKeys.axfr_public_key,
-        axfrSecretKey: anonKeys.axfr_secret_key,
-        decKey: anonKeys.dec_key,
-        encKey: anonKeys.enc_key,
-      });
+      expect(result).toEqual(formattedAnonKeys);
+      expect(spyKeysInstanceFree).toHaveBeenCalled();
     });
   });
 
@@ -535,7 +519,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let randomizers: string[];
-    let anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>;
+    let anonKeys: FindoraWallet.FormattedAnonKeys;
 
     let spyConsoleLog: jest.SpyInstance;
     let spyCacheRead: jest.SpyInstance;
@@ -547,13 +531,11 @@ describe('triple masking (unit test)', () => {
       } as unknown as KeypairApi.WalletKeypar;
       randomizers = ['1', '2', '3'];
       anonKeys = {
-        formatted: {
-          axfrPublicKey: 'axfrPublicKey',
-          axfrSecretKey: 'axfrSecretKey',
-          decKey: 'decKey',
-          encKey: 'encKey',
-        },
-      } as unknown as FindoraWallet.AnonKeysResponse<AnonKeys>;
+        axfrPublicKey: 'axfrPublicKey',
+        axfrSecretKey: 'axfrSecretKey',
+        decKey: 'decKey',
+        encKey: 'encKey',
+      } as unknown as FindoraWallet.FormattedAnonKeys;
       spyConsoleLog = jest.spyOn(console, 'log');
       spyCacheRead = jest.spyOn(Cache, 'read');
       spyCacheWrite = jest.spyOn(Cache, 'write');
@@ -562,7 +544,7 @@ describe('triple masking (unit test)', () => {
     it('return a instance of BarToAbarData and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
       const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys.formatted,
+        anonKeysFormatted: anonKeys,
         randomizers,
       });
 
@@ -574,7 +556,7 @@ describe('triple masking (unit test)', () => {
       spyCacheRead.mockImplementationOnce(() => Promise.reject(cacheReadError));
       const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys.formatted,
+        anonKeysFormatted: anonKeys,
         randomizers,
       });
 
@@ -588,7 +570,7 @@ describe('triple masking (unit test)', () => {
       spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
       const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys.formatted,
+        anonKeysFormatted: anonKeys,
         randomizers,
       });
 
@@ -620,6 +602,7 @@ describe('triple masking (unit test)', () => {
 
       ownedAbars = [
         {
+          axfrPublicKey: 'formattedAxfrPublicKey',
           randomizer: givenRandomizer,
           abarData: {
             atxoSid: atxoSid + '',

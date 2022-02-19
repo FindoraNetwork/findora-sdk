@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
@@ -64,6 +75,7 @@ var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
+var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
@@ -80,7 +92,7 @@ var sdkEnv = {
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-    // cacheProvider: FileCacheProvider,
+    cacheProvider: providers_1.FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
     // cacheProvider: MemoryCacheProvider,
@@ -96,6 +108,17 @@ console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
+var myAbarAnonKeys = {
+    axfrPublicKey: '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=',
+    axfrSecretKey: 'z4atlAssg_PcVa05__EXB5VbT2GJF3mS8AuCUa2OfQn4Z2P-G6UzNY94LbcbdEb4eOhbItPZac8AHlywQaRuaA==',
+    decKey: '0Js-MFSVJipTNL-y09zkSBaks14WLK-SfAUTTfsUInE=',
+    encKey: 'dim3EW9_PnClrNuVpKen4DZ0v-RwsVLSUtZy7PXCOCc=',
+};
+var myGivenRandomizersList = [
+    'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
+    'DtJx2dVmXXiDaQS7G6xpNeUhEwH7EsuimLUf1Tqd78LH',
+    '9kpQwq1UqqonX73HgreJcvXEj9SxN5mh55AhBdsSXnhZ',
+];
 /**
  * A simple example - how to use SDK to get FRA assset code
  */
@@ -1253,31 +1276,19 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, formatted, keysInstance, axfrPublicKey, axfrSecretKey, decKey, encKey, myAnonKeys;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var myAnonKeys;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
             case 1:
-                _a = _b.sent(), formatted = _a.formatted, keysInstance = _a.keysInstance;
-                axfrPublicKey = keysInstance.axfr_public_key;
-                axfrSecretKey = keysInstance.axfr_secret_key;
-                decKey = keysInstance.dec_key;
-                encKey = keysInstance.enc_key;
-                myAnonKeys = {
-                    axfrPublicKey: axfrPublicKey,
-                    axfrSecretKey: axfrSecretKey,
-                    decKey: decKey,
-                    encKey: encKey,
-                };
-                console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ keysInstance', keysInstance);
-                console.log('myAnonKeys', myAnonKeys);
-                console.log('formatted', formatted);
+                myAnonKeys = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
                 return [2 /*return*/];
         }
     });
 }); };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse, ownedAbarsSaveResult;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid_, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse, ownedAbarsSaveResult;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1294,36 +1305,34 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                     throw new Error('no sids!');
                 }
                 sortedSids = sids.sort(function (a, b) { return b - a; });
-                sid = sortedSids[0];
-                if (!sid) {
-                    throw new Error('sid is empty. send more transfers to this address!');
-                }
-                return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
-            case 3:
-                anonKeys = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+                sid_ = sortedSids[0];
+                sid = 10;
+                anonKeys = __assign({}, myAbarAnonKeys);
+                console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
-            case 4:
+            case 3:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
                 console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 5:
+            case 4:
                 resultHandle = _b.sent();
                 console.log('send bar to abar result handle!!', resultHandle);
                 formattedAxfrPublicKey = barToAbarData.anonKeysFormatted.axfrPublicKey;
                 givenRandomizer = barToAbarData.randomizers[0];
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 6:
+            case 5:
                 _b.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 7:
+            case 6:
                 _b.sent();
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
-            case 8:
+            case 7:
                 ownedAbarsResponse = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
                 return [4 /*yield*/, api_1.TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse)];
-            case 9:
+            case 8:
                 ownedAbarsSaveResult = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
                 return [2 /*return*/];
@@ -1331,14 +1340,15 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var givenRandomizer, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    var anonKeys, givenRandomizer, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                givenRandomizer = '9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX';
-                formattedAxfrPublicKey = 'uTkQi6dckgOIzkhOd2NLBopJdH-0_Ma0W5UdGpmBp-k=';
-                axfrSecretKey = 'wO2iJHLyC2i9qUVsltbwT0rp5WQQNvQlQ0rpeV1Gowu5ORCLp1ySA4jOSE53Y0sGikl0f7T8xrRblR0amYGn6Q==';
-                decKey = '4G3XniesXhVAHGnFrUj71Xhs4WjoOS3viv4ZKB07ZWU=';
+                anonKeys = __assign({}, myAbarAnonKeys);
+                givenRandomizer = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
+                formattedAxfrPublicKey = anonKeys.axfrPublicKey;
+                axfrSecretKey = anonKeys.axfrSecretKey;
+                decKey = anonKeys.decKey;
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
             case 1:
                 ownedAbarsResponse = _a.sent();
@@ -1358,10 +1368,45 @@ var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, fun
         }
     });
 }); };
+var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeys, givenRandomizersList, unspentAbars;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeys = __assign({}, myAbarAnonKeys);
+                givenRandomizersList = myGivenRandomizersList;
+                return [4 /*yield*/, api_1.TripleMasking.getUnspentAbars(anonKeys, givenRandomizersList)];
+            case 1:
+                unspentAbars = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeys, givenRandomizersList, balances;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeys = __assign({}, myAbarAnonKeys);
+                givenRandomizersList = [
+                    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
+                    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+                ];
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
+            case 1:
+                balances = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // getFraBalance();
 // getAnonKeys();
 // barToAbar();
-validateUnspent();
+// getUnspentAbars();
+getAbarBalance();
+// validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();

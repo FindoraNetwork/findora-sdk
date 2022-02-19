@@ -15,4 +15,5 @@ export {
   XfrKeyPair,
   XfrPublicKey,
   XPublicKey,
+  XSecretKey,
 } from 'findora-wallet-wasm/web/wasm';
