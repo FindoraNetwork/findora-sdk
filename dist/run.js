@@ -1276,24 +1276,12 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, myAnonKeys;
+    var myAnonKeys;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
             case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
-            case 2:
                 myAnonKeys = _a.sent();
-                // const axfrPublicKey = keysInstance.axfr_public_key;
-                // const axfrSecretKey = keysInstance.axfr_secret_key;
-                // const decKey = keysInstance.dec_key;
-                // const encKey = keysInstance.enc_key;
-                // const { axfrPublicKey, axfrSecretKey, decKey, encKey } = myAnonKeys;
-                // const decodedAxfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(axfrPublicKey);
-                // const decodedAxfrSecretKey = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
-                // const decodedEncKey = await Keypair.getXPublicKeyByBase64(encKey);
-                // const decodedDecKey = Keypair.getXPrivateKeyByBase64(decKey);
                 console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
                 return [2 /*return*/];
         }
@@ -1319,7 +1307,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 54;
+                sid = 10;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1386,7 +1374,7 @@ var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, fun
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
-                givenRandomizersList = ['8mG1f6ToqKtC1ghqpHY2JEoapTZACCPdYskLyvXF4g1v'];
+                givenRandomizersList = myGivenRandomizersList;
                 return [4 /*yield*/, api_1.TripleMasking.getUnspentAbars(anonKeys, givenRandomizersList)];
             case 1:
                 unspentAbars = _a.sent();
@@ -1401,7 +1389,10 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
-                givenRandomizersList = ['8mG1f6ToqKtC1ghqpHY2JEoapTZACCPdYskLyvXF4g1v'];
+                givenRandomizersList = [
+                    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
+                    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+                ];
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
             case 1:
                 balances = _a.sent();
@@ -1412,9 +1403,9 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
 }); };
 // getFraBalance();
 // getAnonKeys();
-barToAbar();
+// barToAbar();
 // getUnspentAbars();
-// getAbarBalance();
+getAbarBalance();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

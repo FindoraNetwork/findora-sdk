@@ -1199,7 +1199,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 54;
+  const sid = 10;
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1282,8 +1282,11 @@ const getUnspentAbars = async () => {
 const getAbarBalance = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
-  const givenRandomizersList = myGivenRandomizersList; //
-  // const givenRandomizersList = ['8mG1f6ToqKtC1ghqpHY2JEoapTZACCPdYskLyvXF4g1v'];
+  // const givenRandomizersList = myGivenRandomizersList; //
+  const givenRandomizersList = [
+    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
+    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+  ];
 
   const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
@@ -1291,9 +1294,9 @@ const getAbarBalance = async () => {
 
 // getFraBalance();
 // getAnonKeys();
-barToAbar();
+// barToAbar();
 // getUnspentAbars();
-// getAbarBalance();
+getAbarBalance();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
