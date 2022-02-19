@@ -103,7 +103,6 @@ describe('triple masking (unit test)', function () {
         var spyGetXPublicKeyByBase64;
         var spyAddOperationBarToAbar;
         var spyGetRandomizers;
-        var spyKeysInstanceFree;
         var spySaveBarToAbarToCache;
         beforeEach(function () {
             sid = 1;
@@ -113,19 +112,10 @@ describe('triple masking (unit test)', function () {
                 address: 'myAddress',
             };
             anonKeys = {
-                keysInstance: {
-                    free: jest.fn(function () { }),
-                    axfr_public_key: 'axfr_public_key',
-                    axfr_secret_key: 'axfr_secret_key',
-                    dec_key: 'dec_key',
-                    enc_key: 'enc_key',
-                },
-                formatted: {
-                    axfrPublicKey: 'axfrPublicKey',
-                    axfrSecretKey: 'axfrSecretKey',
-                    decKey: 'decKey',
-                    encKey: 'encKey',
-                },
+                axfrPublicKey: 'axfrPublicKey',
+                axfrSecretKey: 'axfrSecretKey',
+                decKey: 'decKey',
+                encKey: 'encKey',
             };
             clientAssetRecord = {
                 a: 'clientAssetRecord',
@@ -179,7 +169,6 @@ describe('triple masking (unit test)', function () {
             spyGetXPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getXPublicKeyByBase64');
             spyAddOperationBarToAbar = jest.spyOn(transactionBuilder, 'add_operation_bar_to_abar');
             spyGetRandomizers = jest.spyOn(transactionBuilder, 'get_randomizers');
-            spyKeysInstanceFree = jest.spyOn(anonKeys.keysInstance, 'free');
             spySaveBarToAbarToCache = jest.spyOn(TripleMasking, 'saveBarToAbarToCache');
         });
         it('throw an error if could not fetch utxo for sid. [utxoHelper.addUtxo]', function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -397,35 +386,6 @@ describe('triple masking (unit test)', function () {
                 }
             });
         }); });
-        it('throw an error if could not get release the anonymous keys instance. [anonKeys.keysInstance.free]', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var keysInstanceFreeError;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        keysInstanceFreeError = new Error('keysInstanceFreeError error');
-                        spyGetLedger.mockImplementationOnce(function () { return Promise.resolve(nodeLedger); });
-                        spyGetTransactionBuilder.mockImplementationOnce(function () {
-                            return Promise.resolve(transactionBuilder);
-                        });
-                        spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
-                        spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
-                        spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
-                        spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
-                        spyGetXPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnEncKey); });
-                        spyGetRandomizers.mockImplementationOnce(function () { return randomizers; });
-                        spyKeysInstanceFree.mockImplementationOnce(function () {
-                            throw keysInstanceFreeError;
-                        });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys)).rejects.toThrow("could not get release the anonymous keys instance  \"" + keysInstanceFreeError.message + "\" ")];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
         it('throw an error if could not save cache for bar to abar. [TripleMasking.saveBarToAbarToCache]', function () { return __awaiter(void 0, void 0, void 0, function () {
             var saveBarToAbarToCacheError;
             return __generator(this, function (_a) {
@@ -481,11 +441,10 @@ describe('triple masking (unit test)', function () {
                         expect(spyGetOwnerMemo).toHaveBeenCalledWith(sid);
                         expect(spyLedgerOwnerMemoFromJson).toHaveBeenCalledWith(ownerMemoDataResult.response);
                         expect(spyLedgerClientAssetRecordFromJson).toHaveBeenCalledWith(myUtxo[0].utxo);
-                        expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.formatted.axfrPublicKey);
-                        expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.formatted.encKey);
+                        expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrPublicKey);
+                        expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
                         expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(walletInfo.keypair, returnAxfrPublicKey, BigInt(sid), clientAssetRecord, ownerMemo.clone(), returnEncKey);
                         expect(spyGetRandomizers).toHaveBeenCalled();
-                        expect(spyKeysInstanceFree).toHaveBeenCalled();
                         expect(spySaveBarToAbarToCache).toHaveBeenCalledWith(walletInfo, sid, randomizers.randomizers, anonKeys);
                         expect(result.transactionBuilder).toBe(transactionBuilder);
                         expect(result.barToAbarData).toBe(barToAbarData);
@@ -570,6 +529,7 @@ describe('triple masking (unit test)', function () {
                         result = _a.sent();
                         expect(result).toHaveLength(1);
                         abar = result[0];
+                        expect(abar).toHaveProperty('axfrPublicKey', formattedAxfrPublicKey);
                         expect(abar).toHaveProperty('randomizer', givenRandomizer);
                         expect(abar).toHaveProperty('abarData', abarData);
                         expect(abar.abarData).toHaveProperty('atxoSid', "" + atxoSid);
@@ -585,8 +545,10 @@ describe('triple masking (unit test)', function () {
     describe('genAnonKeys', function () {
         var nodeLedger;
         var anonKeys;
+        var formattedAnonKeys;
         var spyGetLedger;
-        var spyGenAnonLeys;
+        var spyGenAnonKeys;
+        var spyKeysInstanceFree;
         beforeEach(function () {
             anonKeys = {
                 free: jest.fn(function () { }),
@@ -595,12 +557,19 @@ describe('triple masking (unit test)', function () {
                 dec_key: 'dec_key',
                 enc_key: 'enc_key',
             };
+            formattedAnonKeys = {
+                axfrPublicKey: anonKeys.axfr_public_key,
+                axfrSecretKey: anonKeys.axfr_secret_key,
+                decKey: anonKeys.dec_key,
+                encKey: anonKeys.enc_key,
+            };
             nodeLedger = {
                 foo: 'node',
                 gen_anon_keys: jest.fn(function () { return anonKeys; }),
             };
             spyGetLedger = jest.spyOn(NodeLedger, 'default');
-            spyGenAnonLeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+            spyGenAnonKeys = jest.spyOn(nodeLedger, 'gen_anon_keys');
+            spyKeysInstanceFree = jest.spyOn(anonKeys, 'free');
         });
         it('throw an error if could not get the anonKeys', function () { return __awaiter(void 0, void 0, void 0, function () {
             var genAnonKeysError;
@@ -609,7 +578,26 @@ describe('triple masking (unit test)', function () {
                     case 0:
                         genAnonKeysError = new Error('genAnonKeys error');
                         spyGetLedger.mockImplementationOnce(function () { return Promise.resolve(nodeLedger); });
-                        spyGenAnonLeys.mockImplementationOnce(function () { return Promise.reject(genAnonKeysError); });
+                        spyGenAnonKeys.mockImplementationOnce(function () { return Promise.reject(genAnonKeysError); });
+                        return [4 /*yield*/, expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message)];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('throw an error if could not get release the anonymous keys instance. [anonKeys.free]', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var genAnonKeysError, keysInstanceFreeError;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        genAnonKeysError = new Error('genAnonKeys error');
+                        keysInstanceFreeError = new Error('keysInstanceFreeError error');
+                        spyGetLedger.mockImplementationOnce(function () { return Promise.resolve(nodeLedger); });
+                        spyGenAnonKeys.mockImplementationOnce(function () { return Promise.reject(genAnonKeysError); });
+                        spyKeysInstanceFree.mockImplementationOnce(function () {
+                            throw keysInstanceFreeError;
+                        });
                         return [4 /*yield*/, expect(TripleMasking.genAnonKeys()).rejects.toThrowError(genAnonKeysError.message)];
                     case 1:
                         _a.sent();
@@ -623,17 +611,12 @@ describe('triple masking (unit test)', function () {
                 switch (_a.label) {
                     case 0:
                         spyGetLedger.mockImplementationOnce(function () { return Promise.resolve(nodeLedger); });
-                        spyGenAnonLeys.mockImplementationOnce(function () { return Promise.resolve(anonKeys); });
+                        spyGenAnonKeys.mockImplementationOnce(function () { return Promise.resolve(anonKeys); });
                         return [4 /*yield*/, TripleMasking.genAnonKeys()];
                     case 1:
                         result = _a.sent();
-                        expect(result.keysInstance).toBe(anonKeys);
-                        expect(result.formatted).toMatchObject({
-                            axfrPublicKey: anonKeys.axfr_public_key,
-                            axfrSecretKey: anonKeys.axfr_secret_key,
-                            decKey: anonKeys.dec_key,
-                            encKey: anonKeys.enc_key,
-                        });
+                        expect(result).toEqual(formattedAnonKeys);
+                        expect(spyKeysInstanceFree).toHaveBeenCalled();
                         return [2 /*return*/];
                 }
             });
@@ -654,12 +637,10 @@ describe('triple masking (unit test)', function () {
             };
             randomizers = ['1', '2', '3'];
             anonKeys = {
-                formatted: {
-                    axfrPublicKey: 'axfrPublicKey',
-                    axfrSecretKey: 'axfrSecretKey',
-                    decKey: 'decKey',
-                    encKey: 'encKey',
-                },
+                axfrPublicKey: 'axfrPublicKey',
+                axfrSecretKey: 'axfrSecretKey',
+                decKey: 'decKey',
+                encKey: 'encKey',
             };
             spyConsoleLog = jest.spyOn(console, 'log');
             spyCacheRead = jest.spyOn(factory_1.default, 'read');
@@ -673,7 +654,7 @@ describe('triple masking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(result).toMatchObject({
-                            anonKeysFormatted: anonKeys.formatted,
+                            anonKeysFormatted: anonKeys,
                             randomizers: randomizers,
                         });
                         expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
@@ -692,7 +673,7 @@ describe('triple masking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(result).toMatchObject({
-                            anonKeysFormatted: anonKeys.formatted,
+                            anonKeysFormatted: anonKeys,
                             randomizers: randomizers,
                         });
                         expect(spyConsoleLog).toHaveBeenCalledWith("Error reading the abarDataCache for " + walletInfo.address + ". Creating an empty object now");
@@ -711,7 +692,7 @@ describe('triple masking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(result).toMatchObject({
-                            anonKeysFormatted: anonKeys.formatted,
+                            anonKeysFormatted: anonKeys,
                             randomizers: randomizers,
                         });
                         expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for abarDataCache, \"" + cacheWriteError.message + "\"");
@@ -737,6 +718,7 @@ describe('triple masking (unit test)', function () {
             ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
             ownedAbars = [
                 {
+                    axfrPublicKey: 'formattedAxfrPublicKey',
                     randomizer: givenRandomizer,
                     abarData: {
                         atxoSid: atxoSid + '',

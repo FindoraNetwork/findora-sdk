@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.XPublicKey = exports.XfrPublicKey = exports.XfrKeyPair = exports.TxoRef = exports.TransferOperationBuilder = exports.TransactionBuilder = exports.TracingPolicy = exports.TracingPolicies = exports.OwnerMemo = exports.ClientAssetRecord = exports.AXfrPubKey = exports.AXfrKeyPair = exports.AssetTracerKeyPair = exports.AssetRules = exports.AnonKeys = exports.AnonBlindAssetRecord = void 0;
+exports.XSecretKey = exports.XPublicKey = exports.XfrPublicKey = exports.XfrKeyPair = exports.TxoRef = exports.TransferOperationBuilder = exports.TransactionBuilder = exports.TracingPolicy = exports.TracingPolicies = exports.OwnerMemo = exports.ClientAssetRecord = exports.AXfrPubKey = exports.AXfrKeyPair = exports.AssetTracerKeyPair = exports.AssetRules = exports.AnonKeys = exports.AnonBlindAssetRecord = void 0;
 var wasm_1 = require("findora-wallet-wasm/web/wasm");
 Object.defineProperty(exports, "AnonBlindAssetRecord", { enumerable: true, get: function () { return wasm_1.AnonBlindAssetRecord; } });
 Object.defineProperty(exports, "AnonKeys", { enumerable: true, get: function () { return wasm_1.AnonKeys; } });
@@ -18,4 +18,5 @@ Object.defineProperty(exports, "TxoRef", { enumerable: true, get: function () { 
 Object.defineProperty(exports, "XfrKeyPair", { enumerable: true, get: function () { return wasm_1.XfrKeyPair; } });
 Object.defineProperty(exports, "XfrPublicKey", { enumerable: true, get: function () { return wasm_1.XfrPublicKey; } });
 Object.defineProperty(exports, "XPublicKey", { enumerable: true, get: function () { return wasm_1.XPublicKey; } });
+Object.defineProperty(exports, "XSecretKey", { enumerable: true, get: function () { return wasm_1.XSecretKey; } });
 //# sourceMappingURL=types.js.map

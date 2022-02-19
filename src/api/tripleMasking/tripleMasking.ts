@@ -1,24 +1,27 @@
 import { CACHE_ENTRIES } from '../../config/cache';
 import Sdk from '../../Sdk';
+import { fromWei, plus } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import {
-  AnonBlindAssetRecord,
-  AnonKeys,
-  AXfrKeyPair,
-  AXfrPubKey,
-  TransactionBuilder,
-  XfrKeyPair,
-  XfrPublicKey,
-  XPublicKey,
-} from '../../services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
+import { getAssetDetails } from '../sdkAsset';
 import { getTransactionBuilder } from '../transaction';
 
-export const genAnonKeys = async (): Promise<FindoraWallet.AnonKeysResponse<AnonKeys>> => {
+interface BalanceInfo {
+  assetType: string;
+  amount: string;
+}
+
+interface AnonWalletBalanceInfo {
+  axfrPublicKey: string;
+  balances: BalanceInfo[];
+}
+
+export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> => {
   const ledger = await getLedger();
 
   try {
@@ -36,10 +39,13 @@ export const genAnonKeys = async (): Promise<FindoraWallet.AnonKeysResponse<Anon
       encKey,
     };
 
-    return {
-      keysInstance: anonKeys,
-      formatted: formattedAnonKeys,
-    };
+    try {
+      anonKeys.free();
+    } catch (error) {
+      throw new Error(`could not get release the anonymous keys instance  "${(error as Error).message}" `);
+    }
+
+    return formattedAnonKeys;
   } catch (err) {
     throw new Error(`could not get anon keys, "${err}" `);
   }
@@ -63,7 +69,7 @@ export const saveBarToAbarToCache = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
   randomizers: string[],
-  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
 ): Promise<FindoraWallet.BarToAbarData> => {
   const cacheDataToSave: CacheItem = {};
 
@@ -80,7 +86,7 @@ export const saveBarToAbarToCache = async (
   }
 
   const barToAbarData = {
-    anonKeysFormatted: anonKeys.formatted,
+    anonKeysFormatted: anonKeys,
     randomizers,
   };
 
@@ -105,14 +111,35 @@ export const saveOwnedAbarsToCache = async (
   ownedAbars: FindoraWallet.OwnedAbarItem[],
   savePath?: string,
 ): Promise<boolean> => {
+  const cacheDataToSave: CacheItem = {};
+
   const cacheEntryName = `${CACHE_ENTRIES.OWNED_ABARS}_${walletInfo.address}`;
 
   const fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
 
   const resolvedFullPathToCacheEntry = savePath || fullPathToCacheEntry;
 
+  const [ownedAbarItem] = ownedAbars;
+
+  const { abarData } = ownedAbarItem;
+
+  const { atxoSid } = abarData;
+  cacheDataToSave[`atxoSid_${atxoSid}`] = ownedAbars;
+
+  let abarDataCache = {};
+
   try {
-    await Cache.write(resolvedFullPathToCacheEntry, ownedAbars, Sdk.environment.cacheProvider);
+    abarDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
+  } catch (error) {
+    console.log(`Error reading the ownedAbarsCache for ${walletInfo.address}. Creating an empty object now`);
+  }
+
+  try {
+    await Cache.write(
+      resolvedFullPathToCacheEntry,
+      { ...abarDataCache, ...cacheDataToSave },
+      Sdk.environment.cacheProvider,
+    );
   } catch (error) {
     const err: Error = error as Error;
     console.log(`Could not write cache for ownedAbarsCache, "${err.message}"`);
@@ -125,7 +152,7 @@ export const saveOwnedAbarsToCache = async (
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
-  anonKeys: FindoraWallet.AnonKeysResponse<AnonKeys>,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
 ): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
   let transactionBuilder = await getTransactionBuilder();
@@ -165,9 +192,9 @@ export const barToAbar = async (
   let encKey;
 
   try {
-    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(anonKeys.formatted.axfrPublicKey);
+    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(anonKeys.axfrPublicKey);
 
-    encKey = await Keypair.getXPublicKeyByBase64(anonKeys.formatted.encKey);
+    encKey = await Keypair.getXPublicKeyByBase64(anonKeys.encKey);
   } catch (error) {
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
@@ -186,7 +213,7 @@ export const barToAbar = async (
   }
 
   // try {
-  //   transactionBuilder = transactionBuilder.add_fee_relative_auto(walletInfo.keypair);
+  //   transactionBuilder = transactionBuilder.add_fee()
   // } catch (error) {
   //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
   // }
@@ -203,12 +230,6 @@ export const barToAbar = async (
     throw new Error(`list of randomizers strings is empty `);
   }
 
-  try {
-    anonKeys.keysInstance.free();
-  } catch (error) {
-    throw new Error(`could not get release the anonymous keys instance  "${(error as Error).message}" `);
-  }
-
   let barToAbarData: FindoraWallet.BarToAbarData;
 
   try {
@@ -218,6 +239,200 @@ export const barToAbar = async (
   }
 
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
+};
+
+export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
+  const checkSpentResult = await Network.checkNullifierHashSpent(hash);
+
+  const { response: checkSpentResponse, error: checkSpentError } = checkSpentResult;
+
+  if (checkSpentError) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - ${checkSpentError.message}`);
+  }
+
+  if (checkSpentResponse === undefined) {
+    throw new Error(`Could not check if hash "${hash} is spent", Error - Response is undefined`);
+  }
+
+  return checkSpentResponse;
+};
+
+export const getUnspentAbars = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenRandomizersList: string[],
+) => {
+  const { axfrPublicKey, axfrSecretKey, decKey } = anonKeys;
+
+  const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
+
+  for (let givenRandomizer of givenRandomizersList) {
+    const ownedAbarsResponse = await getOwnedAbars(axfrPublicKey, givenRandomizer);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
+
+    const [ownedAbarItem] = ownedAbarsResponse;
+
+    const { abarData } = ownedAbarItem;
+
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await genNullifierHash(parseInt(atxoSid), ownedAbar, axfrSecretKey, decKey, givenRandomizer);
+
+    const isAbarSpent = await isNullifierHashSpent(hash);
+
+    if (!isAbarSpent) {
+      unspentAbars.push({ ...ownedAbarItem });
+    }
+  }
+
+  return unspentAbars;
+};
+
+export const openAbar = async (
+  abar: FindoraWallet.OwnedAbarItem,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+): Promise<FindoraWallet.OpenedAbarInfo> => {
+  const ledger = await getLedger();
+  const { axfrSecretKey, decKey } = anonKeys;
+
+  const { abarData } = abar;
+  const { atxoSid, ownedAbar } = abarData;
+
+  const abarOwnerMemoResult = await Network.getAbarOwnerMemo(parseInt(atxoSid));
+
+  const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+  }
+
+  let abarOwnerMemo;
+
+  try {
+    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+  } catch (error) {
+    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+  }
+
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
+
+  const mTLeafInfoResult = await Network.getMTLeafInfo(parseInt(atxoSid));
+
+  const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
+
+  if (mTLeafInfoError) {
+    throw new Error(
+      `Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - ${mTLeafInfoError.message}`,
+    );
+  }
+
+  if (!mTLeafInfo) {
+    throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
+  }
+
+  let myMTLeafInfo;
+
+  try {
+    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+  } catch (error) {
+    throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
+  }
+
+  let myOwnedAbar;
+
+  try {
+    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+  } catch (error) {
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+  }
+
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
+
+  const openedAbar: FindoraWallet.OpenedAbar = ledger.get_open_abar(
+    myOwnedAbar,
+    abarOwnerMemo,
+    aXfrKeyPair,
+    secretDecKey,
+    myMTLeafInfo,
+  );
+
+  const { amount, asset_type } = openedAbar;
+
+  const assetCode = ledger.asset_type_from_jsvalue(asset_type);
+
+  const item = {
+    amount,
+    assetType: assetCode,
+    abar: openedAbar,
+  };
+
+  return item;
+};
+
+export const getBalanceMaps = async (
+  unspentAbars: FindoraWallet.OwnedAbarItem[],
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+) => {
+  const assetDetailsMap: { [key: string]: FindoraWallet.IAsset } = {};
+  const balancesMap: { [key: string]: string } = {};
+  const usedAssets = [];
+
+  for (let abar of unspentAbars) {
+    const openedAbarItem = await openAbar(abar, anonKeys);
+
+    const { amount, assetType } = openedAbarItem;
+
+    if (!assetDetailsMap[assetType]) {
+      const asset = await getAssetDetails(assetType);
+      usedAssets.push(assetType);
+      assetDetailsMap[assetType] = asset;
+    }
+
+    if (!balancesMap[assetType]) {
+      balancesMap[assetType] = '0';
+    }
+
+    balancesMap[assetType] = plus(balancesMap[assetType], amount).toString();
+  }
+
+  return {
+    assetDetailsMap,
+    balancesMap,
+    usedAssets,
+  };
+};
+
+export const getBalance = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenRandomizersList: string[],
+) => {
+  const unspentAbars = await getUnspentAbars(anonKeys, givenRandomizersList);
+  const balances = await getAbarBalance(unspentAbars, anonKeys);
+  return balances;
+};
+
+export const getAbarBalance = async (
+  unspentAbars: FindoraWallet.OwnedAbarItem[],
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+) => {
+  const maps = await getBalanceMaps(unspentAbars, anonKeys);
+  const { axfrPublicKey } = anonKeys;
+
+  const { assetDetailsMap, balancesMap, usedAssets } = maps;
+
+  const balances: BalanceInfo[] = [];
+
+  for (let assetType of usedAssets) {
+    const decimals = assetDetailsMap[assetType].assetRules.decimals;
+    const amount = fromWei(balancesMap[assetType], decimals).toFormat(decimals);
+    balances.push({ assetType, amount });
+  }
+
+  const balanceInfo: AnonWalletBalanceInfo = {
+    axfrPublicKey,
+    balances,
+  };
+
+  return balanceInfo;
 };
 
 export const getOwnedAbars = async (
@@ -230,6 +445,7 @@ export const getOwnedAbars = async (
   const randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
 
   const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(randomizedPubKey);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
 
   if (error) {
     throw new Error(error.message);
@@ -243,6 +459,7 @@ export const getOwnedAbars = async (
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
     const abar = {
+      axfrPublicKey: formattedAxfrPublicKey,
       randomizer: givenRandomizer,
       abarData: {
         atxoSid: atxoSid + '',
@@ -253,23 +470,6 @@ export const getOwnedAbars = async (
   });
 
   return result;
-};
-
-export const isNullifierHashSpent = async (hash: string) => {
-  const checkSpentResult = await Network.checkNullifierHashSpent(hash);
-  console.log('🚀 ~ file: run.ts ~ line 1267 ~ validateUnspent ~ checkSpentResult', checkSpentResult);
-
-  const { response: checkSpentResponse, error: checkSpentError } = checkSpentResult;
-
-  if (checkSpentError) {
-    throw new Error(`Could not check if hash "${hash} is spent", Error - ${checkSpentError.message}`);
-  }
-
-  if (checkSpentResponse === undefined) {
-    throw new Error(`Could not check if hash "${hash} is spent", Error - Response is undefined`);
-  }
-
-  return checkSpentResponse;
 };
 
 export const genNullifierHash = async (
@@ -297,15 +497,15 @@ export const genNullifierHash = async (
     throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
   }
 
-  const aXfrKeyPairForRandomizing = await Keypair.getAXfrKeyPair(axfrSecretKey);
-  const aXfrKeyPair = await Keypair.getAXfrKeyPair(axfrSecretKey);
+  const aXfrKeyPairForRandomizing = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
 
   const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(
     aXfrKeyPairForRandomizing,
     randomizer,
   );
 
-  const randomizeAxfrKeypair = await Keypair.getAXfrKeyPair(randomizeAxfrKeypairString);
+  const randomizeAxfrKeypair = await Keypair.getAXfrPrivateKeyByBase64(randomizeAxfrKeypairString);
 
   const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
 

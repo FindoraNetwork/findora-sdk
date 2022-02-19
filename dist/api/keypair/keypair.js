@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getXPublicKeyByBase64 = exports.getRandomizeAxfrKeypair = exports.getAXfrKeyPair = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
+exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getRandomizeAxfrKeypair = exports.getXPrivateKeyByBase64 = exports.getXPublicKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -184,9 +184,6 @@ var getPublicKeyByXfr = function (publicKey) { return __awaiter(void 0, void 0, 
     });
 }); };
 exports.getPublicKeyByXfr = getPublicKeyByXfr;
-/**
- * @todo Add unit test
- */
 var getAXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, toPublickey;
     return __generator(this, function (_a) {
@@ -206,7 +203,7 @@ var getAXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, v
     });
 }); };
 exports.getAXfrPublicKeyByBase64 = getAXfrPublicKeyByBase64;
-var getAXfrKeyPair = function (savedKeyPair) { return __awaiter(void 0, void 0, void 0, function () {
+var getAXfrPrivateKeyByBase64 = function (privateKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, aXfrKeyPair;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -214,7 +211,7 @@ var getAXfrKeyPair = function (savedKeyPair) { return __awaiter(void 0, void 0, 
             case 1:
                 ledger = _a.sent();
                 try {
-                    aXfrKeyPair = ledger.axfr_keypair_from_string(savedKeyPair);
+                    aXfrKeyPair = ledger.axfr_keypair_from_string(privateKey);
                     return [2 /*return*/, aXfrKeyPair];
                 }
                 catch (err) {
@@ -224,29 +221,7 @@ var getAXfrKeyPair = function (savedKeyPair) { return __awaiter(void 0, void 0, 
         }
     });
 }); };
-exports.getAXfrKeyPair = getAXfrKeyPair;
-var getRandomizeAxfrKeypair = function (aXfrKeyPair, randomizer) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, randomizedAXfrKeyPair;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                try {
-                    randomizedAXfrKeyPair = ledger.randomize_axfr_keypair(aXfrKeyPair, randomizer);
-                    return [2 /*return*/, randomizedAXfrKeyPair];
-                }
-                catch (err) {
-                    throw new Error("could not get randomized string from the AXfrKeyPair, \"" + err + "\" ");
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.getRandomizeAxfrKeypair = getRandomizeAxfrKeypair;
-/**
- * @todo Add unit test
- */
+exports.getAXfrPrivateKeyByBase64 = getAXfrPrivateKeyByBase64;
 var getXPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, toPublickey;
     return __generator(this, function (_a) {
@@ -266,6 +241,44 @@ var getXPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void
     });
 }); };
 exports.getXPublicKeyByBase64 = getXPublicKeyByBase64;
+var getXPrivateKeyByBase64 = function (privateKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, toPrivateKey;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                try {
+                    toPrivateKey = ledger.x_secretkey_from_string(privateKey);
+                    return [2 /*return*/, toPrivateKey];
+                }
+                catch (err) {
+                    throw new Error("could not get XSecretKey by base64 private key, \"" + err + "\" ");
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getXPrivateKeyByBase64 = getXPrivateKeyByBase64;
+var getRandomizeAxfrKeypair = function (aXfrKeyPair, randomizer) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, randomizedAXfrKeyPair;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                try {
+                    randomizedAXfrKeyPair = ledger.randomize_axfr_keypair(aXfrKeyPair, randomizer);
+                    return [2 /*return*/, randomizedAXfrKeyPair];
+                }
+                catch (err) {
+                    throw new Error("could not get randomized string from the AXfrKeyPair, \"" + err + "\" ");
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getRandomizeAxfrKeypair = getRandomizeAxfrKeypair;
 var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, publickey;
     return __generator(this, function (_a) {
