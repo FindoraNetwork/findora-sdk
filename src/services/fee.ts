@@ -2,8 +2,25 @@ import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import * as AssetApi from '../api/sdkAsset';
 import { getLedger } from './ledger/ledgerWrapper';
-import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
+import {
+  ClientAssetRecord,
+  FeeInputs,
+  OwnerMemo,
+  TracingPolicies,
+  TransferOperationBuilder,
+  TxoRef,
+  XfrKeyPair,
+  XfrPublicKey,
+} from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
+
+interface FeeInputPayloadType {
+  txoRef: TxoRef;
+  assetRecord: ClientAssetRecord;
+  ownerMemo: OwnerMemo | undefined;
+  keypair: XfrKeyPair;
+  amount: BigInt;
+}
 
 export interface ReciverInfo {
   utxoNumbers: BigInt;
@@ -144,6 +161,43 @@ export const getTransferOperation = async (
   return transferOp;
 };
 
+export const getPayloadForFeeInputs = async (
+  walletInfo: WalletKeypar,
+  utxoInputs: UtxoInputsInfo,
+): Promise<FeeInputPayloadType[]> => {
+  const ledger = await getLedger();
+
+  const feeInputsPayload: FeeInputPayloadType[] = [];
+
+  const { inputParametersList, inputAmount } = utxoInputs;
+
+  const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
+    const { txoRef, assetRecord, amount, sid } = inputParameters;
+
+    const memoDataResult = await Network.getOwnerMemo(sid);
+
+    const { response: myMemoData, error: memoError } = memoDataResult;
+
+    if (memoError) {
+      throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
+    }
+
+    const ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+
+    feeInputsPayload.push({
+      txoRef,
+      assetRecord,
+      ownerMemo: ownerMemo?.clone(),
+      keypair: walletInfo.keypair,
+      amount,
+    });
+  });
+
+  await Promise.all(inputPromise);
+
+  return feeInputsPayload;
+};
+
 export const buildTransferOperationWithFee = async (
   walletInfo: WalletKeypar,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
@@ -186,6 +240,54 @@ export const buildTransferOperationWithFee = async (
   return trasferOperation;
 };
 
+export const getFeeInputs = async (walletInfo: WalletKeypar): Promise<FeeInputs> => {
+  const ledger = await getLedger();
+
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('No sids were fetched');
+  }
+
+  // const utxoDataList = await addUtxo(walletInfo, sids);
+  const utxoDataList = await addUtxo(walletInfo, [46]);
+
+  const minimalFee = await AssetApi.getMinimalFee();
+
+  const fraAssetCode = await AssetApi.getFraAssetCode();
+
+  const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
+  console.log('🚀 ~ file: fee.ts ~ line 261 ~ getFeeInputs ~ sendUtxoList', sendUtxoList);
+
+  const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+
+  const feeInputsPayload = await getPayloadForFeeInputs(walletInfo, utxoInputsInfo);
+
+  console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
+
+  // const [firstItem] = feeInputsPayload;
+
+  // const { amount, txoRef, assetRecord, ownerMemo, keypair } = firstItem;
+  // let ff = ledger.FeeInputs.new();
+  // let ff2 = ff.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
+  // console.log('🚀 ~ file: fee.ts ~ line 385 ~ ff', ff);
+  // console.log('🚀 ~ file: fee.ts ~ line 385 ~ ff2', ff2);
+
+  let feeInputs = ledger.FeeInputs.new();
+
+  feeInputsPayload.forEach(payloadItem => {
+    const { amount, txoRef, assetRecord, ownerMemo, keypair } = payloadItem;
+    feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
+    console.log('🚀 ~ file: fee.ts ~ line 385 ~ feeInputs', feeInputs);
+  });
+
+  console.log('hey!!!');
+
+  return feeInputs;
+};
+
 export const buildTransferOperation = async (
   walletInfo: WalletKeypar,
   recieversInfo: ReciverInfo[],
@@ -218,49 +320,3 @@ export const buildTransferOperation = async (
 
   return transferOperationBuilder;
 };
-
-// interface preparedOperation {
-//   walletInfo: WalletKeypar;
-//   utxoInputs: UtxoInputsInfo;
-//   recieversInfo: ReciverInfo[];
-//   assetCode: string;
-// }
-
-//combine it with buildTransferOperation and buildTransferOperationWithFee
-// export const buildOperation = async (
-//   walletInfo: WalletKeypar,
-//   recieversInfo: ReciverInfo[],
-//   assetCode: string,
-// ): Promise<preparedOperation> => {
-//   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-
-//   const { response: sids } = sidsResult;
-
-//   if (!sids) {
-//     throw new Error('No sids were fetched');
-//   }
-
-//   const totalUtxoNumbers = recieversInfo.reduce((acc, receiver) => {
-//     return BigInt(Number(receiver.utxoNumbers) + Number(acc));
-//   }, BigInt(0));
-
-//   const utxoDataList = await addUtxo(walletInfo, sids);
-
-//   const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
-
-//   const utxoInputs = await addUtxoInputs(sendUtxoList);
-
-//   // const transferOperationBuilder = await getTransferOperation(
-//   //   walletInfo,
-//   //   utxoInputsInfo,
-//   //   recieversInfo,
-//   //   assetCode,
-//   // );
-
-//   return {
-//     walletInfo,
-//     utxoInputs,
-//     recieversInfo,
-//     assetCode,
-//   };
-// };

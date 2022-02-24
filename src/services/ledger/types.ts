@@ -6,6 +6,7 @@ export {
   AXfrKeyPair,
   AXfrPubKey,
   ClientAssetRecord,
+  FeeInputs,
   OwnerMemo,
   TracingPolicies,
   TracingPolicy,

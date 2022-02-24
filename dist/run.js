@@ -77,6 +77,7 @@ var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
+var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
@@ -92,10 +93,10 @@ var sdkEnv = {
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-    cacheProvider: providers_1.FileCacheProvider,
+    // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    // cacheProvider: MemoryCacheProvider,
+    cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
 /**
@@ -1307,7 +1308,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 10;
+                sid = 47;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1390,8 +1391,8 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
                 givenRandomizersList = [
-                    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
-                    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+                    '7LN9u3NvhtnSvSJp9pstWS4F8K4Gev2h8cKkT39Si9Zp',
+                    '8G4EGtTYSY7yrwiC8QCMqQbxDgAJvGYCwGYxxDJYG1Ch',
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
             case 1:
@@ -1401,11 +1402,31 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         }
     });
 }); };
+var getFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, walletInfo, feeInputsPayload;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '1234';
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo)];
+            case 2:
+                feeInputsPayload = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
 getAbarBalance();
+// getFee();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

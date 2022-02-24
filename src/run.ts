@@ -6,6 +6,7 @@ import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
+import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import * as UtxoHelper from './services/utxoHelper';
 
@@ -24,10 +25,10 @@ const sdkEnv = {
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-  cacheProvider: FileCacheProvider,
+  // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
-  // cacheProvider: MemoryCacheProvider,
+  cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
 
@@ -1199,7 +1200,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 10;
+  const sid = 47;
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1284,12 +1285,24 @@ const getAbarBalance = async () => {
 
   // const givenRandomizersList = myGivenRandomizersList; //
   const givenRandomizersList = [
-    'HsJ79NN655amzK5xYQpQMLnY8BSkh6KTwB6goGGUuqUv',
-    'Gg3KJ1sqcoVFw3DcHKb69kwg1rYxPKYXZ9tBpFHe878w',
+    '7LN9u3NvhtnSvSJp9pstWS4F8K4Gev2h8cKkT39Si9Zp',
+    '8G4EGtTYSY7yrwiC8QCMqQbxDgAJvGYCwGYxxDJYG1Ch',
   ];
 
   const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+};
+
+const getFee = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
+
+  const feeInputsPayload = await getFeeInputs(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
 // getFraBalance();
@@ -1297,6 +1310,7 @@ const getAbarBalance = async () => {
 // barToAbar();
 // getUnspentAbars();
 getAbarBalance();
+// getFee();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

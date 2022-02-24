@@ -74,6 +74,7 @@ var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
+var fee_1 = require("../../services/fee");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
@@ -215,7 +216,7 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
 }); };
 exports.saveOwnedAbarsToCache = saveOwnedAbarsToCache;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_5, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_6, randomizers, barToAbarData, error_7;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_5, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_6, feeInputs, error_7, randomizers, barToAbarData, error_8;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -251,6 +252,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 catch (error) {
                     throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error.message);
                 }
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 184 ~ ownerMemo', ownerMemo);
                 _b.label = 8;
             case 8:
                 _b.trys.push([8, 11, , 12]);
@@ -271,6 +273,23 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 catch (error) {
                     throw new Error("Could not add bar to abar operation\", Error - " + error.message);
                 }
+                _b.label = 13;
+            case 13:
+                _b.trys.push([13, 15, , 16]);
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo)];
+            case 14:
+                feeInputs = _b.sent();
+                return [3 /*break*/, 16];
+            case 15:
+                error_7 = _b.sent();
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_7.message);
+            case 16:
+                try {
+                    transactionBuilder = transactionBuilder.add_fee(feeInputs);
+                }
+                catch (error) {
+                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error.message);
+                }
                 try {
                     randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
                 }
@@ -280,17 +299,17 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 if (!((_a = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _a === void 0 ? void 0 : _a.length)) {
                     throw new Error("list of randomizers strings is empty ");
                 }
-                _b.label = 13;
-            case 13:
-                _b.trys.push([13, 15, , 16]);
+                _b.label = 17;
+            case 17:
+                _b.trys.push([17, 19, , 20]);
                 return [4 /*yield*/, (0, exports.saveBarToAbarToCache)(walletInfo, sid, randomizers.randomizers, anonKeys)];
-            case 14:
+            case 18:
                 barToAbarData = _b.sent();
-                return [3 /*break*/, 16];
-            case 15:
-                error_7 = _b.sent();
-                throw new Error("Could not save cache for bar to abar. Details: " + error_7.message);
-            case 16: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
+                return [3 /*break*/, 20];
+            case 19:
+                error_8 = _b.sent();
+                throw new Error("Could not save cache for bar to abar. Details: " + error_8.message);
+            case 20: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });
 }); };

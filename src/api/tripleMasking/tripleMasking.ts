@@ -3,6 +3,7 @@ import Sdk from '../../Sdk';
 import { fromWei, plus } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
+import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
@@ -212,11 +213,21 @@ export const barToAbar = async (
     throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
   }
 
-  // try {
-  //   transactionBuilder = transactionBuilder.add_fee()
-  // } catch (error) {
-  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
-  // }
+  let feeInputs;
+
+  try {
+    feeInputs = await getFeeInputs(walletInfo);
+  } catch (error) {
+    throw new Error(
+      `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
+    );
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_fee(feeInputs);
+  } catch (error) {
+    throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  }
 
   let randomizers: { randomizers: string[] };
 
