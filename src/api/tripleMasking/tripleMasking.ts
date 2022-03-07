@@ -150,6 +150,96 @@ export const saveOwnedAbarsToCache = async (
   return true;
 };
 
+export const abarToAbar = async (
+  atxoSid: number,
+  ownedAbar: FindoraWallet.OwnedAbar,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+) => {
+  const ledger = await getLedger();
+  let transactionBuilder = await getTransactionBuilder();
+
+  let myOwnedAbar;
+
+  try {
+    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+  } catch (error) {
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+  }
+
+  const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+
+  const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+  }
+
+  let abarOwnerMemo;
+
+  try {
+    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+  } catch (error) {
+    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+  }
+
+  const { axfrSecretKey, decKey } = anonKeys;
+
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
+
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
+
+  const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
+
+  const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
+
+  if (mTLeafInfoError) {
+    throw new Error(
+      `Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - ${mTLeafInfoError.message}`,
+    );
+  }
+
+  if (!mTLeafInfo) {
+    throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
+  }
+
+  let myMTLeafInfo;
+
+  try {
+    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+  } catch (error) {
+    throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
+  }
+
+  let axfrPublicKeyReceiver;
+  let encKeyReceiver;
+
+  try {
+    axfrPublicKeyReceiver = await Keypair.getAXfrPublicKeyByBase64(anonKeysReceiver.axfrPublicKey);
+
+    encKeyReceiver = await Keypair.getXPublicKeyByBase64(anonKeysReceiver.encKey);
+  } catch (error) {
+    throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
+  }
+
+  const to_amount = BigInt(1);
+
+  try {
+    transactionBuilder = transactionBuilder.add_operation_anon_transfer(
+      myOwnedAbar,
+      abarOwnerMemo,
+      myMTLeafInfo,
+      aXfrKeyPair,
+      secretDecKey,
+      axfrPublicKeyReceiver,
+      encKeyReceiver,
+      to_amount,
+    );
+  } catch (error) {
+    throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
+  }
+};
+
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
@@ -216,12 +306,13 @@ export const barToAbar = async (
   let feeInputs;
 
   try {
-    feeInputs = await getFeeInputs(walletInfo);
+    feeInputs = await getFeeInputs(walletInfo, sid);
   } catch (error) {
     throw new Error(
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
     );
   }
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
 
   try {
     transactionBuilder = transactionBuilder.add_fee(feeInputs);

@@ -89,10 +89,10 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '12345';
 
-  // const pkey = PKEY_LOCAL_FAUCET;
+  const pkey = PKEY_LOCAL_FAUCET;
   // const pkey = PKEY_MINE;
   // const pkey = PKEY_MINE3;
-  const pkey = ENG_PKEY;
+  // const pkey = ENG_PKEY;
 
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
@@ -1200,7 +1200,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 47;
+  const sid = 17;
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1301,15 +1301,15 @@ const getFee = async () => {
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
 
-  const feeInputsPayload = await getFeeInputs(walletInfo);
+  const feeInputsPayload = await getFeeInputs(walletInfo, 11);
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
 // getFraBalance();
 // getAnonKeys();
-// barToAbar();
+barToAbar();
 // getUnspentAbars();
-getAbarBalance();
+// getAbarBalance();
 // getFee();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
