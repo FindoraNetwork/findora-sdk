@@ -144,7 +144,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '12345';
-                pkey = ENG_PKEY;
+                pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1308,7 +1308,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 47;
+                sid = 17;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1413,7 +1413,7 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
             case 1:
                 walletInfo = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
-                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo)];
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, 11)];
             case 2:
                 feeInputsPayload = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
@@ -1423,9 +1423,9 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 // getFraBalance();
 // getAnonKeys();
-// barToAbar();
+barToAbar();
 // getUnspentAbars();
-getAbarBalance();
+// getAbarBalance();
 // getFee();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);

@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getUnspentAbars = exports.isNullifierHashSpent = exports.barToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getUnspentAbars = exports.isNullifierHashSpent = exports.barToAbar = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
@@ -215,8 +215,84 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
     });
 }); };
 exports.saveOwnedAbarsToCache = saveOwnedAbarsToCache;
+var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, transactionBuilder, myOwnedAbar, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, axfrSecretKey, decKey, aXfrKeyPair, secretDecKey, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, axfrPublicKeyReceiver, encKeyReceiver, error_5, to_amount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
+            case 2:
+                transactionBuilder = _a.sent();
+                try {
+                    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error.message);
+                }
+                return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
+            case 3:
+                abarOwnerMemoResult = _a.sent();
+                myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
+                if (memoError) {
+                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
+                }
+                try {
+                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+                }
+                catch (error) {
+                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
+                }
+                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey;
+                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
+            case 4:
+                aXfrKeyPair = _a.sent();
+                secretDecKey = ledger.x_secretkey_from_string(decKey);
+                return [4 /*yield*/, Network.getMTLeafInfo(atxoSid)];
+            case 5:
+                mTLeafInfoResult = _a.sent();
+                mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
+                if (mTLeafInfoError) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
+                }
+                if (!mTLeafInfo) {
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
+                }
+                try {
+                    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+                }
+                catch (error) {
+                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
+                }
+                _a.label = 6;
+            case 6:
+                _a.trys.push([6, 9, , 10]);
+                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(anonKeysReceiver.axfrPublicKey)];
+            case 7:
+                axfrPublicKeyReceiver = _a.sent();
+                return [4 /*yield*/, Keypair.getXPublicKeyByBase64(anonKeysReceiver.encKey)];
+            case 8:
+                encKeyReceiver = _a.sent();
+                return [3 /*break*/, 10];
+            case 9:
+                error_5 = _a.sent();
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_5.message);
+            case 10:
+                to_amount = BigInt(1);
+                try {
+                    transactionBuilder = transactionBuilder.add_operation_anon_transfer(myOwnedAbar, abarOwnerMemo, myMTLeafInfo, aXfrKeyPair, secretDecKey, axfrPublicKeyReceiver, encKeyReceiver, to_amount);
+                }
+                catch (error) {
+                    throw new Error("Could not add bar to abar operation\", Error - " + error.message);
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.abarToAbar = abarToAbar;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_5, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_6, feeInputs, error_7, randomizers, barToAbarData, error_8;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, error_8, randomizers, barToAbarData, error_9;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -236,7 +312,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 item = utxoItem;
                 return [3 /*break*/, 6];
             case 5:
-                error_5 = _b.sent();
+                error_6 = _b.sent();
                 throw new Error("could not fetch utxo for sid " + sid);
             case 6: return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 7:
@@ -252,7 +328,6 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 catch (error) {
                     throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error.message);
                 }
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 184 ~ ownerMemo', ownerMemo);
                 _b.label = 8;
             case 8:
                 _b.trys.push([8, 11, , 12]);
@@ -264,8 +339,8 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 encKey = _b.sent();
                 return [3 /*break*/, 12];
             case 11:
-                error_6 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_6.message);
+                error_7 = _b.sent();
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_7.message);
             case 12:
                 try {
                     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), encKey);
@@ -276,14 +351,15 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 _b.label = 13;
             case 13:
                 _b.trys.push([13, 15, , 16]);
-                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo)];
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, sid)];
             case 14:
                 feeInputs = _b.sent();
                 return [3 /*break*/, 16];
             case 15:
-                error_7 = _b.sent();
-                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_7.message);
+                error_8 = _b.sent();
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_8.message);
             case 16:
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
                 try {
                     transactionBuilder = transactionBuilder.add_fee(feeInputs);
                 }
@@ -307,8 +383,8 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 barToAbarData = _b.sent();
                 return [3 /*break*/, 20];
             case 19:
-                error_8 = _b.sent();
-                throw new Error("Could not save cache for bar to abar. Details: " + error_8.message);
+                error_9 = _b.sent();
+                throw new Error("Could not save cache for bar to abar. Details: " + error_9.message);
             case 20: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });

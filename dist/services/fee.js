@@ -257,8 +257,8 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
     });
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
-var getFeeInputs = function (walletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
+var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, sidsResult, sids, filteredSids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -268,10 +268,13 @@ var getFeeInputs = function (walletInfo) { return __awaiter(void 0, void 0, void
             case 2:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
+                console.log('🚀 ~ file: fee.ts ~ line 249 ~ getFeeInputs ~ sids', sids);
                 if (!sids) {
                     throw new Error('No sids were fetched');
                 }
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [46])];
+                filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
+                console.log('🚀 ~ file: fee.ts ~ line 256 ~ getFeeInputs ~ filteredSids', filteredSids);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [11])];
             case 3:
                 utxoDataList = _a.sent();
                 return [4 /*yield*/, AssetApi.getMinimalFee()];
@@ -289,13 +292,14 @@ var getFeeInputs = function (walletInfo) { return __awaiter(void 0, void 0, void
             case 7:
                 feeInputsPayload = _a.sent();
                 console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
-                feeInputs = ledger.FeeInputs.new();
+                feeInputs = new ledger.FeeInputs();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
                     feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
                     console.log('🚀 ~ file: fee.ts ~ line 385 ~ feeInputs', feeInputs);
                 });
                 console.log('hey!!!');
+                console.log('🚀 ~ file: fee.ts ~ line 282 ~ getFeeInputs ~ feeInputs!!!', feeInputs);
                 return [2 /*return*/, feeInputs];
         }
     });
