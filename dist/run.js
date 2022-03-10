@@ -1308,7 +1308,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 17;
+                sid = 27;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1391,8 +1391,8 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
                 givenRandomizersList = [
-                    '7LN9u3NvhtnSvSJp9pstWS4F8K4Gev2h8cKkT39Si9Zp',
-                    '8G4EGtTYSY7yrwiC8QCMqQbxDgAJvGYCwGYxxDJYG1Ch',
+                    '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9',
+                    'Ex9j17dDuGPS8pxNnTj3arWRHjRQWwub9Ni4TkcMqt39', // 4 FRA
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
             case 1:

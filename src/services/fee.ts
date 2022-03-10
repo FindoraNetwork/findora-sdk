@@ -255,7 +255,7 @@ export const getFeeInputs = async (walletInfo: WalletKeypar, excludeSid: number)
   console.log('🚀 ~ file: fee.ts ~ line 256 ~ getFeeInputs ~ filteredSids', filteredSids);
 
   // const utxoDataList = await addUtxo(walletInfo, sids);
-  const utxoDataList = await addUtxo(walletInfo, [11]);
+  const utxoDataList = await addUtxo(walletInfo, [5, 2]);
 
   const minimalFee = await AssetApi.getMinimalFee();
 
@@ -270,7 +270,7 @@ export const getFeeInputs = async (walletInfo: WalletKeypar, excludeSid: number)
 
   console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
 
-  let feeInputs = new ledger.FeeInputs();
+  let feeInputs = ledger.FeeInputs.new();
 
   feeInputsPayload.forEach(payloadItem => {
     const { amount, txoRef, assetRecord, ownerMemo, keypair } = payloadItem;

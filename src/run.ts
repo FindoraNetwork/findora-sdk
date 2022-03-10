@@ -1200,7 +1200,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 17;
+  const sid = 27;
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1285,8 +1285,8 @@ const getAbarBalance = async () => {
 
   // const givenRandomizersList = myGivenRandomizersList; //
   const givenRandomizersList = [
-    '7LN9u3NvhtnSvSJp9pstWS4F8K4Gev2h8cKkT39Si9Zp',
-    '8G4EGtTYSY7yrwiC8QCMqQbxDgAJvGYCwGYxxDJYG1Ch',
+    '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9', // 1 FRA
+    'Ex9j17dDuGPS8pxNnTj3arWRHjRQWwub9Ni4TkcMqt39', // 4 FRA
   ];
 
   const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);

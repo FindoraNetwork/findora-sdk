@@ -274,7 +274,7 @@ var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, 
                 }
                 filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
                 console.log('🚀 ~ file: fee.ts ~ line 256 ~ getFeeInputs ~ filteredSids', filteredSids);
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [11])];
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [5, 2])];
             case 3:
                 utxoDataList = _a.sent();
                 return [4 /*yield*/, AssetApi.getMinimalFee()];
@@ -292,7 +292,7 @@ var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, 
             case 7:
                 feeInputsPayload = _a.sent();
                 console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
-                feeInputs = new ledger.FeeInputs();
+                feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
                     feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
