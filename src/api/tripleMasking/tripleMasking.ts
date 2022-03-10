@@ -222,7 +222,7 @@ export const abarToAbar = async (
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
 
-  const to_amount = BigInt(1);
+  const to_amount = BigInt(1); // 1 FRA as well
 
   try {
     transactionBuilder = transactionBuilder.add_operation_anon_transfer(
@@ -236,8 +236,35 @@ export const abarToAbar = async (
       to_amount,
     );
   } catch (error) {
-    throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
+    throw new Error(`Could not add abar transfer operation", Error - ${(error as Error).message}`);
   }
+
+  let randomizers: { randomizers: string[] };
+
+  try {
+    randomizers = transactionBuilder?.get_randomizers();
+  } catch (err) {
+    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
+  }
+
+  if (!randomizers?.randomizers?.length) {
+    throw new Error(`list of randomizers strings is empty `);
+  }
+
+  // let barToAbarData: FindoraWallet.BarToAbarData;
+
+  // try {
+  //   barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
+  // } catch (error) {
+  //   throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
+  // }
+
+  const barToAbarData: FindoraWallet.BarToAbarData = {
+    anonKeysFormatted: anonKeysReceiver,
+    randomizers: randomizers.randomizers,
+  };
+
+  return { transactionBuilder, barToAbarData, atxoSid: `${atxoSid}` };
 };
 
 export const barToAbar = async (
@@ -305,20 +332,20 @@ export const barToAbar = async (
 
   let feeInputs;
 
-  try {
-    feeInputs = await getFeeInputs(walletInfo, sid);
-  } catch (error) {
-    throw new Error(
-      `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
-    );
-  }
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
+  // try {
+  //   feeInputs = await getFeeInputs(walletInfo, sid);
+  // } catch (error) {
+  //   throw new Error(
+  //     `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
+  //   );
+  // }
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
 
-  try {
-    transactionBuilder = transactionBuilder.add_fee(feeInputs);
-  } catch (error) {
-    throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
-  }
+  // try {
+  //   transactionBuilder = transactionBuilder.add_fee(feeInputs);
+  // } catch (error) {
+  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  // }
 
   let randomizers: { randomizers: string[] };
 
@@ -332,13 +359,18 @@ export const barToAbar = async (
     throw new Error(`list of randomizers strings is empty `);
   }
 
-  let barToAbarData: FindoraWallet.BarToAbarData;
+  // let barToAbarData: FindoraWallet.BarToAbarData;
 
-  try {
-    barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
-  } catch (error) {
-    throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
-  }
+  // try {
+  //   barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
+  // } catch (error) {
+  //   throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
+  // }
+
+  const barToAbarData: FindoraWallet.BarToAbarData = {
+    anonKeysFormatted: anonKeys,
+    randomizers: randomizers.randomizers,
+  };
 
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
 };

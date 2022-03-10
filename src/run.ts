@@ -1305,12 +1305,57 @@ const getFee = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
+const abarToAbar = async () => {
+  const formattedAxfrPublicKey = '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=';
+  const givenRandomizer = '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9'; // so it is 1 FRA
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  console.log('🚀 ~ file: run.ts ~ line 1310 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+
+  const [firstAbar] = ownedAbarsResponse;
+  const { abarData } = firstAbar;
+  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarData);
+
+  const { atxoSid, ownedAbar } = abarData;
+
+  const anonKeys = { ...myAbarAnonKeys };
+
+  const anonKeysReceiver = {
+    axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
+    axfrSecretKey: 'Mtpn0lNdR0Spko_iV3L3g3fA5AP3ep9SckROAOItSAIaTCQoEPS2QjTx5K5KV0aWS5acE9l7VkMvZbwM6E7wWA==',
+    decKey: '0OHKNN8p6NqiDqN7QdRF6aQAsTFBLCRBzpAMox6wUFI=',
+    encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
+  };
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    atxoSid: usedAtxoSid,
+  } = await TripleMasking.abarToAbar(parseInt(atxoSid), ownedAbar, anonKeys, anonKeysReceiver);
+
+  console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+  console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedAtxoSid', usedAtxoSid);
+
+  // const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  // console.log('transfer abar result handle!!', resultHandle);
+
+  // const { axfrPublicKey: formattedAxfrPublicKey } = barToAbarData.anonKeysFormatted;
+  // const [givenRandomizer] = barToAbarData.randomizers;
+
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+
+  // const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  // console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+};
+
 // getFraBalance();
 // getAnonKeys();
-barToAbar();
+// barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
+abarToAbar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

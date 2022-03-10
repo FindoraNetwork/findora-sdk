@@ -74,7 +74,6 @@ var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
-var fee_1 = require("../../services/fee");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
@@ -216,15 +215,16 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
 }); };
 exports.saveOwnedAbarsToCache = saveOwnedAbarsToCache;
 var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, myOwnedAbar, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, axfrSecretKey, decKey, aXfrKeyPair, secretDecKey, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, axfrPublicKeyReceiver, encKeyReceiver, error_5, to_amount;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var ledger, transactionBuilder, myOwnedAbar, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, axfrSecretKey, decKey, aXfrKeyPair, secretDecKey, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, axfrPublicKeyReceiver, encKeyReceiver, error_5, to_amount, randomizers, barToAbarData;
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _a.sent();
+                ledger = _b.sent();
                 return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
             case 2:
-                transactionBuilder = _a.sent();
+                transactionBuilder = _b.sent();
                 try {
                     myOwnedAbar = ledger.abar_from_json(ownedAbar);
                 }
@@ -233,7 +233,7 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                 }
                 return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
             case 3:
-                abarOwnerMemoResult = _a.sent();
+                abarOwnerMemoResult = _b.sent();
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
                     throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
@@ -247,11 +247,11 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                 axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey;
                 return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
             case 4:
-                aXfrKeyPair = _a.sent();
+                aXfrKeyPair = _b.sent();
                 secretDecKey = ledger.x_secretkey_from_string(decKey);
                 return [4 /*yield*/, Network.getMTLeafInfo(atxoSid)];
             case 5:
-                mTLeafInfoResult = _a.sent();
+                mTLeafInfoResult = _b.sent();
                 mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
                 if (mTLeafInfoError) {
                     throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
@@ -265,18 +265,18 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                 catch (error) {
                     throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
                 }
-                _a.label = 6;
+                _b.label = 6;
             case 6:
-                _a.trys.push([6, 9, , 10]);
+                _b.trys.push([6, 9, , 10]);
                 return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(anonKeysReceiver.axfrPublicKey)];
             case 7:
-                axfrPublicKeyReceiver = _a.sent();
+                axfrPublicKeyReceiver = _b.sent();
                 return [4 /*yield*/, Keypair.getXPublicKeyByBase64(anonKeysReceiver.encKey)];
             case 8:
-                encKeyReceiver = _a.sent();
+                encKeyReceiver = _b.sent();
                 return [3 /*break*/, 10];
             case 9:
-                error_5 = _a.sent();
+                error_5 = _b.sent();
                 throw new Error("Could not convert AXfrPublicKey\", Error - " + error_5.message);
             case 10:
                 to_amount = BigInt(1);
@@ -284,15 +284,28 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                     transactionBuilder = transactionBuilder.add_operation_anon_transfer(myOwnedAbar, abarOwnerMemo, myMTLeafInfo, aXfrKeyPair, secretDecKey, axfrPublicKeyReceiver, encKeyReceiver, to_amount);
                 }
                 catch (error) {
-                    throw new Error("Could not add bar to abar operation\", Error - " + error.message);
+                    throw new Error("Could not add abar transfer operation\", Error - " + error.message);
                 }
-                return [2 /*return*/];
+                try {
+                    randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
+                }
+                catch (err) {
+                    throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
+                }
+                if (!((_a = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _a === void 0 ? void 0 : _a.length)) {
+                    throw new Error("list of randomizers strings is empty ");
+                }
+                barToAbarData = {
+                    anonKeysFormatted: anonKeysReceiver,
+                    randomizers: randomizers.randomizers,
+                };
+                return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, atxoSid: "" + atxoSid }];
         }
     });
 }); };
 exports.abarToAbar = abarToAbar;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, error_8, randomizers, barToAbarData, error_9;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, randomizers, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -348,24 +361,6 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 catch (error) {
                     throw new Error("Could not add bar to abar operation\", Error - " + error.message);
                 }
-                _b.label = 13;
-            case 13:
-                _b.trys.push([13, 15, , 16]);
-                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, sid)];
-            case 14:
-                feeInputs = _b.sent();
-                return [3 /*break*/, 16];
-            case 15:
-                error_8 = _b.sent();
-                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_8.message);
-            case 16:
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
-                try {
-                    transactionBuilder = transactionBuilder.add_fee(feeInputs);
-                }
-                catch (error) {
-                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error.message);
-                }
                 try {
                     randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
                 }
@@ -375,17 +370,11 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 if (!((_a = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _a === void 0 ? void 0 : _a.length)) {
                     throw new Error("list of randomizers strings is empty ");
                 }
-                _b.label = 17;
-            case 17:
-                _b.trys.push([17, 19, , 20]);
-                return [4 /*yield*/, (0, exports.saveBarToAbarToCache)(walletInfo, sid, randomizers.randomizers, anonKeys)];
-            case 18:
-                barToAbarData = _b.sent();
-                return [3 /*break*/, 20];
-            case 19:
-                error_9 = _b.sent();
-                throw new Error("Could not save cache for bar to abar. Details: " + error_9.message);
-            case 20: return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
+                barToAbarData = {
+                    anonKeysFormatted: anonKeys,
+                    randomizers: randomizers.randomizers,
+                };
+                return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });
 }); };

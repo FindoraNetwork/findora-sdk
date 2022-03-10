@@ -1421,12 +1421,44 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
+var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse, firstAbar, abarData, atxoSid, ownedAbar, anonKeys, anonKeysReceiver, _a, transactionBuilder, barToAbarData, usedAtxoSid;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                formattedAxfrPublicKey = '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=';
+                givenRandomizer = '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9';
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
+            case 1:
+                ownedAbarsResponse = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1310 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+                firstAbar = ownedAbarsResponse[0];
+                abarData = firstAbar.abarData;
+                console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarData);
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                anonKeys = __assign({}, myAbarAnonKeys);
+                anonKeysReceiver = {
+                    axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
+                    axfrSecretKey: 'Mtpn0lNdR0Spko_iV3L3g3fA5AP3ep9SckROAOItSAIaTCQoEPS2QjTx5K5KV0aWS5acE9l7VkMvZbwM6E7wWA==',
+                    decKey: '0OHKNN8p6NqiDqN7QdRF6aQAsTFBLCRBzpAMox6wUFI=',
+                    encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
+                };
+                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(parseInt(atxoSid), ownedAbar, anonKeys, anonKeysReceiver)];
+            case 2:
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedAtxoSid = _a.atxoSid;
+                console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedAtxoSid', usedAtxoSid);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // getFraBalance();
 // getAnonKeys();
-barToAbar();
+// barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
+abarToAbar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
