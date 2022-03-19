@@ -11,6 +11,11 @@ interface AnonWalletBalanceInfo {
 export declare const genAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;
 export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, randomizers: string[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.BarToAbarData>;
 export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string | undefined) => Promise<boolean>;
+export declare const abarToAbar: (atxoSid: number, ownedAbar: FindoraWallet.OwnedAbar, anonKeys: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys) => Promise<{
+    transactionBuilder: TransactionBuilder;
+    barToAbarData: FindoraWallet.BarToAbarData;
+    atxoSid: string;
+}>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const isNullifierHashSpent: (hash: string) => Promise<boolean>;
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenRandomizersList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;

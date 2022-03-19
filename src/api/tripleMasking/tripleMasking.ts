@@ -3,6 +3,7 @@ import Sdk from '../../Sdk';
 import { fromWei, plus } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
+import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
@@ -149,6 +150,123 @@ export const saveOwnedAbarsToCache = async (
   return true;
 };
 
+export const abarToAbar = async (
+  atxoSid: number,
+  ownedAbar: FindoraWallet.OwnedAbar,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+) => {
+  const ledger = await getLedger();
+  let transactionBuilder = await getTransactionBuilder();
+
+  let myOwnedAbar;
+
+  try {
+    myOwnedAbar = ledger.abar_from_json(ownedAbar);
+  } catch (error) {
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+  }
+
+  const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+
+  const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
+
+  if (memoError) {
+    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+  }
+
+  let abarOwnerMemo;
+
+  try {
+    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+  } catch (error) {
+    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+  }
+
+  const { axfrSecretKey, decKey } = anonKeys;
+
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
+
+  const secretDecKey = ledger.x_secretkey_from_string(decKey);
+
+  const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
+
+  const { response: mTLeafInfo, error: mTLeafInfoError } = mTLeafInfoResult;
+
+  if (mTLeafInfoError) {
+    throw new Error(
+      `Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - ${mTLeafInfoError.message}`,
+    );
+  }
+
+  if (!mTLeafInfo) {
+    throw new Error(`Could not fetch mTLeafInfo data for sid "${atxoSid}", Error - mTLeafInfo is empty`);
+  }
+
+  let myMTLeafInfo;
+
+  try {
+    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
+  } catch (error) {
+    throw new Error(`Could not decode myMTLeafInfo data", Error - ${(error as Error).message}`);
+  }
+
+  let axfrPublicKeyReceiver;
+  let encKeyReceiver;
+
+  try {
+    axfrPublicKeyReceiver = await Keypair.getAXfrPublicKeyByBase64(anonKeysReceiver.axfrPublicKey);
+
+    encKeyReceiver = await Keypair.getXPublicKeyByBase64(anonKeysReceiver.encKey);
+  } catch (error) {
+    throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
+  }
+
+  const to_amount = BigInt(1); // 1 FRA as well
+
+  try {
+    transactionBuilder = transactionBuilder.add_operation_anon_transfer(
+      myOwnedAbar,
+      abarOwnerMemo,
+      myMTLeafInfo,
+      aXfrKeyPair,
+      secretDecKey,
+      axfrPublicKeyReceiver,
+      encKeyReceiver,
+      to_amount,
+    );
+  } catch (error) {
+    throw new Error(`Could not add abar transfer operation", Error - ${(error as Error).message}`);
+  }
+
+  let randomizers: { randomizers: string[] };
+
+  try {
+    randomizers = transactionBuilder?.get_randomizers();
+  } catch (err) {
+    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
+  }
+
+  if (!randomizers?.randomizers?.length) {
+    throw new Error(`list of randomizers strings is empty `);
+  }
+
+  // let barToAbarData: FindoraWallet.BarToAbarData;
+
+  // try {
+  //   barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
+  // } catch (error) {
+  //   throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
+  // }
+
+  const barToAbarData: FindoraWallet.BarToAbarData = {
+    anonKeysFormatted: anonKeysReceiver,
+    randomizers: randomizers.randomizers,
+  };
+
+  return { transactionBuilder, barToAbarData, atxoSid: `${atxoSid}` };
+};
+
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
@@ -212,16 +330,28 @@ export const barToAbar = async (
     throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
   }
 
-  // try {
-  //   transactionBuilder = transactionBuilder.add_fee()
-  // } catch (error) {
-  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
-  // }
+  let feeInputs;
+
+  try {
+    feeInputs = await getFeeInputs(walletInfo, sid);
+  } catch (error) {
+    throw new Error(
+      `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
+    );
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_fee(feeInputs);
+  } catch (error) {
+    console.log(error);
+    throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  }
 
   let randomizers: { randomizers: string[] };
 
   try {
     randomizers = transactionBuilder?.get_randomizers();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ randomizers', randomizers);
   } catch (err) {
     throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
   }
@@ -230,13 +360,10 @@ export const barToAbar = async (
     throw new Error(`list of randomizers strings is empty `);
   }
 
-  let barToAbarData: FindoraWallet.BarToAbarData;
-
-  try {
-    barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
-  } catch (error) {
-    throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
-  }
+  const barToAbarData: FindoraWallet.BarToAbarData = {
+    anonKeysFormatted: anonKeys,
+    randomizers: randomizers.randomizers,
+  };
 
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
 };
@@ -271,6 +398,9 @@ export const getUnspentAbars = async (
 
     const [ownedAbarItem] = ownedAbarsResponse;
 
+    if (!ownedAbarItem) {
+      continue;
+    }
     const { abarData } = ownedAbarItem;
 
     const { atxoSid, ownedAbar } = abarData;
