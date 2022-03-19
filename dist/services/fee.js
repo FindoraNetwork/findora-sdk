@@ -268,13 +268,11 @@ var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, 
             case 2:
                 sidsResult = _a.sent();
                 sids = sidsResult.response;
-                console.log('🚀 ~ file: fee.ts ~ line 249 ~ getFeeInputs ~ sids', sids);
                 if (!sids) {
                     throw new Error('No sids were fetched');
                 }
                 filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
-                console.log('🚀 ~ file: fee.ts ~ line 256 ~ getFeeInputs ~ filteredSids', filteredSids);
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, [5, 2])];
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
             case 3:
                 utxoDataList = _a.sent();
                 return [4 /*yield*/, AssetApi.getMinimalFee()];
@@ -284,22 +282,17 @@ var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, 
             case 5:
                 fraAssetCode = _a.sent();
                 sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
-                console.log('🚀 ~ file: fee.ts ~ line 261 ~ getFeeInputs ~ sendUtxoList', sendUtxoList);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
             case 6:
                 utxoInputsInfo = _a.sent();
                 return [4 /*yield*/, (0, exports.getPayloadForFeeInputs)(walletInfo, utxoInputsInfo)];
             case 7:
                 feeInputsPayload = _a.sent();
-                console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
                 feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
                     feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
-                    console.log('🚀 ~ file: fee.ts ~ line 385 ~ feeInputs', feeInputs);
                 });
-                console.log('hey!!!');
-                console.log('🚀 ~ file: fee.ts ~ line 282 ~ getFeeInputs ~ feeInputs!!!', feeInputs);
                 return [2 /*return*/, feeInputs];
         }
     });

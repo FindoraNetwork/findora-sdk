@@ -332,25 +332,26 @@ export const barToAbar = async (
 
   let feeInputs;
 
-  // try {
-  //   feeInputs = await getFeeInputs(walletInfo, sid);
-  // } catch (error) {
-  //   throw new Error(
-  //     `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
-  //   );
-  // }
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 220 ~ feeInputs from tripleMasking', feeInputs);
+  try {
+    feeInputs = await getFeeInputs(walletInfo, sid);
+  } catch (error) {
+    throw new Error(
+      `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
+    );
+  }
 
-  // try {
-  //   transactionBuilder = transactionBuilder.add_fee(feeInputs);
-  // } catch (error) {
-  //   throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
-  // }
+  try {
+    transactionBuilder = transactionBuilder.add_fee(feeInputs);
+  } catch (error) {
+    console.log(error);
+    throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+  }
 
   let randomizers: { randomizers: string[] };
 
   try {
     randomizers = transactionBuilder?.get_randomizers();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ randomizers', randomizers);
   } catch (err) {
     throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
   }
@@ -358,14 +359,6 @@ export const barToAbar = async (
   if (!randomizers?.randomizers?.length) {
     throw new Error(`list of randomizers strings is empty `);
   }
-
-  // let barToAbarData: FindoraWallet.BarToAbarData;
-
-  // try {
-  //   barToAbarData = await saveBarToAbarToCache(walletInfo, sid, randomizers.randomizers, anonKeys);
-  // } catch (error) {
-  //   throw new Error(`Could not save cache for bar to abar. Details: ${(error as Error).message}`);
-  // }
 
   const barToAbarData: FindoraWallet.BarToAbarData = {
     anonKeysFormatted: anonKeys,
@@ -405,6 +398,9 @@ export const getUnspentAbars = async (
 
     const [ownedAbarItem] = ownedAbarsResponse;
 
+    if (!ownedAbarItem) {
+      continue;
+    }
     const { abarData } = ownedAbarItem;
 
     const { atxoSid, ownedAbar } = abarData;

@@ -246,41 +246,32 @@ export const getFeeInputs = async (walletInfo: WalletKeypar, excludeSid: number)
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
 
   const { response: sids } = sidsResult;
-  console.log('🚀 ~ file: fee.ts ~ line 249 ~ getFeeInputs ~ sids', sids);
 
   if (!sids) {
     throw new Error('No sids were fetched');
   }
-  const filteredSids = sids.filter(sid => sid !== excludeSid);
-  console.log('🚀 ~ file: fee.ts ~ line 256 ~ getFeeInputs ~ filteredSids', filteredSids);
 
-  // const utxoDataList = await addUtxo(walletInfo, sids);
-  const utxoDataList = await addUtxo(walletInfo, [5, 2]);
+  const filteredSids = sids.filter(sid => sid !== excludeSid);
+
+  const utxoDataList = await addUtxo(walletInfo, filteredSids);
 
   const minimalFee = await AssetApi.getMinimalFee();
 
   const fraAssetCode = await AssetApi.getFraAssetCode();
 
   const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
-  console.log('🚀 ~ file: fee.ts ~ line 261 ~ getFeeInputs ~ sendUtxoList', sendUtxoList);
 
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const feeInputsPayload = await getPayloadForFeeInputs(walletInfo, utxoInputsInfo);
-
-  console.log('🚀 ~ file: fee.ts ~ line 372 ~ feeInputsPayload', feeInputsPayload);
 
   let feeInputs = ledger.FeeInputs.new();
 
   feeInputsPayload.forEach(payloadItem => {
     const { amount, txoRef, assetRecord, ownerMemo, keypair } = payloadItem;
     feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
-    console.log('🚀 ~ file: fee.ts ~ line 385 ~ feeInputs', feeInputs);
   });
 
-  console.log('hey!!!');
-
-  console.log('🚀 ~ file: fee.ts ~ line 282 ~ getFeeInputs ~ feeInputs!!!', feeInputs);
   return feeInputs;
 };
 

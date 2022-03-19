@@ -1308,7 +1308,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 27;
+                sid = 30;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1391,8 +1391,9 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
                 givenRandomizersList = [
-                    '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9',
-                    'Ex9j17dDuGPS8pxNnTj3arWRHjRQWwub9Ni4TkcMqt39', // 4 FRA
+                    '7jSkM2PYTK9YagCZ6pSsyZKngzEBUVxSTiR9isCpsSuQ',
+                    'ANnhttKrEisMg1L8etZndk3YHDPP1e3MvEPCATBso7Cc',
+                    '8TyN5iFq1rWDP4npQjYu9HJBJc7xjmEsLVSCrsHCTHEU',
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
             case 1:
@@ -1422,15 +1423,15 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
     });
 }); };
 var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse, firstAbar, abarData, atxoSid, ownedAbar, anonKeys, anonKeysReceiver, _a, transactionBuilder, barToAbarData, usedAtxoSid;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var formattedAxfrPublicKey, givenRandomizer, ownedAbarsResponse, firstAbar, abarData, atxoSid, ownedAbar, anonKeys, anonKeysReceiver, _a, transactionBuilder, barToAbarData, usedAtxoSid, resultHandle, formattedAxfrPublicKeyOfTheReciever, _b, transferredRandomizerOne, transferredRandomizerTwo, transferredOwnedAbarsResponse;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 formattedAxfrPublicKey = '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=';
-                givenRandomizer = '8UfaNszFefrz1MAcyD9DCwNEDV8jFAJdjF8G2k6RoGg9';
+                givenRandomizer = 'Ex9j17dDuGPS8pxNnTj3arWRHjRQWwub9Ni4TkcMqt39';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)];
             case 1:
-                ownedAbarsResponse = _b.sent();
+                ownedAbarsResponse = _c.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1310 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
                 firstAbar = ownedAbarsResponse[0];
                 abarData = firstAbar.abarData;
@@ -1445,9 +1446,25 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                 };
                 return [4 /*yield*/, api_1.TripleMasking.abarToAbar(parseInt(atxoSid), ownedAbar, anonKeys, anonKeysReceiver)];
             case 2:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedAtxoSid = _a.atxoSid;
+                _a = _c.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedAtxoSid = _a.atxoSid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
                 console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedAtxoSid', usedAtxoSid);
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 3:
+                resultHandle = _c.sent();
+                console.log('transfer abar result handle!!', resultHandle);
+                formattedAxfrPublicKeyOfTheReciever = barToAbarData.anonKeysFormatted.axfrPublicKey;
+                _b = barToAbarData.randomizers, transferredRandomizerOne = _b[0], transferredRandomizerTwo = _b[1];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 4:
+                _c.sent();
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 5:
+                _c.sent();
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(formattedAxfrPublicKeyOfTheReciever, transferredRandomizerOne)];
+            case 6:
+                transferredOwnedAbarsResponse = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1349 ! ~ barToAbar ~ transferredOwnedAbarsResponse', transferredOwnedAbarsResponse);
                 return [2 /*return*/];
         }
     });
@@ -1456,9 +1473,9 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-// getAbarBalance();
+getAbarBalance();
 // getFee();
-abarToAbar();
+// abarToAbar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

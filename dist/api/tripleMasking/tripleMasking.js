@@ -74,6 +74,7 @@ var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
+var fee_1 = require("../../services/fee");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
@@ -305,7 +306,7 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
 }); };
 exports.abarToAbar = abarToAbar;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, randomizers, barToAbarData;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, error_8, randomizers, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -361,8 +362,27 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 catch (error) {
                     throw new Error("Could not add bar to abar operation\", Error - " + error.message);
                 }
+                _b.label = 13;
+            case 13:
+                _b.trys.push([13, 15, , 16]);
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, sid)];
+            case 14:
+                feeInputs = _b.sent();
+                return [3 /*break*/, 16];
+            case 15:
+                error_8 = _b.sent();
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_8.message);
+            case 16:
+                try {
+                    transactionBuilder = transactionBuilder.add_fee(feeInputs);
+                }
+                catch (error) {
+                    console.log(error);
+                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error.message);
+                }
                 try {
                     randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ randomizers', randomizers);
                 }
                 catch (err) {
                     throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
@@ -415,6 +435,9 @@ var getUnspentAbars = function (anonKeys, givenRandomizersList) { return __await
                 ownedAbarsResponse = _a.sent();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
                 ownedAbarItem = ownedAbarsResponse[0];
+                if (!ownedAbarItem) {
+                    return [3 /*break*/, 5];
+                }
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
                 return [4 /*yield*/, (0, exports.genNullifierHash)(parseInt(atxoSid), ownedAbar, axfrSecretKey, decKey, givenRandomizer)];
