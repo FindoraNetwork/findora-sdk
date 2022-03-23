@@ -240,11 +240,9 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
   };
 };
 
-export const abarToAbar = async (
-  abarAmountToTransfer: string,
+const getAbarTransferInputPayload = async (
   ownedAbarItem: FindoraWallet.OwnedAbarItem,
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
 ) => {
   const { abarData } = ownedAbarItem;
 
@@ -253,6 +251,34 @@ export const abarToAbar = async (
   const myOwnedAbar = await getAbarFromJson(ownedAbar);
   const abarOwnerMemo = await getAbarOwnerMemo(atxoSid);
   const myMTLeafInfo = await getMyMTLeafInfo(atxoSid);
+
+  const maps = await getBalanceMaps([ownedAbarItem], anonKeysSender);
+
+  const { usedAssets } = maps;
+  const [assetCode] = usedAssets;
+
+  const asset = await getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+
+  const result = {
+    myOwnedAbar,
+    abarOwnerMemo,
+    myMTLeafInfo,
+    assetCode,
+    decimals,
+  };
+
+  return { ...result };
+};
+
+export const abarToAbar = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  abarAmountToTransfer: string,
+  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+) => {
+  let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
 
   const {
     aXfrKeyPairConverted: aXfrKeyPairSender,
@@ -263,30 +289,44 @@ export const abarToAbar = async (
   const { axfrPublicKeyConverted: axfrPublicKeyReceiver, encKeyConverted: encKeyReceiver } =
     await getAnonKeypairFromJson(anonKeysReceiver);
 
-  const maps = await getBalanceMaps([ownedAbarItem], anonKeysSender);
+  const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
-  const { usedAssets } = maps;
-  const [assetCode] = usedAssets;
-
-  const asset = await getAssetDetails(assetCode);
-  const decimals = asset.assetRules.decimals;
-  const toAmount = BigInt(toWei(abarAmountToTransfer, decimals).toString());
-
-  let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 292 ~ abarPayloadOne', abarPayloadOne);
 
   try {
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
-      myOwnedAbar,
-      abarOwnerMemo,
+      abarPayloadOne.myOwnedAbar,
+      abarPayloadOne.abarOwnerMemo,
       aXfrKeyPairSender,
       secretDecKeySender,
-      myMTLeafInfo,
+      abarPayloadOne.myMTLeafInfo,
     );
   } catch (error) {
     throw new Error(
       `Could not add an input for abar transfer operation", Error - ${(error as Error).message}`,
     );
   }
+
+  for (let ownedAbarItemOne of additionalOwnedAbarItems) {
+    const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 312 ~ abarPayloadNext', abarPayloadNext);
+
+    try {
+      anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
+        abarPayloadNext.myOwnedAbar,
+        abarPayloadNext.abarOwnerMemo,
+        aXfrKeyPairSender,
+        secretDecKeySender,
+        abarPayloadNext.myMTLeafInfo,
+      );
+    } catch (error) {
+      throw new Error(
+        `Could not add an additional input for abar transfer operation", Error - ${(error as Error).message}`,
+      );
+    }
+  }
+
+  const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
 
   try {
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(
@@ -337,7 +377,7 @@ export const abarToAbar = async (
     randomizers: randomizers.randomizers,
   };
 
-  return { anonTransferOperationBuilder, abarToAbarData, atxoSid: `${atxoSid}` };
+  return { anonTransferOperationBuilder, abarToAbarData };
 };
 
 export const barToAbar = async (

@@ -317,87 +317,129 @@ var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void
         }
     });
 }); };
-var abarToAbar = function (abarAmountToTransfer, ownedAbarItem, anonKeysSender, anonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
-    var abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, _a, aXfrKeyPairSender, secretDecKeySender, encKeySender, _b, axfrPublicKeyReceiver, encKeyReceiver, maps, usedAssets, assetCode, asset, decimals, toAmount, anonTransferOperationBuilder, expectedFee, randomizers, abarToAbarData;
-    var _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
+var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { return __awaiter(void 0, void 0, void 0, function () {
+    var abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, maps, usedAssets, assetCode, asset, decimals, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
                 return [4 /*yield*/, getAbarFromJson(ownedAbar)];
             case 1:
-                myOwnedAbar = _d.sent();
+                myOwnedAbar = _a.sent();
                 return [4 /*yield*/, getAbarOwnerMemo(atxoSid)];
             case 2:
-                abarOwnerMemo = _d.sent();
+                abarOwnerMemo = _a.sent();
                 return [4 /*yield*/, getMyMTLeafInfo(atxoSid)];
             case 3:
-                myMTLeafInfo = _d.sent();
-                return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
-            case 4:
-                _a = _d.sent(), aXfrKeyPairSender = _a.aXfrKeyPairConverted, secretDecKeySender = _a.secretDecKeyConverted, encKeySender = _a.encKeyConverted;
-                return [4 /*yield*/, getAnonKeypairFromJson(anonKeysReceiver)];
-            case 5:
-                _b = _d.sent(), axfrPublicKeyReceiver = _b.axfrPublicKeyConverted, encKeyReceiver = _b.encKeyConverted;
+                myMTLeafInfo = _a.sent();
                 return [4 /*yield*/, (0, exports.getBalanceMaps)([ownedAbarItem], anonKeysSender)];
-            case 6:
-                maps = _d.sent();
+            case 4:
+                maps = _a.sent();
                 usedAssets = maps.usedAssets;
                 assetCode = usedAssets[0];
                 return [4 /*yield*/, (0, sdkAsset_1.getAssetDetails)(assetCode)];
-            case 7:
-                asset = _d.sent();
+            case 5:
+                asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, decimals).toString());
-                return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
-            case 8:
-                anonTransferOperationBuilder = _d.sent();
-                try {
-                    anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(myOwnedAbar, abarOwnerMemo, aXfrKeyPairSender, secretDecKeySender, myMTLeafInfo);
-                }
-                catch (error) {
-                    throw new Error("Could not add an input for abar transfer operation\", Error - " + error.message);
-                }
-                try {
-                    anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, axfrPublicKeyReceiver, encKeyReceiver);
-                }
-                catch (error) {
-                    throw new Error("Could not add an output for abar transfer operation\", Error - " + error.message);
-                }
-                expectedFee = anonTransferOperationBuilder.get_expected_fee();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 313 ~ expectedFee', expectedFee);
-                try {
-                    anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
-                }
-                catch (error) {
-                    throw new Error("Could not set remainder receiver for abar transfer operation\", Error - " + error.message);
-                }
-                try {
-                    anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
-                }
-                catch (error) {
-                    throw new Error("Could not buuld and sign abar transfer operation\", Error - " + error.message);
-                }
-                try {
-                    randomizers = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_randomizers();
-                }
-                catch (err) {
-                    throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
-                }
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
-                if (!((_c = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _c === void 0 ? void 0 : _c.length)) {
-                    throw new Error("list of randomizers strings is empty ");
-                }
-                abarToAbarData = {
-                    anonKeysSender: anonKeysSender,
-                    anonKeysReceiver: anonKeysReceiver,
-                    randomizers: randomizers.randomizers,
+                result = {
+                    myOwnedAbar: myOwnedAbar,
+                    abarOwnerMemo: abarOwnerMemo,
+                    myMTLeafInfo: myMTLeafInfo,
+                    assetCode: assetCode,
+                    decimals: decimals,
                 };
-                return [2 /*return*/, { anonTransferOperationBuilder: anonTransferOperationBuilder, abarToAbarData: abarToAbarData, atxoSid: "" + atxoSid }];
+                return [2 /*return*/, __assign({}, result)];
         }
     });
 }); };
+var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
+    if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var anonTransferOperationBuilder, _a, aXfrKeyPairSender, secretDecKeySender, encKeySender, _b, axfrPublicKeyReceiver, encKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount, expectedFee, randomizers, abarToAbarData;
+        var _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0: return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
+                case 1:
+                    anonTransferOperationBuilder = _d.sent();
+                    return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
+                case 2:
+                    _a = _d.sent(), aXfrKeyPairSender = _a.aXfrKeyPairConverted, secretDecKeySender = _a.secretDecKeyConverted, encKeySender = _a.encKeyConverted;
+                    return [4 /*yield*/, getAnonKeypairFromJson(anonKeysReceiver)];
+                case 3:
+                    _b = _d.sent(), axfrPublicKeyReceiver = _b.axfrPublicKeyConverted, encKeyReceiver = _b.encKeyConverted;
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
+                case 4:
+                    abarPayloadOne = _d.sent();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 292 ~ abarPayloadOne', abarPayloadOne);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrKeyPairSender, secretDecKeySender, abarPayloadOne.myMTLeafInfo);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an input for abar transfer operation\", Error - " + error.message);
+                    }
+                    _i = 0, additionalOwnedAbarItems_1 = additionalOwnedAbarItems;
+                    _d.label = 5;
+                case 5:
+                    if (!(_i < additionalOwnedAbarItems_1.length)) return [3 /*break*/, 8];
+                    ownedAbarItemOne = additionalOwnedAbarItems_1[_i];
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
+                case 6:
+                    abarPayloadNext = _d.sent();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 312 ~ abarPayloadNext', abarPayloadNext);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, aXfrKeyPairSender, secretDecKeySender, abarPayloadNext.myMTLeafInfo);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an additional input for abar transfer operation\", Error - " + error.message);
+                    }
+                    _d.label = 7;
+                case 7:
+                    _i++;
+                    return [3 /*break*/, 5];
+                case 8:
+                    toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, axfrPublicKeyReceiver, encKeyReceiver);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an output for abar transfer operation\", Error - " + error.message);
+                    }
+                    expectedFee = anonTransferOperationBuilder.get_expected_fee();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 313 ~ expectedFee', expectedFee);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
+                    }
+                    catch (error) {
+                        throw new Error("Could not set remainder receiver for abar transfer operation\", Error - " + error.message);
+                    }
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
+                    }
+                    catch (error) {
+                        throw new Error("Could not buuld and sign abar transfer operation\", Error - " + error.message);
+                    }
+                    try {
+                        randomizers = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_randomizers();
+                    }
+                    catch (err) {
+                        throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
+                    }
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
+                    if (!((_c = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _c === void 0 ? void 0 : _c.length)) {
+                        throw new Error("list of randomizers strings is empty ");
+                    }
+                    abarToAbarData = {
+                        anonKeysSender: anonKeysSender,
+                        anonKeysReceiver: anonKeysReceiver,
+                        randomizers: randomizers.randomizers,
+                    };
+                    return [2 /*return*/, { anonTransferOperationBuilder: anonTransferOperationBuilder, abarToAbarData: abarToAbarData }];
+            }
+        });
+    });
+};
 exports.abarToAbar = abarToAbar;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, error_8, randomizers, barToAbarData;

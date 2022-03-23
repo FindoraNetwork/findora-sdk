@@ -1327,24 +1327,40 @@ const abarToAbar = async () => {
   };
 
   // randomizer with 10 FRA
-  const givenRandomizer = 'GXFAWAeobddmzhw949Ywfsj74sD7RHGXRnjka1WJndQ9';
+  const givenRandomizerOne = 'GXFAWAeobddmzhw949Ywfsj74sD7RHGXRnjka1WJndQ9';
 
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizer);
+  // randomizer with 2 FRA
+  const givenRandomizerTwo = 'ESrDEnu7sZ82s7rPAKgHVKHjzGxhXNTiaALsbEqCdGiL';
 
-  const [ownedAbarItem] = ownedAbarsResponse;
-  const { abarData } = ownedAbarItem;
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerOne,
+  );
 
-  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarData);
+  const [ownedAbarItemOne] = ownedAbarsResponseOne;
+  const { abarData: abarDataOne } = ownedAbarItemOne;
 
-  const { anonTransferOperationBuilder, abarToAbarData, atxoSid } = await TripleMasking.abarToAbar(
-    '0.1',
-    ownedAbarItem,
+  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataOne);
+
+  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerTwo,
+  );
+
+  const [ownedAbarItemTwo] = ownedAbarsResponseTwo;
+  const { abarData: abarDataTwo } = ownedAbarItemTwo;
+
+  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataTwo);
+
+  const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver,
+    '0.1',
+    ownedAbarItemOne,
+    // [ownedAbarItemTwo],
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
-  console.log('🚀 ~ file: run.ts ~ line 1349 ~ atxoSid', atxoSid);
 
   const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
 
