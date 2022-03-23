@@ -1,4 +1,4 @@
-import { TransactionBuilder } from '../../services/ledger/types';
+import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
 import { LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import { ProcessedTxListResponseResult } from './types';
@@ -7,6 +7,7 @@ export interface TransferReciever {
     amount: string;
 }
 export declare const getTransactionBuilder: () => Promise<TransactionBuilder>;
+export declare const getAnonTransferOperationBuilder: () => Promise<AnonTransferOperationBuilder>;
 /**
  * Send some asset to multiple receivers
  *
@@ -72,6 +73,7 @@ export declare const sendToMany: (walletInfo: WalletKeypar, recieversList: Trans
  * @returns Transaction status handle
  */
 export declare const submitTransaction: (transactionBuilder: TransactionBuilder) => Promise<string>;
+export declare const submitAbarTransaction: (anonTransferOperationBuilder: AnonTransferOperationBuilder) => Promise<string>;
 /**
  * Send some asset to an address
  *

@@ -1257,7 +1257,7 @@ const validateUnspent = async () => {
   const { atxoSid, ownedAbar } = abarData;
 
   const hash = await TripleMasking.genNullifierHash(
-    parseInt(atxoSid),
+    atxoSid,
     ownedAbar,
     axfrSecretKey,
     decKey,
@@ -1281,21 +1281,17 @@ const getUnspentAbars = async () => {
 };
 
 const getAbarBalance = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
+  // const anonKeys = { ...myAbarAnonKeys };
 
-  // const anonKeys = {
-  //   axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
-  //   axfrSecretKey: 'Mtpn0lNdR0Spko_iV3L3g3fA5AP3ep9SckROAOItSAIaTCQoEPS2QjTx5K5KV0aWS5acE9l7VkMvZbwM6E7wWA==',
-  //   decKey: '0OHKNN8p6NqiDqN7QdRF6aQAsTFBLCRBzpAMox6wUFI=',
-  //   encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
-  // };
+  const anonKeys = {
+    axfrPublicKey: '1kaBWKThrrx7auhTbt4McuqHBF2KtkMtt0GEnQMKagA=',
+    axfrSecretKey: 'gHH4PARGM5LxpEKdBeVLyuK3KF1dscsB2uqT7DV88wnWRoFYpOGuvHtq6FNu3gxy6ocEXYq2Qy23QYSdAwpqAA==',
+    decKey: 'aMxIu5G8nL7wfnRPXxm9eCy1Zxrb0OYAPb3o_h50ZEM=',
+    encKey: '0q7Yewc5mbF9x__AItOJn3g4DJRr8woST4x3LOl4eyc=',
+  };
 
   // const givenRandomizersList = myGivenRandomizersList; //
-  const givenRandomizersList = [
-    '7jSkM2PYTK9YagCZ6pSsyZKngzEBUVxSTiR9isCpsSuQ',
-    'ANnhttKrEisMg1L8etZndk3YHDPP1e3MvEPCATBso7Cc',
-    '8TyN5iFq1rWDP4npQjYu9HJBJc7xjmEsLVSCrsHCTHEU',
-  ];
+  const givenRandomizersList = ['29vF3DkatR3qifNCPz6BRiTvVMZT62ALcq9CUhtC2PMh'];
 
   const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
@@ -1314,18 +1310,14 @@ const getFee = async () => {
 };
 
 const abarToAbar = async () => {
-  const formattedAxfrPublicKey = '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=';
-  const givenRandomizer = 'Ex9j17dDuGPS8pxNnTj3arWRHjRQWwub9Ni4TkcMqt39'; // so it is 4 FRA
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
-  console.log('🚀 ~ file: run.ts ~ line 1310 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+  // const anonKeys = { ...myAbarAnonKeys };
 
-  const [firstAbar] = ownedAbarsResponse;
-  const { abarData } = firstAbar;
-  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarData);
-
-  const { atxoSid, ownedAbar } = abarData;
-
-  const anonKeys = { ...myAbarAnonKeys };
+  const anonKeysSender = {
+    axfrPublicKey: '1kaBWKThrrx7auhTbt4McuqHBF2KtkMtt0GEnQMKagA=',
+    axfrSecretKey: 'gHH4PARGM5LxpEKdBeVLyuK3KF1dscsB2uqT7DV88wnWRoFYpOGuvHtq6FNu3gxy6ocEXYq2Qy23QYSdAwpqAA==',
+    decKey: 'aMxIu5G8nL7wfnRPXxm9eCy1Zxrb0OYAPb3o_h50ZEM=',
+    encKey: '0q7Yewc5mbF9x__AItOJn3g4DJRr8woST4x3LOl4eyc=',
+  };
 
   const anonKeysReceiver = {
     axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
@@ -1334,42 +1326,38 @@ const abarToAbar = async () => {
     encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
   };
 
-  const {
-    transactionBuilder,
-    barToAbarData,
-    atxoSid: usedAtxoSid,
-  } = await TripleMasking.abarToAbar(parseInt(atxoSid), ownedAbar, anonKeys, anonKeysReceiver);
+  // randomizer with 10 FRA
+  const givenRandomizer = 'GXFAWAeobddmzhw949Ywfsj74sD7RHGXRnjka1WJndQ9';
 
-  console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-  console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedAtxoSid', usedAtxoSid);
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizer);
 
-  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+  const [ownedAbarItem] = ownedAbarsResponse;
+  const { abarData } = ownedAbarItem;
+
+  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarData);
+
+  const { anonTransferOperationBuilder, abarToAbarData, atxoSid } = await TripleMasking.abarToAbar(
+    '0.1',
+    ownedAbarItem,
+    anonKeysSender,
+    anonKeysReceiver,
+  );
+
+  console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+  console.log('🚀 ~ file: run.ts ~ line 1349 ~ atxoSid', atxoSid);
+
+  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
 
   console.log('transfer abar result handle!!', resultHandle);
-
-  const { axfrPublicKey: formattedAxfrPublicKeyOfTheReciever } = barToAbarData.anonKeysFormatted;
-  const [transferredRandomizerOne, transferredRandomizerTwo] = barToAbarData.randomizers;
-
-  await sleep(waitingTimeBeforeCheckTxStatus);
-  await sleep(waitingTimeBeforeCheckTxStatus);
-
-  const transferredOwnedAbarsResponse = await TripleMasking.getOwnedAbars(
-    formattedAxfrPublicKeyOfTheReciever,
-    transferredRandomizerOne,
-  );
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1349 ! ~ barToAbar ~ transferredOwnedAbarsResponse',
-    transferredOwnedAbarsResponse,
-  );
 };
 
 // getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-getAbarBalance();
+// getAbarBalance();
 // getFee();
-// abarToAbar();
+abarToAbar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

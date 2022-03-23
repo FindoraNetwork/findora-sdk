@@ -5,8 +5,8 @@ export declare const getOwnedSids: (address: string, config?: Types.NetworkAxios
 export declare const getRelatedSids: (address: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedSidsDataResult>;
 export declare const getUtxo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.UtxoDataResult>;
 export declare const getOwnerMemo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
-export declare const getAbarOwnerMemo: (atxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
-export declare const getMTLeafInfo: (atxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.MTLeafInfoDataResult>;
+export declare const getAbarOwnerMemo: (atxoSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
+export declare const getMTLeafInfo: (atxoSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.MTLeafInfoDataResult>;
 /**
  * Returns state commitment
  *

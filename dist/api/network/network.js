@@ -544,7 +544,6 @@ var getOwnedAbars = function (randomizedPubKey, config) { return __awaiter(void 
         switch (_a.label) {
             case 0:
                 url = getQueryRoute() + "/owned_abars/" + randomizedPubKey;
-                console.log('🚀 ~ file: network.ts ~ line 442 ~ url', url);
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();

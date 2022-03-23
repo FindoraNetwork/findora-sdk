@@ -80,7 +80,7 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
   response?: UtxoResponse;
 }
 
-export type OwnedResponseAbarItem = [number, FindoraWallet.OwnedAbar];
+export type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
 
 export type OwnedAbarsResponse = OwnedResponseAbarItem[];
 
