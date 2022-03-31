@@ -1482,8 +1482,8 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                givenRandomizerOne = '3PaExNx4SXNnhhE2pVpNiNHpiSXFQThh8qPgUycUDG5G';
-                givenRandomizerTwo = '3NcCcc493iSc2QcTuEGVwSb5vLDHDVpHHEcPPCPUN9Bp';
+                givenRandomizerOne = '6kpTcqEgMXJ43pqHh6A6K3U1uiCiSe9hVgKT6USoJSX';
+                givenRandomizerTwo = '73foG5Vw5BdfaXMaGk8SrwSq98Xkoic93zN8MauahTdm';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerOne)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();

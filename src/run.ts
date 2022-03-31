@@ -1382,10 +1382,10 @@ const abarToBar = async () => {
   };
 
   // rnadomizer for abar to be sent
-  const givenRandomizerOne = '3PaExNx4SXNnhhE2pVpNiNHpiSXFQThh8qPgUycUDG5G';
+  const givenRandomizerOne = '6kpTcqEgMXJ43pqHh6A6K3U1uiCiSe9hVgKT6USoJSX';
 
   // randomizer to pay fee
-  const givenRandomizerTwo = '3NcCcc493iSc2QcTuEGVwSb5vLDHDVpHHEcPPCPUN9Bp';
+  const givenRandomizerTwo = '73foG5Vw5BdfaXMaGk8SrwSq98Xkoic93zN8MauahTdm';
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
     anonKeysSender.axfrPublicKey,
