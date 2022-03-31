@@ -532,6 +532,8 @@ export const abarToBar = async (
       secretDecKeySender,
     );
   } catch (error) {
+    console.log('Full Error', error);
+
     throw new Error(`Could not anon fee operation", Error - ${(error as Error).message}`);
   }
 

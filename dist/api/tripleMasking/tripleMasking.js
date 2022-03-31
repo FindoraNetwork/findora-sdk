@@ -569,6 +569,7 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                     transactionBuilder = transactionBuilder.add_operation_anon_fee(abarPayloadFee.myOwnedAbar, abarPayloadFee.abarOwnerMemo, abarPayloadFee.myMTLeafInfo, aXfrKeyPairSender, secretDecKeySender);
                 }
                 catch (error) {
+                    console.log('Full Error', error);
                     throw new Error("Could not anon fee operation\", Error - " + error.message);
                 }
                 try {
