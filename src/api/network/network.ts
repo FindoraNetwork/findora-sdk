@@ -169,7 +169,7 @@ export const getOwnerMemo = async (
 };
 
 export const getAbarOwnerMemo = async (
-  atxoSid: number,
+  atxoSid: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_abar_memo/${atxoSid}`;
@@ -180,7 +180,7 @@ export const getAbarOwnerMemo = async (
 };
 
 export const getMTLeafInfo = async (
-  atxoSid: number,
+  atxoSid: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.MTLeafInfoDataResult> => {
   const url = `${getQueryRoute()}/get_abar_proof/${atxoSid}`;

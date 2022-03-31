@@ -376,7 +376,7 @@ describe('triple masking (unit test)', () => {
     let formattedAxfrPublicKey: string;
     let givenRandomizer: string;
     let ownedAbars: OwnedAbarsDataResult;
-    let atxoSid: number;
+    let atxoSid: string;
     let ownedAbar: FindoraWallet.OwnedAbar;
     let abarData: FindoraWallet.OwnedAbarData;
 
@@ -394,11 +394,11 @@ describe('triple masking (unit test)', () => {
       axfrPublicKey = {
         free: jest.fn(() => {}),
       };
-      atxoSid = 1;
+      atxoSid = '1';
       ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
 
       abarData = {
-        atxoSid: atxoSid + '',
+        atxoSid: atxoSid,
         ownedAbar,
       };
 
@@ -589,7 +589,7 @@ describe('triple masking (unit test)', () => {
     let spyCacheWrite: jest.SpyInstance;
     let ownedAbars: FindoraWallet.OwnedAbarItem[];
 
-    let atxoSid: number;
+    let atxoSid: string;
     let ownedAbar: FindoraWallet.OwnedAbar;
     let givenRandomizer: string;
 
@@ -598,7 +598,7 @@ describe('triple masking (unit test)', () => {
         address: 'test_address',
       } as unknown as KeypairApi.WalletKeypar;
 
-      atxoSid = 1;
+      atxoSid = '1';
       ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
 
       ownedAbars = [
@@ -606,7 +606,7 @@ describe('triple masking (unit test)', () => {
           axfrPublicKey: 'formattedAxfrPublicKey',
           randomizer: givenRandomizer,
           abarData: {
-            atxoSid: atxoSid + '',
+            atxoSid,
             ownedAbar: { ...ownedAbar },
           },
         },

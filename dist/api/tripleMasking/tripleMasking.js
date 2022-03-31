@@ -215,26 +215,33 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
     });
 }); };
 exports.saveOwnedAbarsToCache = saveOwnedAbarsToCache;
-var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, myOwnedAbar, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, axfrSecretKey, decKey, aXfrKeyPair, secretDecKey, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, axfrPublicKeyReceiver, encKeyReceiver, error_5, to_amount, randomizers, barToAbarData;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var getAbarFromJson = function (ownedAbar) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, myOwnedAbar;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
-            case 2:
-                transactionBuilder = _b.sent();
+                ledger = _a.sent();
                 try {
                     myOwnedAbar = ledger.abar_from_json(ownedAbar);
                 }
                 catch (error) {
                     throw new Error("Could not decode myOwnedAbar data\", Error - " + error.message);
                 }
+                return [2 /*return*/, myOwnedAbar];
+        }
+    });
+}); };
+var getAbarOwnerMemo = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
                 return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
-            case 3:
-                abarOwnerMemoResult = _b.sent();
+            case 2:
+                abarOwnerMemoResult = _a.sent();
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
                     throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
@@ -245,14 +252,20 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                 catch (error) {
                     throw new Error("Could not get decode abar memo data\", Error - " + error.message);
                 }
-                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey;
-                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
-            case 4:
-                aXfrKeyPair = _b.sent();
-                secretDecKey = ledger.x_secretkey_from_string(decKey);
+                return [2 /*return*/, abarOwnerMemo];
+        }
+    });
+}); };
+var getMyMTLeafInfo = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
                 return [4 /*yield*/, Network.getMTLeafInfo(atxoSid)];
-            case 5:
-                mTLeafInfoResult = _b.sent();
+            case 2:
+                mTLeafInfoResult = _a.sent();
                 mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
                 if (mTLeafInfoError) {
                     throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
@@ -266,44 +279,167 @@ var abarToAbar = function (atxoSid, ownedAbar, anonKeys, anonKeysReceiver) { ret
                 catch (error) {
                     throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
                 }
-                _b.label = 6;
-            case 6:
-                _b.trys.push([6, 9, , 10]);
-                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(anonKeysReceiver.axfrPublicKey)];
-            case 7:
-                axfrPublicKeyReceiver = _b.sent();
-                return [4 /*yield*/, Keypair.getXPublicKeyByBase64(anonKeysReceiver.encKey)];
-            case 8:
-                encKeyReceiver = _b.sent();
-                return [3 /*break*/, 10];
-            case 9:
-                error_5 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_5.message);
-            case 10:
-                to_amount = BigInt(1);
-                try {
-                    transactionBuilder = transactionBuilder.add_operation_anon_transfer(myOwnedAbar, abarOwnerMemo, myMTLeafInfo, aXfrKeyPair, secretDecKey, axfrPublicKeyReceiver, encKeyReceiver, to_amount);
-                }
-                catch (error) {
-                    throw new Error("Could not add abar transfer operation\", Error - " + error.message);
-                }
-                try {
-                    randomizers = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_randomizers();
-                }
-                catch (err) {
-                    throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
-                }
-                if (!((_a = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _a === void 0 ? void 0 : _a.length)) {
-                    throw new Error("list of randomizers strings is empty ");
-                }
-                barToAbarData = {
-                    anonKeysFormatted: anonKeysReceiver,
-                    randomizers: randomizers.randomizers,
-                };
-                return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, atxoSid: "" + atxoSid }];
+                return [2 /*return*/, myMTLeafInfo];
         }
     });
 }); };
+var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var aXfrKeyPairConverted, secretDecKeyConverted, axfrPublicKeyConverted, encKeyConverted, axfrSecretKey, decKey, encKey, axfrPublicKey, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey, encKey = anonKeys.encKey, axfrPublicKey = anonKeys.axfrPublicKey;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 6, , 7]);
+                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
+            case 2:
+                aXfrKeyPairConverted = _a.sent(); // AXfrKeyPair
+                return [4 /*yield*/, Keypair.getXPrivateKeyByBase64(decKey)];
+            case 3:
+                secretDecKeyConverted = _a.sent(); // XSecretKey
+                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(axfrPublicKey)];
+            case 4:
+                axfrPublicKeyConverted = _a.sent(); // AXfrPubKey
+                return [4 /*yield*/, Keypair.getXPublicKeyByBase64(encKey)];
+            case 5:
+                encKeyConverted = _a.sent(); // XPublicKey
+                return [3 /*break*/, 7];
+            case 6:
+                error_5 = _a.sent();
+                throw new Error("Could not convert AnonKeyPair from JSON\", Error - " + error_5.message);
+            case 7: return [2 /*return*/, {
+                    aXfrKeyPairConverted: aXfrKeyPairConverted,
+                    secretDecKeyConverted: secretDecKeyConverted,
+                    axfrPublicKeyConverted: axfrPublicKeyConverted,
+                    encKeyConverted: encKeyConverted,
+                }];
+        }
+    });
+}); };
+var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { return __awaiter(void 0, void 0, void 0, function () {
+    var abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, maps, usedAssets, assetCode, asset, decimals, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, getAbarFromJson(ownedAbar)];
+            case 1:
+                myOwnedAbar = _a.sent();
+                return [4 /*yield*/, getAbarOwnerMemo(atxoSid)];
+            case 2:
+                abarOwnerMemo = _a.sent();
+                return [4 /*yield*/, getMyMTLeafInfo(atxoSid)];
+            case 3:
+                myMTLeafInfo = _a.sent();
+                return [4 /*yield*/, (0, exports.getBalanceMaps)([ownedAbarItem], anonKeysSender)];
+            case 4:
+                maps = _a.sent();
+                usedAssets = maps.usedAssets;
+                assetCode = usedAssets[0];
+                return [4 /*yield*/, (0, sdkAsset_1.getAssetDetails)(assetCode)];
+            case 5:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                result = {
+                    myOwnedAbar: myOwnedAbar,
+                    abarOwnerMemo: abarOwnerMemo,
+                    myMTLeafInfo: myMTLeafInfo,
+                    assetCode: assetCode,
+                    decimals: decimals,
+                };
+                return [2 /*return*/, __assign({}, result)];
+        }
+    });
+}); };
+var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
+    if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var anonTransferOperationBuilder, _a, aXfrKeyPairSender, secretDecKeySender, encKeySender, _b, axfrPublicKeyReceiver, encKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount, expectedFee, randomizers, abarToAbarData;
+        var _c;
+        return __generator(this, function (_d) {
+            switch (_d.label) {
+                case 0: return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
+                case 1:
+                    anonTransferOperationBuilder = _d.sent();
+                    return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
+                case 2:
+                    _a = _d.sent(), aXfrKeyPairSender = _a.aXfrKeyPairConverted, secretDecKeySender = _a.secretDecKeyConverted, encKeySender = _a.encKeyConverted;
+                    return [4 /*yield*/, getAnonKeypairFromJson(anonKeysReceiver)];
+                case 3:
+                    _b = _d.sent(), axfrPublicKeyReceiver = _b.axfrPublicKeyConverted, encKeyReceiver = _b.encKeyConverted;
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
+                case 4:
+                    abarPayloadOne = _d.sent();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 292 ~ abarPayloadOne', abarPayloadOne);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrKeyPairSender, secretDecKeySender, abarPayloadOne.myMTLeafInfo);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an input for abar transfer operation\", Error - " + error.message);
+                    }
+                    _i = 0, additionalOwnedAbarItems_1 = additionalOwnedAbarItems;
+                    _d.label = 5;
+                case 5:
+                    if (!(_i < additionalOwnedAbarItems_1.length)) return [3 /*break*/, 8];
+                    ownedAbarItemOne = additionalOwnedAbarItems_1[_i];
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
+                case 6:
+                    abarPayloadNext = _d.sent();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 312 ~ abarPayloadNext', abarPayloadNext);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, aXfrKeyPairSender, secretDecKeySender, abarPayloadNext.myMTLeafInfo);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an additional input for abar transfer operation\", Error - " + error.message);
+                    }
+                    _d.label = 7;
+                case 7:
+                    _i++;
+                    return [3 /*break*/, 5];
+                case 8:
+                    toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, axfrPublicKeyReceiver, encKeyReceiver);
+                    }
+                    catch (error) {
+                        throw new Error("Could not add an output for abar transfer operation\", Error - " + error.message);
+                    }
+                    expectedFee = anonTransferOperationBuilder.get_expected_fee();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 313 ~ expectedFee', expectedFee);
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
+                    }
+                    catch (error) {
+                        throw new Error("Could not set remainder receiver for abar transfer operation\", Error - " + error.message);
+                    }
+                    try {
+                        anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
+                    }
+                    catch (error) {
+                        throw new Error("Could not buuld and sign abar transfer operation\", Error - " + error.message);
+                    }
+                    try {
+                        randomizers = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_randomizers();
+                    }
+                    catch (err) {
+                        throw new Error("could not get a list of randomizers strings \"" + err.message + "\" ");
+                    }
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
+                    if (!((_c = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _c === void 0 ? void 0 : _c.length)) {
+                        throw new Error("list of randomizers strings is empty ");
+                    }
+                    abarToAbarData = {
+                        anonKeysSender: anonKeysSender,
+                        anonKeysReceiver: anonKeysReceiver,
+                        randomizers: randomizers.randomizers,
+                    };
+                    return [2 /*return*/, { anonTransferOperationBuilder: anonTransferOperationBuilder, abarToAbarData: abarToAbarData }];
+            }
+        });
+    });
+};
 exports.abarToAbar = abarToAbar;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_6, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_7, feeInputs, error_8, randomizers, barToAbarData;
@@ -440,7 +576,7 @@ var getUnspentAbars = function (anonKeys, givenRandomizersList) { return __await
                 }
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-                return [4 /*yield*/, (0, exports.genNullifierHash)(parseInt(atxoSid), ownedAbar, axfrSecretKey, decKey, givenRandomizer)];
+                return [4 /*yield*/, (0, exports.genNullifierHash)(atxoSid, ownedAbar, axfrSecretKey, decKey, givenRandomizer)];
             case 3:
                 hash = _a.sent();
                 return [4 /*yield*/, (0, exports.isNullifierHashSpent)(hash)];
@@ -459,54 +595,26 @@ var getUnspentAbars = function (anonKeys, givenRandomizersList) { return __await
 }); };
 exports.getUnspentAbars = getUnspentAbars;
 var openAbar = function (abar, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, axfrSecretKey, decKey, abarData, atxoSid, ownedAbar, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, aXfrKeyPair, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, myOwnedAbar, secretDecKey, openedAbar, amount, asset_type, assetCode, item;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var ledger, abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, _a, aXfrKeyPair, secretDecKey, openedAbar, amount, asset_type, assetCode, item;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _a.sent();
-                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey;
+                ledger = _b.sent();
                 abarData = abar.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-                return [4 /*yield*/, Network.getAbarOwnerMemo(parseInt(atxoSid))];
+                return [4 /*yield*/, getAbarFromJson(ownedAbar)];
             case 2:
-                abarOwnerMemoResult = _a.sent();
-                myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
-                if (memoError) {
-                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
-                }
-                try {
-                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
-                }
-                catch (error) {
-                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
-                }
-                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
+                myOwnedAbar = _b.sent();
+                return [4 /*yield*/, getAbarOwnerMemo(atxoSid)];
             case 3:
-                aXfrKeyPair = _a.sent();
-                return [4 /*yield*/, Network.getMTLeafInfo(parseInt(atxoSid))];
+                abarOwnerMemo = _b.sent();
+                return [4 /*yield*/, getMyMTLeafInfo(atxoSid)];
             case 4:
-                mTLeafInfoResult = _a.sent();
-                mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
-                if (mTLeafInfoError) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
-                }
-                if (!mTLeafInfo) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
-                }
-                try {
-                    myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
-                }
-                catch (error) {
-                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
-                }
-                try {
-                    myOwnedAbar = ledger.abar_from_json(ownedAbar);
-                }
-                catch (error) {
-                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error.message);
-                }
-                secretDecKey = ledger.x_secretkey_from_string(decKey);
+                myMTLeafInfo = _b.sent();
+                return [4 /*yield*/, getAnonKeypairFromJson(anonKeys)];
+            case 5:
+                _a = _b.sent(), aXfrKeyPair = _a.aXfrKeyPairConverted, secretDecKey = _a.secretDecKeyConverted;
                 openedAbar = ledger.get_open_abar(myOwnedAbar, abarOwnerMemo, aXfrKeyPair, secretDecKey, myMTLeafInfo);
                 amount = openedAbar.amount, asset_type = openedAbar.asset_type;
                 assetCode = ledger.asset_type_from_jsvalue(asset_type);
@@ -616,7 +724,7 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
                 return [4 /*yield*/, Network.getOwnedAbars(randomizedPubKey)];
             case 3:
                 _a = _b.sent(), ownedAbarsResponse = _a.response, error = _a.error;
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
                 if (error) {
                     throw new Error(error.message);
                 }
@@ -629,7 +737,7 @@ var getOwnedAbars = function (formattedAxfrPublicKey, givenRandomizer) { return 
                         axfrPublicKey: formattedAxfrPublicKey,
                         randomizer: givenRandomizer,
                         abarData: {
-                            atxoSid: atxoSid + '',
+                            atxoSid: atxoSid,
                             ownedAbar: __assign({}, ownedAbar),
                         },
                     };

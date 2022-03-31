@@ -477,10 +477,10 @@ describe('triple masking (unit test)', function () {
             axfrPublicKey = {
                 free: jest.fn(function () { }),
             };
-            atxoSid = 1;
+            atxoSid = '1';
             ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
             abarData = {
-                atxoSid: atxoSid + '',
+                atxoSid: atxoSid,
                 ownedAbar: ownedAbar,
             };
             ownedAbars = {
@@ -715,14 +715,14 @@ describe('triple masking (unit test)', function () {
             walletInfo = {
                 address: 'test_address',
             };
-            atxoSid = 1;
+            atxoSid = '1';
             ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
             ownedAbars = [
                 {
                     axfrPublicKey: 'formattedAxfrPublicKey',
                     randomizer: givenRandomizer,
                     abarData: {
-                        atxoSid: atxoSid + '',
+                        atxoSid: atxoSid,
                         ownedAbar: __assign({}, ownedAbar),
                     },
                 },

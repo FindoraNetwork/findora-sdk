@@ -1,6 +1,7 @@
 export {
   AnonBlindAssetRecord,
   AnonKeys,
+  AnonTransferOperationBuilder,
   AssetRules,
   AssetTracerKeyPair,
   AXfrKeyPair,
