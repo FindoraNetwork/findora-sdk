@@ -92,18 +92,13 @@ const sendTxToAccounts = async (
   recieversInfo: TransferReciever[],
   assetCode: string,
 ) => {
-  // const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-
-  // const recieversInfo = [
-  //   { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
-  //   { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
-  // ];
+  const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const transactionBuilder = await Transaction.sendToMany(
     senderWallet,
     recieversInfo,
     assetCode,
-    // assetBlindRules,
+    assetBlindRules,
   );
 
   const txHash = await Transaction.submitTransaction(transactionBuilder);

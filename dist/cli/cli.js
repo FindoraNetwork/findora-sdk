@@ -68,7 +68,8 @@ var CliCommands = __importStar(require("./commands"));
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    hostUrl: 'https://dev-mainnetmock.dev.findora.org',
+    // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'http://127.0.0.1',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
@@ -135,7 +136,7 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_SEND_FRA]);
                     break;
                 }
-                CliCommands.runBatchSendFra(filePath, privateKey, 12);
+                CliCommands.runBatchSendFra(filePath, privateKey, 6);
                 break;
             case COMMANDS.CREATE_AND_SAVE_WALLETS:
                 if (!numberOfWallets) {

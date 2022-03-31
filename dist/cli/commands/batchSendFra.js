@@ -123,10 +123,12 @@ var processTransferRecievers = function (tokenReceiversChunk) { return __awaiter
     });
 }); };
 var sendTxToAccounts = function (senderWallet, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, txHash;
+    var assetBlindRules, transactionBuilder, txHash;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Transaction.sendToMany(senderWallet, recieversInfo, assetCode)];
+            case 0:
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                return [4 /*yield*/, api_1.Transaction.sendToMany(senderWallet, recieversInfo, assetCode, assetBlindRules)];
             case 1:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -136,7 +138,7 @@ var sendTxToAccounts = function (senderWallet, recieversInfo, assetCode) { retur
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 3:
                 _a.sent();
-                return [2 /*return*/, { txHash: txHash }];
+                return [2 /*return*/, { txHash: '' }];
         }
     });
 }); };
