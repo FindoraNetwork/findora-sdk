@@ -1367,13 +1367,64 @@ const abarToAbar = async () => {
   console.log('transfer abar result handle!!', resultHandle);
 };
 
+const abarToBar = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const anonKeysSender = {
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  };
+
+  // rnadomizer for abar to be sent
+  const givenRandomizerOne = '3PaExNx4SXNnhhE2pVpNiNHpiSXFQThh8qPgUycUDG5G';
+
+  // randomizer to pay fee
+  const givenRandomizerTwo = '3NcCcc493iSc2QcTuEGVwSb5vLDHDVpHHEcPPCPUN9Bp';
+
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerOne,
+  );
+
+  const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
+  console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+
+  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerTwo,
+  );
+
+  const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
+  console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
+
+  const { transactionBuilder, abarToBarData } = await TripleMasking.abarToBar(
+    anonKeysSender,
+    walletInfo,
+    ownedAbarToUseAsSource,
+    ownedAbarToUseAsFee,
+  );
+
+  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('abar to bar result handle!!!', resultHandle);
+};
+
 // getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
-abarToAbar();
+// abarToAbar();
+abarToBar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();

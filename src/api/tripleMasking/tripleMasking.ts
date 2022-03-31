@@ -430,6 +430,9 @@ export const barToAbar = async (
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
 
+  // auth_key_pair: XfrKeyPair, abar_pubkey: AXfrPubKey, txo_sid: BigInt,
+  // input_record: ClientAssetRecord, owner_memo: OwnerMemo | undefined,
+  // enc_key: XPublicKey
   try {
     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(
       walletInfo.keypair,
@@ -479,6 +482,76 @@ export const barToAbar = async (
   };
 
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
+};
+
+export const abarToBar = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  receiverWalletInfo: Keypair.WalletKeypar,
+  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  ownedAbarToUseAsFee: FindoraWallet.OwnedAbarItem,
+) => {
+  let transactionBuilder = await getTransactionBuilder();
+
+  //input: AnonBlindAssetRecord,
+  // owner_memo: OwnerMemo, mt_leaf_info: MTLeafInfo,
+  // from_keypair: AXfrKeyPair, from_dec_key: XSecretKey,
+  // recipient: XfrPublicKey, conf_amount: boolean, conf_type: boolean
+
+  const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
+
+  const { aXfrKeyPairConverted: aXfrKeyPairSender, secretDecKeyConverted: secretDecKeySender } =
+    await getAnonKeypairFromJson(anonKeysSender);
+
+  const abarPayloadSource = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
+
+  try {
+    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(
+      abarPayloadSource.myOwnedAbar,
+      abarPayloadSource.abarOwnerMemo,
+      abarPayloadSource.myMTLeafInfo,
+      aXfrKeyPairSender,
+      secretDecKeySender,
+      receiverXfrPublicKey,
+      false,
+      false,
+    );
+  } catch (error) {
+    throw new Error(`Could not add abar to bar operation", Error - ${(error as Error).message}`);
+  }
+
+  const abarPayloadFee = await getAbarTransferInputPayload(ownedAbarToUseAsFee, anonKeysSender);
+
+  // input: AnonBlindAssetRecord, owner_memo: OwnerMemo, mt_leaf_info: MTLeafInfo,
+  // from_keypair: AXfrKeyPair, from_dec_key: XSecretKey
+  try {
+    transactionBuilder = transactionBuilder.add_operation_anon_fee(
+      abarPayloadFee.myOwnedAbar,
+      abarPayloadFee.abarOwnerMemo,
+      abarPayloadFee.myMTLeafInfo,
+      aXfrKeyPairSender,
+      secretDecKeySender,
+    );
+  } catch (error) {
+    throw new Error(`Could not anon fee operation", Error - ${(error as Error).message}`);
+  }
+
+  let randomizers: { randomizers: string[] };
+
+  try {
+    randomizers = transactionBuilder?.get_randomizers();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 542 ~ randomizers', randomizers);
+  } catch (err) {
+    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
+  }
+
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 547 ~ randomizers', randomizers);
+
+  const abarToBarData: FindoraWallet.AbarToBarData = {
+    anonKeysSender,
+    randomizers: randomizers.randomizers,
+  };
+
+  return { transactionBuilder, abarToBarData };
 };
 
 export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
