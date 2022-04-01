@@ -138,7 +138,7 @@ var sendTxToAccounts = function (senderWallet, recieversInfo, assetCode) { retur
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 3:
                 _a.sent();
-                return [2 /*return*/, { txHash: '' }];
+                return [2 /*return*/, { txHash: txHash }];
         }
     });
 }); };
