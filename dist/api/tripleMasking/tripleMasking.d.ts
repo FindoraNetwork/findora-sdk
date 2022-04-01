@@ -19,6 +19,7 @@ export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, 
 export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, ownedAbarToUseAsFee: FindoraWallet.OwnedAbarItem) => Promise<{
     transactionBuilder: TransactionBuilder;
     abarToBarData: FindoraWallet.AbarToBarData;
+    receiverWalletInfo: Keypair.WalletKeypar;
 }>;
 export declare const isNullifierHashSpent: (hash: string) => Promise<boolean>;
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenRandomizersList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;

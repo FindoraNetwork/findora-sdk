@@ -1467,7 +1467,7 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
     });
 }); };
 var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, anonKeysSender, givenRandomizerOne, givenRandomizerTwo, ownedAbarsResponseOne, ownedAbarToUseAsSource, ownedAbarsResponseTwo, ownedAbarToUseAsFee, _a, transactionBuilder, abarToBarData, resultHandle;
+    var password, pkey, walletInfo, anonKeysSender, givenRandomizerOne, givenRandomizerTwo, ownedAbarsResponseOne, ownedAbarToUseAsSource, ownedAbarsResponseTwo, ownedAbarToUseAsFee, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1482,8 +1482,8 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                givenRandomizerOne = '6kpTcqEgMXJ43pqHh6A6K3U1uiCiSe9hVgKT6USoJSX';
-                givenRandomizerTwo = '73foG5Vw5BdfaXMaGk8SrwSq98Xkoic93zN8MauahTdm';
+                givenRandomizerOne = 'DzmNY4BZVUC8rcYWUE55MAuuHFsw314hhpN9uwDX3BiY';
+                givenRandomizerTwo = 'EECfEi8EPdxLWX2LDMSRdPLwESgtNnQVH3ZrxLtRFz1t';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerOne)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();
@@ -1496,8 +1496,9 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
                 return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, ownedAbarToUseAsSource, ownedAbarToUseAsFee)];
             case 4:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
                 console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
+                console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();

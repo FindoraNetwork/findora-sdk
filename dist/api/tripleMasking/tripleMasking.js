@@ -584,7 +584,7 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                     anonKeysSender: anonKeysSender,
                     randomizers: randomizers.randomizers,
                 };
-                return [2 /*return*/, { transactionBuilder: transactionBuilder, abarToBarData: abarToBarData }];
+                return [2 /*return*/, { transactionBuilder: transactionBuilder, abarToBarData: abarToBarData, receiverWalletInfo: receiverWalletInfo }];
         }
     });
 }); };

@@ -1382,10 +1382,10 @@ const abarToBar = async () => {
   };
 
   // rnadomizer for abar to be sent
-  const givenRandomizerOne = '6kpTcqEgMXJ43pqHh6A6K3U1uiCiSe9hVgKT6USoJSX';
+  const givenRandomizerOne = 'DzmNY4BZVUC8rcYWUE55MAuuHFsw314hhpN9uwDX3BiY';
 
   // randomizer to pay fee
-  const givenRandomizerTwo = '73foG5Vw5BdfaXMaGk8SrwSq98Xkoic93zN8MauahTdm';
+  const givenRandomizerTwo = 'EECfEi8EPdxLWX2LDMSRdPLwESgtNnQVH3ZrxLtRFz1t';
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
     anonKeysSender.axfrPublicKey,
@@ -1403,7 +1403,7 @@ const abarToBar = async () => {
   const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
   console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
 
-  const { transactionBuilder, abarToBarData } = await TripleMasking.abarToBar(
+  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
     walletInfo,
     ownedAbarToUseAsSource,
@@ -1411,6 +1411,7 @@ const abarToBar = async () => {
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
+  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 

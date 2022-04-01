@@ -553,7 +553,7 @@ export const abarToBar = async (
     randomizers: randomizers.randomizers,
   };
 
-  return { transactionBuilder, abarToBarData };
+  return { transactionBuilder, abarToBarData, receiverWalletInfo };
 };
 
 export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
