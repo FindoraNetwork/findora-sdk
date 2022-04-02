@@ -68,6 +68,11 @@ declare namespace FindoraWallet {
     randomizers: string[];
   }
 
+  export interface AbarToBarData {
+    anonKeysSender: FormattedAnonKeys;
+    randomizers: string[];
+  }
+
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
     anonKeysReceiver: FormattedAnonKeys;

@@ -1284,14 +1284,22 @@ const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
   const anonKeys = {
-    axfrPublicKey: '1kaBWKThrrx7auhTbt4McuqHBF2KtkMtt0GEnQMKagA=',
-    axfrSecretKey: 'gHH4PARGM5LxpEKdBeVLyuK3KF1dscsB2uqT7DV88wnWRoFYpOGuvHtq6FNu3gxy6ocEXYq2Qy23QYSdAwpqAA==',
-    decKey: 'aMxIu5G8nL7wfnRPXxm9eCy1Zxrb0OYAPb3o_h50ZEM=',
-    encKey: '0q7Yewc5mbF9x__AItOJn3g4DJRr8woST4x3LOl4eyc=',
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   };
 
   // const givenRandomizersList = myGivenRandomizersList; //
-  const givenRandomizersList = ['29vF3DkatR3qifNCPz6BRiTvVMZT62ALcq9CUhtC2PMh'];
+  const givenRandomizersList = [
+    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
+    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
+  ];
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check',
+    givenRandomizersList,
+  );
 
   const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
@@ -1367,13 +1375,65 @@ const abarToAbar = async () => {
   console.log('transfer abar result handle!!', resultHandle);
 };
 
-// getFraBalance();
+const abarToBar = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const anonKeysSender = {
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  };
+
+  // rnadomizer for abar to be sent
+  const givenRandomizerOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+
+  // randomizer to pay fee
+  const givenRandomizerTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
+
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerOne,
+  );
+
+  const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
+  console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+
+  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
+    anonKeysSender.axfrPublicKey,
+    givenRandomizerTwo,
+  );
+
+  const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
+  console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
+
+  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
+    anonKeysSender,
+    walletInfo,
+    ownedAbarToUseAsSource,
+    ownedAbarToUseAsFee,
+  );
+
+  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
+  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('abar to bar result handle!!!', resultHandle);
+};
+
+getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
-abarToAbar();
+// abarToAbar();
+// abarToBar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
