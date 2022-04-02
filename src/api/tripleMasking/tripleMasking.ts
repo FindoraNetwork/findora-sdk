@@ -758,19 +758,25 @@ export const genNullifierHash = async (
   const ledger = await getLedger();
 
   const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 761 ~ atxoSid', atxoSid);
 
   const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
 
   if (memoError) {
-    throw new Error(`Could not fetch abar memo data for sid "${atxoSid}", Error - ${memoError.message}`);
+    throw new Error(
+      `Could not fetch abar memo data for sid (genNullifierHash) "${atxoSid}", Error - ${memoError.message}`,
+    );
   }
 
   let abarOwnerMemo;
 
+  console.log('myMemoData!', myMemoData);
   try {
     abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
   } catch (error) {
-    throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
+    console.log('error!', error);
+
+    throw new Error(`Could not get decode abar memo data 1", Error - ${(error as Error).message}`);
   }
 
   const aXfrKeyPairForRandomizing = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);

@@ -812,15 +812,18 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSecretKey, decKey, rand
                 return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
             case 2:
                 abarOwnerMemoResult = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 761 ~ atxoSid', atxoSid);
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
+                    throw new Error("Could not fetch abar memo data for sid (genNullifierHash) \"" + atxoSid + "\", Error - " + memoError.message);
                 }
+                console.log('myMemoData!', myMemoData);
                 try {
                     abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
                 }
                 catch (error) {
-                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
+                    console.log('error!', error);
+                    throw new Error("Could not get decode abar memo data 1\", Error - " + error.message);
                 }
                 return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey)];
             case 3:

@@ -1292,8 +1292,8 @@ const getAbarBalance = async () => {
 
   // const givenRandomizersList = myGivenRandomizersList; //
   const givenRandomizersList = [
-    'EuH7EoT6SB1SaZhWZ8jx9KTmTrGbqXvqzCFHdeerLMND',
-    '8MLCqoSD9afdKdCoNyyCXRPxfvyq7oT68UH6RpcSHiGo',
+    'ZnbUHHWnQufGgVgnuGRM5iKzqvq8TjXQB59YxNYX5sb',
+    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
   ];
 
   console.log(
@@ -1390,10 +1390,10 @@ const abarToBar = async () => {
   };
 
   // rnadomizer for abar to be sent
-  const givenRandomizerOne = 'DzmNY4BZVUC8rcYWUE55MAuuHFsw314hhpN9uwDX3BiY';
+  const givenRandomizerOne = '7CZoN6EuJC4rKf73EUsGbh1H1vebKGPaiEf5Ty8nJ6RB';
 
   // randomizer to pay fee
-  const givenRandomizerTwo = 'EECfEi8EPdxLWX2LDMSRdPLwESgtNnQVH3ZrxLtRFz1t';
+  const givenRandomizerTwo = '6hvXaGc1Tn5KEWvJ2eKo72jh5ZVSPATDqzrksx5tVgMp';
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
     anonKeysSender.axfrPublicKey,
@@ -1426,11 +1426,11 @@ const abarToBar = async () => {
   console.log('abar to bar result handle!!!', resultHandle);
 };
 
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-// getAbarBalance();
+getAbarBalance();
 // getFee();
 // abarToAbar();
 // abarToBar();

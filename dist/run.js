@@ -1396,8 +1396,8 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 givenRandomizersList = [
-                    'EuH7EoT6SB1SaZhWZ8jx9KTmTrGbqXvqzCFHdeerLMND',
-                    '8MLCqoSD9afdKdCoNyyCXRPxfvyq7oT68UH6RpcSHiGo',
+                    'ZnbUHHWnQufGgVgnuGRM5iKzqvq8TjXQB59YxNYX5sb',
+                    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
                 ];
                 console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check', givenRandomizersList);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
@@ -1486,8 +1486,8 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                givenRandomizerOne = 'DzmNY4BZVUC8rcYWUE55MAuuHFsw314hhpN9uwDX3BiY';
-                givenRandomizerTwo = 'EECfEi8EPdxLWX2LDMSRdPLwESgtNnQVH3ZrxLtRFz1t';
+                givenRandomizerOne = '7CZoN6EuJC4rKf73EUsGbh1H1vebKGPaiEf5Ty8nJ6RB';
+                givenRandomizerTwo = '6hvXaGc1Tn5KEWvJ2eKo72jh5ZVSPATDqzrksx5tVgMp';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerOne)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();
@@ -1511,11 +1511,11 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-// getAbarBalance();
+getAbarBalance();
 // getFee();
 // abarToAbar();
 // abarToBar();
