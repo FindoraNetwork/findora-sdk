@@ -1396,7 +1396,7 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 givenRandomizersList = [
-                    'ZnbUHHWnQufGgVgnuGRM5iKzqvq8TjXQB59YxNYX5sb',
+                    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
                     // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
                 ];
                 console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check', givenRandomizersList);
@@ -1486,8 +1486,8 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                givenRandomizerOne = '7CZoN6EuJC4rKf73EUsGbh1H1vebKGPaiEf5Ty8nJ6RB';
-                givenRandomizerTwo = '6hvXaGc1Tn5KEWvJ2eKo72jh5ZVSPATDqzrksx5tVgMp';
+                givenRandomizerOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+                givenRandomizerTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerOne)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();
@@ -1511,11 +1511,11 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-getAbarBalance();
+// getAbarBalance();
 // getFee();
 // abarToAbar();
 // abarToBar();

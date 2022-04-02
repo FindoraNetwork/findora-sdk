@@ -1292,7 +1292,7 @@ const getAbarBalance = async () => {
 
   // const givenRandomizersList = myGivenRandomizersList; //
   const givenRandomizersList = [
-    'ZnbUHHWnQufGgVgnuGRM5iKzqvq8TjXQB59YxNYX5sb',
+    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
     // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
   ];
 
@@ -1390,10 +1390,10 @@ const abarToBar = async () => {
   };
 
   // rnadomizer for abar to be sent
-  const givenRandomizerOne = '7CZoN6EuJC4rKf73EUsGbh1H1vebKGPaiEf5Ty8nJ6RB';
+  const givenRandomizerOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
 
   // randomizer to pay fee
-  const givenRandomizerTwo = '6hvXaGc1Tn5KEWvJ2eKo72jh5ZVSPATDqzrksx5tVgMp';
+  const givenRandomizerTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
     anonKeysSender.axfrPublicKey,
@@ -1426,11 +1426,11 @@ const abarToBar = async () => {
   console.log('abar to bar result handle!!!', resultHandle);
 };
 
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
-getAbarBalance();
+// getAbarBalance();
 // getFee();
 // abarToAbar();
 // abarToBar();
