@@ -18,11 +18,11 @@ const waitingTimeBeforeCheckTxStatus = 18000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
@@ -111,120 +111,120 @@ const getFraBalance = async () => {
   console.log('\n');
   console.log('\n');
 
-  const walletsToCheck = [
-    {
-      index: 0,
-      privateKey: 'KI4eZLjLe13Vn4JOuoOv3SYS1VL62H-gIt7j4Sco2tI=',
-      address: 'fra1vh9ngxdkky29wdp87rarvdkse3lu8yufrf6yz6lchssxrd0ncwuqpj0j4h',
-    },
-    {
-      index: 1,
-      privateKey: 'lgtvtkzHF-9yk29qIgp8XJp4Tubw1oztJBE1_1vLKxo=',
-      address: 'fra1h9vaypfsrs6jjepxrpr6y0t74clvdndkrelewmywe5dnad54xnqqurt3r3',
-    },
-    {
-      index: 2,
-      privateKey: 'xyyu-fzho1WrfuTZsskT3tTR5a-B5ZaxCsbNE0xIhzM=',
-      address: 'fra1rm48mv8nnjnz560u592wkaf94hdd9mxr6vz5hwn7wpna3daqsusqga2wsz',
-    },
-    {
-      index: 3,
-      privateKey: 'JGtz0xczlxHbwUsLZzuTUHvPhswl9RnJkZdi3TGt0-k=',
-      address: 'fra1njx7a9qhcd5xuphxdrxwxufx9565kr4n523m7cxyanfq5xf4hxrss9pna6',
-    },
-    {
-      index: 4,
-      privateKey: 'kdzqk0LPPs-mlNY41gOcXJ_ZXpqa_5WM5PNwOGrFTQY=',
-      address: 'fra17p3lpqgkg6gz0mgpd7zvpkka2pxzvzfp9pte8uzvwnmfprvtdhhsf5je45',
-    },
-    {
-      index: 5,
-      privateKey: 'zriAFyo3qCft0i0tU6zPPIIn7F055SkaxCxOyZheeZE=',
-      address: 'fra15y5gc2w5vs2rjxc2gu6lts8gye6y2g4gyyfd2zuk6x7yhu2kajws2j0yu9',
-    },
-    {
-      index: 6,
-      privateKey: 'yD9z1rj6isM12eqU4QMkeO7ldAmidHB-y6rdHvHnnBo=',
-      address: 'fra1f7nfhw2uqq6ksrh3qfal9mfxsh0qmaevmqhhgcayafl2tyudnnsqd6e3rm',
-    },
-    {
-      index: 7,
-      privateKey: 'WsbjPKME5sK1dq3DBjs9qVlyf89nK8Ks8buE7fLWhjw=',
-      address: 'fra1gv30rxxxaurfl6zza04mwh5m870yfv95l6uufecphu9prd3mhp2sfvhf85',
-    },
-    {
-      index: 8,
-      privateKey: 'DRa0tuxuO7gao2wXD3dX7U99YjZO4lewTMP7CoknpN0=',
-      address: 'fra14hfpc3g9d28npwjqmchmeya74yamfem35c58ctu7rr04cs75z0nstpqwx6',
-    },
-    {
-      index: 9,
-      privateKey: 'G1Mrl0BY7GmlxQmuc6o-BBANvzJPM0rcfpJBRJqRyBE=',
-      address: 'fra130m3uqwtegnnrwfd0fr69jhsj2y4adgyqgq9wn4qjgjjwjksjunq92tvlp',
-    },
-    {
-      index: 10,
-      privateKey: 'BiLmDSnlHF0HWseEIdPyHzQ14QdHDkTpsL_8_CU07kE=',
-      address: 'fra1symt3n88ddnxw0chsqckxwhynldkkft40yrsplzg8xqv6ryhmrsskpwvrf',
-    },
-    {
-      index: 11,
-      privateKey: 'pqzR6buGwnaOxbUBNp1nmnK6HulSnlkP80kEBzt6XDY=',
-      address: 'fra1uhdewn0h7wxk473mc9jcqr6tm7h2r6ns4cn0s0g8gpsujyvpxhqslmqcq5',
-    },
-    {
-      index: 12,
-      privateKey: 'L_jcArSue933v6cUCCtkC_plWHIkk2RuFWr_Txf6VIw=',
-      address: 'fra1t2fju9ja3j8vahhglfnpcczapahs85jtmcf5d34xxwrvux6yyk5sj4ye3v',
-    },
-    {
-      index: 13,
-      privateKey: 'xS_7tr-lF6UjvePa0sikOAZwXjQYeWdejE2kfPpAl_8=',
-      address: 'fra1yq0e8tk34579nggek09j8tasjclnl5q4qpy7td8tegqlfusxgjzqsj8rcq',
-    },
-    {
-      index: 14,
-      privateKey: 'BLZ1zP--arQ3ASIdXrKBd-IyiIWi1sa5fXW_dgf_J34=',
-      address: 'fra132p90p0wjlxxvesqdyxlt0a947u0y9lztj394qpk9kz8g7qf3v7sdhuzrt',
-    },
-    {
-      index: 15,
-      privateKey: '2f9u311DTE7aFkNsCWvlvKkYedFhE8jiobEZyBBO4vQ=',
-      address: 'fra1kvdjeezgccslumaf22vqrqwjnuqxlv7whx683unxxr2xect6d4jshq82hu',
-    },
-    {
-      index: 16,
-      privateKey: 'UBHiIe2T2NCg1s1POrdl_vdL4gIJhWHy88hX6_NId8w=',
-      address: 'fra1jfcg0altp2kghvlturuwyhapt420xeey3khd7kjqujltw56pdtqq5dpeu5',
-    },
-    {
-      index: 17,
-      privateKey: 'ZBOjsZv1jT5PrCEY7riQG6Pq12TvLQ9WFH47bubQxlA=',
-      address: 'fra1mvhf6zh0vp24rar66f6qqcd2pwze53c48wsen5alm52pn049fr6sgncnvj',
-    },
-    {
-      index: 18,
-      privateKey: 'gBSmBxZ-OaA3LoOAQ_N-i8vq2bIxq6u26O_zPRUNcwk=',
-      address: 'fra1vfejdytqzuz5jlk7hp3cu08y6rktczdtz7zzdjd02xw8w2yk8s9shgdeyq',
-    },
-    {
-      index: 19,
-      privateKey: 'LR-IFDmgT-uhher0dkDCYXSdT9fcb3tDqO_0y6wERpw=',
-      address: 'fra1pq2cgtplxeu94eekt49xvkmn7qcjkcfgehpxwzlxrspl7l2un05qg32uls',
-    },
-  ];
+  // const walletsToCheck = [
+  //   {
+  //     index: 0,
+  //     privateKey: 'KI4eZLjLe13Vn4JOuoOv3SYS1VL62H-gIt7j4Sco2tI=',
+  //     address: 'fra1vh9ngxdkky29wdp87rarvdkse3lu8yufrf6yz6lchssxrd0ncwuqpj0j4h',
+  //   },
+  //   {
+  //     index: 1,
+  //     privateKey: 'lgtvtkzHF-9yk29qIgp8XJp4Tubw1oztJBE1_1vLKxo=',
+  //     address: 'fra1h9vaypfsrs6jjepxrpr6y0t74clvdndkrelewmywe5dnad54xnqqurt3r3',
+  //   },
+  //   {
+  //     index: 2,
+  //     privateKey: 'xyyu-fzho1WrfuTZsskT3tTR5a-B5ZaxCsbNE0xIhzM=',
+  //     address: 'fra1rm48mv8nnjnz560u592wkaf94hdd9mxr6vz5hwn7wpna3daqsusqga2wsz',
+  //   },
+  //   {
+  //     index: 3,
+  //     privateKey: 'JGtz0xczlxHbwUsLZzuTUHvPhswl9RnJkZdi3TGt0-k=',
+  //     address: 'fra1njx7a9qhcd5xuphxdrxwxufx9565kr4n523m7cxyanfq5xf4hxrss9pna6',
+  //   },
+  //   {
+  //     index: 4,
+  //     privateKey: 'kdzqk0LPPs-mlNY41gOcXJ_ZXpqa_5WM5PNwOGrFTQY=',
+  //     address: 'fra17p3lpqgkg6gz0mgpd7zvpkka2pxzvzfp9pte8uzvwnmfprvtdhhsf5je45',
+  //   },
+  //   {
+  //     index: 5,
+  //     privateKey: 'zriAFyo3qCft0i0tU6zPPIIn7F055SkaxCxOyZheeZE=',
+  //     address: 'fra15y5gc2w5vs2rjxc2gu6lts8gye6y2g4gyyfd2zuk6x7yhu2kajws2j0yu9',
+  //   },
+  //   {
+  //     index: 6,
+  //     privateKey: 'yD9z1rj6isM12eqU4QMkeO7ldAmidHB-y6rdHvHnnBo=',
+  //     address: 'fra1f7nfhw2uqq6ksrh3qfal9mfxsh0qmaevmqhhgcayafl2tyudnnsqd6e3rm',
+  //   },
+  //   {
+  //     index: 7,
+  //     privateKey: 'WsbjPKME5sK1dq3DBjs9qVlyf89nK8Ks8buE7fLWhjw=',
+  //     address: 'fra1gv30rxxxaurfl6zza04mwh5m870yfv95l6uufecphu9prd3mhp2sfvhf85',
+  //   },
+  //   {
+  //     index: 8,
+  //     privateKey: 'DRa0tuxuO7gao2wXD3dX7U99YjZO4lewTMP7CoknpN0=',
+  //     address: 'fra14hfpc3g9d28npwjqmchmeya74yamfem35c58ctu7rr04cs75z0nstpqwx6',
+  //   },
+  //   {
+  //     index: 9,
+  //     privateKey: 'G1Mrl0BY7GmlxQmuc6o-BBANvzJPM0rcfpJBRJqRyBE=',
+  //     address: 'fra130m3uqwtegnnrwfd0fr69jhsj2y4adgyqgq9wn4qjgjjwjksjunq92tvlp',
+  //   },
+  //   {
+  //     index: 10,
+  //     privateKey: 'BiLmDSnlHF0HWseEIdPyHzQ14QdHDkTpsL_8_CU07kE=',
+  //     address: 'fra1symt3n88ddnxw0chsqckxwhynldkkft40yrsplzg8xqv6ryhmrsskpwvrf',
+  //   },
+  //   {
+  //     index: 11,
+  //     privateKey: 'pqzR6buGwnaOxbUBNp1nmnK6HulSnlkP80kEBzt6XDY=',
+  //     address: 'fra1uhdewn0h7wxk473mc9jcqr6tm7h2r6ns4cn0s0g8gpsujyvpxhqslmqcq5',
+  //   },
+  //   {
+  //     index: 12,
+  //     privateKey: 'L_jcArSue933v6cUCCtkC_plWHIkk2RuFWr_Txf6VIw=',
+  //     address: 'fra1t2fju9ja3j8vahhglfnpcczapahs85jtmcf5d34xxwrvux6yyk5sj4ye3v',
+  //   },
+  //   {
+  //     index: 13,
+  //     privateKey: 'xS_7tr-lF6UjvePa0sikOAZwXjQYeWdejE2kfPpAl_8=',
+  //     address: 'fra1yq0e8tk34579nggek09j8tasjclnl5q4qpy7td8tegqlfusxgjzqsj8rcq',
+  //   },
+  //   {
+  //     index: 14,
+  //     privateKey: 'BLZ1zP--arQ3ASIdXrKBd-IyiIWi1sa5fXW_dgf_J34=',
+  //     address: 'fra132p90p0wjlxxvesqdyxlt0a947u0y9lztj394qpk9kz8g7qf3v7sdhuzrt',
+  //   },
+  //   {
+  //     index: 15,
+  //     privateKey: '2f9u311DTE7aFkNsCWvlvKkYedFhE8jiobEZyBBO4vQ=',
+  //     address: 'fra1kvdjeezgccslumaf22vqrqwjnuqxlv7whx683unxxr2xect6d4jshq82hu',
+  //   },
+  //   {
+  //     index: 16,
+  //     privateKey: 'UBHiIe2T2NCg1s1POrdl_vdL4gIJhWHy88hX6_NId8w=',
+  //     address: 'fra1jfcg0altp2kghvlturuwyhapt420xeey3khd7kjqujltw56pdtqq5dpeu5',
+  //   },
+  //   {
+  //     index: 17,
+  //     privateKey: 'ZBOjsZv1jT5PrCEY7riQG6Pq12TvLQ9WFH47bubQxlA=',
+  //     address: 'fra1mvhf6zh0vp24rar66f6qqcd2pwze53c48wsen5alm52pn049fr6sgncnvj',
+  //   },
+  //   {
+  //     index: 18,
+  //     privateKey: 'gBSmBxZ-OaA3LoOAQ_N-i8vq2bIxq6u26O_zPRUNcwk=',
+  //     address: 'fra1vfejdytqzuz5jlk7hp3cu08y6rktczdtz7zzdjd02xw8w2yk8s9shgdeyq',
+  //   },
+  //   {
+  //     index: 19,
+  //     privateKey: 'LR-IFDmgT-uhher0dkDCYXSdT9fcb3tDqO_0y6wERpw=',
+  //     address: 'fra1pq2cgtplxeu94eekt49xvkmn7qcjkcfgehpxwzlxrspl7l2un05qg32uls',
+  //   },
+  // ];
 
-  for (let walletInfo of walletsToCheck) {
-    const restoredWalletInfo = await Keypair.restoreFromPrivateKey(walletInfo.privateKey, password);
+  // for (let walletInfo of walletsToCheck) {
+  //   const restoredWalletInfo = await Keypair.restoreFromPrivateKey(walletInfo.privateKey, password);
 
-    const balance = await Account.getBalance(restoredWalletInfo);
+  //   const balance = await Account.getBalance(restoredWalletInfo);
 
-    console.log('\n');
+  //   console.log('\n');
 
-    console.log('restoredWalletInfo.address (from pKey)', restoredWalletInfo.address);
-    console.log('restoredWalletInfo.privateStr', restoredWalletInfo.privateStr);
-    console.log('restoredWalletInfo balance ', balance);
-  }
+  //   console.log('restoredWalletInfo.address (from pKey)', restoredWalletInfo.address);
+  //   console.log('restoredWalletInfo.privateStr', restoredWalletInfo.privateStr);
+  //   console.log('restoredWalletInfo balance ', balance);
+  // }
 };
 
 /**
