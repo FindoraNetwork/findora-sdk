@@ -68,7 +68,9 @@ var CliCommands = __importStar(require("./commands"));
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    hostUrl: 'https://dev-mainnetmock.dev.findora.org',
+    // hostUrl: 'https://prod-mainnet.prod.findora.org',
+    // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'http://127.0.0.1',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
@@ -79,12 +81,16 @@ var COMMANDS = {
     CREATE_WALLET: 'createWallet',
     RESTORE_WALLET: 'restoreWallet',
     BATCH_SEND_ERC20: 'batchSendErc20',
+    BATCH_SEND_FRA: 'batchSendFra',
+    CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
 };
 var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
     _a[COMMANDS.CREATE_WALLET] = 'please run as "yarn cli createWallet"',
     _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
     _a[COMMANDS.BATCH_SEND_ERC20] = "please run as \"yarn cli batchSendErc20 --filePath=\"./file.csv\"",
+    _a[COMMANDS.BATCH_SEND_FRA] = "please run as \"yarn cli batchSendFra --privateKey=XXX --filePath=\"./fileFra.csv\"",
+    _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10",
     _a);
 var showHelp = function () {
     for (var prop in ERROR_MESSAGES) {
@@ -92,11 +98,11 @@ var showHelp = function () {
     }
 };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString, filePath;
+    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath;
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets;
         if (!command) {
             showHelp();
             return [2 /*return*/];
@@ -125,6 +131,20 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     break;
                 }
                 CliCommands.runBatchSendERC20(filePath);
+                break;
+            case COMMANDS.BATCH_SEND_FRA:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_SEND_FRA]);
+                    break;
+                }
+                CliCommands.runBatchSendFra(filePath, privateKey, 12);
+                break;
+            case COMMANDS.CREATE_AND_SAVE_WALLETS:
+                if (!numberOfWallets) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_AND_SAVE_WALLETS]);
+                    break;
+                }
+                CliCommands.runCreateAndSaveWallets(numberOfWallets);
                 break;
             default:
                 showHelp();

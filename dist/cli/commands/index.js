@@ -11,6 +11,8 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./batchSendErc20"), exports);
+__exportStar(require("./batchSendFra"), exports);
+__exportStar(require("./createAndSaveWallets"), exports);
 __exportStar(require("./createWallet"), exports);
 __exportStar(require("./fund"), exports);
 __exportStar(require("./restoreWallet"), exports);
