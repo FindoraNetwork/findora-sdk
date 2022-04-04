@@ -8,8 +8,10 @@ import * as CliCommands from './commands';
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
+  // hostUrl: 'https://prod-mainnet.prod.findora.org',
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'http://127.0.0.1',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -21,6 +23,8 @@ const COMMANDS = {
   CREATE_WALLET: 'createWallet',
   RESTORE_WALLET: 'restoreWallet',
   BATCH_SEND_ERC20: 'batchSendErc20',
+  BATCH_SEND_FRA: 'batchSendFra',
+  CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
 };
 
 const ERROR_MESSAGES = {
@@ -28,6 +32,8 @@ const ERROR_MESSAGES = {
   [COMMANDS.CREATE_WALLET]: 'please run as "yarn cli createWallet"',
   [COMMANDS.RESTORE_WALLET]: `please run as "yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'"`,
   [COMMANDS.BATCH_SEND_ERC20]: `please run as "yarn cli batchSendErc20 --filePath="./file.csv"`,
+  [COMMANDS.BATCH_SEND_FRA]: `please run as "yarn cli batchSendFra --privateKey=XXX --filePath="./fileFra.csv"`,
+  [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10`,
 };
 
 const showHelp = () => {
@@ -39,7 +45,7 @@ const showHelp = () => {
 const main = async () => {
   const argv = minimist(process.argv.slice(4));
   const [command] = argv._;
-  const { address, amountToFund, mnemonicString, filePath } = argv;
+  const { address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets } = argv;
 
   if (!command) {
     showHelp();
@@ -74,6 +80,22 @@ const main = async () => {
       }
 
       CliCommands.runBatchSendERC20(filePath);
+      break;
+    case COMMANDS.BATCH_SEND_FRA:
+      if (!filePath) {
+        log(ERROR_MESSAGES[COMMANDS.BATCH_SEND_FRA]);
+        break;
+      }
+
+      CliCommands.runBatchSendFra(filePath, privateKey, 12);
+      break;
+    case COMMANDS.CREATE_AND_SAVE_WALLETS:
+      if (!numberOfWallets) {
+        log(ERROR_MESSAGES[COMMANDS.CREATE_AND_SAVE_WALLETS]);
+        break;
+      }
+
+      CliCommands.runCreateAndSaveWallets(numberOfWallets);
       break;
     default:
       showHelp();
