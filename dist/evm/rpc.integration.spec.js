@@ -482,7 +482,7 @@ describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
                         return [4 /*yield*/, getTestResult(3, 'eth_estimateGas', extraParams)];
                     case 1:
                         result = _b.sent();
-                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).toEqual('0x52d4');
+                        expect((_a = result === null || result === void 0 ? void 0 : result.response) === null || _a === void 0 ? void 0 : _a.result).toEqual('0x573b');
                         return [2 /*return*/];
                 }
             });
