@@ -15,6 +15,8 @@ export declare const abarToAbar: (anonKeysSender: FindoraWallet.FormattedAnonKey
     anonTransferOperationBuilder: AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
 }>;
+export declare const prepareAnonTransferOperationBuilder: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<AnonTransferOperationBuilder>;
+export declare const getAbarTransferFee: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<string>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, ownedAbarToUseAsFee: FindoraWallet.OwnedAbarItem) => Promise<{
     transactionBuilder: TransactionBuilder;

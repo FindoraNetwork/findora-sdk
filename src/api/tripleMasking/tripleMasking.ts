@@ -1,6 +1,6 @@
 import { CACHE_ENTRIES } from '../../config/cache';
 import Sdk from '../../Sdk';
-import { fromWei, plus, toWei } from '../../services/bigNumber';
+import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
 import { getFeeInputs } from '../../services/fee';
@@ -278,6 +278,80 @@ export const abarToAbar = async (
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
+  const calculatedFee = await getAbarTransferFee(
+    anonKeysSender,
+    anonKeysReceiver,
+    abarAmountToTransfer,
+    ownedAbarToUseAsSource,
+    additionalOwnedAbarItems,
+  );
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
+
+  const balanceAfterSendToBN = createBigNumber(calculatedFee);
+  // const zeroFee = createBigNumber(0);
+
+  const isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
+
+  if (isMoreFeeNeeded) {
+    const msg = `Could not process abar transfer. More fee are needed. Required amount at least "${calculatedFee} FRA"`;
+    throw new Error(msg);
+  }
+
+  const { encKeyConverted: encKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+
+  let anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
+    anonKeysSender,
+    anonKeysReceiver,
+    abarAmountToTransfer,
+    ownedAbarToUseAsSource,
+    additionalOwnedAbarItems,
+  );
+
+  try {
+    anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
+  } catch (error) {
+    throw new Error(
+      `Could not set remainder receiver for abar transfer operation", Error - ${(error as Error).message}`,
+    );
+  }
+
+  try {
+    anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
+  } catch (error) {
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
+    throw new Error(`Could not build and sign abar transfer operation", Error - ${(error as Error).message}`);
+  }
+
+  let randomizers: { randomizers: string[] };
+
+  try {
+    randomizers = anonTransferOperationBuilder?.get_randomizers();
+  } catch (err) {
+    throw new Error(`Could not get a list of randomizers strings "${(err as Error).message}" `);
+  }
+
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
+
+  if (!randomizers?.randomizers?.length) {
+    throw new Error(`List of randomizers strings is empty `);
+  }
+
+  const abarToAbarData: FindoraWallet.AbarToAbarData = {
+    anonKeysSender,
+    anonKeysReceiver,
+    randomizers: randomizers.randomizers,
+  };
+
+  return { anonTransferOperationBuilder, abarToAbarData };
+};
+
+export const prepareAnonTransferOperationBuilder = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  abarAmountToTransfer: string,
+  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+) => {
   let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
 
   const {
@@ -290,8 +364,6 @@ export const abarToAbar = async (
     await getAnonKeypairFromJson(anonKeysReceiver);
 
   const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
-
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 292 ~ abarPayloadOne', abarPayloadOne);
 
   try {
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
@@ -309,7 +381,6 @@ export const abarToAbar = async (
 
   for (let ownedAbarItemOne of additionalOwnedAbarItems) {
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 312 ~ abarPayloadNext', abarPayloadNext);
 
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
@@ -340,44 +411,29 @@ export const abarToAbar = async (
     );
   }
 
-  const expectedFee = anonTransferOperationBuilder.get_expected_fee();
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 313 ~ expectedFee', expectedFee);
+  return anonTransferOperationBuilder;
+};
 
-  try {
-    anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
-  } catch (error) {
-    throw new Error(
-      `Could not set remainder receiver for abar transfer operation", Error - ${(error as Error).message}`,
-    );
-  }
-
-  try {
-    anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
-  } catch (error) {
-    throw new Error(`Could not buuld and sign abar transfer operation", Error - ${(error as Error).message}`);
-  }
-
-  let randomizers: { randomizers: string[] };
-
-  try {
-    randomizers = anonTransferOperationBuilder?.get_randomizers();
-  } catch (err) {
-    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
-  }
-
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
-
-  if (!randomizers?.randomizers?.length) {
-    throw new Error(`list of randomizers strings is empty `);
-  }
-
-  const abarToAbarData: FindoraWallet.AbarToAbarData = {
+export const getAbarTransferFee = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  abarAmountToTransfer: string,
+  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+) => {
+  const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonKeysReceiver,
-    randomizers: randomizers.randomizers,
-  };
+    abarAmountToTransfer,
+    ownedAbarToUseAsSource,
+    additionalOwnedAbarItems,
+  );
 
-  return { anonTransferOperationBuilder, abarToAbarData };
+  const expectedFee = anonTransferOperationBuilder.get_expected_fee();
+
+  const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+
+  return calculatedFee;
 };
 
 export const barToAbar = async (

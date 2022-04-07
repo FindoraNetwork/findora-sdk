@@ -22,8 +22,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
-  hostUrl: 'https://dev-qa02.dev.findora.org',
+  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
@@ -1324,58 +1324,68 @@ const abarToAbar = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
   const anonKeysSender = {
-    axfrPublicKey: '1kaBWKThrrx7auhTbt4McuqHBF2KtkMtt0GEnQMKagA=',
-    axfrSecretKey: 'gHH4PARGM5LxpEKdBeVLyuK3KF1dscsB2uqT7DV88wnWRoFYpOGuvHtq6FNu3gxy6ocEXYq2Qy23QYSdAwpqAA==',
-    decKey: 'aMxIu5G8nL7wfnRPXxm9eCy1Zxrb0OYAPb3o_h50ZEM=',
-    encKey: '0q7Yewc5mbF9x__AItOJn3g4DJRr8woST4x3LOl4eyc=',
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   };
 
   const anonKeysReceiver = {
-    axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
-    axfrSecretKey: 'Mtpn0lNdR0Spko_iV3L3g3fA5AP3ep9SckROAOItSAIaTCQoEPS2QjTx5K5KV0aWS5acE9l7VkMvZbwM6E7wWA==',
-    decKey: '0OHKNN8p6NqiDqN7QdRF6aQAsTFBLCRBzpAMox6wUFI=',
-    encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
+    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
-  // randomizer with 10 FRA
-  const givenRandomizerOne = 'GXFAWAeobddmzhw949Ywfsj74sD7RHGXRnjka1WJndQ9';
+  const givenRandomizerToTransfer = '7ujy3mCYmEDMpwbVUKHAHVGjpm88qAPZaczp9aYjZV4h'; // 9.99
 
-  // randomizer with 2 FRA
-  const givenRandomizerTwo = 'ESrDEnu7sZ82s7rPAKgHVKHjzGxhXNTiaALsbEqCdGiL';
+  const givenRandomizersToPayFee = [
+    '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
+    '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
+  ];
+
+  const additionalOwnedAbarItems = [];
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
     anonKeysSender.axfrPublicKey,
-    givenRandomizerOne,
+    givenRandomizerToTransfer,
   );
 
-  const [ownedAbarItemOne] = ownedAbarsResponseOne;
-  const { abarData: abarDataOne } = ownedAbarItemOne;
+  const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
-  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataOne);
+  for (let givenRandomizerToPayFee of givenRandomizersToPayFee) {
+    const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
+      anonKeysSender.axfrPublicKey,
+      givenRandomizerToPayFee,
+    );
 
-  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
-    anonKeysSender.axfrPublicKey,
-    givenRandomizerTwo,
-  );
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
 
-  const [ownedAbarItemTwo] = ownedAbarsResponseTwo;
-  const { abarData: abarDataTwo } = ownedAbarItemTwo;
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+  }
 
-  console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataTwo);
+  // const calculatedFee = await TripleMasking.getAbarTransferFee(
+  //   anonKeysSender,
+  //   anonKeysReceiver,
+  //   '11.03',
+  //   ownedAbarToUseAsSource,
+  //   additionalOwnedAbarItems,
+  // );
+  // console.log('🚀 ~ file: run.ts ~ line 1374 ~ abarToAbar ~ calculatedFee', calculatedFee);
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver,
-    '0.1',
-    ownedAbarItemOne,
-    // [ownedAbarItemTwo],
+    '11.03',
+    ownedAbarToUseAsSource,
+    additionalOwnedAbarItems,
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
 
-  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+  // const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
 
-  console.log('transfer abar result handle!!', resultHandle);
+  // console.log('transfer abar result handle!!', resultHandle);
 };
 
 const abarToBar = async () => {
@@ -1429,13 +1439,13 @@ const abarToBar = async () => {
   console.log('abar to bar result handle!!!', resultHandle);
 };
 
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
-// abarToAbar();
+abarToAbar();
 // abarToBar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
