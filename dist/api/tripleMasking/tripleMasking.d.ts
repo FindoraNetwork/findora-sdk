@@ -1,4 +1,4 @@
-import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import * as Keypair from '../keypair';
 interface BalanceInfo {
     assetType: string;
@@ -8,14 +8,23 @@ interface AnonWalletBalanceInfo {
     axfrPublicKey: string;
     balances: BalanceInfo[];
 }
+export interface RandomizersResponseMap {
+    [key: string]: [string, number[], number];
+}
+export interface ProcessedRandomizersMap {
+    radomizerKey: string;
+    randomizerAxfrPublicKey: string;
+    randomizerAssetType: string;
+    randomizerAmount: string;
+}
 export declare const genAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;
 export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, randomizers: string[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.BarToAbarData>;
 export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string | undefined) => Promise<boolean>;
 export declare const abarToAbar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<{
-    anonTransferOperationBuilder: AnonTransferOperationBuilder;
+    anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
 }>;
-export declare const prepareAnonTransferOperationBuilder: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<AnonTransferOperationBuilder>;
+export declare const prepareAnonTransferOperationBuilder: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<import("findora-wallet-wasm/web").AnonTransferOperationBuilder>;
 export declare const getAbarTransferFee: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonKeysReceiver: FindoraWallet.FormattedAnonKeys, abarAmountToTransfer: string, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<string>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sid: number, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem, ownedAbarToUseAsFee: FindoraWallet.OwnedAbarItem) => Promise<{

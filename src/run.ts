@@ -1293,10 +1293,11 @@ const getAbarBalance = async () => {
     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   };
 
-  // const givenRandomizersList = myGivenRandomizersList; //
   const givenRandomizersList = [
-    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
-    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
+    // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
+    // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
+    // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
+    'Ce3NeQjiUfPG7oMnA6Nb6BA3a4kErtbK9PP1NNUyBLxs', // 2.85 - sender
   ];
 
   console.log(
@@ -1337,12 +1338,15 @@ const abarToAbar = async () => {
     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
-  const givenRandomizerToTransfer = '7ujy3mCYmEDMpwbVUKHAHVGjpm88qAPZaczp9aYjZV4h'; // 9.99
+  const givenRandomizerToTransfer = '527ay69ktiwE6u3YzybzPRkNZkwtxPvWW8adXoaY6Gh7'; // 9.99
 
   const givenRandomizersToPayFee = [
-    '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
-    '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
+    // '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
+    // '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
+    '9zAZh5xKcoJ9HKrqEAuhDLvykZoSrN2peCvdLBnN4dAB', // 4.99 FRA
   ];
+
+  const givenRandomizersListSender = [givenRandomizerToTransfer, ...givenRandomizersToPayFee];
 
   const additionalOwnedAbarItems = [];
 
@@ -1381,11 +1385,50 @@ const abarToAbar = async () => {
     additionalOwnedAbarItems,
   );
 
-  console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+  console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
 
-  // const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
 
-  // console.log('transfer abar result handle!!', resultHandle);
+  console.log('transfer abar result handle!!', resultHandle);
+
+  console.log(
+    `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver randomizers`,
+  );
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  console.log('now checking balances\n\n\n');
+
+  const { randomizersMap } = abarToAbarData;
+
+  const retrivedRandomizersListReceiver = [];
+
+  for (const randomizersMapEntry of randomizersMap) {
+    const { radomizerKey, randomizerAxfrPublicKey } = randomizersMapEntry;
+
+    if (randomizerAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+      givenRandomizersListSender.push(radomizerKey);
+    }
+
+    if (randomizerAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+      retrivedRandomizersListReceiver.push(radomizerKey);
+    }
+  }
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedRandomizersListReceiver',
+    retrivedRandomizersListReceiver,
+  );
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenRandomizersListSender',
+    givenRandomizersListSender,
+  );
+
+  const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenRandomizersListSender);
+  console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+
+  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedRandomizersListReceiver);
+  console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
 };
 
 const abarToBar = async () => {

@@ -5,11 +5,11 @@ import Cache from '../../services/cacheStore/factory';
 import { CacheItem } from '../../services/cacheStore/types';
 import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
-import { getAssetDetails } from '../sdkAsset';
+import { getAssetCode, getAssetDetails } from '../sdkAsset';
 import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction';
 
 interface BalanceInfo {
@@ -20,6 +20,17 @@ interface BalanceInfo {
 interface AnonWalletBalanceInfo {
   axfrPublicKey: string;
   balances: BalanceInfo[];
+}
+
+export interface RandomizersResponseMap {
+  [key: string]: [string, number[], number];
+}
+
+export interface ProcessedRandomizersMap {
+  radomizerKey: string;
+  randomizerAxfrPublicKey: string;
+  randomizerAssetType: string;
+  randomizerAmount: string;
 }
 
 export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> => {
@@ -285,10 +296,10 @@ export const abarToAbar = async (
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
+
   console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
 
   const balanceAfterSendToBN = createBigNumber(calculatedFee);
-  // const zeroFee = createBigNumber(0);
 
   const isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
 
@@ -322,24 +333,20 @@ export const abarToAbar = async (
     throw new Error(`Could not build and sign abar transfer operation", Error - ${(error as Error).message}`);
   }
 
-  let randomizers: { randomizers: string[] };
+  let randomizersMap: RandomizersResponseMap;
 
   try {
-    randomizers = anonTransferOperationBuilder?.get_randomizers();
+    randomizersMap = anonTransferOperationBuilder?.get_randomizer_map();
   } catch (err) {
     throw new Error(`Could not get a list of randomizers strings "${(err as Error).message}" `);
   }
 
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
-
-  if (!randomizers?.randomizers?.length) {
-    throw new Error(`List of randomizers strings is empty `);
-  }
+  const processedRandomizersMap = await processAbarToAbarRandomizerResponse(randomizersMap);
 
   const abarToAbarData: FindoraWallet.AbarToAbarData = {
     anonKeysSender,
     anonKeysReceiver,
-    randomizers: randomizers.randomizers,
+    randomizersMap: processedRandomizersMap,
   };
 
   return { anonTransferOperationBuilder, abarToAbarData };
@@ -354,11 +361,8 @@ export const prepareAnonTransferOperationBuilder = async (
 ) => {
   let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
 
-  const {
-    aXfrKeyPairConverted: aXfrKeyPairSender,
-    secretDecKeyConverted: secretDecKeySender,
-    encKeyConverted: encKeySender,
-  } = await getAnonKeypairFromJson(anonKeysSender);
+  const { aXfrKeyPairConverted: aXfrKeyPairSender, secretDecKeyConverted: secretDecKeySender } =
+    await getAnonKeypairFromJson(anonKeysSender);
 
   const { axfrPublicKeyConverted: axfrPublicKeyReceiver, encKeyConverted: encKeyReceiver } =
     await getAnonKeypairFromJson(anonKeysReceiver);
@@ -412,6 +416,36 @@ export const prepareAnonTransferOperationBuilder = async (
   }
 
   return anonTransferOperationBuilder;
+};
+
+const processAbarToAbarRandomizerResponse = async (
+  randomizersMap: RandomizersResponseMap,
+): Promise<ProcessedRandomizersMap[]> => {
+  const randomizerKeys = Object.keys(randomizersMap);
+
+  if (!randomizerKeys?.length) {
+    throw new Error(`Randomizers maps is empty `);
+  }
+
+  const responseMap: ProcessedRandomizersMap[] = [];
+
+  for (let radomizerKey of randomizerKeys) {
+    const radomizerEntity = randomizersMap[radomizerKey];
+    const [randomizerAxfrPublicKey, randomizerNumericAssetType, randomizerAmountInWei] = radomizerEntity;
+
+    const randomizerAssetType = await getAssetCode(randomizerNumericAssetType);
+
+    const randomizerAmount = fromWei(createBigNumber(randomizerAmountInWei.toString()), 6).toFormat(6);
+
+    responseMap.push({
+      radomizerKey,
+      randomizerAxfrPublicKey,
+      randomizerAssetType,
+      randomizerAmount: `${randomizerAmount}`,
+    });
+  }
+
+  return responseMap;
 };
 
 export const getAbarTransferFee = async (
@@ -638,7 +672,7 @@ export const getUnspentAbars = async (
 
   for (let givenRandomizer of givenRandomizersList) {
     const ownedAbarsResponse = await getOwnedAbars(axfrPublicKey, givenRandomizer);
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
+    // console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
 
     const [ownedAbarItem] = ownedAbarsResponse;
 
@@ -814,7 +848,6 @@ export const genNullifierHash = async (
   const ledger = await getLedger();
 
   const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 761 ~ atxoSid', atxoSid);
 
   const { response: myMemoData, error: memoError } = abarOwnerMemoResult;
 
@@ -826,7 +859,6 @@ export const genNullifierHash = async (
 
   let abarOwnerMemo;
 
-  console.log('myMemoData!', myMemoData);
   try {
     abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
   } catch (error) {

@@ -356,13 +356,12 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
 var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var calculatedFee, balanceAfterSendToBN, isMoreFeeNeeded, msg, encKeySender, anonTransferOperationBuilder, randomizers, abarToAbarData;
-        var _a;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+        var calculatedFee, balanceAfterSendToBN, isMoreFeeNeeded, msg, encKeySender, anonTransferOperationBuilder, randomizersMap, processedRandomizersMap, abarToAbarData;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
                 case 1:
-                    calculatedFee = _b.sent();
+                    calculatedFee = _a.sent();
                     console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                     isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
@@ -372,10 +371,10 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
                     }
                     return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
                 case 2:
-                    encKeySender = (_b.sent()).encKeyConverted;
+                    encKeySender = (_a.sent()).encKeyConverted;
                     return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
                 case 3:
-                    anonTransferOperationBuilder = _b.sent();
+                    anonTransferOperationBuilder = _a.sent();
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.set_fra_remainder_receiver(encKeySender);
                     }
@@ -390,19 +389,18 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
                         throw new Error("Could not build and sign abar transfer operation\", Error - " + error.message);
                     }
                     try {
-                        randomizers = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_randomizers();
+                        randomizersMap = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_randomizer_map();
                     }
                     catch (err) {
                         throw new Error("Could not get a list of randomizers strings \"" + err.message + "\" ");
                     }
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 368 ~ randomizers', randomizers);
-                    if (!((_a = randomizers === null || randomizers === void 0 ? void 0 : randomizers.randomizers) === null || _a === void 0 ? void 0 : _a.length)) {
-                        throw new Error("List of randomizers strings is empty ");
-                    }
+                    return [4 /*yield*/, processAbarToAbarRandomizerResponse(randomizersMap)];
+                case 4:
+                    processedRandomizersMap = _a.sent();
                     abarToAbarData = {
                         anonKeysSender: anonKeysSender,
                         anonKeysReceiver: anonKeysReceiver,
-                        randomizers: randomizers.randomizers,
+                        randomizersMap: processedRandomizersMap,
                     };
                     return [2 /*return*/, { anonTransferOperationBuilder: anonTransferOperationBuilder, abarToAbarData: abarToAbarData }];
             }
@@ -413,7 +411,7 @@ exports.abarToAbar = abarToAbar;
 var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var anonTransferOperationBuilder, _a, aXfrKeyPairSender, secretDecKeySender, encKeySender, _b, axfrPublicKeyReceiver, encKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount;
+        var anonTransferOperationBuilder, _a, aXfrKeyPairSender, secretDecKeySender, _b, axfrPublicKeyReceiver, encKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
@@ -421,7 +419,7 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysRece
                     anonTransferOperationBuilder = _c.sent();
                     return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
                 case 2:
-                    _a = _c.sent(), aXfrKeyPairSender = _a.aXfrKeyPairConverted, secretDecKeySender = _a.secretDecKeyConverted, encKeySender = _a.encKeyConverted;
+                    _a = _c.sent(), aXfrKeyPairSender = _a.aXfrKeyPairConverted, secretDecKeySender = _a.secretDecKeyConverted;
                     return [4 /*yield*/, getAnonKeypairFromJson(anonKeysReceiver)];
                 case 3:
                     _b = _c.sent(), axfrPublicKeyReceiver = _b.axfrPublicKeyConverted, encKeyReceiver = _b.encKeyConverted;
@@ -466,6 +464,41 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysRece
     });
 };
 exports.prepareAnonTransferOperationBuilder = prepareAnonTransferOperationBuilder;
+var processAbarToAbarRandomizerResponse = function (randomizersMap) { return __awaiter(void 0, void 0, void 0, function () {
+    var randomizerKeys, responseMap, _i, randomizerKeys_1, radomizerKey, radomizerEntity, randomizerAxfrPublicKey, randomizerNumericAssetType, randomizerAmountInWei, randomizerAssetType, randomizerAmount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                randomizerKeys = Object.keys(randomizersMap);
+                if (!(randomizerKeys === null || randomizerKeys === void 0 ? void 0 : randomizerKeys.length)) {
+                    throw new Error("Randomizers maps is empty ");
+                }
+                responseMap = [];
+                _i = 0, randomizerKeys_1 = randomizerKeys;
+                _a.label = 1;
+            case 1:
+                if (!(_i < randomizerKeys_1.length)) return [3 /*break*/, 4];
+                radomizerKey = randomizerKeys_1[_i];
+                radomizerEntity = randomizersMap[radomizerKey];
+                randomizerAxfrPublicKey = radomizerEntity[0], randomizerNumericAssetType = radomizerEntity[1], randomizerAmountInWei = radomizerEntity[2];
+                return [4 /*yield*/, (0, sdkAsset_1.getAssetCode)(randomizerNumericAssetType)];
+            case 2:
+                randomizerAssetType = _a.sent();
+                randomizerAmount = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(randomizerAmountInWei.toString()), 6).toFormat(6);
+                responseMap.push({
+                    radomizerKey: radomizerKey,
+                    randomizerAxfrPublicKey: randomizerAxfrPublicKey,
+                    randomizerAssetType: randomizerAssetType,
+                    randomizerAmount: "" + randomizerAmount,
+                });
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/, responseMap];
+        }
+    });
+}); };
 var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -665,7 +698,6 @@ var getUnspentAbars = function (anonKeys, givenRandomizersList) { return __await
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(axfrPublicKey, givenRandomizer)];
             case 2:
                 ownedAbarsResponse = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
                 ownedAbarItem = ownedAbarsResponse[0];
                 if (!ownedAbarItem) {
                     return [3 /*break*/, 5];
@@ -854,12 +886,10 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSecretKey, decKey, rand
                 return [4 /*yield*/, Network.getAbarOwnerMemo(atxoSid)];
             case 2:
                 abarOwnerMemoResult = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 761 ~ atxoSid', atxoSid);
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
                     throw new Error("Could not fetch abar memo data for sid (genNullifierHash) \"" + atxoSid + "\", Error - " + memoError.message);
                 }
-                console.log('myMemoData!', myMemoData);
                 try {
                     abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
                 }

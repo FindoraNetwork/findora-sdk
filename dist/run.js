@@ -65,6 +65,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -1400,8 +1409,10 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 givenRandomizersList = [
-                    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
-                    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
+                    // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
+                    // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
+                    // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
+                    'Ce3NeQjiUfPG7oMnA6Nb6BA3a4kErtbK9PP1NNUyBLxs', // 2.85 - sender
                 ];
                 console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check', givenRandomizersList);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
@@ -1432,9 +1443,9 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
     });
 }); };
 var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, anonKeysReceiver, givenRandomizerToTransfer, givenRandomizersToPayFee, additionalOwnedAbarItems, ownedAbarsResponseOne, ownedAbarToUseAsSource, _i, givenRandomizersToPayFee_1, givenRandomizerToPayFee, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var anonKeysSender, anonKeysReceiver, givenRandomizerToTransfer, givenRandomizersToPayFee, givenRandomizersListSender, additionalOwnedAbarItems, ownedAbarsResponseOne, ownedAbarToUseAsSource, _i, givenRandomizersToPayFee_1, givenRandomizerToPayFee, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, randomizersMap, retrivedRandomizersListReceiver, _b, randomizersMap_1, randomizersMapEntry, radomizerKey, randomizerAxfrPublicKey, balancesSender, balancesReceiver;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 anonKeysSender = {
                     axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
@@ -1448,34 +1459,67 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                     decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
                     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
-                givenRandomizerToTransfer = '7ujy3mCYmEDMpwbVUKHAHVGjpm88qAPZaczp9aYjZV4h';
+                givenRandomizerToTransfer = '527ay69ktiwE6u3YzybzPRkNZkwtxPvWW8adXoaY6Gh7';
                 givenRandomizersToPayFee = [
-                    '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9',
-                    '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
+                    // '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
+                    // '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
+                    '9zAZh5xKcoJ9HKrqEAuhDLvykZoSrN2peCvdLBnN4dAB', // 4.99 FRA
                 ];
+                givenRandomizersListSender = __spreadArray([givenRandomizerToTransfer], givenRandomizersToPayFee, true);
                 additionalOwnedAbarItems = [];
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerToTransfer)];
             case 1:
-                ownedAbarsResponseOne = _b.sent();
+                ownedAbarsResponseOne = _c.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
                 _i = 0, givenRandomizersToPayFee_1 = givenRandomizersToPayFee;
-                _b.label = 2;
+                _c.label = 2;
             case 2:
                 if (!(_i < givenRandomizersToPayFee_1.length)) return [3 /*break*/, 5];
                 givenRandomizerToPayFee = givenRandomizersToPayFee_1[_i];
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerToPayFee)];
             case 3:
-                ownedAbarsResponseTwo = _b.sent();
+                ownedAbarsResponseTwo = _c.sent();
                 additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
                 additionalOwnedAbarItems.push(additionalOwnedAbarItem);
-                _b.label = 4;
+                _c.label = 4;
             case 4:
                 _i++;
                 return [3 /*break*/, 2];
             case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '11.03', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
             case 6:
-                _a = _b.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
-                console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 7:
+                resultHandle = _c.sent();
+                console.log('transfer abar result handle!!', resultHandle);
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver randomizers");
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 8:
+                _c.sent();
+                console.log('now checking balances\n\n\n');
+                randomizersMap = abarToAbarData.randomizersMap;
+                retrivedRandomizersListReceiver = [];
+                for (_b = 0, randomizersMap_1 = randomizersMap; _b < randomizersMap_1.length; _b++) {
+                    randomizersMapEntry = randomizersMap_1[_b];
+                    radomizerKey = randomizersMapEntry.radomizerKey, randomizerAxfrPublicKey = randomizersMapEntry.randomizerAxfrPublicKey;
+                    if (randomizerAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+                        givenRandomizersListSender.push(radomizerKey);
+                    }
+                    if (randomizerAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+                        retrivedRandomizersListReceiver.push(radomizerKey);
+                    }
+                }
+                console.log('🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedRandomizersListReceiver', retrivedRandomizersListReceiver);
+                console.log('🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenRandomizersListSender', givenRandomizersListSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenRandomizersListSender)];
+            case 9:
+                balancesSender = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrivedRandomizersListReceiver)];
+            case 10:
+                balancesReceiver = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
                 return [2 /*return*/];
         }
     });
