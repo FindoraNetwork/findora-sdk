@@ -1459,11 +1459,9 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                     decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
                     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
-                givenRandomizerToTransfer = '527ay69ktiwE6u3YzybzPRkNZkwtxPvWW8adXoaY6Gh7';
+                givenRandomizerToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs';
                 givenRandomizersToPayFee = [
-                    // '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
-                    // '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
-                    '9zAZh5xKcoJ9HKrqEAuhDLvykZoSrN2peCvdLBnN4dAB', // 4.99 FRA
+                    'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
                 ];
                 givenRandomizersListSender = __spreadArray([givenRandomizerToTransfer], givenRandomizersToPayFee, true);
                 additionalOwnedAbarItems = [];
@@ -1485,7 +1483,7 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
             case 4:
                 _i++;
                 return [3 /*break*/, 2];
-            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '11.03', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '3', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
             case 6:
                 _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));

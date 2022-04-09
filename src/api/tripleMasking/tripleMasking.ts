@@ -330,6 +330,7 @@ export const abarToAbar = async (
     anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
   } catch (error) {
     console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
+    console.log('Full Error: ', error);
     throw new Error(`Could not build and sign abar transfer operation", Error - ${(error as Error).message}`);
   }
 
@@ -402,6 +403,7 @@ export const prepareAnonTransferOperationBuilder = async (
   }
 
   const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(

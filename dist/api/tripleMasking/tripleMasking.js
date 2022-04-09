@@ -386,6 +386,7 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
                     }
                     catch (error) {
                         console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
+                        console.log('Full Error: ', error);
                         throw new Error("Could not build and sign abar transfer operation\", Error - " + error.message);
                     }
                     try {
@@ -452,6 +453,7 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysRece
                     return [3 /*break*/, 5];
                 case 8:
                     toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, axfrPublicKeyReceiver, encKeyReceiver);
                     }

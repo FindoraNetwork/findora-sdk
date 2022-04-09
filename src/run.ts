@@ -1338,12 +1338,10 @@ const abarToAbar = async () => {
     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
-  const givenRandomizerToTransfer = '527ay69ktiwE6u3YzybzPRkNZkwtxPvWW8adXoaY6Gh7'; // 9.99
+  const givenRandomizerToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs'; // 3 test3 (sid 1)
 
   const givenRandomizersToPayFee = [
-    // '2gU6Mdsj3zkxpN1GPnrAhdiVJS4Zr6RRFg1X7fkQd9x9', // 2.13 FRA
-    // '4pNcEH2VcHGp7x7ngTLqDfgsoUkGkbr7tQVTQfVu3N9p', // 0.01 FRA
-    '9zAZh5xKcoJ9HKrqEAuhDLvykZoSrN2peCvdLBnN4dAB', // 4.99 FRA
+    'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
   ];
 
   const givenRandomizersListSender = [givenRandomizerToTransfer, ...givenRandomizersToPayFee];
@@ -1368,19 +1366,10 @@ const abarToAbar = async () => {
     additionalOwnedAbarItems.push(additionalOwnedAbarItem);
   }
 
-  // const calculatedFee = await TripleMasking.getAbarTransferFee(
-  //   anonKeysSender,
-  //   anonKeysReceiver,
-  //   '11.03',
-  //   ownedAbarToUseAsSource,
-  //   additionalOwnedAbarItems,
-  // );
-  // console.log('🚀 ~ file: run.ts ~ line 1374 ~ abarToAbar ~ calculatedFee', calculatedFee);
-
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver,
-    '11.03',
+    '3',
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
