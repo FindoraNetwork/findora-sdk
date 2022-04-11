@@ -73,10 +73,17 @@ declare namespace FindoraWallet {
     randomizers: string[];
   }
 
+  interface ProcessedRandomizersMap {
+    radomizerKey: string;
+    randomizerAxfrPublicKey: string;
+    randomizerAssetType: string;
+    randomizerAmount: string;
+  }
+
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
     anonKeysReceiver: FormattedAnonKeys;
-    randomizers: string[];
+    randomizersMap: ProcessedRandomizersMap[];
   }
 
   export interface BarToAbarResult<T> {

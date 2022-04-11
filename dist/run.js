@@ -65,6 +65,15 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -90,8 +99,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    // hostUrl: 'http://127.0.0.1',
-    hostUrl: 'https://dev-qa02.dev.findora.org',
+    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
@@ -1400,8 +1409,10 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 givenRandomizersList = [
-                    '4rN4CSnZc6zpy3FkZupyahyUvAR5Kq3F6MtWKhDFWT7V',
-                    // 'AaRMkB9G5MGN5vudp2G27ZNvanecVNWAygmZBmUaMkgP',
+                    // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
+                    // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
+                    // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
+                    'Ce3NeQjiUfPG7oMnA6Nb6BA3a4kErtbK9PP1NNUyBLxs', // 2.85 - sender
                 ];
                 console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check', givenRandomizersList);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenRandomizersList)];
@@ -1432,44 +1443,81 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
     });
 }); };
 var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, anonKeysReceiver, givenRandomizerOne, givenRandomizerTwo, ownedAbarsResponseOne, ownedAbarItemOne, abarDataOne, ownedAbarsResponseTwo, ownedAbarItemTwo, abarDataTwo, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var anonKeysSender, anonKeysReceiver, givenRandomizerToTransfer, givenRandomizersToPayFee, givenRandomizersListSender, additionalOwnedAbarItems, ownedAbarsResponseOne, ownedAbarToUseAsSource, _i, givenRandomizersToPayFee_1, givenRandomizerToPayFee, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, randomizersMap, retrivedRandomizersListReceiver, _b, randomizersMap_1, randomizersMapEntry, radomizerKey, randomizerAxfrPublicKey, balancesSender, balancesReceiver;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 anonKeysSender = {
-                    axfrPublicKey: '1kaBWKThrrx7auhTbt4McuqHBF2KtkMtt0GEnQMKagA=',
-                    axfrSecretKey: 'gHH4PARGM5LxpEKdBeVLyuK3KF1dscsB2uqT7DV88wnWRoFYpOGuvHtq6FNu3gxy6ocEXYq2Qy23QYSdAwpqAA==',
-                    decKey: 'aMxIu5G8nL7wfnRPXxm9eCy1Zxrb0OYAPb3o_h50ZEM=',
-                    encKey: '0q7Yewc5mbF9x__AItOJn3g4DJRr8woST4x3LOl4eyc=',
+                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 anonKeysReceiver = {
-                    axfrPublicKey: 'GkwkKBD0tkI08eSuSldGlkuWnBPZe1ZDL2W8DOhO8Fg=',
-                    axfrSecretKey: 'Mtpn0lNdR0Spko_iV3L3g3fA5AP3ep9SckROAOItSAIaTCQoEPS2QjTx5K5KV0aWS5acE9l7VkMvZbwM6E7wWA==',
-                    decKey: '0OHKNN8p6NqiDqN7QdRF6aQAsTFBLCRBzpAMox6wUFI=',
-                    encKey: 'O0aKloRpnGiRhtFDO8u5YOV6hV4n0wQ-BgmFKipavTo=',
+                    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+                    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+                    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+                    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
-                givenRandomizerOne = 'GXFAWAeobddmzhw949Ywfsj74sD7RHGXRnjka1WJndQ9';
-                givenRandomizerTwo = 'ESrDEnu7sZ82s7rPAKgHVKHjzGxhXNTiaALsbEqCdGiL';
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerOne)];
+                givenRandomizerToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs';
+                givenRandomizersToPayFee = [
+                    'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
+                ];
+                givenRandomizersListSender = __spreadArray([givenRandomizerToTransfer], givenRandomizersToPayFee, true);
+                additionalOwnedAbarItems = [];
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerToTransfer)];
             case 1:
-                ownedAbarsResponseOne = _b.sent();
-                ownedAbarItemOne = ownedAbarsResponseOne[0];
-                abarDataOne = ownedAbarItemOne.abarData;
-                console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataOne);
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerTwo)];
+                ownedAbarsResponseOne = _c.sent();
+                ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
+                _i = 0, givenRandomizersToPayFee_1 = givenRandomizersToPayFee;
+                _c.label = 2;
             case 2:
-                ownedAbarsResponseTwo = _b.sent();
-                ownedAbarItemTwo = ownedAbarsResponseTwo[0];
-                abarDataTwo = ownedAbarItemTwo.abarData;
-                console.log('🚀 ~ file: run.ts ~ line 1315 ~ abarToAbar ~ abarData', abarDataTwo);
-                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '0.1', ownedAbarItemOne)];
+                if (!(_i < givenRandomizersToPayFee_1.length)) return [3 /*break*/, 5];
+                givenRandomizerToPayFee = givenRandomizersToPayFee_1[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(anonKeysSender.axfrPublicKey, givenRandomizerToPayFee)];
             case 3:
-                _a = _b.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
-                console.log('🚀 ~ file: run.ts ~ line 1348 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
-                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+                ownedAbarsResponseTwo = _c.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _c.label = 4;
             case 4:
-                resultHandle = _b.sent();
+                _i++;
+                return [3 /*break*/, 2];
+            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '3', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 6:
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 7:
+                resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver randomizers");
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 8:
+                _c.sent();
+                console.log('now checking balances\n\n\n');
+                randomizersMap = abarToAbarData.randomizersMap;
+                retrivedRandomizersListReceiver = [];
+                for (_b = 0, randomizersMap_1 = randomizersMap; _b < randomizersMap_1.length; _b++) {
+                    randomizersMapEntry = randomizersMap_1[_b];
+                    radomizerKey = randomizersMapEntry.radomizerKey, randomizerAxfrPublicKey = randomizersMapEntry.randomizerAxfrPublicKey;
+                    if (randomizerAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+                        givenRandomizersListSender.push(radomizerKey);
+                    }
+                    if (randomizerAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+                        retrivedRandomizersListReceiver.push(radomizerKey);
+                    }
+                }
+                console.log('🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedRandomizersListReceiver', retrivedRandomizersListReceiver);
+                console.log('🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenRandomizersListSender', givenRandomizersListSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenRandomizersListSender)];
+            case 9:
+                balancesSender = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrivedRandomizersListReceiver)];
+            case 10:
+                balancesReceiver = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
                 return [2 /*return*/];
         }
     });
@@ -1515,13 +1563,13 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
-// abarToAbar();
+abarToAbar();
 // abarToBar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
