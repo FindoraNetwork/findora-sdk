@@ -50,7 +50,7 @@ var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                pkey = ENG_PKEY;
+                pkey = PKEY_LOCAL_FAUCET;
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:

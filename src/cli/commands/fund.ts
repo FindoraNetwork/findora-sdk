@@ -7,8 +7,8 @@ dotenv.config();
 const { PKEY_LOCAL_FAUCET = '', ENG_PKEY = '' } = process.env;
 
 export const runFund = async (address: string, amountToFund: string) => {
-  // const pkey = PKEY_LOCAL_FAUCET;
-  const pkey = ENG_PKEY;
+  const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = ENG_PKEY;
 
   const password = '123';
 
