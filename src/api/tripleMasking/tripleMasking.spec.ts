@@ -16,7 +16,7 @@ import * as TripleMasking from './tripleMasking';
 
 interface TransferOpBuilderLight {
   add_operation_bar_to_abar: () => TransferOpBuilderLight;
-  get_randomizers: () => { randomizers: string[] };
+  get_commitments: () => { commitments: string[] };
   new?: () => TransferOpBuilderLight;
   create?: () => TransferOpBuilderLight;
   sign?: () => TransferOpBuilderLight;
@@ -48,7 +48,7 @@ describe('triple masking (unit test)', () => {
     let ledgerOwnerMemo: LedgerLight<OwnerMemoLight>;
     let ledgerClientAssetRecord: LedgerLight<ClientAssetRecordLight>;
     let nodeLedger: NodeLedger.LedgerForNode;
-    let randomizers: { randomizers: string[] };
+    let commitments: { commitments: string[] };
     let transactionBuilder: TransferOpBuilderLight;
     let myUtxo: Partial<UtxoHelper.AddUtxoItem>[];
     let returnAxfrPublicKey: AXfrKeyPair;
@@ -64,7 +64,7 @@ describe('triple masking (unit test)', () => {
     let spyGetAXfrPublicKeyByBase64: jest.SpyInstance;
     let spyGetXPublicKeyByBase64: jest.SpyInstance;
     let spyAddOperationBarToAbar: jest.SpyInstance;
-    let spyGetRandomizers: jest.SpyInstance;
+    let spyGetCommitments: jest.SpyInstance;
     let spySaveBarToAbarToCache: jest.SpyInstance;
 
     beforeEach(() => {
@@ -108,12 +108,12 @@ describe('triple masking (unit test)', () => {
           },
         },
       };
-      randomizers = {
-        randomizers: ['1', '2', '3'],
+      commitments = {
+        commitments: ['1', '2', '3'],
       };
       transactionBuilder = {
         add_operation_bar_to_abar: jest.fn(() => transactionBuilder),
-        get_randomizers: jest.fn(() => randomizers),
+        get_commitments: jest.fn(() => commitments),
       };
       myUtxo = [{ utxo: { record: 'utxo.record' } }];
       returnAxfrPublicKey = {
@@ -133,7 +133,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
       spyGetXPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getXPublicKeyByBase64');
       spyAddOperationBarToAbar = jest.spyOn(transactionBuilder, 'add_operation_bar_to_abar');
-      spyGetRandomizers = jest.spyOn(transactionBuilder, 'get_randomizers');
+      spyGetCommitments = jest.spyOn(transactionBuilder, 'get_commitments');
       spySaveBarToAbarToCache = jest.spyOn(TripleMasking, 'saveBarToAbarToCache');
     });
 
@@ -260,8 +260,8 @@ describe('triple masking (unit test)', () => {
       );
     });
 
-    it('throw an error if could not get a list of randomizers strings. [transactionBuilder.get_randomizers]', async () => {
-      const getRandomizersError = new Error('getRandomizersError error');
+    it('throw an error if could not get a list of commitments strings. [transactionBuilder.get_commitments]', async () => {
+      const getCommitmentsError = new Error('getCommitmentsError error');
       spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
       spyGetTransactionBuilder.mockImplementationOnce(() =>
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
@@ -274,16 +274,16 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
-      spyGetRandomizers.mockImplementationOnce(() => {
-        throw getRandomizersError;
+      spyGetCommitments.mockImplementationOnce(() => {
+        throw getCommitmentsError;
       });
       await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys)).rejects.toThrow(
-        `could not get a list of randomizers strings "${getRandomizersError.message}"`,
+        `could not get a list of commitments strings "${getCommitmentsError.message}"`,
       );
     });
 
-    it('throw an error if list of randomizers strings is empty. [transactionBuilder.get_randomizers]', async () => {
-      randomizers.randomizers = [];
+    it('throw an error if list of commitments strings is empty. [transactionBuilder.get_commitments]', async () => {
+      commitments.commitments = [];
       spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
       spyGetTransactionBuilder.mockImplementationOnce(() =>
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
@@ -296,9 +296,9 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
-      spyGetRandomizers.mockImplementationOnce(() => randomizers);
+      spyGetCommitments.mockImplementationOnce(() => commitments);
       await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys)).rejects.toThrow(
-        'list of randomizers strings is empty ',
+        'list of commitments strings is empty ',
       );
     });
 
@@ -316,7 +316,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
-      spyGetRandomizers.mockImplementationOnce(() => randomizers);
+      spyGetCommitments.mockImplementationOnce(() => commitments);
       spySaveBarToAbarToCache.mockImplementationOnce(() => Promise.reject(saveBarToAbarToCacheError));
       await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys)).rejects.toThrow(
         `Could not save cache for bar to abar. Details: ${saveBarToAbarToCacheError.message}`,
@@ -336,7 +336,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
-      spyGetRandomizers.mockImplementationOnce(() => randomizers);
+      spyGetCommitments.mockImplementationOnce(() => commitments);
       spySaveBarToAbarToCache.mockImplementationOnce(() => Promise.resolve(barToAbarData));
 
       const result = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
@@ -357,11 +357,11 @@ describe('triple masking (unit test)', () => {
         ownerMemo.clone(),
         returnEncKey,
       );
-      expect(spyGetRandomizers).toHaveBeenCalled();
+      expect(spyGetCommitments).toHaveBeenCalled();
       expect(spySaveBarToAbarToCache).toHaveBeenCalledWith(
         walletInfo,
         sid,
-        randomizers.randomizers,
+        commitments.commitments,
         anonKeys,
       );
 
@@ -374,7 +374,7 @@ describe('triple masking (unit test)', () => {
     let randomizeAxfrPubkey: string;
     let axfrPublicKey: AXfrPubKey;
     let formattedAxfrPublicKey: string;
-    let givenRandomizer: string;
+    let givenCommitment: string;
     let ownedAbars: OwnedAbarsDataResult;
     let atxoSid: string;
     let ownedAbar: FindoraWallet.OwnedAbar;
@@ -386,7 +386,7 @@ describe('triple masking (unit test)', () => {
     let spyGetOwnedAbars: jest.SpyInstance;
     beforeEach(() => {
       formattedAxfrPublicKey = '';
-      givenRandomizer = '';
+      givenCommitment = '';
       randomizeAxfrPubkey = 'randomize_axfr_pubkey';
       nodeLedger = {
         randomize_axfr_pubkey: jest.fn(() => {}),
@@ -418,7 +418,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment)).rejects.toThrow(
         ownedAbars.error.message,
       );
     });
@@ -429,7 +429,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer)).rejects.toThrow(
+      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment)).rejects.toThrow(
         'Could not receive response from get ownedAbars call',
       );
     });
@@ -439,16 +439,16 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+      const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment);
       expect(result).toHaveLength(1);
       const [abar] = result;
       expect(abar).toHaveProperty('axfrPublicKey', formattedAxfrPublicKey);
-      expect(abar).toHaveProperty('randomizer', givenRandomizer);
+      expect(abar).toHaveProperty('commitment', givenCommitment);
       expect(abar).toHaveProperty('abarData', abarData);
       expect(abar.abarData).toHaveProperty('atxoSid', `${atxoSid}`);
       expect(abar.abarData).toHaveProperty('ownedAbar', ownedAbar);
       expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(formattedAxfrPublicKey);
-      expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenRandomizer);
+      expect(spyRandomizeAxfrPubkey).toHaveBeenCalledWith(axfrPublicKey, givenCommitment);
       expect(spyGetOwnedAbars).toHaveBeenCalledWith(randomizeAxfrPubkey);
     });
   });
@@ -519,7 +519,7 @@ describe('triple masking (unit test)', () => {
   describe('saveBarToAbarToCache', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
-    let randomizers: string[];
+    let commitments: string[];
     let anonKeys: FindoraWallet.FormattedAnonKeys;
 
     let spyConsoleLog: jest.SpyInstance;
@@ -530,7 +530,7 @@ describe('triple masking (unit test)', () => {
       walletInfo = {
         address: 'test_address',
       } as unknown as KeypairApi.WalletKeypar;
-      randomizers = ['1', '2', '3'];
+      commitments = ['1', '2', '3'];
       anonKeys = {
         axfrPublicKey: 'axfrPublicKey',
         axfrSecretKey: 'axfrSecretKey',
@@ -543,10 +543,10 @@ describe('triple masking (unit test)', () => {
     });
 
     it('return a instance of BarToAbarData and print `for browser mode a default fullPathToCacheEntry was used`', async () => {
-      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, commitments, anonKeys);
       expect(result).toMatchObject({
         anonKeysFormatted: anonKeys,
-        randomizers,
+        commitments,
       });
 
       expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
@@ -555,10 +555,10 @@ describe('triple masking (unit test)', () => {
     it('return a instance of BarToAbarData and print `Error reading the abarDataCache for $address`', async () => {
       const cacheReadError = new Error('cacheRead error');
       spyCacheRead.mockImplementationOnce(() => Promise.reject(cacheReadError));
-      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, commitments, anonKeys);
       expect(result).toMatchObject({
         anonKeysFormatted: anonKeys,
-        randomizers,
+        commitments,
       });
 
       expect(spyConsoleLog).toHaveBeenCalledWith(
@@ -569,10 +569,10 @@ describe('triple masking (unit test)', () => {
     it('return a instance of BarToAbarData and print `Could not write cache for abarDataCache`', async () => {
       const cacheWriteError = new Error('cacheWrite error');
       spyCacheWrite.mockImplementationOnce(() => Promise.reject(cacheWriteError));
-      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, randomizers, anonKeys);
+      const result = await TripleMasking.saveBarToAbarToCache(walletInfo, sid, commitments, anonKeys);
       expect(result).toMatchObject({
         anonKeysFormatted: anonKeys,
-        randomizers,
+        commitments,
       });
 
       expect(spyConsoleLog).toHaveBeenCalledWith(
@@ -591,7 +591,7 @@ describe('triple masking (unit test)', () => {
 
     let atxoSid: string;
     let ownedAbar: FindoraWallet.OwnedAbar;
-    let givenRandomizer: string;
+    let givenCommitment: string;
 
     beforeEach(() => {
       walletInfo = {
@@ -604,7 +604,7 @@ describe('triple masking (unit test)', () => {
       ownedAbars = [
         {
           axfrPublicKey: 'formattedAxfrPublicKey',
-          randomizer: givenRandomizer,
+          commitment: givenCommitment,
           abarData: {
             atxoSid,
             ownedAbar: { ...ownedAbar },
