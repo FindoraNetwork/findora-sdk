@@ -185,15 +185,12 @@ export const getIssueAssetTransactionBuilder = async (
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
-  const zeiParams = ledger.PublicParams.new();
-
   const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(
     walletKeypair,
     assetName,
     BigInt(blockCount),
     utxoNumbers,
     !!blindIsAmount,
-    zeiParams,
   );
 
   return definitionTransaction;

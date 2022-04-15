@@ -22,7 +22,7 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -68,7 +68,7 @@ const myAbarAnonKeys = {
   encKey: 'dim3EW9_PnClrNuVpKen4DZ0v-RwsVLSUtZy7PXCOCc=',
 };
 
-const myGivenRandomizersList = [
+const myGivenCommitmentsList = [
   'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
   'DtJx2dVmXXiDaQS7G6xpNeUhEwH7EsuimLUf1Tqd78LH',
   '9kpQwq1UqqonX73HgreJcvXEj9SxN5mh55AhBdsSXnhZ',
@@ -1223,12 +1223,12 @@ const barToAbar = async () => {
   console.log('send bar to abar result handle!!', resultHandle);
 
   const { axfrPublicKey: formattedAxfrPublicKey } = barToAbarData.anonKeysFormatted;
-  const [givenRandomizer] = barToAbarData.randomizers;
+  const [givenCommitment] = barToAbarData.commitments;
 
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
   console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
 
   const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
@@ -1238,7 +1238,7 @@ const barToAbar = async () => {
 const validateUnspent = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
-  const givenRandomizer = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
+  const givenCommitment = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
 
   const formattedAxfrPublicKey = anonKeys.axfrPublicKey;
 
@@ -1246,7 +1246,7 @@ const validateUnspent = async () => {
 
   const decKey = anonKeys.decKey;
 
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenRandomizer);
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
   console.log(
     '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
@@ -1259,13 +1259,7 @@ const validateUnspent = async () => {
 
   const { atxoSid, ownedAbar } = abarData;
 
-  const hash = await TripleMasking.genNullifierHash(
-    atxoSid,
-    ownedAbar,
-    axfrSecretKey,
-    decKey,
-    givenRandomizer,
-  );
+  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
   console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
 
   const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
@@ -1276,10 +1270,10 @@ const validateUnspent = async () => {
 const getUnspentAbars = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
-  const givenRandomizersList = myGivenRandomizersList;
-  // const givenRandomizersList = ['5VoNtFWTXsTVwiYB8h3FykCJJG8h4ve5dwQ2ZymKqyPE'];
+  const givenCommitmentsList = myGivenCommitmentsList;
+  // const givenCommitmentsList = ['5VoNtFWTXsTVwiYB8h3FykCJJG8h4ve5dwQ2ZymKqyPE'];
 
-  const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenRandomizersList);
+  const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
 };
 
@@ -1293,7 +1287,7 @@ const getAbarBalance = async () => {
     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   };
 
-  const givenRandomizersList = [
+  const givenCommitmentsList = [
     // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
     // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
     // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
@@ -1301,11 +1295,11 @@ const getAbarBalance = async () => {
   ];
 
   console.log(
-    '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenRandomizersList to check',
-    givenRandomizersList,
+    '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check',
+    givenCommitmentsList,
   );
 
-  const balances = await TripleMasking.getBalance(anonKeys, givenRandomizersList);
+  const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
 };
 
@@ -1338,28 +1332,22 @@ const abarToAbar = async () => {
     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
-  const givenRandomizerToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs'; // 3 test3 (sid 1)
+  const givenCommitmentToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs'; // 3 test3 (sid 1)
 
-  const givenRandomizersToPayFee = [
+  const givenCommitmentsToPayFee = [
     'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
   ];
 
-  const givenRandomizersListSender = [givenRandomizerToTransfer, ...givenRandomizersToPayFee];
+  const givenCommitmentsListSender = [givenCommitmentToTransfer, ...givenCommitmentsToPayFee];
 
   const additionalOwnedAbarItems = [];
 
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
-    anonKeysSender.axfrPublicKey,
-    givenRandomizerToTransfer,
-  );
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentToTransfer);
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
-  for (let givenRandomizerToPayFee of givenRandomizersToPayFee) {
-    const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
-      anonKeysSender.axfrPublicKey,
-      givenRandomizerToPayFee,
-    );
+  for (let givenCommitmentToPayFee of givenCommitmentsToPayFee) {
+    const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitmentToPayFee);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
 
@@ -1381,42 +1369,42 @@ const abarToAbar = async () => {
   console.log('transfer abar result handle!!', resultHandle);
 
   console.log(
-    `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver randomizers`,
+    `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver commitments`,
   );
 
   await sleep(waitingTimeBeforeCheckTxStatus);
 
   console.log('now checking balances\n\n\n');
 
-  const { randomizersMap } = abarToAbarData;
+  const { commitmentsMap } = abarToAbarData;
 
-  const retrivedRandomizersListReceiver = [];
+  const retrivedCommitmentsListReceiver = [];
 
-  for (const randomizersMapEntry of randomizersMap) {
-    const { radomizerKey, randomizerAxfrPublicKey } = randomizersMapEntry;
+  for (const commitmentsMapEntry of commitmentsMap) {
+    const { commitmentAxfrPublicKey, commitment } = commitmentsMapEntry;
 
-    if (randomizerAxfrPublicKey === anonKeysSender.axfrPublicKey) {
-      givenRandomizersListSender.push(radomizerKey);
+    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+      givenCommitmentsListSender.push(commitment);
     }
 
-    if (randomizerAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
-      retrivedRandomizersListReceiver.push(radomizerKey);
+    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+      retrivedCommitmentsListReceiver.push(commitment);
     }
   }
 
   console.log(
-    '🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedRandomizersListReceiver',
-    retrivedRandomizersListReceiver,
+    '🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedCommitmentsListReceiver',
+    retrivedCommitmentsListReceiver,
   );
   console.log(
-    '🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenRandomizersListSender',
-    givenRandomizersListSender,
+    '🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenCommitmentsListSender',
+    givenCommitmentsListSender,
   );
 
-  const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenRandomizersListSender);
+  const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
   console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
 
-  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedRandomizersListReceiver);
+  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver);
   console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
 };
 
@@ -1435,23 +1423,17 @@ const abarToBar = async () => {
   };
 
   // rnadomizer for abar to be sent
-  const givenRandomizerOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+  const givenCommitmentOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
 
-  // randomizer to pay fee
-  const givenRandomizerTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
+  // commitment to pay fee
+  const givenCommitmentTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
 
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(
-    anonKeysSender.axfrPublicKey,
-    givenRandomizerOne,
-  );
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
   console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
 
-  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(
-    anonKeysSender.axfrPublicKey,
-    givenRandomizerTwo,
-  );
+  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitmentTwo);
 
   const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
   console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);

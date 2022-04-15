@@ -22,15 +22,15 @@ interface AnonWalletBalanceInfo {
   balances: BalanceInfo[];
 }
 
-export interface RandomizersResponseMap {
+export interface CommitmentsResponseMap {
   [key: string]: [string, number[], number];
 }
 
-export interface ProcessedRandomizersMap {
-  radomizerKey: string;
-  randomizerAxfrPublicKey: string;
-  randomizerAssetType: string;
-  randomizerAmount: string;
+export interface ProcessedCommitmentsMap {
+  commitmentAxfrPublicKey: string;
+  commitment: string;
+  commitmentAssetType: string;
+  commitmentAmount: string;
 }
 
 export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> => {
@@ -80,7 +80,7 @@ const resolvePathToCacheEntry = (cacheEntryName: string) => {
 export const saveBarToAbarToCache = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
-  randomizers: string[],
+  commitments: string[],
   anonKeys: FindoraWallet.FormattedAnonKeys,
 ): Promise<FindoraWallet.BarToAbarData> => {
   const cacheDataToSave: CacheItem = {};
@@ -99,7 +99,7 @@ export const saveBarToAbarToCache = async (
 
   const barToAbarData = {
     anonKeysFormatted: anonKeys,
-    randomizers,
+    commitments,
   };
 
   cacheDataToSave[`sid_${sid}`] = barToAbarData;
@@ -327,27 +327,27 @@ export const abarToAbar = async (
   }
 
   try {
-    anonTransferOperationBuilder = anonTransferOperationBuilder.build_and_sign();
+    anonTransferOperationBuilder = anonTransferOperationBuilder.build();
   } catch (error) {
     console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
     console.log('Full Error: ', error);
     throw new Error(`Could not build and sign abar transfer operation", Error - ${(error as Error).message}`);
   }
 
-  let randomizersMap: RandomizersResponseMap;
+  let commitmentsMap: CommitmentsResponseMap;
 
   try {
-    randomizersMap = anonTransferOperationBuilder?.get_randomizer_map();
+    commitmentsMap = anonTransferOperationBuilder?.get_commitment_map();
   } catch (err) {
-    throw new Error(`Could not get a list of randomizers strings "${(err as Error).message}" `);
+    throw new Error(`Could not get a list of commitments strings "${(err as Error).message}" `);
   }
 
-  const processedRandomizersMap = await processAbarToAbarRandomizerResponse(randomizersMap);
+  const processedCommitmentsMap = await processAbarToAbarCommitmentResponse(commitmentsMap);
 
   const abarToAbarData: FindoraWallet.AbarToAbarData = {
     anonKeysSender,
     anonKeysReceiver,
-    randomizersMap: processedRandomizersMap,
+    commitmentsMap: processedCommitmentsMap,
   };
 
   return { anonTransferOperationBuilder, abarToAbarData };
@@ -420,30 +420,30 @@ export const prepareAnonTransferOperationBuilder = async (
   return anonTransferOperationBuilder;
 };
 
-const processAbarToAbarRandomizerResponse = async (
-  randomizersMap: RandomizersResponseMap,
-): Promise<ProcessedRandomizersMap[]> => {
-  const randomizerKeys = Object.keys(randomizersMap);
+const processAbarToAbarCommitmentResponse = async (
+  commitmentsMap: CommitmentsResponseMap,
+): Promise<ProcessedCommitmentsMap[]> => {
+  const commitmentKeys = Object.keys(commitmentsMap);
 
-  if (!randomizerKeys?.length) {
-    throw new Error(`Randomizers maps is empty `);
+  if (!commitmentKeys?.length) {
+    throw new Error(`Commitments maps is empty `);
   }
 
-  const responseMap: ProcessedRandomizersMap[] = [];
+  const responseMap: ProcessedCommitmentsMap[] = [];
 
-  for (let radomizerKey of randomizerKeys) {
-    const radomizerEntity = randomizersMap[radomizerKey];
-    const [randomizerAxfrPublicKey, randomizerNumericAssetType, randomizerAmountInWei] = radomizerEntity;
+  for (let commitment of commitmentKeys) {
+    const radomizerEntity = commitmentsMap[commitment];
+    const [commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei] = radomizerEntity;
 
-    const randomizerAssetType = await getAssetCode(randomizerNumericAssetType);
+    const commitmentAssetType = await getAssetCode(commitmentNumericAssetType);
 
-    const randomizerAmount = fromWei(createBigNumber(randomizerAmountInWei.toString()), 6).toFormat(6);
+    const commitmentAmount = fromWei(createBigNumber(commitmentAmountInWei.toString()), 6).toFormat(6);
 
     responseMap.push({
-      radomizerKey,
-      randomizerAxfrPublicKey,
-      randomizerAssetType,
-      randomizerAmount: `${randomizerAmount}`,
+      commitment,
+      commitmentAxfrPublicKey,
+      commitmentAssetType,
+      commitmentAmount: `${commitmentAmount}`,
     });
   }
 
@@ -555,22 +555,22 @@ export const barToAbar = async (
     throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
   }
 
-  let randomizers: { randomizers: string[] };
+  let commitments: { commitments: string[] };
 
   try {
-    randomizers = transactionBuilder?.get_randomizers();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ randomizers', randomizers);
+    commitments = transactionBuilder?.get_commitments();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
   } catch (err) {
-    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
+    throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
   }
 
-  if (!randomizers?.randomizers?.length) {
-    throw new Error(`list of randomizers strings is empty `);
+  if (!commitments?.commitments?.length) {
+    throw new Error(`list of commitments strings is empty `);
   }
 
   const barToAbarData: FindoraWallet.BarToAbarData = {
     anonKeysFormatted: anonKeys,
-    randomizers: randomizers.randomizers,
+    commitments: commitments.commitments,
   };
 
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
@@ -629,20 +629,20 @@ export const abarToBar = async (
     throw new Error(`Could not anon fee operation", Error - ${(error as Error).message}`);
   }
 
-  let randomizers: { randomizers: string[] };
+  let commitments: { commitments: string[] };
 
   try {
-    randomizers = transactionBuilder?.get_randomizers();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 542 ~ randomizers', randomizers);
+    commitments = transactionBuilder?.get_commitments();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 542 ~ commitments', commitments);
   } catch (err) {
-    throw new Error(`could not get a list of randomizers strings "${(err as Error).message}" `);
+    throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
   }
 
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 547 ~ randomizers', randomizers);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 547 ~ commitments', commitments);
 
   const abarToBarData: FindoraWallet.AbarToBarData = {
     anonKeysSender,
-    randomizers: randomizers.randomizers,
+    commitments: commitments.commitments,
   };
 
   return { transactionBuilder, abarToBarData, receiverWalletInfo };
@@ -666,14 +666,14 @@ export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
 
 export const getUnspentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
-  givenRandomizersList: string[],
+  givenCommitmentsList: string[],
 ) => {
   const { axfrPublicKey, axfrSecretKey, decKey } = anonKeys;
 
   const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
-  for (let givenRandomizer of givenRandomizersList) {
-    const ownedAbarsResponse = await getOwnedAbars(axfrPublicKey, givenRandomizer);
+  for (let givenCommitment of givenCommitmentsList) {
+    const ownedAbarsResponse = await getOwnedAbars(givenCommitment);
     // console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
 
     const [ownedAbarItem] = ownedAbarsResponse;
@@ -685,7 +685,7 @@ export const getUnspentAbars = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey, givenRandomizer);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
 
     const isAbarSpent = await isNullifierHashSpent(hash);
 
@@ -771,9 +771,9 @@ export const getBalanceMaps = async (
 
 export const getBalance = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
-  givenRandomizersList: string[],
+  givenCommitmentsList: string[],
 ) => {
-  const unspentAbars = await getUnspentAbars(anonKeys, givenRandomizersList);
+  const unspentAbars = await getUnspentAbars(anonKeys, givenCommitmentsList);
   const balances = await getAbarBalance(unspentAbars, anonKeys);
   return balances;
 };
@@ -803,16 +803,10 @@ export const getAbarBalance = async (
   return balanceInfo;
 };
 
-export const getOwnedAbars = async (
-  formattedAxfrPublicKey: string,
-  givenRandomizer: string,
-): Promise<FindoraWallet.OwnedAbarItem[]> => {
+export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const ledger = await getLedger();
 
-  const axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(formattedAxfrPublicKey);
-  const randomizedPubKey = ledger.randomize_axfr_pubkey(axfrPublicKey, givenRandomizer);
-
-  const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(randomizedPubKey);
+  const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(givenCommitment);
   // console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
 
   if (error) {
@@ -827,8 +821,7 @@ export const getOwnedAbars = async (
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
     const abar = {
-      axfrPublicKey: formattedAxfrPublicKey,
-      randomizer: givenRandomizer,
+      commitment: givenCommitment,
       abarData: {
         atxoSid,
         ownedAbar: { ...ownedAbar },
@@ -845,7 +838,6 @@ export const genNullifierHash = async (
   ownedAbar: FindoraWallet.OwnedAbar,
   axfrSecretKey: string,
   decKey: string,
-  randomizer: string,
 ) => {
   const ledger = await getLedger();
 
@@ -871,13 +863,6 @@ export const genNullifierHash = async (
 
   const aXfrKeyPairForRandomizing = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
   const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
-
-  const randomizeAxfrKeypairString = await Keypair.getRandomizeAxfrKeypair(
-    aXfrKeyPairForRandomizing,
-    randomizer,
-  );
-
-  const randomizeAxfrKeypair = await Keypair.getAXfrPrivateKeyByBase64(randomizeAxfrKeypairString);
 
   const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
 
@@ -916,7 +901,6 @@ export const genNullifierHash = async (
       myOwnedAbar,
       abarOwnerMemo,
       aXfrKeyPair,
-      randomizeAxfrKeypair,
       secretDecKey,
       myMTLeafInfo,
     );

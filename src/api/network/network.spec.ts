@@ -1161,11 +1161,11 @@ describe('network (unit test)', () => {
   });
 
   describe('getOwnedAbars', () => {
-    const randomizedPubKey = 'randomizedPubKey';
-    const url = `${hostUrl}:8667/owned_abars/${randomizedPubKey}`;
+    const commitment = 'commitment';
+    const url = `${hostUrl}:8667/owned_abars/${commitment}`;
 
     it('returns properly formatted data', async () => {
-      const ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+      const ownedAbar = { amount_type_commitment: 'amount_type_commitment' };
       const myResponse = [[123, ownedAbar]];
 
       server.use(
@@ -1176,7 +1176,7 @@ describe('network (unit test)', () => {
 
       const spyApiGet = jest.spyOn(network, 'apiGet');
 
-      const result = await network.getOwnedAbars(randomizedPubKey, testConfig);
+      const result = await network.getOwnedAbars(commitment, testConfig);
       const { response } = result;
 
       expect(result).toHaveProperty('response');
@@ -1192,7 +1192,7 @@ describe('network (unit test)', () => {
         }),
       );
 
-      const result = await network.getOwnedAbars(randomizedPubKey, testConfig);
+      const result = await network.getOwnedAbars(commitment, testConfig);
 
       expect(result).not.toHaveProperty('response');
       expect(result).toHaveProperty('error');

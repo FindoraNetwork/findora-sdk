@@ -65,25 +65,25 @@ declare namespace FindoraWallet {
 
   export interface BarToAbarData {
     anonKeysFormatted: FormattedAnonKeys;
-    randomizers: string[];
+    commitments: string[];
   }
 
   export interface AbarToBarData {
     anonKeysSender: FormattedAnonKeys;
-    randomizers: string[];
+    commitments: string[];
   }
 
-  interface ProcessedRandomizersMap {
-    radomizerKey: string;
-    randomizerAxfrPublicKey: string;
-    randomizerAssetType: string;
-    randomizerAmount: string;
+  interface ProcessedCommitmentsMap {
+    commitmentAxfrPublicKey: string;
+    commitment: string;
+    commitmentAssetType: string;
+    commitmentAmount: string;
   }
 
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
     anonKeysReceiver: FormattedAnonKeys;
-    randomizersMap: ProcessedRandomizersMap[];
+    commitmentsMap: ProcessedCommitmentsMap[];
   }
 
   export interface BarToAbarResult<T> {
@@ -99,7 +99,6 @@ declare namespace FindoraWallet {
 
   export interface OwnedAbar {
     amount_type_commitment: string;
-    public_key: string;
   }
 
   export interface OwnedAbarData {
@@ -108,8 +107,7 @@ declare namespace FindoraWallet {
   }
 
   export interface OwnedAbarItem {
-    axfrPublicKey: string;
-    randomizer: string;
+    commitment: string;
     abarData: OwnedAbarData;
   }
 
@@ -125,7 +123,6 @@ declare namespace FindoraWallet {
     asset_type: number[];
     blind: string;
     pub_key: string;
-    key_rand_factor: string;
     owner_memo: {
       blind_share: string;
       lock: {
