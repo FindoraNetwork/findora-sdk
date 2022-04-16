@@ -1422,30 +1422,20 @@ const abarToBar = async () => {
     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   };
 
-  // rnadomizer for abar to be sent
-  const givenCommitmentOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+  // commitment for abar to be sent
+  const givenCommitment = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
 
-  // commitment to pay fee
-  const givenCommitmentTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
-
-  const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
+  const [ownedAbarToUseAsSource] = ownedAbarsResponse;
   console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
 
-  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitmentTwo);
-
-  const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
-  console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
-
-  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
+  const { transactionBuilder, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
     walletInfo,
     ownedAbarToUseAsSource,
-    ownedAbarToUseAsFee,
   );
 
-  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);

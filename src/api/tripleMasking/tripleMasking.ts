@@ -580,7 +580,6 @@ export const abarToBar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   receiverWalletInfo: Keypair.WalletKeypar,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-  ownedAbarToUseAsFee: FindoraWallet.OwnedAbarItem,
 ) => {
   let transactionBuilder = await getTransactionBuilder();
 
@@ -611,41 +610,7 @@ export const abarToBar = async (
     throw new Error(`Could not add abar to bar operation", Error - ${(error as Error).message}`);
   }
 
-  const abarPayloadFee = await getAbarTransferInputPayload(ownedAbarToUseAsFee, anonKeysSender);
-
-  // input: AnonBlindAssetRecord, owner_memo: OwnerMemo, mt_leaf_info: MTLeafInfo,
-  // from_keypair: AXfrKeyPair, from_dec_key: XSecretKey
-  try {
-    transactionBuilder = transactionBuilder.add_operation_anon_fee(
-      abarPayloadFee.myOwnedAbar,
-      abarPayloadFee.abarOwnerMemo,
-      abarPayloadFee.myMTLeafInfo,
-      aXfrKeyPairSender,
-      secretDecKeySender,
-    );
-  } catch (error) {
-    console.log('Full Error', error);
-
-    throw new Error(`Could not anon fee operation", Error - ${(error as Error).message}`);
-  }
-
-  let commitments: { commitments: string[] };
-
-  try {
-    commitments = transactionBuilder?.get_commitments();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 542 ~ commitments', commitments);
-  } catch (err) {
-    throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
-  }
-
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 547 ~ commitments', commitments);
-
-  const abarToBarData: FindoraWallet.AbarToBarData = {
-    anonKeysSender,
-    commitments: commitments.commitments,
-  };
-
-  return { transactionBuilder, abarToBarData, receiverWalletInfo };
+  return { transactionBuilder, receiverWalletInfo };
 };
 
 export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
