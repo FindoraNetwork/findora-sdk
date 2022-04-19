@@ -183,19 +183,6 @@ export const getXPrivateKeyByBase64 = async (privateKey: string): Promise<XSecre
   }
 };
 
-export const getRandomizeAxfrKeypair = async (
-  aXfrKeyPair: AXfrKeyPair,
-  commitment: string,
-): Promise<string> => {
-  const ledger = await getLedger();
-  try {
-    const randomizedAXfrKeyPair = ledger.randomize_axfr_keypair(aXfrKeyPair, commitment);
-    return randomizedAXfrKeyPair;
-  } catch (err) {
-    throw new Error(`could not get randomized string from the AXfrKeyPair, "${err}" `);
-  }
-};
-
 export const getAddressPublicAndKey = async (address: string): Promise<LightWalletKeypair> => {
   const ledger = await getLedger();
 

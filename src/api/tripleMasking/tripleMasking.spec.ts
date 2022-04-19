@@ -408,7 +408,6 @@ describe('triple masking (unit test)', () => {
 
       spyGetLedger = jest.spyOn(NodeLedger, 'default');
       spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
-      spyRandomizeAxfrPubkey = jest.spyOn(nodeLedger, 'randomize_axfr_pubkey');
       spyGetOwnedAbars = jest.spyOn(NetworkApi, 'getOwnedAbars');
     });
     it('throw an error if receive error response from get ownedAbars call', async () => {
@@ -418,9 +417,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment)).rejects.toThrow(
-        ownedAbars.error.message,
-      );
+      expect(TripleMasking.getOwnedAbars(givenCommitment)).rejects.toThrow(ownedAbars.error.message);
     });
 
     it('throw an error if not receive response from get ownedAbars call', async () => {
@@ -429,7 +426,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      expect(TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment)).rejects.toThrow(
+      expect(TripleMasking.getOwnedAbars(givenCommitment)).rejects.toThrow(
         'Could not receive response from get ownedAbars call',
       );
     });
@@ -439,7 +436,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(axfrPublicKey));
       spyRandomizeAxfrPubkey.mockImplementationOnce(() => randomizeAxfrPubkey);
       spyGetOwnedAbars.mockImplementationOnce(() => Promise.resolve(ownedAbars));
-      const result = await TripleMasking.getOwnedAbars(formattedAxfrPublicKey, givenCommitment);
+      const result = await TripleMasking.getOwnedAbars(givenCommitment);
       expect(result).toHaveLength(1);
       const [abar] = result;
       expect(abar).toHaveProperty('axfrPublicKey', formattedAxfrPublicKey);
@@ -603,7 +600,6 @@ describe('triple masking (unit test)', () => {
 
       ownedAbars = [
         {
-          axfrPublicKey: 'formattedAxfrPublicKey',
           commitment: givenCommitment,
           abarData: {
             atxoSid,
