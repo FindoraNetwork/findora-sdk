@@ -169,7 +169,7 @@ const getAbarFromJson = async (ownedAbar: FindoraWallet.OwnedAbar) => {
   try {
     myOwnedAbar = ledger.abar_from_json(ownedAbar);
   } catch (error) {
-    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${error}`);
   }
 
   return myOwnedAbar;
@@ -331,7 +331,7 @@ export const abarToAbar = async (
   } catch (error) {
     console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
     console.log('Full Error: ', error);
-    throw new Error(`Could not build and sign abar transfer operation", Error - ${(error as Error).message}`);
+    throw new Error(`Could not build and sign abar transfer operation", Error - ${error}`);
   }
 
   let commitmentsMap: CommitmentsResponseMap;
@@ -384,7 +384,7 @@ export const prepareAnonTransferOperationBuilder = async (
     );
   }
 
-  for (let ownedAbarItemOne of additionalOwnedAbarItems) {
+  for (const ownedAbarItemOne of additionalOwnedAbarItems) {
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
     try {
@@ -406,8 +406,18 @@ export const prepareAnonTransferOperationBuilder = async (
   console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
+    const ledger = await getLedger();
+
+    const amountAssetType = ledger.open_abar(
+      abarPayloadOne.myOwnedAbar,
+      abarPayloadOne.abarOwnerMemo,
+      aXfrKeyPairSender,
+      secretDecKeySender,
+    );
+
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(
       toAmount,
+      amountAssetType.asset_type,
       axfrPublicKeyReceiver,
       encKeyReceiver,
     );
@@ -431,7 +441,7 @@ const processAbarToAbarCommitmentResponse = async (
 
   const responseMap: ProcessedCommitmentsMap[] = [];
 
-  for (let commitmentKey of commitmentKeys) {
+  for (const commitmentKey of commitmentKeys) {
     const commitmentEntity = commitmentsMap[commitmentKey];
     const [commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei] = commitmentEntity;
 
@@ -583,7 +593,7 @@ export const abarToBar = async (
 ) => {
   let transactionBuilder = await getTransactionBuilder();
 
-  //input: AnonBlindAssetRecord,
+  // input: AnonBlindAssetRecord,
   // owner_memo: OwnerMemo, mt_leaf_info: MTLeafInfo,
   // from_keypair: AXfrKeyPair, from_dec_key: XSecretKey,
   // recipient: XfrPublicKey, conf_amount: boolean, conf_type: boolean
@@ -641,7 +651,7 @@ export const getUnspentAbars = async (
 
   const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
-  for (let givenCommitment of givenCommitmentsList) {
+  for (const givenCommitment of givenCommitmentsList) {
     const ownedAbarsResponse = await getOwnedAbars(givenCommitment);
     // console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
 
@@ -713,7 +723,7 @@ export const getBalanceMaps = async (
   const balancesMap: { [key: string]: string } = {};
   const usedAssets = [];
 
-  for (let abar of unspentAbars) {
+  for (const abar of unspentAbars) {
     const openedAbarItem = await openAbar(abar, anonKeys);
 
     const { amount, assetType } = openedAbarItem;
@@ -758,7 +768,7 @@ export const getAbarBalance = async (
 
   const balances: BalanceInfo[] = [];
 
-  for (let assetType of usedAssets) {
+  for (const assetType of usedAssets) {
     const decimals = assetDetailsMap[assetType].assetRules.decimals;
     const amount = fromWei(balancesMap[assetType], decimals).toFormat(decimals);
     balances.push({ assetType, amount });
@@ -773,8 +783,6 @@ export const getAbarBalance = async (
 };
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
-  const ledger = await getLedger();
-
   const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(givenCommitment);
   // console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
 
@@ -786,14 +794,14 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
     throw new Error('Could not receive response from get ownedAbars call');
   }
 
-  const result = ownedAbarsResponse.map(ownedAbarItem => {
+  const result = [ownedAbarsResponse].map(ownedAbarItem => {
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
     const abar = {
       commitment: givenCommitment,
       abarData: {
         atxoSid,
-        ownedAbar: { ...ownedAbar },
+        ownedAbar: { ownedAbar },
       },
     };
     return abar;
@@ -830,7 +838,6 @@ export const genNullifierHash = async (
     throw new Error(`Could not get decode abar memo data 1", Error - ${(error as Error).message}`);
   }
 
-  const aXfrKeyPairForRandomizing = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
   const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey);
 
   const mTLeafInfoResult = await Network.getMTLeafInfo(atxoSid);
@@ -860,7 +867,7 @@ export const genNullifierHash = async (
   try {
     myOwnedAbar = ledger.abar_from_json(ownedAbar);
   } catch (error) {
-    throw new Error(`Could not decode myOwnedAbar data", Error - ${(error as Error).message}`);
+    throw new Error(`Could not decode myOwnedAbar data", Error - ${error}`);
   }
 
   const secretDecKey = ledger.x_secretkey_from_string(decKey);

@@ -98,7 +98,6 @@ declare namespace FindoraWallet {
 
   export interface OwnedAbar {
     amount_type_commitment: string;
-    public_key: string;
   }
 
   export interface OwnedAbarData {
