@@ -1424,18 +1424,10 @@ const abarToBar = async () => {
   // rnadomizer for abar to be sent
   const givenCommitmentOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
 
-  // commitment to pay fee
-  const givenCommitmentTwo = 'CGqNmoGkLT2zJm56suUaP8iXWMaeRqGZ9eeZgYRXMi5N';
-
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
   console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-
-  const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitmentTwo);
-
-  const [ownedAbarToUseAsFee] = ownedAbarsResponseTwo;
-  console.log('🚀 ~ file: run.ts ~ line 1407 ~ abarToBar ~ ownedAbarToUseAsFee', ownedAbarToUseAsFee);
 
   const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
