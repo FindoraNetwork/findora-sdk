@@ -801,7 +801,7 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       commitment: givenCommitment,
       abarData: {
         atxoSid,
-        ownedAbar: { ownedAbar },
+        ownedAbar: ownedAbar,
       },
     };
     return abar;

@@ -441,8 +441,7 @@ export const getOwnedAbars = async (
   const url = `${getQueryRoute()}/owned_abars/${commitment}`;
 
   const dataResult = await apiGet(url, config);
-
-  return dataResult;
+  return JSON.parse(JSON.stringify(dataResult));
 };
 
 export const checkNullifierHashSpent = async (
