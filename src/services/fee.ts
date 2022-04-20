@@ -240,7 +240,11 @@ export const buildTransferOperationWithFee = async (
   return trasferOperation;
 };
 
-export const getFeeInputs = async (walletInfo: WalletKeypar, excludeSid: number): Promise<FeeInputs> => {
+export const getFeeInputs = async (
+  walletInfo: WalletKeypar,
+  excludeSid: number,
+  isBarToAbar: boolean,
+): Promise<FeeInputs> => {
   const ledger = await getLedger();
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
@@ -255,7 +259,7 @@ export const getFeeInputs = async (walletInfo: WalletKeypar, excludeSid: number)
 
   const utxoDataList = await addUtxo(walletInfo, filteredSids);
 
-  const minimalFee = await AssetApi.getMinimalFee();
+  const minimalFee = isBarToAbar ? await AssetApi.getBarToAbarMinimalFee() : await AssetApi.getMinimalFee();
 
   const fraAssetCode = await AssetApi.getFraAssetCode();
 

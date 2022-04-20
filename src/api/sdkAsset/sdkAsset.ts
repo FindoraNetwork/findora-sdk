@@ -51,6 +51,12 @@ export const getMinimalFee = async (): Promise<BigInt> => {
   return fee;
 };
 
+export const getBarToAbarMinimalFee = async (): Promise<BigInt> => {
+  const ledger = await getLedger();
+  const fee = ledger.fra_get_minimal_fee_for_bar_to_abar();
+  return fee;
+};
+
 export const getFraPublicKey = async (): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   const key = ledger.fra_get_dest_pubkey();
@@ -185,15 +191,12 @@ export const getIssueAssetTransactionBuilder = async (
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
-  const zeiParams = ledger.PublicParams.new();
-
   const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(
     walletKeypair,
     assetName,
     BigInt(blockCount),
     utxoNumbers,
     !!blindIsAmount,
-    zeiParams,
   );
 
   return definitionTransaction;

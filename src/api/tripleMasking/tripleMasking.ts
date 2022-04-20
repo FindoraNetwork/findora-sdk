@@ -551,7 +551,7 @@ export const barToAbar = async (
   let feeInputs;
 
   try {
-    feeInputs = await getFeeInputs(walletInfo, sid);
+    feeInputs = await getFeeInputs(walletInfo, sid, true);
   } catch (error) {
     throw new Error(
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
