@@ -395,7 +395,7 @@ describe('triple masking (unit test)', () => {
         free: jest.fn(() => {}),
       };
       atxoSid = '1';
-      ownedAbar = { commitment: 'commitment', public_key: 'public_key' };
+      ownedAbar = { commitment: 'commitment' };
 
       abarData = {
         atxoSid: atxoSid,
@@ -596,7 +596,7 @@ describe('triple masking (unit test)', () => {
       } as unknown as KeypairApi.WalletKeypar;
 
       atxoSid = '1';
-      ownedAbar = { commitment: 'commitment', public_key: 'public_key' };
+      ownedAbar = { commitment: 'commitment' };
 
       ownedAbars = [
         {
