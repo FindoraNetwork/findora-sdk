@@ -62,10 +62,10 @@ const mainFaucet = PKEY_LOCAL_FAUCET;
 const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
-  axfrPublicKey: '-Gdj_hulMzWPeC23G3RG-HjoWyLT2WnPAB5csEGkbmg=',
-  axfrSecretKey: 'z4atlAssg_PcVa05__EXB5VbT2GJF3mS8AuCUa2OfQn4Z2P-G6UzNY94LbcbdEb4eOhbItPZac8AHlywQaRuaA==',
-  decKey: '0Js-MFSVJipTNL-y09zkSBaks14WLK-SfAUTTfsUInE=',
-  encKey: 'dim3EW9_PnClrNuVpKen4DZ0v-RwsVLSUtZy7PXCOCc=',
+  axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+  axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+  decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+  encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
 };
 
 const myGivenCommitmentsList = [
@@ -1192,6 +1192,7 @@ const barToAbar = async () => {
   if (!sids) {
     throw new Error('no sids!');
   }
+  console.log('🚀 ~ file: run.ts ~ line 1193 ~ barToAbar ~ sids', sids);
 
   const sortedSids = sids.sort((a, b) => b - a);
   console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
@@ -1203,7 +1204,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 30;
+  const sid = 2;
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1310,7 +1311,7 @@ const getFee = async () => {
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
 
-  const feeInputsPayload = await getFeeInputs(walletInfo, 11);
+  const feeInputsPayload = await getFeeInputs(walletInfo, 11, true);
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
@@ -1445,11 +1446,11 @@ const abarToBar = async () => {
 
 // getFraBalance();
 // getAnonKeys();
-// barToAbar();
+barToAbar();
 // getUnspentAbars();
 // getAbarBalance();
 // getFee();
-abarToAbar();
+// abarToAbar();
 // abarToBar();
 // validateUnspent();
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);

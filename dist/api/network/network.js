@@ -538,12 +538,12 @@ var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0
     });
 }); };
 exports.sendRpcCall = sendRpcCall;
-var getOwnedAbars = function (randomizedPubKey, config) { return __awaiter(void 0, void 0, void 0, function () {
+var getOwnedAbars = function (commitment, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = getQueryRoute() + "/owned_abars/" + randomizedPubKey;
+                url = getQueryRoute() + "/owned_abars/" + commitment;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();

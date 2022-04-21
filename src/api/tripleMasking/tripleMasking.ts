@@ -557,11 +557,12 @@ export const barToAbar = async (
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
     );
   }
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
 
   try {
     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
   } catch (error) {
-    console.log(error);
+    console.log('Full error', error);
     throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
   }
 
@@ -794,14 +795,14 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
     throw new Error('Could not receive response from get ownedAbars call');
   }
 
-  const result = [ownedAbarsResponse].map(ownedAbarItem => {
+  const result = ownedAbarsResponse.map(ownedAbarItem => {
     const [atxoSid, ownedAbar] = ownedAbarItem;
 
     const abar = {
       commitment: givenCommitment,
       abarData: {
         atxoSid,
-        ownedAbar: ownedAbar,
+        ownedAbar: { ...ownedAbar },
       },
     };
     return abar;

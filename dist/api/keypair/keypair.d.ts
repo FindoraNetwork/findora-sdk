@@ -77,7 +77,6 @@ export declare const getAXfrPublicKeyByBase64: (publicKey: string) => Promise<AX
 export declare const getAXfrPrivateKeyByBase64: (privateKey: string) => Promise<AXfrKeyPair>;
 export declare const getXPublicKeyByBase64: (publicKey: string) => Promise<XPublicKey>;
 export declare const getXPrivateKeyByBase64: (privateKey: string) => Promise<XSecretKey>;
-export declare const getRandomizeAxfrKeypair: (aXfrKeyPair: AXfrKeyPair, randomizer: string) => Promise<string>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.

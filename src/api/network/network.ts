@@ -431,7 +431,7 @@ export const sendRpcCall = async <T>(
 
   const dataResult = await apiPost(url, payload, { ...config });
 
-  return dataResult as T;
+  return dataResult as unknown as T;
 };
 
 export const getOwnedAbars = async (
@@ -441,7 +441,8 @@ export const getOwnedAbars = async (
   const url = `${getQueryRoute()}/owned_abars/${commitment}`;
 
   const dataResult = await apiGet(url, config);
-  return JSON.parse(JSON.stringify(dataResult));
+  return dataResult;
+  // return JSON.parse(JSON.stringify(dataResult));
 };
 
 export const checkNullifierHashSpent = async (

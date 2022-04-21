@@ -260,6 +260,7 @@ export const getFeeInputs = async (
   const utxoDataList = await addUtxo(walletInfo, filteredSids);
 
   const minimalFee = isBarToAbar ? await AssetApi.getBarToAbarMinimalFee() : await AssetApi.getMinimalFee();
+  console.log('🚀 ~ file: fee.ts ~ line 263 ~ minimalFee', minimalFee);
 
   const fraAssetCode = await AssetApi.getFraAssetCode();
 
@@ -268,6 +269,7 @@ export const getFeeInputs = async (
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const feeInputsPayload = await getPayloadForFeeInputs(walletInfo, utxoInputsInfo);
+  console.log('🚀 ~ file: fee.ts ~ line 272 ~ feeInputsPayload', feeInputsPayload);
 
   let feeInputs = ledger.FeeInputs.new();
 

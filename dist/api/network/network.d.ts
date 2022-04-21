@@ -45,5 +45,5 @@ export declare const getDelegateInfo: (publickey: string, config?: Types.Network
 export declare const sendRpcCall: <T>(url: string, givenPayload: {
     [key: string]: any;
 }, config?: Types.NetworkAxiosConfig | undefined) => Promise<T>;
-export declare const getOwnedAbars: (randomizedPubKey: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
+export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.CheckNullifierHashSpentDataResult>;

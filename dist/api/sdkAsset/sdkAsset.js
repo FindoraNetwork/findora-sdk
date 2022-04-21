@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getBarToAbarMinimalFee = exports.getMinimalFee = exports.getFraAssetCode = void 0;
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -114,6 +114,19 @@ var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getMinimalFee = getMinimalFee;
+var getBarToAbarMinimalFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fee;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fee = ledger.fra_get_minimal_fee_for_bar_to_abar();
+                return [2 /*return*/, fee];
+        }
+    });
+}); };
+exports.getBarToAbarMinimalFee = getBarToAbarMinimalFee;
 var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, key;
     return __generator(this, function (_a) {
@@ -244,7 +257,7 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
 };
 exports.getDefineAssetTransactionBuilder = getDefineAssetTransactionBuilder;
 var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
+    var ledger, _a, stateCommitment, error, _, height, blockCount, utxoNumbers, blindIsAmount, definitionTransaction;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -263,8 +276,7 @@ var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amount
                 blockCount = BigInt(height);
                 utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
-                zeiParams = ledger.PublicParams.new();
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, !!blindIsAmount, zeiParams);
+                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, !!blindIsAmount);
                 return [2 /*return*/, definitionTransaction];
         }
     });
