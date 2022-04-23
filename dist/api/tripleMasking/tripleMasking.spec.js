@@ -478,13 +478,13 @@ describe('triple masking (unit test)', function () {
                 free: jest.fn(function () { }),
             };
             atxoSid = '1';
-            ownedAbar = { commitment: 'commitment', public_key: 'public_key' };
+            ownedAbar = { commitment: 'commitment' };
             abarData = {
                 atxoSid: atxoSid,
                 ownedAbar: ownedAbar,
             };
             ownedAbars = {
-                response: [[atxoSid, ownedAbar]],
+                response: [atxoSid, ownedAbar],
             };
             spyGetLedger = jest.spyOn(NodeLedger, 'default');
             spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
@@ -715,7 +715,7 @@ describe('triple masking (unit test)', function () {
                 address: 'test_address',
             };
             atxoSid = '1';
-            ownedAbar = { commitment: 'commitment', public_key: 'public_key' };
+            ownedAbar = { commitment: 'commitment' };
             ownedAbars = [
                 {
                     commitment: givenCommitment,

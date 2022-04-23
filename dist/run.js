@@ -1322,7 +1322,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 2;
+                sid = 58;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1344,7 +1344,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 7:
                 ownedAbarsResponse = _b.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+                console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
                 return [4 /*yield*/, api_1.TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse)];
             case 8:
                 ownedAbarsSaveResult = _b.sent();
@@ -1354,13 +1354,12 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitment, formattedAxfrPublicKey, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    var anonKeys, givenCommitment, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitment = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
-                formattedAxfrPublicKey = anonKeys.axfrPublicKey;
+                givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
                 axfrSecretKey = anonKeys.axfrSecretKey;
                 decKey = anonKeys.decKey;
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
@@ -1388,7 +1387,7 @@ var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, fun
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = myGivenCommitmentsList;
+                givenCommitmentsList = ['ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY='];
                 return [4 /*yield*/, api_1.TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList)];
             case 1:
                 unspentAbars = _a.sent();
@@ -1403,16 +1402,16 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 anonKeys = {
-                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+                    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+                    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+                    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+                    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
                 givenCommitmentsList = [
-                    // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
-                    // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
-                    // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
-                    'Ce3NeQjiUfPG7oMnA6Nb6BA3a4kErtbK9PP1NNUyBLxs', // 2.85 - sender
+                    // 'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA -- sender paid fee, should be 0
+                    // 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=', // 3.15 TESt1A - sender. should be 0
+                    'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=', // receiver, 3.15 TEST1a
+                    // 'J5uZO0rFKQGnfulxKeCkQv1pWRNBlavXXTKOem9Eh2A=', // remainder of the fee 1.88 FRA . sender
                 ];
                 console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check', givenCommitmentsList);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenCommitmentsList)];
@@ -1459,9 +1458,9 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                     decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
                     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
-                givenCommitmentToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs';
+                givenCommitmentToTransfer = 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=';
                 givenCommitmentsToPayFee = [
-                    'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
+                    'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA atxo 9
                 ];
                 givenCommitmentsListSender = __spreadArray([givenCommitmentToTransfer], givenCommitmentsToPayFee, true);
                 additionalOwnedAbarItems = [];
@@ -1483,7 +1482,7 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
             case 4:
                 _i++;
                 return [3 /*break*/, 2];
-            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '3', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '3.15', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
             case 6:
                 _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
@@ -1533,12 +1532,12 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
             case 1:
                 walletInfo = _b.sent();
                 anonKeysSender = {
-                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+                    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+                    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+                    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+                    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
                 };
-                givenCommitmentOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+                givenCommitmentOne = 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentOne)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();
@@ -1558,14 +1557,14 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 // getFraBalance();
-// getAnonKeys();
-barToAbar();
-// getUnspentAbars();
-// getAbarBalance();
+// getAnonKeys(); // +
+// barToAbar(); // ++
+// getUnspentAbars(); // +
+getAbarBalance(); // +
 // getFee();
-// abarToAbar();
-// abarToBar();
-// validateUnspent();
+// abarToAbar(); // ++
+// abarToBar(); // +
+// validateUnspent(); // +
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();

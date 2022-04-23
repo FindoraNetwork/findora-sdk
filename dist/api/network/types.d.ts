@@ -66,7 +66,7 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
     response?: UtxoResponse;
 }
 export declare type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
-export declare type OwnedAbarsResponse = OwnedResponseAbarItem[];
+export declare type OwnedAbarsResponse = OwnedResponseAbarItem;
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
     response?: OwnedAbarsResponse;
 }

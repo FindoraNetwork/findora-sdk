@@ -297,7 +297,6 @@ var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awa
                 return [4 /*yield*/, (0, exports.getPayloadForFeeInputs)(walletInfo, utxoInputsInfo)];
             case 10:
                 feeInputsPayload = _b.sent();
-                console.log('🚀 ~ file: fee.ts ~ line 272 ~ feeInputsPayload', feeInputsPayload);
                 feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;

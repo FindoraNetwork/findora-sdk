@@ -827,31 +827,28 @@ var getAbarBalance = function (unspentAbars, anonKeys) { return __awaiter(void 0
 }); };
 exports.getAbarBalance = getAbarBalance;
 var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, ownedAbarsResponse, error, result;
+    var _a, ownedAbarsResponse, error, atxoSid, ownedAbar, abar;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, Network.getOwnedAbars(givenCommitment)];
             case 1:
                 _a = _b.sent(), ownedAbarsResponse = _a.response, error = _a.error;
-                // console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
                 if (error) {
                     throw new Error(error.message);
                 }
                 if (!ownedAbarsResponse) {
                     throw new Error('Could not receive response from get ownedAbars call');
                 }
-                result = ownedAbarsResponse.map(function (ownedAbarItem) {
-                    var atxoSid = ownedAbarItem[0], ownedAbar = ownedAbarItem[1];
-                    var abar = {
-                        commitment: givenCommitment,
-                        abarData: {
-                            atxoSid: atxoSid,
-                            ownedAbar: __assign({}, ownedAbar),
-                        },
-                    };
-                    return abar;
-                });
-                return [2 /*return*/, result];
+                atxoSid = ownedAbarsResponse[0], ownedAbar = ownedAbarsResponse[1];
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 800 ~ getOwnedAbars ~ ownedAbarItem', ownedAbarsResponse);
+                abar = {
+                    commitment: givenCommitment,
+                    abarData: {
+                        atxoSid: atxoSid,
+                        ownedAbar: __assign({}, ownedAbar),
+                    },
+                };
+                return [2 /*return*/, [abar]];
         }
     });
 }); };
