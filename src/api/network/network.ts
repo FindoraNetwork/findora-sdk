@@ -431,18 +431,18 @@ export const sendRpcCall = async <T>(
 
   const dataResult = await apiPost(url, payload, { ...config });
 
-  return dataResult as T;
+  return dataResult as unknown as T;
 };
 
 export const getOwnedAbars = async (
-  randomizedPubKey: string,
+  commitment: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnedAbarsDataResult> => {
-  const url = `${getQueryRoute()}/owned_abars/${randomizedPubKey}`;
+  const url = `${getQueryRoute()}/owned_abars/${commitment}`;
 
   const dataResult = await apiGet(url, config);
-
   return dataResult;
+  // return JSON.parse(JSON.stringify(dataResult));
 };
 
 export const checkNullifierHashSpent = async (

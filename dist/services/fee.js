@@ -257,16 +257,16 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
     });
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
-var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, filteredSids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, sidsResult, sids, filteredSids, utxoDataList, minimalFee, _a, fraAssetCode, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _a.sent();
+                ledger = _b.sent();
                 return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
             case 2:
-                sidsResult = _a.sent();
+                sidsResult = _b.sent();
                 sids = sidsResult.response;
                 if (!sids) {
                     throw new Error('No sids were fetched');
@@ -274,20 +274,29 @@ var getFeeInputs = function (walletInfo, excludeSid) { return __awaiter(void 0, 
                 filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
             case 3:
-                utxoDataList = _a.sent();
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
+                utxoDataList = _b.sent();
+                if (!isBarToAbar) return [3 /*break*/, 5];
+                return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
             case 4:
-                minimalFee = _a.sent();
+                _a = _b.sent();
+                return [3 /*break*/, 7];
+            case 5: return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 6:
+                _a = _b.sent();
+                _b.label = 7;
+            case 7:
+                minimalFee = _a;
+                console.log('🚀 ~ file: fee.ts ~ line 263 ~ minimalFee', minimalFee);
                 return [4 /*yield*/, AssetApi.getFraAssetCode()];
-            case 5:
-                fraAssetCode = _a.sent();
+            case 8:
+                fraAssetCode = _b.sent();
                 sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
-            case 6:
-                utxoInputsInfo = _a.sent();
+            case 9:
+                utxoInputsInfo = _b.sent();
                 return [4 /*yield*/, (0, exports.getPayloadForFeeInputs)(walletInfo, utxoInputsInfo)];
-            case 7:
-                feeInputsPayload = _a.sent();
+            case 10:
+                feeInputsPayload = _b.sent();
                 feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
