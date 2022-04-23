@@ -269,7 +269,6 @@ export const getFeeInputs = async (
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const feeInputsPayload = await getPayloadForFeeInputs(walletInfo, utxoInputsInfo);
-  console.log('🚀 ~ file: fee.ts ~ line 272 ~ feeInputsPayload', feeInputsPayload);
 
   let feeInputs = ledger.FeeInputs.new();
 

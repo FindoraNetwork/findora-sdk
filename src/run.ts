@@ -1204,7 +1204,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 2;
+  const sid = 58; // 3.15 TEST1A
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1229,7 +1229,11 @@ const barToAbar = async () => {
   await sleep(waitingTimeBeforeCheckTxStatus);
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-  console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', ownedAbarsResponse);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse',
+    JSON.stringify(ownedAbarsResponse, null, 2),
+  );
 
   const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
   console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
@@ -1238,9 +1242,7 @@ const barToAbar = async () => {
 const validateUnspent = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
-  const givenCommitment = '9J2ZTyFfgL1itkBGJ2iCQm7r5iUD4pJkmmbqvSrcte2P';
-
-  const formattedAxfrPublicKey = anonKeys.axfrPublicKey;
+  const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
 
   const axfrSecretKey = anonKeys.axfrSecretKey;
 
@@ -1270,8 +1272,8 @@ const validateUnspent = async () => {
 const getUnspentAbars = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
-  const givenCommitmentsList = myGivenCommitmentsList;
-  // const givenCommitmentsList = ['5VoNtFWTXsTVwiYB8h3FykCJJG8h4ve5dwQ2ZymKqyPE'];
+  // const givenCommitmentsList = myGivenCommitmentsList;
+  const givenCommitmentsList = ['ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY='];
 
   const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList);
   console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
@@ -1280,18 +1282,27 @@ const getUnspentAbars = async () => {
 const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
+  // Anon Walet 1
+  // const anonKeys = {
+  //   axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+  //   axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+  //   decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+  //   encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  // };
+
+  // Anon Walet 2
   const anonKeys = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
   const givenCommitmentsList = [
-    // '7fSCFfghGid1sy5ivMBwoYXyiM2Fbu8MjNwQH3Wbu1UC', // 9.99 - original sender
-    // '5bRL7AMaMq4maunQy77HBu61ADkJRatMW2aTXwW1grQt', // 4.99 FRA - original sender
-    // '6qhDexyKxoNTShwYdAw5i7TjaxKgD86TmsDw4kSuzCBq', // 11.03 - receiver
-    'Ce3NeQjiUfPG7oMnA6Nb6BA3a4kErtbK9PP1NNUyBLxs', // 2.85 - sender
+    // 'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA -- sender paid fee, should be 0
+    // 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=', // 3.15 TESt1A - sender. should be 0
+    'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=', // receiver, 3.15 TEST1a
+    // 'J5uZO0rFKQGnfulxKeCkQv1pWRNBlavXXTKOem9Eh2A=', // remainder of the fee 1.88 FRA . sender
   ];
 
   console.log(
@@ -1332,10 +1343,10 @@ const abarToAbar = async () => {
     encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
-  const givenCommitmentToTransfer = 'FRghJ4uC3E4yJ4a9pFydogXRNLt2nvRZrrKd6woDMFQs'; // 3 test3 (sid 1)
+  const givenCommitmentToTransfer = 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE='; // 3.15 TEST1A (sid 11)
 
   const givenCommitmentsToPayFee = [
-    'CdhXbHX1Fb22LH4mNcw1es8rA2RnmA9Xjmb1hmPuQAmu', // 20 FRA (sid 5)
+    'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA atxo 9
   ];
 
   const givenCommitmentsListSender = [givenCommitmentToTransfer, ...givenCommitmentsToPayFee];
@@ -1357,7 +1368,7 @@ const abarToAbar = async () => {
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver,
-    '3',
+    '3.15',
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
@@ -1415,15 +1426,24 @@ const abarToBar = async () => {
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
+  // const anonKeysSender = {
+  //   axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+  //   axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+  //   decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+  //   encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  // };
+
   const anonKeysSender = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
+    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
+    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
+    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
   };
 
+  // 1.5 TEST1 + 3.15 TEST1 ->  ?
+
   // rnadomizer for abar to be sent
-  const givenCommitmentOne = '7TVrrpvFgH5C5jSYXxfyYZVS5ZGLVH7oWMuAMSjH8Nsg';
+  const givenCommitmentOne = 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=';
 
   const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
 
@@ -1445,14 +1465,14 @@ const abarToBar = async () => {
 };
 
 // getFraBalance();
-// getAnonKeys();
-barToAbar();
-// getUnspentAbars();
-// getAbarBalance();
+// getAnonKeys(); // +
+// barToAbar(); // ++
+// getUnspentAbars(); // +
+getAbarBalance(); // +
 // getFee();
-// abarToAbar();
-// abarToBar();
-// validateUnspent();
+// abarToAbar(); // ++
+// abarToBar(); // +
+// validateUnspent(); // +
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
 // defineCustomAsset();
 // issueCustomAsset();

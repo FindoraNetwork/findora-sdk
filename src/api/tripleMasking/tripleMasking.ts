@@ -785,7 +785,6 @@ export const getAbarBalance = async (
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(givenCommitment);
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 456 ~ ownedAbarsResponse', ownedAbarsResponse);
 
   if (error) {
     throw new Error(error.message);
@@ -795,20 +794,18 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
     throw new Error('Could not receive response from get ownedAbars call');
   }
 
-  const result = ownedAbarsResponse.map(ownedAbarItem => {
-    const [atxoSid, ownedAbar] = ownedAbarItem;
+  const [atxoSid, ownedAbar] = ownedAbarsResponse;
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 800 ~ getOwnedAbars ~ ownedAbarItem', ownedAbarsResponse);
 
-    const abar = {
-      commitment: givenCommitment,
-      abarData: {
-        atxoSid,
-        ownedAbar: { ...ownedAbar },
-      },
-    };
-    return abar;
-  });
+  const abar = {
+    commitment: givenCommitment,
+    abarData: {
+      atxoSid,
+      ownedAbar: { ...ownedAbar },
+    },
+  };
 
-  return result;
+  return [abar];
 };
 
 export const genNullifierHash = async (
