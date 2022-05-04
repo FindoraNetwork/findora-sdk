@@ -595,7 +595,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 error_9 = _b.sent();
                 throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_9.message);
             case 16:
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
                     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
                 }
@@ -605,7 +605,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
+                    // console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
                 }
                 catch (err) {
                     throw new Error("could not get a list of commitments strings \"" + err.message + "\" ");
@@ -672,40 +672,50 @@ var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, vo
 }); };
 exports.isNullifierHashSpent = isNullifierHashSpent;
 var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrPublicKey, axfrSecretKey, decKey, unspentAbars, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+    var axfrSecretKey, decKey, axfrPublicKey, unspentAbars, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_10, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                axfrPublicKey = anonKeys.axfrPublicKey, axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey;
+                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey, axfrPublicKey = anonKeys.axfrPublicKey;
                 unspentAbars = [];
                 _i = 0, givenCommitmentsList_1 = givenCommitmentsList;
                 _a.label = 1;
             case 1:
-                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 6];
+                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 9];
                 givenCommitment = givenCommitmentsList_1[_i];
-                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+                ownedAbarsResponse = [];
+                _a.label = 2;
             case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 3:
                 ownedAbarsResponse = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_10 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_10.message);
+                return [3 /*break*/, 8];
+            case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
                 if (!ownedAbarItem) {
-                    return [3 /*break*/, 5];
+                    return [3 /*break*/, 8];
                 }
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
                 return [4 /*yield*/, (0, exports.genNullifierHash)(atxoSid, ownedAbar, axfrSecretKey, decKey)];
-            case 3:
+            case 6:
                 hash = _a.sent();
                 return [4 /*yield*/, (0, exports.isNullifierHashSpent)(hash)];
-            case 4:
+            case 7:
                 isAbarSpent = _a.sent();
                 if (!isAbarSpent) {
                     unspentAbars.push(__assign({}, ownedAbarItem));
                 }
-                _a.label = 5;
-            case 5:
+                _a.label = 8;
+            case 8:
                 _i++;
                 return [3 /*break*/, 1];
-            case 6: return [2 /*return*/, unspentAbars];
+            case 9: return [2 /*return*/, unspentAbars];
         }
     });
 }); };
@@ -827,20 +837,23 @@ var getAbarBalance = function (unspentAbars, anonKeys) { return __awaiter(void 0
 }); };
 exports.getAbarBalance = getAbarBalance;
 var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, ownedAbarsResponse, error, atxoSid, ownedAbar, abar;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var getOwnedAbarsResponse, ownedAbarsResponse, error, atxoSid, ownedAbar, abar;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, Network.getOwnedAbars(givenCommitment)];
             case 1:
-                _a = _b.sent(), ownedAbarsResponse = _a.response, error = _a.error;
+                getOwnedAbarsResponse = _a.sent();
+                ownedAbarsResponse = getOwnedAbarsResponse.response, error = getOwnedAbarsResponse.error;
                 if (error) {
                     throw new Error(error.message);
                 }
-                if (!ownedAbarsResponse) {
+                if (ownedAbarsResponse === undefined) {
                     throw new Error('Could not receive response from get ownedAbars call');
                 }
+                if (!ownedAbarsResponse) {
+                    return [2 /*return*/, []];
+                }
                 atxoSid = ownedAbarsResponse[0], ownedAbar = ownedAbarsResponse[1];
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 800 ~ getOwnedAbars ~ ownedAbarItem', ownedAbarsResponse);
                 abar = {
                     commitment: givenCommitment,
                     abarData: {
@@ -848,6 +861,7 @@ var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0
                         ownedAbar: __assign({}, ownedAbar),
                     },
                 };
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
                 return [2 /*return*/, [abar]];
         }
     });

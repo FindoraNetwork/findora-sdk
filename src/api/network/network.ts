@@ -442,7 +442,6 @@ export const getOwnedAbars = async (
 
   const dataResult = await apiGet(url, config);
   return dataResult;
-  // return JSON.parse(JSON.stringify(dataResult));
 };
 
 export const checkNullifierHashSpent = async (

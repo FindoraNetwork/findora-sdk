@@ -557,7 +557,7 @@ export const barToAbar = async (
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
     );
   }
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
 
   try {
     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
@@ -570,7 +570,7 @@ export const barToAbar = async (
 
   try {
     commitments = transactionBuilder?.get_commitments();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
+    // console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
   } catch (err) {
     throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
   }
@@ -648,13 +648,23 @@ export const getUnspentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrPublicKey, axfrSecretKey, decKey } = anonKeys;
+  const { axfrSecretKey, decKey, axfrPublicKey } = anonKeys;
 
   const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
   for (const givenCommitment of givenCommitmentsList) {
-    const ownedAbarsResponse = await getOwnedAbars(givenCommitment);
-    // console.log('🚀 ~ file: tripleMasking.ts ~ line 279 ~ ownedAbarsResponse', ownedAbarsResponse);
+    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+
+    try {
+      ownedAbarsResponse = await getOwnedAbars(givenCommitment);
+    } catch (error) {
+      console.log(
+        `getOwnedAbars for '${axfrPublicKey}'->'${givenCommitment}' returned an error. ${
+          (error as Error).message
+        }`,
+      );
+      continue;
+    }
 
     const [ownedAbarItem] = ownedAbarsResponse;
 
@@ -784,18 +794,22 @@ export const getAbarBalance = async (
 };
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
-  const { response: ownedAbarsResponse, error } = await Network.getOwnedAbars(givenCommitment);
+  const getOwnedAbarsResponse = await Network.getOwnedAbars(givenCommitment);
+  const { response: ownedAbarsResponse, error } = getOwnedAbarsResponse;
 
   if (error) {
     throw new Error(error.message);
   }
 
-  if (!ownedAbarsResponse) {
+  if (ownedAbarsResponse === undefined) {
     throw new Error('Could not receive response from get ownedAbars call');
   }
 
+  if (!ownedAbarsResponse) {
+    return [];
+  }
+
   const [atxoSid, ownedAbar] = ownedAbarsResponse;
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 800 ~ getOwnedAbars ~ ownedAbarItem', ownedAbarsResponse);
 
   const abar = {
     commitment: givenCommitment,
@@ -804,6 +818,7 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       ownedAbar: { ...ownedAbar },
     },
   };
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
 
   return [abar];
 };
