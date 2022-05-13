@@ -10,6 +10,28 @@ export interface ProcessedIssuedRecord extends TxOutput {
   ownerMemo?: number | null;
 }
 
+/**
+ * Get the balance of the specific asset for the given user
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const { response: sids } = await Network.getOwnedSids(walletKeypair.publickey);
+ *  const fraAssetCode = await getFraAssetCode();
+ *  const balance = await Account.getAssetBalance(walletInfo, fraAssetCode, sids);
+ * ```
+ *
+ * @throws `Could not get list of addUtxo, Details: `
+ * @param walletKeypair A Findora key pair of given user
+ * @param assetCode Asset Code.
+ * @param sids SIDs
+ *
+ * @returns The balance of the specific asset for the given user
+ */
 export const getAssetBalance = async (
   walletKeypair: WalletKeypar,
   assetCode: string,
@@ -43,10 +65,24 @@ export const getAssetBalance = async (
 };
 
 /**
- * @todo Add unit test
- * @param walletKeypair
- * @param assetCode
- * @returns
+ * Get the balance of the specific asset for the given user in Wei format
+ *
+ * @remarks
+ * Using this function user can retrieve the balance for the specific asset code, which could be either custom asset or an FRA asset
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  const balance = await Account.getBalanceInWei(walletInfo, customAssetCode);
+ * ```
+ *
+ * @throws `Could not fetch balance for `
+ * @param walletKeypair A Findora key pair of given user
+ * @param assetCode Asset Code which could be either custom asset or an FRA asset
+ *
+ * @returns The balance of the specific asset for the given user
  */
 export const getBalanceInWei = async (
   walletKeypair: WalletKeypar,
@@ -89,10 +125,11 @@ export const getBalanceInWei = async (
  *  const balance = await Account.getBalance(walletInfo, customAssetCode);
  * ```
  *
- * @throws `No sids were fetched`
- * @throws `Could not fetch balance`
+ * @throws `Could not fetch balance for `
+ * @param walletKeypair A Findora key pair of given user
+ * @param assetCode Asset Code which could be either custom asset or an FRA asset.
  *
- * @returns Result of transaction submission to the network
+ * @returns The balance of the specific asset for the given user in Wei format.
  */
 export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string): Promise<string> => {
   const fraAssetCode = await getFraAssetCode();
@@ -111,6 +148,22 @@ export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string
   }
 };
 
+/**
+ * Create Wallet
+ *
+ * @remarks
+ * Using this function user can create wallet
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletKeyPair = await create(password);
+ * ```
+ *
+ * @throws `Could not create a new account.`
+ * @param password Wallet password
+ * @returns A Findora key pair consists of a private and public key.
+ */
 export const create = async (password: string): Promise<WalletKeypar> => {
   let walletKeyPair;
 
