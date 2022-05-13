@@ -100,6 +100,24 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   }
 };
 
+/**
+ * Get wallet address by given public key
+ *
+ * @remarks
+ * Using this function user can retreive the wallet address by given public key
+ *
+ * @example
+ *
+ * ```ts
+ *  const pubkey = 'qsjEI%123';
+ *  // Get wallet address by public key
+ *  const walletAddress = await Keypair.getAddressByPublicKey(pubkey);
+ * ```
+ *
+ * @throws `could not get address by public key,`
+ * @param publicKey Public key
+ * @returns A wallet address.
+ */
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
   try {
@@ -210,6 +228,33 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
   };
 };
 
+/**
+ * Creates an instance of {@link WalletKeypar} using Mnemonic and password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ * const mnemonic = ['Apple', 'Orange', 'Banana'];
+ *
+ * // Create a wallet info object using given Mnemonic and password
+ * const walletPair = await Keypair.restoreFromMnemonic(mnemonic, password);
+ * ```
+ * @param mnemonic - mnemonic words
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const restoreFromMnemonic = async (mnemonic: string[], password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
@@ -229,6 +274,34 @@ export const restoreFromMnemonic = async (mnemonic: string[], password: string):
   };
 };
 
+/**
+ * Creates an instance of {@link WalletKeypar} using given keyStore and password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ * const keyStore = [123,456,798];
+ *
+ * // Create a wallet info object using given keyStore and password
+ * const walletPair = await Keypair.restoreFromKeystore(keyStore, password);
+ * ```
+ * @throws `could not restore keypair from the key string. Details:`
+ * @param keyStore - keystore
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const restoreFromKeystore = async (keyStore: Uint8Array, password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
@@ -253,6 +326,34 @@ export const restoreFromKeystore = async (keyStore: Uint8Array, password: string
   }
 };
 
+/**
+ * Creates an instance of {@link WalletKeypar} using given keystore string and password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ * const keyStoreString = '...123,456,798';
+ *
+ * // Create a wallet info object using given keyStore string and password
+ * const walletPair = await Keypair.restoreFromKeystoreString(keyStoreString, password);
+ * ```
+ * @throws `could not restore keypair from the key store string. Details:`
+ * @param keyStoreString - keyStore string
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const restoreFromKeystoreString = async (
   keyStoreString: string,
   password: string,
@@ -271,6 +372,32 @@ export const restoreFromKeystoreString = async (
   }
 };
 
+/**
+ * Creates an instance of {@link WalletKeypar} using password.
+ *
+ * @remarks
+ * This method is used to restore a `wallet keypair`.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
+ *
+ * @example
+ *
+ * ```ts
+ * const password = 'qsjEI%123';
+ *
+ * // Create a wallet info object using given password
+ * const walletPair = await Keypair.createKeypair(password);
+ * ```
+ * @throws `could not create a WalletKeypar,`
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const createKeypair = async (password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
