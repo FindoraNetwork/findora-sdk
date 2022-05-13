@@ -154,6 +154,31 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
   }
 };
 
+/**
+ * Create an instance of {@link LightWalletKeypair} using given wallet address.
+ *
+ * @remarks
+ * This method is used to create a light version of the WalletKeypar using given wallet address..
+ *
+ * The **LightWalletKeypair** contains two essential information:
+ * - address
+ * - public key
+ *
+ * It's a `light` version of the WalletKeypar, containing only address and publickey
+ *
+ * @example
+ *
+ * ```ts
+ * const address = 'fra234xfde4';
+ *
+ * // Create a LightWalletKeypair object using given address
+ * const lightWalletKeypair = await Keypair.getAddressPublicAndKey(address);
+ * ```
+ * @throws `could not create a LightWalletKeypair,`
+ * @param address - Wallet address
+ * @returns An instance of {@link LightWalletKeypair}
+ *
+ */
 export const getAddressPublicAndKey = async (address: string): Promise<LightWalletKeypair> => {
   const ledger = await getLedger();
 
@@ -422,6 +447,26 @@ export const createKeypair = async (password: string): Promise<WalletKeypar> => 
   }
 };
 
+/**
+ * Creates an array of Mnemonic phrases.
+ *
+ * @remarks
+ * This method is used to creates an array of Mnemonic phrases.
+ *
+ *
+ * @example
+ *
+ * ```ts
+ * const desiredLength = 24;
+ *
+ * // Create a wallet info object using given password
+ * const mnemonic = await Keypair.getMnemonic(desiredLength);
+ * ```
+ * @throws `could not generate custom mnemonic. Details are: `
+ * @param desiredLength - Desired length of mnemonic phrases. It can only be 12/15/18/21/24
+ * @returns An array of mnemonic phrases
+ *
+ */
 export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
   const ledger = await getLedger();
 
