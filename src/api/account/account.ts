@@ -19,14 +19,24 @@ export interface ProcessedIssuedRecord extends TxOutput {
  * @example
  *
  * ```ts
+ *  const pkey = 'lfyd1234!';
+ *  const password = 'uuicnf!34';
+ *
+ *  // Restore Wallet
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *
+ *  // Get SIDs
  *  const { response: sids } = await Network.getOwnedSids(walletKeypair.publickey);
+ *
+ *  // Get FRA asset code
  *  const fraAssetCode = await getFraAssetCode();
+ *
+ *  // Get the balance of the specific asset for the given user
  *  const balance = await Account.getAssetBalance(walletInfo, fraAssetCode, sids);
  * ```
  *
  * @throws `Could not get list of addUtxo, Details: `
- * @param walletKeypair A Findora key pair of given user
+ * @param walletKeypair An instance of {@link WalletKeypar}
  * @param assetCode Asset Code.
  * @param sids SIDs
  *
@@ -73,16 +83,22 @@ export const getAssetBalance = async (
  * @example
  *
  * ```ts
+ *  const pkey = 'lfyd1234!';
+ *  const password = 'uuicnf!34';
+ *
+ *  // Restore Wallet
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
+ *  // Get balance in Wei format
  *  const balance = await Account.getBalanceInWei(walletInfo, customAssetCode);
  * ```
  *
- * @throws `Could not fetch balance for `
- * @param walletKeypair A Findora key pair of given user
+ * @throws `No sids were fetched! `
+ * @throws `Could not fetch balance in wei for  `
+ * @param walletKeypair An instance of {@link WalletKeypar}
  * @param assetCode Asset Code which could be either custom asset or an FRA asset
  *
- * @returns The balance of the specific asset for the given user
+ * @returns The balance of the specific asset for the given user in Wei format
  */
 export const getBalanceInWei = async (
   walletKeypair: WalletKeypar,
@@ -120,16 +136,21 @@ export const getBalanceInWei = async (
  * @example
  *
  * ```ts
+ *  const pkey = 'lfyd1234!';
+ *  const password = 'uuicnf!34';
+ *
+ *  // Restore Wallet
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
+ *  // Get balance
  *  const balance = await Account.getBalance(walletInfo, customAssetCode);
  * ```
  *
  * @throws `Could not fetch balance for `
- * @param walletKeypair A Findora key pair of given user
+ * @param walletKeypair An instance of {@link WalletKeypar}
  * @param assetCode Asset Code which could be either custom asset or an FRA asset.
  *
- * @returns The balance of the specific asset for the given user in Wei format.
+ * @returns The balance of the specific asset for the given user.
  */
 export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string): Promise<string> => {
   const fraAssetCode = await getFraAssetCode();
@@ -149,20 +170,29 @@ export const getBalance = async (walletKeypair: WalletKeypar, assetCode?: string
 };
 
 /**
- * Create Wallet
+ * Creates an instance of {@link WalletKeypar} using password.
  *
  * @remarks
- * Using this function user can create wallet
+ * This method is used to create a {@link WalletKeypar} using password.
+ *
+ * The **Keypair** contains some essential information, such as:
+ * - address
+ * - public key
+ * - key store
+ *
+ * and so on, and it is used for pretty much any _personalized_ operation that user can do using FindoraSdk
  *
  * @example
  *
  * ```ts
- *  const walletKeyPair = await create(password);
- * ```
+ * const password = 'qsjEI%123';
  *
- * @throws `Could not create a new account.`
- * @param password Wallet password
- * @returns A Findora key pair consists of a private and public key.
+ * // Create a wallet info object using given password
+ * const walletInfo = await Account.create(password);
+ * ```
+ * @param password - Password to be used to generate an encrypted KeyStore
+ * @returns An instance of {@link WalletKeypar}
+ *
  */
 export const create = async (password: string): Promise<WalletKeypar> => {
   let walletKeyPair;
@@ -193,6 +223,33 @@ export const processIssuedRecordList = async (
   return Promise.all(issuedRecords.map(issuedRecord => processIssuedRecordItem(issuedRecord)));
 };
 
+/**
+ * Get an array of instances of {@link ProcessedIssuedRecord} using wallet address.
+ *
+ * @remarks
+ * This method is used to get created Assets.
+ *
+ * The **ProcessedIssuedRecord** contains some essential information, such as:
+ * - code
+ * - record
+ * - id
+ * - ownerMemo
+ *
+ * and so on. It's the issued asset.
+ *
+ * @example
+ *
+ * ```ts
+ * const address = 'fraxdref123';
+ *
+ * // get Created Assets
+ * const createdAssets = Account.getCreatedAssets(address);
+ * ```
+ * @throws `No issued records were fetched!`
+ * @param address - Wallet address
+ * @returns An instance of {@link WalletKeypar}
+ *
+ */
 export const getCreatedAssets = async (address: string): Promise<ProcessedIssuedRecord[]> => {
   const { publickey } = await getAddressPublicAndKey(address);
 
