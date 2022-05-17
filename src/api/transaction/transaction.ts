@@ -14,6 +14,23 @@ export interface TransferReciever {
   amount: string;
 }
 
+/**
+ * Create an instance of {@link TransactionBuilder}
+ *
+ * @remarks
+ * This method is used to create a transaction builder
+ *
+ * @example
+ *
+ * ```ts
+ * // Create a TransactionBuilder object
+ * const transactionBuilder = await Transaction.getTransactionBuilder();
+ * ```
+ * @throws `Could not receive response from state commitement call`
+ *
+ * @returns An instance of {@link TransactionBuilder}
+ *
+ */
 export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
 
@@ -71,6 +88,11 @@ export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
  * @throws `Could not add transfer operation`
  * @throws `Could not create transfer operation for fee`
  * @throws `Could not add transfer operation for fee`
+ *
+ * @param walletInfo - Wallet key pair
+ * @param recieversList - the list of target wallet addresses and amount
+ * @param assetCode - Asset code
+ * @param assetBlindRules - confidential options for blind rule
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
@@ -254,6 +276,11 @@ export const submitTransaction = async (transactionBuilder: TransactionBuilder):
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
  * ```
+ * @param walletInfo - Wallet key pair
+ * @param address - target wallet address
+ * @param amount - amount to be sent
+ * @param assetCode - Asset code
+ * @param assetBlindRules - confidential options for blind rule
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
@@ -271,6 +298,43 @@ export const sendToAddress = async (
   return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
 };
 
+/**
+ * Send some asset to a wallet by public key
+ *
+ * @remarks
+ * Using this function, user can transfer some amount of given asset to another wallet by target's public key
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const toWalletPublicKey = `tgshauuy213`;
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await Transaction.sendToPublicKey(
+ *    walletInfo,
+ *    toWalletPublicKey,
+ *    '2',
+ *    assetCode,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @param walletInfo - Wallet key pair
+ * @param publicKey - target's public key
+ * @param amount - amount to be sent
+ * @param assetCode - Asset code
+ * @param assetBlindRules - confidential options for blind rule
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
 export const sendToPublicKey = async (
   walletInfo: WalletKeypar,
   publicKey: string,
@@ -283,6 +347,27 @@ export const sendToPublicKey = async (
   return sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
 };
 
+/**
+ * Get a list of transactions for given wallet address
+ *
+ * @remarks
+ * This method is used to get a list of transactions for given wallet address
+ *
+ * @example
+ *
+ * ```ts
+ * const address = `fra000xxsr`;
+ * const type = 'to';
+ *
+ * // Get list of `to` transaction of given address
+ * const txDetail = await Transaction.getTxList(address,type);
+ * ```
+ * @param address - wallet address
+ * @param type - transaction type. it can only be 'to' or 'from'
+ * @param page - pagination
+ * @returns An instance of {@link ProcessedTxListResponseResult} containing the total count and transactions.
+ *
+ */
 export const getTxList = async (
   address: string,
   type: 'to' | 'from',
