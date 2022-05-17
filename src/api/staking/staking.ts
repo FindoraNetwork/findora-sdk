@@ -1,12 +1,11 @@
-import * as Transaction from '../../api/transaction';
 import orderBy from 'lodash/orderBy';
-
+import * as Transaction from '../../api/transaction';
+import { create as createBigNumber, toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { WalletKeypar, getAddressPublicAndKey } from '../keypair';
-import * as AssetApi from '../sdkAsset';
+import { getAddressPublicAndKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
-import { create as createBigNumber, toWei } from '../../services/bigNumber';
+import * as AssetApi from '../sdkAsset';
 
 /**
  * Unstake FRA tokens
@@ -31,6 +30,15 @@ import { create as createBigNumber, toWei } from '../../services/bigNumber';
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
  * ```
+ * @param walletInfo - Wallet key pair
+ * @param amount - the amount users wants to unstake
+ * @param validator - validator's address
+ * @param isFullUnstake - fully unstake option
+ *
+ * @throws `Could not create transfer operation with fee, Error:`
+ * @throws `Could not get "stakingTransactionBuilder", Error: `
+ * @throws `Could not add staking unStake operation, Error: `
+ * @throws `Could not add transfer to unStake operation, Error:`
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
@@ -131,6 +139,12 @@ export const unStake = async (
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
  * ```
+ * @param walletInfo - Wallet key pair
+ * @param address - Target address for delegation
+ * @param amount - delegation amout
+ * @param assetCode - Asset Code
+ * @param validator - Target validator Address
+ * @param assetBlindRules - Confidential options for blind rule
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
@@ -181,6 +195,12 @@ export const delegate = async (
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
  * ```
+ * @param walletInfo - The wallet key pair
+ * @param amount - the amout of rewards which users wants to claim
+ *
+ * @throws `Could not create transfer operation, Error:`
+ * @throws `Could not get "stakingTransactionBuilder", Error:`
+ * @throws `Could not add staking claim operation, Error: `
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
@@ -253,8 +273,24 @@ const calculateComissionRate = (validatorAddress: string, commissionRate: number
 };
 
 /**
- * @returns
- * @todo add unit test
+ * Get validator list
+ *
+ * @remarks
+ * This method is used to get the list of validators.
+ *
+ * @example
+ *
+ * ```ts
+ * // Get validator list
+ * const acbiInfo = await StakingApi.getValidatorList();
+ * ```
+ *
+ * @throws `Could not receive response from get validators call`
+ * @throws `Validators list is empty!`
+ * @throws `Could not get validators list`
+ *
+ * @returns A list of validators.
+ *
  */
 export const getValidatorList = async () => {
   const { response: validatorListResponse, error } = await Network.getValidatorList();
@@ -294,8 +330,22 @@ export const getValidatorList = async () => {
 };
 
 /**
- * @returns
- * @todo add unit test
+ * Get the delegation information
+ *
+ * @remarks
+ * This method is used to get the delegation information
+ *
+ * @example
+ *
+ * ```ts
+ * const address = 'fra123sxde';
+ *
+ * // Get the delegation information
+ * const delegateInfo = await StakingApi.getDelegateInfo(address);
+ * ```
+ * @param address - wallet address
+ * @returns An instance of {@link DelegateInfoDataResult} containing the response and error.
+ *
  */
 export const getDelegateInfo = async (address: string) => {
   try {
