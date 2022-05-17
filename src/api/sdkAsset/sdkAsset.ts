@@ -35,7 +35,7 @@ export interface AssetBlindRules {
  * @example
  *
  * ```ts *
- * const fraAssetCode = await getFraAssetCode();
+ * const fraAssetCode = await Asset.getFraAssetCode();
  * ```
  * @returns - Findora Asset code
  */
@@ -45,18 +45,66 @@ export const getFraAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
+/**
+ * Return Minimal Fee for transaction
+ *
+ * @remarks
+ * This method returns the required minimal fee for transaction
+ *
+ * @example
+ *
+ * ```ts
+ * // Get the minimal fee for transaction
+ * const minFee = await Asset.getMinimalFee();
+ * ```
+ * @returns The required minimal fee as instance of {@link BigInt}.
+ *
+ */
 export const getMinimalFee = async (): Promise<BigInt> => {
   const ledger = await getLedger();
   const fee = ledger.fra_get_minimal_fee();
   return fee;
 };
 
+/**
+ * Return Destination's Public Key
+ *
+ * @remarks
+ * This method returns the public key of destination
+ *
+ * @example
+ *
+ * ```ts
+ * // Get the public key of detination
+ * const pubKey = await Asset.getFraPublicKey();
+ * ```
+ * @returns An instance of {@link XfrPublicKey}.
+ *
+ */
 export const getFraPublicKey = async (): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   const key = ledger.fra_get_dest_pubkey();
   return key;
 };
 
+/**
+ * Return Asset Code
+ *
+ * @remarks
+ * This method returns Asset Code by given asset type
+ *
+ * @example
+ *
+ * ```ts
+ * const assetType = [1,2];
+ *
+ * // Get the decrypted Asset code
+ * const assetCode = await Asset.getAssetCode(assetType);
+ * ```
+ * @param val - asset type
+ * @returns Asset code.
+ *
+ */
 export const getAssetCode = async (val: number[]): Promise<string> => {
   const ledger = await getLedger();
 
@@ -73,7 +121,7 @@ export const getAssetCode = async (val: number[]): Promise<string> => {
  * @example
  *
  * ```ts *
- * const assetCode = await getRandomAssetCode();
+ * const assetCode = await Asset.getRandomAssetCode();
  * ```
  * @returns - Asset code
  */
@@ -274,7 +322,7 @@ export const defineAsset = async (
 };
 
 /**
- * Issue some anount of a custom asset
+ * Issue some amount of a custom asset
  *
  * @remarks
  * Asset issuers can use the ```IssueAsset``` operation to mint units of an asset
