@@ -282,7 +282,7 @@ const calculateComissionRate = (validatorAddress: string, commissionRate: number
  *
  * ```ts
  * // Get validator list
- * const acbiInfo = await StakingApi.getValidatorList();
+ * const validatorList = await StakingApi.getValidatorList();
  * ```
  *
  * @throws `Could not receive response from get validators call`

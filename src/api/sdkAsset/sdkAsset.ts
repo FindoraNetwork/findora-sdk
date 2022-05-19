@@ -400,6 +400,29 @@ export const issueAsset = async (
   return transactionBuilder;
 };
 
+/**
+ * Get Asset Details
+ *
+ * @remarks
+ * This method returns Asset details by given asset code
+ *
+ * @example
+ *
+ * ```ts
+ * const assetCode = "Your_Asset_Code";
+ * // Get asset details
+ * const assetDetails = await getAssetDetails(assetCode);
+ *
+ * ```
+ * @param assetCode - asset code
+ *
+ * @throws `Could not get asset token:`
+ * @throws `Could not get asset details: `
+ * @throws `Could not get asset details: `
+ * @throws `Could not get asset details - asset result is missing `
+ *
+ * @returns An instance of {@link FindoraWallet.IAsset}
+ */
 export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.IAsset> => {
   let result;
 

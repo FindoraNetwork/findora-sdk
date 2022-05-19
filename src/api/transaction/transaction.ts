@@ -219,6 +219,8 @@ export const sendToMany = async (
  * @throws `Could not submit transaction`
  * @throws `Handle is missing. Could not submit transaction`
  *
+ * @param transactionBuilder an instance of {@link TransactionBuilder}
+ *
  * @returns Transaction status handle
  */
 export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {

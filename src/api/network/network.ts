@@ -179,7 +179,7 @@ export const getRelatedSids = async (
  * // Get UTXO details
  * const utxoData = await Network.getUtxo(utxoSid);
  * ```
- * @param address - wallet address
+ * @param utxoSid - UTXO SID
  * @param config - network config
  * @returns An instance of {@link UtxoDataResult} containing the response and error.
  *
@@ -275,14 +275,14 @@ export const getSubmitTransactionData = <T extends Types.TransactionData>(data?:
  * Submit transation
  *
  * @remarks
- * This method is used to submit transaction
+ * This method is used to submit a transaction
  *
  * @example
  *
  * ```ts
  * const data = `Your_Transaction_Data`;
  *
- * // Submit transaction
+ * // Submit a transaction
  * const txResult = await Network.submitTransaction(data);
  * ```
  * @param data - transaction data
@@ -366,15 +366,6 @@ export const getIssuedRecords = async (
 
   return dataResult;
 };
-
-/**
- * Returns transaction status
- *
- * @remarks
- * Using the transaction handle, user can fetch the status of the transaction from the query server.
- *
- * @returns An instace of TransactionStatusDataResult
- */
 
 /**
  * Returns transaction status
@@ -509,6 +500,25 @@ export const getTxList = async (
   return dataResult;
 };
 
+/**
+ * Returns transaction details
+ *
+ * @remarks
+ * Using the transaction handle, user can fetch the details of the transaction from the query server.
+ *
+ * @example
+ *
+ * ```ts
+ * const handle = `YOUR_TX_HASH`;
+ *
+ * // Get transaction details
+ * const transactionDetails = await Network.getTransactionDetails(handle);
+ * ```
+ * @param hash - transaction hash
+ * @param config - network config
+ * @returns An instance of {@link TxDetailsDataResult} containing the response and error.
+ *
+ */
 export const getTransactionDetails = async (
   hash: string,
   config?: Types.NetworkAxiosConfig,
@@ -597,14 +607,14 @@ export const getAbciInfo = async (
  * Submit EVM transaction
  *
  * @remarks
- * This method is used to submit the EVM transaction.
+ * This method is used to submit a EVM transaction.
  *
  * @example
  *
  * ```ts
  * const tx = 'Your_TX_Hash';
  *
- * // Submit the EVM transaction
+ * // Submit a EVM transaction
  * const result = await Network.submitEvmTx(tx);
  * ```
  * @param tx - transaction hash
@@ -702,12 +712,12 @@ export const getDelegateInfo = async (
  * };
  *
  * // Send the RPC call to get block details by hash
- * const blockDetail = await Network.sendRpcCall(url,payload);
+ * const response = await Network.sendRpcCall(url,payload);
  * ```
  * @param url - RPC url
  * @param givenPayload - payload
  * @param config - network config
- * @returns The response from RPC call.
+ * @returns The response object from RPC call.
  *
  */
 export const sendRpcCall = async <T>(

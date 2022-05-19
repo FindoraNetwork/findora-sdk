@@ -45,7 +45,7 @@ export const getTxListFromResponse = (result: TxListDataResult): null | TxInfo[]
  *  opList = helpers.getTxOperationsList(parsedTx);
  * ```
  * @param parsedTx - parsed tx info
- * @returns transaction list
+ * @returns transaction operations list
  */
 export const getTxOperationsList = (parsedTx: Types.ParsedTx): Types.TxOperation[] =>
   _get(parsedTx, 'body.operations', []);
@@ -59,9 +59,11 @@ export const getTxOperationsList = (parsedTx: Types.ParsedTx): Types.TxOperation
  * @example
  *
  * ```ts
- *  const blockTime = await helpers.getBlockTime();
+ *  const blockHeight = 2341;
+ *  // Get block time at Block #2341
+ *  const blockTime = await helpers.getBlockTime(blockHeight);
  * ```
- *
+ *@param height block height
  * @returns block time
  */
 export const getBlockTime = async (height: number) => {

@@ -247,7 +247,7 @@ export const processIssuedRecordList = async (
  * ```
  * @throws `No issued records were fetched!`
  * @param address - Wallet address
- * @returns An instance of {@link WalletKeypar}
+ * @returns an array of {@link ProcessedIssuedRecord}
  *
  */
 export const getCreatedAssets = async (address: string): Promise<ProcessedIssuedRecord[]> => {
