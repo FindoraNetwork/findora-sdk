@@ -662,6 +662,7 @@ export const getUnspentAbars = async (
         `getOwnedAbars for '${axfrPublicKey}'->'${givenCommitment}' returned an error. ${
           (error as Error).message
         }`,
+        console.log('Full Error', error),
       );
       continue;
     }

@@ -693,7 +693,7 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
                 return [3 /*break*/, 5];
             case 4:
                 error_10 = _a.sent();
-                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_10.message);
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_10.message, console.log('Full Error', error_10));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];

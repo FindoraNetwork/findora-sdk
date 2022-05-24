@@ -70,9 +70,9 @@ var CliCommands = __importStar(require("./commands"));
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
