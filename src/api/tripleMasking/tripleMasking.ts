@@ -570,7 +570,6 @@ export const barToAbar = async (
 
   try {
     commitments = transactionBuilder?.get_commitments();
-    // console.log('🚀 ~ file: tripleMasking.ts ~ line 355 ~ commitments', commitments);
   } catch (err) {
     throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
   }
@@ -593,11 +592,6 @@ export const abarToBar = async (
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
 ) => {
   let transactionBuilder = await getTransactionBuilder();
-
-  // input: AnonBlindAssetRecord,
-  // owner_memo: OwnerMemo, mt_leaf_info: MTLeafInfo,
-  // from_keypair: AXfrKeyPair, from_dec_key: XSecretKey,
-  // recipient: XfrPublicKey, conf_amount: boolean, conf_type: boolean
 
   const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
 
@@ -688,6 +682,50 @@ export const getUnspentAbars = async (
   return unspentAbars;
 };
 
+export const getSpentAbars = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitmentsList: string[],
+) => {
+  const { axfrSecretKey, decKey, axfrPublicKey } = anonKeys;
+
+  const spentAbars: FindoraWallet.OwnedAbarItem[] = [];
+
+  for (const givenCommitment of givenCommitmentsList) {
+    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+
+    try {
+      ownedAbarsResponse = await getOwnedAbars(givenCommitment);
+    } catch (error) {
+      console.log(
+        `getOwnedAbars for '${axfrPublicKey}'->'${givenCommitment}' returned an error. ${
+          (error as Error).message
+        }`,
+        console.log('Full Error', error),
+      );
+      continue;
+    }
+
+    const [ownedAbarItem] = ownedAbarsResponse;
+
+    if (!ownedAbarItem) {
+      continue;
+    }
+    const { abarData } = ownedAbarItem;
+
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
+
+    const isAbarSpent = await isNullifierHashSpent(hash);
+
+    if (isAbarSpent) {
+      spentAbars.push({ ...ownedAbarItem });
+    }
+  }
+
+  return spentAbars;
+};
+
 export const openAbar = async (
   abar: FindoraWallet.OwnedAbarItem,
   anonKeys: FindoraWallet.FormattedAnonKeys,
@@ -767,6 +805,28 @@ export const getBalance = async (
   const unspentAbars = await getUnspentAbars(anonKeys, givenCommitmentsList);
   const balances = await getAbarBalance(unspentAbars, anonKeys);
   return balances;
+};
+
+export const getSpentBalance = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitmentsList: string[],
+) => {
+  const unspentAbars = await getSpentAbars(anonKeys, givenCommitmentsList);
+  const balances = await getAbarBalance(unspentAbars, anonKeys);
+  return balances;
+};
+
+export const getAllAbarBalances = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitmentsList: string[],
+) => {
+  const spentBalances = await getSpentBalance(anonKeys, givenCommitmentsList);
+  const unSpentBalances = await getBalance(anonKeys, givenCommitmentsList);
+  return {
+    spentBalances,
+    unSpentBalances,
+    givenCommitmentsList,
+  };
 };
 
 export const getAbarBalance = async (
@@ -897,6 +957,7 @@ export const genNullifierHash = async (
 
     return hash;
   } catch (err) {
+    console.log('error', err);
     throw new Error(`Could not get nullifier hash", Error - ${(err as Error).message}`);
   }
 };
