@@ -31,6 +31,42 @@ export interface TransferAssetOperation {
         transfer_type: string;
     };
 }
+export interface BarToAbarOperation {
+    note: {
+        ArNote: {
+            body: {
+                input: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+        BarNote: {
+            body: {
+                input: {
+                    amount: {
+                        Confidential: string[];
+                    };
+                    asset_type: {
+                        Confidential: string;
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+    };
+}
 export interface IssueAssetOperation {
     body: {
         code: {
@@ -92,6 +128,7 @@ export interface TxOperation {
     UnDelegation?: UnDelegationOperation;
     Delegation?: DelegationOperation;
     ConvertAccount?: ConvertAccountOperation;
+    BarToAbar?: BarToAbarOperation;
 }
 export interface ParsedTx {
     body: {

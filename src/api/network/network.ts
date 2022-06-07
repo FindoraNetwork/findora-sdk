@@ -438,9 +438,7 @@ export const getOwnedAbars = async (
   commitment: string,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnedAbarsDataResult> => {
-  // const url = `${getQueryRoute()}/owned_abars/${commitment}`;
-  const url = `${getQueryRoute()}/owned_abar_data/${commitment}`;
-  // console.log('🚀 ~ file: network.ts ~ line 443 ~ url', url);
+  const url = `${getQueryRoute()}/owned_abars/${commitment}`;
 
   const dataResult = await apiGet(url, config);
   return dataResult;

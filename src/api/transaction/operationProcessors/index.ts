@@ -1,13 +1,14 @@
 import _get from 'lodash/get';
 
 import * as Types from '../types';
+import { processBarToAbar, ProcessedBarToAbar } from './barToAbar';
+import { processClaim, ProcessedClaim } from './claim';
+import { processConvertAccount, ProcessedConvertAccount } from './converAccount';
 import { processDefineAsset, ProcessedDefineAsset } from './defineAsset';
+import { processDelegation, ProcessedDelegation } from './delegation';
 import { ProcessedIssueAsset, processIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset, processTransferAsset } from './transferAsset';
 import { ProcessedUndelegation, processUndelegation } from './undelegation';
-import { ProcessedDelegation, processDelegation } from './delegation';
-import { ProcessedClaim, processClaim } from './claim';
-import { ProcessedConvertAccount, processConvertAccount } from './converAccount';
 
 import { processUnsupported, Unsupported } from './unsupported';
 
@@ -19,6 +20,7 @@ export type ProcessedTx =
   | ProcessedDelegation
   | ProcessedClaim
   | ProcessedConvertAccount
+  | ProcessedBarToAbar
   | Unsupported;
 
 export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
@@ -48,5 +50,6 @@ export const processorsMap: TxOperationProcessors = {
   UnDelegation: processUndelegation,
   Delegation: processDelegation,
   Claim: processClaim,
+  BarToAbar: processBarToAbar,
   ConvertAccount: processConvertAccount,
 };
