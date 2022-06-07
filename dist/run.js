@@ -636,11 +636,11 @@ var myFunc15 = function () { return __awaiter(void 0, void 0, void 0, function (
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'to')];
+                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'from')];
             case 2:
                 dataResult = _a.sent();
                 response = dataResult.response;
-                console.log('response!!!', response);
+                console.log('response!!!', JSON.stringify(response, null, 2));
                 return [2 /*return*/];
         }
     });
@@ -1406,13 +1406,13 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
                     decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
                     encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
+                    name: 'AnonWallet2',
                 };
-                givenCommitmentsList = ['MVkrgCW6xioAqK1LgClUTV3GOAcV-INUiagIi1VS50M='];
-                console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check', givenCommitmentsList);
-                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenCommitmentsList)];
+                givenCommitmentsList = ['BcUSUwpQVzYnzbs92NJtVZ4e4XbJVhBngVjR5hfnetpw'];
+                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
                 balances = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
                 return [2 /*return*/];
         }
     });
@@ -1551,11 +1551,11 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-// getAbarBalance(); // +
+getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1580,4 +1580,5 @@ getFraBalance();
 // unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();
+// myFunc16(); // tx list
 //# sourceMappingURL=run.js.map
