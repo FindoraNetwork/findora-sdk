@@ -109,3 +109,4 @@ export declare const submitAbarTransaction: (anonTransferOperationBuilder: AnonT
 export declare const sendToAddress: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
 export declare const sendToPublicKey: (walletInfo: WalletKeypar, publicKey: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
 export declare const getTxList: (address: string, type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;
+export declare const getAnonTxList: (subjects: string[], type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;

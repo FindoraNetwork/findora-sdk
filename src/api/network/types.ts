@@ -179,6 +179,13 @@ export interface TxListDataResult extends NetworkAxiosDataResult {
   response?: TxListResponse;
 }
 
+export interface TxListQueryParams {
+  query: string;
+  page: number;
+  per_page: number;
+  order_by: string;
+}
+
 export type TxDetailsResponse = {
   result: {
     tx: string;

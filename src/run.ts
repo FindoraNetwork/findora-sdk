@@ -1487,11 +1487,33 @@ const abarToBar = async () => {
   console.log('abar to bar result handle!!!', resultHandle);
 };
 
+const getAnonTxList = async () => {
+  const anonKeysSender = {
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  };
+
+  // const subject = 'LPFtpmeSPKDKMQbhy2NkawaeQtQUzUfUca9sE8aJDwX'; // non-spent commitment
+  // const subject = '4P1iTuvWEFiM8Hfethb8CvuBMC6NncwsB7Je7MdziAwr'; // spent commitment
+  const subject = 'BQ9eqeQVJowbtiUs7C3nXgvzytgGq2ZviKuTL7Gqe2zi'; // spent commitment
+
+  const hashes = await TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject]);
+  console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
+
+  // const txList = await Transaction.getAnonTxList([subject], 'to');
+  const txList = await Transaction.getAnonTxList(hashes, 'from');
+
+  console.log('!anon txList', JSON.stringify(txList, null, 2));
+  // console.log('!anon txList', txList);
+};
+
 // getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1517,3 +1539,4 @@ getAbarBalance(); // +
 // sendEvmToAccount();
 // ethProtocol();
 // myFunc16(); // tx list
+getAnonTxList();
