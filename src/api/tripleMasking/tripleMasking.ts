@@ -638,6 +638,47 @@ export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
   return checkSpentResponse;
 };
 
+export const getNullifierHashesFromCommitments = async (
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitmentsList: string[],
+) => {
+  const { axfrSecretKey, decKey, axfrPublicKey } = anonKeys;
+
+  const nullifierHashes: string[] = [];
+
+  for (const givenCommitment of givenCommitmentsList) {
+    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+
+    try {
+      ownedAbarsResponse = await getOwnedAbars(givenCommitment);
+    } catch (error) {
+      console.log(
+        `getOwnedAbars for '${axfrPublicKey}'->'${givenCommitment}' returned an error. ${
+          (error as Error).message
+        }`,
+        console.log('Full Error', error),
+      );
+      continue;
+    }
+
+    const [ownedAbarItem] = ownedAbarsResponse;
+
+    if (!ownedAbarItem) {
+      continue;
+    }
+
+    const { abarData } = ownedAbarItem;
+
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
+
+    nullifierHashes.push(hash);
+  }
+
+  return nullifierHashes;
+};
+
 export const getUnspentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
@@ -957,7 +998,6 @@ export const genNullifierHash = async (
 
     return hash;
   } catch (err) {
-    console.log('error', err);
     throw new Error(`Could not get nullifier hash", Error - ${(err as Error).message}`);
   }
 };

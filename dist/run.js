@@ -1551,11 +1551,35 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
+var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, subject, hashes, txList;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeysSender = {
+                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+                };
+                subject = 'BQ9eqeQVJowbtiUs7C3nXgvzytgGq2ZviKuTL7Gqe2zi';
+                return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
+            case 1:
+                hashes = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
+                return [4 /*yield*/, api_1.Transaction.getAnonTxList(hashes, 'from')];
+            case 2:
+                txList = _a.sent();
+                console.log('!anon txList', JSON.stringify(txList, null, 2));
+                return [2 /*return*/];
+        }
+    });
+}); };
 // getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1581,4 +1605,5 @@ getAbarBalance(); // +
 // sendEvmToAccount();
 // ethProtocol();
 // myFunc16(); // tx list
+getAnonTxList();
 //# sourceMappingURL=run.js.map

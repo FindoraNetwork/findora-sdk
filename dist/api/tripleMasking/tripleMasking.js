@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
@@ -670,17 +670,17 @@ var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.isNullifierHashSpent = isNullifierHashSpent;
-var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrSecretKey, decKey, axfrPublicKey, unspentAbars, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_10, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var axfrSecretKey, decKey, axfrPublicKey, nullifierHashes, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_10, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey, axfrPublicKey = anonKeys.axfrPublicKey;
-                unspentAbars = [];
+                nullifierHashes = [];
                 _i = 0, givenCommitmentsList_1 = givenCommitmentsList;
                 _a.label = 1;
             case 1:
-                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 9];
+                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 8];
                 givenCommitment = givenCommitmentsList_1[_i];
                 ownedAbarsResponse = [];
                 _a.label = 2;
@@ -693,6 +693,50 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
             case 4:
                 error_10 = _a.sent();
                 console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_10.message, console.log('Full Error', error_10));
+                return [3 /*break*/, 7];
+            case 5:
+                ownedAbarItem = ownedAbarsResponse[0];
+                if (!ownedAbarItem) {
+                    return [3 /*break*/, 7];
+                }
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, (0, exports.genNullifierHash)(atxoSid, ownedAbar, axfrSecretKey, decKey)];
+            case 6:
+                hash = _a.sent();
+                nullifierHashes.push(hash);
+                _a.label = 7;
+            case 7:
+                _i++;
+                return [3 /*break*/, 1];
+            case 8: return [2 /*return*/, nullifierHashes];
+        }
+    });
+}); };
+exports.getNullifierHashesFromCommitments = getNullifierHashesFromCommitments;
+var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var axfrSecretKey, decKey, axfrPublicKey, unspentAbars, _i, givenCommitmentsList_2, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey, axfrPublicKey = anonKeys.axfrPublicKey;
+                unspentAbars = [];
+                _i = 0, givenCommitmentsList_2 = givenCommitmentsList;
+                _a.label = 1;
+            case 1:
+                if (!(_i < givenCommitmentsList_2.length)) return [3 /*break*/, 9];
+                givenCommitment = givenCommitmentsList_2[_i];
+                ownedAbarsResponse = [];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 3:
+                ownedAbarsResponse = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_11 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_11.message, console.log('Full Error', error_11));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -720,17 +764,17 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
 }); };
 exports.getUnspentAbars = getUnspentAbars;
 var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrSecretKey, decKey, axfrPublicKey, spentAbars, _i, givenCommitmentsList_2, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+    var axfrSecretKey, decKey, axfrPublicKey, spentAbars, _i, givenCommitmentsList_3, givenCommitment, ownedAbarsResponse, error_12, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 axfrSecretKey = anonKeys.axfrSecretKey, decKey = anonKeys.decKey, axfrPublicKey = anonKeys.axfrPublicKey;
                 spentAbars = [];
-                _i = 0, givenCommitmentsList_2 = givenCommitmentsList;
+                _i = 0, givenCommitmentsList_3 = givenCommitmentsList;
                 _a.label = 1;
             case 1:
-                if (!(_i < givenCommitmentsList_2.length)) return [3 /*break*/, 9];
-                givenCommitment = givenCommitmentsList_2[_i];
+                if (!(_i < givenCommitmentsList_3.length)) return [3 /*break*/, 9];
+                givenCommitment = givenCommitmentsList_3[_i];
                 ownedAbarsResponse = [];
                 _a.label = 2;
             case 2:
@@ -740,8 +784,8 @@ var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter
                 ownedAbarsResponse = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_11 = _a.sent();
-                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_11.message, console.log('Full Error', error_11));
+                error_12 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_12.message, console.log('Full Error', error_12));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -1001,7 +1045,6 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSecretKey, decKey) { re
                     return [2 /*return*/, hash];
                 }
                 catch (err) {
-                    console.log('error', err);
                     throw new Error("Could not get nullifier hash\", Error - " + err.message);
                 }
                 return [2 /*return*/];

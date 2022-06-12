@@ -33,6 +33,7 @@ export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys
     receiverWalletInfo: Keypair.WalletKeypar;
 }>;
 export declare const isNullifierHashSpent: (hash: string) => Promise<boolean>;
+export declare const getNullifierHashesFromCommitments: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<string[]>;
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const getSpentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const openAbar: (abar: FindoraWallet.OwnedAbarItem, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.OpenedAbarInfo>;

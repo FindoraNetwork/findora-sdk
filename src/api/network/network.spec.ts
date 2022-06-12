@@ -1030,7 +1030,7 @@ describe('network (unit test)', () => {
 
       const spy = jest.spyOn(network, 'apiGet');
 
-      const dataResult = await network.getTxList(address, 'from', 2, testConfig);
+      const dataResult = await network.getTxList(address, 'from', 2, 'transparent', testConfig);
 
       expect(dataResult).toHaveProperty('response');
       expect(dataResult).not.toHaveProperty('error');
@@ -1069,7 +1069,7 @@ describe('network (unit test)', () => {
         }),
       );
 
-      const dataResult = await network.getTxList(address, type, page, testConfig);
+      const dataResult = await network.getTxList(address, type, page, 'transparent', testConfig);
 
       expect(dataResult).not.toHaveProperty('response');
       expect(dataResult).toHaveProperty('error');
@@ -1082,7 +1082,7 @@ describe('network (unit test)', () => {
         }),
       );
 
-      const dataResult = await network.getTxList(address, type, page, testConfig);
+      const dataResult = await network.getTxList(address, type, page, 'transparent', testConfig);
 
       expect(dataResult).not.toHaveProperty('response');
       expect(dataResult).toHaveProperty('error');

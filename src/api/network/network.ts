@@ -308,14 +308,11 @@ export const getHashSwap = async (
   return dataResult;
 };
 
-export const getTxList = async (
+export const getParamsForTransparentTxList = (
   address: string,
   type: 'to' | 'from',
   page = 1,
-  config?: Types.NetworkAxiosConfig,
-): Promise<Types.TxListDataResult> => {
-  const url = `${getExplorerApiRoute()}/tx_search`;
-
+): Types.TxListQueryParams => {
   const query = type === 'from' ? `"addr.from.${address}='y'"` : `"addr.to.${address}='y'"`;
 
   const params = {
@@ -324,6 +321,41 @@ export const getTxList = async (
     per_page: 10,
     order_by: '"desc"',
   };
+
+  return params;
+};
+
+export const getAnonymousTxList = (
+  subject: string,
+  type: 'to' | 'from',
+  page = 1,
+): Types.TxListQueryParams => {
+  const query = type === 'to' ? `"commitment.created.${subject}='y'"` : `"nullifier.used.${subject}='y'"`;
+
+  const params = {
+    query,
+    page,
+    per_page: 10,
+    order_by: '"desc"',
+  };
+
+  return params;
+};
+
+export const getTxList = async (
+  subject: string,
+  type: 'to' | 'from',
+  page = 1,
+  privacy: 'transparent' | 'anonymous' = 'transparent',
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListDataResult> => {
+  const isTransparentTxListRequest = privacy === 'transparent';
+
+  const params = isTransparentTxListRequest
+    ? getParamsForTransparentTxList(subject, type, page)
+    : getAnonymousTxList(subject, type, page);
+
+  const url = `${getExplorerApiRoute()}/tx_search`;
 
   const dataResult = await apiGet(url, { ...config, params });
 

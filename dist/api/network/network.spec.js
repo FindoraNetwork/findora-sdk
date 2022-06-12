@@ -1153,7 +1153,7 @@ describe('network (unit test)', function () {
                             return res(ctx.json(myResponse));
                         }));
                         spy = jest.spyOn(network, 'apiGet');
-                        return [4 /*yield*/, network.getTxList(address, 'from', 2, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, 'from', 2, 'transparent', testConfig)];
                     case 1:
                         dataResult = _b.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -1185,7 +1185,7 @@ describe('network (unit test)', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network.getTxList(address, type, page, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, type, page, 'transparent', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -1202,7 +1202,7 @@ describe('network (unit test)', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network.getTxList(address, type, page, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, type, page, 'transparent', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
