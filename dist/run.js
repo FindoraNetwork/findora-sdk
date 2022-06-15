@@ -1562,19 +1562,45 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                subject = 'BQ9eqeQVJowbtiUs7C3nXgvzytgGq2ZviKuTL7Gqe2zi';
+                subject = '8q2AQSnMe5xcRnmr58n5fuzhdoMYt2oeZRSU6yj6Bdom';
                 return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
             case 1:
                 hashes = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
                 return [4 /*yield*/, api_1.Transaction.getAnonTxList(hashes, 'from')];
             case 2:
                 txList = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
                 console.log('!anon txList', JSON.stringify(txList, null, 2));
                 return [2 /*return*/];
         }
     });
 }); };
+var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
+    function isCoinBase(fraAddress) {
+        console.log("we are going to call leger with " + fraAddress);
+        // return false;
+        var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
+        return false;
+        // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
+        //   addressInBase64,
+        // );
+    }
+    var findoraWasm, aaa1, aaa2, aaa3, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                findoraWasm = _a.sent();
+                aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
+                aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
+                aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
+                result = isCoinBase(aaa1);
+                console.log('result', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// testIt();
 // getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
