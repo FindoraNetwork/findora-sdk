@@ -1,6 +1,7 @@
 import _get from 'lodash/get';
 
 import * as Types from '../types';
+import { processAbarToBar, ProcessedAbarToBar } from './abarToBar';
 import { processBarToAbar, ProcessedBarToAbar } from './barToAbar';
 import { processClaim, ProcessedClaim } from './claim';
 import { processConvertAccount, ProcessedConvertAccount } from './converAccount';
@@ -21,6 +22,7 @@ export type ProcessedTx =
   | ProcessedClaim
   | ProcessedConvertAccount
   | ProcessedBarToAbar
+  | ProcessedAbarToBar
   | Unsupported;
 
 export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
@@ -51,5 +53,6 @@ export const processorsMap: TxOperationProcessors = {
   Delegation: processDelegation,
   Claim: processClaim,
   BarToAbar: processBarToAbar,
+  AbarToBar: processAbarToBar,
   ConvertAccount: processConvertAccount,
 };
