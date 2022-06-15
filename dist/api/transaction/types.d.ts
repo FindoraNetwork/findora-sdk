@@ -67,6 +67,24 @@ export interface BarToAbarOperation {
         };
     };
 }
+export interface AbarToBarOperation {
+    note: {
+        AbarToAr: {
+            body: {
+                input: string;
+                output: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+            };
+        };
+    };
+}
 export interface IssueAssetOperation {
     body: {
         code: {
@@ -129,6 +147,7 @@ export interface TxOperation {
     Delegation?: DelegationOperation;
     ConvertAccount?: ConvertAccountOperation;
     BarToAbar?: BarToAbarOperation;
+    AbarToBar?: AbarToBarOperation;
 }
 export interface ParsedTx {
     body: {
