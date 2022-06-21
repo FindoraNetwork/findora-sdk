@@ -4,3 +4,5 @@ export declare const readFile: (filePath: string) => Promise<string>;
 export declare const createCacheDir: (dirPath: string) => string | undefined;
 export declare const now: () => string;
 export declare const log: (message: string, ...rest: any) => void;
+export declare const getCryptoInstance: () => any;
+export declare const generateSeedString: () => string;
