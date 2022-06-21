@@ -1602,9 +1602,9 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
-// barToAbar(); // ++
+barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +

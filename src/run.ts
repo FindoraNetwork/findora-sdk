@@ -1204,7 +1204,7 @@ const barToAbar = async () => {
   // }
 
   // return;
-  const sid = 2; // 1.88
+  const sid = 2; //
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1540,9 +1540,9 @@ const testIt = async () => {
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
-// barToAbar(); // ++
+barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
