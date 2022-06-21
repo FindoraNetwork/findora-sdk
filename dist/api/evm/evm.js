@@ -58,27 +58,81 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.createLowLevelData = void 0;
+var ethers_1 = require("ethers");
 var js_base64_1 = __importDefault(require("js-base64"));
-var Transaction = __importStar(require("../transaction"));
-var AssetApi = __importStar(require("../sdkAsset"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var web3_1 = __importDefault(require("web3"));
 var api_1 = require("../../api");
 var bigNumber_1 = require("../../services/bigNumber");
-var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address, assetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var AssetApi = __importStar(require("../sdkAsset"));
+var Transaction = __importStar(require("../transaction"));
+var toHex = function (covertThis, padding) {
+    var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(BigInt(covertThis)), padding);
+    return temp1;
+};
+var createGenericDepositData = function (hexMetaData) {
+    if (hexMetaData === null) {
+        return '0x' + toHex('0', 32).substring(2); // len(metaData) (32 bytes)
+    }
+    var hexMetaDataLength = hexMetaData.substring(2).length / 2;
+    return '0x' + toHex(String(hexMetaDataLength), 32).substring(2) + hexMetaData.substr(2);
+};
+var createLowLevelData = function (destinationChainId, tokenAmount, tokenId, recipientAddress, funcName) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, data, fun, dt, callData, fun1;
+    return __generator(this, function (_a) {
+        web3 = new web3_1.default();
+        data = web3.eth.abi.encodeParameters(['uint256', 'address', 'uint256'], [tokenId, recipientAddress, tokenAmount]);
+        fun = web3.eth.abi.encodeFunctionCall({
+            inputs: [
+                {
+                    internalType: 'bytes',
+                    name: 'data',
+                    type: 'bytes',
+                },
+            ],
+            name: 'withdrawToOtherChainCallback',
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+        }, [data]);
+        dt = '0x' + fun.substring(10);
+        callData = createGenericDepositData(dt);
+        fun1 = web3.eth.abi.encodeFunctionCall({
+            inputs: [
+                {
+                    name: 'chainId',
+                    type: 'uint8',
+                },
+                {
+                    name: 'data',
+                    type: 'bytes',
+                },
+            ],
+            name: funcName,
+            outputs: [],
+            stateMutability: 'nonpayable',
+            type: 'function',
+        }, [destinationChainId, callData]);
+        return [2 /*return*/, fun1];
+    });
+}); };
+exports.createLowLevelData = createLowLevelData;
+var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowLevelData) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, address, fraAssetCode, mainAssetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 address = ledger.base64_to_bech32(ledger.get_coinbase_address());
-                assetCode = ledger.fra_get_asset_code();
+                fraAssetCode = ledger.fra_get_asset_code();
+                mainAssetCode = assetCode || fraAssetCode;
                 assetBlindRules = {
                     isAmountBlind: false,
                     isTypeBlind: false,
                 };
-                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
+                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
             case 2:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
@@ -87,7 +141,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awai
                 decimals = asset.assetRules.decimals;
                 convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
                 transactionBuilder = transactionBuilder
-                    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
+                    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
                     .sign(walletInfo.keypair);
                 return [2 /*return*/, transactionBuilder];
         }

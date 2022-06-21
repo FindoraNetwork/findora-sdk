@@ -1,21 +1,94 @@
+import { ethers } from 'ethers';
 import base64 from 'js-base64';
-import * as Transaction from '../transaction';
-import { TransactionBuilder } from '../../services/ledger/types';
-import { WalletKeypar } from '../keypair';
-import * as AssetApi from '../sdkAsset';
-import { getLedger } from '../../services/ledger/ledgerWrapper';
+import Web3 from 'web3';
 import { Network } from '../../api';
 import { toWei } from '../../services/bigNumber';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
+import { TransactionBuilder } from '../../services/ledger/types';
+import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
+import * as AssetApi from '../sdkAsset';
+import * as Transaction from '../transaction';
+
+const toHex = (covertThis: string, padding: number) => {
+  const temp1 = ethers.utils.hexZeroPad(ethers.utils.hexlify(BigInt(covertThis)), padding);
+  return temp1;
+};
+
+const createGenericDepositData = (hexMetaData: string | null) => {
+  if (hexMetaData === null) {
+    return '0x' + toHex('0', 32).substring(2); // len(metaData) (32 bytes)
+  }
+  const hexMetaDataLength = hexMetaData.substring(2).length / 2;
+  return '0x' + toHex(String(hexMetaDataLength), 32).substring(2) + hexMetaData.substr(2);
+};
+
+export const createLowLevelData = async (
+  destinationChainId: string,
+  tokenAmount: string,
+  tokenId: string,
+  recipientAddress: string,
+  funcName: string,
+) => {
+  const web3 = new Web3();
+  const data = web3.eth.abi.encodeParameters(
+    ['uint256', 'address', 'uint256'],
+    [tokenId, recipientAddress, tokenAmount],
+  );
+
+  const fun = web3.eth.abi.encodeFunctionCall(
+    {
+      inputs: [
+        {
+          internalType: 'bytes',
+          name: 'data',
+          type: 'bytes',
+        },
+      ],
+      name: 'withdrawToOtherChainCallback',
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    [data],
+  );
+  const dt = '0x' + fun.substring(10);
+  const callData = createGenericDepositData(dt);
+  const fun1 = web3.eth.abi.encodeFunctionCall(
+    {
+      inputs: [
+        {
+          name: 'chainId',
+          type: 'uint8',
+        },
+        {
+          name: 'data',
+          type: 'bytes',
+        },
+      ],
+      name: funcName,
+      outputs: [],
+      stateMutability: 'nonpayable',
+      type: 'function',
+    },
+    [destinationChainId, callData],
+  );
+  return fun1;
+};
 
 export const sendAccountToEvm = async (
   walletInfo: WalletKeypar,
   amount: string,
   ethAddress: string,
+  assetCode: string,
+  lowLevelData: string,
 ): Promise<TransactionBuilder> => {
   const ledger = await getLedger();
   const address = ledger.base64_to_bech32(ledger.get_coinbase_address());
-  const assetCode = ledger.fra_get_asset_code();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const mainAssetCode = assetCode || fraAssetCode;
+
   const assetBlindRules: AssetApi.AssetBlindRules = {
     isAmountBlind: false,
     isTypeBlind: false,
@@ -25,7 +98,7 @@ export const sendAccountToEvm = async (
     walletInfo,
     address,
     amount,
-    assetCode,
+    mainAssetCode,
     assetBlindRules,
   );
 
@@ -34,7 +107,7 @@ export const sendAccountToEvm = async (
   const convertAmount = BigInt(toWei(amount, decimals).toString());
 
   transactionBuilder = transactionBuilder
-    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
+    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
     .sign(walletInfo.keypair);
 
   return transactionBuilder;
