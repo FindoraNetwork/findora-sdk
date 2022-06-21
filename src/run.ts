@@ -493,11 +493,11 @@ const myFunc15 = async () => {
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const dataResult = await Network.getTxList(walletInfo.address, 'to');
+  const dataResult = await Network.getTxList(walletInfo.address, 'from');
 
   const { response } = dataResult;
 
-  console.log('response!!!', response);
+  console.log('response!!!', JSON.stringify(response, null, 2));
 };
 
 const myFunc16 = async () => {
@@ -1283,39 +1283,58 @@ const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
   // Anon Walet 1
-  const anonKeys = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
-  };
-
-  // Anon Walet 2
   // const anonKeys = {
-  //   axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
-  //   axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
-  //   decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
-  //   encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
+  //   axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+  //   axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+  //   decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+  //   encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
   // };
 
-  const givenCommitmentsList = [
-    // 'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA -- sender paid fee, should be 0
-    // 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=', // 3.15 TESt1A - sender. should be 0
-    // 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=', // receiver, 3.15 TEST1a
-    // 'J5uZO0rFKQGnfulxKeCkQv1pWRNBlavXXTKOem9Eh2A=', // remainder of the fee 1.88 FRA . sender
-    // '1uwqMW9cZHuKVi16kXcxUdZ3JUzaNGufbe7oSudAuwE', // ?
-    'Tfg1MOKahINjl-cDaQTZt9LshEeSQIcZuwiZyAxnPwM=', // 1.88 //
-    // '23Zx14Cj6gTpFYChiXdw1JS19vo9xMxC8PjveccakJWb', // error
-    // 'sss',
-  ];
+  // Anon Walet 3
+  // const anonKeys = {
+  //   axfrPublicKey: '5kJ1D8ZGmaHbyv4Yfn3q94oYAgV8km5dkiBHWPMU2b8=',
+  //   axfrSecretKey: 'VDj-QNt0UEilrJsXa69HduAnfsXpZqYabXC_ozqiCwTmQnUPxkaZodvK_hh-fer3ihgCBXySbl2SIEdY8xTZvw==',
+  //   decKey: 'KLzfPV-ft7m114DsUBt_ZblsdbCFqhIzkTWd9rZBN3w=',
+  //   encKey: 'k9L1_NnjjZu6jpkKZXrmsRi2Vta0LuLGsk2y4Hk0akI=',
+  //   name: 'AnonWallet3',
+  // };
 
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check',
-    givenCommitmentsList,
-  );
+  // Anon Walet 2
+  const anonKeys = {
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+    decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
+    encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
+    name: 'AnonWallet2',
+  };
 
-  const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
-  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+  // const anonKeys = {
+  //   axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+  //   axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+  //   decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
+  //   encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
+  // };
+
+  const givenCommitmentsList = ['BcUSUwpQVzYnzbs92NJtVZ4e4XbJVhBngVjR5hfnetpw'];
+
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check',
+  //   givenCommitmentsList,
+  // );
+
+  // const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
+  //   JSON.stringify(spentAbars, null, 2),
+  // );
+
+  // const a = await TripleMasking.openAbar(spentAbars[0], anonKeys);
+  // console.log('🚀 ~ file: run.ts ~ line 1325 ~ getAbarBalance ~ a', a);
+
+  // const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
+  const balances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList);
+
+  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
 };
 
 const getFee = async () => {
@@ -1341,10 +1360,10 @@ const abarToAbar = async () => {
   };
 
   const anonKeysReceiver = {
-    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
-    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
-    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
-    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+    decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
+    encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
   };
 
   const givenCommitmentToTransfer = 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE='; // 3.15 TEST1A (sid 11)
@@ -1468,11 +1487,62 @@ const abarToBar = async () => {
   console.log('abar to bar result handle!!!', resultHandle);
 };
 
+const getAnonTxList = async () => {
+  const anonKeysSender = {
+    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+  };
+
+  // const subject = '8McGaaXNwEPn79z5wVBXLoWXiaArGc6tMGnT2ZMeeUni'; // non-conf
+  const subject = '8q2AQSnMe5xcRnmr58n5fuzhdoMYt2oeZRSU6yj6Bdom'; // conf
+  // const subject = '4P1iTuvWEFiM8Hfethb8CvuBMC6NncwsB7Je7MdziAwr'; // spent commitment
+  // const subject = 'BQ9eqeQVJowbtiUs7C3nXgvzytgGq2ZviKuTL7Gqe2zi'; // spent commitment
+
+  // const hashes = [subject];
+  // const txList = await Transaction.getAnonTxList(hashes, 'to');
+
+  const hashes = await TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject]);
+  const txList = await Transaction.getAnonTxList(hashes, 'from');
+
+  console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
+
+  console.log('!anon txList', JSON.stringify(txList, null, 2));
+  // console.log('!anon txList', txList);
+};
+
+const testIt = async () => {
+  const findoraWasm = await getLedger();
+
+  function isCoinBase(fraAddress: string) {
+    console.log(`we are going to call leger with ${fraAddress}`);
+    // return false;
+
+    const addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
+
+    return false;
+
+    // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
+    //   addressInBase64,
+    // );
+  }
+
+  const aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
+  const aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
+  const aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
+
+  const result = isCoinBase(aaa1);
+
+  console.log('result', result);
+};
+
+// testIt();
 // getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1497,3 +1567,5 @@ getAbarBalance(); // +
 // unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();
+// myFunc16(); // tx list
+getAnonTxList();

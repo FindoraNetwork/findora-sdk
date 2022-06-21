@@ -33,7 +33,9 @@ export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys
     receiverWalletInfo: Keypair.WalletKeypar;
 }>;
 export declare const isNullifierHashSpent: (hash: string) => Promise<boolean>;
+export declare const getNullifierHashesFromCommitments: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<string[]>;
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
+export declare const getSpentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const openAbar: (abar: FindoraWallet.OwnedAbarItem, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.OpenedAbarInfo>;
 export declare const getBalanceMaps: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
     assetDetailsMap: {
@@ -45,6 +47,12 @@ export declare const getBalanceMaps: (unspentAbars: FindoraWallet.OwnedAbarItem[
     usedAssets: string[];
 }>;
 export declare const getBalance: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<AnonWalletBalanceInfo>;
+export declare const getSpentBalance: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<AnonWalletBalanceInfo>;
+export declare const getAllAbarBalances: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<{
+    spentBalances: AnonWalletBalanceInfo;
+    unSpentBalances: AnonWalletBalanceInfo;
+    givenCommitmentsList: string[];
+}>;
 export declare const getAbarBalance: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<AnonWalletBalanceInfo>;
 export declare const getOwnedAbars: (givenCommitment: string) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const genNullifierHash: (atxoSid: string, ownedAbar: FindoraWallet.OwnedAbar, axfrSecretKey: string, decKey: string) => Promise<string>;

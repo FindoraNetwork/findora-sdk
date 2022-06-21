@@ -35,7 +35,9 @@ export declare const getIssuedRecords: (address: string, config?: Types.NetworkA
 export declare const getTransactionStatus: (handle: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TransactionStatusDataResult>;
 export declare const getBlock: (height: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.BlockDetailsDataResult>;
 export declare const getHashSwap: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.HashSwapDataResult>;
-export declare const getTxList: (address: string, type: 'to' | 'from', page?: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
+export declare const getParamsForTransparentTxList: (address: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
+export declare const getAnonymousTxList: (subject: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
+export declare const getTxList: (subject: string, type: 'to' | 'from', page?: number, privacy?: 'transparent' | 'anonymous', config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
 export declare const getTransactionDetails: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxDetailsDataResult>;
 export declare const getAbciNoce: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciNoceResult>;
 export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciInfoResult>;

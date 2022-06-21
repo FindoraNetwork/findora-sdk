@@ -1,4 +1,5 @@
 import Base64 from 'js-base64';
+
 import _get from 'lodash/get';
 
 import { TxInfo } from '../network/types';
@@ -36,7 +37,7 @@ export const processTxInfoItem = async (txItem: TxInfo): Promise<Types.Processed
   const hash = txItem.hash;
   const code = txItem.tx_result.code;
 
-  const operationsList = helpers.getTxOperationsList(parsedTx);
+  const operationsList = helpers.getTxOperationsList(parsedTx); // has BarToAbar TransferAsset etc
 
   const processedOperationList = await processTxOperationList(operationsList);
 

@@ -140,7 +140,11 @@
     "editor.renderWhitespace": "all",
     "editor.acceptSuggestionOnEnter": "off",
     "editor.parameterHints.enabled": true,
-    "editor.quickSuggestions": true
+    "editor.quickSuggestions": {
+      "comments": "on",
+      "strings": "on",
+      "other": "on"
+    }
   },
 
   //********************************

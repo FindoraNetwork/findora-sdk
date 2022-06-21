@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = exports.getAnonTransferOperationBuilder = exports.getTransactionBuilder = void 0;
+exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = exports.getAnonTransferOperationBuilder = exports.getTransactionBuilder = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -393,7 +393,7 @@ var getTxList = function (address, type, page) {
         var dataResult, txList, processedTxList;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Network.getTxList(address, type, page)];
+                case 0: return [4 /*yield*/, Network.getTxList(address, type, page, 'transparent')];
                 case 1:
                     dataResult = _a.sent();
                     if (!dataResult.response) {
@@ -415,4 +415,53 @@ var getTxList = function (address, type, page) {
     });
 };
 exports.getTxList = getTxList;
+var getAnonTxList = function (subjects, type, page) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var promises, results, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    promises = subjects.map(function (subject) { return __awaiter(void 0, void 0, void 0, function () {
+                        var dataResult, txList, processedTxList;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, Network.getTxList(subject, type, page, 'anonymous')];
+                                case 1:
+                                    dataResult = _a.sent();
+                                    if (!dataResult.response) {
+                                        throw new Error('Could not fetch a list of anonymous transactions. No response from the server.');
+                                    }
+                                    txList = helpers.getTxListFromResponse(dataResult);
+                                    if (!txList) {
+                                        throw new Error('Could not get a list of anonymous transactions from the server response.');
+                                    }
+                                    return [4 /*yield*/, (0, processor_1.processeTxInfoList)(txList)];
+                                case 2:
+                                    processedTxList = _a.sent();
+                                    return [2 /*return*/, {
+                                            total_count: dataResult.response.result.total_count,
+                                            txs: processedTxList,
+                                        }];
+                            }
+                        });
+                    }); });
+                    return [4 /*yield*/, Promise.all(promises)];
+                case 1:
+                    results = _a.sent();
+                    result = {
+                        total_count: 0,
+                        txs: [],
+                    };
+                    results.forEach(function (processed) {
+                        var total_count = processed.total_count, txs = processed.txs;
+                        result.total_count = result.total_count + parseFloat("" + total_count);
+                        result.txs = result.txs.concat(txs);
+                    });
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+};
+exports.getAnonTxList = getAnonTxList;
 //# sourceMappingURL=transaction.js.map

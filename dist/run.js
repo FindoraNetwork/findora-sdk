@@ -636,11 +636,11 @@ var myFunc15 = function () { return __awaiter(void 0, void 0, void 0, function (
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'to')];
+                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'from')];
             case 2:
                 dataResult = _a.sent();
                 response = dataResult.response;
-                console.log('response!!!', response);
+                console.log('response!!!', JSON.stringify(response, null, 2));
                 return [2 /*return*/];
         }
     });
@@ -1402,26 +1402,17 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 anonKeys = {
-                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+                    decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
+                    encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
+                    name: 'AnonWallet2',
                 };
-                givenCommitmentsList = [
-                    // 'dWrhD9C5f2jgLkvq-CAndeanSyKml1eBRY9MBG9HqVQ=', // 2.98 FRA -- sender paid fee, should be 0
-                    // 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=', // 3.15 TESt1A - sender. should be 0
-                    // 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=', // receiver, 3.15 TEST1a
-                    // 'J5uZO0rFKQGnfulxKeCkQv1pWRNBlavXXTKOem9Eh2A=', // remainder of the fee 1.88 FRA . sender
-                    // '1uwqMW9cZHuKVi16kXcxUdZ3JUzaNGufbe7oSudAuwE', // ?
-                    'Tfg1MOKahINjl-cDaQTZt9LshEeSQIcZuwiZyAxnPwM=', // 1.88 //
-                    // '23Zx14Cj6gTpFYChiXdw1JS19vo9xMxC8PjveccakJWb', // error
-                    // 'sss',
-                ];
-                console.log('🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check', givenCommitmentsList);
-                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeys, givenCommitmentsList)];
+                givenCommitmentsList = ['BcUSUwpQVzYnzbs92NJtVZ4e4XbJVhBngVjR5hfnetpw'];
+                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
                 balances = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', balances);
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
                 return [2 /*return*/];
         }
     });
@@ -1457,10 +1448,10 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
                 anonKeysReceiver = {
-                    axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
-                    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
-                    decKey: 'GMzcWMbWz41hO5AEpXk1q1XYr8wpkq_zRscrxqg7TW0=',
-                    encKey: 'nGfox4UJTBHCjiUMUmyUolyOGMAmR25ktfEYOZXTJ0s=',
+                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+                    decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
+                    encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
                 };
                 givenCommitmentToTransfer = 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=';
                 givenCommitmentsToPayFee = [
@@ -1560,11 +1551,61 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
         }
     });
 }); };
+var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, subject, hashes, txList;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeysSender = {
+                    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
+                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+                    decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
+                    encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
+                };
+                subject = '8q2AQSnMe5xcRnmr58n5fuzhdoMYt2oeZRSU6yj6Bdom';
+                return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
+            case 1:
+                hashes = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.getAnonTxList(hashes, 'from')];
+            case 2:
+                txList = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
+                console.log('!anon txList', JSON.stringify(txList, null, 2));
+                return [2 /*return*/];
+        }
+    });
+}); };
+var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
+    function isCoinBase(fraAddress) {
+        console.log("we are going to call leger with " + fraAddress);
+        // return false;
+        var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
+        return false;
+        // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
+        //   addressInBase64,
+        // );
+    }
+    var findoraWasm, aaa1, aaa2, aaa3, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                findoraWasm = _a.sent();
+                aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
+                aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
+                aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
+                result = isCoinBase(aaa1);
+                console.log('result', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// testIt();
 // getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1589,4 +1630,6 @@ getAbarBalance(); // +
 // unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();
+// myFunc16(); // tx list
+getAnonTxList();
 //# sourceMappingURL=run.js.map

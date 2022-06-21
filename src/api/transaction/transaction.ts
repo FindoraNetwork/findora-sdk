@@ -337,7 +337,7 @@ export const getTxList = async (
   type: 'to' | 'from',
   page = 1,
 ): Promise<ProcessedTxListResponseResult> => {
-  const dataResult = await Network.getTxList(address, type, page);
+  const dataResult = await Network.getTxList(address, type, page, 'transparent');
 
   if (!dataResult.response) {
     throw new Error('Could not fetch a list of transactions. No response from the server.');
@@ -355,4 +355,47 @@ export const getTxList = async (
     total_count: dataResult.response.result.total_count,
     txs: processedTxList,
   };
+};
+
+export const getAnonTxList = async (
+  subjects: string[],
+  type: 'to' | 'from',
+  page = 1,
+): Promise<ProcessedTxListResponseResult> => {
+  const promises = subjects.map(async subject => {
+    const dataResult = await Network.getTxList(subject, type, page, 'anonymous');
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of anonymous transactions. No response from the server.');
+    }
+
+    const txList = helpers.getTxListFromResponse(dataResult);
+
+    if (!txList) {
+      throw new Error('Could not get a list of anonymous transactions from the server response.');
+    }
+
+    const processedTxList = await processeTxInfoList(txList);
+
+    return {
+      total_count: dataResult.response.result.total_count,
+      txs: processedTxList,
+    };
+  });
+
+  const results = await Promise.all(promises);
+
+  const result: { total_count: number; txs: any[] } = {
+    total_count: 0,
+    txs: [],
+  };
+
+  results.forEach(processed => {
+    const { total_count, txs } = processed;
+
+    result.total_count = result.total_count + parseFloat(`${total_count}`);
+    result.txs = result.txs.concat(txs);
+  });
+
+  return result;
 };
