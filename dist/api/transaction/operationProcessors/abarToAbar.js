@@ -62,10 +62,6 @@ var processAbarToAbar = function (operationItem) { return __awaiter(void 0, void
                     to: toCommitement58List,
                     type: 'abarToAbar',
                     originalOperation: operationItem,
-                    // amount: [transperentNote?.body?.output?.amount?.NonConfidential],
-                    // assetType: transperentNote?.body?.output?.asset_type?.NonConfidential,
-                    // amount: ['amount'],
-                    // assetType: [123],
                 };
                 return [2 /*return*/, data];
         }

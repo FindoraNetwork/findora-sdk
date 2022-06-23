@@ -1,7 +1,8 @@
 import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
-export declare const sendAccountToEvm: (walletInfo: WalletKeypar, amount: string, ethAddress: string) => Promise<TransactionBuilder>;
+export declare const createLowLevelData: (destinationChainId: string, tokenAmount: string, tokenId: string, recipientAddress: string, funcName: string) => Promise<string>;
+export declare const sendAccountToEvm: (walletInfo: WalletKeypar, amount: string, ethAddress: string, assetCode: string, lowLevelData: string) => Promise<TransactionBuilder>;
 /**
  * Transfer ETH to the user FRA address
  *
