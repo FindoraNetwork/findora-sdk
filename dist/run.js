@@ -1322,7 +1322,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 sid_ = sortedSids[0];
-                sid = 70;
+                sid = 2;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
@@ -1408,7 +1408,12 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                     encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
                     name: 'AnonWallet2',
                 };
-                givenCommitmentsList = ['BcUSUwpQVzYnzbs92NJtVZ4e4XbJVhBngVjR5hfnetpw'];
+                givenCommitmentsList = [
+                    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
+                    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
+                    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
+                    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+                ];
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
                 balances = _a.sent();
@@ -1562,7 +1567,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
                     decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
                     encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
                 };
-                subject = '8q2AQSnMe5xcRnmr58n5fuzhdoMYt2oeZRSU6yj6Bdom';
+                subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E';
                 return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
             case 1:
                 hashes = _a.sent();
@@ -1570,7 +1575,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
             case 2:
                 txList = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
-                console.log('!anon txList', JSON.stringify(txList, null, 2));
+                console.log('!anon txList!', JSON.stringify(txList, null, 2));
                 return [2 /*return*/];
         }
     });
@@ -1605,7 +1610,7 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-// getAbarBalance(); // +
+getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
@@ -1631,5 +1636,5 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 // sendEvmToAccount();
 // ethProtocol();
 // myFunc16(); // tx list
-getAnonTxList();
+// getAnonTxList();
 //# sourceMappingURL=run.js.map

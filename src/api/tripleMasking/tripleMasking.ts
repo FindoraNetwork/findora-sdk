@@ -6,6 +6,7 @@ import { CacheItem } from '../../services/cacheStore/types';
 import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
+import { generateSeedString } from '../../services/utils';
 import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
@@ -532,11 +533,12 @@ export const barToAbar = async (
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
 
-  // auth_key_pair: XfrKeyPair, abar_pubkey: AXfrPubKey, txo_sid: BigInt,
-  // input_record: ClientAssetRecord, owner_memo: OwnerMemo | undefined,
-  // enc_key: XPublicKey
+  const seed = generateSeedString();
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
+
   try {
     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(
+      seed,
       walletInfo.keypair,
       axfrPublicKey,
       BigInt(sid),
@@ -557,7 +559,7 @@ export const barToAbar = async (
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
     );
   }
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
 
   try {
     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
@@ -570,6 +572,7 @@ export const barToAbar = async (
 
   try {
     commitments = transactionBuilder?.get_commitments();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
   } catch (err) {
     throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
   }

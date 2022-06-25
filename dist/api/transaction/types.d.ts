@@ -85,6 +85,17 @@ export interface AbarToBarOperation {
         };
     };
 }
+interface AbarToAbarNoteOutput {
+    commitment: string;
+}
+export interface AbarToAbarOperation {
+    note: {
+        body: {
+            inputs: string[];
+            outputs: AbarToAbarNoteOutput[];
+        };
+    };
+}
 export interface IssueAssetOperation {
     body: {
         code: {
@@ -148,6 +159,7 @@ export interface TxOperation {
     ConvertAccount?: ConvertAccountOperation;
     BarToAbar?: BarToAbarOperation;
     AbarToBar?: AbarToBarOperation;
+    TransferAnonAsset?: AbarToAbarOperation;
 }
 export interface ParsedTx {
     body: {
@@ -164,3 +176,4 @@ export interface ProcessedTxListResponseResult {
     txs: ProcessedTxInfo[];
     total_count: number;
 }
+export {};

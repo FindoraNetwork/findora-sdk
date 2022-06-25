@@ -76,6 +76,7 @@ var bigNumber_1 = require("../../services/bigNumber");
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
 var fee_1 = require("../../services/fee");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var utils_1 = require("../../services/utils");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
 var Network = __importStar(require("../network"));
@@ -525,7 +526,7 @@ var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountT
 };
 exports.getAbarTransferFee = getAbarTransferFee;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_8, feeInputs, error_9, commitments, barToAbarData;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_8, seed, feeInputs, error_9, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -575,11 +576,10 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 error_8 = _b.sent();
                 throw new Error("Could not convert AXfrPublicKey\", Error - " + error_8.message);
             case 12:
-                // auth_key_pair: XfrKeyPair, abar_pubkey: AXfrPubKey, txo_sid: BigInt,
-                // input_record: ClientAssetRecord, owner_memo: OwnerMemo | undefined,
-                // enc_key: XPublicKey
+                seed = (0, utils_1.generateSeedString)();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
                 try {
-                    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), encKey);
+                    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(seed, walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), encKey);
                 }
                 catch (error) {
                     throw new Error("Could not add bar to abar operation\", Error - " + error.message);
@@ -595,7 +595,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 error_9 = _b.sent();
                 throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_9.message);
             case 16:
-                // console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
                     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
                 }
@@ -605,6 +605,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
                 }
                 catch (err) {
                     throw new Error("could not get a list of commitments strings \"" + err.message + "\" ");
