@@ -7,52 +7,9 @@ import { FileCacheProvider, MemoryCacheProvider } from '../services/cacheStore/p
 
 dotenv.config();
 
-const waitingTimeBeforeCheckTxStatus = 19000;
-
-/**
- * Prior to using SDK we have to initialize its environment configuration
- */
-const sdkEnv = {
-  // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
-  // hostUrl: 'http://127.0.0.1',
-  // hostUrl: 'https://dev-qa02.dev.findora.org',
-  hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
-  // cacheProvider: FileCacheProvider,
-  // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
-  cacheProvider: MemoryCacheProvider,
-  cachePath: './cache',
-};
-
-Sdk.init(sdkEnv);
-
-console.log(`Connecting to "${sdkEnv.hostUrl}"`);
-
-const {
-  CUSTOM_ASSET_CODE = '',
-  PKEY_MINE = '',
-  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = '',
-  PKEY_MINE2 = '',
-  PKEY_MINE3 = '',
-  PKEY_LOCAL_FAUCET = '',
-  ENG_PKEY = '',
-  PKEY_LOCAL_TRIPLE_MASKING = '',
-  PKEY_LOCAL_FAUCET_MNEMONIC_STRING = '',
-  M_STRING = '',
-  FRA_ADDRESS = '',
-  ETH_PRIVATE = '',
-  ETH_ADDRESS = '',
-} = process.env;
-
-const mainFaucet = PKEY_LOCAL_FAUCET;
-
-const password = 'yourSecretPassword';
-
-/* TODO: Switch to env
 const envConfigFile = process.env.INTEGRATION_ENV_NAME
-  ? `../.env_tm_integration_${process.env.INTEGRATION_ENV_NAME}`
-  : `../.env_tm_example`;
+  ? `../../.env_tm_integration_${process.env.INTEGRATION_ENV_NAME}`
+  : `../../.env_example`;
 
 const envConfig = require(`${envConfigFile}.json`);
 
@@ -60,7 +17,7 @@ const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
 
 /**
  * Prior to using SDK we have to initialize its environment configuration
- */ /*
+ */
 const sdkEnv = {
   hostUrl: envHostUrl,
   cacheProvider: MemoryCacheProvider,
@@ -75,18 +32,18 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 Sdk.init(sdkEnv);
 
-const { mainFaucet, senderOne, receiverOne } = walletKeys;
+const { mainFaucet, senderOne } = walletKeys;
 
 const password = 'yourSecretPassword';
-*/
 
 /**
  * Create 4 Test BARs
  */
 export const createTestBars = async () => {
   console.log('////////////////  createTestBars //////////////// ');
-  const pkey = PKEY_LOCAL_FAUCET;
-  const toPkeyMine = PKEY_MINE;
+
+  const pkey = mainFaucet;
+  const toPkeyMine = senderOne;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
@@ -105,34 +62,35 @@ export const createTestBars = async () => {
     );
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     console.log('send fra result handle!!', resultHandle);
+    await sleep(waitingTimeBeforeCheckTxStatus);
   }
 
   return true;
 };
 
 export const getAnonKeys = async () => {
+  console.log('////////////////  getAnonKeys //////////////// ');
+
   const myAnonKeys = await TripleMasking.genAnonKeys();
 
   console.log('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
   return myAnonKeys;
 };
 
-export const barToAbar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
+export const barToAbar = async (AnonKeys: FindoraWallet.FormattedAnonKeys, isBalanceCheck: boolean) => {
   console.log('////////////////  barToAbar //////////////// ');
 
-  let givenCommitment = '';
-
-  const pkey = PKEY_MINE;
+  const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const balance = await Account.getBalance(walletInfo);
   //const fraCode = await Asset.getFraAssetCode();
-  console.log('BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
+  //console.log('BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
 
   const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
   const { response: sids } = sidsResult;
   if (!sids) {
     console.log('ERROR no sids available');
-    return [false, givenCommitment];
+    return false;
   }
   const sortedSids = sids.sort((a, b) => b - a);
   console.log('🚀 ~ barToAbar ~ sortedSids', sortedSids);
@@ -153,9 +111,8 @@ export const barToAbar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
 
   console.log('send bar to abar result handle!!', resultHandle);
 
-  [givenCommitment] = barToAbarData.commitments;
+  const [givenCommitment] = barToAbarData.commitments;
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -165,37 +122,56 @@ export const barToAbar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
   const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
   console.log('🚀 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
 
-  //TODO - check inconsisent balances issue
+  if (isBalanceCheck) {
+    const balanceResult = await barToAbarBalances(walletInfo, anonKeys, givenCommitment, balance);
+    if (!balanceResult) {
+      return false;
+    }
+    return true;
+  } else {
+    return givenCommitment;
+  }
+};
+
+const barToAbarBalances = async (
+  walletInfo: Keypair.WalletKeypar,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitment: string,
+  balance: string,
+) => {
   const balanceNew = await Account.getBalance(walletInfo);
+  console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
   console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChange = parseInt(balance) - parseInt(balanceNew);
+  const balanceChange = parseInt(balance.replace(/,/g, ''), 10) - parseInt(balanceNew.replace(/,/g, ''), 10);
   console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChange, ' FRA');
 
-  /* if (balanceChange != 210.02) {
-    console.log('BAR balance does not match expected value')
-    return [false, givenCommitment];
-  }*/
+  if (balanceChange != 210) {
+    console.log('BAR balance does not match expected value');
+    return false;
+  }
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment]);
   const anonBalanceValue = parseInt(anonBalances.unSpentBalances.balances[0].amount);
   console.log('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ' FRA');
-  /* TODO - change 210 to usedSid BAR balance
-  if (anonBalanceValue != 210) {
-    console.log('ABAR balance does not match expected value')
-    return [false, givenCommitment];
-  }*/
 
-  return [true, givenCommitment];
+  if (anonBalanceValue != 210 && anonBalanceValue != 209) {
+    console.log('ABAR balance does not match expected value');
+    return false;
+  }
+
+  return true;
 };
 
 export const abarToAbar = async (
   AnonKeys1: FindoraWallet.FormattedAnonKeys,
   AnonKeys2: FindoraWallet.FormattedAnonKeys,
-  givenCommitmentToTransfer: string,
 ) => {
   console.log('////////////////  AnonTransfer (abarToAbar) //////////////// ');
+
   const anonKeysSender = { ...AnonKeys1 };
   const anonKeysReceiver = { ...AnonKeys2 };
+
+  const givenCommitmentToTransfer = (await barToAbar(anonKeysSender, false)) as string;
 
   //const givenCommitmentToTransfer = 'ePe-5CbvvSFrddkd3FzN6MPz5QvDOGuw1-THyti4OUE=';
   console.log('🚀 ~ abarToAbar ~ givenCommitmentToTransfer', givenCommitmentToTransfer);
@@ -244,7 +220,7 @@ export const abarToAbar = async (
 
   const { commitmentsMap } = abarToAbarData;
 
-  const retrivedCommitmentsListReceiver = [];
+  const retrievedCommitmentsListReceiver = [];
 
   for (const commitmentsMapEntry of commitmentsMap) {
     const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
@@ -254,23 +230,23 @@ export const abarToAbar = async (
     }
 
     if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
-      retrivedCommitmentsListReceiver.push(commitmentKey);
+      retrievedCommitmentsListReceiver.push(commitmentKey);
     }
   }
 
-  console.log('🚀 ~ abarToAbar ~ retrivedCommitmentsListReceiver', retrivedCommitmentsListReceiver);
+  console.log('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
   console.log('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
 
   const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
-  console.log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
+  //console.log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
 
-  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver);
-  console.log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver);
+  //console.log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
 
   const balanceSender = parseInt(balancesSender.balances[0].amount);
   const balanceReceiver = parseInt(balancesReceiver.balances[0].amount);
 
-  if (balanceSender != 0 || balanceReceiver != 50) {
+  if (balanceSender != 158 || balanceReceiver != 50) {
     console.log('ABAR balances does not match expected value');
     return false;
   }
@@ -284,17 +260,20 @@ export const abarToAbar = async (
   return true;
 };
 
-export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
-  const pkey = PKEY_MINE;
+export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
+  console.log('//////////////// abarToBar //////////////// ');
+
+  const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const anonKeysSender = { ...AnonKeys };
 
+  const givenCommitment = (await barToAbar(anonKeysSender, false)) as string;
+
   const balance = await Account.getBalance(walletInfo);
-  console.log('BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
   const [ownedAbarToUseAsSource] = ownedAbarsResponse;
-  console.log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+  //console.log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
 
   const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
@@ -309,20 +288,22 @@ export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys, given
 
   console.log('abar to bar result handle!!!', resultHandle);
 
+  await sleep(waitingTimeBeforeCheckTxStatus);
+  console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChange = parseInt(balanceNew) - parseInt(balance);
+  const balanceChange = parseInt(balanceNew.replace(/,/g, ''), 10) - parseInt(balance.replace(/,/g, ''), 10);
   console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChange, ' FRA');
 
-  /* if (balanceChange != 210) {
-    console.log('BAR balance does not match expected value')
+  if (balanceChange != 210) {
+    console.log('BAR balance does not match expected value');
     return false;
-  }*/
+  }
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
-  const anonBalanceValue = parseInt(anonBalances.unSpentBalances.balances[0].amount);
-
-  if (anonBalanceValue != 0) {
+  console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
+  const anonBalanceValue = parseInt(anonBalances.spentBalances.balances[0].amount);
+  if (anonBalanceValue != 210 && anonBalanceValue != 209) {
     console.log('ABAR balance does not match expected value');
     return false;
   }
@@ -350,7 +331,7 @@ export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, g
 /*
 // Define and Issue a custom asset
 const defineIssueCustomAsset = async () => {
-  const pkey = PKEY_LOCAL_FAUCET;
+  const pkey = mainFaucet;
 
   const assetCode = await Asset.getRandomAssetCode();
   //const assetCode = CustomAssetCode;
@@ -374,7 +355,7 @@ const defineIssueCustomAsset = async () => {
 
 // Send custom asset to a single recepient
  const transferCustomAssetToSingleRecepient = async () => {
-  const pkey = PKEY_MINE;
+  const pkey = senderOne;
   const toPkey = PKEY_MINE2;
   const customAssetCode = CustomAssetCode;
 
@@ -403,7 +384,7 @@ const defineIssueCustomAsset = async () => {
 
 // Get custom asset balance
 const getCustomAssetBalance = async () => {
-  const pkey = PKEY_MINE;
+  const pkey = senderOne;
   const customAssetCode = CustomAssetCode;
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
@@ -423,7 +404,7 @@ const getTransactionStatus = async () => {
 };
 
 const getFee = async () => {
-  const pkey = PKEY_MINE;
+  const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const feeInputsPayload = await getFeeInputs(walletInfo, 11, true);
   console.log('🚀 ~ getFee ~ feeInputsPayload', feeInputsPayload);
