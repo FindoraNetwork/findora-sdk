@@ -94,8 +94,9 @@ const barToAbarBalances = async (
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
   console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChange = parseInt(balance.replace(/,/g, ''), 10) - parseInt(balanceNew.replace(/,/g, ''), 10);
-  console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChange, ' FRA');
+  const balanceChangeF = parseFloat(balance.replace(/,/g, '')) - parseFloat(balanceNew.replace(/,/g, ''));
+  const balanceChange = Math.floor(balanceChangeF);
+  console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
 
   if (balanceChange != 210) {
     console.log('BAR balance does not match expected value');
@@ -325,10 +326,11 @@ export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
   console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChange = parseInt(balanceNew.replace(/,/g, ''), 10) - parseInt(balance.replace(/,/g, ''), 10);
-  console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChange, ' FRA');
+  const balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
+  const balanceChange = Math.floor(balanceChangeF);
+  console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
 
-  if (balanceChange != 210) {
+  if (balanceChange != 209 && balanceChange != 210) {
     console.log('BAR balance does not match expected value');
     return false;
   }
@@ -443,15 +445,16 @@ export const createTestBarsMulti = async () => {
   await defineIssueCustomAsset(asset1Code);
 
   const balance1New = await Account.getBalance(toWalletInfo, asset1Code);
-  const balance1Change =
-    parseInt(balance1New.replace(/,/g, ''), 10) - parseInt(balance1Old.replace(/,/g, ''), 10);
+  const balance1ChangeF =
+    parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
+  const balance1Change = Math.floor(balance1ChangeF);
   console.log(
     'Custom Asset1 Old Balance = ',
     balance1Old,
     '; Custom Asset1 New Balance = ',
     balance1New,
     '; Custom Asset1 Balance Change = ',
-    balance1Change,
+    balance1ChangeF,
   );
 
   // const asset2Code = 'Pw-qyQ1cpBMPevW-rLy5Qv1pxr3qrfiMz6kaxiL-s-Q='; // await Asset.getRandomAssetCode();
@@ -460,8 +463,9 @@ export const createTestBarsMulti = async () => {
   // await sleep(waitingTimeBeforeCheckTxStatus);
 
   // const balance2New = await Account.getBalance(toWalletInfo, asset2Code);
-  // const balance2Change = parseInt(balance2New.replace(/,/g, ''), 10) - parseInt(balance2Old.replace(/,/g, ''), 10);
-  // console.log('Asset2 Old Balance = ', balance2Old, '; Asset2 New Balance = ', balance2New, '; Asset2 Balance Change = ', balance2Change);
+  // const balance2ChangeF = parseFloat(balance2New.replace(/,/g, '')) - parseFloat(balance2Old.replace(/,/g, ''));
+  // const balance2Change = Math.floor(balance2ChangeF);
+  // console.log('Asset2 Old Balance = ', balance2Old, '; Asset2 New Balance = ', balance2New, '; Asset2 Balance Change = ', balance2ChangeF);
 
   if (balance1Change != 1000) {
     console.log('Custom Asset BAR balance does not match expected value');
