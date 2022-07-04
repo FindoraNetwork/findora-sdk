@@ -1,10 +1,8 @@
 import dotenv from 'dotenv';
-import { getFeeInputs } from 'services/fee';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from '../api';
+import { Account, Asset, Keypair, Network, Transaction, TripleMasking } from '../api';
 import Sdk from '../Sdk';
-import { create as createBigNumber } from '../services/bigNumber';
-import { FileCacheProvider, MemoryCacheProvider } from '../services/cacheStore/providers';
+import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { addUtxo } from '../services/utxoHelper';
 
 dotenv.config();
@@ -34,14 +32,24 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 Sdk.init(sdkEnv);
 
-const { mainFaucet, senderOne } = walletKeys;
+const { mainFaucet } = walletKeys;
 
 const password = 'yourSecretPassword';
+
+export const createNewKeypair = async () => {
+  const mm = await Keypair.getMnemonic(24);
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
+  console.log('new wallet info', walletInfo);
+
+  return walletInfo;
+};
 
 /**
  * Create FRA Test BARs for Single Asset Integration Test
  */
-export const createTestBars = async () => {
+export const createTestBars = async (senderOne: string) => {
   console.log('////////////////  Create Test Bars //////////////// ');
 
   const pkey = mainFaucet;
@@ -140,6 +148,7 @@ export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, g
  * BAR to ABAR conversion
  */
 export const barToAbar = async (
+  senderOne: string,
   AnonKeys: FindoraWallet.FormattedAnonKeys,
   isBalanceCheck: boolean,
   givenSid = 0,
@@ -149,8 +158,6 @@ export const barToAbar = async (
   const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const balance = await Account.getBalance(walletInfo);
-  // const fraCode = await Asset.getFraAssetCode();
-  // console.log('BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
 
   let sid = givenSid;
   if (givenSid === 0) {
@@ -206,6 +213,7 @@ export const barToAbar = async (
  * Single Asset Anonymous Transfer (ABAR To ABAR) Integration Test
  */
 export const abarToAbar = async (
+  senderOne: string,
   AnonKeys1: FindoraWallet.FormattedAnonKeys,
   AnonKeys2: FindoraWallet.FormattedAnonKeys,
 ) => {
@@ -214,7 +222,7 @@ export const abarToAbar = async (
   const anonKeysSender = { ...AnonKeys1 };
   const anonKeysReceiver = { ...AnonKeys2 };
 
-  const givenCommitmentToTransfer = (await barToAbar(anonKeysSender, false)) as string;
+  const givenCommitmentToTransfer = (await barToAbar(senderOne, anonKeysSender, false)) as string;
 
   console.log('🚀 ~ abarToAbar ~ givenCommitmentToTransfer', givenCommitmentToTransfer);
   const givenCommitmentsListSender = [givenCommitmentToTransfer];
@@ -293,14 +301,14 @@ export const abarToAbar = async (
 /**
  * ABAR To BAR conversion Integration Test for FRA
  */
-export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
+export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => {
   console.log('//////////////// ABAR To BAR conversion //////////////// ');
 
   const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const anonKeysSender = { ...AnonKeys };
 
-  const givenCommitment = (await barToAbar(anonKeysSender, false)) as string;
+  const givenCommitment = (await barToAbar(senderOne, anonKeysSender, false)) as string;
 
   const balance = await Account.getBalance(walletInfo);
 
@@ -313,9 +321,6 @@ export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
     walletInfo,
     ownedAbarToUseAsSource,
   );
-
-  console.log('🚀 ~ abarToBar ~ abarToBarData', abarToBarData);
-  console.log('🚀 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
@@ -337,7 +342,7 @@ export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
   console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
-  if (anonBalances.spentBalances.balances === []) {
+  if (!anonBalances?.spentBalances?.balances?.length) {
     console.log('No ABAR spent balances available');
     return false;
   }
@@ -362,7 +367,7 @@ export const abarToBar = async (AnonKeys: FindoraWallet.FormattedAnonKeys) => {
 /**
  * Define and Issue a custom asset
  */
-const defineIssueCustomAsset = async (assetCode: string) => {
+const defineIssueCustomAsset = async (senderOne: string, assetCode: string) => {
   const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -384,7 +389,7 @@ const defineIssueCustomAsset = async (assetCode: string) => {
 /**
  * Get available SIDs for a given custom asset and FRA
  */
-const getSidsForAsset = async (assetCode: string) => {
+const getSidsForAsset = async (senderOne: string, assetCode: string) => {
   const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
   const fraCode = await Asset.getFraAssetCode();
 
@@ -417,7 +422,7 @@ const getSidsForAsset = async (assetCode: string) => {
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
-export const createTestBarsMulti = async () => {
+export const createTestBarsMulti = async (senderOne: string, asset1Code: string) => {
   console.log('//////////////// Issue Custom Asset and Create Test Bars //////////////// ');
 
   const pkey = mainFaucet;
@@ -440,14 +445,14 @@ export const createTestBarsMulti = async () => {
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
   console.log('send fra result handle!!', resultHandle);
 
-  const asset1Code = 'A2kCJW_VVJZWF0AhprPWPt4B_QHj8-Ze4L0vCAxnJTM='; // await Asset.getRandomAssetCode();
   const balance1Old = await Account.getBalance(toWalletInfo, asset1Code);
-  await defineIssueCustomAsset(asset1Code);
+  await defineIssueCustomAsset(senderOne, asset1Code);
 
   const balance1New = await Account.getBalance(toWalletInfo, asset1Code);
   const balance1ChangeF =
     parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
   const balance1Change = Math.floor(balance1ChangeF);
+
   console.log(
     'Custom Asset1 Old Balance = ',
     balance1Old,
@@ -456,16 +461,6 @@ export const createTestBarsMulti = async () => {
     '; Custom Asset1 Balance Change = ',
     balance1ChangeF,
   );
-
-  // const asset2Code = 'Pw-qyQ1cpBMPevW-rLy5Qv1pxr3qrfiMz6kaxiL-s-Q='; // await Asset.getRandomAssetCode();
-  // const balance2Old = await Account.getBalance(toWalletInfo, asset2Code);
-  // await defineIssueCustomAsset(asset2Code);
-  // await sleep(waitingTimeBeforeCheckTxStatus);
-
-  // const balance2New = await Account.getBalance(toWalletInfo, asset2Code);
-  // const balance2ChangeF = parseFloat(balance2New.replace(/,/g, '')) - parseFloat(balance2Old.replace(/,/g, ''));
-  // const balance2Change = Math.floor(balance2ChangeF);
-  // console.log('Asset2 Old Balance = ', balance2Old, '; Asset2 New Balance = ', balance2New, '; Asset2 Balance Change = ', balance2ChangeF);
 
   if (balance1Change != 1000) {
     console.log('Custom Asset BAR balance does not match expected value');
@@ -479,22 +474,28 @@ export const createTestBarsMulti = async () => {
  * Multi/Custom Asset Anonymous Transfer (ABAR To ABAR) Integration Test
  */
 export const abarToAbarMulti = async (
+  senderOne: string,
   AnonKeys1: FindoraWallet.FormattedAnonKeys,
   AnonKeys2: FindoraWallet.FormattedAnonKeys,
+  asset1Code: string,
 ) => {
   console.log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
 
   const anonKeysSender = { ...AnonKeys1 };
   const anonKeysReceiver = { ...AnonKeys2 };
 
-  const asset1Code = 'A2kCJW_VVJZWF0AhprPWPt4B_QHj8-Ze4L0vCAxnJTM=';
-  const [_fraSids, customAssetSids] = await getSidsForAsset(asset1Code);
+  const [_fraSids, customAssetSids] = await getSidsForAsset(senderOne, asset1Code);
   const customAssetSid = customAssetSids.sort((a, b) => b - a)[0];
-  const givenCommitmentToTransfer = (await barToAbar(anonKeysSender, false, customAssetSid)) as string;
+  const givenCommitmentToTransfer = (await barToAbar(
+    senderOne,
+    anonKeysSender,
+    false,
+    customAssetSid,
+  )) as string;
 
-  const [fraSids, _customAssetSids] = await getSidsForAsset(asset1Code);
+  const [fraSids, _customAssetSids] = await getSidsForAsset(senderOne, asset1Code);
   const fraSid = fraSids.sort((a, b) => b - a)[0];
-  const givenCommitmentsToPayFee = [(await barToAbar(anonKeysSender, false, fraSid)) as string];
+  const givenCommitmentsToPayFee = [(await barToAbar(senderOne, anonKeysSender, false, fraSid)) as string];
 
   console.log('🚀 ~ abarToAbar ~ Given ABAR commitment To Transfer', givenCommitmentToTransfer);
   console.log('🚀 ~ abarToAbar ~ Given FRA ABAR Commitment', givenCommitmentsToPayFee);
@@ -572,8 +573,10 @@ export const abarToAbarMulti = async (
   const senderCustomBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [
     givenCommitmentToTransfer,
   ]);
+
   console.log('🚀 Custom Asset spent balances for sender after transfer', senderCustomBalances.spentBalances);
-  if (senderCustomBalances.spentBalances.balances === []) {
+
+  if (!senderCustomBalances?.spentBalances?.balances?.length) {
     console.log('No ABAR spent balances available');
     return false;
   }
@@ -603,4 +606,9 @@ export const abarToAbarMulti = async (
   }
 
   return true;
+};
+
+export const getRandomAssetCode = async () => {
+  const asset1Code = await Asset.getRandomAssetCode();
+  return asset1Code;
 };
