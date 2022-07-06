@@ -502,7 +502,7 @@ export const barToAbar = async (
   }
 
   let axfrPublicKey;
-  let encKey;
+  // let encKey;
 
   try {
     axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(anonKeys.axfrPublicKey);
