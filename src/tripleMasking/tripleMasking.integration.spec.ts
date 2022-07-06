@@ -2,39 +2,32 @@ import * as Integration from './tripleMasking.integration';
 
 const extendedExecutionTimeout = 180000;
 
-/*
-const anonKeys1 = Integration.getAnonKeys();
-const anonKeys2 = Integration.getAnonKeys();
-const anonKeys3 = Integration.getAnonKeys();
-*/
+let anonKeys1: FindoraWallet.FormattedAnonKeys;
+let anonKeys2: FindoraWallet.FormattedAnonKeys;
+let anonKeys3: FindoraWallet.FormattedAnonKeys;
 
-const anonKeys1 = {
-  axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-  axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-  decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-  encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
-};
+let senderOne = '';
+let asset1Code = '';
 
-const anonKeys2 = {
-  axfrPublicKey: '5kJ1D8ZGmaHbyv4Yfn3q94oYAgV8km5dkiBHWPMU2b8=',
-  axfrSecretKey: 'VDj-QNt0UEilrJsXa69HduAnfsXpZqYabXC_ozqiCwTmQnUPxkaZodvK_hh-fer3ihgCBXySbl2SIEdY8xTZvw==',
-  decKey: 'KLzfPV-ft7m114DsUBt_ZblsdbCFqhIzkTWd9rZBN3w=',
-  encKey: 'k9L1_NnjjZu6jpkKZXrmsRi2Vta0LuLGsk2y4Hk0akI=',
-};
+beforeAll(async (done: any) => {
+  const walletInfo = await Integration.createNewKeypair();
+  anonKeys1 = await Integration.getAnonKeys();
+  anonKeys2 = await Integration.getAnonKeys();
+  anonKeys3 = await Integration.getAnonKeys();
 
-const anonKeys3 = {
-  axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-  axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-  decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
-  encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
-};
+  senderOne = walletInfo.privateStr!;
+
+  asset1Code = await Integration.getRandomAssetCode();
+
+  done();
+}, extendedExecutionTimeout);
 
 describe(`Triple Masking Integration (integration test)`, () => {
   describe('Single Asset Integration Test', () => {
     it(
       'Should create test BARs with simple FRA transfer',
       async () => {
-        const result = await Integration.createTestBars();
+        const result = await Integration.createTestBars(senderOne);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,
@@ -42,7 +35,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should convert BAR to ABAR, and verify balances of BAR and ABAR',
       async () => {
-        const result = (await Integration.barToAbar(anonKeys1, true)) as boolean;
+        const result = (await Integration.barToAbar(senderOne, anonKeys1, true)) as boolean;
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,
@@ -50,7 +43,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should do anonymous transfer from Sender to Receiver, and verify ABAR balances',
       async () => {
-        const result = await Integration.abarToAbar(anonKeys1, anonKeys2);
+        const result = await Integration.abarToAbar(senderOne, anonKeys1, anonKeys2);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout * 2,
@@ -58,7 +51,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
       async () => {
-        const result = await Integration.abarToBar(anonKeys1);
+        const result = await Integration.abarToBar(senderOne, anonKeys1);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,
@@ -69,7 +62,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should create test BARs with simple creation and transfer of different assets',
       async () => {
-        const result = await Integration.createTestBarsMulti();
+        const result = await Integration.createTestBarsMulti(senderOne, asset1Code);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,
@@ -77,7 +70,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should do multi asset anonymous transfer, and verify ABAR balances',
       async () => {
-        const result = await Integration.abarToAbarMulti(anonKeys2, anonKeys3);
+        const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, asset1Code);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout * 2,
