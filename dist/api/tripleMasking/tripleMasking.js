@@ -511,7 +511,7 @@ var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountT
 };
 exports.getAbarTransferFee = getAbarTransferFee;
 var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, encKey, error_8, seed, feeInputs, error_9, commitments, barToAbarData;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, error_8, seed, feeInputs, error_9, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
