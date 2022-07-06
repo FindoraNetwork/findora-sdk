@@ -1546,11 +1546,11 @@ const testIt = async () => {
 };
 
 // testIt();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
-getAbarBalance(); // +
+// getAbarBalance(); // +
 // getFee();
 // abarToAbar(); // ++
 // abarToBar(); // +
