@@ -188,7 +188,7 @@ const getAbarOwnerMemo = async (atxoSid: string) => {
   let abarOwnerMemo;
 
   try {
-    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+    abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
   } catch (error) {
     throw new Error(`Could not get decode abar memo data", Error - ${(error as Error).message}`);
   }
@@ -492,7 +492,7 @@ export const barToAbar = async (
   let assetRecord;
 
   try {
-    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+    ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
 
     assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
   } catch (error) {
@@ -920,7 +920,7 @@ export const genNullifierHash = async (
   let abarOwnerMemo;
 
   try {
-    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+    abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
   } catch (error) {
     console.log('error!', error);
 
