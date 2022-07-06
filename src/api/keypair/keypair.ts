@@ -2,12 +2,12 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import {
   AXfrKeyPair,
   AXfrPubKey,
+  AXfrViewKey,
   XfrKeyPair,
   XfrPublicKey,
   XPublicKey,
   XSecretKey,
 } from '../../services/ledger/types';
-import { AXfrViewKey } from 'findora-wallet-wasm/web';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
