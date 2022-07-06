@@ -88,8 +88,9 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '12345';
 
-  const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = PKEY_LOCAL_FAUCET;
   // const pkey = PKEY_MINE;
+  const pkey = PKEY_MINE2;
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
 

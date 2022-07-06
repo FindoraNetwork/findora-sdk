@@ -246,7 +246,7 @@ var getAbarOwnerMemo = function (atxoSid) { return __awaiter(void 0, void 0, voi
                     throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
                 }
                 try {
-                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+                    abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
                 }
                 catch (error) {
                     throw new Error("Could not get decode abar memo data\", Error - " + error.message);
@@ -541,7 +541,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                     throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                 }
                 try {
-                    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+                    ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
                     assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
                 }
                 catch (error) {
@@ -991,7 +991,7 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                     throw new Error("Could not fetch abar memo data for sid (genNullifierHash) \"" + atxoSid + "\", Error - " + memoError.message);
                 }
                 try {
-                    abarOwnerMemo = ledger.OwnerMemo.from_json(myMemoData);
+                    abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
                 }
                 catch (error) {
                     console.log('error!', error);

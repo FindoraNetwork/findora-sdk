@@ -152,7 +152,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '12345';
-                pkey = PKEY_LOCAL_FAUCET;
+                pkey = PKEY_MINE2;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
