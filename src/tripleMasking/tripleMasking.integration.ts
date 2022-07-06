@@ -1,10 +1,8 @@
 import dotenv from 'dotenv';
-import { getFeeInputs } from 'services/fee';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from '../api';
+import { Account, Asset, Keypair, Network, Transaction, TripleMasking } from '../api';
 import Sdk from '../Sdk';
-import { create as createBigNumber } from '../services/bigNumber';
-import { FileCacheProvider, MemoryCacheProvider } from '../services/cacheStore/providers';
+import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { addUtxo } from '../services/utxoHelper';
 
 dotenv.config();
@@ -121,8 +119,7 @@ const barToAbarBalances = async (
  */
 export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
   const anonKeys = { ...AnonKeys };
-  const axfrSecretKey = anonKeys.axfrSecretKey;
-  const decKey = anonKeys.decKey;
+  const axfrKeyPair = anonKeys.axfrSpendKey;
 
   // const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitment);
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -130,10 +127,8 @@ export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, g
   const { abarData } = ownedAbarItem;
   const { atxoSid, ownedAbar } = abarData;
 
-  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
-  const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
-
-  return isNullifierHashSpent;
+  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair);
+  return await TripleMasking.isNullifierHashSpent(hash);
 };
 
 /**
