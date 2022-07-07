@@ -15,6 +15,7 @@
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
+    "resolveJsonModule": true,
     "noUnusedLocals": false,
     "noUnusedParameters": true,
     "outDir": "dist",

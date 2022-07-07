@@ -63,7 +63,7 @@ describe('evm (unit test)', () => {
 
       // ethAddress = findoraNetwork.columbus.relayer;
 
-      const lowLeveldata = await Evm.createLowLevelData('0', convertAmount, '-1', ethAddress, funcName);
+      const lowLeveldata = '';
 
       const result = await Evm.sendAccountToEvm(walletInfo, amount, ethAddress, assetCode, lowLeveldata);
 

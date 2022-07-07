@@ -1,6 +1,8 @@
-import { ethers } from 'ethers';
+import * as bech32ToBuffer from 'bech32-buffer';
+import BigNumber from 'bignumber.js';
+import { TransactionReceipt } from 'ethereum-abi-types-generator';
 import base64 from 'js-base64';
-import Web3 from 'web3';
+
 import { Network } from '../../api';
 import { toWei } from '../../services/bigNumber';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
@@ -9,71 +11,61 @@ import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
 import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
+import {
+  calculationDecimalsAmount,
+  getDefaultAccount,
+  getErc20Contract,
+  getSimBridgeContract,
+  getWeb3,
+  IWebLinkedInfo,
+} from './web3';
 
-const toHex = (covertThis: string, padding: number) => {
-  const temp1 = ethers.utils.hexZeroPad(ethers.utils.hexlify(BigInt(covertThis)), padding);
-  return temp1;
+export const fraAddressToHashAddress = (address: string) => {
+  const result = bech32ToBuffer.decode(address).data;
+  return '0x' + Buffer.from(result).toString('hex');
 };
 
-const createGenericDepositData = (hexMetaData: string | null) => {
-  if (hexMetaData === null) {
-    return '0x' + toHex('0', 32).substring(2); // len(metaData) (32 bytes)
-  }
-  const hexMetaDataLength = hexMetaData.substring(2).length / 2;
-  return '0x' + toHex(String(hexMetaDataLength), 32).substring(2) + hexMetaData.substr(2);
-};
-
-export const createLowLevelData = async (
-  destinationChainId: string,
-  tokenAmount: string,
-  tokenId: string,
+export const fraToBar = async (
+  bridgeAddress: string,
   recipientAddress: string,
-  funcName: string,
-) => {
-  const web3 = new Web3();
-  const data = web3.eth.abi.encodeParameters(
-    ['uint256', 'address', 'uint256'],
-    [tokenId, recipientAddress, tokenAmount],
-  );
+  amount: string,
+  webLinkedInfo: IWebLinkedInfo,
+): Promise<TransactionReceipt> => {
+  const web3 = getWeb3(webLinkedInfo);
+  const contract = getSimBridgeContract(web3, bridgeAddress);
+  const account = await getDefaultAccount(web3);
+  const convertAmount = BigInt(new BigNumber(amount).times(10 ** 18).toString());
 
-  const fun = web3.eth.abi.encodeFunctionCall(
-    {
-      inputs: [
-        {
-          internalType: 'bytes',
-          name: 'data',
-          type: 'bytes',
-        },
-      ],
-      name: 'withdrawToOtherChainCallback',
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    [data],
-  );
-  const dt = '0x' + fun.substring(10);
-  const callData = createGenericDepositData(dt);
-  const fun1 = web3.eth.abi.encodeFunctionCall(
-    {
-      inputs: [
-        {
-          name: 'chainId',
-          type: 'uint8',
-        },
-        {
-          name: 'data',
-          type: 'bytes',
-        },
-      ],
-      name: funcName,
-      outputs: [],
-      stateMutability: 'nonpayable',
-      type: 'function',
-    },
-    [destinationChainId, callData],
-  );
-  return fun1;
+  const sendObj = {
+    from: account,
+    value: convertAmount.toString(),
+  };
+
+  const findoraTo = fraAddressToHashAddress(recipientAddress);
+  return contract.methods.depositFRA(findoraTo).send(sendObj);
+};
+
+export const frc20ToBar = async (
+  bridgeAddress: string,
+  recipientAddress: string,
+  tokenAddress: string,
+  tokenAmount: string,
+  webLinkedInfo: IWebLinkedInfo,
+): Promise<TransactionReceipt | any> => {
+  const web3 = getWeb3(webLinkedInfo);
+  const contract = getSimBridgeContract(web3, bridgeAddress);
+  const erc20Contract = getErc20Contract(web3, tokenAddress);
+  const account = await getDefaultAccount(web3);
+
+  const bridgeAmount = await calculationDecimalsAmount(erc20Contract, tokenAmount, 'toWei');
+
+  const sendObj = {
+    from: account,
+  };
+
+  const findoraTo = fraAddressToHashAddress(recipientAddress);
+
+  return contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).send(sendObj);
 };
 
 export const sendAccountToEvm = async (

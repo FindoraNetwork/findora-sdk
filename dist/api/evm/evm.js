@@ -58,66 +58,65 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.createLowLevelData = void 0;
-var ethers_1 = require("ethers");
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.frc20ToBar = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
+var bech32ToBuffer = __importStar(require("bech32-buffer"));
+var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var js_base64_1 = __importDefault(require("js-base64"));
-var web3_1 = __importDefault(require("web3"));
 var api_1 = require("../../api");
 var bigNumber_1 = require("../../services/bigNumber");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
-var toHex = function (covertThis, padding) {
-    var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(BigInt(covertThis)), padding);
-    return temp1;
+var web3_1 = require("./web3");
+var fraAddressToHashAddress = function (address) {
+    var result = bech32ToBuffer.decode(address).data;
+    return '0x' + Buffer.from(result).toString('hex');
 };
-var createGenericDepositData = function (hexMetaData) {
-    if (hexMetaData === null) {
-        return '0x' + toHex('0', 32).substring(2); // len(metaData) (32 bytes)
-    }
-    var hexMetaDataLength = hexMetaData.substring(2).length / 2;
-    return '0x' + toHex(String(hexMetaDataLength), 32).substring(2) + hexMetaData.substr(2);
-};
-var createLowLevelData = function (destinationChainId, tokenAmount, tokenId, recipientAddress, funcName) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, data, fun, dt, callData, fun1;
+exports.fraAddressToHashAddress = fraAddressToHashAddress;
+var fraToBar = function (bridgeAddress, recipientAddress, amount, webLinkedInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, account, convertAmount, sendObj, findoraTo;
     return __generator(this, function (_a) {
-        web3 = new web3_1.default();
-        data = web3.eth.abi.encodeParameters(['uint256', 'address', 'uint256'], [tokenId, recipientAddress, tokenAmount]);
-        fun = web3.eth.abi.encodeFunctionCall({
-            inputs: [
-                {
-                    internalType: 'bytes',
-                    name: 'data',
-                    type: 'bytes',
-                },
-            ],
-            name: 'withdrawToOtherChainCallback',
-            outputs: [],
-            stateMutability: 'nonpayable',
-            type: 'function',
-        }, [data]);
-        dt = '0x' + fun.substring(10);
-        callData = createGenericDepositData(dt);
-        fun1 = web3.eth.abi.encodeFunctionCall({
-            inputs: [
-                {
-                    name: 'chainId',
-                    type: 'uint8',
-                },
-                {
-                    name: 'data',
-                    type: 'bytes',
-                },
-            ],
-            name: funcName,
-            outputs: [],
-            stateMutability: 'nonpayable',
-            type: 'function',
-        }, [destinationChainId, callData]);
-        return [2 /*return*/, fun1];
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_1.getWeb3)(webLinkedInfo);
+                contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
+                return [4 /*yield*/, (0, web3_1.getDefaultAccount)(web3)];
+            case 1:
+                account = _a.sent();
+                convertAmount = BigInt(new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString());
+                sendObj = {
+                    from: account,
+                    value: convertAmount.toString(),
+                };
+                findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
+                return [2 /*return*/, contract.methods.depositFRA(findoraTo).send(sendObj)];
+        }
     });
 }); };
-exports.createLowLevelData = createLowLevelData;
+exports.fraToBar = fraToBar;
+var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, webLinkedInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, erc20Contract, account, bridgeAmount, sendObj, findoraTo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_1.getWeb3)(webLinkedInfo);
+                contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
+                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_1.getDefaultAccount)(web3)];
+            case 1:
+                account = _a.sent();
+                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, tokenAmount, 'toWei')];
+            case 2:
+                bridgeAmount = _a.sent();
+                sendObj = {
+                    from: account,
+                };
+                findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
+                return [2 /*return*/, contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).send(sendObj)];
+        }
+    });
+}); };
+exports.frc20ToBar = frc20ToBar;
 var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowLevelData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, address, fraAssetCode, mainAssetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {
