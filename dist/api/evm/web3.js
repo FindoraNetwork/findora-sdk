@@ -39,19 +39,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentBalance = exports.getSimBridgeContract = exports.getDefaultAccount = exports.toHex = exports.calculationDecimalsAmount = exports.getErc20Contract = exports.getWeb3 = void 0;
-var hdwallet_provider_1 = __importDefault(require("@truffle/hdwallet-provider"));
+exports.getCurrentBalance = exports.getSimBridgeContract = exports.toHex = exports.calculationDecimalsAmount = exports.getErc20Contract = exports.getWeb3 = void 0;
 var ethers_1 = require("ethers");
 var web3_1 = __importDefault(require("web3"));
 var Erc20_json_1 = __importDefault(require("./abis/Erc20.json"));
 var SimBridge_json_1 = __importDefault(require("./abis/SimBridge.json"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
-var getWeb3 = function (data) {
-    var provider = new hdwallet_provider_1.default({
-        privateKeys: [data.privateStr],
-        providerOrUrl: data.rpcUrl,
-        chainId: data.chainId,
-    });
+var getWeb3 = function (rpcUrl) {
+    var provider = new web3_1.default.providers.HttpProvider(rpcUrl);
     var web3 = new web3_1.default(provider);
     return web3;
 };
@@ -64,21 +59,6 @@ var getSimBridgeContract = function (web3, address) {
     return new web3.eth.Contract(SimBridge_json_1.default, address);
 };
 exports.getSimBridgeContract = getSimBridgeContract;
-var getDefaultAccount = function (web3) { return __awaiter(void 0, void 0, void 0, function () {
-    var accounts;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, web3.eth.getAccounts()];
-            case 1:
-                accounts = _a.sent();
-                if (accounts.length > 0) {
-                    return [2 /*return*/, accounts[0]];
-                }
-                return [2 /*return*/, ''];
-        }
-    });
-}); };
-exports.getDefaultAccount = getDefaultAccount;
 var toHex = function (covertThis, padding) {
     var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(new bignumber_js_1.default(covertThis).toNumber()), padding);
     return temp1;
@@ -101,15 +81,11 @@ var calculationDecimalsAmount = function (contract, amount, type) { return __awa
     });
 }); };
 exports.calculationDecimalsAmount = calculationDecimalsAmount;
-var getCurrentBalance = function (web3) { return __awaiter(void 0, void 0, void 0, function () {
-    var account;
+var getCurrentBalance = function (web3, account) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, getDefaultAccount(web3)];
-            case 1:
-                account = _a.sent();
-                return [4 /*yield*/, web3.eth.getBalance(account)];
-            case 2: return [2 /*return*/, _a.sent()];
+            case 0: return [4 /*yield*/, web3.eth.getBalance(account)];
+            case 1: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

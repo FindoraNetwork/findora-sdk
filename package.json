@@ -116,7 +116,6 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
-    "@truffle/hdwallet-provider": "^2.0.10",
     "@types/btoa": "^1.2.3",
     "@types/web3-provider-engine": "^14.0.1",
     "aws-sdk": "^2.929.0",

@@ -73,46 +73,76 @@ var fraAddressToHashAddress = function (address) {
     return '0x' + Buffer.from(result).toString('hex');
 };
 exports.fraAddressToHashAddress = fraAddressToHashAddress;
-var fraToBar = function (bridgeAddress, recipientAddress, amount, webLinkedInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, contract, account, convertAmount, sendObj, findoraTo;
+var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                web3 = (0, web3_1.getWeb3)(webLinkedInfo);
+                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
                 contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
-                return [4 /*yield*/, (0, web3_1.getDefaultAccount)(web3)];
-            case 1:
-                account = _a.sent();
-                convertAmount = BigInt(new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString());
-                sendObj = {
-                    from: account,
-                    value: convertAmount.toString(),
-                };
+                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
-                return [2 /*return*/, contract.methods.depositFRA(findoraTo).send(sendObj)];
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 1:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 2:
+                gasPrice = _a.sent();
+                contractData = contract.methods.depositFRA(findoraTo).encodeABI();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: bridgeAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    value: convertAmount,
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 3:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 5];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 4: return [2 /*return*/, _a.sent()];
+            case 5: throw Error('fail frc20ToBar');
         }
     });
 }); };
 exports.fraToBar = fraToBar;
-var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, webLinkedInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, contract, erc20Contract, account, bridgeAmount, sendObj, findoraTo;
+var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                web3 = (0, web3_1.getWeb3)(webLinkedInfo);
+                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
                 contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
                 erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
-                return [4 /*yield*/, (0, web3_1.getDefaultAccount)(web3)];
-            case 1:
-                account = _a.sent();
                 return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, tokenAmount, 'toWei')];
-            case 2:
+            case 1:
                 bridgeAmount = _a.sent();
-                sendObj = {
-                    from: account,
-                };
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
-                return [2 /*return*/, contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).send(sendObj)];
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 2:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 3:
+                gasPrice = _a.sent();
+                contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: bridgeAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 4:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 6];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 5: return [2 /*return*/, _a.sent()];
+            case 6: throw Error('fail frc20ToBar');
         }
     });
 }); };

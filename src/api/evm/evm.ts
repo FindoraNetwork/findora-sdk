@@ -11,9 +11,9 @@ import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
 import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
+
 import {
   calculationDecimalsAmount,
-  getDefaultAccount,
   getErc20Contract,
   getSimBridgeContract,
   getWeb3,
@@ -29,20 +29,34 @@ export const fraToBar = async (
   bridgeAddress: string,
   recipientAddress: string,
   amount: string,
-  webLinkedInfo: IWebLinkedInfo,
-): Promise<TransactionReceipt> => {
-  const web3 = getWeb3(webLinkedInfo);
+  web3WalletInfo: IWebLinkedInfo,
+): Promise<TransactionReceipt | any> => {
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const contract = getSimBridgeContract(web3, bridgeAddress);
-  const account = await getDefaultAccount(web3);
-  const convertAmount = BigInt(new BigNumber(amount).times(10 ** 18).toString());
-
-  const sendObj = {
-    from: account,
-    value: convertAmount.toString(),
-  };
+  const convertAmount = new BigNumber(amount).times(10 ** 18).toString();
 
   const findoraTo = fraAddressToHashAddress(recipientAddress);
-  return contract.methods.depositFRA(findoraTo).send(sendObj);
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
+
+  const contractData = contract.methods.depositFRA(findoraTo).encodeABI();
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: bridgeAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    value: convertAmount,
+    nonce: nonce,
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
 };
 
 export const frc20ToBar = async (
@@ -50,22 +64,35 @@ export const frc20ToBar = async (
   recipientAddress: string,
   tokenAddress: string,
   tokenAmount: string,
-  webLinkedInfo: IWebLinkedInfo,
+  web3WalletInfo: IWebLinkedInfo,
 ): Promise<TransactionReceipt | any> => {
-  const web3 = getWeb3(webLinkedInfo);
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const contract = getSimBridgeContract(web3, bridgeAddress);
   const erc20Contract = getErc20Contract(web3, tokenAddress);
-  const account = await getDefaultAccount(web3);
 
   const bridgeAmount = await calculationDecimalsAmount(erc20Contract, tokenAmount, 'toWei');
 
-  const sendObj = {
-    from: account,
-  };
-
   const findoraTo = fraAddressToHashAddress(recipientAddress);
 
-  return contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).send(sendObj);
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
+  const contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: bridgeAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    nonce: nonce,
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
 };
 
 export const sendAccountToEvm = async (

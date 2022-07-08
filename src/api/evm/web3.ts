@@ -1,4 +1,3 @@
-import HDWalletProvider from '@truffle/hdwallet-provider';
 import { AbiItem } from 'ethereum-abi-types-generator';
 import { ethers } from 'ethers';
 import Web3 from 'web3';
@@ -16,14 +15,11 @@ export interface IWebLinkedInfo {
   privateStr: string;
   rpcUrl: string;
   chainId: number;
+  account: string;
 }
 
-const getWeb3 = (data: IWebLinkedInfo): Web3 => {
-  const provider = new HDWalletProvider({
-    privateKeys: [data.privateStr],
-    providerOrUrl: data.rpcUrl,
-    chainId: data.chainId,
-  });
+const getWeb3 = (rpcUrl: string): Web3 => {
+  const provider = new Web3.providers.HttpProvider(rpcUrl);
   const web3: Web3 = new Web3(provider);
   return web3;
 };
@@ -38,14 +34,6 @@ const getErc20Contract = (web3: Web3, address: string) => {
 
 const getSimBridgeContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(SimBridgeAbi as AbiItem[], address) as unknown as MyContract<SimBridge>;
-};
-
-const getDefaultAccount = async (web3: Web3) => {
-  const accounts = await web3.eth.getAccounts();
-  if (accounts.length > 0) {
-    return accounts[0];
-  }
-  return '';
 };
 
 const toHex = (covertThis: string, padding: number) => {
@@ -67,8 +55,7 @@ const calculationDecimalsAmount = async (
   return new BigNumber(amount).div(power).toString();
 };
 
-const getCurrentBalance = async (web3: Web3): Promise<string> => {
-  const account = await getDefaultAccount(web3);
+const getCurrentBalance = async (web3: Web3, account: string): Promise<string> => {
   return await web3.eth.getBalance(account);
 };
 
@@ -77,7 +64,6 @@ export {
   getErc20Contract,
   calculationDecimalsAmount,
   toHex,
-  getDefaultAccount,
   getSimBridgeContract,
   getCurrentBalance,
 };
