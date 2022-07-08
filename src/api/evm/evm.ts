@@ -11,7 +11,7 @@ import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
 
 const toHex = (covertThis: string, padding: number) => {
-  const temp1 = ethers.utils.hexZeroPad(ethers.utils.hexlify(BigInt(covertThis)), padding);
+  const temp1 = ethers.utils.hexZeroPad(ethers.utils.hexlify(BigInt(covertThis).toString()), padding);
   return temp1;
 };
 

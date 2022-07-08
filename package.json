@@ -117,7 +117,6 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
-    "@truffle/hdwallet-provider": "^1.5.1",
     "@types/btoa": "^1.2.3",
     "aws-sdk": "^2.929.0",
     "axios": "^0.21.1",
@@ -135,6 +134,8 @@
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "util": "^0.12.4",
-    "web3": "^1.5.2"
+    "web3": "^1.5.2",
+    "web3-eth-contract": "^1.5.2",
+    "@truffle/hdwallet-provider": "^1.5.1"
   }
 }

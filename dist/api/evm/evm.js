@@ -68,7 +68,7 @@ var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var toHex = function (covertThis, padding) {
-    var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(BigInt(covertThis)), padding);
+    var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(BigInt(covertThis).toString()), padding);
     return temp1;
 };
 var createGenericDepositData = function (hexMetaData) {
