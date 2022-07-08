@@ -75,10 +75,13 @@ describe('triple masking (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
       anonKeys = {
-        axfrPublicKey: 'axfrPublicKey',
-        axfrSecretKey: 'axfrSecretKey',
-        decKey: 'decKey',
-        encKey: 'encKey',
+        // axfrPublicKey: 'axfrPublicKey',
+        // axfrSecretKey: 'axfrSecretKey',
+        // decKey: 'decKey',
+        // encKey: 'encKey',
+        axfrPublicKey: 'pub_key',
+        axfrSpendKey: 'spend_key',
+        axfrViewKey: 'view_key',
       };
 
       clientAssetRecord = {
@@ -348,7 +351,7 @@ describe('triple masking (unit test)', () => {
       expect(spyLedgerOwnerMemoFromJson).toHaveBeenCalledWith(ownerMemoDataResult.response);
       expect(spyLedgerClientAssetRecordFromJson).toHaveBeenCalledWith(myUtxo[0].utxo);
       expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrPublicKey);
-      expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
+      // expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
       expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(
         walletInfo.keypair,
         returnAxfrPublicKey,
@@ -463,16 +466,18 @@ describe('triple masking (unit test)', () => {
       anonKeys = {
         free: jest.fn(() => {}),
         to_json: jest.fn(() => {}),
-        axfr_public_key: 'axfr_public_key',
-        axfr_secret_key: 'axfr_secret_key',
-        dec_key: 'dec_key',
-        enc_key: 'enc_key',
+        pub_key: 'pub_key',
+        spend_key: 'spend_key',
+        view_key: 'view_key',
+        // dec_key: 'dec_key',
+        // enc_key: 'enc_key',
       };
       formattedAnonKeys = {
-        axfrPublicKey: anonKeys.axfr_public_key,
-        axfrSecretKey: anonKeys.axfr_secret_key,
-        decKey: anonKeys.dec_key,
-        encKey: anonKeys.enc_key,
+        axfrPublicKey: anonKeys.pub_key,
+        axfrSpendKey: anonKeys.spend_key,
+        axfrViewKey: anonKeys.view_key,
+        // decKey: anonKeys.dec_key,
+        // encKey: anonKeys.enc_key,
       };
       nodeLedger = {
         foo: 'node',
