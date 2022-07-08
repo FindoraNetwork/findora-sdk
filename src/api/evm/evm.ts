@@ -49,8 +49,8 @@ export const fraToBar = async (
   const txParams = {
     from: web3WalletInfo.account,
     to: bridgeAddress,
-    gasPrice: web3.utils.toHex(gasPrice),
-    gas: web3.utils.toHex(estimategas),
+    gasPrice: gasPrice,
+    gas: estimategas,
     value: convertAmount,
     nonce: nonce,
     data: contractData,
@@ -92,7 +92,7 @@ export const frc20ToBar = async (
   const txParams = {
     from: web3WalletInfo.account,
     to: bridgeAddress,
-    gasPrice: web3.utils.toHex(gasPrice),
+    gasPrice: web3.utils.toHex(Number(gasPrice) * 2),
     gas: web3.utils.toHex(estimategas),
     nonce: nonce,
     data: contractData,

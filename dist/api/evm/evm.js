@@ -98,8 +98,8 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
                 txParams = {
                     from: web3WalletInfo.account,
                     to: bridgeAddress,
-                    gasPrice: web3.utils.toHex(gasPrice),
-                    gas: web3.utils.toHex(estimategas),
+                    gasPrice: gasPrice,
+                    gas: estimategas,
                     value: convertAmount,
                     nonce: nonce,
                     data: contractData,
@@ -144,7 +144,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                 txParams = {
                     from: web3WalletInfo.account,
                     to: bridgeAddress,
-                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasPrice: web3.utils.toHex(Number(gasPrice) * 2),
                     gas: web3.utils.toHex(estimategas),
                     nonce: nonce,
                     data: contractData,
