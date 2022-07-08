@@ -90,7 +90,7 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
                 gasPrice = _a.sent();
                 contractData = contract.methods.depositFRA(findoraTo).encodeABI();
                 return [4 /*yield*/, web3.eth.estimateGas({
-                        to: bridgeAddress,
+                        to: web3WalletInfo.account,
                         data: contractData,
                     })];
             case 3:

@@ -42,7 +42,7 @@ export const fraToBar = async (
   const contractData = contract.methods.depositFRA(findoraTo).encodeABI();
 
   const estimategas = await web3.eth.estimateGas({
-    to: bridgeAddress,
+    to: web3WalletInfo.account,
     data: contractData,
   });
 
