@@ -97,11 +97,9 @@ describe('evm (unit test)', function () {
                         assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
                         funcName = 'withdrawFRA';
                         convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
-                        return [4 /*yield*/, Evm.createLowLevelData('0', convertAmount, '-1', ethAddress, funcName)];
-                    case 2:
-                        lowLeveldata = _a.sent();
+                        lowLeveldata = '';
                         return [4 /*yield*/, Evm.sendAccountToEvm(walletInfo, amount, ethAddress, assetCode, lowLeveldata)];
-                    case 3:
+                    case 2:
                         result = _a.sent();
                         expect(spyTransactionSendToaddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
                         expect(spyAddOperationConvertAccount).toHaveBeenCalledWith(walletInfo.keypair, ethAddress, BigInt(amount) * BigInt(Math.pow(10, 6)));

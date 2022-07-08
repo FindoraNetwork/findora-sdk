@@ -1,7 +1,11 @@
+import { TransactionReceipt } from 'ethereum-abi-types-generator';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
-export declare const createLowLevelData: (destinationChainId: string, tokenAmount: string, tokenId: string, recipientAddress: string, funcName: string) => Promise<string>;
+import { IWebLinkedInfo } from './web3';
+export declare const fraAddressToHashAddress: (address: string) => string;
+export declare const fraToBar: (bridgeAddress: string, recipientAddress: string, amount: string, webLinkedInfo: IWebLinkedInfo) => Promise<TransactionReceipt>;
+export declare const frc20ToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, webLinkedInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare const sendAccountToEvm: (walletInfo: WalletKeypar, amount: string, ethAddress: string, assetCode: string, lowLevelData: string) => Promise<TransactionBuilder>;
 /**
  * Transfer ETH to the user FRA address
