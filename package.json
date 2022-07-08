@@ -104,6 +104,7 @@
     "prettier": "^2.2.1",
     "solc": "0.4.17",
     "stream-browserify": "^3.0.0",
+    "truffle-hdwallet-provider": "^1.0.17",
     "ts-jest": "^26.4.4",
     "ts-loader": "^8.0.13",
     "ts-node": "^9.1.1",
@@ -117,7 +118,6 @@
   },
   "dependencies": {
     "@types/btoa": "^1.2.3",
-    "@types/web3-provider-engine": "^14.0.1",
     "aws-sdk": "^2.929.0",
     "axios": "^0.21.1",
     "axios-retry": "^3.1.9",
@@ -135,10 +135,9 @@
     "neat-csv": "^6.0.1",
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
-    "truffle-hdwallet-provider": "^1.0.17",
     "util": "^0.12.4",
     "web3": "^1.5.2",
-    "web3-eth-contract": "^1.5.2",
-    "@truffle/hdwallet-provider": "^1.5.1"
+    "web3-eth-contract": "1.5.2",
+    "@truffle/hdwallet-provider": "1.5.1"
   }
 }
