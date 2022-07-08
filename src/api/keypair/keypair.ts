@@ -2,6 +2,7 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import {
   AXfrKeyPair,
   AXfrPubKey,
+  AXfrViewKey,
   XfrKeyPair,
   XfrPublicKey,
   XPublicKey,
@@ -146,8 +147,7 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
 export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
   const ledger = await getLedger();
   try {
-    const toPublickey = ledger.axfr_pubkey_from_string(publicKey);
-    return toPublickey;
+    return ledger.axfr_pubkey_from_string(publicKey);
   } catch (err) {
     throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
   }
@@ -156,10 +156,18 @@ export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrP
 export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
   const ledger = await getLedger();
   try {
-    const aXfrKeyPair = ledger.axfr_keypair_from_string(privateKey);
-    return aXfrKeyPair;
+    return ledger.axfr_keypair_from_string(privateKey);
   } catch (err) {
     throw new Error(`could not get AXfrKeyPair from the string, "${err}" `);
+  }
+};
+
+export const getAXfrViewKeyByBase64 = async (privateKey: string): Promise<AXfrViewKey> => {
+  const ledger = await getLedger();
+  try {
+    return ledger.axfr_viewkey_from_string(privateKey);
+  } catch (err) {
+    throw new Error(`could not get AXfrViewKey from the string, "${err}" `);
   }
 };
 

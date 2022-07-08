@@ -129,8 +129,7 @@ const barToAbarBalances = async (
  */
 export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
   const anonKeys = { ...AnonKeys };
-  const axfrSecretKey = anonKeys.axfrSecretKey;
-  const decKey = anonKeys.decKey;
+  const axfrKeyPair = anonKeys.axfrSpendKey;
 
   // const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitment);
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -138,10 +137,8 @@ export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, g
   const { abarData } = ownedAbarItem;
   const { atxoSid, ownedAbar } = abarData;
 
-  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey);
-  const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
-
-  return isNullifierHashSpent;
+  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair);
+  return await TripleMasking.isNullifierHashSpent(hash);
 };
 
 /**

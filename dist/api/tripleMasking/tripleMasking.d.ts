@@ -55,5 +55,5 @@ export declare const getAllAbarBalances: (anonKeys: FindoraWallet.FormattedAnonK
 }>;
 export declare const getAbarBalance: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<AnonWalletBalanceInfo>;
 export declare const getOwnedAbars: (givenCommitment: string) => Promise<FindoraWallet.OwnedAbarItem[]>;
-export declare const genNullifierHash: (atxoSid: string, ownedAbar: FindoraWallet.OwnedAbar, axfrSecretKey: string, decKey: string) => Promise<string>;
+export declare const genNullifierHash: (atxoSid: string, ownedAbar: FindoraWallet.OwnedAbar, axfrSpendKey: string) => Promise<string>;
 export {};

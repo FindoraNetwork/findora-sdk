@@ -112,10 +112,13 @@ describe('triple masking (unit test)', function () {
                 address: 'myAddress',
             };
             anonKeys = {
-                axfrPublicKey: 'axfrPublicKey',
-                axfrSecretKey: 'axfrSecretKey',
-                decKey: 'decKey',
-                encKey: 'encKey',
+                // axfrPublicKey: 'axfrPublicKey',
+                // axfrSecretKey: 'axfrSecretKey',
+                // decKey: 'decKey',
+                // encKey: 'encKey',
+                axfrPublicKey: 'pub_key',
+                axfrSpendKey: 'spend_key',
+                axfrViewKey: 'view_key',
             };
             clientAssetRecord = {
                 a: 'clientAssetRecord',
@@ -442,7 +445,7 @@ describe('triple masking (unit test)', function () {
                         expect(spyLedgerOwnerMemoFromJson).toHaveBeenCalledWith(ownerMemoDataResult.response);
                         expect(spyLedgerClientAssetRecordFromJson).toHaveBeenCalledWith(myUtxo[0].utxo);
                         expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrPublicKey);
-                        expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
+                        // expect(spyGetXPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.encKey);
                         expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(walletInfo.keypair, returnAxfrPublicKey, BigInt(sid), clientAssetRecord, ownerMemo.clone(), returnEncKey);
                         expect(spyGetCommitments).toHaveBeenCalled();
                         expect(spySaveBarToAbarToCache).toHaveBeenCalledWith(walletInfo, sid, commitments.commitments, anonKeys);
@@ -552,16 +555,18 @@ describe('triple masking (unit test)', function () {
             anonKeys = {
                 free: jest.fn(function () { }),
                 to_json: jest.fn(function () { }),
-                axfr_public_key: 'axfr_public_key',
-                axfr_secret_key: 'axfr_secret_key',
-                dec_key: 'dec_key',
-                enc_key: 'enc_key',
+                pub_key: 'pub_key',
+                spend_key: 'spend_key',
+                view_key: 'view_key',
+                // dec_key: 'dec_key',
+                // enc_key: 'enc_key',
             };
             formattedAnonKeys = {
-                axfrPublicKey: anonKeys.axfr_public_key,
-                axfrSecretKey: anonKeys.axfr_secret_key,
-                decKey: anonKeys.dec_key,
-                encKey: anonKeys.enc_key,
+                axfrPublicKey: anonKeys.pub_key,
+                axfrSpendKey: anonKeys.spend_key,
+                axfrViewKey: anonKeys.view_key,
+                // decKey: anonKeys.dec_key,
+                // encKey: anonKeys.enc_key,
             };
             nodeLedger = {
                 foo: 'node',

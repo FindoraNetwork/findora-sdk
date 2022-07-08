@@ -202,26 +202,23 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitment, balance
  * Given a commitment, check if nullifier is spent
  */
 var validateSpent = function (AnonKeys, givenCommitment) { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, axfrSecretKey, decKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    var anonKeys, axfrKeyPair, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, AnonKeys);
-                axfrSecretKey = anonKeys.axfrSecretKey;
-                decKey = anonKeys.decKey;
+                axfrKeyPair = anonKeys.axfrSpendKey;
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 1:
                 ownedAbarsResponse = _a.sent();
                 ownedAbarItem = ownedAbarsResponse[0];
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey, decKey)];
+                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair)];
             case 2:
                 hash = _a.sent();
                 return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
-            case 3:
-                isNullifierHashSpent = _a.sent();
-                return [2 /*return*/, isNullifierHashSpent];
+            case 3: return [2 /*return*/, _a.sent()];
         }
     });
 }); };

@@ -1,11 +1,12 @@
 export {
-  AnonBlindAssetRecord,
+  AnonAssetRecord,
   AnonKeys,
   AnonTransferOperationBuilder,
   AssetRules,
   AssetTracerKeyPair,
   AXfrKeyPair,
   AXfrPubKey,
+  AXfrViewKey,
   ClientAssetRecord,
   FeeInputs,
   OwnerMemo,
