@@ -1,6 +1,6 @@
-import HDWalletProvider from '@truffle/hdwallet-provider';
 import { AbiItem } from 'ethereum-abi-types-generator';
 import { ethers } from 'ethers';
+import HDWalletProvider from 'truffle-hdwallet-provider';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
