@@ -41,11 +41,16 @@ export const fraToBar = async (
 
   const contractData = contract.methods.depositFRA(findoraTo).encodeABI();
 
+  const estimategas = await web3.eth.estimateGas({
+    to: bridgeAddress,
+    data: contractData,
+  });
+
   const txParams = {
     from: web3WalletInfo.account,
     to: bridgeAddress,
     gasPrice: web3.utils.toHex(gasPrice),
-    gas: web3.utils.toHex(5000000),
+    gas: web3.utils.toHex(estimategas),
     value: convertAmount,
     nonce: nonce,
     data: contractData,
@@ -79,11 +84,16 @@ export const frc20ToBar = async (
   const gasPrice = await web3.eth.getGasPrice();
   const contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
 
+  const estimategas = await web3.eth.estimateGas({
+    to: bridgeAddress,
+    data: contractData,
+  });
+
   const txParams = {
     from: web3WalletInfo.account,
     to: bridgeAddress,
     gasPrice: web3.utils.toHex(gasPrice),
-    gas: web3.utils.toHex(5000000),
+    gas: web3.utils.toHex(estimategas),
     nonce: nonce,
     data: contractData,
     chainId: web3WalletInfo.chainId,
