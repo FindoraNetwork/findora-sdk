@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.frc20ToBar = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var js_base64_1 = __importDefault(require("js-base64"));
@@ -105,6 +105,7 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
                     data: contractData,
                     chainId: web3WalletInfo.chainId,
                 };
+                console.log(txParams);
                 return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
             case 4:
                 signed_txn = _a.sent();
@@ -116,6 +117,22 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
     });
 }); };
 exports.fraToBar = fraToBar;
+var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, erc20Contract, amount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.table([tokenAddress, deckAddress, price]);
+                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, price, 'toWei')];
+            case 1:
+                amount = _a.sent();
+                return [2 /*return*/, erc20Contract.methods.approve(deckAddress, amount).send({ from: web3WalletInfo.account })];
+        }
+    });
+}); };
+exports.approveToken = approveToken;
 var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -136,7 +153,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                 gasPrice = _a.sent();
                 contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
                 return [4 /*yield*/, web3.eth.estimateGas({
-                        to: bridgeAddress,
+                        to: web3WalletInfo.account,
                         data: contractData,
                     })];
             case 4:
@@ -144,7 +161,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                 txParams = {
                     from: web3WalletInfo.account,
                     to: bridgeAddress,
-                    gasPrice: web3.utils.toHex(Number(gasPrice) * 2),
+                    gasPrice: web3.utils.toHex(gasPrice),
                     gas: web3.utils.toHex(estimategas),
                     nonce: nonce,
                     data: contractData,

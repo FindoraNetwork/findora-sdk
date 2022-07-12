@@ -57,12 +57,28 @@ export const fraToBar = async (
     chainId: web3WalletInfo.chainId,
   };
 
+  console.log(txParams);
+
   const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
   if (signed_txn?.rawTransaction) {
     return await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
   } else {
     throw Error('fail frc20ToBar');
   }
+};
+
+export const approveToken = async (
+  tokenAddress: string,
+  deckAddress: string,
+  price: string,
+  web3WalletInfo: IWebLinkedInfo,
+) => {
+  console.table([tokenAddress, deckAddress, price]);
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+  const erc20Contract = getErc20Contract(web3, tokenAddress);
+
+  const amount = await calculationDecimalsAmount(erc20Contract, price, 'toWei');
+  return erc20Contract.methods.approve(deckAddress, amount).send({ from: web3WalletInfo.account });
 };
 
 export const frc20ToBar = async (
@@ -85,14 +101,14 @@ export const frc20ToBar = async (
   const contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
 
   const estimategas = await web3.eth.estimateGas({
-    to: bridgeAddress,
+    to: web3WalletInfo.account,
     data: contractData,
   });
 
   const txParams = {
     from: web3WalletInfo.account,
     to: bridgeAddress,
-    gasPrice: web3.utils.toHex(Number(gasPrice) * 2),
+    gasPrice: web3.utils.toHex(gasPrice),
     gas: web3.utils.toHex(estimategas),
     nonce: nonce,
     data: contractData,
