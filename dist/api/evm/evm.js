@@ -118,7 +118,7 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
 }); };
 exports.fraToBar = fraToBar;
 var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, erc20Contract, amount;
+    var web3, erc20Contract, amount, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -128,7 +128,35 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
                 return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, price, 'toWei')];
             case 1:
                 amount = _a.sent();
-                return [2 /*return*/, erc20Contract.methods.approve(deckAddress, amount).send({ from: web3WalletInfo.account })];
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 2:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 3:
+                gasPrice = _a.sent();
+                contractData = erc20Contract.methods.approve(deckAddress, amount).encodeABI();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 4:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: tokenAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gas: web3.utils.toHex(estimategas),
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 5:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 7];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 6: return [2 /*return*/, _a.sent()];
+            case 7: throw Error('fail frc20ToBar');
         }
     });
 }); };

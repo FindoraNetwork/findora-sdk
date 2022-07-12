@@ -78,7 +78,31 @@ export const approveToken = async (
   const erc20Contract = getErc20Contract(web3, tokenAddress);
 
   const amount = await calculationDecimalsAmount(erc20Contract, price, 'toWei');
-  return erc20Contract.methods.approve(deckAddress, amount).send({ from: web3WalletInfo.account });
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
+  const contractData = erc20Contract.methods.approve(deckAddress, amount).encodeABI();
+
+  const estimategas = await web3.eth.estimateGas({
+    to: web3WalletInfo.account,
+    data: contractData,
+  });
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: tokenAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    gas: web3.utils.toHex(estimategas),
+    nonce: nonce,
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
 };
 
 export const frc20ToBar = async (
