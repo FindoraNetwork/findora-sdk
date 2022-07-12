@@ -98,8 +98,9 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
                 txParams = {
                     from: web3WalletInfo.account,
                     to: bridgeAddress,
-                    gasPrice: gasPrice,
-                    gas: estimategas,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
                     value: convertAmount,
                     nonce: nonce,
                     data: contractData,
@@ -145,6 +146,7 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
                     from: web3WalletInfo.account,
                     to: tokenAddress,
                     gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
                     gas: web3.utils.toHex(estimategas),
                     nonce: nonce,
                     data: contractData,
@@ -154,7 +156,7 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
             case 5:
                 signed_txn = _a.sent();
                 if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 7];
-                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)];
             case 6: return [2 /*return*/, _a.sent()];
             case 7: throw Error('fail frc20ToBar');
         }
@@ -190,6 +192,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                     from: web3WalletInfo.account,
                     to: bridgeAddress,
                     gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
                     gas: web3.utils.toHex(estimategas),
                     nonce: nonce,
                     data: contractData,

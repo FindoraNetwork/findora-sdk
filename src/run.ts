@@ -1,7 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
@@ -1546,8 +1546,27 @@ const testIt = async () => {
   console.log('result', result);
 };
 
+async function approveToken() {
+  const webLinkedInfo = {
+    privateStr: '81ea4cbdceb327f7cedacf2048137b17cc0fdc4f19c4201a9002dcd8f463fc41',
+    rpcUrl: 'https://prod-forge.prod.findora.org:8545',
+    chainId: 2154,
+    account: '0x63c2f320e9ccd90088f08527881bc70112d521b2',
+  };
+  const result = await Evm.approveToken(
+    '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',
+    '0x039849E3EAe3D525Fd21a19b5400b0d1Bd3AB61C',
+    '100',
+    webLinkedInfo,
+  );
+
+  console.log(result);
+}
+
+approveToken();
+
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +
