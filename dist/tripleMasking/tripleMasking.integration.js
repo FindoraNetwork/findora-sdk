@@ -443,7 +443,7 @@ exports.abarToBar = abarToBar;
 /**
  * Define and Issue a custom asset
  */
-var defineIssueCustomAsset = function (senderOne, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+var defineIssueCustomAsset = function (senderOne, assetCode, derivedAssetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, assetBuilder, handle, assetBlindRules, assetBuilderIssue, handleIssue;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -463,7 +463,7 @@ var defineIssueCustomAsset = function (senderOne, assetCode) { return __awaiter(
             case 4:
                 _a.sent();
                 assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, assetCode, '1000', assetBlindRules)];
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedAssetCode, '1000', assetBlindRules)];
             case 5:
                 assetBuilderIssue = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilderIssue)];
@@ -521,7 +521,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
-var createTestBarsMulti = function (senderOne, asset1Code) { return __awaiter(void 0, void 0, void 0, function () {
+var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, balance1Old, balance1New, balance1ChangeF, balance1Change;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -547,13 +547,13 @@ var createTestBarsMulti = function (senderOne, asset1Code) { return __awaiter(vo
             case 5:
                 resultHandle = _a.sent();
                 console.log('send fra result handle!!', resultHandle);
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, asset1Code)];
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 6:
                 balance1Old = _a.sent();
-                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code)];
             case 7:
                 _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, asset1Code)];
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 8:
                 balance1New = _a.sent();
                 balance1ChangeF = parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
@@ -695,13 +695,13 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
 }); };
 exports.abarToAbarMulti = abarToAbarMulti;
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var asset1Code;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, asset1Code, derivedAsset1Code;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
-                asset1Code = _a.sent();
-                return [2 /*return*/, asset1Code];
+                _a = _b.sent(), asset1Code = _a[0], derivedAsset1Code = _a[1];
+                return [2 /*return*/, [asset1Code, derivedAsset1Code]];
         }
     });
 }); };

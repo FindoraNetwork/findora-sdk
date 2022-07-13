@@ -8,6 +8,7 @@ let anonKeys3: FindoraWallet.FormattedAnonKeys;
 
 let senderOne = '';
 let asset1Code = '';
+let derivedAsset1Code = '';
 
 beforeAll(async (done: any) => {
   const walletInfo = await Integration.createNewKeypair();
@@ -17,7 +18,7 @@ beforeAll(async (done: any) => {
 
   senderOne = walletInfo.privateStr!;
 
-  asset1Code = await Integration.getRandomAssetCode();
+  [asset1Code, derivedAsset1Code] = await Integration.getRandomAssetCode();
 
   done();
 }, extendedExecutionTimeout);
@@ -62,7 +63,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should create test BARs with simple creation and transfer of different assets',
       async () => {
-        const result = await Integration.createTestBarsMulti(senderOne, asset1Code);
+        const result = await Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,
@@ -70,7 +71,7 @@ describe(`Triple Masking Integration (integration test)`, () => {
     it(
       'Should do multi asset anonymous transfer, and verify ABAR balances',
       async () => {
-        const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, asset1Code);
+        const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code);
         expect(result).toBe(true);
       },
       extendedExecutionTimeout * 2,

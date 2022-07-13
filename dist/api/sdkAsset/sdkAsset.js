@@ -167,14 +167,15 @@ exports.getAssetCode = getAssetCode;
  * @returns - Asset code
  */
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode;
+    var ledger, assetCode, derivedAssetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.random_asset_type();
-                return [2 /*return*/, assetCode];
+                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                return [2 /*return*/, [assetCode, derivedAssetCode]];
         }
     });
 }); };
@@ -353,6 +354,14 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 catch (err) {
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }

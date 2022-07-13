@@ -83,10 +83,11 @@ export const getAssetCode = async (val: number[]): Promise<string> => {
  * ```
  * @returns - Asset code
  */
-export const getRandomAssetCode = async (): Promise<string> => {
+export const getRandomAssetCode = async (): Promise<[string, string]> => {
   const ledger = await getLedger();
   const assetCode = ledger.random_asset_type();
-  return assetCode;
+  const derivedAssetCode = ledger.hash_asset_code(assetCode);
+  return [assetCode, derivedAssetCode];
 };
 
 export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
@@ -279,6 +280,14 @@ export const defineAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;
