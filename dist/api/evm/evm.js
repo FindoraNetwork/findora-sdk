@@ -58,7 +58,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var js_base64_1 = __importDefault(require("js-base64"));
@@ -126,7 +126,7 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
                 console.table([tokenAddress, deckAddress, price]);
                 web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
                 erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
-                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, price, 'toWei')];
+                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, price, 'toWei')];
             case 1:
                 amount = _a.sent();
                 return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
@@ -171,7 +171,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                 web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
                 contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
                 erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
-                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, tokenAmount, 'toWei')];
+                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, tokenAmount, 'toWei')];
             case 1:
                 bridgeAmount = _a.sent();
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
@@ -211,6 +211,33 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
     });
 }); };
 exports.frc20ToBar = frc20ToBar;
+var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, erc20Contract, contractData, txParams, callResultHex, balance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
+                contractData = erc20Contract.methods.balanceOf(account).encodeABI();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: tokenAddress,
+                    data: contractData,
+                };
+                return [4 /*yield*/, web3.eth.call(txParams)];
+            case 1:
+                callResultHex = _a.sent();
+                balance = web3.utils.hexToNumberString(callResultHex);
+                if (!decimals) return [3 /*break*/, 3];
+                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, balance, 'formWei')];
+            case 2:
+                balance = _a.sent();
+                _a.label = 3;
+            case 3: return [2 /*return*/, balance];
+        }
+    });
+}); };
+exports.tokenBalance = tokenBalance;
 var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowLevelData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, address, fraAssetCode, mainAssetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {

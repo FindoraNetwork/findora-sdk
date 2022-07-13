@@ -43,16 +43,30 @@ const toHex = (covertThis: string, padding: number) => {
 
 const calculationDecimalsAmount = async (
   contract: MyContract<Erc20>,
+  web3: Web3,
+  from: string,
+  to: string,
   amount: string,
   type: 'toWei' | 'formWei',
 ): Promise<string> => {
-  const erc20Decimals = await contract.methods.decimals().call();
+  const contractData = await contract.methods.decimals().encodeABI();
+
+  const txParams = {
+    from,
+    to,
+    data: contractData,
+  };
+
+  const callResultHex = await web3.eth.call(txParams);
+  let erc20Decimals = web3.utils.hexToNumberString(callResultHex);
+
   const ten = new BigNumber(10);
   const power = ten.exponentiatedBy(erc20Decimals);
+
   if (type === 'toWei') {
     return new BigNumber(amount).times(power).toString();
   }
-  return new BigNumber(amount).div(power).toString();
+  return new BigNumber(amount).div(power).toFormat(Number(erc20Decimals));
 };
 
 const getCurrentBalance = async (web3: Web3, account: string): Promise<string> => {

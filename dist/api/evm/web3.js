@@ -64,19 +64,28 @@ var toHex = function (covertThis, padding) {
     return temp1;
 };
 exports.toHex = toHex;
-var calculationDecimalsAmount = function (contract, amount, type) { return __awaiter(void 0, void 0, void 0, function () {
-    var erc20Decimals, ten, power;
+var calculationDecimalsAmount = function (contract, web3, from, to, amount, type) { return __awaiter(void 0, void 0, void 0, function () {
+    var contractData, txParams, callResultHex, erc20Decimals, ten, power;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, contract.methods.decimals().call()];
+            case 0: return [4 /*yield*/, contract.methods.decimals().encodeABI()];
             case 1:
-                erc20Decimals = _a.sent();
+                contractData = _a.sent();
+                txParams = {
+                    from: from,
+                    to: to,
+                    data: contractData,
+                };
+                return [4 /*yield*/, web3.eth.call(txParams)];
+            case 2:
+                callResultHex = _a.sent();
+                erc20Decimals = web3.utils.hexToNumberString(callResultHex);
                 ten = new bignumber_js_1.default(10);
                 power = ten.exponentiatedBy(erc20Decimals);
                 if (type === 'toWei') {
                     return [2 /*return*/, new bignumber_js_1.default(amount).times(power).toString()];
                 }
-                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toString()];
+                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(Number(erc20Decimals))];
         }
     });
 }); };

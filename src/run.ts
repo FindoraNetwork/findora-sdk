@@ -1548,28 +1548,36 @@ const testIt = async () => {
 
 async function approveToken() {
   const webLinkedInfo = {
-    privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
-    rpcUrl: 'https://dev-qa02.dev.findora.org:8545',
-    chainId: 1111,
-    account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
+    privateStr: '81ea4cbdceb327f7cedacf2048137b17cc0fdc4f19c4201a9002dcd8f463fc41',
+    rpcUrl: 'https://prod-forge.prod.findora.org:8545',
+    chainId: 2154,
+    account: '0x63c2F320e9ccd90088F08527881Bc70112d521b2',
   };
-  const result = await Evm.approveToken(
-    '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
-    '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // 授权 prism->ledger
-    '100',
-    webLinkedInfo,
-  );
-  console.log(result);
 
-  const result1 = await Evm.frc20ToBar(
-    '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // bridge
-    'fra1vczzg806lhuknp92td3dk3rv6y8chgvmweey928f3rcqlrj2vryqyhja5e',
-    '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
-    '100',
-    webLinkedInfo,
-  );
+  // const result = await Evm.approveToken(
+  //   '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
+  //   '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // 授权 prism->ledger
+  //   '100',
+  //   webLinkedInfo,
+  // );
+  // console.log(result);
 
-  console.log(result1);
+  // const result1 = await Evm.frc20ToBar(
+  //   '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // bridge
+  //   'fra1vczzg806lhuknp92td3dk3rv6y8chgvmweey928f3rcqlrj2vryqyhja5e',
+  //   '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
+  //   '100',
+  //   webLinkedInfo,
+  // );
+
+  // const result1 = await Evm.tokenBalance(
+  //   webLinkedInfo,
+  //   '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',
+  //   true,
+  //   webLinkedInfo.account,
+  // );
+
+  // console.log(result1);
 }
 
 approveToken();

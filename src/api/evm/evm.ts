@@ -78,7 +78,14 @@ export const approveToken = async (
   const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const erc20Contract = getErc20Contract(web3, tokenAddress);
 
-  const amount = await calculationDecimalsAmount(erc20Contract, price, 'toWei');
+  const amount = await calculationDecimalsAmount(
+    erc20Contract,
+    web3,
+    web3WalletInfo.account,
+    tokenAddress,
+    price,
+    'toWei',
+  );
 
   const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
   const gasPrice = await web3.eth.getGasPrice();
@@ -119,7 +126,14 @@ export const frc20ToBar = async (
   const contract = getSimBridgeContract(web3, bridgeAddress);
   const erc20Contract = getErc20Contract(web3, tokenAddress);
 
-  const bridgeAmount = await calculationDecimalsAmount(erc20Contract, tokenAmount, 'toWei');
+  const bridgeAmount = await calculationDecimalsAmount(
+    erc20Contract,
+    web3,
+    web3WalletInfo.account,
+    tokenAddress,
+    tokenAmount,
+    'toWei',
+  );
 
   const findoraTo = fraAddressToHashAddress(recipientAddress);
 
@@ -152,6 +166,54 @@ export const frc20ToBar = async (
   } else {
     throw Error('fail frc20ToBar');
   }
+};
+
+export const tokenBalance = async (
+  web3WalletInfo: IWebLinkedInfo,
+  tokenAddress: string,
+  decimals: boolean,
+  account: string,
+): Promise<string> => {
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+  const erc20Contract = getErc20Contract(web3, tokenAddress);
+  let contractData = erc20Contract.methods.balanceOf(account).encodeABI();
+
+  let txParams = {
+    from: web3WalletInfo.account,
+    to: tokenAddress,
+    data: contractData,
+  };
+
+  let callResultHex = await web3.eth.call(txParams);
+  let balance = web3.utils.hexToNumberString(callResultHex);
+
+  if (decimals) {
+    balance = await calculationDecimalsAmount(
+      erc20Contract,
+      web3,
+      web3WalletInfo.account,
+      tokenAddress,
+      balance,
+      'formWei',
+    );
+  }
+
+  return balance;
+
+  // contractData = await erc20Contract.methods.decimals().encodeABI();
+  // txParams = {
+  //   from: web3WalletInfo.account,
+  //   to: tokenAddress,
+  //   data: contractData,
+  // };
+
+  // callResultHex = await web3.eth.call(txParams);
+  // const erc20Decimals = web3.utils.hexToNumberString(callResultHex);
+
+  // const ten = new BigNumber(10);
+  // const power = ten.exponentiatedBy(erc20Decimals);
+
+  // return new BigNumber(balance).div(power).toString();
 };
 
 export const sendAccountToEvm = async (
