@@ -562,6 +562,13 @@ export const barToAbar = async (
     commitments: commitments.commitments,
   };
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return { transactionBuilder, barToAbarData, sid: `${sid}` };
 };
 
@@ -589,6 +596,7 @@ export const abarToBar = async (
       false,
     );
   } catch (error) {
+    console.log('Error adding Abar to bar', error);
     throw new Error(`Could not add abar to bar operation", Error - ${(error as Error).message}`);
   }
 

@@ -155,12 +155,20 @@ export const getDefineAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
+  let definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
     walletKeypair,
     assetMemo,
     assetName,
     assetRules,
   );
+
+  try {
+    definitionTransaction = definitionTransaction.build();
+    definitionTransaction = definitionTransaction.sign(walletKeypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
 
   return definitionTransaction;
 };
@@ -350,6 +358,14 @@ export const issueAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;

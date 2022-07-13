@@ -125,6 +125,7 @@ describe('triple masking (unit test)', () => {
       returnEncKey = {
         free: jest.fn(() => {}),
       };
+
       barToAbarData = {};
 
       spyGetLedger = jest.spyOn(NodeLedger, 'default');

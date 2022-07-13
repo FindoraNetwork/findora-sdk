@@ -333,14 +333,14 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
 
   if (balanceChange != 209 && balanceChange != 210) {
-    console.log('BAR balance does not match expected value');
+    console.log('ERROR BAR balance does not match expected value', balanceChange);
     return false;
   }
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
   console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
   if (!anonBalances?.spentBalances?.balances?.length) {
-    console.log('No ABAR spent balances available');
+    console.log('ERROR No ABAR spent balances available');
     return false;
   }
 
@@ -348,13 +348,13 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   const anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
 
   if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-    console.log('ABAR balance does not match expected value');
+    console.log('ERROR ABAR balance does not match expected value');
     return false;
   }
 
   const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitment);
   if (!isNullifierHashSpent) {
-    console.log('Nullifier hash of sender still unspent');
+    console.log('ERROR Nullifier hash of sender still unspent');
     return false;
   }
 
