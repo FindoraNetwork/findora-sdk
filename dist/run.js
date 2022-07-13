@@ -1600,20 +1600,26 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
-        var webLinkedInfo, result;
+        var webLinkedInfo, result, result1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     webLinkedInfo = {
-                        privateStr: '81ea4cbdceb327f7cedacf2048137b17cc0fdc4f19c4201a9002dcd8f463fc41',
-                        rpcUrl: 'https://prod-forge.prod.findora.org:8545',
-                        chainId: 2154,
-                        account: '0x63c2f320e9ccd90088f08527881bc70112d521b2',
+                        privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
+                        rpcUrl: 'https://dev-qa02.dev.findora.org:8545',
+                        chainId: 1111,
+                        account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
                     };
-                    return [4 /*yield*/, api_1.Evm.approveToken('0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125', '0x039849E3EAe3D525Fd21a19b5400b0d1Bd3AB61C', '100', webLinkedInfo)];
+                    return [4 /*yield*/, api_1.Evm.approveToken('0x767B74E80D9082D7C5EFa024F194BBB7261449D0', '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // 授权 prism->ledger
+                        '100', webLinkedInfo)];
                 case 1:
                     result = _a.sent();
                     console.log(result);
+                    return [4 /*yield*/, api_1.Evm.frc20ToBar('0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // bridge
+                        'fra1vczzg806lhuknp92td3dk3rv6y8chgvmweey928f3rcqlrj2vryqyhja5e', '0x767B74E80D9082D7C5EFa024F194BBB7261449D0', '100', webLinkedInfo)];
+                case 2:
+                    result1 = _a.sent();
+                    console.log(result1);
                     return [2 /*return*/];
             }
         });

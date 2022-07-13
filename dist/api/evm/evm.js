@@ -164,7 +164,7 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
 }); };
 exports.approveToken = approveToken;
 var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
+    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, convertAmount, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -182,6 +182,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
             case 3:
                 gasPrice = _a.sent();
                 contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
+                convertAmount = new bignumber_js_1.default('0.03').times(Math.pow(10, 18)).toString();
                 return [4 /*yield*/, web3.eth.estimateGas({
                         to: web3WalletInfo.account,
                         data: contractData,
@@ -195,6 +196,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
                     gasLimit: web3.utils.toHex(3000000),
                     gas: web3.utils.toHex(estimategas),
                     nonce: nonce,
+                    value: web3.utils.toHex(convertAmount),
                     data: contractData,
                     chainId: web3WalletInfo.chainId,
                 };
