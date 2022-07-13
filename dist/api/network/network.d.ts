@@ -49,3 +49,4 @@ export declare const sendRpcCall: <T>(url: string, givenPayload: {
 }, config?: Types.NetworkAxiosConfig | undefined) => Promise<T>;
 export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.CheckNullifierHashSpentDataResult>;
+export declare const getConfig: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.NetworkAxiosDataResult>;
