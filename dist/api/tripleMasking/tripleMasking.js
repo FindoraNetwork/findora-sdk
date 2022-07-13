@@ -634,6 +634,12 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                     console.log('Error adding Abar to bar', error);
                     throw new Error("Could not add abar to bar operation\", Error - ".concat(error.message));
                 }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                }
+                catch (err) {
+                    throw new Error("could not build txn \"".concat(err.message, "\""));
+                }
                 abarToBarData = {
                     anonKeysSender: anonKeysSender,
                 };

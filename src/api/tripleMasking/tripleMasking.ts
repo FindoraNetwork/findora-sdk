@@ -600,6 +600,12 @@ export const abarToBar = async (
     throw new Error(`Could not add abar to bar operation", Error - ${(error as Error).message}`);
   }
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+  } catch (err) {
+    throw new Error(`could not build txn "${(err as Error).message}"`);
+  }
+
   const abarToBarData: FindoraWallet.AbarToBarData = {
     anonKeysSender,
   };
