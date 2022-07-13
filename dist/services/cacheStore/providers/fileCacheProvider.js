@@ -50,14 +50,14 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
         switch (_a.label) {
             case 0:
                 cacheData = {};
-                console.log("Reading file cache from \"" + filePath + "\"");
+                console.log("Reading file cache from \"".concat(filePath, "\""));
                 try {
                     if (!fs_1.default.existsSync(filePath)) {
                         return [2 /*return*/, cacheData];
                     }
                 }
                 catch (err) {
-                    console.log("File doesnt exist at \"" + filePath + "\", so returning default cache data", err);
+                    console.log("File doesnt exist at \"".concat(filePath, "\", so returning default cache data"), err);
                     return [2 /*return*/, cacheData];
                 }
                 _a.label = 1;
@@ -69,13 +69,13 @@ var readCache = function (filePath) { return __awaiter(void 0, void 0, void 0, f
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                throw new Error("could not read file \"" + filePath + "\". Error. " + error_1.message + " ");
+                throw new Error("could not read file \"".concat(filePath, "\". Error. ").concat(error_1.message, " "));
             case 4:
                 try {
                     cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).parse(fileContent);
                 }
                 catch (error) {
-                    throw new Error("could not read parse cache data from  \"" + fileContent + "\". Error. " + error.message + " ");
+                    throw new Error("could not read parse cache data from  \"".concat(fileContent, "\". Error. ").concat(error.message, " "));
                 }
                 return [2 /*return*/, cacheData];
         }
@@ -86,18 +86,18 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("Writing file cache to \"" + filePath + "\"");
+                console.log("Writing file cache to \"".concat(filePath, "\""));
                 try {
                     cacheData = (0, json_bigint_1.default)({ useNativeBigInt: true }).stringify(data);
                 }
                 catch (err) {
-                    throw new Error("can not stringify data for cache, \"" + err.message + "\"");
+                    throw new Error("can not stringify data for cache, \"".concat(err.message, "\""));
                 }
                 try {
                     (0, utils_1.createCacheDir)(path_1.default.parse(filePath).dir);
                 }
                 catch (err) {
-                    throw new Error("Failed to create directory, \"" + err.message + "\", \"dir path: " + path_1.default.parse(filePath).dir + "\"");
+                    throw new Error("Failed to create directory, \"".concat(err.message, "\", \"dir path: ").concat(path_1.default.parse(filePath).dir, "\""));
                 }
                 _a.label = 1;
             case 1:
@@ -108,7 +108,7 @@ var writeCache = function (filePath, data) { return __awaiter(void 0, void 0, vo
                 return [3 /*break*/, 4];
             case 3:
                 error_2 = _a.sent();
-                throw new Error("can not write cache for \"" + filePath + "\", \"" + error_2.message + "\"");
+                throw new Error("can not write cache for \"".concat(filePath, "\", \"").concat(error_2.message, "\""));
             case 4: return [2 /*return*/, result];
         }
     });
