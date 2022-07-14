@@ -57,9 +57,9 @@ var testHelpers_1 = require("../../testHelpers");
 var compileDeployed_1 = require("./compileDeployed");
 var compileExisting_1 = require("./compileExisting");
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../../../.env_rpc_" + process.env.RPC_ENV_NAME
+    ? "../../../../.env_rpc_".concat(process.env.RPC_ENV_NAME)
     : "../../../../.env_example";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var extendedExecutionTimeout = 600000;
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
@@ -73,7 +73,7 @@ var web3 = new web3_1.default(provider);
 (0, testHelpers_1.timeLog)('Connecting to the server', rpcParams.rpcUrl);
 afterAll(testHelpers_1.afterAllLog);
 afterEach(testHelpers_1.afterEachLog);
-describe("SkyMaxMulti Contract (contract test) \"" + rpcUrl + "\"", function () {
+describe("SkyMaxMulti Contract (contract test) \"".concat(rpcUrl, "\""), function () {
     beforeEach(function () { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             switch (_a.label) {

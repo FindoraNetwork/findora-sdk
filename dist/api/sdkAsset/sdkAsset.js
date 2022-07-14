@@ -167,14 +167,15 @@ exports.getAssetCode = getAssetCode;
  * @returns - Asset code
  */
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode;
+    var ledger, assetCode, derivedAssetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.random_asset_type();
-                return [2 /*return*/, assetCode];
+                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                return [2 /*return*/, [assetCode, derivedAssetCode]];
         }
     });
 }); };
@@ -250,6 +251,14 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
                     _ = stateCommitment[0], height = stateCommitment[1];
                     blockCount = BigInt(height);
                     definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(walletKeypair, assetMemo, assetName, assetRules);
+                    try {
+                        definitionTransaction = definitionTransaction.build();
+                        definitionTransaction = definitionTransaction.sign(walletKeypair);
+                    }
+                    catch (err) {
+                        console.log('sendToMany error in build and sign ', err);
+                        throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                    }
                     return [2 /*return*/, definitionTransaction];
             }
         });
@@ -325,7 +334,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 3;
             case 3:
@@ -337,14 +346,22 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
             case 5:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 6:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -397,7 +414,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 3;
             case 3:
@@ -409,14 +426,22 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
             case 5:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 6:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -436,11 +461,11 @@ var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, vo
             case 2:
                 err_3 = _a.sent();
                 e = err_3;
-                throw new Error("Could not get asset token: \"" + e.message + "\"");
+                throw new Error("Could not get asset token: \"".concat(e.message, "\""));
             case 3:
                 assetResult = result.response, submitError = result.error;
                 if (submitError) {
-                    throw new Error("Could not get asset details: \"" + submitError.message + "\"");
+                    throw new Error("Could not get asset details: \"".concat(submitError.message, "\""));
                 }
                 if (!assetResult) {
                     throw new Error("Could not get asset details - asset result is missing");

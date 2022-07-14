@@ -151,7 +151,7 @@ const defineCustomAsset = async () => {
 
   const password = '123';
 
-  const assetCode = await Asset.getRandomAssetCode();
+  const [assetCode, derivedAssetCode] = await Asset.getRandomAssetCode();
 
   console.log('🚀 ~ file: run.ts ~ line 110 ~ defineCustomAsset ~ assetCode', assetCode);
 

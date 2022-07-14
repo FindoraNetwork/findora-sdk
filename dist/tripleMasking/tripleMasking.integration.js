@@ -68,9 +68,9 @@ var providers_1 = require("../services/cacheStore/providers");
 var utxoHelper_1 = require("../services/utxoHelper");
 dotenv_1.default.config();
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../../.env_tm_integration_" + process.env.INTEGRATION_ENV_NAME
+    ? "../../.env_tm_integration_".concat(process.env.INTEGRATION_ENV_NAME)
     : "../../.env_example";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -82,7 +82,7 @@ var sdkEnv = {
 };
 var waitingTimeBeforeCheckTxStatus = 19000;
 console.log('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
-console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
+console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet;
 var password = 'yourSecretPassword';
@@ -320,7 +320,7 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
             case 4:
                 resultHandle = _b.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 5:
                 _b.sent();
@@ -411,7 +411,7 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 balanceChange = Math.floor(balanceChangeF);
                 console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
                 if (balanceChange != 209 && balanceChange != 210) {
-                    console.log('BAR balance does not match expected value');
+                    console.log('ERROR BAR balance does not match expected value', balanceChange);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment])];
@@ -419,20 +419,20 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 anonBalances = _d.sent();
                 console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
                 if (!((_c = (_b = anonBalances === null || anonBalances === void 0 ? void 0 : anonBalances.spentBalances) === null || _b === void 0 ? void 0 : _b.balances) === null || _c === void 0 ? void 0 : _c.length)) {
-                    console.log('No ABAR spent balances available');
+                    console.log('ERROR No ABAR spent balances available');
                     return [2 /*return*/, false];
                 }
                 anonBalSpent = anonBalances.spentBalances.balances[0].amount;
                 anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
                 if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-                    console.log('ABAR balance does not match expected value');
+                    console.log('ERROR ABAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitment)];
             case 10:
                 isNullifierHashSpent = _d.sent();
                 if (!isNullifierHashSpent) {
-                    console.log('Nullifier hash of sender still unspent');
+                    console.log('ERROR Nullifier hash of sender still unspent');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -443,7 +443,7 @@ exports.abarToBar = abarToBar;
 /**
  * Define and Issue a custom asset
  */
-var defineIssueCustomAsset = function (senderOne, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+var defineIssueCustomAsset = function (senderOne, assetCode, derivedAssetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, assetBuilder, handle, assetBlindRules, assetBuilderIssue, handleIssue;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -463,7 +463,7 @@ var defineIssueCustomAsset = function (senderOne, assetCode) { return __awaiter(
             case 4:
                 _a.sent();
                 assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, assetCode, '1000', assetBlindRules)];
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedAssetCode, '1000', assetBlindRules)];
             case 5:
                 assetBuilderIssue = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilderIssue)];
@@ -521,7 +521,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
-var createTestBarsMulti = function (senderOne, asset1Code) { return __awaiter(void 0, void 0, void 0, function () {
+var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, balance1Old, balance1New, balance1ChangeF, balance1Change;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -547,13 +547,13 @@ var createTestBarsMulti = function (senderOne, asset1Code) { return __awaiter(vo
             case 5:
                 resultHandle = _a.sent();
                 console.log('send fra result handle!!', resultHandle);
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, asset1Code)];
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 6:
                 balance1Old = _a.sent();
-                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code)];
             case 7:
                 _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, asset1Code)];
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 8:
                 balance1New = _a.sent();
                 balance1ChangeF = parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
@@ -624,7 +624,7 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 11:
                 resultHandle = _g.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 12:
                 _g.sent();
@@ -695,13 +695,13 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
 }); };
 exports.abarToAbarMulti = abarToAbarMulti;
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var asset1Code;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a, asset1Code, derivedAsset1Code;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
-                asset1Code = _a.sent();
-                return [2 /*return*/, asset1Code];
+                _a = _b.sent(), asset1Code = _a[0], derivedAsset1Code = _a[1];
+                return [2 /*return*/, [asset1Code, derivedAsset1Code]];
         }
     });
 }); };

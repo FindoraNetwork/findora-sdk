@@ -126,8 +126,8 @@ export const defineAssetTransaction = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
+  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
+  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode, derivedTokenCode);
 
   const memo = 'this is a test asset';
 
@@ -156,8 +156,8 @@ export const defineAssetTransactionSubmit = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
+  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
+  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode);
 
@@ -180,8 +180,8 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode);
+  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
+  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -206,7 +206,12 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
 
   const assetBlindRules = { isAmountBlind: false };
 
-  const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
+  const issueAssetBuilder = await AssetApi.issueAsset(
+    walletInfo,
+    derivedTokenCode,
+    inputNumbers,
+    assetBlindRules,
+  );
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
 
@@ -229,7 +234,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
 
-  const tokenCode = await AssetApi.getRandomAssetCode();
+  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
 
   console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
 
@@ -258,7 +263,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
 
   const issueAssetBuilder = await AssetApi.issueAsset(
     walletInfo,
-    tokenCode,
+    derivedTokenCode,
     `${inputNumbers}`,
     assetBlindRules,
   );
@@ -278,7 +283,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
     walletInfo,
     toWalletInfo.address,
     `${inputNumbers / 2}`,
-    tokenCode,
+    derivedTokenCode,
     assetBlindRulesForSend,
   );
 
@@ -446,9 +451,9 @@ export const issueAndSendConfidentialAsset = async () => {
   const aliceKeyPair = walletInfo.keypair;
   const bobKeyPair = toWalletInfo.keypair;
 
-  const tokenCode = await AssetApi.getRandomAssetCode();
+  const [tokenCode, derviedTokenCode] = await AssetApi.getRandomAssetCode();
 
-  console.log('Defining a custom asset:', tokenCode);
+  console.log('Defining a custom asset:', tokenCode, derviedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -473,7 +478,12 @@ export const issueAndSendConfidentialAsset = async () => {
 
   const assetBlindRules = { isAmountBlind: true };
 
-  const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
+  const issueAssetBuilder = await AssetApi.issueAsset(
+    walletInfo,
+    derviedTokenCode,
+    inputNumbers,
+    assetBlindRules,
+  );
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
 
@@ -579,7 +589,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const sendTransactionBuilder = await TransactionApi.sendToMany(
     walletInfo,
     recieversInfo,
-    tokenCode,
+    derviedTokenCode,
     assetBlindRulesForSend,
   );
 
@@ -638,7 +648,8 @@ export const issueAndSendConfidentialAsset = async () => {
     return false;
   }
 
-  const isAssetTypeCorrect = Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == tokenCode;
+  const isAssetTypeCorrect =
+    Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derviedTokenCode;
 
   if (!isAssetTypeCorrect) {
     console.log(

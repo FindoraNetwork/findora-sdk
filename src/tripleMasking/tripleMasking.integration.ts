@@ -333,14 +333,14 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
 
   if (balanceChange != 209 && balanceChange != 210) {
-    console.log('BAR balance does not match expected value');
+    console.log('ERROR BAR balance does not match expected value', balanceChange);
     return false;
   }
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
   console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
   if (!anonBalances?.spentBalances?.balances?.length) {
-    console.log('No ABAR spent balances available');
+    console.log('ERROR No ABAR spent balances available');
     return false;
   }
 
@@ -348,13 +348,13 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   const anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
 
   if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-    console.log('ABAR balance does not match expected value');
+    console.log('ERROR ABAR balance does not match expected value');
     return false;
   }
 
   const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitment);
   if (!isNullifierHashSpent) {
-    console.log('Nullifier hash of sender still unspent');
+    console.log('ERROR Nullifier hash of sender still unspent');
     return false;
   }
 
@@ -364,7 +364,7 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
 /**
  * Define and Issue a custom asset
  */
-const defineIssueCustomAsset = async (senderOne: string, assetCode: string) => {
+const defineIssueCustomAsset = async (senderOne: string, assetCode: string, derivedAssetCode: string) => {
   const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -375,7 +375,7 @@ const defineIssueCustomAsset = async (senderOne: string, assetCode: string) => {
   await sleep(waitingTimeBeforeCheckTxStatus);
 
   const assetBlindRules = { isAmountBlind: false };
-  const assetBuilderIssue = await Asset.issueAsset(walletInfo, assetCode, '1000', assetBlindRules);
+  const assetBuilderIssue = await Asset.issueAsset(walletInfo, derivedAssetCode, '1000', assetBlindRules);
 
   const handleIssue = await Transaction.submitTransaction(assetBuilderIssue);
 
@@ -419,7 +419,11 @@ const getSidsForAsset = async (senderOne: string, assetCode: string) => {
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
-export const createTestBarsMulti = async (senderOne: string, asset1Code: string) => {
+export const createTestBarsMulti = async (
+  senderOne: string,
+  asset1Code: string,
+  derivedAsset1Code: string,
+) => {
   console.log('//////////////// Issue Custom Asset and Create Test Bars //////////////// ');
 
   const pkey = mainFaucet;
@@ -442,10 +446,10 @@ export const createTestBarsMulti = async (senderOne: string, asset1Code: string)
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
   console.log('send fra result handle!!', resultHandle);
 
-  const balance1Old = await Account.getBalance(toWalletInfo, asset1Code);
-  await defineIssueCustomAsset(senderOne, asset1Code);
+  const balance1Old = await Account.getBalance(toWalletInfo, derivedAsset1Code);
+  await defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code);
 
-  const balance1New = await Account.getBalance(toWalletInfo, asset1Code);
+  const balance1New = await Account.getBalance(toWalletInfo, derivedAsset1Code);
   const balance1ChangeF =
     parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
   const balance1Change = Math.floor(balance1ChangeF);
@@ -606,6 +610,6 @@ export const abarToAbarMulti = async (
 };
 
 export const getRandomAssetCode = async () => {
-  const asset1Code = await Asset.getRandomAssetCode();
-  return asset1Code;
+  const [asset1Code, derivedAsset1Code] = await Asset.getRandomAssetCode();
+  return [asset1Code, derivedAsset1Code];
 };
