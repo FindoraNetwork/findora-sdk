@@ -599,6 +599,13 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                     anonKeysFormatted: anonKeys,
                     commitments: commitments.commitments,
                 };
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
                 return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sid: "" + sid }];
         }
     });
@@ -624,7 +631,14 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                     transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadSource.myOwnedAbar, abarPayloadSource.abarOwnerMemo, abarPayloadSource.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKey, false, false);
                 }
                 catch (error) {
+                    console.log('Error adding Abar to bar', error);
                     throw new Error("Could not add abar to bar operation\", Error - " + error.message);
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                }
+                catch (err) {
+                    throw new Error("could not build txn \"" + err.message + "\"");
                 }
                 abarToBarData = {
                     anonKeysSender: anonKeysSender,

@@ -153,6 +153,14 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                         e = error;
                         throw new Error("Could not add transfer to unStake operation, Error: \"" + e.message + "\"");
                     }
+                    try {
+                        transactionBuilder = transactionBuilder.build();
+                        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                    }
+                    catch (err) {
+                        console.log('sendToMany error in build and sign ', err);
+                        throw new Error("could not build and sign txn \"" + err.message + "\"");
+                    }
                     return [2 /*return*/, transactionBuilder];
             }
         });
@@ -215,6 +223,14 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 decimals = asset.assetRules.decimals;
                 delegateAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
                 transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -278,6 +294,14 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 catch (error) {
                     e = error;
                     throw new Error("Could not add staking claim operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }

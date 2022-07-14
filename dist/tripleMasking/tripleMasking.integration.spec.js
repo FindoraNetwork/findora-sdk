@@ -62,26 +62,28 @@ var anonKeys2;
 var anonKeys3;
 var senderOne = '';
 var asset1Code = '';
+var derivedAsset1Code = '';
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var walletInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, Integration.createNewKeypair()];
             case 1:
-                walletInfo = _a.sent();
+                walletInfo = _b.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 2:
-                anonKeys1 = _a.sent();
+                anonKeys1 = _b.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 3:
-                anonKeys2 = _a.sent();
+                anonKeys2 = _b.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 4:
-                anonKeys3 = _a.sent();
+                anonKeys3 = _b.sent();
                 senderOne = walletInfo.privateStr;
                 return [4 /*yield*/, Integration.getRandomAssetCode()];
             case 5:
-                asset1Code = _a.sent();
+                _a = _b.sent(), asset1Code = _a[0], derivedAsset1Code = _a[1];
                 done();
                 return [2 /*return*/];
         }
@@ -143,7 +145,7 @@ describe("Triple Masking Integration (integration test)", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.createTestBarsMulti(senderOne, asset1Code)];
+                    case 0: return [4 /*yield*/, Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code)];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(true);
@@ -155,7 +157,7 @@ describe("Triple Masking Integration (integration test)", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, asset1Code)];
+                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code)];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(true);

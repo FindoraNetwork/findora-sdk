@@ -167,14 +167,15 @@ exports.getAssetCode = getAssetCode;
  * @returns - Asset code
  */
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode;
+    var ledger, assetCode, derivedAssetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.random_asset_type();
-                return [2 /*return*/, assetCode];
+                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                return [2 /*return*/, [assetCode, derivedAssetCode]];
         }
     });
 }); };
@@ -250,6 +251,14 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
                     _ = stateCommitment[0], height = stateCommitment[1];
                     blockCount = BigInt(height);
                     definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(walletKeypair, assetMemo, assetName, assetRules);
+                    try {
+                        definitionTransaction = definitionTransaction.build();
+                        definitionTransaction = definitionTransaction.sign(walletKeypair);
+                    }
+                    catch (err) {
+                        console.log('sendToMany error in build and sign ', err);
+                        throw new Error("could not build and sign txn \"" + err.message + "\"");
+                    }
                     return [2 /*return*/, definitionTransaction];
             }
         });
@@ -346,6 +355,14 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -417,6 +434,14 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 catch (err) {
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }

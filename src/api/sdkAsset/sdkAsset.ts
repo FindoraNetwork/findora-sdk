@@ -83,10 +83,11 @@ export const getAssetCode = async (val: number[]): Promise<string> => {
  * ```
  * @returns - Asset code
  */
-export const getRandomAssetCode = async (): Promise<string> => {
+export const getRandomAssetCode = async (): Promise<[string, string]> => {
   const ledger = await getLedger();
   const assetCode = ledger.random_asset_type();
-  return assetCode;
+  const derivedAssetCode = ledger.hash_asset_code(assetCode);
+  return [assetCode, derivedAssetCode];
 };
 
 export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
@@ -155,12 +156,20 @@ export const getDefineAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
+  let definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
     walletKeypair,
     assetMemo,
     assetName,
     assetRules,
   );
+
+  try {
+    definitionTransaction = definitionTransaction.build();
+    definitionTransaction = definitionTransaction.sign(walletKeypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
 
   return definitionTransaction;
 };
@@ -273,6 +282,14 @@ export const defineAsset = async (
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -350,6 +367,14 @@ export const issueAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;
