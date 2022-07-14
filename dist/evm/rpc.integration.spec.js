@@ -75,9 +75,9 @@ var web3_1 = __importDefault(require("web3"));
 var Network = __importStar(require("../api/network/network"));
 var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../.env_rpc_".concat(process.env.RPC_ENV_NAME)
+    ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../.env_example";
-var envConfig = require("".concat(envConfigFile, ".json"));
+var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
 var extendedExecutionTimeout = 600000;
@@ -164,14 +164,14 @@ var getTestResult = function (msgId, method, extraParams) { return __awaiter(voi
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
-                (0, testHelpers_1.timeLog)("RPC Network call to \"".concat(method, "\""));
+                (0, testHelpers_1.timeLog)("RPC Network call to \"" + method + "\"");
                 (0, testHelpers_1.assertResultResponse)(result);
                 (0, testHelpers_1.assertBasicResult)(result, msgId);
                 return [2 /*return*/, result];
         }
     });
 }); };
-describe("Api Endpoint (rpc test) for \"".concat(rpcUrl, "\""), function () {
+describe("Api Endpoint (rpc test) for \"" + rpcUrl + "\"", function () {
     describe('eth_protocolVersion', function () {
         it('Returns the current ethereum protocol version', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;

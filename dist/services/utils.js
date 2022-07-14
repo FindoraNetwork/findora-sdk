@@ -79,7 +79,7 @@ var log = function (message) {
     for (var _i = 1; _i < arguments.length; _i++) {
         rest[_i - 1] = arguments[_i];
     }
-    console.log("\"".concat((0, exports.now)(), "\" - ").concat(message), (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
+    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
 };
 exports.log = log;
 var getCryptoInstance = function () {
@@ -96,7 +96,7 @@ var generateSeedString = function () {
     myCrypto.getRandomValues(randomVals);
     randomVals.forEach(function (num) {
         var hex = num.toString(16);
-        seed += hex.length === 1 ? "0".concat(hex) : hex;
+        seed += hex.length === 1 ? "0" + hex : hex;
     });
     return seed;
 };
