@@ -130,7 +130,7 @@ var resolvePathToCacheEntry = function (cacheEntryName) {
     }
     return fullPathToCacheEntry;
 };
-var saveBarToAbarToCache = function (walletInfo, sid, commitments, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+var saveBarToAbarToCache = function (walletInfo, sid, commitments, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var cacheDataToSave, cacheEntryName, fullPathToCacheEntry, abarDataCache, error_1, barToAbarData, error_2, err;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -152,7 +152,7 @@ var saveBarToAbarToCache = function (walletInfo, sid, commitments, anonKeys) { r
                 return [3 /*break*/, 4];
             case 4:
                 barToAbarData = {
-                    anonKeysFormatted: anonKeys,
+                    receiverAxfrPublicKey: receiverAxfrPublicKey,
                     commitments: commitments,
                 };
                 cacheDataToSave["sid_" + sid] = barToAbarData;
@@ -510,7 +510,7 @@ var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountT
     });
 };
 exports.getAbarTransferFee = getAbarTransferFee;
-var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, error_8, seed, feeInputs, error_9, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
@@ -550,7 +550,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                 _b.label = 8;
             case 8:
                 _b.trys.push([8, 10, , 11]);
-                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(anonKeys.axfrPublicKey)];
+                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(receiverAxfrPublicKey)];
             case 9:
                 axfrPublicKey = _b.sent();
                 return [3 /*break*/, 11];
@@ -596,7 +596,7 @@ var barToAbar = function (walletInfo, sid, anonKeys) { return __awaiter(void 0, 
                     throw new Error("list of commitments strings is empty ");
                 }
                 barToAbarData = {
-                    anonKeysFormatted: anonKeys,
+                    receiverAxfrPublicKey: receiverAxfrPublicKey,
                     commitments: commitments.commitments,
                 };
                 try {
