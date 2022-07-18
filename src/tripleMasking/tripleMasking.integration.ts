@@ -610,6 +610,11 @@ export const abarToAbarMulti = async (
 };
 
 export const getRandomAssetCode = async () => {
-  const [asset1Code, derivedAsset1Code] = await Asset.getRandomAssetCode();
-  return [asset1Code, derivedAsset1Code];
+  const asset1Code = await Asset.getRandomAssetCode();
+  return asset1Code;
+};
+
+export const getDerivedAssetCode = async (asset1Code: string) => {
+  const derivedAsset1Code = await Asset.getDerivedAssetCode(asset1Code);
+  return derivedAsset1Code;
 };

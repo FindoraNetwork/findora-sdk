@@ -83,11 +83,31 @@ export const getAssetCode = async (val: number[]): Promise<string> => {
  * ```
  * @returns - Asset code
  */
-export const getRandomAssetCode = async (): Promise<[string, string]> => {
+export const getRandomAssetCode = async (): Promise<string> => {
   const ledger = await getLedger();
   const assetCode = ledger.random_asset_type();
+  return assetCode;
+};
+
+export const getDerivedAssetCode = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
   const derivedAssetCode = ledger.hash_asset_code(assetCode);
-  return [assetCode, derivedAssetCode];
+  return derivedAssetCode;
+};
+
+export const getAssetCodeToSend = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  if (isFraTransfer) {
+    return assetCode;
+  }
+
+  const derivedAssetCode = await getDerivedAssetCode(assetCode);
+  return derivedAssetCode;
 };
 
 export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
