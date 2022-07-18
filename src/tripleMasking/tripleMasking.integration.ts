@@ -175,7 +175,7 @@ export const barToAbar = async (
     transactionBuilder,
     barToAbarData,
     sid: usedSid,
-  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
+  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   console.log('🚀 ~ usedSid', usedSid);

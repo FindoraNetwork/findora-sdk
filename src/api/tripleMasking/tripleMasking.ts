@@ -80,7 +80,7 @@ export const saveBarToAbarToCache = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
   commitments: string[],
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  receiverAxfrPublicKey: string,
 ): Promise<FindoraWallet.BarToAbarData> => {
   const cacheDataToSave: CacheItem = {};
 
@@ -97,7 +97,7 @@ export const saveBarToAbarToCache = async (
   }
 
   const barToAbarData = {
-    anonKeysFormatted: anonKeys,
+    receiverAxfrPublicKey,
     commitments,
   };
 
@@ -465,7 +465,7 @@ export const getAbarTransferFee = async (
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sid: number,
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  receiverAxfrPublicKey: string,
 ): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
   let transactionBuilder = await getTransactionBuilder();
@@ -505,7 +505,7 @@ export const barToAbar = async (
   // let encKey;
 
   try {
-    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(anonKeys.axfrPublicKey);
+    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(receiverAxfrPublicKey);
   } catch (error) {
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
@@ -558,7 +558,7 @@ export const barToAbar = async (
   }
 
   const barToAbarData: FindoraWallet.BarToAbarData = {
-    anonKeysFormatted: anonKeys,
+    receiverAxfrPublicKey,
     commitments: commitments.commitments,
   };
 
