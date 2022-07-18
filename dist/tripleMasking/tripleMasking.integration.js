@@ -257,7 +257,7 @@ var barToAbar = function (senderOne, AnonKeys, isBalanceCheck, givenSid) {
                     _b.label = 4;
                 case 4:
                     anonKeys = __assign({}, AnonKeys);
-                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
+                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
                 case 5:
                     _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                     console.log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
