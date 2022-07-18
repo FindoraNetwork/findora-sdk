@@ -32,4 +32,5 @@ export declare const createTestBarsMulti: (senderOne: string, asset1Code: string
  * Multi/Custom Asset Anonymous Transfer (ABAR To ABAR) Integration Test
  */
 export declare const abarToAbarMulti: (senderOne: string, AnonKeys1: FindoraWallet.FormattedAnonKeys, AnonKeys2: FindoraWallet.FormattedAnonKeys, asset1Code: string) => Promise<boolean>;
-export declare const getRandomAssetCode: () => Promise<string[]>;
+export declare const getRandomAssetCode: () => Promise<string>;
+export declare const getDerivedAssetCode: (asset1Code: string) => Promise<string>;

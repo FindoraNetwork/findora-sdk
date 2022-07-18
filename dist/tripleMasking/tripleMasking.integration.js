@@ -59,7 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
+exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("../api");
@@ -695,15 +695,27 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
 }); };
 exports.abarToAbarMulti = abarToAbarMulti;
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, asset1Code, derivedAsset1Code;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var asset1Code;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
-                _a = _b.sent(), asset1Code = _a[0], derivedAsset1Code = _a[1];
-                return [2 /*return*/, [asset1Code, derivedAsset1Code]];
+                asset1Code = _a.sent();
+                return [2 /*return*/, asset1Code];
         }
     });
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
+var getDerivedAssetCode = function (asset1Code) { return __awaiter(void 0, void 0, void 0, function () {
+    var derivedAsset1Code;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(asset1Code)];
+            case 1:
+                derivedAsset1Code = _a.sent();
+                return [2 /*return*/, derivedAsset1Code];
+        }
+    });
+}); };
+exports.getDerivedAssetCode = getDerivedAssetCode;
 //# sourceMappingURL=tripleMasking.integration.js.map
