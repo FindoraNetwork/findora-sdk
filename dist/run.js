@@ -212,25 +212,25 @@ var getCustomAssetBalance = function () { return __awaiter(void 0, void 0, void 
  * Define a custom asset
  */
 var defineCustomAsset = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, _a, assetCode, derivedAssetCode, walletInfo, assetBuilder, handle;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var pkey, password, assetCode, walletInfo, assetBuilder, handle;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0:
                 pkey = PKEY_LOCAL_FAUCET;
                 password = '123';
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 1:
-                _a = _b.sent(), assetCode = _a[0], derivedAssetCode = _a[1];
+                assetCode = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 110 ~ defineCustomAsset ~ assetCode', assetCode);
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 2:
-                walletInfo = _b.sent();
+                walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
             case 3:
-                assetBuilder = _b.sent();
+                assetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 4:
-                handle = _b.sent();
+                handle = _a.sent();
                 console.log('our new asset created, handle - ! ! ', handle);
                 return [2 /*return*/];
         }

@@ -37,7 +37,7 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 findoraSdk.init(sdkEnv);
 
-const { mainFaucet, senderOne, receiverOne } = walletKeys;
+const { mainFaucet, receiverOne } = walletKeys;
 
 const password = 'yourSecretPassword';
 
@@ -126,8 +126,8 @@ export const defineAssetTransaction = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode, derivedTokenCode);
+  const tokenCode = await AssetApi.getRandomAssetCode();
+  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
 
   const memo = 'this is a test asset';
 
@@ -156,8 +156,8 @@ export const defineAssetTransactionSubmit = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
+  const tokenCode = await AssetApi.getRandomAssetCode();
+  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode);
 
@@ -180,7 +180,9 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
-  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
+  const tokenCode = await AssetApi.getRandomAssetCode();
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
+
   console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetRules = {
@@ -234,7 +236,8 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
 
-  const [tokenCode, derivedTokenCode] = await AssetApi.getRandomAssetCode();
+  const tokenCode = await AssetApi.getRandomAssetCode();
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
   console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
 
@@ -443,7 +446,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const Ledger = await getLedger();
 
   const pkey = mainFaucet;
-  const toPkey = senderOne;
+  const toPkey = receiverOne;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
@@ -451,9 +454,10 @@ export const issueAndSendConfidentialAsset = async () => {
   const aliceKeyPair = walletInfo.keypair;
   const bobKeyPair = toWalletInfo.keypair;
 
-  const [tokenCode, derviedTokenCode] = await AssetApi.getRandomAssetCode();
+  const tokenCode = await AssetApi.getRandomAssetCode();
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
-  console.log('Defining a custom asset:', tokenCode, derviedTokenCode);
+  console.log('Defining a custom asset:', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -480,7 +484,7 @@ export const issueAndSendConfidentialAsset = async () => {
 
   const issueAssetBuilder = await AssetApi.issueAsset(
     walletInfo,
-    derviedTokenCode,
+    derivedTokenCode,
     inputNumbers,
     assetBlindRules,
   );
@@ -589,7 +593,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const sendTransactionBuilder = await TransactionApi.sendToMany(
     walletInfo,
     recieversInfo,
-    derviedTokenCode,
+    derivedTokenCode,
     assetBlindRulesForSend,
   );
 
@@ -649,7 +653,7 @@ export const issueAndSendConfidentialAsset = async () => {
   }
 
   const isAssetTypeCorrect =
-    Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derviedTokenCode;
+    Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derivedTokenCode;
 
   if (!isAssetTypeCorrect) {
     console.log(

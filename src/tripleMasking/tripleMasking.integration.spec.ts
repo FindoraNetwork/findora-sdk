@@ -18,7 +18,8 @@ beforeAll(async (done: any) => {
 
   senderOne = walletInfo.privateStr!;
 
-  [asset1Code, derivedAsset1Code] = await Integration.getRandomAssetCode();
+  asset1Code = await Integration.getRandomAssetCode();
+  derivedAsset1Code = await Integration.getDerivedAssetCode(asset1Code);
 
   done();
 }, extendedExecutionTimeout);

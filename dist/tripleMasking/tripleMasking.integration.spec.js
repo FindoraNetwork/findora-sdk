@@ -65,25 +65,27 @@ var asset1Code = '';
 var derivedAsset1Code = '';
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var walletInfo;
-    var _a;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, Integration.createNewKeypair()];
             case 1:
-                walletInfo = _b.sent();
+                walletInfo = _a.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 2:
-                anonKeys1 = _b.sent();
+                anonKeys1 = _a.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 3:
-                anonKeys2 = _b.sent();
+                anonKeys2 = _a.sent();
                 return [4 /*yield*/, Integration.getAnonKeys()];
             case 4:
-                anonKeys3 = _b.sent();
+                anonKeys3 = _a.sent();
                 senderOne = walletInfo.privateStr;
                 return [4 /*yield*/, Integration.getRandomAssetCode()];
             case 5:
-                _a = _b.sent(), asset1Code = _a[0], derivedAsset1Code = _a[1];
+                asset1Code = _a.sent();
+                return [4 /*yield*/, Integration.getDerivedAssetCode(asset1Code)];
+            case 6:
+                derivedAsset1Code = _a.sent();
                 done();
                 return [2 /*return*/];
         }

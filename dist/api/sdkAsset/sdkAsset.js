@@ -66,7 +66,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getBarToAbarMinimalFee = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getAssetCodeToSend = exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getBarToAbarMinimalFee = exports.getMinimalFee = exports.getFraAssetCode = void 0;
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -167,19 +167,51 @@ exports.getAssetCode = getAssetCode;
  * @returns - Asset code
  */
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetCode, derivedAssetCode;
+    var ledger, assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 assetCode = ledger.random_asset_type();
-                derivedAssetCode = ledger.hash_asset_code(assetCode);
-                return [2 /*return*/, [assetCode, derivedAssetCode]];
+                return [2 /*return*/, assetCode];
         }
     });
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
+var getDerivedAssetCode = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, derivedAssetCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                return [2 /*return*/, derivedAssetCode];
+        }
+    });
+}); };
+exports.getDerivedAssetCode = getDerivedAssetCode;
+var getAssetCodeToSend = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, isFraTransfer, derivedAssetCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                isFraTransfer = assetCode === fraAssetCode;
+                if (isFraTransfer) {
+                    return [2 /*return*/, assetCode];
+                }
+                return [4 /*yield*/, (0, exports.getDerivedAssetCode)(assetCode)];
+            case 2:
+                derivedAssetCode = _a.sent();
+                return [2 /*return*/, derivedAssetCode];
+        }
+    });
+}); };
+exports.getAssetCodeToSend = getAssetCodeToSend;
 var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, defaultTransferable, defaultUpdatable, defaultDecimals, assetRules;
     return __generator(this, function (_a) {
