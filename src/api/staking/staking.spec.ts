@@ -1,12 +1,11 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
-import * as Staking from './staking';
-import * as Transaction from '../transaction/transaction';
 import * as Fee from '../../services/fee';
+import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
 import * as KeypairApi from '../keypair/keypair';
 import * as SdkAsset from '../sdkAsset/sdkAsset';
-import { FindoraWallet } from 'types/findoraWallet';
+import * as Transaction from '../transaction/transaction';
+import * as Staking from './staking';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;

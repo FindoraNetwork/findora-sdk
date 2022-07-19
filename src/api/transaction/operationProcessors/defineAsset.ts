@@ -1,7 +1,6 @@
 import { DEFAULT_ASSET_RULES } from '../../../config/asset';
 import * as Keypair from '../../keypair';
 import { DefineAssetOperation, TxOperation } from '../types';
-import { FindoraWallet } from 'types/findoraWallet';
 
 export interface ProcessedDefineAsset {
   defineAsset: DefineAssetOperation;

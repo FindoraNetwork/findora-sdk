@@ -4,7 +4,6 @@ import { Account, Asset, Keypair, Network, Transaction, TripleMasking } from '..
 import Sdk from '../Sdk';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { addUtxo } from '../services/utxoHelper';
-import { FindoraWallet } from 'types/findoraWallet';
 
 dotenv.config();
 

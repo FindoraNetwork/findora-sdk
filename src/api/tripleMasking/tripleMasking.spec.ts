@@ -13,7 +13,6 @@ import * as NetworkApi from '../network/network';
 import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
 import * as TransactionApi from '../transaction/transaction';
 import * as TripleMasking from './tripleMasking';
-import { FindoraWallet } from 'types/findoraWallet';
 
 interface TransferOpBuilderLight {
   add_operation_bar_to_abar: () => TransferOpBuilderLight;

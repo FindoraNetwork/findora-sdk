@@ -1,3 +1,4 @@
+import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { CACHE_ENTRIES } from '../../config/cache';
 import Sdk from '../../Sdk';
 import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
@@ -12,8 +13,6 @@ import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getAssetCode, getAssetDetails } from '../sdkAsset';
 import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction';
-import { AXfrPubKey } from 'findora-wallet-wasm/web';
-import { FindoraWallet } from 'types/findoraWallet';
 
 interface BalanceInfo {
   assetType: string;
@@ -237,7 +236,7 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
     aXfrSpendKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSpendKey); // AXfrSpendKey
     axfrViewKeyConverted = await Keypair.getAXfrViewKeyByBase64(axfrViewKey); // axfrViewKey
 
-    axfrPublicKeyConverted = await Keypair.getAXfrPublicKeyByBase64(axfrPublicKey); // AXfrPubKey
+    axfrPublicKeyConverted = await getAnonPubKeyFromString(axfrPublicKey); // AXfrPubKey
   } catch (error) {
     throw new Error(`Could not convert AnonKeyPair from JSON", Error - ${(error as Error).message}`);
   }
@@ -249,7 +248,7 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
   };
 };
 
-const getAnonPubKeyFromString = async (anonPubKey: string) => {
+const getAnonPubKeyFromString = async (anonPubKey: string): Promise<AXfrPubKey> => {
   let axfrPublicKeyConverted;
   try {
     axfrPublicKeyConverted = await Keypair.getAXfrPublicKeyByBase64(anonPubKey);
@@ -514,10 +513,9 @@ export const barToAbar = async (
   }
 
   let axfrPublicKey;
-  // let encKey;
 
   try {
-    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(receiverAxfrPublicKey);
+    axfrPublicKey = await getAnonPubKeyFromString(receiverAxfrPublicKey);
   } catch (error) {
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
