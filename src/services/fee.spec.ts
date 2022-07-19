@@ -8,6 +8,7 @@ import * as UtxoHelper from './utxoHelper';
 import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import * as Ledger from './ledger/ledgerWrapper';
 import { LedgerForNode } from './ledger/nodeLedger';
+import { FindoraWallet } from 'types/findoraWallet';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;

@@ -17,6 +17,7 @@ import {
   XfrKeyPair,
 } from '../../services/ledger/types';
 import { AssetBlindRules } from './sdkAsset';
+import { FindoraWallet } from 'types/findoraWallet';
 
 interface FakeLedgerAssetRules {
   new?: () => FakeLedgerAssetRules;

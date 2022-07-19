@@ -10,6 +10,7 @@ import {
 } from '../../services/ledger/types';
 import { getAddressByPublicKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
+import { FindoraWallet } from 'types/findoraWallet';
 
 export interface AssetRules {
   transferable: boolean;

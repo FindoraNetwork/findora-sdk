@@ -1,3 +1,5 @@
+import { AXfrPubKey } from 'findora-wallet-wasm/web';
+
 declare namespace FindoraWallet {
   export interface IAssetRules {
     decimals: number;
@@ -80,7 +82,7 @@ declare namespace FindoraWallet {
 
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
-    anonKeysReceiver: FormattedAnonKeys;
+    anonPubKeyReceiver: string;
     commitmentsMap: ProcessedCommitmentsMap[];
   }
 

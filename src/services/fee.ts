@@ -13,6 +13,7 @@ import {
   XfrPublicKey,
 } from './ledger/types';
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
+import { FindoraWallet } from 'types/findoraWallet';
 
 interface FeeInputPayloadType {
   txoRef: TxoRef;

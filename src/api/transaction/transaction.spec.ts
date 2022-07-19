@@ -11,6 +11,7 @@ import { ProcessedTxInfo } from './types';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
 import * as Transaction from './transaction';
 import { TransactionBuilder, TransferOperationBuilder, XfrPublicKey } from '../../services/ledger/types';
+import { FindoraWallet } from 'types/findoraWallet';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;

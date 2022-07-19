@@ -12,6 +12,8 @@ import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getAssetCode, getAssetDetails } from '../sdkAsset';
 import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction';
+import { AXfrPubKey } from 'findora-wallet-wasm/web';
+import { FindoraWallet } from 'types/findoraWallet';
 
 interface BalanceInfo {
   assetType: string;
@@ -247,6 +249,17 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
   };
 };
 
+const getAnonPubKeyFromString = async (anonPubKey: string) => {
+  let axfrPublicKeyConverted;
+  try {
+    axfrPublicKeyConverted = await Keypair.getAXfrPublicKeyByBase64(anonPubKey);
+  } catch (error) {
+    throw new Error(`Could not convert Anon Public Key from string", Error - ${(error as Error).message}`);
+  }
+
+  return axfrPublicKeyConverted;
+};
+
 const getAbarTransferInputPayload = async (
   ownedAbarItem: FindoraWallet.OwnedAbarItem,
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
@@ -280,14 +293,14 @@ const getAbarTransferInputPayload = async (
 
 export const abarToAbar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
@@ -306,7 +319,7 @@ export const abarToAbar = async (
 
   let anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
@@ -332,7 +345,7 @@ export const abarToAbar = async (
 
   const abarToAbarData: FindoraWallet.AbarToAbarData = {
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     commitmentsMap: processedCommitmentsMap,
   };
 
@@ -341,7 +354,7 @@ export const abarToAbar = async (
 
 export const prepareAnonTransferOperationBuilder = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  axfrPublicKeyReceiverString: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
@@ -349,8 +362,7 @@ export const prepareAnonTransferOperationBuilder = async (
   let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
-
-  const { axfrPublicKeyConverted: axfrPublicKeyReceiver } = await getAnonKeypairFromJson(anonKeysReceiver);
+  const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
 
   const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
@@ -442,14 +454,14 @@ const processAbarToAbarCommitmentResponse = async (
 
 export const getAbarTransferFee = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,

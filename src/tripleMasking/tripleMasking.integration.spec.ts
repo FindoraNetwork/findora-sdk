@@ -1,4 +1,5 @@
 import * as Integration from './tripleMasking.integration';
+import { FindoraWallet } from 'types/findoraWallet';
 
 const extendedExecutionTimeout = 180000;
 
