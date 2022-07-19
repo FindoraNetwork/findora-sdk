@@ -297,7 +297,7 @@ var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void
                 return [4 /*yield*/, Keypair.getAXfrViewKeyByBase64(axfrViewKey)];
             case 3:
                 axfrViewKeyConverted = _a.sent(); // axfrViewKey
-                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(axfrPublicKey)];
+                return [4 /*yield*/, getAnonPubKeyFromString(axfrPublicKey)];
             case 4:
                 axfrPublicKeyConverted = _a.sent(); // AXfrPubKey
                 return [3 /*break*/, 6];
@@ -309,6 +309,23 @@ var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void
                     axfrPublicKeyConverted: axfrPublicKeyConverted,
                     axfrViewKeyConverted: axfrViewKeyConverted,
                 }];
+        }
+    });
+}); };
+var getAnonPubKeyFromString = function (anonPubKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var axfrPublicKeyConverted, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(anonPubKey)];
+            case 1:
+                axfrPublicKeyConverted = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_6 = _a.sent();
+                throw new Error("Could not convert Anon Public Key from string\", Error - " + error_6.message);
+            case 3: return [2 /*return*/, axfrPublicKeyConverted];
         }
     });
 }); };
@@ -348,13 +365,13 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
         }
     });
 }); };
-var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
+var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var calculatedFee, balanceAfterSendToBN, isMoreFeeNeeded, msg, anonTransferOperationBuilder, commitmentsMap, processedCommitmentsMap, abarToAbarData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
                 case 1:
                     calculatedFee = _a.sent();
                     console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
@@ -364,7 +381,7 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
                         msg = "Could not process abar transfer. More fee are needed. Required amount at least \"" + calculatedFee + " FRA\"";
                         throw new Error(msg);
                     }
-                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
                 case 2:
                     anonTransferOperationBuilder = _a.sent();
                     try {
@@ -386,7 +403,7 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
                     processedCommitmentsMap = _a.sent();
                     abarToAbarData = {
                         anonKeysSender: anonKeysSender,
-                        anonKeysReceiver: anonKeysReceiver,
+                        anonPubKeyReceiver: anonPubKeyReceiver,
                         commitmentsMap: processedCommitmentsMap,
                     };
                     return [2 /*return*/, { anonTransferOperationBuilder: anonTransferOperationBuilder, abarToAbarData: abarToAbarData }];
@@ -395,10 +412,10 @@ var abarToAbar = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfe
     });
 };
 exports.abarToAbar = abarToAbar;
-var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
+var prepareAnonTransferOperationBuilder = function (anonKeysSender, axfrPublicKeyReceiverString, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var anonTransferOperationBuilder, aXfrSpendKeySender, axfrPublicKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount, ledger, amountAssetType, error_6;
+        var anonTransferOperationBuilder, aXfrSpendKeySender, axfrPublicKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount, ledger, amountAssetType, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
@@ -407,9 +424,9 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysRece
                     return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
                 case 2:
                     aXfrSpendKeySender = (_a.sent()).aXfrSpendKeyConverted;
-                    return [4 /*yield*/, getAnonKeypairFromJson(anonKeysReceiver)];
+                    return [4 /*yield*/, getAnonPubKeyFromString(axfrPublicKeyReceiverString)];
                 case 3:
-                    axfrPublicKeyReceiver = (_a.sent()).axfrPublicKeyConverted;
+                    axfrPublicKeyReceiver = _a.sent();
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
                 case 4:
                     abarPayloadOne = _a.sent();
@@ -450,8 +467,8 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, anonKeysRece
                     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, amountAssetType.asset_type, axfrPublicKeyReceiver);
                     return [3 /*break*/, 12];
                 case 11:
-                    error_6 = _a.sent();
-                    throw new Error("Could not add an output for abar transfer operation\", Error - " + error_6.message);
+                    error_7 = _a.sent();
+                    throw new Error("Could not add an output for abar transfer operation\", Error - " + error_7.message);
                 case 12: return [2 /*return*/, anonTransferOperationBuilder];
             }
         });
@@ -493,13 +510,13 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
         }
     });
 }); };
-var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
+var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonKeysReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, ownedAbarToUseAsSource, additionalOwnedAbarItems)];
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     expectedFee = anonTransferOperationBuilder.get_expected_fee();
@@ -511,7 +528,7 @@ var getAbarTransferFee = function (anonKeysSender, anonKeysReceiver, abarAmountT
 };
 exports.getAbarTransferFee = getAbarTransferFee;
 var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_7, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, error_8, seed, feeInputs, error_9, commitments, barToAbarData;
+    var ledger, transactionBuilder, item, utxoDataList, utxoItem, error_8, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, axfrPublicKey, error_9, seed, feeInputs, error_10, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -531,7 +548,7 @@ var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awa
                 item = utxoItem;
                 return [3 /*break*/, 6];
             case 5:
-                error_7 = _b.sent();
+                error_8 = _b.sent();
                 throw new Error("could not fetch utxo for sid " + sid);
             case 6: return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 7:
@@ -550,13 +567,13 @@ var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awa
                 _b.label = 8;
             case 8:
                 _b.trys.push([8, 10, , 11]);
-                return [4 /*yield*/, Keypair.getAXfrPublicKeyByBase64(receiverAxfrPublicKey)];
+                return [4 /*yield*/, getAnonPubKeyFromString(receiverAxfrPublicKey)];
             case 9:
                 axfrPublicKey = _b.sent();
                 return [3 /*break*/, 11];
             case 10:
-                error_8 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_8.message);
+                error_9 = _b.sent();
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_9.message);
             case 11:
                 seed = (0, utils_1.generateSeedString)();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
@@ -574,8 +591,8 @@ var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awa
                 feeInputs = _b.sent();
                 return [3 /*break*/, 15];
             case 14:
-                error_9 = _b.sent();
-                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_9.message);
+                error_10 = _b.sent();
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_10.message);
             case 15:
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
@@ -668,7 +685,7 @@ var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, vo
 }); };
 exports.isNullifierHashSpent = isNullifierHashSpent;
 var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrSpendKey, axfrPublicKey, nullifierHashes, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_10, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
+    var axfrSpendKey, axfrPublicKey, nullifierHashes, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -688,8 +705,8 @@ var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList
                 ownedAbarsResponse = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_10 = _a.sent();
-                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_10.message, console.log('Full Error', error_10));
+                error_11 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_11.message, console.log('Full Error', error_11));
                 return [3 /*break*/, 7];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -712,7 +729,7 @@ var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList
 }); };
 exports.getNullifierHashesFromCommitments = getNullifierHashesFromCommitments;
 var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrSpendKey, axfrPublicKey, unspentAbars, _i, givenCommitmentsList_2, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+    var axfrSpendKey, axfrPublicKey, unspentAbars, _i, givenCommitmentsList_2, givenCommitment, ownedAbarsResponse, error_12, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -732,8 +749,8 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
                 ownedAbarsResponse = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_11 = _a.sent();
-                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_11.message, console.log('Full Error', error_11));
+                error_12 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_12.message, console.log('Full Error', error_12));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -761,7 +778,7 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
 }); };
 exports.getUnspentAbars = getUnspentAbars;
 var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var axfrSpendKey, axfrPublicKey, spentAbars, _i, givenCommitmentsList_3, givenCommitment, ownedAbarsResponse, error_12, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
+    var axfrSpendKey, axfrPublicKey, spentAbars, _i, givenCommitmentsList_3, givenCommitment, ownedAbarsResponse, error_13, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -781,8 +798,8 @@ var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter
                 ownedAbarsResponse = _a.sent();
                 return [3 /*break*/, 5];
             case 4:
-                error_12 = _a.sent();
-                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_12.message, console.log('Full Error', error_12));
+                error_13 = _a.sent();
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_13.message, console.log('Full Error', error_13));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];

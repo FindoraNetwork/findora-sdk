@@ -1324,7 +1324,7 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sid = 2;
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
-                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys)];
+                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
             case 3:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
@@ -1477,7 +1477,7 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
             case 4:
                 _i++;
                 return [3 /*break*/, 2];
-            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '3.15', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 5: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '3.15', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
             case 6:
                 _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));

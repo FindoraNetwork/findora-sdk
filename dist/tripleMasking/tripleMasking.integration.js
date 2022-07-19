@@ -312,7 +312,7 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
             case 2:
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
-                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '50', ownedAbarToUseAsSource)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '50', ownedAbarToUseAsSource)];
             case 3:
                 _a = _b.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
@@ -616,7 +616,7 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 8:
                 _i++;
                 return [3 /*break*/, 6];
-            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver, '1000', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '1000', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
             case 10:
                 _c = _g.sent(), anonTransferOperationBuilder = _c.anonTransferOperationBuilder, abarToAbarData = _c.abarToAbarData;
                 console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));

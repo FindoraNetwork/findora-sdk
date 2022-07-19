@@ -57,12 +57,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Fee = __importStar(require("../../services/fee"));
+var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var KeypairApi = __importStar(require("../keypair/keypair"));
 var NetworkApi = __importStar(require("../network/network"));
 var AssetApi = __importStar(require("../sdkAsset/sdkAsset"));
 var helpers = __importStar(require("./helpers"));
 var Processor = __importStar(require("./processor"));
-var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var Transaction = __importStar(require("./transaction"));
 describe('transaction (unit test)', function () {
     describe('getTransactionBuilder', function () {

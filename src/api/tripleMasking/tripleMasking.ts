@@ -1,3 +1,4 @@
+import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { CACHE_ENTRIES } from '../../config/cache';
 import Sdk from '../../Sdk';
 import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
@@ -235,7 +236,7 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
     aXfrSpendKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSpendKey); // AXfrSpendKey
     axfrViewKeyConverted = await Keypair.getAXfrViewKeyByBase64(axfrViewKey); // axfrViewKey
 
-    axfrPublicKeyConverted = await Keypair.getAXfrPublicKeyByBase64(axfrPublicKey); // AXfrPubKey
+    axfrPublicKeyConverted = await getAnonPubKeyFromString(axfrPublicKey); // AXfrPubKey
   } catch (error) {
     throw new Error(`Could not convert AnonKeyPair from JSON", Error - ${(error as Error).message}`);
   }
@@ -245,6 +246,17 @@ const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys)
     axfrPublicKeyConverted,
     axfrViewKeyConverted,
   };
+};
+
+const getAnonPubKeyFromString = async (anonPubKey: string): Promise<AXfrPubKey> => {
+  let axfrPublicKeyConverted;
+  try {
+    axfrPublicKeyConverted = await Keypair.getAXfrPublicKeyByBase64(anonPubKey);
+  } catch (error) {
+    throw new Error(`Could not convert Anon Public Key from string", Error - ${(error as Error).message}`);
+  }
+
+  return axfrPublicKeyConverted;
 };
 
 const getAbarTransferInputPayload = async (
@@ -280,14 +292,14 @@ const getAbarTransferInputPayload = async (
 
 export const abarToAbar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
@@ -306,7 +318,7 @@ export const abarToAbar = async (
 
   let anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
@@ -332,7 +344,7 @@ export const abarToAbar = async (
 
   const abarToAbarData: FindoraWallet.AbarToAbarData = {
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     commitmentsMap: processedCommitmentsMap,
   };
 
@@ -341,7 +353,7 @@ export const abarToAbar = async (
 
 export const prepareAnonTransferOperationBuilder = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  axfrPublicKeyReceiverString: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
@@ -349,8 +361,7 @@ export const prepareAnonTransferOperationBuilder = async (
   let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
-
-  const { axfrPublicKeyConverted: axfrPublicKeyReceiver } = await getAnonKeypairFromJson(anonKeysReceiver);
+  const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
 
   const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
@@ -442,14 +453,14 @@ const processAbarToAbarCommitmentResponse = async (
 
 export const getAbarTransferFee = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  anonKeysReceiver: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
-    anonKeysReceiver,
+    anonPubKeyReceiver,
     abarAmountToTransfer,
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
@@ -502,10 +513,9 @@ export const barToAbar = async (
   }
 
   let axfrPublicKey;
-  // let encKey;
 
   try {
-    axfrPublicKey = await Keypair.getAXfrPublicKeyByBase64(receiverAxfrPublicKey);
+    axfrPublicKey = await getAnonPubKeyFromString(receiverAxfrPublicKey);
   } catch (error) {
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }

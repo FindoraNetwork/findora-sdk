@@ -230,7 +230,7 @@ export const abarToAbar = async (
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
-    anonKeysReceiver,
+    anonKeysReceiver.axfrPublicKey,
     '50',
     ownedAbarToUseAsSource,
   );
@@ -519,7 +519,7 @@ export const abarToAbarMulti = async (
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
-    anonKeysReceiver,
+    anonKeysReceiver.axfrPublicKey,
     '1000',
     ownedAbarToUseAsSource,
     additionalOwnedAbarItems,

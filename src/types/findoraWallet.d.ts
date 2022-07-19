@@ -80,7 +80,7 @@ declare namespace FindoraWallet {
 
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
-    anonKeysReceiver: FormattedAnonKeys;
+    anonPubKeyReceiver: string;
     commitmentsMap: ProcessedCommitmentsMap[];
   }
 
