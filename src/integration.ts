@@ -37,7 +37,7 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 findoraSdk.init(sdkEnv);
 
-const { mainFaucet, senderOne, receiverOne } = walletKeys;
+const { mainFaucet, receiverOne } = walletKeys;
 
 const password = 'yourSecretPassword';
 
@@ -438,7 +438,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const Ledger = await getLedger();
 
   const pkey = mainFaucet;
-  const toPkey = senderOne;
+  const toPkey = receiverOne;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
