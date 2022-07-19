@@ -83,7 +83,7 @@ var waitingTimeBeforeCheckTxStatus = 19000;
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
 console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 Sdk_1.default.init(sdkEnv);
-var mainFaucet = walletKeys.mainFaucet, senderOne = walletKeys.senderOne, receiverOne = walletKeys.receiverOne;
+var mainFaucet = walletKeys.mainFaucet, receiverOne = walletKeys.receiverOne;
 var password = 'yourSecretPassword';
 var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionStatus, sendResponse, Committed, txnSID;
@@ -471,7 +471,7 @@ var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 
             case 1:
                 Ledger = _a.sent();
                 pkey = mainFaucet;
-                toPkey = senderOne;
+                toPkey = receiverOne;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 2:
                 walletInfo = _a.sent();
