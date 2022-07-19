@@ -1,5 +1,4 @@
 import { Keypair } from '../api';
-import { FindoraWallet } from 'types/findoraWallet';
 export declare const createNewKeypair: () => Promise<Keypair.WalletKeypar>;
 /**
  * Create FRA Test BARs for Single Asset Integration Test

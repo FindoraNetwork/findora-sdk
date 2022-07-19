@@ -67,9 +67,9 @@ var bigNumber = __importStar(require("./services/bigNumber"));
 var providers_1 = require("./services/cacheStore/providers");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../.env_integration_".concat(process.env.INTEGRATION_ENV_NAME)
+    ? "../.env_integration_" + process.env.INTEGRATION_ENV_NAME
     : "../.env_example";
-var envConfig = require("".concat(envConfigFile, ".json"));
+var envConfig = require(envConfigFile + ".json");
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -81,7 +81,7 @@ var sdkEnv = {
 };
 var waitingTimeBeforeCheckTxStatus = 19000;
 console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
-console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet, receiverOne = walletKeys.receiverOne;
 var password = 'yourSecretPassword';
@@ -90,7 +90,7 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("\uD83D\uDE80 ~ ".concat(operationName, " ~ txHandle"), txHandle);
+                console.log("\uD83D\uDE80 ~ " + operationName + " ~ txHandle", txHandle);
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 1:
                 _a.sent();
@@ -99,18 +99,18 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
                 transactionStatus = _a.sent();
                 sendResponse = transactionStatus.response;
                 if (!sendResponse) {
-                    console.log("\uD83D\uDE80 ~ ERROR 1 - ".concat(operationName, " ~ transactionStatus"), transactionStatus);
+                    console.log("\uD83D\uDE80 ~ ERROR 1 - " + operationName + " ~ transactionStatus", transactionStatus);
                     return [2 /*return*/, false];
                 }
                 Committed = sendResponse.Committed;
                 if (!Array.isArray(Committed)) {
-                    console.log("\uD83D\uDE80 ~ ERROR 2 - ".concat(operationName, " ~ sendResponse"), sendResponse);
+                    console.log("\uD83D\uDE80 ~ ERROR 2 - " + operationName + " ~ sendResponse", sendResponse);
                     return [2 /*return*/, false];
                 }
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log("\uD83D\uDE80 ~ ".concat(operationName, " ~ txnSID"), txnSID);
+                console.log("\uD83D\uDE80 ~ " + operationName + " ~ txnSID", txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus);
+                    console.log("\uD83D\uDE80  ~ ERROR 3 - " + operationName + " ~ Could not retrieve the transaction with a handle " + txHandle + ". Response was: ", transactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -310,7 +310,7 @@ var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(vo
                 }
                 inputNumbers = 5;
                 assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, "".concat(inputNumbers), assetBlindRules)];
+                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, "" + inputNumbers, assetBlindRules)];
             case 8:
                 issueAssetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
@@ -324,7 +324,7 @@ var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(vo
                     return [2 /*return*/, false];
                 }
                 assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "".concat(inputNumbers / 2), derivedTokenCode, assetBlindRulesForSend)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + inputNumbers / 2, derivedTokenCode, assetBlindRulesForSend)];
             case 11:
                 sendTransactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(sendTransactionBuilder)];
@@ -380,7 +380,7 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
             case 8:
                 receiverBalanceAfterTransfer = _a.sent();
                 isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
-                peterCheckResult = "Peter balance should be 0.100000 and now it is ".concat((0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer), ", so this is \"").concat(isItRight, "\" ");
+                peterCheckResult = "Peter balance should be 0.100000 and now it is " + (0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer) + ", so this is \"" + isItRight + "\" ";
                 console.log('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
                 return [2 /*return*/, isItRight];
         }
@@ -440,8 +440,8 @@ var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter
                 peterBalanceAfterTransfer = _a.sent();
                 isItRightAlice = (0, testHelpers_1.isNumberChangedBy)(aliceBalanceBeforeTransfer, aliceBalanceAfterTransfer, numbersForAlice);
                 isItRightPeter = (0, testHelpers_1.isNumberChangedBy)(peterBalanceBeforeTransfer, peterBalanceAfterTransfer, numbersForPeter);
-                aliceCheckResult = "Alice balance should be 0.100000 and now it is ".concat((0, testHelpers_1.formatFromWei)(aliceBalanceAfterTransfer), ", so this is \"").concat(isItRightAlice, "\" ");
-                peterCheckResult = "Peter balance should be 0.200000 and now it is ".concat((0, testHelpers_1.formatFromWei)(peterBalanceAfterTransfer), ", so this is \"").concat(isItRightPeter, "\" ");
+                aliceCheckResult = "Alice balance should be 0.100000 and now it is " + (0, testHelpers_1.formatFromWei)(aliceBalanceAfterTransfer) + ", so this is \"" + isItRightAlice + "\" ";
+                peterCheckResult = "Peter balance should be 0.200000 and now it is " + (0, testHelpers_1.formatFromWei)(peterBalanceAfterTransfer) + ", so this is \"" + isItRightPeter + "\" ";
                 console.log('🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult', aliceCheckResult);
                 console.log('🚀 ~ file: integration.ts ~ line 602 ~ sendFraToMultipleReceiversTransactionSubmit ~ peterCheckResult', peterCheckResult);
                 return [2 /*return*/, isItRightAlice && isItRightPeter];

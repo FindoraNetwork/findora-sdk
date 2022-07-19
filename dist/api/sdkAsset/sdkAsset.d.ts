@@ -1,6 +1,5 @@
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
-import { FindoraWallet } from 'types/findoraWallet';
 export interface AssetRules {
     transferable: boolean;
     updatable: boolean;

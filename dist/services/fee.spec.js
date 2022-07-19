@@ -60,8 +60,8 @@ var KeypairApi = __importStar(require("../api/keypair"));
 var NetworkApi = __importStar(require("../api/network/network"));
 var Asset = __importStar(require("../api/sdkAsset/sdkAsset"));
 var Fee = __importStar(require("./fee"));
-var UtxoHelper = __importStar(require("./utxoHelper"));
 var Ledger = __importStar(require("./ledger/ledgerWrapper"));
+var UtxoHelper = __importStar(require("./utxoHelper"));
 describe('fee (unit test)', function () {
     var pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
     var password = '123';
