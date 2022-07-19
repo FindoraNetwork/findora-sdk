@@ -45,7 +45,7 @@ var runRestoreWallet = function (mnemonicString) { return __awaiter(void 0, void
         switch (_a.label) {
             case 0:
                 password = '123';
-                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
+                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"".concat(mnemonicString, "\""));
                 mm = mnemonicString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:

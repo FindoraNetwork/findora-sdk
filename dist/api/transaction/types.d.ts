@@ -1,4 +1,5 @@
 import { ProcessedTx } from './operationProcessors/index';
+import { FindoraWallet } from 'types/findoraWallet';
 export interface TxInput {
     Absolute: number;
 }

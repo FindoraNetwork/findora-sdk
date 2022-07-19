@@ -2,6 +2,7 @@ import { WalletKeypar } from '../api/keypair';
 import * as AssetApi from '../api/sdkAsset';
 import { ClientAssetRecord, FeeInputs, OwnerMemo, TransferOperationBuilder, TxoRef, XfrKeyPair, XfrPublicKey } from './ledger/types';
 import { UtxoInputsInfo } from './utxoHelper';
+import { FindoraWallet } from 'types/findoraWallet';
 interface FeeInputPayloadType {
     txoRef: TxoRef;
     assetRecord: ClientAssetRecord;

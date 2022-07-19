@@ -1214,7 +1214,7 @@ const barToAbar = async () => {
     transactionBuilder,
     barToAbarData,
     sid: usedSid,
-  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys);
+  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
