@@ -12,6 +12,7 @@ import {
   XfrKeyPair,
   XfrPublicKey,
 } from './ledger/types';
+
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
 
 interface FeeInputPayloadType {
@@ -169,7 +170,7 @@ export const getPayloadForFeeInputs = async (
 
   const feeInputsPayload: FeeInputPayloadType[] = [];
 
-  const { inputParametersList, inputAmount } = utxoInputs;
+  const { inputParametersList } = utxoInputs;
 
   const inputPromise = inputParametersList.map(async (inputParameters: UtxoInputParameter) => {
     const { txoRef, assetRecord, amount, sid } = inputParameters;
@@ -198,28 +199,13 @@ export const getPayloadForFeeInputs = async (
   return feeInputsPayload;
 };
 
+// creates an istance of a TransferOperationBuilder with a minimal FRA fee
 export const buildTransferOperationWithFee = async (
   walletInfo: WalletKeypar,
   assetBlindRules?: { isAmountBlind?: boolean; isTypeBlind?: boolean },
 ): Promise<TransferOperationBuilder> => {
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-
-  const { response: sids } = sidsResult;
-
-  if (!sids) {
-    throw new Error('No sids were fetched');
-  }
-
-  const utxoDataList = await addUtxo(walletInfo, sids);
-
   const minimalFee = await AssetApi.getMinimalFee();
-
   const fraAssetCode = await AssetApi.getFraAssetCode();
-
-  const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
-
-  const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
-
   const toPublickey = await AssetApi.getFraPublicKey();
 
   const recieversInfo = [
@@ -230,16 +216,12 @@ export const buildTransferOperationWithFee = async (
     },
   ];
 
-  const trasferOperation = await getTransferOperation(
-    walletInfo,
-    utxoInputsInfo,
-    recieversInfo,
-    fraAssetCode,
-  );
+  const trasferOperation = await buildTransferOperation(walletInfo, recieversInfo, fraAssetCode);
 
   return trasferOperation;
 };
 
+// used in triple masking
 export const getFeeInputs = async (
   walletInfo: WalletKeypar,
   excludeSid: number,
@@ -257,15 +239,14 @@ export const getFeeInputs = async (
 
   const filteredSids = sids.filter(sid => sid !== excludeSid);
 
-  const utxoDataList = await addUtxo(walletInfo, filteredSids);
-
   const minimalFee = isBarToAbar ? await AssetApi.getBarToAbarMinimalFee() : await AssetApi.getMinimalFee();
-  console.log('🚀 ~ file: fee.ts ~ line 263 ~ minimalFee', minimalFee);
+
+  console.log('🚀 ~ file: fee.ts ~ line 263 ~ abar minimalFee', minimalFee);
 
   const fraAssetCode = await AssetApi.getFraAssetCode();
 
+  const utxoDataList = await addUtxo(walletInfo, filteredSids);
   const sendUtxoList = getSendUtxo(fraAssetCode, minimalFee, utxoDataList);
-
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const feeInputsPayload = await getPayloadForFeeInputs(walletInfo, utxoInputsInfo);
@@ -280,6 +261,7 @@ export const getFeeInputs = async (
   return feeInputs;
 };
 
+// creates an istance of a TransferOperationBuilder to transfer tokens based on recieversInfo
 export const buildTransferOperation = async (
   walletInfo: WalletKeypar,
   recieversInfo: ReciverInfo[],
@@ -298,9 +280,7 @@ export const buildTransferOperation = async (
   }, BigInt(0));
 
   const utxoDataList = await addUtxo(walletInfo, sids);
-
   const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
-
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
   const transferOperationBuilder = await getTransferOperation(

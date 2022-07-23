@@ -11,7 +11,7 @@ import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
-import * as TransactionApi from '../transaction/transaction';
+import * as Builder from '../transaction/builder';
 import * as TripleMasking from './tripleMasking';
 
 interface TransferOpBuilderLight {
@@ -131,7 +131,7 @@ describe('triple masking (unit test)', () => {
       spyGetLedger = jest.spyOn(NodeLedger, 'default');
       spyLedgerOwnerMemoFromJson = jest.spyOn(ledgerOwnerMemo, 'from_json');
       spyLedgerClientAssetRecordFromJson = jest.spyOn(ledgerClientAssetRecord, 'from_json');
-      spyGetTransactionBuilder = jest.spyOn(TransactionApi, 'getTransactionBuilder');
+      spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder');
       spyAddUtxo = jest.spyOn(UtxoHelper, 'addUtxo');
       spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo');
       spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');

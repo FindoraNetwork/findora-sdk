@@ -12,7 +12,7 @@ import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getAssetCode, getAssetDetails } from '../sdkAsset';
-import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction';
+import * as Builder from '../transaction/builder';
 
 interface BalanceInfo {
   assetType: string;
@@ -358,7 +358,7 @@ export const prepareAnonTransferOperationBuilder = async (
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
+  let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
   const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
@@ -479,7 +479,7 @@ export const barToAbar = async (
   receiverAxfrPublicKey: string,
 ): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
-  let transactionBuilder = await getTransactionBuilder();
+  let transactionBuilder = await Builder.getTransactionBuilder();
 
   let item;
 
@@ -587,7 +587,7 @@ export const abarToBar = async (
   receiverWalletInfo: Keypair.WalletKeypar,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
 ) => {
-  let transactionBuilder = await getTransactionBuilder();
+  let transactionBuilder = await Builder.getTransactionBuilder();
 
   const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
 

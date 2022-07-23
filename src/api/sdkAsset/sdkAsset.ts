@@ -1,7 +1,9 @@
+import * as Builder from '../../api/transaction/Builder';
 import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
+
 import {
   AssetRules as LedgerAssetRules,
   TransactionBuilder,
@@ -161,22 +163,17 @@ export const getDefineAssetTransactionBuilder = async (
   assetRules: LedgerAssetRules,
   assetMemo = 'memo',
 ): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
+  let transactionBuilder;
 
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
 
-  if (error) {
-    throw new Error(error.message);
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
   }
 
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  let definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
+  let definitionTransaction = transactionBuilder.add_operation_create_asset(
     walletKeypair,
     assetMemo,
     assetName,
@@ -201,29 +198,26 @@ export const getIssueAssetTransactionBuilder = async (
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
+  const blockCount = await Builder.getBlockHeight();
 
   const utxoNumbers = BigInt(toWei(amountToIssue, assetDecimals).toString());
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  const definitionTransaction = transactionBuilder.add_basic_issue_asset(
     walletKeypair,
     assetName,
-    BigInt(blockCount),
+    blockCount,
     utxoNumbers,
     !!blindIsAmount,
   );
@@ -276,7 +270,7 @@ export const defineAsset = async (
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation!, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -362,7 +356,7 @@ export const issueAsset = async (
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation!!, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
