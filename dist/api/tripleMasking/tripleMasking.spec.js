@@ -74,7 +74,7 @@ var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var UtxoHelper = __importStar(require("../../services/utxoHelper"));
 var KeypairApi = __importStar(require("../keypair/keypair"));
 var NetworkApi = __importStar(require("../network/network"));
-var TransactionApi = __importStar(require("../transaction/transaction"));
+var Builder = __importStar(require("../transaction/builder"));
 var TripleMasking = __importStar(require("./tripleMasking"));
 describe('triple masking (unit test)', function () {
     describe('barToAbar', function () {
@@ -165,7 +165,7 @@ describe('triple masking (unit test)', function () {
             spyGetLedger = jest.spyOn(NodeLedger, 'default');
             spyLedgerOwnerMemoFromJson = jest.spyOn(ledgerOwnerMemo, 'from_json');
             spyLedgerClientAssetRecordFromJson = jest.spyOn(ledgerClientAssetRecord, 'from_json');
-            spyGetTransactionBuilder = jest.spyOn(TransactionApi, 'getTransactionBuilder');
+            spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder');
             spyAddUtxo = jest.spyOn(UtxoHelper, 'addUtxo');
             spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo');
             spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');

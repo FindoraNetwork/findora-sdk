@@ -81,7 +81,8 @@ var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
 var Network = __importStar(require("../network"));
 var sdkAsset_1 = require("../sdkAsset");
-var transaction_1 = require("../transaction");
+// import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction/builder';
+var Builder = __importStar(require("../transaction/builder"));
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, anonKeys, axfrPublicKey, axfrSpendKey, axfrViewKey, formattedAnonKeys, err_1;
     return __generator(this, function (_a) {
@@ -418,7 +419,7 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, axfrPublicKe
         var anonTransferOperationBuilder, aXfrSpendKeySender, axfrPublicKeyReceiver, abarPayloadOne, _i, additionalOwnedAbarItems_1, ownedAbarItemOne, abarPayloadNext, toAmount, ledger, amountAssetType, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, transaction_1.getAnonTransferOperationBuilder)()];
+                case 0: return [4 /*yield*/, Builder.getAnonTransferOperationBuilder()];
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
@@ -535,7 +536,7 @@ var barToAbar = function (walletInfo, sid, receiverAxfrPublicKey) { return __awa
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _b.sent();
-                return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
             case 2:
                 transactionBuilder = _b.sent();
                 _b.label = 3;
@@ -632,7 +633,7 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
     var transactionBuilder, receiverXfrPublicKey, aXfrSpendKeySender, abarPayloadSource, abarToBarData;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, transaction_1.getTransactionBuilder)()];
+            case 0: return [4 /*yield*/, Builder.getTransactionBuilder()];
             case 1:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey)];

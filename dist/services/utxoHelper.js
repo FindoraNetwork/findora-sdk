@@ -69,14 +69,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUtxoInputs = exports.getSendUtxo = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = void 0;
+exports.addUtxoInputs = exports.getSendUtxo = exports.getSendUtxoLegacy = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = exports.filterUtxoByCode = void 0;
 var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
+var mergeUtxoList = function (arr1, arr2) {
+    var res = [];
+    while (arr1.length && arr2.length) {
+        var assetItem1 = arr1[0];
+        var assetItem2 = arr2[0];
+        var amount1 = BigInt(assetItem1.body.amount);
+        var amount2 = BigInt(assetItem2.body.amount);
+        if (amount1 < amount2) {
+            res.push(arr1.splice(0, 1)[0]);
+            continue;
+        }
+        res.push(arr2.splice(0, 1)[0]);
+    }
+    return res.concat(arr1, arr2);
+};
+var mergeSortUtxoList = function (arr) {
+    if (arr.length < 2)
+        return arr;
+    var middleIdx = Math.floor(arr.length / 2);
+    var left = arr.splice(0, middleIdx);
+    var right = arr.splice(0);
+    return mergeUtxoList(mergeSortUtxoList(left), mergeSortUtxoList(right));
+};
+var filterUtxoByCode = function (code, utxoDataList) {
+    return utxoDataList.filter(function (assetItem) { var _a; return ((_a = assetItem === null || assetItem === void 0 ? void 0 : assetItem.body) === null || _a === void 0 ? void 0 : _a.asset_type) === code; });
+};
+exports.filterUtxoByCode = filterUtxoByCode;
+// is called only from getUtxoItem
 var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, assetRecord, err, memoDataResult, myMemoData, memoError, ownerMemo, err, decryptAssetData, error_1, err, decryptedAsetType, err, item;
+    var ledger, assetRecord, err, ownerMemo, err, decryptAssetData, error_1, err, decryptedAsetType, err, item;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -89,32 +117,25 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                     err = error;
                     throw new Error("Can not get client asset record. Details: \"" + err.message + "\"");
                 }
-                return [4 /*yield*/, Network.getOwnerMemo(sid)];
-            case 2:
-                memoDataResult = _a.sent();
-                myMemoData = memoDataResult.response, memoError = memoDataResult.error;
-                if (memoError) {
-                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
-                }
                 try {
-                    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
+                    ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : undefined;
                 }
                 catch (error) {
                     err = error;
                     throw new Error("Can not decode owner memo. Details: \"" + err.message + "\"");
                 }
-                _a.label = 3;
-            case 3:
-                _a.trys.push([3, 5, , 6]);
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
                 return [4 /*yield*/, ledger.open_client_asset_record(assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair)];
-            case 4:
+            case 3:
                 decryptAssetData = _a.sent();
-                return [3 /*break*/, 6];
-            case 5:
+                return [3 /*break*/, 5];
+            case 4:
                 error_1 = _a.sent();
                 err = error_1;
                 throw new Error("Can not open client asset record to decode. Details: \"" + err.message + "\"");
-            case 6:
+            case 5:
                 try {
                     decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 }
@@ -137,6 +158,7 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
     });
 }); };
 exports.decryptUtxoItem = decryptUtxoItem;
+// is called only by addUtxo
 var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void 0, void 0, void 0, function () {
     var utxoDataResult, utxoData, utxoError, memoDataResult, memoData, memoError, item;
     return __generator(this, function (_a) {
@@ -145,7 +167,6 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
                 if (cachedItem) {
                     return [2 /*return*/, cachedItem];
                 }
-                console.log("Fetching sid \"" + sid + "\"");
                 return [4 /*yield*/, Network.getUtxo(sid)];
             case 1:
                 utxoDataResult = _a.sent();
@@ -163,6 +184,8 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
                 return [4 /*yield*/, (0, exports.decryptUtxoItem)(sid, walletInfo, utxoData, memoData)];
             case 3:
                 item = _a.sent();
+                // console.log('🚀 ~ file: utxoHelper.ts ~ line 155 ~ sid processed', sid);
+                // console.log('🚀 ~ file: utxoHelper.ts ~ line 178 ~ item', item);
                 return [2 /*return*/, item];
         }
     });
@@ -207,7 +230,9 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, (0, exports.getUtxoItem)(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
             case 7:
                 item = _a.sent();
+                // console.log('🚀 ~ file: utxoHelper.ts ~ line 211 ~ addUtxo ~ item', item);
                 utxoDataList.push(item);
+                // console.log('sid processed!!', sid);
                 cacheDataToSave["sid_" + item.sid] = item;
                 return [3 /*break*/, 9];
             case 8:
@@ -235,7 +260,8 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
 }); };
 exports.addUtxo = addUtxo;
 // creates a list of utxo like object, which are suitable for the required send operation
-var getSendUtxo = function (code, amount, utxoDataList) {
+// is only used in fee
+var getSendUtxoLegacy = function (code, amount, utxoDataList) {
     var balance = amount;
     var result = [];
     for (var i = 0; i < utxoDataList.length; i++) {
@@ -271,8 +297,70 @@ var getSendUtxo = function (code, amount, utxoDataList) {
     }
     return result;
 };
+exports.getSendUtxoLegacy = getSendUtxoLegacy;
+// export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
+//   let balance = amount;
+//   const result = [];
+//   const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
+//   const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
+//   for (let i = 0; i < sortedUtxoList.length; i++) {
+//     const assetItem = sortedUtxoList[i];
+//     const _amount = BigInt(assetItem.body.amount);
+//     if (balance <= BigInt(0)) {
+//       break;
+//     } else if (BigInt(_amount) >= balance) {
+//       result.push({
+//         amount: balance,
+//         originAmount: _amount,
+//         sid: assetItem.sid,
+//         utxo: { ...assetItem.utxo },
+//         ownerMemo: assetItem.ownerMemo,
+//         memoData: assetItem.memoData,
+//       });
+//       break;
+//     } else {
+//       balance = BigInt(Number(balance) - Number(_amount));
+//       result.push({
+//         amount: _amount, //[5, 3, 2]
+//         originAmount: _amount, // [5, 3, 4]
+//         sid: assetItem.sid,
+//         utxo: { ...assetItem.utxo },
+//         ownerMemo: assetItem.ownerMemo,
+//         memoData: assetItem.memoData,
+//       });
+//     }
+//   }
+//   return result;
+// };
+var getSendUtxo = function (code, amount, utxoDataList) {
+    var result = [];
+    var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);
+    var sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
+    var sum = BigInt(0);
+    for (var _i = 0, sortedUtxoList_1 = sortedUtxoList; _i < sortedUtxoList_1.length; _i++) {
+        var assetItem = sortedUtxoList_1[_i];
+        var _amount = BigInt(assetItem.body.amount);
+        sum = sum + _amount;
+        var credit = BigInt(Number(sum) - Number(amount));
+        var remainedDebt = _amount - credit;
+        var amountToUse = !!credit ? remainedDebt : _amount;
+        result.push({
+            amount: amountToUse,
+            originAmount: _amount,
+            sid: assetItem.sid,
+            utxo: __assign({}, assetItem.utxo),
+            ownerMemo: assetItem.ownerMemo,
+            memoData: assetItem.memoData,
+        });
+        if (credit) {
+            break;
+        }
+    }
+    return result;
+};
 exports.getSendUtxo = getSendUtxo;
 // creates a list of inputs, which would be used by transaction builder in a fee service
+// used in fee.buildTransferOperation , fee.getFeeInputs
 var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, inputAmount, inputParametersList, i, item, assetRecord, err, txoRef, err, inputParameters, res;
     return __generator(this, function (_a) {

@@ -174,14 +174,14 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
 }); };
 exports.getTransferOperation = getTransferOperation;
 var getPayloadForFeeInputs = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, feeInputsPayload, inputParametersList, inputAmount, inputPromise;
+    var ledger, feeInputsPayload, inputParametersList, inputPromise;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 feeInputsPayload = [];
-                inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
+                inputParametersList = utxoInputs.inputParametersList;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
                     var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
                     return __generator(this, function (_a) {
@@ -215,32 +215,19 @@ var getPayloadForFeeInputs = function (walletInfo, utxoInputs) { return __awaite
     });
 }); };
 exports.getPayloadForFeeInputs = getPayloadForFeeInputs;
+// creates an istance of a TransferOperationBuilder with a minimal FRA fee
 var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
+    var minimalFee, fraAssetCode, toPublickey, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+            case 0: return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 1:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    throw new Error('No sids were fetched');
-                }
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
-            case 2:
-                utxoDataList = _a.sent();
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 3:
                 minimalFee = _a.sent();
                 return [4 /*yield*/, AssetApi.getFraAssetCode()];
-            case 4:
+            case 2:
                 fraAssetCode = _a.sent();
-                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
-            case 5:
-                utxoInputsInfo = _a.sent();
                 return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 6:
+            case 3:
                 toPublickey = _a.sent();
                 recieversInfo = [
                     {
@@ -249,16 +236,18 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                         assetBlindRules: assetBlindRules,
                     },
                 ];
-                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
-            case 7:
+                console.log('🚀 ~ file: fee.ts ~ line 217 ~ recieversInfo', recieversInfo);
+                return [4 /*yield*/, (0, exports.buildTransferOperation)(walletInfo, recieversInfo, fraAssetCode)];
+            case 4:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
         }
     });
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
+// used in triple masking
 var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, filteredSids, utxoDataList, minimalFee, _a, fraAssetCode, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
+    var ledger, sidsResult, sids, filteredSids, minimalFee, _a, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -272,24 +261,24 @@ var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awa
                     throw new Error('No sids were fetched');
                 }
                 filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
-            case 3:
-                utxoDataList = _b.sent();
-                if (!isBarToAbar) return [3 /*break*/, 5];
+                if (!isBarToAbar) return [3 /*break*/, 4];
                 return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
-            case 4:
+            case 3:
                 _a = _b.sent();
-                return [3 /*break*/, 7];
-            case 5: return [4 /*yield*/, AssetApi.getMinimalFee()];
+                return [3 /*break*/, 6];
+            case 4: return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 5:
+                _a = _b.sent();
+                _b.label = 6;
             case 6:
-                _a = _b.sent();
-                _b.label = 7;
-            case 7:
                 minimalFee = _a;
-                console.log('🚀 ~ file: fee.ts ~ line 263 ~ minimalFee', minimalFee);
+                console.log('🚀 ~ file: fee.ts ~ line 263 ~ abar minimalFee', minimalFee);
                 return [4 /*yield*/, AssetApi.getFraAssetCode()];
-            case 8:
+            case 7:
                 fraAssetCode = _b.sent();
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
+            case 8:
+                utxoDataList = _b.sent();
                 sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
             case 9:
@@ -307,6 +296,7 @@ var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awa
     });
 }); };
 exports.getFeeInputs = getFeeInputs;
+// creates an istance of a TransferOperationBuilder to transfer tokens based on recieversInfo
 var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var sidsResult, sids, totalUtxoNumbers, utxoDataList, sendUtxoList, utxoInputsInfo, transferOperationBuilder;
     return __generator(this, function (_a) {

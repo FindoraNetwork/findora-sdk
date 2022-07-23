@@ -55,63 +55,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = exports.getAnonTransferOperationBuilder = exports.getTransactionBuilder = void 0;
+exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var AssetApi = __importStar(require("../sdkAsset"));
+var Builder = __importStar(require("./builder"));
 var helpers = __importStar(require("./helpers"));
 var processor_1 = require("./processor");
-var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-                return [2 /*return*/, transactionBuilder];
-        }
-    });
-}); };
-exports.getTransactionBuilder = getTransactionBuilder;
-var getAnonTransferOperationBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, anonTransferOperationBuilder;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                anonTransferOperationBuilder = ledger.AnonTransferOperationBuilder.new(BigInt(blockCount));
-                return [2 /*return*/, anonTransferOperationBuilder];
-        }
-    });
-}); };
-exports.getAnonTransferOperationBuilder = getAnonTransferOperationBuilder;
 /**
  * Send some asset to multiple receivers
  *
@@ -202,7 +155,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 _a.label = 7;
             case 7:
                 _a.trys.push([7, 9, , 10]);
-                return [4 /*yield*/, (0, exports.getTransactionBuilder)()];
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
             case 8:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 10];

@@ -58,6 +58,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Fee = __importStar(require("../../services/fee"));
 var SdkAsset = __importStar(require("../sdkAsset/sdkAsset"));
+var Builder = __importStar(require("../transaction/builder"));
 var Transaction = __importStar(require("../transaction/transaction"));
 var Staking = __importStar(require("./staking"));
 describe('staking (unit test)', function () {
@@ -99,7 +100,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
@@ -177,7 +178,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
@@ -271,7 +272,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             throw new Error('boom');
                         });
@@ -325,7 +326,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
@@ -385,7 +386,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
@@ -496,7 +497,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
@@ -591,7 +592,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             throw new Error('boom');
                         });
@@ -637,7 +638,7 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         spyTransactionGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
+                            .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
