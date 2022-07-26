@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var crypto = require('crypto');
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
@@ -101,4 +101,10 @@ var generateSeedString = function () {
     return seed;
 };
 exports.generateSeedString = generateSeedString;
+var getRandomNumber = function (min, max) {
+    if (min === void 0) { min = 1; }
+    if (max === void 0) { max = 10; }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+exports.getRandomNumber = getRandomNumber;
 //# sourceMappingURL=utils.js.map

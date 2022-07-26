@@ -37,6 +37,12 @@ export declare const getNullifierHashesFromCommitments: (anonKeys: FindoraWallet
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const getSpentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const openAbar: (abar: FindoraWallet.OwnedAbarItem, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.OpenedAbarInfo>;
+interface AtxoMapItem {
+    amount: string;
+    atxoSid: string;
+    assetType: string;
+    commitment: string;
+}
 export declare const getBalanceMaps: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
     assetDetailsMap: {
         [key: string]: FindoraWallet.IAsset;
@@ -45,6 +51,9 @@ export declare const getBalanceMaps: (unspentAbars: FindoraWallet.OwnedAbarItem[
         [key: string]: string;
     };
     usedAssets: string[];
+    atxoMap: {
+        [key: string]: AtxoMapItem[];
+    };
 }>;
 export declare const getBalance: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<AnonWalletBalanceInfo>;
 export declare const getSpentBalance: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<AnonWalletBalanceInfo>;
@@ -56,4 +65,9 @@ export declare const getAllAbarBalances: (anonKeys: FindoraWallet.FormattedAnonK
 export declare const getAbarBalance: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<AnonWalletBalanceInfo>;
 export declare const getOwnedAbars: (givenCommitment: string) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const genNullifierHash: (atxoSid: string, ownedAbar: FindoraWallet.OwnedAbar, axfrSpendKey: string) => Promise<string>;
+export declare const getSendAtxo: (code: string, amount: BigInt, commitments: string[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
+    amount: bigint;
+    sid: string;
+    commitment: string;
+}[]>;
 export {};

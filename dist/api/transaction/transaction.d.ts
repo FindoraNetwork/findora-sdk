@@ -6,8 +6,6 @@ export interface TransferReciever {
     reciverWalletInfo: WalletKeypar | LightWalletKeypair;
     amount: string;
 }
-export declare const getTransactionBuilder: () => Promise<TransactionBuilder>;
-export declare const getAnonTransferOperationBuilder: () => Promise<AnonTransferOperationBuilder>;
 /**
  * Send some asset to multiple receivers
  *

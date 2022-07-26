@@ -5,6 +5,7 @@ import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
+import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
 import { ProcessedTxListResponseResult } from './types';
@@ -13,48 +14,6 @@ export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
   amount: string;
 }
-
-export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-
-  return transactionBuilder;
-};
-
-export const getAnonTransferOperationBuilder = async (): Promise<AnonTransferOperationBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const anonTransferOperationBuilder = ledger.AnonTransferOperationBuilder.new(BigInt(blockCount));
-
-  return anonTransferOperationBuilder;
-};
 
 /**
  * Send some asset to multiple receivers
@@ -153,7 +112,7 @@ export const sendToMany = async (
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getTransactionBuilder();
+    transactionBuilder = await Builder.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
 

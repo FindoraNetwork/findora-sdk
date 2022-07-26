@@ -92,6 +92,7 @@ var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
+var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
@@ -123,9 +124,9 @@ var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 var myAbarAnonKeys = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    axfrViewKey: '',
+    axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
+    axfrSpendKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
+    axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 var myGivenCommitmentsList = [
     'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
@@ -156,7 +157,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '12345';
-                pkey = PKEY_MINE2;
+                pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1304,18 +1305,68 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
+var createTestBars = function (senderOne) {
+    if (senderOne === void 0) { senderOne = PKEY_MINE; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var password, pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, i, amount, transactionBuilder, resultHandle;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    console.log('////////////////  Create Test Bars //////////////// ');
+                    password = '1234';
+                    pkey = mainFaucet;
+                    toPkeyMine = senderOne;
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+                case 1:
+                    walletInfo = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine, password)];
+                case 2:
+                    toWalletInfo = _a.sent();
+                    return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                case 3:
+                    fraCode = _a.sent();
+                    assetCode = fraCode;
+                    assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                    i = 0;
+                    _a.label = 4;
+                case 4:
+                    if (!(i < 2)) return [3 /*break*/, 9];
+                    amount = (0, utils_1.getRandomNumber)(5, 10);
+                    console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
+                case 5:
+                    transactionBuilder = _a.sent();
+                    return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+                case 6:
+                    resultHandle = _a.sent();
+                    console.log('send fra result handle!!', resultHandle);
+                    return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                case 7:
+                    _a.sent();
+                    _a.label = 8;
+                case 8:
+                    i++;
+                    return [3 /*break*/, 4];
+                case 9: return [2 /*return*/, true];
+            }
+        });
+    });
+};
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid_, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 password = '1234';
                 pkey = PKEY_MINE;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+                return [4 /*yield*/, createTestBars(pkey)];
             case 1:
+                _b.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
                 walletInfo = _b.sent();
                 return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 2:
+            case 3:
                 sidsResult = _b.sent();
                 sids = sidsResult.response;
                 if (!sids) {
@@ -1323,33 +1374,32 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 }
                 console.log('🚀 ~ file: run.ts ~ line 1193 ~ barToAbar ~ sids', sids);
                 sortedSids = sids.sort(function (a, b) { return b - a; });
-                console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
-                sid_ = sortedSids[0];
-                sid = 2;
+                console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+                sid = sortedSids[0];
                 anonKeys = __assign({}, myAbarAnonKeys);
-                console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
+                console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
                 return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
-            case 3:
+            case 4:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
                 console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 4:
+            case 5:
                 resultHandle = _b.sent();
                 console.log('send bar to abar result handle!!', resultHandle);
                 givenCommitment = barToAbarData.commitments[0];
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 5:
-                _b.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 6:
                 _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 7:
+                _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 8:
                 ownedAbarsResponse = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
                 return [4 /*yield*/, api_1.TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse)];
-            case 8:
+            case 9:
                 ownedAbarsSaveResult = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
                 return [2 /*return*/];
@@ -1635,7 +1685,8 @@ approveToken();
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
-// barToAbar(); // ++
+// createTestBars();
+//barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();

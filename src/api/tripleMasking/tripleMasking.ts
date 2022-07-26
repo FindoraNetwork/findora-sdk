@@ -12,7 +12,7 @@ import { addUtxo } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getAssetCode, getAssetDetails } from '../sdkAsset';
-import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction';
+import * as Builder from '../transaction/builder';
 
 interface BalanceInfo {
   assetType: string;
@@ -358,7 +358,7 @@ export const prepareAnonTransferOperationBuilder = async (
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  let anonTransferOperationBuilder = await getAnonTransferOperationBuilder();
+  let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
   const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
@@ -479,7 +479,7 @@ export const barToAbar = async (
   receiverAxfrPublicKey: string,
 ): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
-  let transactionBuilder = await getTransactionBuilder();
+  let transactionBuilder = await Builder.getTransactionBuilder();
 
   let item;
 
@@ -587,7 +587,7 @@ export const abarToBar = async (
   receiverWalletInfo: Keypair.WalletKeypar,
   ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
 ) => {
-  let transactionBuilder = await getTransactionBuilder();
+  let transactionBuilder = await Builder.getTransactionBuilder();
 
   const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
 
@@ -805,15 +805,31 @@ export const openAbar = async (
   return item;
 };
 
+interface AtxoMapItem {
+  amount: string;
+  atxoSid: string;
+  assetType: string;
+  commitment: string;
+}
+
 export const getBalanceMaps = async (
   unspentAbars: FindoraWallet.OwnedAbarItem[],
   anonKeys: FindoraWallet.FormattedAnonKeys,
 ) => {
   const assetDetailsMap: { [key: string]: FindoraWallet.IAsset } = {};
   const balancesMap: { [key: string]: string } = {};
+
+  const atxoMap: { [key: string]: AtxoMapItem[] } = {};
   const usedAssets = [];
 
   for (const abar of unspentAbars) {
+    const {
+      abarData: {
+        atxoSid,
+        ownedAbar: { commitment },
+      },
+    } = abar;
+
     const openedAbarItem = await openAbar(abar, anonKeys);
 
     const { amount, assetType } = openedAbarItem;
@@ -827,14 +843,19 @@ export const getBalanceMaps = async (
     if (!balancesMap[assetType]) {
       balancesMap[assetType] = '0';
     }
+    if (!atxoMap[assetType]) {
+      atxoMap[assetType] = [];
+    }
 
     balancesMap[assetType] = plus(balancesMap[assetType], amount).toString();
+    atxoMap[assetType].push({ amount: amount.toString(), assetType, atxoSid, commitment });
   }
 
   return {
     assetDetailsMap,
     balancesMap,
     usedAssets,
+    atxoMap,
   };
 };
 
@@ -990,4 +1011,78 @@ export const genNullifierHash = async (
   } catch (err) {
     throw new Error(`Could not get nullifier hash", Error - ${(err as Error).message}`);
   }
+};
+
+const mergeAtxoList = (arr1: AtxoMapItem[], arr2: AtxoMapItem[]) => {
+  const res = [];
+
+  while (arr1.length && arr2.length) {
+    const assetItem1 = arr1[0];
+    const assetItem2 = arr2[0];
+    const amount1 = BigInt(assetItem1.amount);
+    const amount2 = BigInt(assetItem2.amount);
+
+    if (amount1 < amount2) {
+      res.push(arr1.splice(0, 1)[0]);
+      continue;
+    }
+    res.push(arr2.splice(0, 1)[0]);
+  }
+
+  return res.concat(arr1, arr2);
+};
+
+const mergeSortAtxoList = (arr: AtxoMapItem[]): AtxoMapItem[] => {
+  if (arr.length < 2) return arr;
+  const middleIdx = Math.floor(arr.length / 2);
+
+  let left = arr.splice(0, middleIdx);
+  let right = arr.splice(0);
+
+  return mergeAtxoList(mergeSortAtxoList(left), mergeSortAtxoList(right));
+};
+
+export const getSendAtxo = async (
+  code: string,
+  amount: BigInt,
+  commitments: string[],
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+) => {
+  const result = [];
+
+  const unspentAbars = await getUnspentAbars(anonKeys, commitments);
+  const balancesMaps = await getBalanceMaps(unspentAbars, anonKeys);
+  const { atxoMap } = balancesMaps;
+
+  const filteredUtxoList = atxoMap[code];
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
+
+  if (!filteredUtxoList) {
+    return [];
+  }
+
+  const sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
+  //  console.log('🚀 ~ file: tripleMasking.ts ~ line 1065 ~ sortedUtxoList', sortedUtxoList);
+
+  let sum = BigInt(0);
+
+  for (let assetItem of sortedUtxoList) {
+    const _amount = BigInt(assetItem.amount);
+
+    sum = sum + _amount;
+
+    const credit = BigInt(Number(sum) - Number(amount));
+
+    result.push({
+      amount: _amount,
+      sid: assetItem.atxoSid,
+      commitment: assetItem.commitment,
+    });
+
+    if (credit >= 0) {
+      break;
+    }
+  }
+
+  return sum >= amount ? result : [];
 };

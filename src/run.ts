@@ -8,6 +8,7 @@ import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/pr
 import * as Fee from './services/fee';
 import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
+import { getRandomNumber } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
 
 dotenv.config();
@@ -62,9 +63,10 @@ const mainFaucet = PKEY_LOCAL_FAUCET;
 const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
-  axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-  axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-  axfrViewKey: '',
+  axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
+  axfrSpendKey:
+    'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
+  axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 
 const myGivenCommitmentsList = [
@@ -88,9 +90,9 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '12345';
 
-  // const pkey = PKEY_LOCAL_FAUCET;
+  const pkey = PKEY_LOCAL_FAUCET;
   // const pkey = PKEY_MINE;
-  const pkey = PKEY_MINE2;
+  //  const pkey = PKEY_MINE2;
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
 
@@ -1178,10 +1180,47 @@ const getAnonKeys = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
 };
 
+const createTestBars = async (senderOne = PKEY_MINE) => {
+  console.log('////////////////  Create Test Bars //////////////// ');
+
+  const password = '1234';
+
+  const pkey = mainFaucet;
+  const toPkeyMine = senderOne;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
+
+  const fraCode = await Asset.getFraAssetCode();
+  const assetCode = fraCode;
+  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  for (let i = 0; i < 2; i++) {
+    const amount = getRandomNumber(5, 10);
+    console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
+
+    const transactionBuilder = await Transaction.sendToAddress(
+      walletInfo,
+      toWalletInfo.address,
+      `${amount}`,
+      assetCode,
+      assetBlindRules,
+    );
+
+    const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+    console.log('send fra result handle!!', resultHandle);
+    await sleep(waitingTimeBeforeCheckTxStatus);
+  }
+
+  return true;
+};
+
 const barToAbar = async () => {
   const password = '1234';
 
   const pkey = PKEY_MINE;
+
+  await createTestBars(pkey);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -1195,20 +1234,20 @@ const barToAbar = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1193 ~ barToAbar ~ sids', sids);
 
   const sortedSids = sids.sort((a, b) => b - a);
-  console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+  console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
-  const [sid_] = sortedSids;
+  const [sid] = sortedSids;
 
   // if (!sid) {
   //   throw new Error('sid is empty. send more transfers to this address!');
   // }
 
   // return;
-  const sid = 2; //
+  // const sid = 2; //
 
   const anonKeys = { ...myAbarAnonKeys };
 
-  console.log('🚀 ~ file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
+  console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
 
   const {
     transactionBuilder,
@@ -1585,7 +1624,8 @@ approveToken();
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
-// barToAbar(); // ++
+// createTestBars();
+//barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
