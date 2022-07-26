@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -68,9 +72,9 @@ require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
+    ? "../../.env_rpc_".concat(process.env.RPC_ENV_NAME)
     : "../../.env_example";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 var extendedExecutionTimeout = 600000;
@@ -92,13 +96,13 @@ var getTestResult = function (msgId, method, extraParams) { return __awaiter(voi
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
-                (0, testHelpers_1.timeLog)("Send an RPC call for \"" + method + "\"");
+                (0, testHelpers_1.timeLog)("Send an RPC call for \"".concat(method, "\""));
                 (0, testHelpers_1.assertResultResponse)(result);
                 return [2 /*return*/, result];
         }
     });
 }); };
-describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () {
+describe("Api Endpoint (rpc test negative) for \"".concat(rpcUrl, "\""), function () {
     describe('notSupportedMethod', function () {
         it('Returns a proper error code when requested method was not found', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;

@@ -1,7 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
@@ -1585,8 +1585,44 @@ const testIt = async () => {
   console.log('result', result);
 };
 
+async function approveToken() {
+  const webLinkedInfo = {
+    privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
+    rpcUrl: 'https://dev-qa02.dev.findora.org:8545', //'https://prod-forge.prod.findora.org:8545',
+    chainId: 1111, // 2154,
+    account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
+  };
+
+  const result = await Evm.approveToken(
+    '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+    '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
+    '100',
+    webLinkedInfo,
+  );
+  console.log(result.transactionHash);
+
+  const result1 = await Evm.frc20ToBar(
+    '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
+    'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
+    '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+    '100',
+    webLinkedInfo,
+  );
+  console.log(result1.transactionHash);
+  // const result1 = await Evm.tokenBalance(
+  //   webLinkedInfo,
+  //   '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',
+  //   true,
+  //   webLinkedInfo.account,
+  // );
+
+  // console.log(result1);
+}
+
+approveToken();
+
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
 //barToAbar(); // ++

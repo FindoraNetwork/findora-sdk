@@ -55,6 +55,7 @@ var factory_1 = __importDefault(require("./services/cacheStore/factory"));
 var providers_1 = require("./services/cacheStore/providers");
 var SdkDefaultEnvironment = {
     hostUrl: 'https://dev-evm.dev.findora.org',
+    configServerUrl: 'http://columbus-config-qa02.s3-website-us-west-1.amazonaws.com/',
     queryPort: '8667',
     ledgerPort: '8668',
     submissionPort: '8669',
@@ -79,9 +80,9 @@ var Sdk = /** @class */ (function () {
                     case 0:
                         cacheDataToSave = {};
                         utxoCache.forEach(function (item) {
-                            cacheDataToSave["sid_" + item.sid] = item;
+                            cacheDataToSave["sid_".concat(item.sid)] = item;
                         });
-                        return [4 /*yield*/, factory_1.default.write(cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletAddress, cacheDataToSave, Sdk.environment.cacheProvider)];
+                        return [4 /*yield*/, factory_1.default.write("".concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletAddress), cacheDataToSave, Sdk.environment.cacheProvider)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, true];

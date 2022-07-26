@@ -485,3 +485,9 @@ export const checkNullifierHashSpent = async (
 
   return dataResult;
 };
+
+export const getConfig = async (config?: Types.NetworkAxiosConfig) => {
+  const { configServerUrl } = Sdk.environment;
+  const dataResult = await apiGet(configServerUrl, config);
+  return dataResult;
+};
