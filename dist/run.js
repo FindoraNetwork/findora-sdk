@@ -1598,8 +1598,23 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
+function approveToken() {
+    return __awaiter(this, void 0, void 0, function () {
+        var webLinkedInfo;
+        return __generator(this, function (_a) {
+            webLinkedInfo = {
+                privateStr: '81ea4cbdceb327f7cedacf2048137b17cc0fdc4f19c4201a9002dcd8f463fc41',
+                rpcUrl: 'https://prod-forge.prod.findora.org:8545',
+                chainId: 2154,
+                account: '0x63c2F320e9ccd90088F08527881Bc70112d521b2',
+            };
+            return [2 /*return*/];
+        });
+    });
+}
+approveToken();
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // barToAbar(); // ++
 // getUnspentAbars(); // +

@@ -117,37 +117,6 @@ var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, voi
         }
     });
 }); };
-// const sendFromFaucetToAccount = async (
-//   walletInfo: KeypairApi.WalletKeypar,
-//   toWalletInfo: KeypairApi.WalletKeypar,
-//   numbersToSend: string,
-// ) => {
-//   console.log('////////////////  sendFromFaucetToAccount //////////////// ');
-//   const fraCode = await AssetApi.getFraAssetCode();
-//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-//   const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
-//   const transactionBuilderSend = await TransactionApi.sendToAddress(
-//     walletInfo,
-//     toWalletInfo.address,
-//     numbersToSend,
-//     fraCode,
-//     assetBlindRules,
-//   );
-//   const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
-//   const isTxSent = await getTxSid('send fra', resultHandleSend);
-//   if (!isTxSent) {
-//     console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
-//     return false;
-//   }
-//   const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
-//   const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
-//   const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
-//   const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
-//   console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
-//   return isSentSuccessfull;
-// };
 var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
     return __generator(this, function (_a) {
