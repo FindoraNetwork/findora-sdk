@@ -63,13 +63,13 @@ export const createTestBars = async (senderOne: string) => {
   const assetCode = fraCode;
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  const amount = getRandomNumber(10, 50);
+  //  const amount = getRandomNumber(100, 200);
 
   for (let i = 0; i < 4; i++) {
     const transactionBuilder = await Transaction.sendToAddress(
       walletInfo,
       toWalletInfo.address,
-      `${amount}`,
+      '210',
       assetCode,
       assetBlindRules,
     );
