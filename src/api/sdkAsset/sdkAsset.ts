@@ -2,7 +2,7 @@ import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import * as Builder from '../transaction/Builder';
+import * as Builder from '../transaction/builder';
 
 import {
   AssetRules as LedgerAssetRules,
