@@ -68,10 +68,11 @@ var CliCommands = __importStar(require("./commands"));
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    hostUrl: 'https://prod-mainnet.prod.findora.org',
+    // hostUrl: 'https://prod-mainnet.prod.findora.org',
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
-    // hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
+    hostUrl: 'http://127.0.0.1',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };

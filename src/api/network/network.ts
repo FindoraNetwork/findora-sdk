@@ -91,7 +91,6 @@ export const apiGet = async (
     return { response: myResponse };
   } catch (err) {
     const e: Error = err as Error;
-
     return { error: { message: e.message } };
   }
 };
@@ -162,6 +161,28 @@ export const getOwnerMemo = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_owner_memo/${utxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getAbarOwnerMemo = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnerMemoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_memo/${atxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getMTLeafInfo = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.MTLeafInfoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_proof/${atxoSid}`;
 
   const dataResult = await apiGet(url, config);
 
@@ -286,14 +307,11 @@ export const getHashSwap = async (
   return dataResult;
 };
 
-export const getTxList = async (
+export const getParamsForTransparentTxList = (
   address: string,
   type: 'to' | 'from',
   page = 1,
-  config?: Types.NetworkAxiosConfig,
-): Promise<Types.TxListDataResult> => {
-  const url = `${getExplorerApiRoute()}/tx_search`;
-
+): Types.TxListQueryParams => {
   const query = type === 'from' ? `"addr.from.${address}='y'"` : `"addr.to.${address}='y'"`;
 
   const params = {
@@ -302,6 +320,41 @@ export const getTxList = async (
     per_page: 10,
     order_by: '"desc"',
   };
+
+  return params;
+};
+
+export const getAnonymousTxList = (
+  subject: string,
+  type: 'to' | 'from',
+  page = 1,
+): Types.TxListQueryParams => {
+  const query = type === 'to' ? `"commitment.created.${subject}='y'"` : `"nullifier.used.${subject}='y'"`;
+
+  const params = {
+    query,
+    page,
+    per_page: 10,
+    order_by: '"desc"',
+  };
+
+  return params;
+};
+
+export const getTxList = async (
+  subject: string,
+  type: 'to' | 'from',
+  page = 1,
+  privacy: 'transparent' | 'anonymous' = 'transparent',
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListDataResult> => {
+  const isTransparentTxListRequest = privacy === 'transparent';
+
+  const params = isTransparentTxListRequest
+    ? getParamsForTransparentTxList(subject, type, page)
+    : getAnonymousTxList(subject, type, page);
+
+  const url = `${getExplorerApiRoute()}/tx_search`;
 
   const dataResult = await apiGet(url, { ...config, params });
 
@@ -409,5 +462,32 @@ export const sendRpcCall = async <T>(
 
   const dataResult = await apiPost(url, payload, { ...config });
 
-  return dataResult as T;
+  return dataResult as unknown as T;
+};
+
+export const getOwnedAbars = async (
+  commitment: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnedAbarsDataResult> => {
+  const url = `${getQueryRoute()}/owned_abars/${commitment}`;
+
+  const dataResult = await apiGet(url, config);
+  return dataResult;
+};
+
+export const checkNullifierHashSpent = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.CheckNullifierHashSpentDataResult> => {
+  const url = `${getQueryRoute()}/check_nullifier_hash/${hash}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getConfig = async (config?: Types.NetworkAxiosConfig) => {
+  const { configServerUrl } = Sdk.environment;
+  const dataResult = await apiGet(configServerUrl, config);
+  return dataResult;
 };

@@ -1,10 +1,11 @@
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { TransactionBuilder } from '../../services/ledger/types';
+import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
+import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
 import { ProcessedTxListResponseResult } from './types';
@@ -13,27 +14,6 @@ export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
   amount: string;
 }
-
-export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-
-  return transactionBuilder;
-};
 
 /**
  * Send some asset to multiple receivers
@@ -132,7 +112,7 @@ export const sendToMany = async (
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getTransactionBuilder();
+    transactionBuilder = await Builder.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
 
@@ -172,6 +152,13 @@ export const sendToMany = async (
     }
   }
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
   return transactionBuilder;
 };
 
@@ -220,6 +207,34 @@ export const submitTransaction = async (transactionBuilder: TransactionBuilder):
 
   if (!handle) {
     throw new Error(`Handle is missing. Could not submit transaction - submit handle is missing`);
+  }
+
+  return handle;
+};
+
+export const submitAbarTransaction = async (
+  anonTransferOperationBuilder: AnonTransferOperationBuilder,
+): Promise<string> => {
+  const submitData = anonTransferOperationBuilder.transaction();
+
+  let result;
+
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not submit abar transaction: "${e.message}"`);
+  }
+
+  const { response: handle, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`Could not submit abar transaction: "${submitError.message}"`);
+  }
+
+  if (!handle) {
+    throw new Error(`Handle is missing. Could not submit abar transaction - submit handle is missing`);
   }
 
   return handle;
@@ -288,7 +303,7 @@ export const getTxList = async (
   type: 'to' | 'from',
   page = 1,
 ): Promise<ProcessedTxListResponseResult> => {
-  const dataResult = await Network.getTxList(address, type, page);
+  const dataResult = await Network.getTxList(address, type, page, 'transparent');
 
   if (!dataResult.response) {
     throw new Error('Could not fetch a list of transactions. No response from the server.');
@@ -306,4 +321,47 @@ export const getTxList = async (
     total_count: dataResult.response.result.total_count,
     txs: processedTxList,
   };
+};
+
+export const getAnonTxList = async (
+  subjects: string[],
+  type: 'to' | 'from',
+  page = 1,
+): Promise<ProcessedTxListResponseResult> => {
+  const promises = subjects.map(async subject => {
+    const dataResult = await Network.getTxList(subject, type, page, 'anonymous');
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of anonymous transactions. No response from the server.');
+    }
+
+    const txList = helpers.getTxListFromResponse(dataResult);
+
+    if (!txList) {
+      throw new Error('Could not get a list of anonymous transactions from the server response.');
+    }
+
+    const processedTxList = await processeTxInfoList(txList);
+
+    return {
+      total_count: dataResult.response.result.total_count,
+      txs: processedTxList,
+    };
+  });
+
+  const results = await Promise.all(promises);
+
+  const result: { total_count: number; txs: any[] } = {
+    total_count: 0,
+    txs: [],
+  };
+
+  results.forEach(processed => {
+    const { total_count, txs } = processed;
+
+    result.total_count = result.total_count + parseFloat(`${total_count}`);
+    result.txs = result.txs.concat(txs);
+  });
+
+  return result;
 };

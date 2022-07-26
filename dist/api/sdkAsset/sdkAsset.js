@@ -66,7 +66,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getAssetCodeToSend = exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getBarToAbarMinimalFee = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+var Builder = __importStar(require("../../api/transaction/Builder"));
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -114,6 +115,19 @@ var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getMinimalFee = getMinimalFee;
+var getBarToAbarMinimalFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fee;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fee = ledger.fra_get_minimal_fee_for_bar_to_abar();
+                return [2 /*return*/, fee];
+        }
+    });
+}); };
+exports.getBarToAbarMinimalFee = getBarToAbarMinimalFee;
 var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, key;
     return __generator(this, function (_a) {
@@ -166,6 +180,39 @@ var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, 
     });
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
+var getDerivedAssetCode = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, derivedAssetCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                return [2 /*return*/, derivedAssetCode];
+        }
+    });
+}); };
+exports.getDerivedAssetCode = getDerivedAssetCode;
+var getAssetCodeToSend = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, isFraTransfer, derivedAssetCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                isFraTransfer = assetCode === fraAssetCode;
+                if (isFraTransfer) {
+                    return [2 /*return*/, assetCode];
+                }
+                return [4 /*yield*/, (0, exports.getDerivedAssetCode)(assetCode)];
+            case 2:
+                derivedAssetCode = _a.sent();
+                return [2 /*return*/, derivedAssetCode];
+        }
+    });
+}); };
+exports.getAssetCodeToSend = getAssetCodeToSend;
 var getDefaultAssetRules = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, defaultTransferable, defaultUpdatable, defaultDecimals, assetRules;
     return __generator(this, function (_a) {
@@ -219,24 +266,29 @@ exports.getAssetRules = getAssetRules;
 var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, assetRules, assetMemo) {
     if (assetMemo === void 0) { assetMemo = 'memo'; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, _a, stateCommitment, error, _, height, blockCount, definitionTransaction;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+        var transactionBuilder, error_1, e, definitionTransaction;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _a.trys.push([0, 2, , 3]);
+                    return [4 /*yield*/, Builder.getTransactionBuilder()];
                 case 1:
-                    ledger = _b.sent();
-                    return [4 /*yield*/, Network.getStateCommitment()];
+                    transactionBuilder = _a.sent();
+                    return [3 /*break*/, 3];
                 case 2:
-                    _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                    if (error) {
-                        throw new Error(error.message);
+                    error_1 = _a.sent();
+                    e = error_1;
+                    throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"" + e.message + "\"");
+                case 3:
+                    definitionTransaction = transactionBuilder.add_operation_create_asset(walletKeypair, assetMemo, assetName, assetRules);
+                    try {
+                        definitionTransaction = definitionTransaction.build();
+                        definitionTransaction = definitionTransaction.sign(walletKeypair);
                     }
-                    if (!stateCommitment) {
-                        throw new Error('Could not receive response from state commitement call');
+                    catch (err) {
+                        console.log('sendToMany error in build and sign ', err);
+                        throw new Error("could not build and sign txn \"" + err.message + "\"");
                     }
-                    _ = stateCommitment[0], height = stateCommitment[1];
-                    blockCount = BigInt(height);
-                    definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(walletKeypair, assetMemo, assetName, assetRules);
                     return [2 /*return*/, definitionTransaction];
             }
         });
@@ -244,27 +296,27 @@ var getDefineAssetTransactionBuilder = function (walletKeypair, assetName, asset
 };
 exports.getDefineAssetTransactionBuilder = getDefineAssetTransactionBuilder;
 var getIssueAssetTransactionBuilder = function (walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, utxoNumbers, blindIsAmount, zeiParams, definitionTransaction;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+    var blockCount, utxoNumbers, blindIsAmount, transactionBuilder, error_2, e, definitionTransaction;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Builder.getBlockHeight()];
             case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
+                blockCount = _a.sent();
                 utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
                 blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
-                zeiParams = ledger.PublicParams.new();
-                definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, !!blindIsAmount, zeiParams);
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_2 = _a.sent();
+                e = error_2;
+                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"" + e.message + "\"");
+            case 5:
+                definitionTransaction = transactionBuilder.add_basic_issue_asset(walletKeypair, assetName, blockCount, utxoNumbers, !!blindIsAmount);
                 return [2 /*return*/, definitionTransaction];
         }
     });
@@ -313,7 +365,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation!, Error: \"" + e.message + "\"");
                 }
                 _a.label = 3;
             case 3:
@@ -333,6 +385,14 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 catch (err) {
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -385,7 +445,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation!!, Error: \"" + e.message + "\"");
                 }
                 _a.label = 3;
             case 3:
@@ -405,6 +465,14 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 catch (err) {
                     e = err;
                     throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }

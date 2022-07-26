@@ -5,6 +5,8 @@ export declare const getOwnedSids: (address: string, config?: Types.NetworkAxios
 export declare const getRelatedSids: (address: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedSidsDataResult>;
 export declare const getUtxo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.UtxoDataResult>;
 export declare const getOwnerMemo: (utxoSid: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
+export declare const getAbarOwnerMemo: (atxoSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnerMemoDataResult>;
+export declare const getMTLeafInfo: (atxoSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.MTLeafInfoDataResult>;
 /**
  * Returns state commitment
  *
@@ -33,7 +35,9 @@ export declare const getIssuedRecords: (address: string, config?: Types.NetworkA
 export declare const getTransactionStatus: (handle: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TransactionStatusDataResult>;
 export declare const getBlock: (height: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.BlockDetailsDataResult>;
 export declare const getHashSwap: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.HashSwapDataResult>;
-export declare const getTxList: (address: string, type: 'to' | 'from', page?: number, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
+export declare const getParamsForTransparentTxList: (address: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
+export declare const getAnonymousTxList: (subject: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
+export declare const getTxList: (subject: string, type: 'to' | 'from', page?: number, privacy?: 'transparent' | 'anonymous', config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxListDataResult>;
 export declare const getTransactionDetails: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.TxDetailsDataResult>;
 export declare const getAbciNoce: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciNoceResult>;
 export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbciInfoResult>;
@@ -43,3 +47,6 @@ export declare const getDelegateInfo: (publickey: string, config?: Types.Network
 export declare const sendRpcCall: <T>(url: string, givenPayload: {
     [key: string]: any;
 }, config?: Types.NetworkAxiosConfig | undefined) => Promise<T>;
+export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
+export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.CheckNullifierHashSpentDataResult>;
+export declare const getConfig: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.NetworkAxiosDataResult>;

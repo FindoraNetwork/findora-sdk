@@ -1,9 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
-
 import BigNumber from 'bignumber.js';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
-
 import Sdk from '../../Sdk';
 import { MemoryCacheProvider } from '../../services/cacheStore/providers';
 import * as network from './network';
@@ -1032,7 +1030,7 @@ describe('network (unit test)', () => {
 
       const spy = jest.spyOn(network, 'apiGet');
 
-      const dataResult = await network.getTxList(address, 'from', 2, testConfig);
+      const dataResult = await network.getTxList(address, 'from', 2, 'transparent', testConfig);
 
       expect(dataResult).toHaveProperty('response');
       expect(dataResult).not.toHaveProperty('error');
@@ -1071,7 +1069,7 @@ describe('network (unit test)', () => {
         }),
       );
 
-      const dataResult = await network.getTxList(address, type, page, testConfig);
+      const dataResult = await network.getTxList(address, type, page, 'transparent', testConfig);
 
       expect(dataResult).not.toHaveProperty('response');
       expect(dataResult).toHaveProperty('error');
@@ -1084,7 +1082,7 @@ describe('network (unit test)', () => {
         }),
       );
 
-      const dataResult = await network.getTxList(address, type, page, testConfig);
+      const dataResult = await network.getTxList(address, type, page, 'transparent', testConfig);
 
       expect(dataResult).not.toHaveProperty('response');
       expect(dataResult).toHaveProperty('error');
@@ -1159,6 +1157,45 @@ describe('network (unit test)', () => {
 
       expect(dataResult).not.toHaveProperty('response');
       expect(dataResult).toHaveProperty('error');
+    });
+  });
+
+  describe('getOwnedAbars', () => {
+    const randomizedPubKey = 'randomizedPubKey';
+    const url = `${hostUrl}:8667/owned_abars/${randomizedPubKey}`;
+
+    it('returns properly formatted data', async () => {
+      const ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+      const myResponse = [[123, ownedAbar]];
+
+      server.use(
+        rest.get(url, (_req, res, ctx) => {
+          return res(ctx.json(myResponse));
+        }),
+      );
+
+      const spyApiGet = jest.spyOn(network, 'apiGet');
+
+      const result = await network.getOwnedAbars(randomizedPubKey, testConfig);
+      const { response } = result;
+
+      expect(result).toHaveProperty('response');
+      expect(result).not.toHaveProperty('error');
+      expect(response).toEqual(myResponse);
+      expect(spyApiGet).toHaveBeenCalledWith(url, testConfig);
+    });
+
+    it('returns an error in case of a user error', async () => {
+      server.use(
+        rest.get(url, (_req, res, ctx) => {
+          return res(ctx.status(404));
+        }),
+      );
+
+      const result = await network.getOwnedAbars(randomizedPubKey, testConfig);
+
+      expect(result).not.toHaveProperty('response');
+      expect(result).toHaveProperty('error');
     });
   });
 });

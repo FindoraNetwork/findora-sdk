@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTransferOperation = exports.buildTransferOperationWithFee = exports.getTransferOperation = exports.getAssetTracingPolicies = exports.getEmptyTransferBuilder = void 0;
+exports.buildTransferOperation = exports.getFeeInputs = exports.buildTransferOperationWithFee = exports.getPayloadForFeeInputs = exports.getTransferOperation = exports.getAssetTracingPolicies = exports.getEmptyTransferBuilder = void 0;
 var Network = __importStar(require("../api/network"));
 var AssetApi = __importStar(require("../api/sdkAsset"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
@@ -173,32 +173,61 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
     });
 }); };
 exports.getTransferOperation = getTransferOperation;
-var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var sidsResult, sids, utxoDataList, minimalFee, fraAssetCode, sendUtxoList, utxoInputsInfo, toPublickey, recieversInfo, trasferOperation;
+var getPayloadForFeeInputs = function (walletInfo, utxoInputs) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, feeInputsPayload, inputParametersList, inputPromise;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    throw new Error('No sids were fetched');
-                }
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
+                ledger = _a.sent();
+                feeInputsPayload = [];
+                inputParametersList = utxoInputs.inputParametersList;
+                inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
+                    var txoRef, assetRecord, amount, sid, memoDataResult, myMemoData, memoError, ownerMemo;
+                    return __generator(this, function (_a) {
+                        switch (_a.label) {
+                            case 0:
+                                txoRef = inputParameters.txoRef, assetRecord = inputParameters.assetRecord, amount = inputParameters.amount, sid = inputParameters.sid;
+                                return [4 /*yield*/, Network.getOwnerMemo(sid)];
+                            case 1:
+                                memoDataResult = _a.sent();
+                                myMemoData = memoDataResult.response, memoError = memoDataResult.error;
+                                if (memoError) {
+                                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                                }
+                                ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
+                                feeInputsPayload.push({
+                                    txoRef: txoRef,
+                                    assetRecord: assetRecord,
+                                    ownerMemo: ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(),
+                                    keypair: walletInfo.keypair,
+                                    amount: amount,
+                                });
+                                return [2 /*return*/];
+                        }
+                    });
+                }); });
+                return [4 /*yield*/, Promise.all(inputPromise)];
             case 2:
-                utxoDataList = _a.sent();
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 3:
+                _a.sent();
+                return [2 /*return*/, feeInputsPayload];
+        }
+    });
+}); };
+exports.getPayloadForFeeInputs = getPayloadForFeeInputs;
+// creates an istance of a TransferOperationBuilder with a minimal FRA fee
+var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var minimalFee, fraAssetCode, toPublickey, recieversInfo, trasferOperation;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 1:
                 minimalFee = _a.sent();
                 return [4 /*yield*/, AssetApi.getFraAssetCode()];
-            case 4:
+            case 2:
                 fraAssetCode = _a.sent();
-                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
-                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
-            case 5:
-                utxoInputsInfo = _a.sent();
                 return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 6:
+            case 3:
                 toPublickey = _a.sent();
                 recieversInfo = [
                     {
@@ -207,14 +236,66 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                         assetBlindRules: assetBlindRules,
                     },
                 ];
-                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, fraAssetCode)];
-            case 7:
+                return [4 /*yield*/, (0, exports.buildTransferOperation)(walletInfo, recieversInfo, fraAssetCode)];
+            case 4:
                 trasferOperation = _a.sent();
                 return [2 /*return*/, trasferOperation];
         }
     });
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
+// used in triple masking
+var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, sidsResult, sids, filteredSids, minimalFee, _a, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _b.sent();
+                return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+            case 2:
+                sidsResult = _b.sent();
+                sids = sidsResult.response;
+                if (!sids) {
+                    throw new Error('No sids were fetched');
+                }
+                filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
+                if (!isBarToAbar) return [3 /*break*/, 4];
+                return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
+            case 3:
+                _a = _b.sent();
+                return [3 /*break*/, 6];
+            case 4: return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 5:
+                _a = _b.sent();
+                _b.label = 6;
+            case 6:
+                minimalFee = _a;
+                console.log('🚀 ~ file: fee.ts ~ line 263 ~ abar minimalFee', minimalFee);
+                return [4 /*yield*/, AssetApi.getFraAssetCode()];
+            case 7:
+                fraAssetCode = _b.sent();
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
+            case 8:
+                utxoDataList = _b.sent();
+                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
+            case 9:
+                utxoInputsInfo = _b.sent();
+                return [4 /*yield*/, (0, exports.getPayloadForFeeInputs)(walletInfo, utxoInputsInfo)];
+            case 10:
+                feeInputsPayload = _b.sent();
+                feeInputs = ledger.FeeInputs.new();
+                feeInputsPayload.forEach(function (payloadItem) {
+                    var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
+                    feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
+                });
+                return [2 /*return*/, feeInputs];
+        }
+    });
+}); };
+exports.getFeeInputs = getFeeInputs;
+// creates an istance of a TransferOperationBuilder to transfer tokens based on recieversInfo
 var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
     var sidsResult, sids, totalUtxoNumbers, utxoDataList, sendUtxoList, utxoInputsInfo, transferOperationBuilder;
     return __generator(this, function (_a) {

@@ -1153,7 +1153,7 @@ describe('network (unit test)', function () {
                             return res(ctx.json(myResponse));
                         }));
                         spy = jest.spyOn(network, 'apiGet');
-                        return [4 /*yield*/, network.getTxList(address, 'from', 2, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, 'from', 2, 'transparent', testConfig)];
                     case 1:
                         dataResult = _b.sent();
                         expect(dataResult).toHaveProperty('response');
@@ -1185,7 +1185,7 @@ describe('network (unit test)', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
-                        return [4 /*yield*/, network.getTxList(address, type, page, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, type, page, 'transparent', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -1202,7 +1202,7 @@ describe('network (unit test)', function () {
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(404));
                         }));
-                        return [4 /*yield*/, network.getTxList(address, type, page, testConfig)];
+                        return [4 /*yield*/, network.getTxList(address, type, page, 'transparent', testConfig)];
                     case 1:
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
@@ -1276,6 +1276,50 @@ describe('network (unit test)', function () {
                         dataResult = _a.sent();
                         expect(dataResult).not.toHaveProperty('response');
                         expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getOwnedAbars', function () {
+        var randomizedPubKey = 'randomizedPubKey';
+        var url = hostUrl + ":8667/owned_abars/" + randomizedPubKey;
+        it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var ownedAbar, myResponse, spyApiGet, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        ownedAbar = { amount_type_commitment: 'amount_type_commitment', public_key: 'public_key' };
+                        myResponse = [[123, ownedAbar]];
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(myResponse));
+                        }));
+                        spyApiGet = jest.spyOn(network, 'apiGet');
+                        return [4 /*yield*/, network.getOwnedAbars(randomizedPubKey, testConfig)];
+                    case 1:
+                        result = _a.sent();
+                        response = result.response;
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        expect(response).toEqual(myResponse);
+                        expect(spyApiGet).toHaveBeenCalledWith(url, testConfig);
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network.getOwnedAbars(randomizedPubKey, testConfig)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).not.toHaveProperty('response');
+                        expect(result).toHaveProperty('error');
                         return [2 /*return*/];
                 }
             });

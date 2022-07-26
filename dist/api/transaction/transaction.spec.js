@@ -57,12 +57,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
 var Fee = __importStar(require("../../services/fee"));
+var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var KeypairApi = __importStar(require("../keypair/keypair"));
 var NetworkApi = __importStar(require("../network/network"));
 var AssetApi = __importStar(require("../sdkAsset/sdkAsset"));
+var Builder = __importStar(require("./builder"));
 var helpers = __importStar(require("./helpers"));
 var Processor = __importStar(require("./processor"));
-var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
 var Transaction = __importStar(require("./transaction"));
 describe('transaction (unit test)', function () {
     describe('getTransactionBuilder', function () {
@@ -91,7 +92,7 @@ describe('transaction (unit test)', function () {
                             return Promise.resolve(myLedger);
                         });
                         spyNew = jest.spyOn(fakeOpBuilder, 'new');
-                        return [4 /*yield*/, Transaction.getTransactionBuilder()];
+                        return [4 /*yield*/, Builder.getTransactionBuilder()];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(fakeOpBuilder);
@@ -122,7 +123,7 @@ describe('transaction (unit test)', function () {
                         spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
                             return Promise.resolve(myLedger);
                         });
-                        return [4 /*yield*/, expect(Transaction.getTransactionBuilder()).rejects.toThrowError('foo bar')];
+                        return [4 /*yield*/, expect(Builder.getTransactionBuilder()).rejects.toThrowError('foo bar')];
                     case 1:
                         _a.sent();
                         spyGetLedger.mockReset();
@@ -146,7 +147,7 @@ describe('transaction (unit test)', function () {
                         spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
                             return Promise.resolve(myLedger);
                         });
-                        return [4 /*yield*/, expect(Transaction.getTransactionBuilder()).rejects.toThrowError('Could not receive response from state commitement call')];
+                        return [4 /*yield*/, expect(Builder.getTransactionBuilder()).rejects.toThrowError('Could not receive response from state commitement call')];
                     case 1:
                         _a.sent();
                         spyGetLedger.mockReset();
@@ -220,9 +221,7 @@ describe('transaction (unit test)', function () {
                         spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilder);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
                         spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -394,9 +393,7 @@ describe('transaction (unit test)', function () {
                         spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilder);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             throw new Error('foo');
                         });
                         return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not get transactionBuilder from "getTransactionBuilder"')];
@@ -475,9 +472,7 @@ describe('transaction (unit test)', function () {
                         spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilder);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
                         spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -576,9 +571,7 @@ describe('transaction (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
                         spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -692,9 +685,7 @@ describe('transaction (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
                         spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
@@ -794,9 +785,7 @@ describe('transaction (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
-                        spyGetTransactionBuilder = jest
-                            .spyOn(Transaction, 'getTransactionBuilder')
-                            .mockImplementation(function () {
+                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
                         spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');

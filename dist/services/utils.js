@@ -39,8 +39,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
+var crypto = require('crypto');
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
 exports.uint8arrayToHexStr = uint8arrayToHexStr;
 var writeFile = function (filePath, cacheData) { return __awaiter(void 0, void 0, void 0, function () {
@@ -81,4 +82,29 @@ var log = function (message) {
     console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
 };
 exports.log = log;
+var getCryptoInstance = function () {
+    if (!global.window) {
+        return crypto.webcrypto;
+    }
+    return window.crypto;
+};
+exports.getCryptoInstance = getCryptoInstance;
+var generateSeedString = function () {
+    var seed = '';
+    var randomVals = new Uint8Array(32);
+    var myCrypto = (0, exports.getCryptoInstance)();
+    myCrypto.getRandomValues(randomVals);
+    randomVals.forEach(function (num) {
+        var hex = num.toString(16);
+        seed += hex.length === 1 ? "0" + hex : hex;
+    });
+    return seed;
+};
+exports.generateSeedString = generateSeedString;
+var getRandomNumber = function (min, max) {
+    if (min === void 0) { min = 1; }
+    if (max === void 0) { max = 10; }
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+exports.getRandomNumber = getRandomNumber;
 //# sourceMappingURL=utils.js.map

@@ -55,39 +55,16 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitTransaction = exports.sendToMany = exports.getTransactionBuilder = void 0;
+exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var AssetApi = __importStar(require("../sdkAsset"));
+var Builder = __importStar(require("./builder"));
 var helpers = __importStar(require("./helpers"));
 var processor_1 = require("./processor");
-var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount, transactionBuilder;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
-                }
-                if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-                return [2 /*return*/, transactionBuilder];
-        }
-    });
-}); };
-exports.getTransactionBuilder = getTransactionBuilder;
 /**
  * Send some asset to multiple receivers
  *
@@ -178,7 +155,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 _a.label = 7;
             case 7:
                 _a.trys.push([7, 9, , 10]);
-                return [4 /*yield*/, (0, exports.getTransactionBuilder)()];
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
             case 8:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 10];
@@ -217,7 +194,16 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     throw new Error("Could not add transfer operation for fee, Error: \"" + e.message + "\"");
                 }
                 _a.label = 12;
-            case 12: return [2 /*return*/, transactionBuilder];
+            case 12:
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };
@@ -276,6 +262,36 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
     });
 }); };
 exports.submitTransaction = submitTransaction;
+var submitAbarTransaction = function (anonTransferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var submitData, result, err_2, e, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                submitData = anonTransferOperationBuilder.transaction();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 2:
+                result = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _a.sent();
+                e = err_2;
+                throw new Error("Error Could not submit abar transaction: \"" + e.message + "\"");
+            case 4:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit abar transaction: \"" + submitError.message + "\"");
+                }
+                if (!handle) {
+                    throw new Error("Handle is missing. Could not submit abar transaction - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
+        }
+    });
+}); };
+exports.submitAbarTransaction = submitAbarTransaction;
 /**
  * Send some asset to an address
  *
@@ -339,7 +355,7 @@ var getTxList = function (address, type, page) {
         var dataResult, txList, processedTxList;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Network.getTxList(address, type, page)];
+                case 0: return [4 /*yield*/, Network.getTxList(address, type, page, 'transparent')];
                 case 1:
                     dataResult = _a.sent();
                     if (!dataResult.response) {
@@ -361,4 +377,53 @@ var getTxList = function (address, type, page) {
     });
 };
 exports.getTxList = getTxList;
+var getAnonTxList = function (subjects, type, page) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var promises, results, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    promises = subjects.map(function (subject) { return __awaiter(void 0, void 0, void 0, function () {
+                        var dataResult, txList, processedTxList;
+                        return __generator(this, function (_a) {
+                            switch (_a.label) {
+                                case 0: return [4 /*yield*/, Network.getTxList(subject, type, page, 'anonymous')];
+                                case 1:
+                                    dataResult = _a.sent();
+                                    if (!dataResult.response) {
+                                        throw new Error('Could not fetch a list of anonymous transactions. No response from the server.');
+                                    }
+                                    txList = helpers.getTxListFromResponse(dataResult);
+                                    if (!txList) {
+                                        throw new Error('Could not get a list of anonymous transactions from the server response.');
+                                    }
+                                    return [4 /*yield*/, (0, processor_1.processeTxInfoList)(txList)];
+                                case 2:
+                                    processedTxList = _a.sent();
+                                    return [2 /*return*/, {
+                                            total_count: dataResult.response.result.total_count,
+                                            txs: processedTxList,
+                                        }];
+                            }
+                        });
+                    }); });
+                    return [4 /*yield*/, Promise.all(promises)];
+                case 1:
+                    results = _a.sent();
+                    result = {
+                        total_count: 0,
+                        txs: [],
+                    };
+                    results.forEach(function (processed) {
+                        var total_count = processed.total_count, txs = processed.txs;
+                        result.total_count = result.total_count + parseFloat("" + total_count);
+                        result.txs = result.txs.concat(txs);
+                    });
+                    return [2 /*return*/, result];
+            }
+        });
+    });
+};
+exports.getAnonTxList = getAnonTxList;
 //# sourceMappingURL=transaction.js.map

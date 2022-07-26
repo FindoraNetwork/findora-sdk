@@ -1,5 +1,13 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import {
+  AXfrKeyPair,
+  AXfrPubKey,
+  AXfrViewKey,
+  XfrKeyPair,
+  XfrPublicKey,
+  XPublicKey,
+  XSecretKey,
+} from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -133,6 +141,53 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
     return toPublickey;
   } catch (err) {
     throw new Error(`could not get base64 public key by xfr, "${err}" `);
+  }
+};
+
+export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
+  const ledger = await getLedger();
+  try {
+    return ledger.axfr_pubkey_from_string(publicKey);
+  } catch (err) {
+    throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
+  }
+};
+
+export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
+  const ledger = await getLedger();
+  try {
+    return ledger.axfr_keypair_from_string(privateKey);
+  } catch (err) {
+    throw new Error(`could not get AXfrKeyPair from the string, "${err}" `);
+  }
+};
+
+export const getAXfrViewKeyByBase64 = async (privateKey: string): Promise<AXfrViewKey> => {
+  const ledger = await getLedger();
+  try {
+    return ledger.axfr_viewkey_from_string(privateKey);
+  } catch (err) {
+    throw new Error(`could not get AXfrViewKey from the string, "${err}" `);
+  }
+};
+
+export const getXPublicKeyByBase64 = async (publicKey: string): Promise<XPublicKey> => {
+  const ledger = await getLedger();
+  try {
+    const toPublickey = ledger.x_pubkey_from_string(publicKey);
+    return toPublickey;
+  } catch (err) {
+    throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
+  }
+};
+
+export const getXPrivateKeyByBase64 = async (privateKey: string): Promise<XSecretKey> => {
+  const ledger = await getLedger();
+  try {
+    const toPrivateKey = ledger.x_secretkey_from_string(privateKey);
+    return toPrivateKey;
+  } catch (err) {
+    throw new Error(`could not get XSecretKey by base64 private key, "${err}" `);
   }
 };
 

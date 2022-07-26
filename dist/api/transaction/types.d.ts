@@ -31,6 +31,71 @@ export interface TransferAssetOperation {
         transfer_type: string;
     };
 }
+export interface BarToAbarOperation {
+    note: {
+        ArNote: {
+            body: {
+                input: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+        BarNote: {
+            body: {
+                input: {
+                    amount: {
+                        Confidential: string[];
+                    };
+                    asset_type: {
+                        Confidential: string;
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+    };
+}
+export interface AbarToBarOperation {
+    note: {
+        AbarToAr: {
+            body: {
+                input: string;
+                output: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+            };
+        };
+    };
+}
+interface AbarToAbarNoteOutput {
+    commitment: string;
+}
+export interface AbarToAbarOperation {
+    note: {
+        body: {
+            inputs: string[];
+            outputs: AbarToAbarNoteOutput[];
+        };
+    };
+}
 export interface IssueAssetOperation {
     body: {
         code: {
@@ -92,6 +157,9 @@ export interface TxOperation {
     UnDelegation?: UnDelegationOperation;
     Delegation?: DelegationOperation;
     ConvertAccount?: ConvertAccountOperation;
+    BarToAbar?: BarToAbarOperation;
+    AbarToBar?: AbarToBarOperation;
+    TransferAnonAsset?: AbarToAbarOperation;
 }
 export interface ParsedTx {
     body: {
@@ -108,3 +176,4 @@ export interface ProcessedTxListResponseResult {
     txs: ProcessedTxInfo[];
     total_count: number;
 }
+export {};

@@ -37,7 +37,7 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 findoraSdk.init(sdkEnv);
 
-const { mainFaucet, senderOne, receiverOne } = walletKeys;
+const { mainFaucet, receiverOne } = walletKeys;
 
 const password = 'yourSecretPassword';
 
@@ -75,49 +75,6 @@ const getTxSid = async (operationName: string, txHandle: string) => {
   }
   return true;
 };
-
-// const sendFromFaucetToAccount = async (
-//   walletInfo: KeypairApi.WalletKeypar,
-//   toWalletInfo: KeypairApi.WalletKeypar,
-//   numbersToSend: string,
-// ) => {
-//   console.log('////////////////  sendFromFaucetToAccount //////////////// ');
-
-//   const fraCode = await AssetApi.getFraAssetCode();
-
-//   const assetBlindRules: AssetApi.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-
-//   const balanceBeforeSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceBeforeSendTo', balanceBeforeSendTo);
-
-//   const transactionBuilderSend = await TransactionApi.sendToAddress(
-//     walletInfo,
-//     toWalletInfo.address,
-//     numbersToSend,
-//     fraCode,
-//     assetBlindRules,
-//   );
-
-//   const resultHandleSend = await TransactionApi.submitTransaction(transactionBuilderSend);
-
-//   const isTxSent = await getTxSid('send fra', resultHandleSend);
-
-//   if (!isTxSent) {
-//     console.log(`🚀 ~ sendFromFaucetToAccount ~ Could not submit transfer`);
-//     return false;
-//   }
-
-//   const balanceAfterSendTo = await AccountApi.getBalanceInWei(toWalletInfo);
-//   console.log('🚀 ~ sendFromFaucetToAccount ~ balanceAfterSendTo', balanceAfterSendTo);
-
-//   const balanceBeforeSendToBN = bigNumber.create(balanceBeforeSendTo);
-//   const balanceAfterSendToBN = bigNumber.create(balanceAfterSendTo);
-
-//   const isSentSuccessfull = balanceAfterSendToBN.gte(balanceBeforeSendToBN);
-//   console.log('🚀 ~ file: integration.ts ~ line 123 ~ isSentSuccessfull', isSentSuccessfull);
-
-//   return isSentSuccessfull;
-// };
 
 export const defineAssetTransaction = async () => {
   console.log('////////////////  defineAssetTransaction //////////////// ');
@@ -181,7 +138,9 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode);
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
+
+  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -206,7 +165,12 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
 
   const assetBlindRules = { isAmountBlind: false };
 
-  const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
+  const issueAssetBuilder = await AssetApi.issueAsset(
+    walletInfo,
+    derivedTokenCode,
+    inputNumbers,
+    assetBlindRules,
+  );
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
 
@@ -230,6 +194,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
   console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
 
@@ -258,7 +223,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
 
   const issueAssetBuilder = await AssetApi.issueAsset(
     walletInfo,
-    tokenCode,
+    derivedTokenCode,
     `${inputNumbers}`,
     assetBlindRules,
   );
@@ -278,7 +243,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
     walletInfo,
     toWalletInfo.address,
     `${inputNumbers / 2}`,
-    tokenCode,
+    derivedTokenCode,
     assetBlindRulesForSend,
   );
 
@@ -438,7 +403,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const Ledger = await getLedger();
 
   const pkey = mainFaucet;
-  const toPkey = senderOne;
+  const toPkey = receiverOne;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await KeypairApi.restoreFromPrivateKey(toPkey, password);
@@ -447,8 +412,9 @@ export const issueAndSendConfidentialAsset = async () => {
   const bobKeyPair = toWalletInfo.keypair;
 
   const tokenCode = await AssetApi.getRandomAssetCode();
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
-  console.log('Defining a custom asset:', tokenCode);
+  console.log('Defining a custom asset:', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -473,7 +439,12 @@ export const issueAndSendConfidentialAsset = async () => {
 
   const assetBlindRules = { isAmountBlind: true };
 
-  const issueAssetBuilder = await AssetApi.issueAsset(walletInfo, tokenCode, inputNumbers, assetBlindRules);
+  const issueAssetBuilder = await AssetApi.issueAsset(
+    walletInfo,
+    derivedTokenCode,
+    inputNumbers,
+    assetBlindRules,
+  );
 
   const handleIssue = await TransactionApi.submitTransaction(issueAssetBuilder);
 
@@ -579,7 +550,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const sendTransactionBuilder = await TransactionApi.sendToMany(
     walletInfo,
     recieversInfo,
-    tokenCode,
+    derivedTokenCode,
     assetBlindRulesForSend,
   );
 
@@ -638,7 +609,8 @@ export const issueAndSendConfidentialAsset = async () => {
     return false;
   }
 
-  const isAssetTypeCorrect = Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == tokenCode;
+  const isAssetTypeCorrect =
+    Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derivedTokenCode;
 
   if (!isAssetTypeCorrect) {
     console.log(

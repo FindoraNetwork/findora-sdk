@@ -12,6 +12,7 @@ import {
   getPayloadWithGas,
   getRpcPayload,
   setCurrentTestName,
+  SuperSimpleObject,
   timeLog,
   timeStart,
 } from './testHelpers';
@@ -94,7 +95,11 @@ beforeAll(async (done: any) => {
     });
 }, extendedExecutionTimeout);
 
-const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+const getTestResult = async <N extends SuperSimpleObject, T>(
+  msgId: number,
+  method: string,
+  extraParams?: T,
+) => {
   const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
 
   timeStart();
@@ -394,7 +399,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           extraParams,
         );
 
-        expect(result?.response?.result).toEqual('0x52d4');
+        expect(result?.response?.result).toEqual('0x573b');
       },
       extendedExecutionTimeout,
     );

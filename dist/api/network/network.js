@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getConfig = exports.checkNullifierHashSpent = exports.getOwnedAbars = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -218,6 +218,34 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
     });
 }); };
 exports.getOwnerMemo = getOwnerMemo;
+var getAbarOwnerMemo = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_abar_memo/" + atxoSid;
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getAbarOwnerMemo = getAbarOwnerMemo;
+var getMTLeafInfo = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_abar_proof/" + atxoSid;
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getMTLeafInfo = getMTLeafInfo;
 /**
  * Returns state commitment
  *
@@ -355,21 +383,43 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getHashSwap = getHashSwap;
-var getTxList = function (address, type, page, config) {
+var getParamsForTransparentTxList = function (address, type, page) {
     if (page === void 0) { page = 1; }
+    var query = type === 'from' ? "\"addr.from." + address + "='y'\"" : "\"addr.to." + address + "='y'\"";
+    var params = {
+        query: query,
+        page: page,
+        per_page: 10,
+        order_by: '"desc"',
+    };
+    return params;
+};
+exports.getParamsForTransparentTxList = getParamsForTransparentTxList;
+var getAnonymousTxList = function (subject, type, page) {
+    if (page === void 0) { page = 1; }
+    var query = type === 'to' ? "\"commitment.created." + subject + "='y'\"" : "\"nullifier.used." + subject + "='y'\"";
+    var params = {
+        query: query,
+        page: page,
+        per_page: 10,
+        order_by: '"desc"',
+    };
+    return params;
+};
+exports.getAnonymousTxList = getAnonymousTxList;
+var getTxList = function (subject, type, page, privacy, config) {
+    if (page === void 0) { page = 1; }
+    if (privacy === void 0) { privacy = 'transparent'; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var url, query, params, dataResult;
+        var isTransparentTxListRequest, params, url, dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
+                    isTransparentTxListRequest = privacy === 'transparent';
+                    params = isTransparentTxListRequest
+                        ? (0, exports.getParamsForTransparentTxList)(subject, type, page)
+                        : (0, exports.getAnonymousTxList)(subject, type, page);
                     url = getExplorerApiRoute() + "/tx_search";
-                    query = type === 'from' ? "\"addr.from." + address + "='y'\"" : "\"addr.to." + address + "='y'\"";
-                    params = {
-                        query: query,
-                        page: page,
-                        per_page: 10,
-                        order_by: '"desc"',
-                    };
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
@@ -510,4 +560,46 @@ var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0
     });
 }); };
 exports.sendRpcCall = sendRpcCall;
+var getOwnedAbars = function (commitment, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/owned_abars/" + commitment;
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getOwnedAbars = getOwnedAbars;
+var checkNullifierHashSpent = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/check_nullifier_hash/" + hash;
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.checkNullifierHashSpent = checkNullifierHashSpent;
+var getConfig = function (config) { return __awaiter(void 0, void 0, void 0, function () {
+    var configServerUrl, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                configServerUrl = Sdk_1.default.environment.configServerUrl;
+                return [4 /*yield*/, (0, exports.apiGet)(configServerUrl, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getConfig = getConfig;
 //# sourceMappingURL=network.js.map

@@ -70,13 +70,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDelegateInfo = exports.getValidatorList = exports.claim = exports.delegate = exports.unStake = void 0;
-var Transaction = __importStar(require("../../api/transaction"));
 var orderBy_1 = __importDefault(require("lodash/orderBy"));
+var Transaction = __importStar(require("../../api/transaction"));
+var Builder = __importStar(require("../../api/transaction/Builder"));
+var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var keypair_1 = require("../keypair");
-var AssetApi = __importStar(require("../sdkAsset"));
 var Network = __importStar(require("../network"));
-var bigNumber_1 = require("../../services/bigNumber");
+var AssetApi = __importStar(require("../sdkAsset"));
 /**
  * Unstake FRA tokens
  *
@@ -125,7 +126,7 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     _a.label = 2;
                 case 2:
                     _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, Transaction.getTransactionBuilder()];
+                    return [4 /*yield*/, Builder.getTransactionBuilder()];
                 case 3:
                     transactionBuilder = _a.sent();
                     return [3 /*break*/, 5];
@@ -152,6 +153,14 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     catch (error) {
                         e = error;
                         throw new Error("Could not add transfer to unStake operation, Error: \"" + e.message + "\"");
+                    }
+                    try {
+                        transactionBuilder = transactionBuilder.build();
+                        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                    }
+                    catch (err) {
+                        console.log('sendToMany error in build and sign ', err);
+                        throw new Error("could not build and sign txn \"" + err.message + "\"");
                     }
                     return [2 /*return*/, transactionBuilder];
             }
@@ -215,6 +224,14 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 decimals = asset.assetRules.decimals;
                 delegateAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
                 transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -261,7 +278,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 4, , 5]);
-                return [4 /*yield*/, Transaction.getTransactionBuilder()];
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
             case 3:
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 5];
@@ -278,6 +295,14 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 catch (error) {
                     e = error;
                     throw new Error("Could not add staking claim operation, Error: \"" + e.message + "\"");
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }

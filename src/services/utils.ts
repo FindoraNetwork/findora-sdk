@@ -1,4 +1,5 @@
 import fs from 'fs';
+const crypto = require('crypto');
 
 export const uint8arrayToHexStr = (input: Uint8Array): string => Buffer.from(input).toString('hex');
 
@@ -36,3 +37,28 @@ export const log = (message: string, ...rest: any) => {
     (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '',
   );
 };
+
+export const getCryptoInstance = () => {
+  if (!global.window) {
+    return crypto.webcrypto;
+  }
+  return window.crypto;
+};
+
+export const generateSeedString = () => {
+  let seed = '';
+  const randomVals = new Uint8Array(32);
+
+  const myCrypto = getCryptoInstance();
+
+  myCrypto.getRandomValues(randomVals);
+
+  randomVals.forEach(num => {
+    const hex = num.toString(16);
+    seed += hex.length === 1 ? `0${hex}` : hex;
+  });
+
+  return seed;
+};
+
+export const getRandomNumber = (min = 1, max = 10) => Math.floor(Math.random() * (max - min + 1)) + min;

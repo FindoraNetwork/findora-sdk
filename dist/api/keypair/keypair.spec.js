@@ -274,5 +274,122 @@ describe('keypair (unit test)', function () {
             });
         }); });
     });
+    describe('getAXfrPublicKeyByBase64', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getAXfrPublicKeyByBase64)('aa')).rejects.toThrowError('could not get AXfrPubKey by base64 public key, ')];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get AXfrPubKey by base64 public key', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getAXfrPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('free');
+                        expect(typeof result.free).toBe('function');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getXPublicKeyByBase64', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getXPublicKeyByBase64)('aa')).rejects.toThrowError("could not get XPublicKey by base64 public key, \"")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get XPublicKey by base64 public key', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getXPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('free');
+                        expect(typeof result.free).toBe('function');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getXfrPublicKeyByBase64', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getXfrPublicKeyByBase64)('aa')).rejects.toThrowError("could not get xfr public key by base64, \"")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get XfrPublicKey by base64', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getXfrPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('free');
+                        expect(typeof result.free).toBe('function');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getPublicKeyByXfr', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var toPublickey;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        toPublickey = 'mockedToPublickey';
+                        return [4 /*yield*/, expect((0, keypair_1.getPublicKeyByXfr)(toPublickey)).rejects.toThrowError("could not get base64 public key by xfr, \"")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get publicKey by xfr', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, toPublickey, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getXfrPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        toPublickey = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getPublicKeyByXfr)(toPublickey)];
+                    case 3:
+                        result = _a.sent();
+                        expect(typeof result).toBe('string');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
 });
 //# sourceMappingURL=keypair.spec.js.map
