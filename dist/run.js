@@ -1677,9 +1677,9 @@ function approveToken() {
         });
     });
 }
-approveToken();
+// approveToken();
 // testIt();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
 //barToAbar(); // ++

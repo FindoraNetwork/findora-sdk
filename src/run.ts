@@ -1619,10 +1619,10 @@ async function approveToken() {
   // console.log(result1);
 }
 
-approveToken();
+// approveToken();
 
 // testIt();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
 //barToAbar(); // ++
