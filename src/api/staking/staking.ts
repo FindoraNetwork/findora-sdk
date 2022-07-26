@@ -1,6 +1,6 @@
 import orderBy from 'lodash/orderBy';
 import * as Transaction from '../../api/transaction';
-import * as Builder from '../../api/transaction/Builder';
+import * as Builder from '../transaction/builder';
 
 import { create as createBigNumber, toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
