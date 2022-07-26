@@ -65,6 +65,7 @@ var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("../api");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var providers_1 = require("../services/cacheStore/providers");
+var utils_1 = require("../services/utils");
 var utxoHelper_1 = require("../services/utxoHelper");
 dotenv_1.default.config();
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
@@ -106,7 +107,7 @@ exports.createNewKeypair = createNewKeypair;
  * Create FRA Test BARs for Single Asset Integration Test
  */
 var createTestBars = function (senderOne) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, i, transactionBuilder, resultHandle;
+    var pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, amount, i, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -124,11 +125,12 @@ var createTestBars = function (senderOne) { return __awaiter(void 0, void 0, voi
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                amount = (0, utils_1.getRandomNumber)(10, 50);
                 i = 0;
                 _a.label = 4;
             case 4:
                 if (!(i < 4)) return [3 /*break*/, 9];
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '210', assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
             case 5:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];

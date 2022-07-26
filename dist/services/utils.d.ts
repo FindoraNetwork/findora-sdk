@@ -6,3 +6,4 @@ export declare const now: () => string;
 export declare const log: (message: string, ...rest: any) => void;
 export declare const getCryptoInstance: () => any;
 export declare const generateSeedString: () => string;
+export declare const getRandomNumber: (min?: number, max?: number) => number;

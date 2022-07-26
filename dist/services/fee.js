@@ -236,7 +236,6 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
                         assetBlindRules: assetBlindRules,
                     },
                 ];
-                console.log('🚀 ~ file: fee.ts ~ line 217 ~ recieversInfo', recieversInfo);
                 return [4 /*yield*/, (0, exports.buildTransferOperation)(walletInfo, recieversInfo, fraAssetCode)];
             case 4:
                 trasferOperation = _a.sent();

@@ -206,7 +206,9 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                         fullPathToCacheEntry = cacheEntryName;
                     }
                 }
-                catch (error) { }
+                catch (error) {
+                    console.log('window instance is not found. running is sdk mode. skipping');
+                }
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
@@ -261,6 +263,9 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
 exports.addUtxo = addUtxo;
 // creates a list of utxo like object, which are suitable for the required send operation
 // is only used in fee
+/**
+ * @depricated
+ */
 var getSendUtxoLegacy = function (code, amount, utxoDataList) {
     var balance = amount;
     var result = [];
@@ -298,40 +303,6 @@ var getSendUtxoLegacy = function (code, amount, utxoDataList) {
     return result;
 };
 exports.getSendUtxoLegacy = getSendUtxoLegacy;
-// export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
-//   let balance = amount;
-//   const result = [];
-//   const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
-//   const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-//   for (let i = 0; i < sortedUtxoList.length; i++) {
-//     const assetItem = sortedUtxoList[i];
-//     const _amount = BigInt(assetItem.body.amount);
-//     if (balance <= BigInt(0)) {
-//       break;
-//     } else if (BigInt(_amount) >= balance) {
-//       result.push({
-//         amount: balance,
-//         originAmount: _amount,
-//         sid: assetItem.sid,
-//         utxo: { ...assetItem.utxo },
-//         ownerMemo: assetItem.ownerMemo,
-//         memoData: assetItem.memoData,
-//       });
-//       break;
-//     } else {
-//       balance = BigInt(Number(balance) - Number(_amount));
-//       result.push({
-//         amount: _amount, //[5, 3, 2]
-//         originAmount: _amount, // [5, 3, 4]
-//         sid: assetItem.sid,
-//         utxo: { ...assetItem.utxo },
-//         ownerMemo: assetItem.ownerMemo,
-//         memoData: assetItem.memoData,
-//       });
-//     }
-//   }
-//   return result;
-// };
 var getSendUtxo = function (code, amount, utxoDataList) {
     var result = [];
     var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);
@@ -343,7 +314,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
         sum = sum + _amount;
         var credit = BigInt(Number(sum) - Number(amount));
         var remainedDebt = _amount - credit;
-        var amountToUse = !!credit ? remainedDebt : _amount;
+        var amountToUse = credit ? remainedDebt : _amount;
         result.push({
             amount: amountToUse,
             originAmount: _amount,
@@ -352,7 +323,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
             ownerMemo: assetItem.ownerMemo,
             memoData: assetItem.memoData,
         });
-        if (credit) {
+        if (credit >= 0) {
             break;
         }
     }

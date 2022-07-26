@@ -167,7 +167,6 @@ var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void
             case 3:
                 assetBuilder = _a.sent();
                 submitData = assetBuilder.transaction();
-                console.log('🚀 ~ file: integration.ts ~ line 137 ~ defineAssetTransaction ~ submitData', submitData);
                 try {
                     operation = JSON.parse(submitData).body.operations[0];
                     return [2 /*return*/, 'DefineAsset' in operation];

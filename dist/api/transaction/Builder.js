@@ -59,14 +59,11 @@ exports.getAnonTransferOperationBuilder = exports.getTransactionBuilder = export
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
 var getBlockHeight = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, _a, stateCommitment, error, _, height, blockCount;
+    var _a, stateCommitment, error, _, height, blockCount;
     return __generator(this, function (_b) {
         switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, Network.getStateCommitment()];
             case 1:
-                ledger = _b.sent();
-                return [4 /*yield*/, Network.getStateCommitment()];
-            case 2:
                 _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
                 if (error) {
                     throw new Error(error.message);

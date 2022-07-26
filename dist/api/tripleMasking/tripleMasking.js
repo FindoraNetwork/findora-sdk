@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
@@ -81,7 +81,6 @@ var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
 var Network = __importStar(require("../network"));
 var sdkAsset_1 = require("../sdkAsset");
-// import { getAnonTransferOperationBuilder, getTransactionBuilder } from '../transaction/builder';
 var Builder = __importStar(require("../transaction/builder"));
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, anonKeys, axfrPublicKey, axfrSpendKey, axfrViewKey, formattedAnonKeys, err_1;
@@ -862,35 +861,41 @@ var openAbar = function (abar, anonKeys) { return __awaiter(void 0, void 0, void
 }); };
 exports.openAbar = openAbar;
 var getBalanceMaps = function (unspentAbars, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var assetDetailsMap, balancesMap, usedAssets, _i, unspentAbars_1, abar, openedAbarItem, amount, assetType, asset;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var assetDetailsMap, balancesMap, atxoMap, usedAssets, _i, unspentAbars_1, abar, _a, atxoSid, commitment, openedAbarItem, amount, assetType, asset;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 assetDetailsMap = {};
                 balancesMap = {};
+                atxoMap = {};
                 usedAssets = [];
                 _i = 0, unspentAbars_1 = unspentAbars;
-                _a.label = 1;
+                _b.label = 1;
             case 1:
                 if (!(_i < unspentAbars_1.length)) return [3 /*break*/, 6];
                 abar = unspentAbars_1[_i];
+                _a = abar.abarData, atxoSid = _a.atxoSid, commitment = _a.ownedAbar.commitment;
                 return [4 /*yield*/, (0, exports.openAbar)(abar, anonKeys)];
             case 2:
-                openedAbarItem = _a.sent();
+                openedAbarItem = _b.sent();
                 amount = openedAbarItem.amount, assetType = openedAbarItem.assetType;
                 if (!!assetDetailsMap[assetType]) return [3 /*break*/, 4];
                 return [4 /*yield*/, (0, sdkAsset_1.getAssetDetails)(assetType)];
             case 3:
-                asset = _a.sent();
+                asset = _b.sent();
                 usedAssets.push(assetType);
                 assetDetailsMap[assetType] = asset;
-                _a.label = 4;
+                _b.label = 4;
             case 4:
                 if (!balancesMap[assetType]) {
                     balancesMap[assetType] = '0';
                 }
+                if (!atxoMap[assetType]) {
+                    atxoMap[assetType] = [];
+                }
                 balancesMap[assetType] = (0, bigNumber_1.plus)(balancesMap[assetType], amount).toString();
-                _a.label = 5;
+                atxoMap[assetType].push({ amount: amount.toString(), assetType: assetType, atxoSid: atxoSid, commitment: commitment });
+                _b.label = 5;
             case 5:
                 _i++;
                 return [3 /*break*/, 1];
@@ -898,6 +903,7 @@ var getBalanceMaps = function (unspentAbars, anonKeys) { return __awaiter(void 0
                     assetDetailsMap: assetDetailsMap,
                     balancesMap: balancesMap,
                     usedAssets: usedAssets,
+                    atxoMap: atxoMap,
                 }];
         }
     });
@@ -1066,4 +1072,66 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
     });
 }); };
 exports.genNullifierHash = genNullifierHash;
+var mergeAtxoList = function (arr1, arr2) {
+    var res = [];
+    while (arr1.length && arr2.length) {
+        var assetItem1 = arr1[0];
+        var assetItem2 = arr2[0];
+        var amount1 = BigInt(assetItem1.amount);
+        var amount2 = BigInt(assetItem2.amount);
+        if (amount1 < amount2) {
+            res.push(arr1.splice(0, 1)[0]);
+            continue;
+        }
+        res.push(arr2.splice(0, 1)[0]);
+    }
+    return res.concat(arr1, arr2);
+};
+var mergeSortAtxoList = function (arr) {
+    if (arr.length < 2)
+        return arr;
+    var middleIdx = Math.floor(arr.length / 2);
+    var left = arr.splice(0, middleIdx);
+    var right = arr.splice(0);
+    return mergeAtxoList(mergeSortAtxoList(left), mergeSortAtxoList(right));
+};
+var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, unspentAbars, balancesMaps, atxoMap, filteredUtxoList, sortedUtxoList, sum, _i, sortedUtxoList_1, assetItem, _amount, credit;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                result = [];
+                return [4 /*yield*/, (0, exports.getUnspentAbars)(anonKeys, commitments)];
+            case 1:
+                unspentAbars = _a.sent();
+                return [4 /*yield*/, (0, exports.getBalanceMaps)(unspentAbars, anonKeys)];
+            case 2:
+                balancesMaps = _a.sent();
+                atxoMap = balancesMaps.atxoMap;
+                filteredUtxoList = atxoMap[code];
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
+                if (!filteredUtxoList) {
+                    return [2 /*return*/, []];
+                }
+                sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
+                sum = BigInt(0);
+                for (_i = 0, sortedUtxoList_1 = sortedUtxoList; _i < sortedUtxoList_1.length; _i++) {
+                    assetItem = sortedUtxoList_1[_i];
+                    _amount = BigInt(assetItem.amount);
+                    sum = sum + _amount;
+                    credit = BigInt(Number(sum) - Number(amount));
+                    result.push({
+                        amount: _amount,
+                        sid: assetItem.atxoSid,
+                        commitment: assetItem.commitment,
+                    });
+                    if (credit >= 0) {
+                        break;
+                    }
+                }
+                return [2 /*return*/, sum >= amount ? result : []];
+        }
+    });
+}); };
+exports.getSendAtxo = getSendAtxo;
 //# sourceMappingURL=tripleMasking.js.map
