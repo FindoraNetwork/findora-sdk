@@ -1548,28 +1548,28 @@ const testIt = async () => {
 
 async function approveToken() {
   const webLinkedInfo = {
-    privateStr: '81ea4cbdceb327f7cedacf2048137b17cc0fdc4f19c4201a9002dcd8f463fc41',
-    rpcUrl: 'https://prod-forge.prod.findora.org:8545',
-    chainId: 2154,
-    account: '0x63c2F320e9ccd90088F08527881Bc70112d521b2',
+    privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
+    rpcUrl: 'https://dev-qa02.dev.findora.org:8545', //'https://prod-forge.prod.findora.org:8545',
+    chainId: 1111, // 2154,
+    account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
   };
 
-  // const result = await Evm.approveToken(
-  //   '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
-  //   '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // 授权 prism->ledger
-  //   '100',
-  //   webLinkedInfo,
-  // );
-  // console.log(result);
+  const result = await Evm.approveToken(
+    '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+    '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
+    '100',
+    webLinkedInfo,
+  );
+  console.log(result.transactionHash);
 
-  // const result1 = await Evm.frc20ToBar(
-  //   '0xffCB8F50593684C9bCf13A329CC7CEc88f7c04D5', // bridge
-  //   'fra1vczzg806lhuknp92td3dk3rv6y8chgvmweey928f3rcqlrj2vryqyhja5e',
-  //   '0x767B74E80D9082D7C5EFa024F194BBB7261449D0',
-  //   '100',
-  //   webLinkedInfo,
-  // );
-
+  const result1 = await Evm.frc20ToBar(
+    '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
+    'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
+    '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+    '100',
+    webLinkedInfo,
+  );
+  console.log(result1.transactionHash);
   // const result1 = await Evm.tokenBalance(
   //   webLinkedInfo,
   //   '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',

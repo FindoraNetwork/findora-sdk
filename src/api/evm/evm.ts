@@ -155,7 +155,7 @@ export const frc20ToBar = async (
     gasLimit: web3.utils.toHex(3000000),
     gas: web3.utils.toHex(estimategas),
     nonce: nonce,
-    value: web3.utils.toHex(convertAmount),
+    // value: web3.utils.toHex(convertAmount),
     data: contractData,
     chainId: web3WalletInfo.chainId,
   };
@@ -199,21 +199,6 @@ export const tokenBalance = async (
   }
 
   return balance;
-
-  // contractData = await erc20Contract.methods.decimals().encodeABI();
-  // txParams = {
-  //   from: web3WalletInfo.account,
-  //   to: tokenAddress,
-  //   data: contractData,
-  // };
-
-  // callResultHex = await web3.eth.call(txParams);
-  // const erc20Decimals = web3.utils.hexToNumberString(callResultHex);
-
-  // const ten = new BigNumber(10);
-  // const power = ten.exponentiatedBy(erc20Decimals);
-
-  // return new BigNumber(balance).div(power).toString();
 };
 
 export const sendAccountToEvm = async (
