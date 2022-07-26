@@ -10,7 +10,7 @@ export const getBlockHeight = async (): Promise<bigint> => {
   }
 
   if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
+    throw new Error('Could not receive response from state commitement call...');
   }
 
   const [_, height] = stateCommitment;

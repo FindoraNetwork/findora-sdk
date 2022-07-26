@@ -69,7 +69,7 @@ var getBlockHeight = function () { return __awaiter(void 0, void 0, void 0, func
                     throw new Error(error.message);
                 }
                 if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call');
+                    throw new Error('Could not receive response from state commitement call...');
                 }
                 _ = stateCommitment[0], height = stateCommitment[1];
                 blockCount = BigInt(height);
