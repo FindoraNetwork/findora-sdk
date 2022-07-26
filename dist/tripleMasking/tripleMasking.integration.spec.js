@@ -62,6 +62,7 @@ var anonKeys2;
 var anonKeys3;
 var senderOne = '';
 var asset1Code = '';
+var derivedAsset1Code = '';
 beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     var walletInfo;
     return __generator(this, function (_a) {
@@ -82,6 +83,9 @@ beforeAll(function (done) { return __awaiter(void 0, void 0, void 0, function ()
                 return [4 /*yield*/, Integration.getRandomAssetCode()];
             case 5:
                 asset1Code = _a.sent();
+                return [4 /*yield*/, Integration.getDerivedAssetCode(asset1Code)];
+            case 6:
+                derivedAsset1Code = _a.sent();
                 done();
                 return [2 /*return*/];
         }
@@ -143,7 +147,7 @@ describe("Triple Masking Integration (integration test)", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.createTestBarsMulti(senderOne, asset1Code)];
+                    case 0: return [4 /*yield*/, Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code)];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(true);
@@ -155,7 +159,7 @@ describe("Triple Masking Integration (integration test)", function () {
             var result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, asset1Code)];
+                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code)];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(true);

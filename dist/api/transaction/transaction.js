@@ -241,7 +241,16 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     throw new Error("Could not add transfer operation for fee, Error: \"" + e.message + "\"");
                 }
                 _a.label = 12;
-            case 12: return [2 /*return*/, transactionBuilder];
+            case 12:
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                }
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };

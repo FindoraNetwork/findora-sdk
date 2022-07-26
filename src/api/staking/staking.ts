@@ -88,6 +88,14 @@ export const unStake = async (
     throw new Error(`Could not add transfer to unStake operation, Error: "${e.message}"`);
   }
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -160,6 +168,14 @@ export const delegate = async (
     validator,
   );
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -217,6 +233,14 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
     const e: Error = error as Error;
 
     throw new Error(`Could not add staking claim operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;

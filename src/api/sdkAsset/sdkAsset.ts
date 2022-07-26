@@ -89,6 +89,27 @@ export const getRandomAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
+export const getDerivedAssetCode = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
+  const derivedAssetCode = ledger.hash_asset_code(assetCode);
+  return derivedAssetCode;
+};
+
+export const getAssetCodeToSend = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  if (isFraTransfer) {
+    return assetCode;
+  }
+
+  const derivedAssetCode = await getDerivedAssetCode(assetCode);
+  return derivedAssetCode;
+};
+
 export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
@@ -155,12 +176,20 @@ export const getDefineAssetTransactionBuilder = async (
   const [_, height] = stateCommitment;
   const blockCount = BigInt(height);
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
+  let definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
     walletKeypair,
     assetMemo,
     assetName,
     assetRules,
   );
+
+  try {
+    definitionTransaction = definitionTransaction.build();
+    definitionTransaction = definitionTransaction.sign(walletKeypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
 
   return definitionTransaction;
 };
@@ -273,6 +302,14 @@ export const defineAsset = async (
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -350,6 +387,14 @@ export const issueAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;

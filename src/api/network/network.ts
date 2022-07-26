@@ -91,7 +91,6 @@ export const apiGet = async (
     return { response: myResponse };
   } catch (err) {
     const e: Error = err as Error;
-
     return { error: { message: e.message } };
   }
 };

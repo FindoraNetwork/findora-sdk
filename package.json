@@ -1,6 +1,6 @@
 {
   "name": "@findora-network/findora-sdk.js",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "The JavaScript SDK for Findora Network",
   "license": "ISC",
   "author": "Findora Network",
@@ -47,6 +47,7 @@
     "test:evm:integration:rpc:no_tx:devnet": "RPC_ENV_NAME=dev yarn test:evm:integration:rpc:no_tx",
     "test:evm:integration:rpc:no_tx:mocknet": "RPC_ENV_NAME=mocknet yarn test:evm:integration:rpc:no_tx",
     "test:evm:integration:all:devnet": "RPC_ENV_NAME=dev yarn test:evm:integration:all",
+    "test:evm:integration:all:local": "RPC_ENV_NAME=local yarn test:evm:integration:all",
     "test:tm:integration:testnet": "INTEGRATION_ENV_NAME=testnet yarn test:tm:integration",
     "test:tm:integration:local": "INTEGRATION_ENV_NAME=local yarn test:tm:integration",
     "prettier": "prettier --write ./src/**/*.ts",

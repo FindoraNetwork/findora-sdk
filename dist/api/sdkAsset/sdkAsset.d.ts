@@ -45,6 +45,8 @@ export declare const getAssetCode: (val: number[]) => Promise<string>;
  * @returns - Asset code
  */
 export declare const getRandomAssetCode: () => Promise<string>;
+export declare const getDerivedAssetCode: (assetCode: string) => Promise<string>;
+export declare const getAssetCodeToSend: (assetCode: string) => Promise<string>;
 export declare const getDefaultAssetRules: () => Promise<LedgerAssetRules>;
 export declare const getAssetRules: (newAssetRules?: AssetRules | undefined) => Promise<LedgerAssetRules>;
 export declare const getDefineAssetTransactionBuilder: (walletKeypair: XfrKeyPair, assetName: string, assetRules: LedgerAssetRules, assetMemo?: string) => Promise<TransactionBuilder>;

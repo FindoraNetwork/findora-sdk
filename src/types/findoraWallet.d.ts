@@ -63,7 +63,7 @@ declare namespace FindoraWallet {
   }
 
   export interface BarToAbarData {
-    anonKeysFormatted: FormattedAnonKeys;
+    receiverAxfrPublicKey: string;
     commitments: string[];
   }
 
@@ -80,7 +80,7 @@ declare namespace FindoraWallet {
 
   export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
-    anonKeysReceiver: FormattedAnonKeys;
+    anonPubKeyReceiver: string;
     commitmentsMap: ProcessedCommitmentsMap[];
   }
 

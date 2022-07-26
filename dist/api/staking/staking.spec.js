@@ -56,10 +56,10 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var Staking = __importStar(require("./staking"));
-var Transaction = __importStar(require("../transaction/transaction"));
 var Fee = __importStar(require("../../services/fee"));
 var SdkAsset = __importStar(require("../sdkAsset/sdkAsset"));
+var Transaction = __importStar(require("../transaction/transaction"));
+var Staking = __importStar(require("./staking"));
 describe('staking (unit test)', function () {
     describe('undelegate', function () {
         it('undelegates all funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
