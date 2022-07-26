@@ -68,22 +68,22 @@ _axios.defaults.transformResponse = [
 ];
 var getQueryRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
-    var url = "".concat(hostUrl, ":").concat(queryPort);
+    var url = hostUrl + ":" + queryPort;
     return url;
 };
 var getSubmitRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, submissionPort = _a.submissionPort;
-    var url = "".concat(hostUrl, ":").concat(submissionPort);
+    var url = hostUrl + ":" + submissionPort;
     return url;
 };
 var getLedgerRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, ledgerPort = _a.ledgerPort;
-    var url = "".concat(hostUrl, ":").concat(ledgerPort);
+    var url = hostUrl + ":" + ledgerPort;
     return url;
 };
 var getExplorerApiRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, explorerApiPort = _a.explorerApiPort;
-    var url = "".concat(hostUrl, ":").concat(explorerApiPort);
+    var url = hostUrl + ":" + explorerApiPort;
     return url;
 };
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
@@ -147,7 +147,7 @@ var getOwnedSids = function (address, config) { return __awaiter(void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_owned_utxos/").concat(address);
+                url = getQueryRoute() + "/get_owned_utxos/" + address;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -171,7 +171,7 @@ var getRelatedSids = function (address, config) { return __awaiter(void 0, void 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_related_txns/").concat(address);
+                url = getQueryRoute() + "/get_related_txns/" + address;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -195,7 +195,7 @@ var getUtxo = function (utxoSid, config) { return __awaiter(void 0, void 0, void
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getLedgerRoute(), "/utxo_sid/").concat(utxoSid);
+                url = getLedgerRoute() + "/utxo_sid/" + utxoSid;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -209,7 +209,7 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_owner_memo/").concat(utxoSid);
+                url = getQueryRoute() + "/get_owner_memo/" + utxoSid;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -223,7 +223,7 @@ var getAbarOwnerMemo = function (atxoSid, config) { return __awaiter(void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_abar_memo/").concat(atxoSid);
+                url = getQueryRoute() + "/get_abar_memo/" + atxoSid;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -237,7 +237,7 @@ var getMTLeafInfo = function (atxoSid, config) { return __awaiter(void 0, void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_abar_proof/").concat(atxoSid);
+                url = getQueryRoute() + "/get_abar_proof/" + atxoSid;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -263,7 +263,7 @@ var getStateCommitment = function (config) { return __awaiter(void 0, void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getLedgerRoute(), "/global_state");
+                url = getLedgerRoute() + "/global_state";
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -283,7 +283,7 @@ var getSubmitTransactionData = function (data) {
     }
     catch (err) {
         var e = err;
-        return { error: { message: "Can't submit transaction. Can't parse transaction data. ".concat(e.message) } };
+        return { error: { message: "Can't submit transaction. Can't parse transaction data. " + e.message } };
     }
 };
 exports.getSubmitTransactionData = getSubmitTransactionData;
@@ -292,7 +292,7 @@ var submitTransaction = function (data, config) { return __awaiter(void 0, void 
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                url = "".concat(getSubmitRoute(), "/submit_transaction");
+                url = getSubmitRoute() + "/submit_transaction";
                 _a = (0, exports.getSubmitTransactionData)(data), txData = _a.response, error = _a.error;
                 if (error) {
                     return [2 /*return*/, { error: error }];
@@ -310,7 +310,7 @@ var getAssetToken = function (assetCode, config) { return __awaiter(void 0, void
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getLedgerRoute(), "/asset_token/").concat(assetCode);
+                url = getLedgerRoute() + "/asset_token/" + assetCode;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -324,7 +324,7 @@ var getIssuedRecords = function (address, config) { return __awaiter(void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/get_issued_records/").concat(address);
+                url = getQueryRoute() + "/get_issued_records/" + address;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -346,7 +346,7 @@ var getTransactionStatus = function (handle, config) { return __awaiter(void 0, 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getSubmitRoute(), "/txn_status/").concat(handle);
+                url = getSubmitRoute() + "/txn_status/" + handle;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -360,7 +360,7 @@ var getBlock = function (height, config) { return __awaiter(void 0, void 0, void
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getExplorerApiRoute(), "/block");
+                url = getExplorerApiRoute() + "/block";
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { height: height } }))];
             case 1:
                 dataResult = _a.sent();
@@ -374,8 +374,8 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getExplorerApiRoute(), "/tx_search");
-                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { query: "\"tx.prehash='".concat(hash, "'\"") } }))];
+                url = getExplorerApiRoute() + "/tx_search";
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { query: "\"tx.prehash='" + hash + "'\"" } }))];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];
@@ -385,7 +385,7 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
 exports.getHashSwap = getHashSwap;
 var getParamsForTransparentTxList = function (address, type, page) {
     if (page === void 0) { page = 1; }
-    var query = type === 'from' ? "\"addr.from.".concat(address, "='y'\"") : "\"addr.to.".concat(address, "='y'\"");
+    var query = type === 'from' ? "\"addr.from." + address + "='y'\"" : "\"addr.to." + address + "='y'\"";
     var params = {
         query: query,
         page: page,
@@ -397,7 +397,7 @@ var getParamsForTransparentTxList = function (address, type, page) {
 exports.getParamsForTransparentTxList = getParamsForTransparentTxList;
 var getAnonymousTxList = function (subject, type, page) {
     if (page === void 0) { page = 1; }
-    var query = type === 'to' ? "\"commitment.created.".concat(subject, "='y'\"") : "\"nullifier.used.".concat(subject, "='y'\"");
+    var query = type === 'to' ? "\"commitment.created." + subject + "='y'\"" : "\"nullifier.used." + subject + "='y'\"";
     var params = {
         query: query,
         page: page,
@@ -419,7 +419,7 @@ var getTxList = function (subject, type, page, privacy, config) {
                     params = isTransparentTxListRequest
                         ? (0, exports.getParamsForTransparentTxList)(subject, type, page)
                         : (0, exports.getAnonymousTxList)(subject, type, page);
-                    url = "".concat(getExplorerApiRoute(), "/tx_search");
+                    url = getExplorerApiRoute() + "/tx_search";
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
@@ -435,9 +435,9 @@ var getTransactionDetails = function (hash, config) { return __awaiter(void 0, v
         switch (_a.label) {
             case 0:
                 params = {
-                    hash: "0x".concat(hash),
+                    hash: "0x" + hash,
                 };
-                url = "".concat(getExplorerApiRoute(), "/tx");
+                url = getExplorerApiRoute() + "/tx";
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
             case 1:
                 dataResult = _a.sent();
@@ -454,10 +454,10 @@ var getAbciNoce = function (data, config) { return __awaiter(void 0, void 0, voi
             case 1:
                 ledger = _a.sent();
                 ethAddressJson = ledger.get_serialized_address(data);
-                url = "".concat(getExplorerApiRoute(), "/abci_query");
+                url = getExplorerApiRoute() + "/abci_query";
                 params = {
                     path: '"module/account/nonce"',
-                    data: "\"".concat(ethAddressJson, "\""),
+                    data: "\"" + ethAddressJson + "\"",
                     prove: false,
                 };
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
@@ -476,10 +476,10 @@ var getAbciInfo = function (data, config) { return __awaiter(void 0, void 0, voi
             case 1:
                 ledger = _a.sent();
                 ethAddressJson = ledger.get_serialized_address(data);
-                url = "".concat(getExplorerApiRoute(), "/abci_query");
+                url = getExplorerApiRoute() + "/abci_query";
                 params = {
                     path: '"module/account/info"',
-                    data: "\"".concat(ethAddressJson, "\""),
+                    data: "\"" + ethAddressJson + "\"",
                     prove: false,
                 };
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
@@ -495,7 +495,7 @@ var submitEvmTx = function (tx, config) { return __awaiter(void 0, void 0, void 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getExplorerApiRoute());
+                url = "" + getExplorerApiRoute();
                 params = {
                     id: 58,
                     jsonrpc: '2.0',
@@ -517,7 +517,7 @@ var getValidatorList = function (config) { return __awaiter(void 0, void 0, void
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getLedgerRoute(), "/validator_list");
+                url = getLedgerRoute() + "/validator_list";
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -531,7 +531,7 @@ var getDelegateInfo = function (publickey, config) { return __awaiter(void 0, vo
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getLedgerRoute(), "/delegation_info/").concat(publickey);
+                url = getLedgerRoute() + "/delegation_info/" + publickey;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -565,7 +565,7 @@ var getOwnedAbars = function (commitment, config) { return __awaiter(void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/owned_abars/").concat(commitment);
+                url = getQueryRoute() + "/owned_abars/" + commitment;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
@@ -579,7 +579,7 @@ var checkNullifierHashSpent = function (hash, config) { return __awaiter(void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                url = "".concat(getQueryRoute(), "/check_nullifier_hash/").concat(hash);
+                url = getQueryRoute() + "/check_nullifier_hash/" + hash;
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();

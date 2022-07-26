@@ -45,7 +45,7 @@ export interface TransferReciever {
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const sendToMany: (walletInfo: WalletKeypar, recieversList: TransferReciever[], assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
+export declare const sendToMany: (walletInfo: WalletKeypar, recieversList: TransferReciever[], assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
 /**
  * Submits a transaction
  *
@@ -104,7 +104,7 @@ export declare const submitAbarTransaction: (anonTransferOperationBuilder: AnonT
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const sendToAddress: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
-export declare const sendToPublicKey: (walletInfo: WalletKeypar, publicKey: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
+export declare const sendToAddress: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
+export declare const sendToPublicKey: (walletInfo: WalletKeypar, publicKey: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
 export declare const getTxList: (address: string, type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;
 export declare const getAnonTxList: (subjects: string[], type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;

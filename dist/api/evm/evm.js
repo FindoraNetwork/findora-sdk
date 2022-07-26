@@ -1,11 +1,7 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -327,7 +323,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 5:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Get nonce error \"".concat(ethAddress, "\". Error - ").concat(e.message));
+                throw new Error("Get nonce error \"" + ethAddress + "\". Error - " + e.message);
             case 6:
                 result = '';
                 try {
@@ -335,7 +331,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Evm to Account wasm error\". Error - ".concat(e.message));
+                    throw new Error("Evm to Account wasm error\". Error - " + e.message);
                 }
                 _a.label = 7;
             case 7:
@@ -350,7 +346,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 9:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Evm to Account submit error\". Error - ".concat(e.message));
+                throw new Error("Evm to Account submit error\". Error - " + e.message);
             case 10: return [2 /*return*/];
         }
     });
