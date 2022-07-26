@@ -56,10 +56,13 @@
     "prepublishOnly": "npm run build",
     "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js --ignore cache/",
+    "start-b:build": "tsc -w  ",
+    "start-b:run": "nodemon dist/run-balance.js --ignore cache/",
     "cli:build": "tsc",
     "cli:run": "nodemon dist/cli/cli.js --ignore cache/ \"$npm_config\"",
     "jest-coverage": "yarn run jest -- --coverage",
     "start": "concurrently npm:start:*",
+    "start-b": "concurrently npm:start-b:*",
     "cli": "yarn cli:build && yarn cli:run \"$npm_config\"",
     "update-wasm": "yarn upgrade findora-wallet-wasm"
   },

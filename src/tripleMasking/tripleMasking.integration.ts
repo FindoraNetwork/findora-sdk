@@ -3,6 +3,7 @@ import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Transaction, TripleMasking } from '../api';
 import Sdk from '../Sdk';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
+import { getRandomNumber } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
 
 dotenv.config();
@@ -62,11 +63,13 @@ export const createTestBars = async (senderOne: string) => {
   const assetCode = fraCode;
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
+  const amount = getRandomNumber(10, 50);
+
   for (let i = 0; i < 4; i++) {
     const transactionBuilder = await Transaction.sendToAddress(
       walletInfo,
       toWalletInfo.address,
-      '210',
+      `${amount}`,
       assetCode,
       assetBlindRules,
     );

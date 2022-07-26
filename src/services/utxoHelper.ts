@@ -291,48 +291,6 @@ export const getSendUtxoLegacy = (
   return result;
 };
 
-// export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
-//   let balance = amount;
-
-//   const result = [];
-
-//   const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
-//   const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-
-//   for (let i = 0; i < sortedUtxoList.length; i++) {
-//     const assetItem = sortedUtxoList[i];
-
-//     const _amount = BigInt(assetItem.body.amount);
-
-//     if (balance <= BigInt(0)) {
-//       break;
-//     } else if (BigInt(_amount) >= balance) {
-//       result.push({
-//         amount: balance,
-//         originAmount: _amount,
-//         sid: assetItem.sid,
-//         utxo: { ...assetItem.utxo },
-//         ownerMemo: assetItem.ownerMemo,
-//         memoData: assetItem.memoData,
-//       });
-//       break;
-//     } else {
-//       balance = BigInt(Number(balance) - Number(_amount));
-
-//       result.push({
-//         amount: _amount, //[5, 3, 2]
-//         originAmount: _amount, // [5, 3, 4]
-//         sid: assetItem.sid,
-//         utxo: { ...assetItem.utxo },
-//         ownerMemo: assetItem.ownerMemo,
-//         memoData: assetItem.memoData,
-//       });
-//     }
-//   }
-
-//   return result;
-// };
-
 export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
   const result = [];
 
@@ -359,7 +317,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
       memoData: assetItem.memoData,
     });
 
-    if (credit) {
+    if (credit >= 0) {
       break;
     }
   }
