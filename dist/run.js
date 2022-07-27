@@ -382,7 +382,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
  * Send fra to a single address
  */
 var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, sortedSids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, submitResult;
+    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, sortedSids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, submitResult, sidsResultNew, sidsNew, sortedSidsNew, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -427,6 +427,19 @@ var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, 
             case 9:
                 submitResult = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
+                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
+            case 10:
+                sidsResultNew = _a.sent();
+                sidsNew = sidsResultNew.response;
+                if (!sidsNew) {
+                    throw new Error('no sids!');
+                }
+                sortedSidsNew = sids.sort(function (a, b) { return b - a; });
+                console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 11:
+                balanceNew = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
                 return [2 /*return*/];
         }
     });

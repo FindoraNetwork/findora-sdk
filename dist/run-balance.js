@@ -98,6 +98,49 @@ var myGivenCommitmentsList = [
     'EU6sbUEKBpoMwxdx1D1vE8GDgVh6ccQ6Dv4y1TZ2Nwg3',
     '4zRUTuWqq3RcmXpcPxiM5GYkBnf8g6M6jisenJEJniKr',
 ];
+/**
+ * Get FRA balance
+ */
+var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, mString, mm, newWallet, faucetWalletInfo, balance, balanceNew, fraCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '12345';
+                pkey = PKEY_LOCAL_FAUCET;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+                mm = mString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                newWallet = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                faucetWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfo)];
+            case 3:
+                balance = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(newWallet)];
+            case 4:
+                balanceNew = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 5:
+                fraCode = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
+                console.log('\n');
+                console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+                console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+                console.log('\n');
+                console.log('newWallet.address (from mnenmonic)', newWallet.address);
+                console.log('newWallet.privateStr', newWallet.privateStr);
+                console.log('\n');
+                console.log('balance from restored from pkey IS', balance);
+                console.log('balance from restored using mnemonic IS', balanceNew);
+                console.log('\n');
+                console.log('\n');
+                return [2 /*return*/];
+        }
+    });
+}); };
 var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
     var anonKeys, givenCommitmentsList, unspentAbars;
     return __generator(this, function (_a) {
@@ -219,10 +262,11 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
+getFraBalance();
 // getAnonKeys(); // +
 // getAbarBalance();
 //getAtxoSendList();
 // getUnspentAbars();
 // validateUnspent();
-testIt();
+// testIt();
 //# sourceMappingURL=run-balance.js.map

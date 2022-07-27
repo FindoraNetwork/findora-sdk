@@ -321,19 +321,19 @@ const transferFraToSingleAddress = async () => {
   const submitResult = await Network.getTransactionDetails(resultHandle);
   console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
 
-  // const sidsResultNew = await Network.getOwnedSids(walletInfo.publickey);
+  const sidsResultNew = await Network.getOwnedSids(walletInfo.publickey);
 
-  // const { response: sidsNew } = sidsResultNew;
+  const { response: sidsNew } = sidsResultNew;
 
-  // if (!sidsNew) {
-  //   throw new Error('no sids!');
-  // }
+  if (!sidsNew) {
+    throw new Error('no sids!');
+  }
 
-  // const sortedSidsNew = sids.sort((a, b) => b - a);
-  // console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
+  const sortedSidsNew = sids.sort((a, b) => b - a);
+  console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
 
-  // const balanceNew = await Account.getBalance(walletInfo);
-  // console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
+  const balanceNew = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
 };
 
 /**

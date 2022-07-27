@@ -106,6 +106,8 @@ export const sendToMany = async (
   } catch (error) {
     const e: Error = error as Error;
 
+    console.log('Full error (main)', error);
+
     throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
   }
 

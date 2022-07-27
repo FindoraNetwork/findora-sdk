@@ -81,6 +81,52 @@ const myGivenCommitmentsList = [
   '4zRUTuWqq3RcmXpcPxiM5GYkBnf8g6M6jisenJEJniKr',
 ];
 
+/**
+ * Get FRA balance
+ */
+const getFraBalance = async () => {
+  const password = '12345';
+
+  const pkey = PKEY_LOCAL_FAUCET;
+  // const pkey = PKEY_MINE;
+  //  const pkey = PKEY_MINE2;
+  // const pkey = PKEY_MINE3;
+  // const pkey = ENG_PKEY;
+
+  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+  // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
+
+  const mm = mString.split(' ');
+
+  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const balance = await Account.getBalance(faucetWalletInfo);
+  const balanceNew = await Account.getBalance(newWallet);
+
+  const fraCode = await Asset.getFraAssetCode();
+  console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
+
+  console.log('\n');
+
+  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+  console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+
+  console.log('\n');
+
+  console.log('newWallet.address (from mnenmonic)', newWallet.address);
+  console.log('newWallet.privateStr', newWallet.privateStr);
+
+  console.log('\n');
+
+  console.log('balance from restored from pkey IS', balance);
+  console.log('balance from restored using mnemonic IS', balanceNew);
+  console.log('\n');
+  console.log('\n');
+};
+
 const getUnspentAbars = async () => {
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -185,9 +231,10 @@ const getAnonKeys = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
 };
 
+getFraBalance();
 // getAnonKeys(); // +
 // getAbarBalance();
 //getAtxoSendList();
 // getUnspentAbars();
 // validateUnspent();
-testIt();
+// testIt();
