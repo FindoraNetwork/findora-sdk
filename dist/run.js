@@ -1349,7 +1349,7 @@ var createTestBars = function (senderOne) {
     });
 };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sid, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sidOne, sidTwo, sidThree, anonKeys, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1371,14 +1371,14 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 console.log('🚀 ~ file: run.ts ~ line 1193 ~ barToAbar ~ sids', sids);
                 sortedSids = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
-                sid = sortedSids[0];
+                sidOne = sortedSids[0], sidTwo = sortedSids[1], sidThree = sortedSids[2];
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
-                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
+                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey)];
             case 4:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-                console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
+                console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSids', usedSids.join(','));
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();
@@ -1480,7 +1480,7 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
             case 1:
                 walletInfo = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
-                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, 11, true)];
+                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, [11], true)];
             case 2:
                 feeInputsPayload = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
@@ -1679,10 +1679,10 @@ function approveToken() {
 }
 // approveToken();
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
-//barToAbar(); // ++
+barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
@@ -1705,7 +1705,7 @@ getFraBalance();
 // getTransactionStatus();
 // getBlockDetails();
 // delegateFraTransactionSubmit();
-// delegateFraTransactionAndClaimRewards();
+// delegateFraTransactionAiindClaimRewards();
 // unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();

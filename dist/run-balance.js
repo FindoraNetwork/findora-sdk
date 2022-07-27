@@ -91,9 +91,13 @@ var myAbarAnonKeys = {
     axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 var myGivenCommitmentsList = [
-    'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5',
-    '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC',
-    '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+    // 'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5', // 6
+    // '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC', // 5
+    // '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+    // 'FeKLHRpfREkG5XzLLPKzwPjWTJazJe7b1jhkpbv5NomA',
+    'GD1q5AZX7kwgeMM88x5MTYy2Ek2vi1bbt4ep6oSdeg6a',
+    'EU6sbUEKBpoMwxdx1D1vE8GDgVh6ccQ6Dv4y1TZ2Nwg3',
+    '4zRUTuWqq3RcmXpcPxiM5GYkBnf8g6M6jisenJEJniKr',
 ];
 var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
     var anonKeys, givenCommitmentsList, unspentAbars;
@@ -107,6 +111,43 @@ var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, fun
                 unspentAbars = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', JSON.stringify(unspentAbars, null, 2));
                 return [2 /*return*/];
+        }
+    });
+}); };
+var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeys, givenCommitmentsList, _i, givenCommitmentsList_1, givenCommitment, axfrSecretKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeys = __assign({}, myAbarAnonKeys);
+                givenCommitmentsList = myGivenCommitmentsList;
+                _i = 0, givenCommitmentsList_1 = givenCommitmentsList;
+                _a.label = 1;
+            case 1:
+                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 6];
+                givenCommitment = givenCommitmentsList_1[_i];
+                console.log("processing " + givenCommitment);
+                axfrSecretKey = anonKeys.axfrSpendKey;
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 2:
+                ownedAbarsResponse = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
+                ownedAbarItem = ownedAbarsResponse[0];
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey)];
+            case 3:
+                hash = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
+            case 4:
+                isNullifierHashSpent = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
+                _a.label = 5;
+            case 5:
+                _i++;
+                return [3 /*break*/, 1];
+            case 6: return [2 /*return*/];
         }
     });
 }); };
@@ -135,7 +176,7 @@ var getAtxoSendList = function () { return __awaiter(void 0, void 0, void 0, fun
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 1:
                 assetCode = _a.sent();
-                amount = '19';
+                amount = '26';
                 return [4 /*yield*/, api_1.Asset.getAssetDetails(assetCode)];
             case 2:
                 asset = _a.sent();
@@ -150,26 +191,12 @@ var getAtxoSendList = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    function isCoinBase(fraAddress) {
-        console.log("we are going to call leger with " + fraAddress);
-        // return false;
-        var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
-        return false;
-        // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
-        //   addressInBase64,
-        // );
-    }
-    var findoraWasm, aaa1, aaa2, aaa3, result;
+    var findoraWasm;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 findoraWasm = _a.sent();
-                aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
-                aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
-                aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
-                result = isCoinBase(aaa1);
-                console.log('result', result);
                 return [2 /*return*/];
         }
     });
@@ -187,7 +214,8 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 // getAnonKeys(); // +
-//getAbarBalance();
-getAtxoSendList();
+// getAbarBalance();
+//getAtxoSendList();
 // getUnspentAbars();
+validateUnspent();
 //# sourceMappingURL=run-balance.js.map

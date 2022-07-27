@@ -229,7 +229,7 @@ exports.validateSpent = validateSpent;
 var barToAbar = function (senderOne, AnonKeys, isBalanceCheck, givenSid) {
     if (givenSid === void 0) { givenSid = 0; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var pkey, walletInfo, balance, sid, sidsResult, sids, sortedSids, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult, balanceResult;
+        var pkey, walletInfo, balance, sid, sidsResult, sids, sortedSids, anonKeys, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult, balanceResult;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -257,11 +257,11 @@ var barToAbar = function (senderOne, AnonKeys, isBalanceCheck, givenSid) {
                     _b.label = 4;
                 case 4:
                     anonKeys = __assign({}, AnonKeys);
-                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
+                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)];
                 case 5:
-                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
+                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
                     console.log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-                    console.log('🚀 ~ usedSid', usedSid);
+                    console.log('🚀 ~ usedSids', usedSids.join(','));
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
                 case 6:
                     resultHandle = _b.sent();

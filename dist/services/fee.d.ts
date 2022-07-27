@@ -22,6 +22,6 @@ export declare const buildTransferOperationWithFee: (walletInfo: WalletKeypar, a
     isAmountBlind?: boolean | undefined;
     isTypeBlind?: boolean | undefined;
 } | undefined) => Promise<TransferOperationBuilder>;
-export declare const getFeeInputs: (walletInfo: WalletKeypar, excludeSid: number, isBarToAbar: boolean) => Promise<FeeInputs>;
+export declare const getFeeInputs: (walletInfo: WalletKeypar, excludeSids: number[], isBarToAbar: boolean) => Promise<FeeInputs>;
 export declare const buildTransferOperation: (walletInfo: WalletKeypar, recieversInfo: ReciverInfo[], assetCode: string) => Promise<TransferOperationBuilder>;
 export {};
