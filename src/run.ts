@@ -274,12 +274,29 @@ const transferFraToSingleAddress = async () => {
   const pkey = PKEY_MINE;
 
   // const toPkeyMine2 = PKEY_MINE2;
-  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
+  //  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   // const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  const destAddress = walletInfo.address;
+
   const toWalletInfo = await Keypair.getAddressPublicAndKey(destAddress);
+
+  const balanceOld = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 287 ~ transferFraToSingleAddress ~ balanceOld', balanceOld);
+
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('no sids!');
+  }
+
+  const sortedSids = sids.sort((a, b) => b - a);
+
+  console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -290,7 +307,7 @@ const transferFraToSingleAddress = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '0.01',
+    '1',
     assetCode,
     assetBlindRules,
   );
@@ -298,6 +315,25 @@ const transferFraToSingleAddress = async () => {
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
   console.log('send fra result handle!!', resultHandle);
+
+  await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const submitResult = await Network.getTransactionDetails(resultHandle);
+  console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
+
+  // const sidsResultNew = await Network.getOwnedSids(walletInfo.publickey);
+
+  // const { response: sidsNew } = sidsResultNew;
+
+  // if (!sidsNew) {
+  //   throw new Error('no sids!');
+  // }
+
+  // const sortedSidsNew = sids.sort((a, b) => b - a);
+  // console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
+
+  // const balanceNew = await Account.getBalance(walletInfo);
+  // console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
 };
 
 /**
@@ -1625,13 +1661,13 @@ async function approveToken() {
   console.log(addr);
 }
 
-approveToken();
+// approveToken();
 
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
-barToAbar(); // ++
+// barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
@@ -1647,6 +1683,7 @@ barToAbar(); // ++
 // getTransferBuilderOperation();
 // createNewKeypair();
 // transferFraToSingleRecepient();
+transferFraToSingleAddress();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();

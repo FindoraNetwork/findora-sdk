@@ -382,31 +382,51 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
  * Send fra to a single address
  */
 var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, destAddress, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle;
+    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, sortedSids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, submitResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 pkey = PKEY_MINE;
-                destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
                 walletInfo = _a.sent();
+                destAddress = walletInfo.address;
                 return [4 /*yield*/, api_1.Keypair.getAddressPublicAndKey(destAddress)];
             case 2:
                 toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
             case 3:
+                balanceOld = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 287 ~ transferFraToSingleAddress ~ balanceOld', balanceOld);
+                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
+            case 4:
+                sidsResult = _a.sent();
+                sids = sidsResult.response;
+                if (!sids) {
+                    throw new Error('no sids!');
+                }
+                sortedSids = sids.sort(function (a, b) { return b - a; });
+                console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 5:
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.01', assetCode, assetBlindRules)];
-            case 4:
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '1', assetCode, assetBlindRules)];
+            case 6:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 5:
+            case 7:
                 resultHandle = _a.sent();
                 console.log('send fra result handle!!', resultHandle);
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 8:
+                _a.sent();
+                return [4 /*yield*/, api_1.Network.getTransactionDetails(resultHandle)];
+            case 9:
+                submitResult = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
                 return [2 /*return*/];
         }
     });
@@ -1667,12 +1687,12 @@ function approveToken() {
         });
     });
 }
-approveToken();
+// approveToken();
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
-barToAbar(); // ++
+// barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
@@ -1688,6 +1708,7 @@ barToAbar(); // ++
 // getTransferBuilderOperation();
 // createNewKeypair();
 // transferFraToSingleRecepient();
+transferFraToSingleAddress();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();
