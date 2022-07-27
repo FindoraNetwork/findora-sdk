@@ -8,7 +8,7 @@ import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString } from '../../services/utils';
-import { addUtxo } from '../../services/utxoHelper';
+import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
 import { getAssetCode, getAssetDetails } from '../sdkAsset';
@@ -475,7 +475,7 @@ export const getAbarTransferFee = async (
 
 export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
-  sid: number,
+  sids: number[],
   receiverAxfrPublicKey: string,
 ): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
@@ -483,34 +483,7 @@ export const barToAbar = async (
 
   let item;
 
-  try {
-    const utxoDataList = await addUtxo(walletInfo, [sid]);
-    const [utxoItem] = utxoDataList;
-    item = utxoItem;
-  } catch (error) {
-    throw new Error(`could not fetch utxo for sid ${sid}`);
-  }
-
-  const memoDataResult = await Network.getOwnerMemo(sid);
-
-  const { response: myMemoData, error: memoError } = memoDataResult;
-
-  if (memoError) {
-    throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
-  }
-
-  let ownerMemo;
-  let assetRecord;
-
-  try {
-    ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
-
-    assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
-  } catch (error) {
-    throw new Error(
-      `Could not get decode memo data or get assetRecord", Error - ${(error as Error).message}`,
-    );
-  }
+  let utxoDataList: AddUtxoItem[] = [];
 
   let axfrPublicKey;
 
@@ -520,26 +493,59 @@ export const barToAbar = async (
     throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
   }
 
-  const seed = generateSeedString();
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
-
   try {
-    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(
-      seed,
-      walletInfo.keypair,
-      axfrPublicKey,
-      BigInt(sid),
-      assetRecord,
-      ownerMemo?.clone(),
-    );
+    utxoDataList = await addUtxo(walletInfo, sids);
+    const [utxoItem] = utxoDataList;
+    item = utxoItem;
   } catch (error) {
-    throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
+    throw new Error(`could not fetch utxo for sids ${sids.join(',')}`);
+  }
+
+  for (const utxoItem of utxoDataList) {
+    const sid = utxoItem.sid;
+
+    const memoDataResult = await Network.getOwnerMemo(sid);
+
+    const { response: myMemoData, error: memoError } = memoDataResult;
+
+    if (memoError) {
+      throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
+    }
+
+    let ownerMemo;
+    let assetRecord;
+
+    try {
+      ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
+
+      assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+    } catch (error) {
+      throw new Error(
+        `Could not get decode memo data or get assetRecord", Error - ${(error as Error).message}`,
+      );
+    }
+
+    const seed = generateSeedString();
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
+
+    try {
+      transactionBuilder = transactionBuilder.add_operation_bar_to_abar(
+        seed,
+        walletInfo.keypair,
+        axfrPublicKey,
+        BigInt(sid),
+        assetRecord,
+        ownerMemo?.clone(),
+      );
+    } catch (error) {
+      throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
+    }
   }
 
   let feeInputs;
 
   try {
-    feeInputs = await getFeeInputs(walletInfo, sid, true);
+    feeInputs = await getFeeInputs(walletInfo, sids, true);
   } catch (error) {
     throw new Error(
       `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
@@ -579,7 +585,7 @@ export const barToAbar = async (
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
-  return { transactionBuilder, barToAbarData, sid: `${sid}` };
+  return { transactionBuilder, barToAbarData, sids };
 };
 
 export const abarToBar = async (
@@ -917,6 +923,10 @@ export const getAbarBalance = async (
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const getOwnedAbarsResponse = await Network.getOwnedAbars(givenCommitment);
+  console.log(
+    `🚀 ~ file: tripleMasking.ts ~ line 926 ~ getOwnedAbars ~ getOwnedAbarsResponse for commitment ${givenCommitment}`,
+    getOwnedAbarsResponse,
+  );
   const { response: ownedAbarsResponse, error } = getOwnedAbarsResponse;
 
   if (error) {

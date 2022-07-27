@@ -71,9 +71,14 @@ const myAbarAnonKeys = {
 };
 
 const myGivenCommitmentsList = [
-  'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5', // 6
-  '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC', // 5
-  '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+  // 'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5', // 6
+  // '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC', // 5
+  // '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+  // 'FeKLHRpfREkG5XzLLPKzwPjWTJazJe7b1jhkpbv5NomA',
+
+  'GD1q5AZX7kwgeMM88x5MTYy2Ek2vi1bbt4ep6oSdeg6a',
+  'EU6sbUEKBpoMwxdx1D1vE8GDgVh6ccQ6Dv4y1TZ2Nwg3',
+  '4zRUTuWqq3RcmXpcPxiM5GYkBnf8g6M6jisenJEJniKr',
 ];
 
 const getUnspentAbars = async () => {
@@ -86,6 +91,41 @@ const getUnspentAbars = async () => {
     '🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars',
     JSON.stringify(unspentAbars, null, 2),
   );
+};
+
+const validateUnspent = async () => {
+  const anonKeys = { ...myAbarAnonKeys };
+
+  // const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
+
+  const givenCommitmentsList = myGivenCommitmentsList;
+
+  for (const givenCommitment of givenCommitmentsList) {
+    console.log(`processing ${givenCommitment}`);
+    const axfrSecretKey = anonKeys.axfrSpendKey;
+    const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
+      JSON.stringify(ownedAbarsResponse, null, 2),
+    );
+
+    const [ownedAbarItem] = ownedAbarsResponse;
+
+    const { abarData } = ownedAbarItem;
+
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
+    console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+
+    const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent',
+      isNullifierHashSpent,
+    );
+  }
 };
 
 const getAbarBalance = async () => {
@@ -104,7 +144,7 @@ const getAtxoSendList = async () => {
 
   const assetCode = await Asset.getFraAssetCode();
 
-  const amount = '19';
+  const amount = '26';
   const asset = await Asset.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
 
@@ -120,27 +160,6 @@ const getAtxoSendList = async () => {
 
 const testIt = async () => {
   const findoraWasm = await getLedger();
-
-  function isCoinBase(fraAddress: string) {
-    console.log(`we are going to call leger with ${fraAddress}`);
-    // return false;
-
-    const addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
-
-    return false;
-
-    // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
-    //   addressInBase64,
-    // );
-  }
-
-  const aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
-  const aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
-  const aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
-
-  const result = isCoinBase(aaa1);
-
-  console.log('result', result);
 };
 
 const getAnonKeys = async () => {
@@ -150,6 +169,7 @@ const getAnonKeys = async () => {
 };
 
 // getAnonKeys(); // +
-//getAbarBalance();
-getAtxoSendList();
+// getAbarBalance();
+//getAtxoSendList();
 // getUnspentAbars();
+validateUnspent();

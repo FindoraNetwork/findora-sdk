@@ -224,7 +224,7 @@ export const buildTransferOperationWithFee = async (
 // used in triple masking
 export const getFeeInputs = async (
   walletInfo: WalletKeypar,
-  excludeSid: number,
+  excludeSids: number[],
   isBarToAbar: boolean,
 ): Promise<FeeInputs> => {
   const ledger = await getLedger();
@@ -237,7 +237,8 @@ export const getFeeInputs = async (
     throw new Error('No sids were fetched');
   }
 
-  const filteredSids = sids.filter(sid => sid !== excludeSid);
+  const filteredSids = sids.filter(sid => !excludeSids.includes(sid));
+  //const filteredSids = sids.filter(sid => sid !== excludeSid);
 
   const minimalFee = isBarToAbar ? await AssetApi.getBarToAbarMinimalFee() : await AssetApi.getMinimalFee();
 

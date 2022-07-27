@@ -87,7 +87,8 @@ declare namespace FindoraWallet {
   export interface BarToAbarResult<T> {
     transactionBuilder: T;
     barToAbarData: BarToAbarData;
-    sid: string;
+    sids: number[];
+    // sid: string;
   }
 
   export interface AnonKeysResponse<T> {

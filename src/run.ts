@@ -1236,14 +1236,13 @@ const barToAbar = async () => {
   const sortedSids = sids.sort((a, b) => b - a);
   console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
-  const [sid] = sortedSids;
+  const [sidOne, sidTwo, sidThree] = sortedSids;
 
   // if (!sid) {
   //   throw new Error('sid is empty. send more transfers to this address!');
   // }
 
   // return;
-  // const sid = 2; //
 
   const anonKeys = { ...myAbarAnonKeys };
 
@@ -1252,11 +1251,11 @@ const barToAbar = async () => {
   const {
     transactionBuilder,
     barToAbarData,
-    sid: usedSid,
-  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey);
+    sids: usedSids,
+  } = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-  console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSid', usedSid);
+  console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSids', usedSids.join(','));
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
@@ -1385,7 +1384,7 @@ const getFee = async () => {
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
 
-  const feeInputsPayload = await getFeeInputs(walletInfo, 11, true);
+  const feeInputsPayload = await getFeeInputs(walletInfo, [11], true);
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
@@ -1622,10 +1621,10 @@ async function approveToken() {
 // approveToken();
 
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
-//barToAbar(); // ++
+barToAbar(); // ++
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
@@ -1648,7 +1647,7 @@ getFraBalance();
 // getTransactionStatus();
 // getBlockDetails();
 // delegateFraTransactionSubmit();
-// delegateFraTransactionAndClaimRewards();
+// delegateFraTransactionAiindClaimRewards();
 // unstakeFraTransactionSubmit();
 // sendEvmToAccount();
 // ethProtocol();

@@ -177,11 +177,11 @@ export const barToAbar = async (
   const {
     transactionBuilder,
     barToAbarData,
-    sid: usedSid,
-  } = await TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey);
+    sids: usedSids,
+  } = await TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-  console.log('🚀 ~ usedSid', usedSid);
+  console.log('🚀 ~ usedSids', usedSids.join(','));
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
