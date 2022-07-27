@@ -1,7 +1,9 @@
 import * as bech32ToBuffer from 'bech32-buffer';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'ethereum-abi-types-generator';
+import ethereumjsAbi from 'ethereumjs-abi';
 import base64 from 'js-base64';
+import Web3 from 'web3';
 
 import { Network } from '../../api';
 import { toWei } from '../../services/bigNumber';
@@ -23,6 +25,17 @@ import {
 export const fraAddressToHashAddress = (address: string) => {
   const result = bech32ToBuffer.decode(address).data;
   return '0x' + Buffer.from(result).toString('hex');
+};
+
+export const hashAddressTofraAddress = (addresss: string) => {
+  const tokenAddress = ethereumjsAbi.rawEncode(
+    ['address', 'address'],
+    ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss],
+  );
+
+  const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
+
+  return Buffer.from(Web3.utils.hexToBytes(tokenAddressHex)).toString('base64');
 };
 
 export const fraToBar = async (

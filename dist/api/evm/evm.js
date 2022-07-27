@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -58,28 +62,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
+var ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
 var js_base64_1 = __importDefault(require("js-base64"));
+var web3_1 = __importDefault(require("web3"));
 var api_1 = require("../../api");
 var bigNumber_1 = require("../../services/bigNumber");
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
-var web3_1 = require("./web3");
+var web3_2 = require("./web3");
 var fraAddressToHashAddress = function (address) {
     var result = bech32ToBuffer.decode(address).data;
     return '0x' + Buffer.from(result).toString('hex');
 };
 exports.fraAddressToHashAddress = fraAddressToHashAddress;
+var hashAddressTofraAddress = function (addresss) {
+    var tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
+    var tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
+    return Buffer.from(web3_1.default.utils.hexToBytes(tokenAddressHex)).toString('base64');
+};
+exports.hashAddressTofraAddress = hashAddressTofraAddress;
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
-                contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
                 convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
                 return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
@@ -124,9 +136,9 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
         switch (_a.label) {
             case 0:
                 console.table([tokenAddress, deckAddress, price]);
-                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
-                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
-                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, price, 'toWei')];
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, price, 'toWei')];
             case 1:
                 amount = _a.sent();
                 return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
@@ -168,10 +180,10 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
-                contract = (0, web3_1.getSimBridgeContract)(web3, bridgeAddress);
-                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
-                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, tokenAmount, 'toWei')];
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, tokenAmount, 'toWei')];
             case 1:
                 bridgeAmount = _a.sent();
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
@@ -216,8 +228,8 @@ var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                web3 = (0, web3_1.getWeb3)(web3WalletInfo.rpcUrl);
-                erc20Contract = (0, web3_1.getErc20Contract)(web3, tokenAddress);
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
                 contractData = erc20Contract.methods.balanceOf(account).encodeABI();
                 txParams = {
                     from: web3WalletInfo.account,
@@ -229,7 +241,7 @@ var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { 
                 callResultHex = _a.sent();
                 balance = web3.utils.hexToNumberString(callResultHex);
                 if (!decimals) return [3 /*break*/, 3];
-                return [4 /*yield*/, (0, web3_1.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, balance, 'formWei')];
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, balance, 'formWei')];
             case 2:
                 balance = _a.sent();
                 _a.label = 3;
@@ -323,7 +335,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 5:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Get nonce error \"" + ethAddress + "\". Error - " + e.message);
+                throw new Error("Get nonce error \"".concat(ethAddress, "\". Error - ").concat(e.message));
             case 6:
                 result = '';
                 try {
@@ -331,7 +343,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Evm to Account wasm error\". Error - " + e.message);
+                    throw new Error("Evm to Account wasm error\". Error - ".concat(e.message));
                 }
                 _a.label = 7;
             case 7:
@@ -346,7 +358,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 9:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Evm to Account submit error\". Error - " + e.message);
+                throw new Error("Evm to Account submit error\". Error - ".concat(e.message));
             case 10: return [2 /*return*/];
         }
     });
