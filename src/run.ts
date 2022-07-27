@@ -1618,7 +1618,7 @@ async function approveToken() {
 
   // console.log(result1);
 
-  const addr = Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+  const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
   console.log(addr);
 }
 

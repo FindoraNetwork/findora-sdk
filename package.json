@@ -144,6 +144,7 @@
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "truffle-hdwallet-provider": "^1.0.17",
+    "url-safe-base64": "^1.2.0",
     "util": "^0.12.4",
     "web3": "^1.7.4",
     "web3-eth-contract": "^1.7.4"

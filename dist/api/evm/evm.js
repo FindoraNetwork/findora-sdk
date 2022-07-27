@@ -79,14 +79,19 @@ var fraAddressToHashAddress = function (address) {
     return '0x' + Buffer.from(result).toString('hex');
 };
 exports.fraAddressToHashAddress = fraAddressToHashAddress;
-var hashAddressTofraAddress = function (addresss) {
-    var tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
-    var tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
-    return Buffer.from(web3_1.default.utils.hexToBytes(tokenAddressHex))
-        .toString('base64')
-        .replace(/\+/g, '-')
-        .replace(/\//g, '_');
-};
+var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tokenAddress, tokenAddressHex;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
+                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
+                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+        }
+    });
+}); };
 exports.hashAddressTofraAddress = hashAddressTofraAddress;
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;

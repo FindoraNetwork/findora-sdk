@@ -1656,9 +1656,13 @@ function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
         var addr;
         return __generator(this, function (_a) {
-            addr = api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
-            console.log(addr);
-            return [2 /*return*/];
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5')];
+                case 1:
+                    addr = _a.sent();
+                    console.log(addr);
+                    return [2 /*return*/];
+            }
         });
     });
 }
