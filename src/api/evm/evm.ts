@@ -35,7 +35,10 @@ export const hashAddressTofraAddress = (addresss: string) => {
 
   const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
 
-  return Buffer.from(Web3.utils.hexToBytes(tokenAddressHex)).toString('base64');
+  return Buffer.from(Web3.utils.hexToBytes(tokenAddressHex))
+    .toString('base64')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
 };
 
 export const fraToBar = async (

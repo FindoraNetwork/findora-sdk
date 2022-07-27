@@ -1654,36 +1654,17 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
-        var webLinkedInfo, result, result1;
+        var addr;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    webLinkedInfo = {
-                        privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
-                        rpcUrl: 'https://dev-qa02.dev.findora.org:8545',
-                        chainId: 1111,
-                        account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
-                    };
-                    return [4 /*yield*/, api_1.Evm.approveToken('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
-                        '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
-                        '100', webLinkedInfo)];
-                case 1:
-                    result = _a.sent();
-                    console.log(result.transactionHash);
-                    return [4 /*yield*/, api_1.Evm.frc20ToBar('0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
-                        'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v', '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
-                        '100', webLinkedInfo)];
-                case 2:
-                    result1 = _a.sent();
-                    console.log(result1.transactionHash);
-                    return [2 /*return*/];
-            }
+            addr = api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+            console.log(addr);
+            return [2 /*return*/];
         });
     });
 }
-// approveToken();
+approveToken();
 // testIt();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys(); // +
 // createTestBars();
 //barToAbar(); // ++

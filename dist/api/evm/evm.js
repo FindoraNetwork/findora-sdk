@@ -82,7 +82,10 @@ exports.fraAddressToHashAddress = fraAddressToHashAddress;
 var hashAddressTofraAddress = function (addresss) {
     var tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
     var tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
-    return Buffer.from(web3_1.default.utils.hexToBytes(tokenAddressHex)).toString('base64');
+    return Buffer.from(web3_1.default.utils.hexToBytes(tokenAddressHex))
+        .toString('base64')
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_');
 };
 exports.hashAddressTofraAddress = hashAddressTofraAddress;
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
