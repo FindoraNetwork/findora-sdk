@@ -1,7 +1,10 @@
 import * as bech32ToBuffer from 'bech32-buffer';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'ethereum-abi-types-generator';
+import ethereumjsAbi from 'ethereumjs-abi';
 import base64 from 'js-base64';
+import * as UrlSafeBase64 from 'url-safe-base64';
+import Web3 from 'web3';
 
 import { Network } from '../../api';
 import { toWei } from '../../services/bigNumber';
@@ -23,6 +26,19 @@ import {
 export const fraAddressToHashAddress = (address: string) => {
   const result = bech32ToBuffer.decode(address).data;
   return '0x' + Buffer.from(result).toString('hex');
+};
+
+export const hashAddressTofraAddress = async (addresss: string) => {
+  const ledger = await getLedger();
+
+  const tokenAddress = ethereumjsAbi.rawEncode(
+    ['address', 'address'],
+    ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss],
+  );
+
+  const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
+
+  return ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(tokenAddressHex));
 };
 
 export const fraToBar = async (
@@ -268,6 +284,7 @@ export const sendEvmToAccount = async (
   ethAddress: string,
 ): Promise<SubmitEvmTxResult> => {
   const ledger = await getLedger();
+
   const accountPublickey = ledger.public_key_from_bech32(fraAddress);
   const asset = await AssetApi.getAssetDetails(ledger.fra_get_asset_code());
   const decimals = asset.assetRules.decimals;

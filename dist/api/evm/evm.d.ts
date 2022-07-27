@@ -4,6 +4,7 @@ import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
 import { IWebLinkedInfo } from './web3';
 export declare const fraAddressToHashAddress: (address: string) => string;
+export declare const hashAddressTofraAddress: (addresss: string) => Promise<string>;
 export declare const fraToBar: (bridgeAddress: string, recipientAddress: string, amount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare const approveToken: (tokenAddress: string, deckAddress: string, price: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
 export declare const frc20ToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;

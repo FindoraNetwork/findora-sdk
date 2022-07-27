@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -67,10 +71,10 @@ var msToTime = function (s) {
     sTime = (sTime - secs) / 60;
     var mins = sTime % 60;
     var hrs = (sTime - mins) / 60;
-    var formattedHours = hrs > 0 ? hrs + "h " : '';
-    var formattedMinutes = mins > 0 ? mins + "m " : '';
-    var formattedSeconds = secs > 0 ? secs + "." + ms + "s" : ms + "ms";
-    var result = "" + formattedHours + formattedMinutes + formattedSeconds;
+    var formattedHours = hrs > 0 ? "".concat(hrs, "h ") : '';
+    var formattedMinutes = mins > 0 ? "".concat(mins, "m ") : '';
+    var formattedSeconds = secs > 0 ? "".concat(secs, ".").concat(ms, "s") : "".concat(ms, "ms");
+    var result = "".concat(formattedHours).concat(formattedMinutes).concat(formattedSeconds);
     return result;
 };
 exports.msToTime = msToTime;
@@ -79,13 +83,13 @@ var timeLog = function (label, data) {
     var extraData = typeof data === 'object' ? JSON.stringify(data, null, 2) : data === false ? '' : data;
     var sinceStart = currentTime - start;
     var sinceLastOperation = currentTime - lastOperation;
-    var formattedLabel = label ? label + " " : '';
-    var lastLog = data === false ? '' : "took " + (0, exports.msToTime)(sinceLastOperation) + " ";
-    var totalTime = "-> Total run time " + (0, exports.msToTime)(sinceStart);
-    var formattedExtra = extraData ? "with data - " + extraData + " " : '';
-    var formattedTestName = currentTestName ? "Test \"" + currentTestName + "\" -> " : '';
+    var formattedLabel = label ? "".concat(label, " ") : '';
+    var lastLog = data === false ? '' : "took ".concat((0, exports.msToTime)(sinceLastOperation), " ");
+    var totalTime = "-> Total run time ".concat((0, exports.msToTime)(sinceStart));
+    var formattedExtra = extraData ? "with data - ".concat(extraData, " ") : '';
+    var formattedTestName = currentTestName ? "Test \"".concat(currentTestName, "\" -> ") : '';
     logsCount += 1;
-    var messageToLog = logsCount + ". " + formattedTestName + formattedLabel + formattedExtra + lastLog + totalTime;
+    var messageToLog = "".concat(logsCount, ". ").concat(formattedTestName).concat(formattedLabel).concat(formattedExtra).concat(lastLog).concat(totalTime);
     testLogs.push(messageToLog);
     lastOperation = currentTime;
 };
@@ -100,7 +104,7 @@ var setCurrentTestName = function (testName) {
 };
 exports.setCurrentTestName = setCurrentTestName;
 var afterEachLog = function () {
-    var msg = "Test \"" + currentTestName + "\" is finished";
+    var msg = "Test \"".concat(currentTestName, "\" is finished");
     (0, exports.setCurrentTestName)('');
     (0, exports.timeLog)(msg, false);
 };

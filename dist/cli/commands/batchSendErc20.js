@@ -57,7 +57,7 @@ var web3_1 = __importDefault(require("web3"));
 var testHelpers_1 = require("../../evm/testHelpers");
 var utils_1 = require("../../services/utils");
 var envConfigFile = "../../../.env_erc_distribution";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
 var networkId;
@@ -68,7 +68,7 @@ var isCsvValid = function (parsedListOfRecievers) {
         var isAddressPresented = Object.keys(currentReciever).includes('tokenReceiveAddress');
         var isAmountPresented = Object.keys(currentReciever).includes('tokenAllocated');
         if (!isAddressPresented || !isAmountPresented) {
-            throw Error("ERROR - The data row must have both \"tokenReceiveAddress\" and \"tokenAllocated\" fields " + JSON.stringify(currentReciever) + " ");
+            throw Error("ERROR - The data row must have both \"tokenReceiveAddress\" and \"tokenAllocated\" fields ".concat(JSON.stringify(currentReciever), " "));
         }
     }
     return true;
@@ -89,7 +89,7 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
         switch (_a.label) {
             case 0:
                 dateStamp = (0, utils_1.now)();
-                resultFilePath = "batchSendLog_" + dateStamp + ".txt";
+                resultFilePath = "batchSendLog_".concat(dateStamp, ".txt");
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
@@ -104,7 +104,7 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                throw new Error("can not write result log for \"" + resultFilePath + "\", \"" + error_1.message + "\"");
+                throw new Error("can not write result log for \"".concat(resultFilePath, "\", \"").concat(error_1.message, "\""));
             case 4: return [2 /*return*/];
         }
     });
@@ -180,7 +180,7 @@ var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, v
                     isCsvValid(parsedListOfRecievers);
                 }
                 catch (err) {
-                    throw new Error("ERROR: CSV is not valid. Details: " + err.message);
+                    throw new Error("ERROR: CSV is not valid. Details: ".concat(err.message));
                 }
                 receiversList = getRecieversList(parsedListOfRecievers);
                 i = 0;
@@ -191,7 +191,7 @@ var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, v
                 _b.label = 10;
             case 10:
                 _b.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, sendTxToAccount(senderAccount, recieverInfo.address, "" + recieverInfo.numbers, web3)];
+                return [4 /*yield*/, sendTxToAccount(senderAccount, recieverInfo.address, "".concat(recieverInfo.numbers), web3)];
             case 11:
                 _a = _b.sent(), txHash = _a.txHash, txReceipt = _a.txReceipt;
                 sendInfo.push({
@@ -199,11 +199,11 @@ var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, v
                     recieverInfo: __assign({}, recieverInfo),
                     txReceipt: txReceipt,
                 });
-                (0, utils_1.log)(i + 1 + ": Tx hash is \"" + txHash + "\"");
+                (0, utils_1.log)("".concat(i + 1, ": Tx hash is \"").concat(txHash, "\""));
                 return [3 /*break*/, 13];
             case 12:
                 error_3 = _b.sent();
-                errorMessage = i + 1 + ": !! ERROR!! - could not send a transaction to " + recieverInfo.address + ". Error: - " + error_3.message + ". Skipping....";
+                errorMessage = "".concat(i + 1, ": !! ERROR!! - could not send a transaction to ").concat(recieverInfo.address, ". Error: - ").concat(error_3.message, ". Skipping....");
                 errorsInfo.push(errorMessage);
                 (0, utils_1.log)(errorMessage);
                 return [3 /*break*/, 13];

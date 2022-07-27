@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -115,7 +119,7 @@ var sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk_1.default.init(sdkEnv);
-console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
+console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -736,7 +740,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 4:
                 console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
+                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
                 _d.label = 5;
             case 5:
                 _d.trys.push([5, 7, , 8]);
@@ -840,7 +844,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -963,7 +967,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1044,7 +1048,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
                 if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatusClaim);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatusClaim);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1121,7 +1125,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleSend + ". Response was: ", transactionStatusSend);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleSend, ". Response was: "), transactionStatusSend);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1178,7 +1182,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
                 if (!txnSIDDelegate) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleDelegate + ". Response was: ", transactionStatusDelegate);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleDelegate, ". Response was: "), transactionStatusDelegate);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1284,7 +1288,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
             case 1:
                 result = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
+                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ ".concat(methodName, " ~ result"), result);
                 return [2 /*return*/];
         }
     });
@@ -1329,7 +1333,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 2)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(5, 10);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "".concat(amount), assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -1535,7 +1539,7 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
             case 7:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 8:
                 _c.sent();
@@ -1625,7 +1629,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
     function isCoinBase(fraAddress) {
-        console.log("we are going to call leger with " + fraAddress);
+        console.log("we are going to call leger with ".concat(fraAddress));
         // return false;
         var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
         return false;
@@ -1650,34 +1654,19 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
-        var webLinkedInfo, result, result1;
+        var addr;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    webLinkedInfo = {
-                        privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
-                        rpcUrl: 'https://dev-qa02.dev.findora.org:8545',
-                        chainId: 1111,
-                        account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
-                    };
-                    return [4 /*yield*/, api_1.Evm.approveToken('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
-                        '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
-                        '100', webLinkedInfo)];
+                case 0: return [4 /*yield*/, api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5')];
                 case 1:
-                    result = _a.sent();
-                    console.log(result.transactionHash);
-                    return [4 /*yield*/, api_1.Evm.frc20ToBar('0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
-                        'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v', '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
-                        '100', webLinkedInfo)];
-                case 2:
-                    result1 = _a.sent();
-                    console.log(result1.transactionHash);
+                    addr = _a.sent();
+                    console.log(addr);
                     return [2 /*return*/];
             }
         });
     });
 }
-// approveToken();
+approveToken();
 // testIt();
 // getFraBalance();
 // getAnonKeys(); // +
