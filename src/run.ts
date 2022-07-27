@@ -1252,7 +1252,8 @@ const barToAbar = async () => {
     transactionBuilder,
     barToAbarData,
     sids: usedSids,
-  } = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
+  } = await TripleMasking.barToAbar(walletInfo, [sidOne], anonKeys.axfrPublicKey);
+  //} = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSids', usedSids.join(','));
@@ -1265,6 +1266,9 @@ const barToAbar = async () => {
 
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const submitResult = await Network.getTransactionDetails(resultHandle);
+  console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 

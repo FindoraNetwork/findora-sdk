@@ -369,6 +369,7 @@ export const getTransactionDetails = async (
     hash: `0x${hash}`,
   };
   const url = `${getExplorerApiRoute()}/tx`;
+  console.log('🚀 ~ file: network.ts ~ line 372 ~ url', url);
 
   const dataResult = await apiGet(url, { ...config, params });
 

@@ -100,8 +100,21 @@ const validateUnspent = async () => {
 
   const givenCommitmentsList = myGivenCommitmentsList;
 
+  const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
+    JSON.stringify(spentAbars, null, 2),
+  );
+
   for (const givenCommitment of givenCommitmentsList) {
     console.log(`processing ${givenCommitment}`);
+
+    // const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
+    // console.log(
+    //   '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
+    //   JSON.stringify(spentAbars, null, 2),
+    // );
+
     const axfrSecretKey = anonKeys.axfrSpendKey;
     const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
@@ -117,6 +130,7 @@ const validateUnspent = async () => {
     const { atxoSid, ownedAbar } = abarData;
 
     const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
+
     console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
 
     const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
@@ -159,7 +173,10 @@ const getAtxoSendList = async () => {
 };
 
 const testIt = async () => {
-  const findoraWasm = await getLedger();
+  const txHash = 'dac392d9cd93d85d768f6c6784862d747fdeffd0d52e1295bde2c3dc10242225';
+
+  const result = await Network.getTransactionDetails(txHash);
+  console.log('🚀 ~ file: run-balance.ts ~ line 183 ~ getAnonKeys ~ result', result);
 };
 
 const getAnonKeys = async () => {
@@ -172,4 +189,5 @@ const getAnonKeys = async () => {
 // getAbarBalance();
 //getAtxoSendList();
 // getUnspentAbars();
-validateUnspent();
+// validateUnspent();
+testIt();
