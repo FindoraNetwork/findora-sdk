@@ -481,8 +481,6 @@ export const barToAbar = async (
   const ledger = await getLedger();
   let transactionBuilder = await Builder.getTransactionBuilder();
 
-  let item;
-
   let utxoDataList: AddUtxoItem[] = [];
 
   let axfrPublicKey;
@@ -490,13 +488,11 @@ export const barToAbar = async (
   try {
     axfrPublicKey = await getAnonPubKeyFromString(receiverAxfrPublicKey);
   } catch (error) {
-    throw new Error(`Could not convert AXfrPublicKey", Error - ${(error as Error).message}`);
+    throw new Error(`Could not convert AXfrPublicKey", Error - ${error as Error}`);
   }
 
   try {
     utxoDataList = await addUtxo(walletInfo, sids);
-    const [utxoItem] = utxoDataList;
-    item = utxoItem;
   } catch (error) {
     throw new Error(`could not fetch utxo for sids ${sids.join(',')}`);
   }
@@ -509,7 +505,7 @@ export const barToAbar = async (
     const { response: myMemoData, error: memoError } = memoDataResult;
 
     if (memoError) {
-      throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
+      throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError}`);
     }
 
     let ownerMemo;
@@ -518,11 +514,9 @@ export const barToAbar = async (
     try {
       ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
 
-      assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+      assetRecord = ledger.ClientAssetRecord.from_json(utxoItem.utxo);
     } catch (error) {
-      throw new Error(
-        `Could not get decode memo data or get assetRecord", Error - ${(error as Error).message}`,
-      );
+      throw new Error(`Could not get decode memo data or get assetRecord", Error - ${error as Error}`);
     }
 
     const seed = generateSeedString();
@@ -538,7 +532,7 @@ export const barToAbar = async (
         ownerMemo?.clone(),
       );
     } catch (error) {
-      throw new Error(`Could not add bar to abar operation", Error - ${(error as Error).message}`);
+      throw new Error(`Could not add bar to abar operation", Error - ${error as Error}`);
     }
   }
 
@@ -547,9 +541,7 @@ export const barToAbar = async (
   try {
     feeInputs = await getFeeInputs(walletInfo, sids, true);
   } catch (error) {
-    throw new Error(
-      `Could not get fee inputs for bar to abar operation", Error - ${(error as Error).message}`,
-    );
+    throw new Error(`Could not get fee inputs for bar to abar operation", Error - ${error as Error}`);
   }
   console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
 
@@ -557,7 +549,7 @@ export const barToAbar = async (
     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
   } catch (error) {
     console.log('Full error', error);
-    throw new Error(`Could not add fee for bar to abar operation", Error - ${(error as Error).message}`);
+    throw new Error(`Could not add fee for bar to abar operation", Error - ${error as Error}`);
   }
 
   let commitments: { commitments: string[] };
@@ -566,7 +558,7 @@ export const barToAbar = async (
     commitments = transactionBuilder?.get_commitments();
     console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
   } catch (err) {
-    throw new Error(`could not get a list of commitments strings "${(err as Error).message}" `);
+    throw new Error(`could not get a list of commitments strings "${err as Error}" `);
   }
 
   if (!commitments?.commitments?.length) {
@@ -582,7 +574,7 @@ export const barToAbar = async (
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
   } catch (err) {
-    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+    throw new Error(`could not build and sign txn "${err as Error}"`);
   }
 
   return { transactionBuilder, barToAbarData, sids };
@@ -613,13 +605,13 @@ export const abarToBar = async (
     );
   } catch (error) {
     console.log('Error adding Abar to bar', error);
-    throw new Error(`Could not add abar to bar operation", Error - ${(error as Error).message}`);
+    throw new Error(`Could not add abar to bar operation", Error - ${error as Error}`);
   }
 
   try {
     transactionBuilder = transactionBuilder.build();
   } catch (err) {
-    throw new Error(`could not build txn "${(err as Error).message}"`);
+    throw new Error(`could not build txn "${err as Error}"`);
   }
 
   const abarToBarData: FindoraWallet.AbarToBarData = {

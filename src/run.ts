@@ -1231,7 +1231,7 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
   const assetCode = fraCode;
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < 4; i++) {
     const amount = getRandomNumber(5, 10);
     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
 
@@ -1288,8 +1288,8 @@ const barToAbar = async () => {
     transactionBuilder,
     barToAbarData,
     sids: usedSids,
-  } = await TripleMasking.barToAbar(walletInfo, [sidOne], anonKeys.axfrPublicKey);
-  //} = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
+    // } = await TripleMasking.barToAbar(walletInfo, [sidOne], anonKeys.axfrPublicKey);
+  } = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
 
   console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSids', usedSids.join(','));
