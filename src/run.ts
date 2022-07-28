@@ -337,12 +337,12 @@ const transferFraToSingleAddress = async (amount: string) => {
 };
 
 const testTransferToYourself = async () => {
-  const amounts = ['1', '0.5', '1'];
+  // const amounts = ['1', '0.5', '0.9'];
+  const amounts = ['0.3'];
 
   for (const amount of amounts) {
     console.log(`Sending amount of ${amount} FRA`);
-    const sendResult = await transferFraToSingleAddress(amount);
-    console.log('🚀 ~ !  file: run.ts ~ line 345 ~ testTransferToYourSelf ~ sendResult', sendResult);
+    await transferFraToSingleAddress(amount);
   }
 };
 

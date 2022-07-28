@@ -445,11 +445,11 @@ var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, vo
     });
 }); };
 var testTransferToYourself = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var amounts, _i, amounts_1, amount, sendResult;
+    var amounts, _i, amounts_1, amount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                amounts = ['1', '0.5', '1'];
+                amounts = ['0.3'];
                 _i = 0, amounts_1 = amounts;
                 _a.label = 1;
             case 1:
@@ -458,8 +458,7 @@ var testTransferToYourself = function () { return __awaiter(void 0, void 0, void
                 console.log("Sending amount of " + amount + " FRA");
                 return [4 /*yield*/, transferFraToSingleAddress(amount)];
             case 2:
-                sendResult = _a.sent();
-                console.log('🚀 ~ !  file: run.ts ~ line 345 ~ testTransferToYourSelf ~ sendResult', sendResult);
+                _a.sent();
                 _a.label = 3;
             case 3:
                 _i++;
