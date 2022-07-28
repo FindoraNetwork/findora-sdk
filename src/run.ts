@@ -270,7 +270,7 @@ const createNewKeypair = async () => {
 /**
  * Send fra to a single address
  */
-const transferFraToSingleAddress = async () => {
+const transferFraToSingleAddress = async (amount: string) => {
   const pkey = PKEY_MINE;
 
   // const toPkeyMine2 = PKEY_MINE2;
@@ -296,7 +296,7 @@ const transferFraToSingleAddress = async () => {
 
   const sortedSids = sids.sort((a, b) => b - a);
 
-  console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+  console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -307,7 +307,7 @@ const transferFraToSingleAddress = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '1',
+    amount,
     assetCode,
     assetBlindRules,
   );
@@ -318,7 +318,7 @@ const transferFraToSingleAddress = async () => {
 
   await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const submitResult = await Network.getTransactionDetails(resultHandle);
+  const submitResult = await Network.getTransactionStatus(resultHandle);
   console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
 
   const sidsResultNew = await Network.getOwnedSids(walletInfo.publickey);
@@ -334,6 +334,16 @@ const transferFraToSingleAddress = async () => {
 
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
+};
+
+const testTransferToYourself = async () => {
+  const amounts = ['1', '0.5', '1'];
+
+  for (const amount of amounts) {
+    console.log(`Sending amount of ${amount} FRA`);
+    const sendResult = await transferFraToSingleAddress(amount);
+    console.log('🚀 ~ !  file: run.ts ~ line 345 ~ testTransferToYourSelf ~ sendResult', sendResult);
+  }
 };
 
 /**
@@ -1231,8 +1241,8 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
   const assetCode = fraCode;
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  for (let i = 0; i < 4; i++) {
-    const amount = getRandomNumber(5, 10);
+  for (let i = 0; i < 3; i++) {
+    const amount = getRandomNumber(5, 20);
     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
 
     const transactionBuilder = await Transaction.sendToAddress(
@@ -1298,23 +1308,34 @@ const barToAbar = async () => {
 
   console.log('send bar to abar result handle!!', resultHandle);
 
-  const [givenCommitment] = barToAbarData.commitments;
+  const givenCommitments = barToAbarData.commitments;
 
   await sleep(waitingTimeBeforeCheckTxStatus);
   await sleep(waitingTimeBeforeCheckTxStatus);
 
-  const submitResult = await Network.getTransactionDetails(resultHandle);
-  console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
-
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-
+  const submitResult = await Network.getTransactionStatus(resultHandle);
   console.log(
-    '🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse',
-    JSON.stringify(ownedAbarsResponse, null, 2),
+    '🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting',
+    JSON.stringify(submitResult, null, 2),
   );
 
-  const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
-  console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
+  for (const givenCommitment of givenCommitments) {
+    const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse',
+      JSON.stringify(ownedAbarsResponse, null, 2),
+    );
+    const balances = await TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment]);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances',
+      JSON.stringify(balances, null, 2),
+    );
+
+    const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
+    console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
+  }
 };
 
 const validateUnspent = async () => {
@@ -1683,7 +1704,7 @@ async function approveToken() {
 // getTransferBuilderOperation();
 // createNewKeypair();
 // transferFraToSingleRecepient();
-transferFraToSingleAddress();
+// transferFraToSingleAddress();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();
@@ -1697,3 +1718,4 @@ transferFraToSingleAddress();
 // ethProtocol();
 // myFunc16(); // tx list
 // getAnonTxList();
+testTransferToYourself();

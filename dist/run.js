@@ -381,7 +381,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
 /**
  * Send fra to a single address
  */
-var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, void 0, function () {
+var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, sortedSids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, submitResult, sidsResultNew, sidsNew, sortedSidsNew, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -407,13 +407,13 @@ var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, 
                     throw new Error('no sids!');
                 }
                 sortedSids = sids.sort(function (a, b) { return b - a; });
-                console.log('🚀 ~ 1file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+                console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 5:
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '1', assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, amount, assetCode, assetBlindRules)];
             case 6:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -423,7 +423,7 @@ var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 8:
                 _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionDetails(resultHandle)];
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
             case 9:
                 submitResult = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
@@ -441,6 +441,30 @@ var transferFraToSingleAddress = function () { return __awaiter(void 0, void 0, 
                 balanceNew = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
                 return [2 /*return*/];
+        }
+    });
+}); };
+var testTransferToYourself = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var amounts, _i, amounts_1, amount, sendResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                amounts = ['1', '0.5', '1'];
+                _i = 0, amounts_1 = amounts;
+                _a.label = 1;
+            case 1:
+                if (!(_i < amounts_1.length)) return [3 /*break*/, 4];
+                amount = amounts_1[_i];
+                console.log("Sending amount of " + amount + " FRA");
+                return [4 /*yield*/, transferFraToSingleAddress(amount)];
+            case 2:
+                sendResult = _a.sent();
+                console.log('🚀 ~ !  file: run.ts ~ line 345 ~ testTransferToYourSelf ~ sendResult', sendResult);
+                _a.label = 3;
+            case 3:
+                _i++;
+                return [3 /*break*/, 1];
+            case 4: return [2 /*return*/];
         }
     });
 }); };
@@ -1359,8 +1383,8 @@ var createTestBars = function (senderOne) {
                     i = 0;
                     _a.label = 4;
                 case 4:
-                    if (!(i < 2)) return [3 /*break*/, 9];
-                    amount = (0, utils_1.getRandomNumber)(5, 10);
+                    if (!(i < 3)) return [3 /*break*/, 9];
+                    amount = (0, utils_1.getRandomNumber)(5, 20);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
                     return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
                 case 5:
@@ -1382,7 +1406,7 @@ var createTestBars = function (senderOne) {
     });
 };
 var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sidOne, sidTwo, sidThree, anonKeys, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitment, submitResult, ownedAbarsResponse, ownedAbarsSaveResult;
+    var password, pkey, walletInfo, sidsResult, sids, sortedSids, sidOne, sidTwo, sidThree, anonKeys, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, submitResult, _i, givenCommitments_1, givenCommitment, ownedAbarsResponse, balances, ownedAbarsSaveResult;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -1407,36 +1431,48 @@ var barToAbar = function () { return __awaiter(void 0, void 0, void 0, function 
                 sidOne = sortedSids[0], sidTwo = sortedSids[1], sidThree = sortedSids[2];
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys', anonKeys);
-                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, [sidOne], anonKeys.axfrPublicKey)];
+                return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey)];
             case 4:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
-                //} = await TripleMasking.barToAbar(walletInfo, [sidOne, sidTwo, sidThree], anonKeys.axfrPublicKey);
                 console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
                 console.log('🚀 ~ file: run.ts ~ line 1188 ~ usedSids', usedSids.join(','));
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _b.sent();
                 console.log('send bar to abar result handle!!', resultHandle);
-                givenCommitment = barToAbarData.commitments[0];
+                givenCommitments = barToAbarData.commitments;
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 6:
                 _b.sent();
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 7:
                 _b.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionDetails(resultHandle)];
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
             case 8:
                 submitResult = _b.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+                console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', JSON.stringify(submitResult, null, 2));
+                _i = 0, givenCommitments_1 = givenCommitments;
+                _b.label = 9;
             case 9:
+                if (!(_i < givenCommitments_1.length)) return [3 /*break*/, 14];
+                givenCommitment = givenCommitments_1[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 10:
                 ownedAbarsResponse = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1216 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
+                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment])];
+            case 11:
+                balances = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
                 return [4 /*yield*/, api_1.TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse)];
-            case 10:
+            case 12:
                 ownedAbarsSaveResult = _b.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
-                return [2 /*return*/];
+                _b.label = 13;
+            case 13:
+                _i++;
+                return [3 /*break*/, 9];
+            case 14: return [2 /*return*/];
         }
     });
 }); };
@@ -1721,7 +1757,7 @@ function approveToken() {
 // getTransferBuilderOperation();
 // createNewKeypair();
 // transferFraToSingleRecepient();
-transferFraToSingleAddress();
+// transferFraToSingleAddress();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();
 // transferCustomAssetToMultipleRecepients();
@@ -1735,4 +1771,5 @@ transferFraToSingleAddress();
 // ethProtocol();
 // myFunc16(); // tx list
 // getAnonTxList();
+testTransferToYourself();
 //# sourceMappingURL=run.js.map

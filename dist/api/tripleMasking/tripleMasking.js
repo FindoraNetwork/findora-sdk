@@ -528,7 +528,7 @@ var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmoun
 };
 exports.getAbarTransferFee = getAbarTransferFee;
 var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, transactionBuilder, item, utxoDataList, axfrPublicKey, error_8, utxoItem, error_9, _i, utxoDataList_1, utxoItem, sid, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, seed, feeInputs, error_10, commitments, barToAbarData;
+    var ledger, transactionBuilder, utxoDataList, axfrPublicKey, error_8, error_9, _i, utxoDataList_1, utxoItem, sid, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, seed, feeInputs, error_10, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -548,14 +548,12 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 return [3 /*break*/, 6];
             case 5:
                 error_8 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_8.message);
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_8);
             case 6:
                 _b.trys.push([6, 8, , 9]);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
             case 7:
                 utxoDataList = _b.sent();
-                utxoItem = utxoDataList[0];
-                item = utxoItem;
                 return [3 /*break*/, 9];
             case 8:
                 error_9 = _b.sent();
@@ -572,16 +570,16 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 memoDataResult = _b.sent();
                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError);
                 }
                 ownerMemo = void 0;
                 assetRecord = void 0;
                 try {
                     ownerMemo = myMemoData ? ledger.AxfrOwnerMemo.from_json(myMemoData) : null;
-                    assetRecord = ledger.ClientAssetRecord.from_json(item.utxo);
+                    assetRecord = ledger.ClientAssetRecord.from_json(utxoItem.utxo);
                 }
                 catch (error) {
-                    throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error.message);
+                    throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error);
                 }
                 seed = (0, utils_1.generateSeedString)();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
@@ -589,7 +587,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(seed, walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone());
                 }
                 catch (error) {
-                    throw new Error("Could not add bar to abar operation\", Error - " + error.message);
+                    throw new Error("Could not add bar to abar operation\", Error - " + error);
                 }
                 _b.label = 12;
             case 12:
@@ -603,7 +601,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 return [3 /*break*/, 16];
             case 15:
                 error_10 = _b.sent();
-                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_10.message);
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_10);
             case 16:
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
@@ -611,14 +609,14 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 }
                 catch (error) {
                     console.log('Full error', error);
-                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error.message);
+                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error);
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
                     console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
                 }
                 catch (err) {
-                    throw new Error("could not get a list of commitments strings \"" + err.message + "\" ");
+                    throw new Error("could not get a list of commitments strings \"" + err + "\" ");
                 }
                 if (!((_a = commitments === null || commitments === void 0 ? void 0 : commitments.commitments) === null || _a === void 0 ? void 0 : _a.length)) {
                     throw new Error("list of commitments strings is empty ");
@@ -632,7 +630,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
                 }
                 catch (err) {
-                    throw new Error("could not build and sign txn \"" + err.message + "\"");
+                    throw new Error("could not build and sign txn \"" + err + "\"");
                 }
                 return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sids: sids }];
         }
@@ -660,13 +658,13 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                 }
                 catch (error) {
                     console.log('Error adding Abar to bar', error);
-                    throw new Error("Could not add abar to bar operation\", Error - " + error.message);
+                    throw new Error("Could not add abar to bar operation\", Error - " + error);
                 }
                 try {
                     transactionBuilder = transactionBuilder.build();
                 }
                 catch (err) {
-                    throw new Error("could not build txn \"" + err.message + "\"");
+                    throw new Error("could not build txn \"" + err + "\"");
                 }
                 abarToBarData = {
                     anonKeysSender: anonKeysSender,
