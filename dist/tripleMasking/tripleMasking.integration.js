@@ -59,7 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
+exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.getSidsForAsset = exports.defineIssueCustomAsset = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("../api");
@@ -312,7 +312,7 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
             case 2:
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
-                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '50', ownedAbarToUseAsSource)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '50', [ownedAbarToUseAsSource])];
             case 3:
                 _a = _b.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
@@ -477,6 +477,7 @@ var defineIssueCustomAsset = function (senderOne, assetCode, derivedAssetCode) {
         }
     });
 }); };
+exports.defineIssueCustomAsset = defineIssueCustomAsset;
 /**
  * Get available SIDs for a given custom asset and FRA
  */
@@ -518,6 +519,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
         }
     });
 }); };
+exports.getSidsForAsset = getSidsForAsset;
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
@@ -550,7 +552,7 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 6:
                 balance1Old = _a.sent();
-                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code)];
+                return [4 /*yield*/, (0, exports.defineIssueCustomAsset)(senderOne, asset1Code, derivedAsset1Code)];
             case 7:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
@@ -580,14 +582,14 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
                 console.log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
                 anonKeysSender = __assign({}, AnonKeys1);
                 anonKeysReceiver = __assign({}, AnonKeys2);
-                return [4 /*yield*/, getSidsForAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(senderOne, asset1Code)];
             case 1:
                 _a = _g.sent(), _fraSids = _a[0], customAssetSids = _a[1];
                 customAssetSid = customAssetSids.sort(function (a, b) { return b - a; })[0];
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false, customAssetSid)];
             case 2:
                 givenCommitmentToTransfer = (_g.sent());
-                return [4 /*yield*/, getSidsForAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(senderOne, asset1Code)];
             case 3:
                 _b = _g.sent(), fraSids = _b[0], _customAssetSids = _b[1];
                 fraSid = fraSids.sort(function (a, b) { return b - a; })[0];
@@ -602,6 +604,7 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 5:
                 ownedAbarsResponseOne = _g.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
+                additionalOwnedAbarItems.push(ownedAbarToUseAsSource);
                 _i = 0, givenCommitmentsToPayFee_1 = givenCommitmentsToPayFee;
                 _g.label = 6;
             case 6:
@@ -616,7 +619,9 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 8:
                 _i++;
                 return [3 /*break*/, 6];
-            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '1000', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '1000', 
+                // ownedAbarToUseAsSource,
+                additionalOwnedAbarItems)];
             case 10:
                 _c = _g.sent(), anonTransferOperationBuilder = _c.anonTransferOperationBuilder, abarToAbarData = _c.abarToAbarData;
                 console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
