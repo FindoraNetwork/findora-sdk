@@ -1610,7 +1610,7 @@ const abarToAbar = async () => {
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
-    '25',
+    '15',
     // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
