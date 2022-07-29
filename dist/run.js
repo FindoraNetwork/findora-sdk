@@ -1648,8 +1648,11 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
                 return [4 /*yield*/, (0, exports.issueCustomAsset)(senderOne, asset1Code, derivedAsset1Code, '5')];
             case 5:
                 _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
+                return [4 /*yield*/, (0, exports.issueCustomAsset)(senderOne, asset1Code, derivedAsset1Code, '20')];
             case 6:
+                _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
+            case 7:
                 balance1New = _a.sent();
                 balance1ChangeF = parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
                 balance1Change = Math.floor(balance1ChangeF);

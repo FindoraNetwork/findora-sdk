@@ -1523,7 +1523,7 @@ export const createTestBarsMulti = async (
   await defineCustomAsset(senderOne, asset1Code);
   await issueCustomAsset(senderOne, asset1Code, derivedAsset1Code, '10');
   await issueCustomAsset(senderOne, asset1Code, derivedAsset1Code, '5');
-  // await issueCustomAsset(senderOne, asset1Code, derivedAsset1Code, '20');
+  await issueCustomAsset(senderOne, asset1Code, derivedAsset1Code, '20');
 
   const balance1New = await Account.getBalance(toWalletInfo, derivedAsset1Code);
   const balance1ChangeF =
