@@ -271,15 +271,13 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 fraAssetCode = ledger.fra_get_asset_code();
                 isFraTransfer = assetCode === fraAssetCode;
                 recieversInfo = {};
-                if (isFraTransfer) {
-                    recieversInfo[fraAssetCode] = [
-                        {
-                            utxoNumbers: minimalFee,
-                            toPublickey: toPublickey,
-                        },
-                    ];
-                }
-                else {
+                recieversInfo[fraAssetCode] = [
+                    {
+                        utxoNumbers: minimalFee,
+                        toPublickey: toPublickey,
+                    },
+                ];
+                if (!isFraTransfer) {
                     recieversInfo[assetCode] = [];
                 }
                 recieversList.forEach(function (reciver) {

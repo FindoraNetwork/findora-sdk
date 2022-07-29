@@ -220,14 +220,14 @@ export const sendToManyV2 = async (
 
   const recieversInfo: Fee.ReciverInfoV2 = {};
 
-  if (isFraTransfer) {
-    recieversInfo[fraAssetCode] = [
-      {
-        utxoNumbers: minimalFee,
-        toPublickey,
-      },
-    ];
-  } else {
+  recieversInfo[fraAssetCode] = [
+    {
+      utxoNumbers: minimalFee,
+      toPublickey,
+    },
+  ];
+
+  if (!isFraTransfer) {
     recieversInfo[assetCode] = [];
   }
 
