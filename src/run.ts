@@ -241,13 +241,21 @@ const getTransferBuilderOperation = async () => {
 
   const toPublickey = ledger.fra_get_dest_pubkey();
 
+  let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
   const recieversInfo = [
     {
       utxoNumbers: minimalFee,
       toPublickey,
     },
   ];
-  const trasferOperation = await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode);
+  const trasferOperation = await Fee.getTransferOperation(
+    walletInfo,
+    utxoInputsInfo,
+    recieversInfo,
+    fraCode,
+    transferOperationBuilder,
+  );
 
   console.log('trasferOperation!', trasferOperation);
 };

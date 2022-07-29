@@ -16,7 +16,7 @@ export interface ReciverInfo {
 }
 export declare const getEmptyTransferBuilder: () => Promise<TransferOperationBuilder>;
 export declare const getAssetTracingPolicies: (asset: FindoraWallet.IAsset) => Promise<import("findora-wallet-wasm/nodejs").TracingPolicies | import("findora-wallet-wasm/bundler").TracingPolicies>;
-export declare const getTransferOperation: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo, recieversInfo: ReciverInfo[], assetCode: string) => Promise<TransferOperationBuilder>;
+export declare const getTransferOperation: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo, recieversInfo: ReciverInfo[], assetCode: string, transferOp: TransferOperationBuilder) => Promise<TransferOperationBuilder>;
 export declare const getPayloadForFeeInputs: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo) => Promise<FeeInputPayloadType[]>;
 export declare const buildTransferOperationWithFee: (walletInfo: WalletKeypar, assetBlindRules?: {
     isAmountBlind?: boolean;
@@ -24,4 +24,8 @@ export declare const buildTransferOperationWithFee: (walletInfo: WalletKeypar, a
 }) => Promise<TransferOperationBuilder>;
 export declare const getFeeInputs: (walletInfo: WalletKeypar, excludeSid: number, isBarToAbar: boolean) => Promise<FeeInputs>;
 export declare const buildTransferOperation: (walletInfo: WalletKeypar, recieversInfo: ReciverInfo[], assetCode: string) => Promise<TransferOperationBuilder>;
+export interface ReciverInfoV2 {
+    [key: string]: ReciverInfo[];
+}
+export declare const buildTransferOperationV2: (walletInfo: WalletKeypar, recieversInfo: ReciverInfoV2) => Promise<TransferOperationBuilder>;
 export {};

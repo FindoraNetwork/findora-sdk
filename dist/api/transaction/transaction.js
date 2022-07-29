@@ -252,7 +252,7 @@ exports.sendToMany = sendToMany;
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, minimalFee, toPublickey, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e;
+    var ledger, asset, decimals, minimalFee, toPublickey, fraAssetCode, isFraTransfer, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -268,12 +268,20 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 return [4 /*yield*/, AssetApi.getFraPublicKey()];
             case 4:
                 toPublickey = _a.sent();
-                recieversInfo = [
-                    {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                    },
-                ];
+                fraAssetCode = ledger.fra_get_asset_code();
+                isFraTransfer = assetCode === fraAssetCode;
+                recieversInfo = {};
+                if (isFraTransfer) {
+                    recieversInfo[fraAssetCode] = [
+                        {
+                            utxoNumbers: minimalFee,
+                            toPublickey: toPublickey,
+                        },
+                    ];
+                }
+                else {
+                    recieversInfo[assetCode] = [];
+                }
                 recieversList.forEach(function (reciver) {
                     var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
                     var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
@@ -283,9 +291,9 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                         utxoNumbers: utxoNumbers,
                         assetBlindRules: assetBlindRules,
                     };
-                    recieversInfo.push(recieverInfoItem);
+                    recieversInfo[assetCode].push(recieverInfoItem);
                 });
-                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
+                return [4 /*yield*/, Fee.buildTransferOperationV2(walletInfo, recieversInfo)];
             case 5:
                 transferOperationBuilder = _a.sent();
                 try {

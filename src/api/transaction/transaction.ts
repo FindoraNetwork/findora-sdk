@@ -215,12 +215,21 @@ export const sendToManyV2 = async (
   const minimalFee = await AssetApi.getMinimalFee();
   const toPublickey = await AssetApi.getFraPublicKey();
 
-  const recieversInfo: Fee.ReciverInfo[] = [
-    {
-      utxoNumbers: minimalFee,
-      toPublickey,
-    },
-  ];
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  const recieversInfo: Fee.ReciverInfoV2 = {};
+
+  if (isFraTransfer) {
+    recieversInfo[fraAssetCode] = [
+      {
+        utxoNumbers: minimalFee,
+        toPublickey,
+      },
+    ];
+  } else {
+    recieversInfo[assetCode] = [];
+  }
 
   recieversList.forEach(reciver => {
     const { reciverWalletInfo: toWalletInfo, amount } = reciver;
@@ -233,10 +242,10 @@ export const sendToManyV2 = async (
       assetBlindRules,
     };
 
-    recieversInfo.push(recieverInfoItem);
+    recieversInfo[assetCode].push(recieverInfoItem);
   });
 
-  const transferOperationBuilder = await Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode);
+  const transferOperationBuilder = await Fee.buildTransferOperationV2(walletInfo, recieversInfo);
 
   let receivedTransferOperation;
 
