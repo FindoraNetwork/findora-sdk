@@ -294,14 +294,14 @@ export const abarToAbar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    ownedAbarToUseAsSource,
+    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -320,7 +320,7 @@ export const abarToAbar = async (
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    ownedAbarToUseAsSource,
+    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -355,13 +355,16 @@ export const prepareAnonTransferOperationBuilder = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   axfrPublicKeyReceiverString: string,
   abarAmountToTransfer: string,
-  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+
   const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
+
+  const [ownedAbarToUseAsSource, ...additionalOwnedAbars] = additionalOwnedAbarItems;
 
   const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
@@ -378,7 +381,9 @@ export const prepareAnonTransferOperationBuilder = async (
     );
   }
 
-  for (const ownedAbarItemOne of additionalOwnedAbarItems) {
+  const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+
+  for (const ownedAbarItemOne of additionalOwnedAbars) {
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
     try {
@@ -395,7 +400,6 @@ export const prepareAnonTransferOperationBuilder = async (
     }
   }
 
-  const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
   console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
@@ -455,14 +459,14 @@ export const getAbarTransferFee = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    ownedAbarToUseAsSource,
+    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -915,10 +919,10 @@ export const getAbarBalance = async (
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const getOwnedAbarsResponse = await Network.getOwnedAbars(givenCommitment);
-  console.log(
-    `🚀 ~ file: tripleMasking.ts ~ line 926 ~ getOwnedAbars ~ getOwnedAbarsResponse for commitment ${givenCommitment}`,
-    getOwnedAbarsResponse,
-  );
+  // console.log(
+  //   `🚀 ~ file: tripleMasking.ts ~ line 926 ~ getOwnedAbars ~ getOwnedAbarsResponse for commitment ${givenCommitment}`,
+  //   getOwnedAbarsResponse,
+  // );
   const { response: ownedAbarsResponse, error } = getOwnedAbarsResponse;
 
   if (error) {

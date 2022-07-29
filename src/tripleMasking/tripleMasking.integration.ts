@@ -235,7 +235,7 @@ export const abarToAbar = async (
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
     '50',
-    ownedAbarToUseAsSource,
+    [ownedAbarToUseAsSource],
   );
 
   console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
@@ -367,7 +367,11 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
 /**
  * Define and Issue a custom asset
  */
-const defineIssueCustomAsset = async (senderOne: string, assetCode: string, derivedAssetCode: string) => {
+export const defineIssueCustomAsset = async (
+  senderOne: string,
+  assetCode: string,
+  derivedAssetCode: string,
+) => {
   const pkey = senderOne;
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -389,7 +393,7 @@ const defineIssueCustomAsset = async (senderOne: string, assetCode: string, deri
 /**
  * Get available SIDs for a given custom asset and FRA
  */
-const getSidsForAsset = async (senderOne: string, assetCode: string) => {
+export const getSidsForAsset = async (senderOne: string, assetCode: string) => {
   const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
   const fraCode = await Asset.getFraAssetCode();
 
@@ -512,6 +516,8 @@ export const abarToAbarMulti = async (
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
+  additionalOwnedAbarItems.push(ownedAbarToUseAsSource);
+
   for (let givenCommitmentToPayFee of givenCommitmentsToPayFee) {
     const ownedAbarsResponseFee = await TripleMasking.getOwnedAbars(givenCommitmentToPayFee);
 
@@ -524,7 +530,7 @@ export const abarToAbarMulti = async (
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
     '1000',
-    ownedAbarToUseAsSource,
+    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
