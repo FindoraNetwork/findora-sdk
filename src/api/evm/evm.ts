@@ -233,7 +233,7 @@ export const sendAccountToEvm = async (
     isTypeBlind: false,
   };
 
-  let transactionBuilder = await Transaction.sendToAddress(
+  let transactionBuilder = await Transaction.sendToAddressV2(
     walletInfo,
     address,
     amount,

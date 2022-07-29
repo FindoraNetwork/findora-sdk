@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToMany = void 0;
+exports.getAnonTxList = exports.getTxList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -213,6 +213,121 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
 }); };
 exports.sendToMany = sendToMany;
 /**
+ * Send some asset to multiple receivers
+ *
+ * @remarks
+ * Using this function, user can transfer perform multiple transfers of the same asset to multiple receivers using different amounts
+ *
+ * @example
+ *
+ * ```ts
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ * const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+ *
+ * const assetCode = await Asset.getFraAssetCode();
+ *
+ * const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+ *
+ * const recieversInfo = [
+ *  { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+ *  { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+ * ];
+ *
+ * const transactionBuilder = await Transaction.sendToMany(
+ *  walletInfo,
+ *  recieversInfo,
+ *  assetCode,
+ *  assetBlindRules,
+ * );
+ *
+ * const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @throws `Could not create transfer operation (main)`
+ * @throws `Could not get transactionBuilder from "getTransactionBuilder"`
+ * @throws `Could not add transfer operation`
+ * @throws `Could not create transfer operation for fee`
+ * @throws `Could not add transfer operation for fee`
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, asset, decimals, minimalFee, toPublickey, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
+            case 2:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 3:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 4:
+                toPublickey = _a.sent();
+                recieversInfo = [
+                    {
+                        utxoNumbers: minimalFee,
+                        toPublickey: toPublickey,
+                    },
+                ];
+                recieversList.forEach(function (reciver) {
+                    var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
+                    var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+                    var utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                    var recieverInfoItem = {
+                        toPublickey: toPublickey,
+                        utxoNumbers: utxoNumbers,
+                        assetBlindRules: assetBlindRules,
+                    };
+                    recieversInfo.push(recieverInfoItem);
+                });
+                return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
+            case 5:
+                transferOperationBuilder = _a.sent();
+                try {
+                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not create transfer operation (main), Error: \"".concat(e.message, "\""));
+                }
+                _a.label = 6;
+            case 6:
+                _a.trys.push([6, 8, , 9]);
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
+            case 7:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 9];
+            case 8:
+                error_2 = _a.sent();
+                e = error_2;
+                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
+            case 9:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                }
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.sendToManyV2 = sendToManyV2;
+/**
  * Submits a transaction
  *
  * @remarks
@@ -341,6 +456,51 @@ var sendToAddress = function (walletInfo, address, amount, assetCode, assetBlind
     });
 }); };
 exports.sendToAddress = sendToAddress;
+/**
+ * Send some asset to an address
+ *
+ * @remarks
+ * Using this function, user can transfer some amount of given asset to another address
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await Transaction.sendToAddress(
+ *    walletInfo,
+ *    toWalletInfo.address,
+ *    '2',
+ *    assetCode,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+var sendToAddressV2 = function (walletInfo, address, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
+    var toWalletInfoLight, recieversInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
+            case 1:
+                toWalletInfoLight = _a.sent();
+                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
+                return [2 /*return*/, (0, exports.sendToManyV2)(walletInfo, recieversInfo, assetCode, assetBlindRules)];
+        }
+    });
+}); };
+exports.sendToAddressV2 = sendToAddressV2;
 var sendToPublicKey = function (walletInfo, publicKey, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
     var address;
     return __generator(this, function (_a) {

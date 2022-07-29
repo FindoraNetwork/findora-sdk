@@ -271,7 +271,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowL
                     isAmountBlind: false,
                     isTypeBlind: false,
                 };
-                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
+                return [4 /*yield*/, Transaction.sendToAddressV2(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
             case 2:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];

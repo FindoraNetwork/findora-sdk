@@ -47,6 +47,46 @@ export interface TransferReciever {
  */
 export declare const sendToMany: (walletInfo: WalletKeypar, recieversList: TransferReciever[], assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 /**
+ * Send some asset to multiple receivers
+ *
+ * @remarks
+ * Using this function, user can transfer perform multiple transfers of the same asset to multiple receivers using different amounts
+ *
+ * @example
+ *
+ * ```ts
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ * const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+ *
+ * const assetCode = await Asset.getFraAssetCode();
+ *
+ * const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+ *
+ * const recieversInfo = [
+ *  { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+ *  { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+ * ];
+ *
+ * const transactionBuilder = await Transaction.sendToMany(
+ *  walletInfo,
+ *  recieversInfo,
+ *  assetCode,
+ *  assetBlindRules,
+ * );
+ *
+ * const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @throws `Could not create transfer operation (main)`
+ * @throws `Could not get transactionBuilder from "getTransactionBuilder"`
+ * @throws `Could not add transfer operation`
+ * @throws `Could not create transfer operation for fee`
+ * @throws `Could not add transfer operation for fee`
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export declare const sendToManyV2: (walletInfo: WalletKeypar, recieversList: TransferReciever[], assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
+/**
  * Submits a transaction
  *
  * @remarks
@@ -105,6 +145,39 @@ export declare const submitAbarTransaction: (anonTransferOperationBuilder: AnonT
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 export declare const sendToAddress: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
+/**
+ * Send some asset to an address
+ *
+ * @remarks
+ * Using this function, user can transfer some amount of given asset to another address
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await Transaction.sendToAddress(
+ *    walletInfo,
+ *    toWalletInfo.address,
+ *    '2',
+ *    assetCode,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export declare const sendToAddressV2: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 export declare const sendToPublicKey: (walletInfo: WalletKeypar, publicKey: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 export declare const getTxList: (address: string, type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;
 export declare const getAnonTxList: (subjects: string[], type: 'to' | 'from', page?: number) => Promise<ProcessedTxListResponseResult>;

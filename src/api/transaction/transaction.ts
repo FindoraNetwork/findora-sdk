@@ -163,6 +163,120 @@ export const sendToMany = async (
 };
 
 /**
+ * Send some asset to multiple receivers
+ *
+ * @remarks
+ * Using this function, user can transfer perform multiple transfers of the same asset to multiple receivers using different amounts
+ *
+ * @example
+ *
+ * ```ts
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ * const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+ *
+ * const assetCode = await Asset.getFraAssetCode();
+ *
+ * const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+ *
+ * const recieversInfo = [
+ *  { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+ *  { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+ * ];
+ *
+ * const transactionBuilder = await Transaction.sendToMany(
+ *  walletInfo,
+ *  recieversInfo,
+ *  assetCode,
+ *  assetBlindRules,
+ * );
+ *
+ * const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @throws `Could not create transfer operation (main)`
+ * @throws `Could not get transactionBuilder from "getTransactionBuilder"`
+ * @throws `Could not add transfer operation`
+ * @throws `Could not create transfer operation for fee`
+ * @throws `Could not add transfer operation for fee`
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export const sendToManyV2 = async (
+  walletInfo: WalletKeypar,
+  recieversList: TransferReciever[],
+  assetCode: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  const ledger = await getLedger();
+
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const recieversInfo: Fee.ReciverInfo[] = [
+    {
+      utxoNumbers: minimalFee,
+      toPublickey,
+    },
+  ];
+
+  recieversList.forEach(reciver => {
+    const { reciverWalletInfo: toWalletInfo, amount } = reciver;
+    const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+    const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+    const recieverInfoItem = {
+      toPublickey,
+      utxoNumbers,
+      assetBlindRules,
+    };
+
+    recieversInfo.push(recieverInfoItem);
+  });
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode);
+
+  let receivedTransferOperation;
+
+  try {
+    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+  }
+
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+  return transactionBuilder;
+};
+
+/**
  * Submits a transaction
  *
  * @remarks
@@ -284,6 +398,52 @@ export const sendToAddress = async (
   const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
 
   return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+};
+
+/**
+ * Send some asset to an address
+ *
+ * @remarks
+ * Using this function, user can transfer some amount of given asset to another address
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await Transaction.sendToAddress(
+ *    walletInfo,
+ *    toWalletInfo.address,
+ *    '2',
+ *    assetCode,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export const sendToAddressV2 = async (
+  walletInfo: WalletKeypar,
+  address: string,
+  amount: string,
+  assetCode: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  const toWalletInfoLight = await getAddressPublicAndKey(address);
+
+  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+
+  return sendToManyV2(walletInfo, recieversInfo, assetCode, assetBlindRules);
 };
 
 export const sendToPublicKey = async (
