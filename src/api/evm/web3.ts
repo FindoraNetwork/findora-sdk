@@ -64,7 +64,7 @@ const calculationDecimalsAmount = async (
   const power = ten.exponentiatedBy(erc20Decimals);
 
   if (type === 'toWei') {
-    return new BigNumber(amount).times(power).toString();
+    return new BigNumber(amount).times(power).toString(10);
   }
   return new BigNumber(amount).div(power).toFormat(Number(erc20Decimals));
 };
