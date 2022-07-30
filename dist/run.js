@@ -1653,8 +1653,320 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
     });
 }); };
 exports.createTestBarsMulti = createTestBarsMulti;
-var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
+var abarToAbarFraOneFraAtxoForFee = function () { return __awaiter(void 0, void 0, void 0, function () {
     var anonKeysSender, anonKeysReceiver, pkey, walletInfo, fraCode, assetCode, derivedAssetCode, customAssetSids, cAssetSidOne, cAssetSidTwo, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fraAssetCommitmentsList, givenCommitmentsListSender, additionalOwnedAbarItems, _i, givenCommitmentsListSender_1, givenCommitment, balancesCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _b, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                anonKeysSender = __assign({}, myAbarAnonKeys);
+                anonKeysReceiver = {
+                    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                };
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 2:
+                fraCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 3:
+                assetCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(assetCode)];
+            case 4:
+                derivedAssetCode = _c.sent();
+                return [4 /*yield*/, createTestBars(pkey)];
+            case 5:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.createTestBarsMulti)(pkey, assetCode, derivedAssetCode)];
+            case 6:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, derivedAssetCode)];
+            case 7:
+                customAssetSids = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1574 ~ abarToAbar ~ customAssetSids', customAssetSids);
+                cAssetSidOne = customAssetSids[0], cAssetSidTwo = customAssetSids[1];
+                return [4 /*yield*/, barToAbar([cAssetSidOne, cAssetSidTwo])];
+            case 8:
+                customAssetCommitmentsList = _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, fraCode)];
+            case 9:
+                fraAssetSids = _c.sent();
+                fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2];
+                return [4 /*yield*/, barToAbar([fAssetSidOne])];
+            case 10:
+                fraAssetCommitmentsList = _c.sent();
+                givenCommitmentsListSender = __spreadArray([], fraAssetCommitmentsList, true);
+                additionalOwnedAbarItems = [];
+                _i = 0, givenCommitmentsListSender_1 = givenCommitmentsListSender;
+                _c.label = 11;
+            case 11:
+                if (!(_i < givenCommitmentsListSender_1.length)) return [3 /*break*/, 15];
+                givenCommitment = givenCommitmentsListSender_1[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, [givenCommitment])];
+            case 12:
+                balancesCommitment = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1617 ~ abarToAbar ~ balancesCommitment to be used', balancesCommitment);
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 13:
+                ownedAbarsResponseTwo = _c.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _c.label = 14;
+            case 14:
+                _i++;
+                return [3 /*break*/, 11];
+            case 15: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '0.5', additionalOwnedAbarItems)];
+            case 16:
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 17:
+                resultHandle = _c.sent();
+                console.log('transfer abar result handle!!', resultHandle);
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 18:
+                _c.sent();
+                console.log('now checking balances\n\n\n');
+                commitmentsMap = abarToAbarData.commitmentsMap;
+                retrivedCommitmentsListReceiver = [];
+                for (_b = 0, commitmentsMap_1 = commitmentsMap; _b < commitmentsMap_1.length; _b++) {
+                    commitmentsMapEntry = commitmentsMap_1[_b];
+                    commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAxfrPublicKey = commitmentsMapEntry.commitmentAxfrPublicKey;
+                    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+                        givenCommitmentsListSender.push(commitmentKey);
+                    }
+                    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+                        retrivedCommitmentsListReceiver.push(commitmentKey);
+                    }
+                }
+                console.log('🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedCommitmentsListReceiver', retrivedCommitmentsListReceiver);
+                console.log('🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
+            case 19:
+                balancesSender = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver)];
+            case 20:
+                balancesReceiver = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var abarToAbarFraMultipleFraAtxoForFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, anonKeysReceiver, pkey, walletInfo, fraCode, assetCode, derivedAssetCode, customAssetSids, cAssetSidOne, cAssetSidTwo, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fraAssetCommitmentsList, givenCommitmentsListSender, additionalOwnedAbarItems, _i, givenCommitmentsListSender_2, givenCommitment, balancesCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _b, commitmentsMap_2, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                anonKeysSender = __assign({}, myAbarAnonKeys);
+                anonKeysReceiver = {
+                    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                };
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 2:
+                fraCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 3:
+                assetCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(assetCode)];
+            case 4:
+                derivedAssetCode = _c.sent();
+                return [4 /*yield*/, createTestBars(pkey)];
+            case 5:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.createTestBarsMulti)(pkey, assetCode, derivedAssetCode)];
+            case 6:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, derivedAssetCode)];
+            case 7:
+                customAssetSids = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1574 ~ abarToAbar ~ customAssetSids', customAssetSids);
+                cAssetSidOne = customAssetSids[0], cAssetSidTwo = customAssetSids[1];
+                return [4 /*yield*/, barToAbar([cAssetSidOne, cAssetSidTwo])];
+            case 8:
+                customAssetCommitmentsList = _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, fraCode)];
+            case 9:
+                fraAssetSids = _c.sent();
+                fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2];
+                return [4 /*yield*/, barToAbar([fAssetSidOne, fAssetSidTwo])];
+            case 10:
+                fraAssetCommitmentsList = _c.sent();
+                givenCommitmentsListSender = __spreadArray([], fraAssetCommitmentsList, true);
+                additionalOwnedAbarItems = [];
+                _i = 0, givenCommitmentsListSender_2 = givenCommitmentsListSender;
+                _c.label = 11;
+            case 11:
+                if (!(_i < givenCommitmentsListSender_2.length)) return [3 /*break*/, 15];
+                givenCommitment = givenCommitmentsListSender_2[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, [givenCommitment])];
+            case 12:
+                balancesCommitment = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1617 ~ abarToAbar ~ balancesCommitment to be used', balancesCommitment);
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 13:
+                ownedAbarsResponseTwo = _c.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _c.label = 14;
+            case 14:
+                _i++;
+                return [3 /*break*/, 11];
+            case 15: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '0.5', additionalOwnedAbarItems)];
+            case 16:
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 17:
+                resultHandle = _c.sent();
+                console.log('transfer abar result handle!!', resultHandle);
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 18:
+                _c.sent();
+                console.log('now checking balances\n\n\n');
+                commitmentsMap = abarToAbarData.commitmentsMap;
+                retrivedCommitmentsListReceiver = [];
+                for (_b = 0, commitmentsMap_2 = commitmentsMap; _b < commitmentsMap_2.length; _b++) {
+                    commitmentsMapEntry = commitmentsMap_2[_b];
+                    commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAxfrPublicKey = commitmentsMapEntry.commitmentAxfrPublicKey;
+                    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+                        givenCommitmentsListSender.push(commitmentKey);
+                    }
+                    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+                        retrivedCommitmentsListReceiver.push(commitmentKey);
+                    }
+                }
+                console.log('🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedCommitmentsListReceiver', retrivedCommitmentsListReceiver);
+                console.log('🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
+            case 19:
+                balancesSender = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver)];
+            case 20:
+                balancesReceiver = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var abarToAbarCustomOneFraAtxoForFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, anonKeysReceiver, pkey, walletInfo, fraCode, assetCode, derivedAssetCode, customAssetSids, cAssetSidOne, cAssetSidTwo, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fraAssetCommitmentsList, givenCommitmentsListSender, additionalOwnedAbarItems, _i, givenCommitmentsListSender_3, givenCommitment, balancesCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _b, commitmentsMap_3, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                anonKeysSender = __assign({}, myAbarAnonKeys);
+                anonKeysReceiver = {
+                    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                };
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 2:
+                fraCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 3:
+                assetCode = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(assetCode)];
+            case 4:
+                derivedAssetCode = _c.sent();
+                return [4 /*yield*/, createTestBars(pkey)];
+            case 5:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.createTestBarsMulti)(pkey, assetCode, derivedAssetCode)];
+            case 6:
+                _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, derivedAssetCode)];
+            case 7:
+                customAssetSids = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1574 ~ abarToAbar ~ customAssetSids', customAssetSids);
+                cAssetSidOne = customAssetSids[0], cAssetSidTwo = customAssetSids[1];
+                return [4 /*yield*/, barToAbar([cAssetSidOne, cAssetSidTwo])];
+            case 8:
+                customAssetCommitmentsList = _c.sent();
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(pkey, fraCode)];
+            case 9:
+                fraAssetSids = _c.sent();
+                fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2];
+                return [4 /*yield*/, barToAbar([fAssetSidOne])];
+            case 10:
+                fraAssetCommitmentsList = _c.sent();
+                givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
+                additionalOwnedAbarItems = [];
+                _i = 0, givenCommitmentsListSender_3 = givenCommitmentsListSender;
+                _c.label = 11;
+            case 11:
+                if (!(_i < givenCommitmentsListSender_3.length)) return [3 /*break*/, 15];
+                givenCommitment = givenCommitmentsListSender_3[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, [givenCommitment])];
+            case 12:
+                balancesCommitment = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1617 ~ abarToAbar ~ balancesCommitment to be used', balancesCommitment);
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 13:
+                ownedAbarsResponseTwo = _c.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _c.label = 14;
+            case 14:
+                _i++;
+                return [3 /*break*/, 11];
+            case 15: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '0.5', additionalOwnedAbarItems)];
+            case 16:
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 17:
+                resultHandle = _c.sent();
+                console.log('transfer abar result handle!!', resultHandle);
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+            case 18:
+                _c.sent();
+                console.log('now checking balances\n\n\n');
+                commitmentsMap = abarToAbarData.commitmentsMap;
+                retrivedCommitmentsListReceiver = [];
+                for (_b = 0, commitmentsMap_3 = commitmentsMap; _b < commitmentsMap_3.length; _b++) {
+                    commitmentsMapEntry = commitmentsMap_3[_b];
+                    commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAxfrPublicKey = commitmentsMapEntry.commitmentAxfrPublicKey;
+                    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+                        givenCommitmentsListSender.push(commitmentKey);
+                    }
+                    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+                        retrivedCommitmentsListReceiver.push(commitmentKey);
+                    }
+                }
+                console.log('🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedCommitmentsListReceiver', retrivedCommitmentsListReceiver);
+                console.log('🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
+            case 19:
+                balancesSender = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver)];
+            case 20:
+                balancesReceiver = _c.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var abarToAbarCustomMultipleFraAtxoForFee = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, anonKeysReceiver, pkey, walletInfo, fraCode, assetCode, derivedAssetCode, customAssetSids, cAssetSidOne, cAssetSidTwo, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fraAssetCommitmentsList, givenCommitmentsListSender, additionalOwnedAbarItems, _i, givenCommitmentsListSender_4, givenCommitment, balancesCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _b, commitmentsMap_4, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver;
     return __generator(this, function (_c) {
         switch (_c.label) {
             case 0:
@@ -1700,11 +2012,11 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                 fraAssetCommitmentsList = _c.sent();
                 givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
                 additionalOwnedAbarItems = [];
-                _i = 0, givenCommitmentsListSender_1 = givenCommitmentsListSender;
+                _i = 0, givenCommitmentsListSender_4 = givenCommitmentsListSender;
                 _c.label = 11;
             case 11:
-                if (!(_i < givenCommitmentsListSender_1.length)) return [3 /*break*/, 15];
-                givenCommitment = givenCommitmentsListSender_1[_i];
+                if (!(_i < givenCommitmentsListSender_4.length)) return [3 /*break*/, 15];
+                givenCommitment = givenCommitmentsListSender_4[_i];
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, [givenCommitment])];
             case 12:
                 balancesCommitment = _c.sent();
@@ -1733,8 +2045,8 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                 console.log('now checking balances\n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
                 retrivedCommitmentsListReceiver = [];
-                for (_b = 0, commitmentsMap_1 = commitmentsMap; _b < commitmentsMap_1.length; _b++) {
-                    commitmentsMapEntry = commitmentsMap_1[_b];
+                for (_b = 0, commitmentsMap_4 = commitmentsMap; _b < commitmentsMap_4.length; _b++) {
+                    commitmentsMapEntry = commitmentsMap_4[_b];
                     commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAxfrPublicKey = commitmentsMapEntry.commitmentAxfrPublicKey;
                     if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
                         givenCommitmentsListSender.push(commitmentKey);
@@ -1862,7 +2174,7 @@ function approveToken() {
 // getUnspentAbars(); // +
 // getAbarBalance(); // +
 // getFee();
-abarToAbar(); // ++
+// abarToAbar(); // ++
 // abarToBar(); // +
 // validateUnspent(); // +
 // getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
@@ -1889,4 +2201,12 @@ abarToAbar(); // ++
 // myFunc16(); // tx list
 // getAnonTxList();
 // testTransferToYourself();
+// this one is passing
+// abarToAbarFraOneFraAtxoForFee();
+// this one has multiple fra atxo (two) and it is failing
+// abarToAbarFraMultipleFraAtxoForFee();
+// this one is also passing (it has only one fra atxo)
+// abarToAbarCustomOneFraAtxoForFee();
+// this one has multiple fra txo and it is also failing
+abarToAbarCustomMultipleFraAtxoForFee();
 //# sourceMappingURL=run.js.map
