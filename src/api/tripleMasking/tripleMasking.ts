@@ -305,7 +305,7 @@ export const abarToAbar = async (
     additionalOwnedAbarItems,
   );
 
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
+  console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   const balanceAfterSendToBN = createBigNumber(calculatedFee);
 
@@ -369,6 +369,7 @@ export const prepareAnonTransferOperationBuilder = async (
   const abarPayloadOne = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
   try {
+    // console.log('prepare anon transfer - adding input ', abarPayloadOne);
     anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
       abarPayloadOne.myOwnedAbar,
       abarPayloadOne.abarOwnerMemo,
@@ -386,6 +387,7 @@ export const prepareAnonTransferOperationBuilder = async (
   for (const ownedAbarItemOne of additionalOwnedAbars) {
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
+    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
         abarPayloadNext.myOwnedAbar,
@@ -560,7 +562,7 @@ export const barToAbar = async (
 
   try {
     commitments = transactionBuilder?.get_commitments();
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
+    // console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
   } catch (err) {
     throw new Error(`could not get a list of commitments strings "${err as Error}" `);
   }

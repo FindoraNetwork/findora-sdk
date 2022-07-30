@@ -201,8 +201,8 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
     if (window && window?.document) {
       fullPathToCacheEntry = cacheEntryName;
     }
-  } catch (error) {
-    console.log('window instance is not found. running is sdk mode. skipping');
+  } catch (_) {
+    // console.log('window instance is not found. running is sdk mode. skipping');
   }
 
   try {
@@ -295,9 +295,9 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
   const result = [];
 
   const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
-  console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
   const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-  console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
 
   let sum = BigInt(0);
 
@@ -310,7 +310,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
     //   continue;
     // }
 
-    console.log(JSON.stringify(assetItem.utxo));
+    // console.log(JSON.stringify(assetItem.utxo));
     sum = sum + _amount;
     const credit = BigInt(Number(sum) - Number(amount));
     const remainedDebt = _amount - credit;

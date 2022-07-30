@@ -206,8 +206,8 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                         fullPathToCacheEntry = cacheEntryName;
                     }
                 }
-                catch (error) {
-                    console.log('window instance is not found. running is sdk mode. skipping');
+                catch (_) {
+                    // console.log('window instance is not found. running is sdk mode. skipping');
                 }
                 _a.label = 1;
             case 1:
@@ -306,9 +306,9 @@ exports.getSendUtxoLegacy = getSendUtxoLegacy;
 var getSendUtxo = function (code, amount, utxoDataList) {
     var result = [];
     var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);
-    console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
+    // console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
     var sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-    console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
+    // console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
     var sum = BigInt(0);
     for (var _i = 0, sortedUtxoList_1 = sortedUtxoList; _i < sortedUtxoList_1.length; _i++) {
         var assetItem = sortedUtxoList_1[_i];
@@ -318,7 +318,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
         //   console.log('we got broken? sid');
         //   continue;
         // }
-        console.log(JSON.stringify(assetItem.utxo));
+        // console.log(JSON.stringify(assetItem.utxo));
         sum = sum + _amount;
         var credit = BigInt(Number(sum) - Number(amount));
         var remainedDebt = _amount - credit;

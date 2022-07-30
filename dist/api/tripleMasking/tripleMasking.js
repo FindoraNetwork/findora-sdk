@@ -378,7 +378,7 @@ additionalOwnedAbarItems) {
                     additionalOwnedAbarItems)];
                 case 1:
                     calculatedFee = _a.sent();
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 288 ~ calculatedFee', calculatedFee);
+                    console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                     isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                     if (isMoreFeeNeeded) {
@@ -440,6 +440,7 @@ additionalOwnedAbarItems) {
                 case 4:
                     abarPayloadOne = _a.sent();
                     try {
+                        // console.log('prepare anon transfer - adding input ', abarPayloadOne);
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender, abarPayloadOne.myMTLeafInfo);
                     }
                     catch (error) {
@@ -454,6 +455,7 @@ additionalOwnedAbarItems) {
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
                 case 6:
                     abarPayloadNext = _a.sent();
+                    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, aXfrSpendKeySender, abarPayloadNext.myMTLeafInfo);
                     }
@@ -626,7 +628,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
+                    // console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
                 }
                 catch (err) {
                     throw new Error("could not get a list of commitments strings \"" + err + "\" ");
