@@ -55,7 +55,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.buildTransferOperation = exports.getFeeInputs = exports.buildTransferOperationWithFee = exports.getPayloadForFeeInputs = exports.getTransferOperation = exports.getAssetTracingPolicies = exports.getEmptyTransferBuilder = void 0;
+exports.buildTransferOperationV2 = exports.buildTransferOperation = exports.getFeeInputs = exports.buildTransferOperationWithFee = exports.getPayloadForFeeInputs = exports.getTransferOperation = exports.getAssetTracingPolicies = exports.getEmptyTransferBuilder = void 0;
 var Network = __importStar(require("../api/network"));
 var AssetApi = __importStar(require("../api/sdkAsset"));
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
@@ -85,8 +85,8 @@ var getAssetTracingPolicies = function (asset) { return __awaiter(void 0, void 0
     });
 }); };
 exports.getAssetTracingPolicies = getAssetTracingPolicies;
-var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, isTraceable, tracingPolicies, e_1, isBlindIsAmount, isBlindIsType, transferOp, utxoNumbers, inputParametersList, inputAmount, inputPromise, numberToSubmit;
+var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, assetCode, transferOp) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, asset, isTraceable, tracingPolicies, e_1, isBlindIsAmount, isBlindIsType, utxoNumbers, inputParametersList, inputAmount, inputPromise, numberToSubmit;
     var _a;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -113,9 +113,6 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
             case 6:
                 isBlindIsAmount = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isAmountBlind) === true; });
                 isBlindIsType = recieversInfo.some(function (item) { var _a; return ((_a = item.assetBlindRules) === null || _a === void 0 ? void 0 : _a.isTypeBlind) === true; });
-                return [4 /*yield*/, (0, exports.getEmptyTransferBuilder)()];
-            case 7:
-                transferOp = _b.sent();
                 utxoNumbers = BigInt(0);
                 inputParametersList = utxoInputs.inputParametersList, inputAmount = utxoInputs.inputAmount;
                 inputPromise = inputParametersList.map(function (inputParameters) { return __awaiter(void 0, void 0, void 0, function () {
@@ -144,7 +141,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     });
                 }); });
                 return [4 /*yield*/, Promise.all(inputPromise)];
-            case 8:
+            case 7:
                 _b.sent();
                 recieversInfo.forEach(function (reciverInfo) {
                     var utxoNumbers = reciverInfo.utxoNumbers, toPublickey = reciverInfo.toPublickey, _a = reciverInfo.assetBlindRules, assetBlindRules = _a === void 0 ? {} : _a;
@@ -157,18 +154,18 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                         transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                 });
-                if (!(inputAmount > utxoNumbers)) return [3 /*break*/, 11];
+                if (!(inputAmount > utxoNumbers)) return [3 /*break*/, 10];
                 numberToSubmit = BigInt(Number(inputAmount) - Number(utxoNumbers));
-                if (!isTraceable) return [3 /*break*/, 10];
+                if (!isTraceable) return [3 /*break*/, 9];
                 return [4 /*yield*/, (0, exports.getAssetTracingPolicies)(asset)];
-            case 9:
+            case 8:
                 tracingPolicies = _b.sent();
                 transferOp = transferOp.add_output_with_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), tracingPolicies, assetCode, isBlindIsAmount, isBlindIsType);
-                return [3 /*break*/, 11];
-            case 10:
+                return [3 /*break*/, 10];
+            case 9:
                 transferOp = transferOp.add_output_no_tracing(numberToSubmit, ledger.get_pk_from_keypair(walletInfo.keypair), assetCode, isBlindIsAmount, isBlindIsType);
-                _b.label = 11;
-            case 11: return [2 /*return*/, transferOp];
+                _b.label = 10;
+            case 10: return [2 /*return*/, transferOp];
         }
     });
 }); };
@@ -317,12 +314,58 @@ var buildTransferOperation = function (walletInfo, recieversInfo, assetCode) { r
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
             case 3:
                 utxoInputsInfo = _a.sent();
-                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
+                return [4 /*yield*/, (0, exports.getEmptyTransferBuilder)()];
             case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, recieversInfo, assetCode, transferOperationBuilder)];
+            case 5:
                 transferOperationBuilder = _a.sent();
                 return [2 /*return*/, transferOperationBuilder];
         }
     });
 }); };
 exports.buildTransferOperation = buildTransferOperation;
+// creates an istance of a TransferOperationBuilder to transfer tokens based on recieversInfo
+var buildTransferOperationV2 = function (walletInfo, recieversInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var sidsResult, sids, transferOperationBuilder, _i, _a, assetCodeType, assetCodeItem, totalUtxoNumbers, utxoDataList, sendUtxoList, utxoInputsInfo;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+            case 1:
+                sidsResult = _b.sent();
+                sids = sidsResult.response;
+                if (!sids) {
+                    throw new Error('No sids were fetched');
+                }
+                return [4 /*yield*/, (0, exports.getEmptyTransferBuilder)()];
+            case 2:
+                transferOperationBuilder = _b.sent();
+                _i = 0, _a = Object.keys(recieversInfo);
+                _b.label = 3;
+            case 3:
+                if (!(_i < _a.length)) return [3 /*break*/, 8];
+                assetCodeType = _a[_i];
+                assetCodeItem = recieversInfo[assetCodeType];
+                totalUtxoNumbers = assetCodeItem.reduce(function (acc, receiver) {
+                    return BigInt(Number(receiver.utxoNumbers) + Number(acc));
+                }, BigInt(0));
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
+            case 4:
+                utxoDataList = _b.sent();
+                sendUtxoList = (0, utxoHelper_1.getSendUtxo)(assetCodeType, totalUtxoNumbers, utxoDataList);
+                return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
+            case 5:
+                utxoInputsInfo = _b.sent();
+                return [4 /*yield*/, (0, exports.getTransferOperation)(walletInfo, utxoInputsInfo, assetCodeItem, assetCodeType, transferOperationBuilder)];
+            case 6:
+                transferOperationBuilder = _b.sent();
+                _b.label = 7;
+            case 7:
+                _i++;
+                return [3 /*break*/, 3];
+            case 8: return [2 /*return*/, transferOperationBuilder];
+        }
+    });
+}); };
+exports.buildTransferOperationV2 = buildTransferOperationV2;
 //# sourceMappingURL=fee.js.map

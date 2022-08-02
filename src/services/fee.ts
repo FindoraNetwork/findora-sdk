@@ -48,7 +48,9 @@ export const getTransferOperation = async (
   utxoInputs: UtxoInputsInfo,
   recieversInfo: ReciverInfo[],
   assetCode: string,
+  transferOp: TransferOperationBuilder,
 ): Promise<TransferOperationBuilder> => {
+  // let transferOp = await getEmptyTransferBuilder();
   const ledger = await getLedger();
 
   const asset = await AssetApi.getAssetDetails(assetCode);
@@ -68,7 +70,7 @@ export const getTransferOperation = async (
 
   let isBlindIsAmount = recieversInfo.some(item => item.assetBlindRules?.isAmountBlind === true);
   let isBlindIsType = recieversInfo.some(item => item.assetBlindRules?.isTypeBlind === true);
-  let transferOp = await getEmptyTransferBuilder();
+
   let utxoNumbers = BigInt(0);
 
   const { inputParametersList, inputAmount } = utxoInputs;
@@ -284,12 +286,56 @@ export const buildTransferOperation = async (
   const sendUtxoList = getSendUtxo(assetCode, totalUtxoNumbers, utxoDataList);
   const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
 
-  const transferOperationBuilder = await getTransferOperation(
+  let transferOperationBuilder = await getEmptyTransferBuilder();
+  transferOperationBuilder = await getTransferOperation(
     walletInfo,
     utxoInputsInfo,
     recieversInfo,
     assetCode,
+    transferOperationBuilder,
   );
+
+  return transferOperationBuilder;
+};
+
+export interface ReciverInfoV2 {
+  [key: string]: ReciverInfo[];
+}
+
+// creates an istance of a TransferOperationBuilder to transfer tokens based on recieversInfo
+export const buildTransferOperationV2 = async (
+  walletInfo: WalletKeypar,
+  recieversInfo: ReciverInfoV2,
+): Promise<TransferOperationBuilder> => {
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('No sids were fetched');
+  }
+
+  let transferOperationBuilder = await getEmptyTransferBuilder();
+
+  for (const assetCodeType of Object.keys(recieversInfo)) {
+    const assetCodeItem = recieversInfo[assetCodeType];
+
+    const totalUtxoNumbers = assetCodeItem.reduce((acc, receiver) => {
+      return BigInt(Number(receiver.utxoNumbers) + Number(acc));
+    }, BigInt(0));
+
+    const utxoDataList = await addUtxo(walletInfo, sids);
+    const sendUtxoList = getSendUtxo(assetCodeType, totalUtxoNumbers, utxoDataList);
+    const utxoInputsInfo = await addUtxoInputs(sendUtxoList);
+
+    transferOperationBuilder = await getTransferOperation(
+      walletInfo,
+      utxoInputsInfo,
+      assetCodeItem,
+      assetCodeType,
+      transferOperationBuilder,
+    );
+  }
 
   return transferOperationBuilder;
 };

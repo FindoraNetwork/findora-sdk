@@ -314,7 +314,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
     sum = sum + _amount;
     const credit = BigInt(Number(sum) - Number(amount));
     const remainedDebt = _amount - credit;
-    const amountToUse = credit ? remainedDebt : _amount;
+    const amountToUse = credit > 0 ? remainedDebt : _amount;
 
     result.push({
       amount: amountToUse,

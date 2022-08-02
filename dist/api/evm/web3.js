@@ -83,7 +83,7 @@ var calculationDecimalsAmount = function (contract, web3, from, to, amount, type
                 ten = new bignumber_js_1.default(10);
                 power = ten.exponentiatedBy(erc20Decimals);
                 if (type === 'toWei') {
-                    return [2 /*return*/, new bignumber_js_1.default(amount).times(power).toString()];
+                    return [2 /*return*/, new bignumber_js_1.default(amount).times(power).toString(10)];
                 }
                 return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(Number(erc20Decimals))];
         }

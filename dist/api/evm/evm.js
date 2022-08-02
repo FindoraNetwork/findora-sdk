@@ -180,7 +180,7 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
 }); };
 exports.approveToken = approveToken;
 var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, convertAmount, estimategas, txParams, signed_txn;
+    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -198,7 +198,6 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
             case 3:
                 gasPrice = _a.sent();
                 contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
-                convertAmount = new bignumber_js_1.default('0.03').times(Math.pow(10, 18)).toString();
                 return [4 /*yield*/, web3.eth.estimateGas({
                         to: web3WalletInfo.account,
                         data: contractData,
@@ -268,7 +267,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowL
                     isAmountBlind: false,
                     isTypeBlind: false,
                 };
-                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
+                return [4 /*yield*/, Transaction.sendToAddressV2(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
             case 2:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];

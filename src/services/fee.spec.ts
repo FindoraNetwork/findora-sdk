@@ -157,7 +157,15 @@ describe('fee (unit test)', () => {
         },
       ];
 
-      await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode);
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
+      await Fee.getTransferOperation(
+        walletInfo,
+        utxoInputsInfo,
+        recieversInfo,
+        assetCode,
+        transferOperationBuilder,
+      );
 
       expect(spyInputNoTracing).toHaveBeenCalledTimes(1);
       expect(spyInputWithTracing).not.toBeCalled();
@@ -253,7 +261,15 @@ describe('fee (unit test)', () => {
         },
       ];
 
-      await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode);
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
+      await Fee.getTransferOperation(
+        walletInfo,
+        utxoInputsInfo,
+        recieversInfo,
+        assetCode,
+        transferOperationBuilder,
+      );
 
       expect(spyInputNoTracing).not.toBeCalled();
       expect(spyInputWithTracing).toHaveBeenCalledTimes(1);
@@ -350,9 +366,16 @@ describe('fee (unit test)', () => {
           assetBlindRules,
         },
       ];
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
 
       await expect(
-        Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode),
+        Fee.getTransferOperation(
+          walletInfo,
+          utxoInputsInfo,
+          recieversInfo,
+          assetCode,
+          transferOperationBuilder,
+        ),
       ).rejects.toThrowError('Could not fetch memo data for sid ');
 
       expect(spyInputNoTracing).not.toBeCalled();

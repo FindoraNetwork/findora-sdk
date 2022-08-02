@@ -313,7 +313,7 @@ var getDelegateInfo = function () { return __awaiter(void 0, void 0, void 0, fun
  * Get transfer operation builder (before sending a tx)
  */
 var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, password, pkey, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, recieversInfo, trasferOperation;
+    var ledger, password, pkey, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, transferOperationBuilder, recieversInfo, trasferOperation;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -344,14 +344,17 @@ var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0,
                 utxoInputsInfo = _a.sent();
                 minimalFee = ledger.fra_get_minimal_fee();
                 toPublickey = ledger.fra_get_dest_pubkey();
+                return [4 /*yield*/, Fee.getEmptyTransferBuilder()];
+            case 7:
+                transferOperationBuilder = _a.sent();
                 recieversInfo = [
                     {
                         utxoNumbers: minimalFee,
                         toPublickey: toPublickey,
                     },
                 ];
-                return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode)];
-            case 7:
+                return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode, transferOperationBuilder)];
+            case 8:
                 trasferOperation = _a.sent();
                 console.log('trasferOperation!', trasferOperation);
                 return [2 /*return*/];

@@ -157,8 +157,6 @@ export const frc20ToBar = async (
   const gasPrice = await web3.eth.getGasPrice();
   const contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
 
-  const convertAmount = new BigNumber('0.03').times(10 ** 18).toString();
-
   const estimategas = await web3.eth.estimateGas({
     to: web3WalletInfo.account,
     data: contractData,
@@ -235,7 +233,7 @@ export const sendAccountToEvm = async (
     isTypeBlind: false,
   };
 
-  let transactionBuilder = await Transaction.sendToAddress(
+  let transactionBuilder = await Transaction.sendToAddressV2(
     walletInfo,
     address,
     amount,
