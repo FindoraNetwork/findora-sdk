@@ -322,7 +322,7 @@ var getSendUtxo = function (code, amount, utxoDataList) {
         sum = sum + _amount;
         var credit = BigInt(Number(sum) - Number(amount));
         var remainedDebt = _amount - credit;
-        var amountToUse = credit ? remainedDebt : _amount;
+        var amountToUse = credit > 0 ? remainedDebt : _amount;
         result.push({
             amount: amountToUse,
             originAmount: _amount,

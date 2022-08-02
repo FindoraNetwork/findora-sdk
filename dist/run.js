@@ -2200,13 +2200,13 @@ function approveToken() {
 // ethProtocol();
 // myFunc16(); // tx list
 // getAnonTxList();
-// testTransferToYourself();
-// this one is passing
+testTransferToYourself();
+// PASSING: this one is passing
 // abarToAbarFraOneFraAtxoForFee();
-// this one has multiple fra atxo (two) and it is failing
+// FAILING: this one has multiple fra atxo (two) and it is failing
 // abarToAbarFraMultipleFraAtxoForFee();
-// this one is also passing (it has only one fra atxo)
+// PASSING: this one is also passing (it has only one fra atxo)
 // abarToAbarCustomOneFraAtxoForFee();
-// this one has multiple fra txo and it is also failing
-abarToAbarCustomMultipleFraAtxoForFee();
+// FAILING: this one has multiple fra txo and it is also failing
+// abarToAbarCustomMultipleFraAtxoForFee();
 //# sourceMappingURL=run.js.map
