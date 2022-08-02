@@ -2186,7 +2186,7 @@ async function approveToken() {
 // myFunc16(); // tx list
 // getAnonTxList();
 
-testTransferToYourself();
+// testTransferToYourself();
 
 // PASSING: this one is passing
 // abarToAbarFraOneFraAtxoForFee();
@@ -2195,7 +2195,7 @@ testTransferToYourself();
 // abarToAbarFraMultipleFraAtxoForFee();
 
 // PASSING: this one is also passing (it has only one fra atxo)
-// abarToAbarCustomOneFraAtxoForFee();
+abarToAbarCustomOneFraAtxoForFee();
 
 // FAILING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
