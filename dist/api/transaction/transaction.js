@@ -296,7 +296,7 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not create transfer operation (main), Error: \"".concat(e.message, "\""));
+                    throw new Error("Could not create transfer operation (main), Error: \"" + e.message + "\"");
                 }
                 _a.label = 6;
             case 6:
@@ -308,14 +308,14 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
             case 8:
                 error_2 = _a.sent();
                 e = error_2;
-                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
+                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"" + e.message + "\"");
             case 9:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
                 }
                 try {
                     transactionBuilder = transactionBuilder.build();
@@ -323,7 +323,7 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
-                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }

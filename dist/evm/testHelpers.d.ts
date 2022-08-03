@@ -30,3 +30,4 @@ export declare const afterEachLog: () => void;
 export declare const afterAllLog: () => void;
 export declare const isNumberChangedBy: (numberBefore: bigNumber.BigNumberValue, numberAfter: bigNumber.BigNumberValue, expectedDifference: string, decimals?: 6 | undefined) => boolean;
 export declare const formatFromWei: (numberToFormat: bigNumber.BigNumberValue) => string;
+export declare const waitForBlockChange: (numberOfBlocksToWait?: number) => Promise<void>;

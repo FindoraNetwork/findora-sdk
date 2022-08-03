@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfig = exports.checkNullifierHashSpent = exports.getOwnedAbars = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getConfig = exports.checkNullifierHashSpent = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -84,6 +84,11 @@ var getLedgerRoute = function () {
 var getExplorerApiRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, explorerApiPort = _a.explorerApiPort;
     var url = hostUrl + ":" + explorerApiPort;
+    return url;
+};
+var getRpcRoute = function () {
+    var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, rpcPort = _a.rpcPort;
+    var url = hostUrl + ":" + rpcPort;
     return url;
 };
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
@@ -561,6 +566,52 @@ var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0
     });
 }); };
 exports.sendRpcCall = sendRpcCall;
+var sendRpcCallV2 = function (givenPayload, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var defaultPayload, url, payload, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                defaultPayload = {
+                    id: 1,
+                    jsonrpc: '2.0',
+                    method: 'eth_protocolVersion',
+                    params: [],
+                };
+                url = "" + getRpcRoute();
+                payload = __assign(__assign({}, defaultPayload), givenPayload);
+                return [4 /*yield*/, (0, exports.apiPost)(url, payload, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.sendRpcCallV2 = sendRpcCallV2;
+var getRpcPayload = function (msgId, method, extraParams) {
+    var payload = {
+        id: msgId,
+        method: method,
+        params: extraParams,
+    };
+    return payload;
+};
+exports.getRpcPayload = getRpcPayload;
+var getLatestBlock = function (extraParams, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var msgId, method, payload, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                msgId = 1;
+                method = 'eth_blockNumber';
+                payload = (0, exports.getRpcPayload)(msgId, method, extraParams);
+                return [4 /*yield*/, (0, exports.sendRpcCallV2)(payload, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getLatestBlock = getLatestBlock;
 var getOwnedAbars = function (commitment, config) { return __awaiter(void 0, void 0, void 0, function () {
     var url, dataResult;
     return __generator(this, function (_a) {

@@ -83,6 +83,7 @@ var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
+var testHelpers_1 = require("./evm/testHelpers");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
@@ -2154,6 +2155,18 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
+var testBlockWait = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 1:
+                result = _a.sent();
+                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
         var addr;
@@ -2203,13 +2216,14 @@ function approveToken() {
 // ethProtocol();
 // myFunc16(); // tx list
 // getAnonTxList();
-testTransferToYourself();
-// PASSING: this one is passing
+// testTransferToYourself();
+// 1. PASSING: this one is passing
 // abarToAbarFraOneFraAtxoForFee();
-// FAILING: this one has multiple fra atxo (two) and it is failing
+// 2. PASSING: this one has multiple fra atxo (two) and it is failing
 // abarToAbarFraMultipleFraAtxoForFee();
-// PASSING: this one is also passing (it has only one fra atxo)
+// 3. PASSING: this one is also passing (it has only one fra atxo)
 // abarToAbarCustomOneFraAtxoForFee();
-// FAILING: this one has multiple fra txo and it is also failing
+// 4. PASSING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
+testBlockWait();
 //# sourceMappingURL=run.js.map
