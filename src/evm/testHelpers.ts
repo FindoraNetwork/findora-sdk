@@ -1,4 +1,6 @@
+import * as Network from '../api/network';
 import * as bigNumber from '../services/bigNumber';
+import { delay, log, wait } from '../services/utils';
 
 export interface SuperSimpleObject {
   [key: string]: any;
@@ -139,3 +141,29 @@ export const isNumberChangedBy = (
 
 export const formatFromWei = (numberToFormat: bigNumber.BigNumberValue) =>
   bigNumber.fromWei(numberToFormat, 6).toFormat(6).toString();
+
+export const waitForBlockChange = async (numberOfBlocksToWait = 1) => {
+  const initialBlockData = await Network.getLatestBlock();
+  const initialBlock = initialBlockData.response?.result || '';
+  const initialBlockNumber = parseInt(initialBlock, 16);
+
+  log(`waiting for ${numberOfBlocksToWait} blocks`);
+
+  let updatedBlockNumber = initialBlockNumber;
+
+  await wait(async () => {
+    const currentBlockData = await Network.getLatestBlock();
+    const currentBlock = currentBlockData.response?.result || '';
+
+    const currentBlockNumber = parseInt(currentBlock, 16);
+    updatedBlockNumber = currentBlockNumber;
+
+    const blockDifference = currentBlockNumber - initialBlockNumber;
+
+    const _isBlockChanged = blockDifference >= numberOfBlocksToWait;
+
+    return _isBlockChanged;
+  }, 1000);
+
+  log(`waited from block ${initialBlockNumber} until block ${updatedBlockNumber}`);
+};

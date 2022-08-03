@@ -62,3 +62,13 @@ export const generateSeedString = () => {
 };
 
 export const getRandomNumber = (min = 1, max = 10) => Math.floor(Math.random() * (max - min + 1)) + min;
+
+export async function wait(fn: any, ms: number) {
+  while (!(await fn())) {
+    await delay(ms);
+  }
+}
+
+export function delay(ms: number) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}

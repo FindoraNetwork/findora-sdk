@@ -3,13 +3,14 @@ import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
+import { waitForBlockChange } from './evm/testHelpers';
 import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
 import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
-import { getRandomNumber } from './services/utils';
+import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
 
 dotenv.config();
@@ -2120,6 +2121,11 @@ const testIt = async () => {
   console.log('result', result);
 };
 
+const testBlockWait = async () => {
+  const result = await waitForBlockChange(2);
+  log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+};
+
 async function approveToken() {
   // const webLinkedInfo = {
   //   privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
@@ -2196,14 +2202,16 @@ async function approveToken() {
 
 // testTransferToYourself();
 
-// PASSING: this one is passing
+// 1. PASSING: this one is passing
 // abarToAbarFraOneFraAtxoForFee();
 
-// FAILING: this one has multiple fra atxo (two) and it is failing
+// 2. PASSING: this one has multiple fra atxo (two) and it is failing
 // abarToAbarFraMultipleFraAtxoForFee();
 
-// PASSING: this one is also passing (it has only one fra atxo)
-abarToAbarCustomOneFraAtxoForFee();
+// 3. PASSING: this one is also passing (it has only one fra atxo)
+// abarToAbarCustomOneFraAtxoForFee();
 
-// FAILING: this one has multiple fra txo and it is also failing
+// 4. PASSING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
+
+testBlockWait();

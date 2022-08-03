@@ -48,6 +48,14 @@ const getExplorerApiRoute = (): string => {
   return url;
 };
 
+const getRpcRoute = (): string => {
+  const { hostUrl, rpcPort } = Sdk.environment;
+
+  const url = `${hostUrl}:${rpcPort}`;
+
+  return url;
+};
+
 export const apiPost = async (
   url: string,
   data?: Types.ParsedTransactionData,
@@ -464,6 +472,49 @@ export const sendRpcCall = async <T>(
   const dataResult = await apiPost(url, payload, { ...config });
 
   return dataResult as unknown as T;
+};
+
+export const sendRpcCallV2 = async <N>(
+  givenPayload: N,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.NetworkAxiosDataResult> => {
+  const defaultPayload = {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'eth_protocolVersion',
+    params: [],
+  };
+  const url = `${getRpcRoute()}`;
+
+  const payload = { ...defaultPayload, ...givenPayload };
+
+  const dataResult = await apiPost(url, payload, { ...config });
+
+  return dataResult;
+};
+
+export const getRpcPayload = <T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = {
+    id: msgId,
+    method,
+    params: extraParams,
+  };
+
+  return payload;
+};
+
+export const getLatestBlock = async (
+  extraParams?: Types.BlockHeightParams,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.BlockHeightResult> => {
+  const msgId = 1;
+  const method = 'eth_blockNumber';
+
+  const payload = getRpcPayload<Types.BlockHeightParams>(msgId, method, extraParams);
+
+  const dataResult = await sendRpcCallV2<typeof payload>(payload, config);
+
+  return dataResult;
 };
 
 export const getOwnedAbars = async (
