@@ -554,7 +554,7 @@ export const abarToAbarMulti = async (
   );
 
   // await sleep(waitingTimeBeforeCheckTxStatus);
-  await waitForBlockChange();
+  await waitForBlockChange(2);
 
   log('now checking balances\n\n\n');
 
