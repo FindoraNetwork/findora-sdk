@@ -18,6 +18,7 @@ export default class Sdk {
         ledgerPort: string;
         submissionPort: string;
         explorerApiPort: string;
+        rpcPort: string;
         cacheProvider: import("./services/cacheStore/types").CacheProvider;
         cachePath: string;
     };

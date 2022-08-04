@@ -147,7 +147,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.reject(new Error('addUtxo error')));
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `could not fetch utxo for sid ${sid}`,
       );
     });
@@ -162,7 +162,7 @@ describe('triple masking (unit test)', () => {
       spyGetOwnerMemo.mockImplementationOnce(() =>
         Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
       );
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not fetch memo data for sid "${sid}", Error - ${ownerMemoDataResult.error.message}`,
       );
     });
@@ -180,7 +180,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => {
         throw fromJsonError;
       });
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not get decode memo data or get assetRecord", Error - ${fromJsonError.message}`,
       );
     });
@@ -199,7 +199,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => {
         throw fromJsonError;
       });
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not get decode memo data or get assetRecord", Error - ${fromJsonError.message}`,
       );
     });
@@ -217,7 +217,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.reject(getAXfrPublicKeyByBase64Error));
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not convert AXfrPublicKey", Error - ${getAXfrPublicKeyByBase64Error.message}`,
       );
     });
@@ -236,7 +236,7 @@ describe('triple masking (unit test)', () => {
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.reject(getXPublicKeyByBase64Error));
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not convert AXfrPublicKey", Error - ${getXPublicKeyByBase64Error.message}`,
       );
     });
@@ -259,7 +259,7 @@ describe('triple masking (unit test)', () => {
         throw addOperationBarToAbarError;
       });
 
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not add bar to abar operation", Error - ${addOperationBarToAbarError.message}`,
       );
     });
@@ -281,7 +281,7 @@ describe('triple masking (unit test)', () => {
       spyGetCommitments.mockImplementationOnce(() => {
         throw getCommitmentsError;
       });
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `could not get a list of commitments strings "${getCommitmentsError.message}"`,
       );
     });
@@ -301,7 +301,7 @@ describe('triple masking (unit test)', () => {
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
       spyGetCommitments.mockImplementationOnce(() => commitments);
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         'list of commitments strings is empty ',
       );
     });
@@ -322,7 +322,7 @@ describe('triple masking (unit test)', () => {
       spyGetXPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnEncKey));
       spyGetCommitments.mockImplementationOnce(() => commitments);
       spySaveBarToAbarToCache.mockImplementationOnce(() => Promise.reject(saveBarToAbarToCacheError));
-      await expect(TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)).rejects.toThrow(
+      await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not save cache for bar to abar. Details: ${saveBarToAbarToCacheError.message}`,
       );
     });
@@ -343,7 +343,7 @@ describe('triple masking (unit test)', () => {
       spyGetCommitments.mockImplementationOnce(() => commitments);
       spySaveBarToAbarToCache.mockImplementationOnce(() => Promise.resolve(barToAbarData));
 
-      const result = await TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey);
+      const result = await TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey);
 
       expect(spyGetLedger).toHaveBeenCalled();
       expect(spyGetTransactionBuilder).toHaveBeenCalled();

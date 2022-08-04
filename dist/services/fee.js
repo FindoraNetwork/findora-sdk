@@ -1,11 +1,7 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -130,7 +126,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                 memoDataResult = _a.sent();
                                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                                 if (memoError) {
-                                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
+                                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                                 }
                                 utxoNumbers = utxoNumbers + BigInt(amount.toString());
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
@@ -194,7 +190,7 @@ var getPayloadForFeeInputs = function (walletInfo, utxoInputs) { return __awaite
                                 memoDataResult = _a.sent();
                                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                                 if (memoError) {
-                                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
+                                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
                                 }
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
                                 feeInputsPayload.push({
@@ -246,7 +242,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
 // used in triple masking
-var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
+var getFeeInputs = function (walletInfo, excludeSids, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, sidsResult, sids, filteredSids, minimalFee, _a, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -260,7 +256,7 @@ var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awa
                 if (!sids) {
                     throw new Error('No sids were fetched');
                 }
-                filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
+                filteredSids = sids.filter(function (sid) { return !excludeSids.includes(sid); });
                 if (!isBarToAbar) return [3 /*break*/, 4];
                 return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
             case 3:

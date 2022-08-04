@@ -58,7 +58,7 @@ var runCreateAndSaveWallets = function (amount) {
                     return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
                 case 3:
                     newWalletInfo = _a.sent();
-                    (0, utils_1.log)("\"".concat(i, "\". Created sender wallet \"").concat(newWalletInfo.address, "\" (\"").concat(newWalletInfo.privateStr, "\")"));
+                    (0, utils_1.log)("\"" + i + "\". Created sender wallet \"" + newWalletInfo.address + "\" (\"" + newWalletInfo.privateStr + "\")");
                     data = {
                         index: i,
                         privateKey: newWalletInfo.privateStr,

@@ -19,10 +19,10 @@ export declare const getAssetTracingPolicies: (asset: FindoraWallet.IAsset) => P
 export declare const getTransferOperation: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo, recieversInfo: ReciverInfo[], assetCode: string, transferOp: TransferOperationBuilder) => Promise<TransferOperationBuilder>;
 export declare const getPayloadForFeeInputs: (walletInfo: WalletKeypar, utxoInputs: UtxoInputsInfo) => Promise<FeeInputPayloadType[]>;
 export declare const buildTransferOperationWithFee: (walletInfo: WalletKeypar, assetBlindRules?: {
-    isAmountBlind?: boolean;
-    isTypeBlind?: boolean;
-}) => Promise<TransferOperationBuilder>;
-export declare const getFeeInputs: (walletInfo: WalletKeypar, excludeSid: number, isBarToAbar: boolean) => Promise<FeeInputs>;
+    isAmountBlind?: boolean | undefined;
+    isTypeBlind?: boolean | undefined;
+} | undefined) => Promise<TransferOperationBuilder>;
+export declare const getFeeInputs: (walletInfo: WalletKeypar, excludeSids: number[], isBarToAbar: boolean) => Promise<FeeInputs>;
 export declare const buildTransferOperation: (walletInfo: WalletKeypar, recieversInfo: ReciverInfo[], assetCode: string) => Promise<TransferOperationBuilder>;
 export interface ReciverInfoV2 {
     [key: string]: ReciverInfo[];

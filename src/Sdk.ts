@@ -22,6 +22,7 @@ const SdkDefaultEnvironment = {
   ledgerPort: '8668',
   submissionPort: '8669',
   explorerApiPort: '26657',
+  rpcPort: '8545',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };

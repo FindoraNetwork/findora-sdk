@@ -39,7 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.delay = exports.wait = exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var crypto = require('crypto');
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
@@ -79,7 +79,7 @@ var log = function (message) {
     for (var _i = 1; _i < arguments.length; _i++) {
         rest[_i - 1] = arguments[_i];
     }
-    console.log("\"".concat((0, exports.now)(), "\" - ").concat(message), (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
+    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
 };
 exports.log = log;
 var getCryptoInstance = function () {
@@ -96,7 +96,7 @@ var generateSeedString = function () {
     myCrypto.getRandomValues(randomVals);
     randomVals.forEach(function (num) {
         var hex = num.toString(16);
-        seed += hex.length === 1 ? "0".concat(hex) : hex;
+        seed += hex.length === 1 ? "0" + hex : hex;
     });
     return seed;
 };
@@ -107,4 +107,25 @@ var getRandomNumber = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 exports.getRandomNumber = getRandomNumber;
+function wait(fn, ms) {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, fn()];
+                case 1:
+                    if (!!(_a.sent())) return [3 /*break*/, 3];
+                    return [4 /*yield*/, delay(ms)];
+                case 2:
+                    _a.sent();
+                    return [3 /*break*/, 0];
+                case 3: return [2 /*return*/];
+            }
+        });
+    });
+}
+exports.wait = wait;
+function delay(ms) {
+    return new Promise(function (resolve) { return setTimeout(resolve, ms); });
+}
+exports.delay = delay;
 //# sourceMappingURL=utils.js.map

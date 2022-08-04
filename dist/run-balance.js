@@ -55,7 +55,6 @@ var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var bigNumber_1 = require("./services/bigNumber");
 var providers_1 = require("./services/cacheStore/providers");
-var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -81,7 +80,7 @@ var sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk_1.default.init(sdkEnv);
-console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -91,10 +90,57 @@ var myAbarAnonKeys = {
     axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 var myGivenCommitmentsList = [
-    'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5',
-    '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC',
-    '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+    // 'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5', // 6
+    // '8Q1eEr4HoWfwqXGDucUvmrZ4UDZHgPFnF7vi9UAVj2GC', // 5
+    // '3qZaSoUscNyU5MUJjzHoQWPgUwQ515i2TtGmHFpjYfQy', // 8
+    // 'FeKLHRpfREkG5XzLLPKzwPjWTJazJe7b1jhkpbv5NomA',
+    'GD1q5AZX7kwgeMM88x5MTYy2Ek2vi1bbt4ep6oSdeg6a',
+    'EU6sbUEKBpoMwxdx1D1vE8GDgVh6ccQ6Dv4y1TZ2Nwg3',
+    '4zRUTuWqq3RcmXpcPxiM5GYkBnf8g6M6jisenJEJniKr',
 ];
+/**
+ * Get FRA balance
+ */
+var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, mString, mm, newWallet, faucetWalletInfo, balance, balanceNew, fraCode;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '12345';
+                pkey = PKEY_LOCAL_FAUCET;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+                mm = mString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                newWallet = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                faucetWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfo)];
+            case 3:
+                balance = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(newWallet)];
+            case 4:
+                balanceNew = _a.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 5:
+                fraCode = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
+                console.log('\n');
+                console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+                console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+                console.log('\n');
+                console.log('newWallet.address (from mnenmonic)', newWallet.address);
+                console.log('newWallet.privateStr', newWallet.privateStr);
+                console.log('\n');
+                console.log('balance from restored from pkey IS', balance);
+                console.log('balance from restored using mnemonic IS', balanceNew);
+                console.log('\n');
+                console.log('\n');
+                return [2 /*return*/];
+        }
+    });
+}); };
 var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
     var anonKeys, givenCommitmentsList, unspentAbars;
     return __generator(this, function (_a) {
@@ -107,6 +153,47 @@ var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, fun
                 unspentAbars = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', JSON.stringify(unspentAbars, null, 2));
                 return [2 /*return*/];
+        }
+    });
+}); };
+var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeys, givenCommitmentsList, spentAbars, _i, givenCommitmentsList_1, givenCommitment, axfrSecretKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                anonKeys = __assign({}, myAbarAnonKeys);
+                givenCommitmentsList = myGivenCommitmentsList;
+                return [4 /*yield*/, api_1.TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList)];
+            case 1:
+                spentAbars = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars', JSON.stringify(spentAbars, null, 2));
+                _i = 0, givenCommitmentsList_1 = givenCommitmentsList;
+                _a.label = 2;
+            case 2:
+                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 7];
+                givenCommitment = givenCommitmentsList_1[_i];
+                console.log("processing " + givenCommitment);
+                axfrSecretKey = anonKeys.axfrSpendKey;
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
+            case 3:
+                ownedAbarsResponse = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
+                ownedAbarItem = ownedAbarsResponse[0];
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey)];
+            case 4:
+                hash = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
+                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
+            case 5:
+                isNullifierHashSpent = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
+                _a.label = 6;
+            case 6:
+                _i++;
+                return [3 /*break*/, 2];
+            case 7: return [2 /*return*/];
         }
     });
 }); };
@@ -135,7 +222,7 @@ var getAtxoSendList = function () { return __awaiter(void 0, void 0, void 0, fun
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 1:
                 assetCode = _a.sent();
-                amount = '19';
+                amount = '26';
                 return [4 /*yield*/, api_1.Asset.getAssetDetails(assetCode)];
             case 2:
                 asset = _a.sent();
@@ -150,26 +237,15 @@ var getAtxoSendList = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    function isCoinBase(fraAddress) {
-        console.log("we are going to call leger with ".concat(fraAddress));
-        // return false;
-        var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
-        return false;
-        // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
-        //   addressInBase64,
-        // );
-    }
-    var findoraWasm, aaa1, aaa2, aaa3, result;
+    var txHash, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0:
+                txHash = 'dac392d9cd93d85d768f6c6784862d747fdeffd0d52e1295bde2c3dc10242225';
+                return [4 /*yield*/, api_1.Network.getTransactionDetails(txHash)];
             case 1:
-                findoraWasm = _a.sent();
-                aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
-                aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
-                aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
-                result = isCoinBase(aaa1);
-                console.log('result', result);
+                result = _a.sent();
+                console.log('🚀 ~ file: run-balance.ts ~ line 183 ~ getAnonKeys ~ result', result);
                 return [2 /*return*/];
         }
     });
@@ -186,8 +262,11 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
+getFraBalance();
 // getAnonKeys(); // +
-//getAbarBalance();
-getAtxoSendList();
+// getAbarBalance();
+//getAtxoSendList();
 // getUnspentAbars();
+// validateUnspent();
+// testIt();
 //# sourceMappingURL=run-balance.js.map
