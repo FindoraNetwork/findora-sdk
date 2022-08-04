@@ -313,17 +313,22 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   const anonKeysSender = { ...AnonKeys };
 
   const givenCommitment = (await barToAbar(senderOne, anonKeysSender, false)) as string;
+  const givenCommitmentOne = (await barToAbar(senderOne, anonKeysSender, false)) as string;
 
   const balance = await Account.getBalance(walletInfo);
 
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
   const [ownedAbarToUseAsSource] = ownedAbarsResponse;
-  // log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
+  const [ownedAbarToUseAsSourceOne] = ownedAbarsResponseOne;
+  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
 
   const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
     walletInfo,
-    ownedAbarToUseAsSource,
+    [ownedAbarToUseAsSource, ownedAbarToUseAsSourceOne],
   );
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);

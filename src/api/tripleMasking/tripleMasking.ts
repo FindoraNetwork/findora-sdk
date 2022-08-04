@@ -589,13 +589,16 @@ export const barToAbar = async (
 export const abarToBar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   receiverWalletInfo: Keypair.WalletKeypar,
-  ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
 ) => {
   let transactionBuilder = await Builder.getTransactionBuilder();
 
   const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+
+  const [ownedAbarToUseAsSource, ...additionalOwnedAbars] = additionalOwnedAbarItems;
 
   const abarPayloadSource = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
 
@@ -612,6 +615,29 @@ export const abarToBar = async (
   } catch (error) {
     console.log('Error adding Abar to bar', error);
     throw new Error(`Could not add abar to bar operation", Error - ${error as Error}`);
+  }
+
+  for (const ownedAbarItemOne of additionalOwnedAbars) {
+    const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
+
+    try {
+      transactionBuilder = transactionBuilder.add_operation_abar_to_bar(
+        abarPayloadNext.myOwnedAbar,
+        abarPayloadNext.abarOwnerMemo,
+        abarPayloadNext.myMTLeafInfo,
+        aXfrSpendKeySender,
+        receiverXfrPublicKey,
+        false,
+        false,
+      );
+    } catch (error) {
+      console.log('Error from the backend:', error);
+      throw new Error(
+        `Could not add an additional input for abar to bar transfer operation", Error - ${
+          (error as Error).message
+        }`,
+      );
+    }
   }
 
   try {
