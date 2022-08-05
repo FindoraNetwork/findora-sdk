@@ -428,7 +428,7 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
                 balanceChange = Math.floor(balanceChangeF);
                 (0, utils_1.log)('Change of BAR balance (non formatted)', balanceChange);
-                console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
+                (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
                 if (balanceChange != 419 && balanceChange != 420) {
                     err = "ERROR BAR balance does not match expected value of " + balanceChange;
                     (0, utils_1.log)(err);
