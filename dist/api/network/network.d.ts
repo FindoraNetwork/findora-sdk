@@ -47,6 +47,13 @@ export declare const getDelegateInfo: (publickey: string, config?: Types.Network
 export declare const sendRpcCall: <T>(url: string, givenPayload: {
     [key: string]: any;
 }, config?: Types.NetworkAxiosConfig) => Promise<T>;
+export declare const sendRpcCallV2: <N>(givenPayload: N, config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
+export declare const getRpcPayload: <T>(msgId: number, method: string, extraParams?: T | undefined) => {
+    id: number;
+    method: string;
+    params: T | undefined;
+};
+export declare const getLatestBlock: (extraParams?: Types.BlockHeightParams, config?: Types.NetworkAxiosConfig) => Promise<Types.BlockHeightResult>;
 export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnedAbarsDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig) => Promise<Types.CheckNullifierHashSpentDataResult>;
 export declare const getConfig: (config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;

@@ -462,3 +462,21 @@ export interface EthGetLogsRpcResponse extends EthMainRpcResponse {
 export interface EthGetLogsRpcResult extends NetworkAxiosDataResult {
     response?: EthGetLogsRpcResponse;
 }
+export interface MainRpcResponse {
+    id: string;
+    jsonrpc: string;
+    error?: {
+        code: number;
+        message: string;
+        data?: any;
+    };
+}
+export interface BlockHeightResponse extends MainRpcResponse {
+    result: string;
+}
+export interface BlockHeightResult extends NetworkAxiosDataResult {
+    response?: BlockHeightResponse;
+}
+export interface BlockHeightParams {
+    blockType?: string;
+}

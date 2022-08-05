@@ -154,6 +154,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 }
                 catch (error) {
                     e = error;
+                    console.log('Full error (main)', error);
                     throw new Error("Could not create transfer operation (main), Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 7;

@@ -1,4 +1,3 @@
-import sleep from 'sleep-promise';
 import {
   Account as AccountApi,
   Asset as AssetApi,
@@ -6,11 +5,12 @@ import {
   Network as NetworkApi,
   Transaction as TransactionApi,
 } from './api';
-import { formatFromWei, isNumberChangedBy } from './evm/testHelpers';
+import { formatFromWei, isNumberChangedBy, waitForBlockChange } from './evm/testHelpers';
 import findoraSdk from './Sdk';
 import * as bigNumber from './services/bigNumber';
 import { MemoryCacheProvider } from './services/cacheStore/providers';
 import { getLedger } from './services/ledger/ledgerWrapper';
+import { log } from './services/utils';
 
 const envConfigFile = process.env.INTEGRATION_ENV_NAME
   ? `../.env_integration_${process.env.INTEGRATION_ENV_NAME}`
@@ -29,11 +29,9 @@ const sdkEnv = {
   cachePath: './cache',
 };
 
-const waitingTimeBeforeCheckTxStatus = 19000;
+log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
 
-console.log('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
-
-console.log(`Connecting to "${sdkEnv.hostUrl}"`);
+log(`Connecting to "${sdkEnv.hostUrl}"`);
 
 findoraSdk.init(sdkEnv);
 
@@ -42,32 +40,32 @@ const { mainFaucet, receiverOne } = walletKeys;
 const password = 'yourSecretPassword';
 
 const getTxSid = async (operationName: string, txHandle: string) => {
-  console.log(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
+  log(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  await waitForBlockChange();
 
   const transactionStatus = await NetworkApi.getTransactionStatus(txHandle);
 
   const { response: sendResponse } = transactionStatus;
 
   if (!sendResponse) {
-    console.log(`🚀 ~ ERROR 1 - ${operationName} ~ transactionStatus`, transactionStatus);
+    log(`🚀 ~ ERROR 1 - ${operationName} ~ transactionStatus`, transactionStatus);
     return false;
   }
 
   const { Committed } = sendResponse;
 
   if (!Array.isArray(Committed)) {
-    console.log(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
+    log(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
     return false;
   }
 
   const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
 
-  console.log(`🚀 ~ ${operationName} ~ txnSID`, txnSID);
+  log(`🚀 ~ ${operationName} ~ txnSID`, txnSID);
 
   if (!txnSID) {
-    console.log(
+    log(
       `🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `,
       transactionStatus,
     );
@@ -77,14 +75,14 @@ const getTxSid = async (operationName: string, txHandle: string) => {
 };
 
 export const defineAssetTransaction = async () => {
-  console.log('////////////////  defineAssetTransaction //////////////// ');
+  log('////////////////  defineAssetTransaction //////////////// ');
 
   const pkey = mainFaucet;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
+  log('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
 
   const memo = 'this is a test asset';
 
@@ -101,20 +99,20 @@ export const defineAssetTransaction = async () => {
 
     return 'DefineAsset' in operation;
   } catch (error) {
-    console.log('Error!', error);
+    log('Error!', error);
     return false;
   }
 };
 
 export const defineAssetTransactionSubmit = async () => {
-  console.log('////////////////  defineAssetTransactionSubmit //////////////// ');
+  log('////////////////  defineAssetTransactionSubmit //////////////// ');
 
   const pkey = mainFaucet;
 
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  console.log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
+  log('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetBuilder = await AssetApi.defineAsset(walletInfo, tokenCode);
 
@@ -123,7 +121,7 @@ export const defineAssetTransactionSubmit = async () => {
   const isTxSent = await getTxSid('define asset', handle);
 
   if (!isTxSent) {
-    console.log(`🚀 ~ defineAssetTransactionSubmit ~ Could not submit define asset`);
+    log(`🚀 ~ defineAssetTransactionSubmit ~ Could not submit define asset`);
     return false;
   }
 
@@ -131,7 +129,7 @@ export const defineAssetTransactionSubmit = async () => {
 };
 
 export const defineAndIssueAssetTransactionSubmit = async () => {
-  console.log('////////////////  defineAndIssueAssetTransactionSubmit //////////////// ');
+  log('////////////////  defineAndIssueAssetTransactionSubmit //////////////// ');
 
   const pkey = mainFaucet;
 
@@ -140,7 +138,7 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const tokenCode = await AssetApi.getRandomAssetCode();
   const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
-  console.log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
+  log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -157,7 +155,7 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const isTxSent = await getTxSid('define asset', handle);
 
   if (!isTxSent) {
-    console.log(`🚀 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset`);
+    log(`🚀 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset`);
     return false;
   }
 
@@ -177,7 +175,7 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const isTxIssued = await getTxSid('issue', handleIssue);
 
   if (!isTxIssued) {
-    console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue`);
+    log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue`);
     return false;
   }
 
@@ -185,7 +183,7 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
 };
 
 export const defineIssueAndSendAssetTransactionSubmit = async () => {
-  console.log('////////////////  defineIssueAndSendAssetTransactionSubmit //////////////// ');
+  log('////////////////  defineIssueAndSendAssetTransactionSubmit //////////////// ');
 
   const pkey = mainFaucet;
   const toPkey = receiverOne;
@@ -196,7 +194,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const tokenCode = await AssetApi.getRandomAssetCode();
   const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
-  console.log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
+  log('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
 
   const assetRules = {
     transferable: false,
@@ -213,7 +211,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const isTxDefineSent = await getTxSid('define', handle);
 
   if (!isTxDefineSent) {
-    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define`);
+    log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define`);
     return false;
   }
 
@@ -233,7 +231,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const isTxIssueSent = await getTxSid('define', handleIssue);
 
   if (!isTxIssueSent) {
-    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue`);
+    log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue`);
     return false;
   }
 
@@ -252,7 +250,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
   const isTxTransferSent = await getTxSid('send', handleSend);
 
   if (!isTxTransferSent) {
-    console.log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send`);
+    log(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -260,7 +258,7 @@ export const defineIssueAndSendAssetTransactionSubmit = async () => {
 };
 
 export const sendFraTransactionSubmit = async () => {
-  console.log('////////////////  sendFraTransactionSubmit //////////////// ');
+  log('////////////////  sendFraTransactionSubmit //////////////// ');
 
   const pkey = mainFaucet;
 
@@ -289,7 +287,7 @@ export const sendFraTransactionSubmit = async () => {
   const isTxSend = await getTxSid('send', resultHandle);
 
   if (!isTxSend) {
-    console.log(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
+    log(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -301,10 +299,7 @@ export const sendFraTransactionSubmit = async () => {
     receiverBalanceAfterTransfer,
   )}, so this is "${isItRight}" `;
 
-  console.log(
-    '🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult',
-    peterCheckResult,
-  );
+  log('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
 
   return isItRight;
 };
@@ -312,7 +307,7 @@ export const sendFraTransactionSubmit = async () => {
 export const sendFraToMultipleReceiversTransactionSubmit = async () => {
   const pkey = mainFaucet;
 
-  console.log('////////////////  sendFraToMultipleReceiversTransactionSubmit //////////////// ');
+  log('////////////////  sendFraToMultipleReceiversTransactionSubmit //////////////// ');
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const aliceWalletInfo = await KeypairApi.createKeypair(password);
@@ -347,7 +342,7 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
   const isTxSend = await getTxSid('send', resultHandle);
 
   if (!isTxSend) {
-    console.log(`🚀  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send`);
+    log(`🚀  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send`);
     return false;
   }
 
@@ -373,12 +368,12 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
     peterBalanceAfterTransfer,
   )}, so this is "${isItRightPeter}" `;
 
-  console.log(
+  log(
     '🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult',
     aliceCheckResult,
   );
 
-  console.log(
+  log(
     '🚀 ~ file: integration.ts ~ line 602 ~ sendFraToMultipleReceiversTransactionSubmit ~ peterCheckResult',
     peterCheckResult,
   );
@@ -387,7 +382,7 @@ export const sendFraToMultipleReceiversTransactionSubmit = async () => {
 };
 
 export const getBalance = async () => {
-  console.log('////////////////  getBalance //////////////// ');
+  log('////////////////  getBalance //////////////// ');
 
   const pkey = mainFaucet;
 
@@ -398,7 +393,7 @@ export const getBalance = async () => {
 };
 
 export const issueAndSendConfidentialAsset = async () => {
-  console.log('////////////////  issueAndSendConfidentialAsset //////////////// ');
+  log('////////////////  issueAndSendConfidentialAsset //////////////// ');
 
   const Ledger = await getLedger();
 
@@ -414,7 +409,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const tokenCode = await AssetApi.getRandomAssetCode();
   const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
 
-  console.log('Defining a custom asset:', tokenCode, derivedTokenCode);
+  log('Defining a custom asset:', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -431,7 +426,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isTxDefine = await getTxSid('defineAsset', handle);
 
   if (!isTxDefine) {
-    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit define`);
+    log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit define`);
     return false;
   }
 
@@ -451,20 +446,20 @@ export const issueAndSendConfidentialAsset = async () => {
   const isTxIssue = await getTxSid('issue', handleIssue);
 
   if (!isTxIssue) {
-    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit issue`);
+    log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit issue`);
     return false;
   }
 
-  console.log('Issue Asset with secret amount Transaction handle:', handleIssue);
+  log('Issue Asset with secret amount Transaction handle:', handleIssue);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  await waitForBlockChange();
 
   const issueTransactionStatus = await NetworkApi.getTransactionStatus(handleIssue);
 
   const { response: issueResponse } = issueTransactionStatus;
 
   if (!issueResponse) {
-    console.log('ERROR issueTransactionStatus', issueTransactionStatus);
+    log('ERROR issueTransactionStatus', issueTransactionStatus);
 
     return false;
   }
@@ -472,7 +467,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const { Committed: IssueCommitted } = issueResponse;
 
   if (!Array.isArray(IssueCommitted)) {
-    console.log('ERROR could not get Commited from defineResponse, line 705');
+    log('ERROR could not get Commited from defineResponse, line 705');
     return false;
   }
 
@@ -489,7 +484,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isNonConfidentialMatches = nonConfUtxo?.utxo.record.amount.NonConfidential === '10000';
 
   if (!isNonConfidentialMatches) {
-    console.log(
+    log(
       '🚀 ~ file: integration.ts ~ line 778 ~ issueAndSendConfidentialAsset ~ isNonConfidentialMatches IS FALSE',
       isNonConfidentialMatches,
       nonConfUtxo?.utxo.record.amount.NonConfidential,
@@ -500,7 +495,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isConfidentiaExists = confUtxo?.utxo.record.amount.Confidential;
 
   if (!isConfidentiaExists) {
-    console.log(
+    log(
       '🚀 ~ file: integration.ts ~ line 782 ~ issueAndSendConfidentialAsset ~ isConfidentiaExists IS FALSE , confUtxo?.utxo.record.amount',
       isConfidentiaExists,
       confUtxo?.utxo.record.amount,
@@ -513,10 +508,10 @@ export const issueAndSendConfidentialAsset = async () => {
   const { response: ownerMemoJson } = ownerMemoDataResult;
 
   if (!ownerMemoJson) {
-    console.log(
+    log(
       '🚀 ~ file: integration.ts ~ line 794 ~ issueAndSendConfidentialAsset ~ there is not ownerMemo for confidential sid!',
     );
-    console.log(
+    log(
       '🚀 ~ file: integration.ts ~ line 797 ~ issueAndSendConfidentialAsset ~ ownerMemoDataResult',
       ownerMemoDataResult,
     );
@@ -533,7 +528,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isDecryptedRecordCorrect = decryptedRecord?.amount === '5000000';
 
   if (!isDecryptedRecordCorrect) {
-    console.log(
+    log(
       '🚀 ~ file: integration.ts ~ line 815 ~ issueAndSendConfidentialAsset ~ isDecryptedRecordCorrect IS FALSE!, decryptedRecord',
       isDecryptedRecordCorrect,
       decryptedRecord,
@@ -559,7 +554,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isTxSend = await getTxSid('send', handleSend);
 
   if (!isTxSend) {
-    console.log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit send`);
+    log(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit send`);
     return false;
   }
 
@@ -568,7 +563,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const { response: bobTxoSids } = bobTxoSidsResult;
 
   if (!bobTxoSids) {
-    console.log(`Could not retrieve the list of sids of the receiver. Response was: `, bobTxoSidsResult);
+    log(`Could not retrieve the list of sids of the receiver. Response was: `, bobTxoSidsResult);
     return false;
   }
 
@@ -579,7 +574,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const { response: bobUtxoResponse } = bobUtxoDataResult;
 
   if (!bobUtxoResponse) {
-    console.log('ERROR could not get bobUtxoResponse', bobUtxoDataResult);
+    log('ERROR could not get bobUtxoResponse', bobUtxoDataResult);
     return false;
   }
 
@@ -588,7 +583,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const { response: bobMemoJson } = bobMemoDataResult;
 
   if (!bobMemoJson) {
-    console.log('could not get owner memo for the send to Bob transfer!', bobMemoDataResult);
+    log('could not get owner memo for the send to Bob transfer!', bobMemoDataResult);
     return false;
   }
 
@@ -601,7 +596,7 @@ export const issueAndSendConfidentialAsset = async () => {
   const isBobDecryptedRecordCorrect = bobDecryptedRecord?.amount === '5000000';
 
   if (!isBobDecryptedRecordCorrect) {
-    console.log(
+    log(
       '🚀 ERROR ~ file: integration.ts ~ line 883 ~ issueAndSendConfidentialAsset ~ isBobDecryptedRecordCorrect',
       isBobDecryptedRecordCorrect,
       bobDecryptedRecord,
@@ -613,7 +608,7 @@ export const issueAndSendConfidentialAsset = async () => {
     Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derivedTokenCode;
 
   if (!isAssetTypeCorrect) {
-    console.log(
+    log(
       '🚀 ERROR ~ file: integration.ts ~ line 893 ~ issueAndSendConfidentialAsset ~ isAssetTypeCorrect',
       isAssetTypeCorrect,
       bobDecryptedRecord,
@@ -625,7 +620,7 @@ export const issueAndSendConfidentialAsset = async () => {
 };
 
 // export const delegateFraTransactionSubmit = async () => {
-//   console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
+//   log('////////////////  delegateFraTransactionSubmit //////////////// ');
 
 //   // send part
 //   const Ledger = await getLedger();
@@ -644,7 +639,7 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
 
 //   if (!isFundSuccesfull) {
-//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+//     log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
 //     return false;
 //   }
 
@@ -669,11 +664,11 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isTxDelegated = await getTxSid('delegate', resultHandle);
 
 //   if (!isTxDelegated) {
-//     console.log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit delegation`);
+//     log(`🚀  ~ delegateFraTransactionSubmit ~ Could not submit delegation`);
 //     return false;
 //   }
 
-//   console.log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
+//   log('🚀  ~ delegateFraTransactionSubmit ~ waiting for 10 blocks before checking rewards');
 
 //   // 10 blocks
 //   await sleep(waitingTimeBeforeCheckTxStatus);
@@ -688,24 +683,24 @@ export const issueAndSendConfidentialAsset = async () => {
 //   await sleep(waitingTimeBeforeCheckTxStatus);
 //   await sleep(waitingTimeBeforeCheckTxStatus);
 
-//   console.log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
+//   log('🚀  ~ delegateFraTransactionSubmit ~ checking rewards now');
 
 //   const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
 
 //   const isRewardsAdded = Number(delegateInfo.rewards) > 0;
 
 //   if (!isRewardsAdded) {
-//     console.log('🚀  ~ delegateFraTransactionSubmit ~ There is no rewards yet! , delegateInfo', delegateInfo);
+//     log('🚀  ~ delegateFraTransactionSubmit ~ There is no rewards yet! , delegateInfo', delegateInfo);
 //     return false;
 //   }
 
-//   console.log('🚀  ~ delegateFraTransactionSubmit ~ accumulated rewards ', delegateInfo.rewards);
+//   log('🚀  ~ delegateFraTransactionSubmit ~ accumulated rewards ', delegateInfo.rewards);
 
 //   return true;
 // };
 
 // export const delegateFraTransactionAndClaimRewards = async () => {
-//   console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
+//   log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
 
 //   const password = '123';
 //   const Ledger = await getLedger();
@@ -714,7 +709,7 @@ export const issueAndSendConfidentialAsset = async () => {
 
 //   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 //   const toWalletInfo = await KeypairApi.createKeypair(password);
-//   console.log(
+//   log(
 //     '🚀 ~ file: integration.ts ~ line 1096 ~ delegateFraTransactionAndClaimRewards ~ toWalletInfo',
 //     toWalletInfo,
 //   );
@@ -728,7 +723,7 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isFundSuccesfull = await sendFromFaucetToAccount(walletInfo, toWalletInfo, numbersToSend);
 
 //   if (!isFundSuccesfull) {
-//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
+//     log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not fund account`);
 //     return false;
 //   }
 
@@ -754,11 +749,11 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isTxDelegated = await getTxSid('delegate', resultHandle);
 
 //   if (!isTxDelegated) {
-//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation`);
+//     log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit delegation`);
 //     return false;
 //   }
 
-//   console.log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
+//   log('delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking rewards');
 
 //   await sleep(waitingTimeBeforeCheckTxStatus);
 //   await sleep(waitingTimeBeforeCheckTxStatus);
@@ -774,7 +769,7 @@ export const issueAndSendConfidentialAsset = async () => {
 
 //   await sleep(waitingTimeBeforeCheckTxStatus);
 
-//   console.log('delegateFraTransactionAndClaimRewards - checking rewards now');
+//   log('delegateFraTransactionAndClaimRewards - checking rewards now');
 
 //   const delegateInfo = await StakingApi.getDelegateInfo(toWalletInfo.address);
 
@@ -783,19 +778,19 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isRewardsAdded = Number(amountToClaim) > 0;
 
 //   if (!isRewardsAdded) {
-//     console.log(
+//     log(
 //       'delegateFraTransactionAndClaimRewards - There is no rewards yet! , delegateInfo',
 //       delegateInfo,
 //     );
 //     return false;
 //   }
 
-//   console.log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
+//   log('delegateFraTransactionAndClaimRewards - accumulated rewards ', amountToClaim);
 
 //   // claim
 //   const balanceBefore = await AccountApi.getBalanceInWei(toWalletInfo);
 
-//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
+//   log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
 
 //   const transactionBuilderClaim = await StakingApi.claim(toWalletInfo, amountToClaim);
 
@@ -805,11 +800,11 @@ export const issueAndSendConfidentialAsset = async () => {
 //   const isTxClaimed = await getTxSid('clam', resultHandleClaim);
 
 //   if (!isTxClaimed) {
-//     console.log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim`);
+//     log(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit claim`);
 //     return false;
 //   }
 
-//   console.log(
+//   log(
 //     'delegateFraTransactionAndClaimRewards - waiting for 11 blocks before checking balance of claimed rewards',
 //   );
 
@@ -829,14 +824,14 @@ export const issueAndSendConfidentialAsset = async () => {
 
 //   const balanceAfter = await AccountApi.getBalanceInWei(toWalletInfo);
 
-//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
+//   log('🚀 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
 
 //   const balanceBeforeBN = bigNumber.create(balanceBefore);
 //   const balanceAfterBN = bigNumber.create(balanceAfter);
 
 //   const isClaimSuccessfull = balanceAfterBN.gte(balanceBeforeBN);
 
-//   console.log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
+//   log('🚀 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
 
 //   return isClaimSuccessfull;
 // };

@@ -59,12 +59,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
+exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.abarToAbarMulti = exports.createTestBarsMulti = exports.getSidsForAsset = exports.defineIssueCustomAsset = exports.abarToBar = exports.abarToAbar = exports.barToAbar = exports.validateSpent = exports.getAnonKeys = exports.createTestBars = exports.createNewKeypair = void 0;
 var dotenv_1 = __importDefault(require("dotenv"));
-var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("../api");
+var testHelpers_1 = require("../evm/testHelpers");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var providers_1 = require("../services/cacheStore/providers");
+var utils_1 = require("../services/utils");
 var utxoHelper_1 = require("../services/utxoHelper");
 dotenv_1.default.config();
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
@@ -81,8 +82,8 @@ var sdkEnv = {
     cachePath: './cache',
 };
 var waitingTimeBeforeCheckTxStatus = 19000;
-console.log('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
-console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+(0, utils_1.log)('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
+(0, utils_1.log)("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet;
 var password = 'yourSecretPassword';
@@ -96,7 +97,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 2:
                 walletInfo = _a.sent();
-                console.log('new wallet info', walletInfo);
+                (0, utils_1.log)('new wallet info', walletInfo);
                 return [2 /*return*/, walletInfo];
         }
     });
@@ -110,7 +111,7 @@ var createTestBars = function (senderOne) { return __awaiter(void 0, void 0, voi
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('////////////////  Create Test Bars //////////////// ');
+                (0, utils_1.log)('////////////////  Create Test Bars //////////////// ');
                 pkey = mainFaucet;
                 toPkeyMine = senderOne;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -134,9 +135,11 @@ var createTestBars = function (senderOne) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 6:
                 resultHandle = _a.sent();
-                console.log('send fra result handle!!', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                (0, utils_1.log)('send fra result handle!!', resultHandle);
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 7:
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _a.sent();
                 _a.label = 8;
             case 8:
@@ -155,11 +158,11 @@ var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('//////////////// Generate Anon Keys //////////////// ');
+                (0, utils_1.log)('//////////////// Generate Anon Keys //////////////// ');
                 return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
             case 1:
                 myAnonKeys = _a.sent();
-                console.log('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
+                (0, utils_1.log)('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
                 return [2 /*return*/, myAnonKeys];
         }
     });
@@ -175,13 +178,13 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitment, balance
             case 0: return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
             case 1:
                 balanceNew = _a.sent();
-                console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
-                console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
+                (0, utils_1.log)('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
+                (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
                 balanceChangeF = parseFloat(balance.replace(/,/g, '')) - parseFloat(balanceNew.replace(/,/g, ''));
                 balanceChange = Math.floor(balanceChangeF);
-                console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
+                (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
                 if (balanceChange != 210) {
-                    console.log('BAR balance does not match expected value');
+                    (0, utils_1.log)('BAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment])];
@@ -189,9 +192,9 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitment, balance
                 anonBalances = _a.sent();
                 anonBalUnspent = anonBalances.unSpentBalances.balances[0].amount;
                 anonBalanceValue = parseInt(anonBalUnspent.replace(/,/g, ''), 10);
-                console.log('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ' FRA');
+                (0, utils_1.log)('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ' FRA');
                 if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-                    console.log('ABAR balance does not match expected value');
+                    (0, utils_1.log)('ABAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -229,11 +232,11 @@ exports.validateSpent = validateSpent;
 var barToAbar = function (senderOne, AnonKeys, isBalanceCheck, givenSid) {
     if (givenSid === void 0) { givenSid = 0; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var pkey, walletInfo, balance, sid, sidsResult, sids, sortedSids, anonKeys, _a, transactionBuilder, barToAbarData, usedSid, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult, balanceResult;
+        var pkey, walletInfo, balance, sid, sidsResult, sids, sortedSids, anonKeys, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitment, ownedAbarsResponse, ownedAbarsSaveResult, balanceResult;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    console.log('////////////////  BAR To ABAR conversion //////////////// ');
+                    (0, utils_1.log)('////////////////  BAR To ABAR conversion //////////////// ');
                     pkey = senderOne;
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
                 case 1:
@@ -248,36 +251,38 @@ var barToAbar = function (senderOne, AnonKeys, isBalanceCheck, givenSid) {
                     sidsResult = _b.sent();
                     sids = sidsResult.response;
                     if (!sids) {
-                        console.log('ERROR no sids available');
+                        (0, utils_1.log)('ERROR no sids available');
                         return [2 /*return*/, false];
                     }
                     sortedSids = sids.sort(function (a, b) { return b - a; });
-                    console.log('🚀 ~ barToAbar ~ sortedSids', sortedSids);
+                    (0, utils_1.log)('🚀 ~ barToAbar ~ sortedSids', sortedSids);
                     sid = sortedSids[0];
                     _b.label = 4;
                 case 4:
                     anonKeys = __assign({}, AnonKeys);
-                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, sid, anonKeys.axfrPublicKey)];
+                    return [4 /*yield*/, api_1.TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)];
                 case 5:
-                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSid = _a.sid;
-                    console.log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-                    console.log('🚀 ~ usedSid', usedSid);
+                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
+                    (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                    (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
                 case 6:
                     resultHandle = _b.sent();
-                    console.log('send bar to abar result handle!!', resultHandle);
+                    (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
                     givenCommitment = barToAbarData.commitments[0];
-                    return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                    // await sleep(waitingTimeBeforeCheckTxStatus);
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
                 case 7:
+                    // await sleep(waitingTimeBeforeCheckTxStatus);
                     _b.sent();
                     return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
                 case 8:
                     ownedAbarsResponse = _b.sent();
-                    console.log('🚀 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
+                    (0, utils_1.log)('🚀 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
                     return [4 /*yield*/, api_1.TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse)];
                 case 9:
                     ownedAbarsSaveResult = _b.sent();
-                    console.log('🚀 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
+                    (0, utils_1.log)('🚀 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
                     if (!isBalanceCheck) return [3 /*break*/, 11];
                     return [4 /*yield*/, barToAbarBalances(walletInfo, anonKeys, givenCommitment, balance)];
                 case 10:
@@ -300,31 +305,33 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
-                console.log('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
+                (0, utils_1.log)('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
                 anonKeysSender = __assign({}, AnonKeys1);
                 anonKeysReceiver = __assign({}, AnonKeys2);
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false)];
             case 1:
                 givenCommitmentToTransfer = (_b.sent());
-                console.log('🚀 ~ abarToAbar ~ givenCommitmentToTransfer', givenCommitmentToTransfer);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ givenCommitmentToTransfer', givenCommitmentToTransfer);
                 givenCommitmentsListSender = [givenCommitmentToTransfer];
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentToTransfer)];
             case 2:
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
-                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '50', ownedAbarToUseAsSource)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '50', [ownedAbarToUseAsSource])];
             case 3:
                 _a = _b.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
-                console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                (0, utils_1.log)('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
                 return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
             case 4:
                 resultHandle = _b.sent();
-                console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                (0, utils_1.log)('transfer abar result handle!!', resultHandle);
+                (0, utils_1.log)("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 5:
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _b.sent();
-                console.log('now checking balances\n\n\n');
+                (0, utils_1.log)('now checking balances\n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
                 retrievedCommitmentsListReceiver = [];
                 for (_i = 0, commitmentsMap_1 = commitmentsMap; _i < commitmentsMap_1.length; _i++) {
@@ -337,8 +344,8 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
                         retrievedCommitmentsListReceiver.push(commitmentKey);
                     }
                 }
-                console.log('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
-                console.log('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
             case 6:
                 balancesSender = _b.sent();
@@ -350,14 +357,14 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
                 balReceiver = balancesReceiver.balances[0].amount;
                 balanceReceiver = parseInt(balReceiver.replace(/,/g, ''), 10);
                 if (balanceSender != 158 || balanceReceiver != 50) {
-                    console.log('ABAR balances does not match expected value');
+                    (0, utils_1.log)('ABAR balances does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitmentToTransfer)];
             case 8:
                 isNullifierHashSpent = _b.sent();
                 if (!isNullifierHashSpent) {
-                    console.log('Nullifier hash of sender still unspent');
+                    (0, utils_1.log)('Nullifier hash of sender still unspent');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -374,7 +381,7 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
-                console.log('//////////////// ABAR To BAR conversion //////////////// ');
+                (0, utils_1.log)('//////////////// ABAR To BAR conversion //////////////// ');
                 pkey = senderOne;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -396,43 +403,45 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 6:
                 resultHandle = _d.sent();
-                console.log('abar to bar result handle!!!', resultHandle);
+                (0, utils_1.log)('abar to bar result handle!!!', resultHandle);
                 // Check BAR and ABAR balances, and nullifier spending
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 7:
                 // Check BAR and ABAR balances, and nullifier spending
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _d.sent();
-                console.log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
+                (0, utils_1.log)('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
             case 8:
                 balanceNew = _d.sent();
-                console.log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
+                (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
                 balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
                 balanceChange = Math.floor(balanceChangeF);
-                console.log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
+                (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
                 if (balanceChange != 209 && balanceChange != 210) {
-                    console.log('ERROR BAR balance does not match expected value', balanceChange);
+                    (0, utils_1.log)('ERROR BAR balance does not match expected value', balanceChange);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment])];
             case 9:
                 anonBalances = _d.sent();
-                console.log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
                 if (!((_c = (_b = anonBalances === null || anonBalances === void 0 ? void 0 : anonBalances.spentBalances) === null || _b === void 0 ? void 0 : _b.balances) === null || _c === void 0 ? void 0 : _c.length)) {
-                    console.log('ERROR No ABAR spent balances available');
+                    (0, utils_1.log)('ERROR No ABAR spent balances available');
                     return [2 /*return*/, false];
                 }
                 anonBalSpent = anonBalances.spentBalances.balances[0].amount;
                 anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
                 if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-                    console.log('ERROR ABAR balance does not match expected value');
+                    (0, utils_1.log)('ERROR ABAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitment)];
             case 10:
                 isNullifierHashSpent = _d.sent();
                 if (!isNullifierHashSpent) {
-                    console.log('ERROR Nullifier hash of sender still unspent');
+                    (0, utils_1.log)('ERROR Nullifier hash of sender still unspent');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -458,9 +467,11 @@ var defineIssueCustomAsset = function (senderOne, assetCode, derivedAssetCode) {
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
             case 3:
                 handle = _a.sent();
-                console.log('New asset ', assetCode, ' created, handle', handle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                (0, utils_1.log)('New asset ', assetCode, ' created, handle', handle);
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 4:
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _a.sent();
                 assetBlindRules = { isAmountBlind: false };
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedAssetCode, '1000', assetBlindRules)];
@@ -469,14 +480,17 @@ var defineIssueCustomAsset = function (senderOne, assetCode, derivedAssetCode) {
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilderIssue)];
             case 6:
                 handleIssue = _a.sent();
-                console.log('Asset ', assetCode, ' issued, handle', handleIssue);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                (0, utils_1.log)('Asset ', assetCode, ' issued, handle', handleIssue);
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 7:
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _a.sent();
                 return [2 /*return*/];
         }
     });
 }); };
+exports.defineIssueCustomAsset = defineIssueCustomAsset;
 /**
  * Get available SIDs for a given custom asset and FRA
  */
@@ -495,7 +509,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
                 sids = (_a.sent()).response;
                 sidsResult = sids;
                 if (!sidsResult) {
-                    console.log('ERROR no sids available');
+                    (0, utils_1.log)('ERROR no sids available');
                     return [2 /*return*/, [[], []]];
                 }
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sidsResult)];
@@ -513,11 +527,12 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
                         customAssetSids.push(utxoItem['sid']);
                     }
                 }
-                console.log('FRA Sids: ', fraSids, '; Custom Asset Sids: ', customAssetSids);
+                (0, utils_1.log)('FRA Sids: ', fraSids, '; Custom Asset Sids: ', customAssetSids);
                 return [2 /*return*/, [fraSids, customAssetSids]];
         }
     });
 }); };
+exports.getSidsForAsset = getSidsForAsset;
 /**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
@@ -526,7 +541,7 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log('//////////////// Issue Custom Asset and Create Test Bars //////////////// ');
+                (0, utils_1.log)('//////////////// Issue Custom Asset and Create Test Bars //////////////// ');
                 pkey = mainFaucet;
                 toPkeyMine = senderOne;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -546,11 +561,11 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 5:
                 resultHandle = _a.sent();
-                console.log('send fra result handle!!', resultHandle);
+                (0, utils_1.log)('send fra result handle!!', resultHandle);
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
             case 6:
                 balance1Old = _a.sent();
-                return [4 /*yield*/, defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code)];
+                return [4 /*yield*/, (0, exports.defineIssueCustomAsset)(senderOne, asset1Code, derivedAsset1Code)];
             case 7:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, derivedAsset1Code)];
@@ -558,9 +573,9 @@ var createTestBarsMulti = function (senderOne, asset1Code, derivedAsset1Code) { 
                 balance1New = _a.sent();
                 balance1ChangeF = parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
                 balance1Change = Math.floor(balance1ChangeF);
-                console.log('Custom Asset1 Old Balance = ', balance1Old, '; Custom Asset1 New Balance = ', balance1New, '; Custom Asset1 Balance Change = ', balance1ChangeF);
+                (0, utils_1.log)('Custom Asset1 Old Balance = ', balance1Old, '; Custom Asset1 New Balance = ', balance1New, '; Custom Asset1 Balance Change = ', balance1ChangeF);
                 if (balance1Change != 1000) {
-                    console.log('Custom Asset BAR balance does not match expected value');
+                    (0, utils_1.log)('Custom Asset BAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];
@@ -577,31 +592,32 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
     return __generator(this, function (_g) {
         switch (_g.label) {
             case 0:
-                console.log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
+                (0, utils_1.log)('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
                 anonKeysSender = __assign({}, AnonKeys1);
                 anonKeysReceiver = __assign({}, AnonKeys2);
-                return [4 /*yield*/, getSidsForAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(senderOne, asset1Code)];
             case 1:
                 _a = _g.sent(), _fraSids = _a[0], customAssetSids = _a[1];
                 customAssetSid = customAssetSids.sort(function (a, b) { return b - a; })[0];
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false, customAssetSid)];
             case 2:
                 givenCommitmentToTransfer = (_g.sent());
-                return [4 /*yield*/, getSidsForAsset(senderOne, asset1Code)];
+                return [4 /*yield*/, (0, exports.getSidsForAsset)(senderOne, asset1Code)];
             case 3:
                 _b = _g.sent(), fraSids = _b[0], _customAssetSids = _b[1];
                 fraSid = fraSids.sort(function (a, b) { return b - a; })[0];
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false, fraSid)];
             case 4:
                 givenCommitmentsToPayFee = [(_g.sent())];
-                console.log('🚀 ~ abarToAbar ~ Given ABAR commitment To Transfer', givenCommitmentToTransfer);
-                console.log('🚀 ~ abarToAbar ~ Given FRA ABAR Commitment', givenCommitmentsToPayFee);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ Given ABAR commitment To Transfer', givenCommitmentToTransfer);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ Given FRA ABAR Commitment', givenCommitmentsToPayFee);
                 givenCommitmentsListSender = __spreadArray([givenCommitmentToTransfer], givenCommitmentsToPayFee, true);
                 additionalOwnedAbarItems = [];
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentToTransfer)];
             case 5:
                 ownedAbarsResponseOne = _g.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
+                additionalOwnedAbarItems.push(ownedAbarToUseAsSource);
                 _i = 0, givenCommitmentsToPayFee_1 = givenCommitmentsToPayFee;
                 _g.label = 6;
             case 6:
@@ -616,19 +632,23 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 8:
                 _i++;
                 return [3 /*break*/, 6];
-            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '1000', ownedAbarToUseAsSource, additionalOwnedAbarItems)];
+            case 9: return [4 /*yield*/, api_1.TripleMasking.abarToAbar(anonKeysSender, anonKeysReceiver.axfrPublicKey, '1000', 
+                // ownedAbarToUseAsSource,
+                additionalOwnedAbarItems)];
             case 10:
                 _c = _g.sent(), anonTransferOperationBuilder = _c.anonTransferOperationBuilder, abarToAbarData = _c.abarToAbarData;
-                console.log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+                (0, utils_1.log)('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
                 return [4 /*yield*/, api_1.Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
             case 11:
                 resultHandle = _g.sent();
-                console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                (0, utils_1.log)('transfer abar result handle!!', resultHandle);
+                (0, utils_1.log)("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                // await sleep(waitingTimeBeforeCheckTxStatus);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 12:
+                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _g.sent();
-                console.log('now checking balances\n\n\n');
+                (0, utils_1.log)('now checking balances\n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
                 retrievedCommitmentsListReceiver = [];
                 for (_d = 0, commitmentsMap_2 = commitmentsMap; _d < commitmentsMap_2.length; _d++) {
@@ -641,16 +661,16 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
                         retrievedCommitmentsListReceiver.push(commitmentKey);
                     }
                 }
-                console.log('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
-                console.log('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
             case 13:
                 balancesSender = _g.sent();
-                console.log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver)];
             case 14:
                 balancesReceiver = _g.sent();
-                console.log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
                 fraBalSend = balancesSender.balances[0].amount;
                 fraBalanceSender = parseInt(fraBalSend.replace(/,/g, ''), 10);
                 customBalReceive = balancesReceiver.balances[0].amount;
@@ -660,33 +680,33 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
                     ])];
             case 15:
                 senderCustomBalances = _g.sent();
-                console.log('🚀 Custom Asset spent balances for sender after transfer', senderCustomBalances.spentBalances);
+                (0, utils_1.log)('🚀 Custom Asset spent balances for sender after transfer', senderCustomBalances.spentBalances);
                 if (!((_f = (_e = senderCustomBalances === null || senderCustomBalances === void 0 ? void 0 : senderCustomBalances.spentBalances) === null || _e === void 0 ? void 0 : _e.balances) === null || _f === void 0 ? void 0 : _f.length)) {
-                    console.log('No ABAR spent balances available');
+                    (0, utils_1.log)('No ABAR spent balances available');
                     return [2 /*return*/, false];
                 }
                 sendercustomSpent = senderCustomBalances.spentBalances.balances[0].amount;
                 customSpentSender = parseInt(sendercustomSpent.replace(/,/g, ''), 10);
                 if (customSpentSender != 1000 || customBalanceReceiver != 1000) {
-                    console.log('ABAR balances does not match expected value');
+                    (0, utils_1.log)('ABAR balances does not match expected value');
                     return [2 /*return*/, false];
                 }
                 if (fraBalanceSender != 209 && fraBalanceSender != 208) {
-                    console.log('Sender FRA ABAR balance does not match expected value');
+                    (0, utils_1.log)('Sender FRA ABAR balance does not match expected value');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitmentToTransfer)];
             case 16:
                 isNullifierHashSpent = _g.sent();
                 if (!isNullifierHashSpent) {
-                    console.log('Custom Asset Nullifier hash of sender still unspent');
+                    (0, utils_1.log)('Custom Asset Nullifier hash of sender still unspent');
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitmentsToPayFee[0])];
             case 17:
                 isFraNullifierHashSpent = _g.sent();
                 if (!isFraNullifierHashSpent) {
-                    console.log('FRA Nullifier hash of sender still unspent');
+                    (0, utils_1.log)('FRA Nullifier hash of sender still unspent');
                     return [2 /*return*/, false];
                 }
                 return [2 /*return*/, true];

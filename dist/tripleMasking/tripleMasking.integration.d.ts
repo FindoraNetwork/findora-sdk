@@ -25,6 +25,14 @@ export declare const abarToAbar: (senderOne: string, AnonKeys1: FindoraWallet.Fo
  */
 export declare const abarToBar: (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => Promise<boolean>;
 /**
+ * Define and Issue a custom asset
+ */
+export declare const defineIssueCustomAsset: (senderOne: string, assetCode: string, derivedAssetCode: string) => Promise<void>;
+/**
+ * Get available SIDs for a given custom asset and FRA
+ */
+export declare const getSidsForAsset: (senderOne: string, assetCode: string) => Promise<number[][]>;
+/**
  * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
  */
 export declare const createTestBarsMulti: (senderOne: string, asset1Code: string, derivedAsset1Code: string) => Promise<boolean>;

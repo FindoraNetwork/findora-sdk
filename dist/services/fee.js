@@ -246,7 +246,7 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
 // used in triple masking
-var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
+var getFeeInputs = function (walletInfo, excludeSids, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, sidsResult, sids, filteredSids, minimalFee, _a, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -260,7 +260,7 @@ var getFeeInputs = function (walletInfo, excludeSid, isBarToAbar) { return __awa
                 if (!sids) {
                     throw new Error('No sids were fetched');
                 }
-                filteredSids = sids.filter(function (sid) { return sid !== excludeSid; });
+                filteredSids = sids.filter(function (sid) { return !excludeSids.includes(sid); });
                 if (!isBarToAbar) return [3 /*break*/, 4];
                 return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
             case 3:
