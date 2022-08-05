@@ -12,11 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -121,7 +117,7 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 var password = '123';
-console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -462,7 +458,7 @@ var testTransferToYourself = function () { return __awaiter(void 0, void 0, void
             case 1:
                 if (!(_i < amounts_1.length)) return [3 /*break*/, 4];
                 amount = amounts_1[_i];
-                console.log("Sending amount of ".concat(amount, " FRA"));
+                console.log("Sending amount of " + amount + " FRA");
                 return [4 /*yield*/, transferFraToSingleAddress(amount)];
             case 2:
                 _a.sent();
@@ -799,7 +795,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 4:
                 console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
+                myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
                 _d.label = 5;
             case 5:
                 _d.trys.push([5, 7, , 8]);
@@ -903,7 +899,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1026,7 +1022,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1107,7 +1103,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
                 if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatusClaim);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatusClaim);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1184,7 +1180,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleSend, ". Response was: "), transactionStatusSend);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleSend + ". Response was: ", transactionStatusSend);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1241,7 +1237,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
                 if (!txnSIDDelegate) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleDelegate, ". Response was: "), transactionStatusDelegate);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleDelegate + ". Response was: ", transactionStatusDelegate);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1347,7 +1343,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
             case 1:
                 result = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ ".concat(methodName, " ~ result"), result);
+                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
                 return [2 /*return*/];
         }
     });
@@ -1392,7 +1388,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 5)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(10, 20);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "".concat(amount), assetCode, assetBlindRules)];
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -1416,7 +1412,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("//////////////// Get sids for asset ".concat(assetCode, " //////////////// "));
+                console.log("//////////////// Get sids for asset " + assetCode + " //////////////// ");
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(senderOne, password)];
             case 1:
                 walletInfo = _a.sent();
@@ -1734,7 +1730,7 @@ var abarToAbarFraOneFraAtxoForFee = function () { return __awaiter(void 0, void 
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _c.sent();
@@ -1838,7 +1834,7 @@ var abarToAbarFraMultipleFraAtxoForFee = function () { return __awaiter(void 0, 
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _c.sent();
@@ -1942,7 +1938,7 @@ var abarToAbarCustomOneFraAtxoForFee = function () { return __awaiter(void 0, vo
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _c.sent();
@@ -2046,7 +2042,7 @@ var abarToAbarCustomMultipleFraAtxoForFee = function () { return __awaiter(void 
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
+                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
             case 18:
                 _c.sent();
@@ -2136,7 +2132,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
     function isCoinBase(fraAddress) {
-        console.log("we are going to call leger with ".concat(fraAddress));
+        console.log("we are going to call leger with " + fraAddress);
         // return false;
         var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
         return false;

@@ -19,7 +19,7 @@ export interface ProcessedCommitmentsMap {
 }
 export declare const genAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;
 export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, commitments: string[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarData>;
-export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string) => Promise<boolean>;
+export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string | undefined) => Promise<boolean>;
 export declare const abarToAbar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<{
     anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
