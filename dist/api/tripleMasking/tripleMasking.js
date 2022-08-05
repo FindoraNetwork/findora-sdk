@@ -652,8 +652,10 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
     });
 }); };
 exports.barToAbar = barToAbar;
-var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSource) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, receiverXfrPublicKey, aXfrSpendKeySender, abarPayloadSource, abarToBarData;
+var abarToBar = function (anonKeysSender, receiverWalletInfo, 
+// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
+additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
+    var transactionBuilder, receiverXfrPublicKey, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Builder.getTransactionBuilder()];
@@ -665,6 +667,7 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                 return [4 /*yield*/, getAnonKeypairFromJson(anonKeysSender)];
             case 3:
                 aXfrSpendKeySender = (_a.sent()).aXfrSpendKeyConverted;
+                ownedAbarToUseAsSource = additionalOwnedAbarItems[0], additionalOwnedAbars = additionalOwnedAbarItems.slice(1);
                 return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
             case 4:
                 abarPayloadSource = _a.sent();
@@ -675,6 +678,26 @@ var abarToBar = function (anonKeysSender, receiverWalletInfo, ownedAbarToUseAsSo
                     console.log('Error adding Abar to bar', error);
                     throw new Error("Could not add abar to bar operation\", Error - " + error);
                 }
+                _i = 0, additionalOwnedAbars_2 = additionalOwnedAbars;
+                _a.label = 5;
+            case 5:
+                if (!(_i < additionalOwnedAbars_2.length)) return [3 /*break*/, 8];
+                ownedAbarItemOne = additionalOwnedAbars_2[_i];
+                return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
+            case 6:
+                abarPayloadNext = _a.sent();
+                try {
+                    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, abarPayloadNext.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKey, false, false);
+                }
+                catch (error) {
+                    console.log('Error from the backend:', error);
+                    throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - " + error.message);
+                }
+                _a.label = 7;
+            case 7:
+                _i++;
+                return [3 /*break*/, 5];
+            case 8:
                 try {
                     transactionBuilder = transactionBuilder.build();
                 }

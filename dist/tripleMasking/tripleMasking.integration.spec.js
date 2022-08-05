@@ -105,30 +105,22 @@ describe("Triple Masking Integration (integration test)", function () {
                 }
             });
         }); }, extendedExecutionTimeout);
-        it('Should convert BAR to ABAR, and verify balances of BAR and ABAR', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.barToAbar(senderOne, anonKeys1, true)];
-                    case 1:
-                        result = (_a.sent());
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout);
-        it('Should do anonymous transfer from Sender to Receiver, and verify ABAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.abarToAbar(senderOne, anonKeys1, anonKeys2)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout * 2);
+        // it(
+        //   'Should convert BAR to ABAR, and verify balances of BAR and ABAR',
+        //   async () => {
+        //     const result = (await Integration.barToAbar(senderOne, anonKeys1, true)) as boolean;
+        //     expect(result).toBe(true);
+        //   },
+        //   extendedExecutionTimeout,
+        // );
+        // it(
+        //   'Should do anonymous transfer from Sender to Receiver, and verify ABAR balances',
+        //   async () => {
+        //     const result = await Integration.abarToAbar(senderOne, anonKeys1, anonKeys2);
+        //     expect(result).toBe(true);
+        //   },
+        //   extendedExecutionTimeout * 2,
+        // );
         it('Should convert ABAR to BAR, and verify balances of ABAR and BAR', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
@@ -142,47 +134,39 @@ describe("Triple Masking Integration (integration test)", function () {
             });
         }); }, extendedExecutionTimeout);
     });
-    describe('Multi (Custom) Asset Integration Test', function () {
-        it('Should create test BARs with simple creation and transfer of different assets', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout);
-        it('Should do multi asset anonymous transfer, and verify ABAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(true);
-                        return [2 /*return*/];
-                }
-            });
-        }); }, extendedExecutionTimeout * 2);
-        // it(
-        //   'Should convert BAR to ABAR, and verify balances of BAR and ABAR',
-        //   async () => {
-        //     const result = (await Integration.barToAbarMulti(anonKeys3, true)) as boolean;
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout,
-        // );
-        // it(
-        //   'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
-        //   async () => {
-        //       const result = await Integration.abarToBarMulti(anonKeys3);
-        //       expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout,
-        // );
-    });
+    // describe('Multi (Custom) Asset Integration Test', () => {
+    //   it(
+    //     'Should create test BARs with simple creation and transfer of different assets',
+    //     async () => {
+    //       const result = await Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code);
+    //       expect(result).toBe(true);
+    //     },
+    //     extendedExecutionTimeout,
+    //   );
+    //   it(
+    //     'Should do multi asset anonymous transfer, and verify ABAR balances',
+    //     async () => {
+    //       const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code);
+    //       expect(result).toBe(true);
+    //     },
+    //     extendedExecutionTimeout * 2,
+    //   );
+    //   // it(
+    //   //   'Should convert BAR to ABAR, and verify balances of BAR and ABAR',
+    //   //   async () => {
+    //   //     const result = (await Integration.barToAbarMulti(anonKeys3, true)) as boolean;
+    //   //     expect(result).toBe(true);
+    //   //   },
+    //   //   extendedExecutionTimeout,
+    //   // );
+    //   // it(
+    //   //   'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
+    //   //   async () => {
+    //   //       const result = await Integration.abarToBarMulti(anonKeys3);
+    //   //       expect(result).toBe(true);
+    //   //   },
+    //   //   extendedExecutionTimeout,
+    //   // );
+    // });
 });
 //# sourceMappingURL=tripleMasking.integration.spec.js.map

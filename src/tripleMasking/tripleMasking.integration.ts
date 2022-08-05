@@ -277,10 +277,10 @@ export const abarToAbar = async (
 
   // Check ABAR balances and nullifier spending for sender and receiver
   const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
-  // log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
+  log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
 
   const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver);
-  // log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+  log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
 
   const balSender = balancesSender.balances[0].amount;
   const balanceSender = parseInt(balSender.replace(/,/g, ''), 10);
@@ -336,40 +336,45 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   log('abar to bar result handle!!!', resultHandle);
 
   // Check BAR and ABAR balances, and nullifier spending
-  // await sleep(waitingTimeBeforeCheckTxStatus);
   await waitForBlockChange();
 
-  log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
+  log('Old BAR balance for public key: ', walletInfo.address, ' is ', balance, ' FRA');
+
   const balanceNew = await Account.getBalance(walletInfo);
   log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
   const balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
   const balanceChange = Math.floor(balanceChangeF);
+  log('Change of BAR balance (non formatted)', balanceChange);
   log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
 
-  if (balanceChange != 209 && balanceChange != 210) {
-    log('ERROR BAR balance does not match expected value', balanceChange);
-    return false;
+  if (balanceChange != 419 && balanceChange != 420) {
+    const err = `ERROR BAR balance does not match expected value of ${balanceChange}`;
+    log(err);
+    return err;
   }
 
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
   log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
   if (!anonBalances?.spentBalances?.balances?.length) {
-    log('ERROR No ABAR spent balances available');
-    return false;
+    const err = 'ERROR No ABAR spent balances available';
+    log(err);
+    return err;
   }
 
   const anonBalSpent = anonBalances.spentBalances.balances[0].amount;
   const anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
 
   if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-    log('ERROR ABAR balance does not match expected value');
-    return false;
+    const err = 'ERROR ABAR balance does not match expected value';
+    log(err);
+    return err;
   }
 
   const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitment);
   if (!isNullifierHashSpent) {
-    log('ERROR Nullifier hash of sender still unspent');
-    return false;
+    const err = 'ERROR Nullifier hash of sender still unspent';
+    log(err);
+    return err;
   }
 
   return true;
