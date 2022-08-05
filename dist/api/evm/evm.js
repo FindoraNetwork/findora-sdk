@@ -100,7 +100,7 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
             case 0:
                 web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
                 contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
-                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
+                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString(10);
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
                 return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
             case 1:
@@ -278,7 +278,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowL
             case 3:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 transactionBuilder = transactionBuilder
                     .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
                     .sign(walletInfo.keypair);
@@ -322,7 +322,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 2:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 nonce = '';
                 _a.label = 3;
             case 3:
