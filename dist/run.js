@@ -87,7 +87,6 @@ var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
-var testHelpers_1 = require("./evm/testHelpers");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
@@ -95,6 +94,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
+var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -2098,7 +2098,7 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
                 console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, ownedAbarToUseAsSource)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource])];
             case 3:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
                 console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
@@ -2160,13 +2160,23 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
     });
 }); };
 var testBlockWait = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var result;
+    var anonKeys1, walletInfo, senderOne, resultS, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 0: return [4 /*yield*/, TMI.getAnonKeys()];
             case 1:
+                anonKeys1 = _a.sent();
+                return [4 /*yield*/, TMI.createNewKeypair()];
+            case 2:
+                walletInfo = _a.sent();
+                senderOne = walletInfo.privateStr;
+                return [4 /*yield*/, TMI.createTestBars(senderOne)];
+            case 3:
+                resultS = _a.sent();
+                return [4 /*yield*/, TMI.abarToBar(senderOne, anonKeys1)];
+            case 4:
                 result = _a.sent();
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+                console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
                 return [2 /*return*/];
         }
     });

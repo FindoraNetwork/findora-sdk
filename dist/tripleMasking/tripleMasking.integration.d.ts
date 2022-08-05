@@ -23,7 +23,7 @@ export declare const abarToAbar: (senderOne: string, AnonKeys1: FindoraWallet.Fo
 /**
  * ABAR To BAR conversion Integration Test for FRA
  */
-export declare const abarToBar: (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => Promise<boolean>;
+export declare const abarToBar: (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => Promise<string | true>;
 /**
  * Define and Issue a custom asset
  */

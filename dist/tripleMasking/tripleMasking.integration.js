@@ -349,9 +349,11 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
             case 6:
                 balancesSender = _b.sent();
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver)];
             case 7:
                 balancesReceiver = _b.sent();
+                (0, utils_1.log)('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
                 balSender = balancesSender.balances[0].amount;
                 balanceSender = parseInt(balSender.replace(/,/g, ''), 10);
                 balReceiver = balancesReceiver.balances[0].amount;
@@ -376,7 +378,7 @@ exports.abarToAbar = abarToAbar;
  * ABAR To BAR conversion Integration Test for FRA
  */
 var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, anonKeysSender, givenCommitment, balance, ownedAbarsResponse, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle, balanceNew, balanceChangeF, balanceChange, anonBalances, anonBalSpent, anonBalanceValue, isNullifierHashSpent;
+    var pkey, walletInfo, anonKeysSender, givenCommitment, givenCommitmentOne, balance, ownedAbarsResponse, ownedAbarToUseAsSource, ownedAbarsResponseOne, ownedAbarToUseAsSourceOne, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle, balanceNew, balanceChangeF, balanceChange, err, anonBalances, err, anonBalSpent, anonBalanceValue, err, isNullifierHashSpent, err;
     var _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
@@ -390,59 +392,71 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false)];
             case 2:
                 givenCommitment = (_d.sent());
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+                return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false)];
             case 3:
+                givenCommitmentOne = (_d.sent());
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 4:
                 balance = _d.sent();
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
-            case 4:
+            case 5:
                 ownedAbarsResponse = _d.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponse[0];
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, ownedAbarToUseAsSource)];
-            case 5:
+                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentOne)];
+            case 6:
+                ownedAbarsResponseOne = _d.sent();
+                ownedAbarToUseAsSourceOne = ownedAbarsResponseOne[0];
+                (0, utils_1.log)('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+                (0, utils_1.log)('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource, ownedAbarToUseAsSourceOne])];
+            case 7:
                 _a = _d.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 6:
+            case 8:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('abar to bar result handle!!!', resultHandle);
                 // Check BAR and ABAR balances, and nullifier spending
-                // await sleep(waitingTimeBeforeCheckTxStatus);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 7:
+            case 9:
                 // Check BAR and ABAR balances, and nullifier spending
-                // await sleep(waitingTimeBeforeCheckTxStatus);
                 _d.sent();
-                (0, utils_1.log)('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
+                (0, utils_1.log)('Old BAR balance for public key: ', walletInfo.address, ' is ', balance, ' FRA');
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 8:
+            case 10:
                 balanceNew = _d.sent();
                 (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
                 balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
                 balanceChange = Math.floor(balanceChangeF);
+                (0, utils_1.log)('Change of BAR balance (non formatted)', balanceChange);
                 (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
-                if (balanceChange != 209 && balanceChange != 210) {
-                    (0, utils_1.log)('ERROR BAR balance does not match expected value', balanceChange);
-                    return [2 /*return*/, false];
+                if (balanceChange != 419 && balanceChange != 420) {
+                    err = "ERROR BAR balance does not match expected value of " + balanceChange;
+                    (0, utils_1.log)(err);
+                    return [2 /*return*/, err];
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment])];
-            case 9:
+            case 11:
                 anonBalances = _d.sent();
                 (0, utils_1.log)('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
                 if (!((_c = (_b = anonBalances === null || anonBalances === void 0 ? void 0 : anonBalances.spentBalances) === null || _b === void 0 ? void 0 : _b.balances) === null || _c === void 0 ? void 0 : _c.length)) {
-                    (0, utils_1.log)('ERROR No ABAR spent balances available');
-                    return [2 /*return*/, false];
+                    err = 'ERROR No ABAR spent balances available';
+                    (0, utils_1.log)(err);
+                    return [2 /*return*/, err];
                 }
                 anonBalSpent = anonBalances.spentBalances.balances[0].amount;
                 anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
                 if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-                    (0, utils_1.log)('ERROR ABAR balance does not match expected value');
-                    return [2 /*return*/, false];
+                    err = 'ERROR ABAR balance does not match expected value';
+                    (0, utils_1.log)(err);
+                    return [2 /*return*/, err];
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitment)];
-            case 10:
+            case 12:
                 isNullifierHashSpent = _d.sent();
                 if (!isNullifierHashSpent) {
-                    (0, utils_1.log)('ERROR Nullifier hash of sender still unspent');
-                    return [2 /*return*/, false];
+                    err = 'ERROR Nullifier hash of sender still unspent';
+                    (0, utils_1.log)(err);
+                    return [2 /*return*/, err];
                 }
                 return [2 /*return*/, true];
         }

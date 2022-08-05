@@ -12,6 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
+import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -2049,7 +2050,7 @@ const abarToBar = async () => {
   const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
     anonKeysSender,
     walletInfo,
-    ownedAbarToUseAsSource,
+    [ownedAbarToUseAsSource],
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
@@ -2122,8 +2123,14 @@ const testIt = async () => {
 };
 
 const testBlockWait = async () => {
-  const result = await waitForBlockChange(2);
-  log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+  // const result = await waitForBlockChange(2);
+  // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+  const anonKeys1 = await TMI.getAnonKeys();
+  const walletInfo = await TMI.createNewKeypair();
+  const senderOne = walletInfo.privateStr!;
+  const resultS = await TMI.createTestBars(senderOne);
+  const result = await TMI.abarToBar(senderOne, anonKeys1);
+  console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
 };
 
 async function approveToken() {
