@@ -69,9 +69,9 @@ var utils_1 = require("../services/utils");
 var utxoHelper_1 = require("../services/utxoHelper");
 dotenv_1.default.config();
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../../.env_tm_integration_" + process.env.INTEGRATION_ENV_NAME
+    ? "../../.env_tm_integration_".concat(process.env.INTEGRATION_ENV_NAME)
     : "../../.env_example";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 /**
  * Prior to using SDK we have to initialize its environment configuration
@@ -83,7 +83,7 @@ var sdkEnv = {
 };
 var waitingTimeBeforeCheckTxStatus = 19000;
 (0, utils_1.log)('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
-(0, utils_1.log)("Connecting to \"" + sdkEnv.hostUrl + "\"");
+(0, utils_1.log)("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet;
 var password = 'yourSecretPassword';
@@ -325,7 +325,7 @@ var abarToAbar = function (senderOne, AnonKeys1, AnonKeys2) { return __awaiter(v
             case 4:
                 resultHandle = _b.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
-                (0, utils_1.log)("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                (0, utils_1.log)("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 // await sleep(waitingTimeBeforeCheckTxStatus);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 5:
@@ -656,7 +656,7 @@ var abarToAbarMulti = function (senderOne, AnonKeys1, AnonKeys2, asset1Code) { r
             case 11:
                 resultHandle = _g.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
-                (0, utils_1.log)("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                (0, utils_1.log)("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 // await sleep(waitingTimeBeforeCheckTxStatus);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 12:

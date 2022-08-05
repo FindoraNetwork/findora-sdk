@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -83,7 +87,7 @@ var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, voi
             case 1:
                 ledger = _a.sent();
                 tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
-                tokenAddressHex = web3_1.default.utils.keccak256("0x" + tokenAddress.toString('hex'));
+                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
                 return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
         }
     });
@@ -96,7 +100,7 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
             case 0:
                 web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
                 contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
-                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
+                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString(10);
                 findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
                 return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
             case 1:
@@ -274,7 +278,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowL
             case 3:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 transactionBuilder = transactionBuilder
                     .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
                     .sign(walletInfo.keypair);
@@ -318,7 +322,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 2:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 nonce = '';
                 _a.label = 3;
             case 3:
@@ -338,7 +342,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 5:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Get nonce error \"" + ethAddress + "\". Error - " + e.message);
+                throw new Error("Get nonce error \"".concat(ethAddress, "\". Error - ").concat(e.message));
             case 6:
                 result = '';
                 try {
@@ -346,7 +350,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Evm to Account wasm error\". Error - " + e.message);
+                    throw new Error("Evm to Account wasm error\". Error - ".concat(e.message));
                 }
                 _a.label = 7;
             case 7:
@@ -361,7 +365,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 9:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Evm to Account submit error\". Error - " + e.message);
+                throw new Error("Evm to Account submit error\". Error - ".concat(e.message));
             case 10: return [2 /*return*/];
         }
     });

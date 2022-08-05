@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -269,7 +273,7 @@ describe('account (unit test)', function () {
                     case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(walletInfo.publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));
@@ -290,7 +294,7 @@ describe('account (unit test)', function () {
                     case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(walletInfo.publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
@@ -309,7 +313,7 @@ describe('account (unit test)', function () {
                     case 1:
                         walletInfo = _a.sent();
                         publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';
-                        url = hostUrl + ":8667/get_owned_utxos/" + publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));

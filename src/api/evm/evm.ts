@@ -49,7 +49,7 @@ export const fraToBar = async (
 ): Promise<TransactionReceipt | any> => {
   const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const contract = getSimBridgeContract(web3, bridgeAddress);
-  const convertAmount = new BigNumber(amount).times(10 ** 18).toString();
+  const convertAmount = new BigNumber(amount).times(10 ** 18).toString(10);
 
   const findoraTo = fraAddressToHashAddress(recipientAddress);
   const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
@@ -243,7 +243,7 @@ export const sendAccountToEvm = async (
 
   const asset = await AssetApi.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
-  const convertAmount = BigInt(toWei(amount, decimals).toString());
+  const convertAmount = BigInt(toWei(amount, decimals).toString(10));
 
   transactionBuilder = transactionBuilder
     .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
@@ -286,7 +286,7 @@ export const sendEvmToAccount = async (
   const accountPublickey = ledger.public_key_from_bech32(fraAddress);
   const asset = await AssetApi.getAssetDetails(ledger.fra_get_asset_code());
   const decimals = asset.assetRules.decimals;
-  const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+  const utxoNumbers = BigInt(toWei(amount, decimals).toString(10));
 
   let nonce = '';
 
