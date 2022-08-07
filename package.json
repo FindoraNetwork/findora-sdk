@@ -138,7 +138,7 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.6.9",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#address-folding",
+    "findora-wallet-wasm": "../findora-wallet-wasm",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",

@@ -50,33 +50,33 @@ describe(`Triple Masking Integration (integration test)`, () => {
       },
       extendedExecutionTimeout * 2,
     );
-    it(
-      'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
-      async () => {
-        const result = await Integration.abarToBar(senderOne, anonKeys1);
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout,
-    );
+    // it(
+    //   'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
+    //   async () => {
+    //     const result = await Integration.abarToBar(senderOne, anonKeys1);
+    //     expect(result).toBe(true);
+    //   },
+    //   extendedExecutionTimeout,
+    // );
   });
 
   describe('Multi (Custom) Asset Integration Test', () => {
-    it(
-      'Should create test BARs with simple creation and transfer of different assets',
-      async () => {
-        const result = await Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code);
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout,
-    );
-    it(
-      'Should do multi asset anonymous transfer, and verify ABAR balances',
-      async () => {
-        const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code);
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 2,
-    );
+    // it(
+    //   'Should create test BARs with simple creation and transfer of different assets',
+    //   async () => {
+    //     const result = await Integration.createTestBarsMulti(senderOne, asset1Code, derivedAsset1Code);
+    //     expect(result).toBe(true);
+    //   },
+    //   extendedExecutionTimeout,
+    // );
+    // it(
+    //   'Should do multi asset anonymous transfer, and verify ABAR balances',
+    //   async () => {
+    //     const result = await Integration.abarToAbarMulti(senderOne, anonKeys2, anonKeys3, derivedAsset1Code);
+    //     expect(result).toBe(true);
+    //   },
+    //   extendedExecutionTimeout * 2,
+    // );
     // it(
     //   'Should convert BAR to ABAR, and verify balances of BAR and ABAR',
     //   async () => {

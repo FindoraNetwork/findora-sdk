@@ -57,9 +57,8 @@ declare namespace FindoraWallet {
   }
 
   interface FormattedAnonKeys {
-    axfrSpendKey: string;
+    axfrSecretKey: string;
     axfrPublicKey: string;
-    axfrViewKey: string;
   }
 
   export interface BarToAbarData {

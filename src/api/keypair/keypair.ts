@@ -1,13 +1,5 @@
+import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from 'findora-wallet-wasm/web';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import {
-  AXfrKeyPair,
-  AXfrPubKey,
-  AXfrViewKey,
-  XfrKeyPair,
-  XfrPublicKey,
-  XPublicKey,
-  XSecretKey,
-} from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -77,8 +69,7 @@ export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => 
   const ledger = await getLedger();
 
   try {
-    const privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
-    return privateStr;
+    return ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
   } catch (err) {
     throw new Error(`could not get priv key string, "${err}" `);
   }
@@ -88,11 +79,10 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
 
   try {
-    const publickey = ledger.get_pub_key_str(keypair).replace(/"/g, '');
     // other option is
-    //  const publickey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
+    //  return ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
     //
-    return publickey;
+    return ledger.get_pub_key_str(keypair).replace(/"/g, '');
   } catch (err) {
     throw new Error(`could not get pub key string, "${err}" `);
   }
@@ -101,8 +91,7 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
-    return address;
+    return ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
   } catch (err) {
     throw new Error(`could not get address string, "${err}" `);
   }
@@ -111,8 +100,7 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const address = ledger.base64_to_bech32(publicKey);
-    return address;
+    return ledger.base64_to_bech32(publicKey);
   } catch (err) {
     throw new Error(`could not get address by public key, "${err}" `);
   }
@@ -124,8 +112,7 @@ export const getAddressByPublicKey = async (publicKey: string): Promise<string> 
 export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   try {
-    const toPublickey = ledger.public_key_from_base64(publicKey);
-    return toPublickey;
+    return ledger.public_key_from_base64(publicKey);
   } catch (err) {
     throw new Error(`could not get xfr public key by base64, "${err}" `);
   }
@@ -137,14 +124,13 @@ export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPub
 export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const toPublickey = ledger.public_key_to_base64(publicKey);
-    return toPublickey;
+    return ledger.public_key_to_base64(publicKey);
   } catch (err) {
     throw new Error(`could not get base64 public key by xfr, "${err}" `);
   }
 };
 
-export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
+export const getAxfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
   const ledger = await getLedger();
   try {
     return ledger.axfr_pubkey_from_string(publicKey);
@@ -153,7 +139,7 @@ export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrP
   }
 };
 
-export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
+export const getAxfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
   const ledger = await getLedger();
   try {
     return ledger.axfr_keypair_from_string(privateKey);
@@ -162,32 +148,12 @@ export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXf
   }
 };
 
-export const getAXfrViewKeyByBase64 = async (privateKey: string): Promise<AXfrViewKey> => {
+export const getAxfrPubKeyByBase64 = async (privateKey: string): Promise<AXfrPubKey> => {
   const ledger = await getLedger();
   try {
-    return ledger.axfr_viewkey_from_string(privateKey);
+    return ledger.axfr_pubkey_from_string(privateKey);
   } catch (err) {
     throw new Error(`could not get AXfrViewKey from the string, "${err}" `);
-  }
-};
-
-export const getXPublicKeyByBase64 = async (publicKey: string): Promise<XPublicKey> => {
-  const ledger = await getLedger();
-  try {
-    const toPublickey = ledger.x_pubkey_from_string(publicKey);
-    return toPublickey;
-  } catch (err) {
-    throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
-  }
-};
-
-export const getXPrivateKeyByBase64 = async (privateKey: string): Promise<XSecretKey> => {
-  const ledger = await getLedger();
-  try {
-    const toPrivateKey = ledger.x_secretkey_from_string(privateKey);
-    return toPrivateKey;
-  } catch (err) {
-    throw new Error(`could not get XSecretKey by base64 private key, "${err}" `);
   }
 };
 
@@ -316,9 +282,7 @@ export const restoreFromKeystoreString = async (
     const keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
     const keyStore: Uint8Array = new Uint8Array(Object.values(keyStoreObject));
 
-    const result = await restoreFromKeystore(keyStore, password);
-
-    return result;
+    return await restoreFromKeystore(keyStore, password);
   } catch (err) {
     throw new Error(
       `could not restore keypair from the key store string. Details: "${(err as Error).message}"`,
@@ -355,8 +319,7 @@ export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): P
 
   try {
     const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
-    const result = String(ledgerMnemonicString).split(' ');
-    return result;
+    return String(ledgerMnemonicString).split(' ');
   } catch (err) {
     throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
   }

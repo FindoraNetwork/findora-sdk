@@ -1,12 +1,6 @@
 import Cache from '../../services/cacheStore/factory';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
-import {
-  AnonKeys,
-  AXfrKeyPair,
-  AXfrPubKey,
-  TransactionBuilder,
-  XPublicKey,
-} from '../../services/ledger/types';
+import { AnonKeys, AXfrKeyPair, AXfrPubKey, TransactionBuilder, XPublicKey } from 'findora-wallet-wasm/web';
 import * as UtxoHelper from '../../services/utxoHelper';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
@@ -80,8 +74,7 @@ describe('triple masking (unit test)', () => {
         // decKey: 'decKey',
         // encKey: 'encKey',
         axfrPublicKey: 'pub_key',
-        axfrSpendKey: 'spend_key',
-        axfrViewKey: 'view_key',
+        axfrSecretKeyStr: 'spend_key',
       };
 
       clientAssetRecord = {
@@ -134,8 +127,7 @@ describe('triple masking (unit test)', () => {
       spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder');
       spyAddUtxo = jest.spyOn(UtxoHelper, 'addUtxo');
       spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo');
-      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
-      spyGetXPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getXPublicKeyByBase64');
+      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAxfrPublicKeyByBase64');
       spyAddOperationBarToAbar = jest.spyOn(transactionBuilder, 'add_operation_bar_to_abar');
       spyGetCommitments = jest.spyOn(transactionBuilder, 'get_commitments');
       spySaveBarToAbarToCache = jest.spyOn(TripleMasking, 'saveBarToAbarToCache');
@@ -411,7 +403,7 @@ describe('triple masking (unit test)', () => {
       };
 
       spyGetLedger = jest.spyOn(NodeLedger, 'default');
-      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
+      spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAxfrPublicKeyByBase64');
       spyGetOwnedAbars = jest.spyOn(NetworkApi, 'getOwnedAbars');
     });
     it('throw an error if receive error response from get ownedAbars call', async () => {
@@ -469,14 +461,12 @@ describe('triple masking (unit test)', () => {
         to_json: jest.fn(() => {}),
         pub_key: 'pub_key',
         spend_key: 'spend_key',
-        view_key: 'view_key',
         // dec_key: 'dec_key',
         // enc_key: 'enc_key',
       };
       formattedAnonKeys = {
         axfrPublicKey: anonKeys.pub_key,
-        axfrSpendKey: anonKeys.spend_key,
-        axfrViewKey: anonKeys.view_key,
+        axfrSecretKeyStr: anonKeys.spend_key,
         // decKey: anonKeys.dec_key,
         // encKey: anonKeys.enc_key,
       };

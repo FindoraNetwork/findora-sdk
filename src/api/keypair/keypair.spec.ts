@@ -5,7 +5,7 @@ import {
   getAddress,
   getAddressByPublicKey,
   getAddressPublicAndKey,
-  getAXfrPublicKeyByBase64,
+  getAxfrPublicKeyByBase64,
   getMnemonic,
   getPrivateKeyStr,
   getPublicKeyByXfr,
@@ -160,7 +160,7 @@ describe('keypair (unit test)', () => {
 
   describe('getAXfrPublicKeyByBase64', () => {
     it('throws an error if not a valid public key is given', async () => {
-      await expect(getAXfrPublicKeyByBase64('aa')).rejects.toThrowError(
+      await expect(getAxfrPublicKeyByBase64('aa')).rejects.toThrowError(
         'could not get AXfrPubKey by base64 public key, ',
       );
     });
@@ -168,7 +168,7 @@ describe('keypair (unit test)', () => {
     it('get AXfrPubKey by base64 public key', async () => {
       const kp = await createKeypair('123');
       // const result = await getAXfrPublicKeyByBase64('U4One4jJ9Lo0vyWG-0sZSRS2Pzuyt4hMLyrBjSb9yh0=');
-      const result = await getAXfrPublicKeyByBase64(kp.publickey);
+      const result = await getAxfrPublicKeyByBase64(kp.publickey);
       expect(result).toHaveProperty('free');
       expect(typeof result.free).toBe('function');
     });

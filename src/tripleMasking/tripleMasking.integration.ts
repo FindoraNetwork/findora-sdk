@@ -134,7 +134,7 @@ const barToAbarBalances = async (
  */
 export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
   const anonKeys = { ...AnonKeys };
-  const axfrKeyPair = anonKeys.axfrSpendKey;
+  const axfrKeyPair = anonKeys.axfrSecretKey;
 
   // const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitment);
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -234,6 +234,7 @@ export const abarToAbar = async (
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
+  console.log(anonKeysReceiver.axfrPublicKey);
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
@@ -252,7 +253,7 @@ export const abarToAbar = async (
   );
 
   // await sleep(waitingTimeBeforeCheckTxStatus);
-  await waitForBlockChange();
+  await waitForBlockChange(3);
 
   log('now checking balances\n\n\n');
 
