@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addUtxoInputs = exports.getSendUtxo = exports.getSendUtxoLegacy = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = exports.filterUtxoByCode = void 0;
+exports.getUtxoWithAmount = exports.addUtxoInputs = exports.getSendUtxo = exports.getSendUtxoForAmount = exports.getSendUtxoLegacy = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = exports.filterUtxoByCode = void 0;
 var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
@@ -303,22 +303,37 @@ var getSendUtxoLegacy = function (code, amount, utxoDataList) {
     return result;
 };
 exports.getSendUtxoLegacy = getSendUtxoLegacy;
+var getSendUtxoForAmount = function (code, amount, utxoDataList) {
+    var result = [];
+    var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);
+    console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ amount', amount);
+    for (var _i = 0, filteredUtxoList_1 = filteredUtxoList; _i < filteredUtxoList_1.length; _i++) {
+        var assetItem = filteredUtxoList_1[_i];
+        var _amount = BigInt(assetItem.body.amount);
+        console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ _amount', _amount);
+        if (_amount === amount) {
+            result.push({
+                amount: _amount,
+                originAmount: _amount,
+                sid: assetItem.sid,
+                utxo: __assign({}, assetItem.utxo),
+                ownerMemo: assetItem.ownerMemo,
+                memoData: assetItem.memoData,
+            });
+            break;
+        }
+    }
+    return result;
+};
+exports.getSendUtxoForAmount = getSendUtxoForAmount;
 var getSendUtxo = function (code, amount, utxoDataList) {
     var result = [];
     var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);
-    // console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
     var sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-    // console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
     var sum = BigInt(0);
     for (var _i = 0, sortedUtxoList_1 = sortedUtxoList; _i < sortedUtxoList_1.length; _i++) {
         var assetItem = sortedUtxoList_1[_i];
-        // for (const assetItem of filteredUtxoList) {
         var _amount = BigInt(assetItem.body.amount);
-        // if (assetItem.sid in [8, 11, 14]) {
-        //   console.log('we got broken? sid');
-        //   continue;
-        // }
-        // console.log(JSON.stringify(assetItem.utxo));
         sum = sum + _amount;
         var credit = BigInt(Number(sum) - Number(amount));
         var remainedDebt = _amount - credit;
@@ -384,4 +399,28 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.addUtxoInputs = addUtxoInputs;
+var getUtxoWithAmount = function (walletInfo, utxoNumbers, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var sids, utxoDataList, sendUtxoList, utxoInput;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
+            case 1:
+                sids = (_a.sent()).response;
+                if (!sids) {
+                    console.log('ERROR no sids available');
+                    throw new Error("could not get an utxo with an amount of " + utxoNumbers + " for asset code " + assetCode + ". No sids available");
+                }
+                return [4 /*yield*/, (0, exports.addUtxo)(walletInfo, sids)];
+            case 2:
+                utxoDataList = _a.sent();
+                sendUtxoList = (0, exports.getSendUtxoForAmount)(assetCode, utxoNumbers, utxoDataList);
+                utxoInput = sendUtxoList[0];
+                if (!utxoInput) {
+                    throw new Error("could not get an utxo with an amount of " + utxoNumbers + " for asset code " + assetCode);
+                }
+                return [2 /*return*/, utxoInput];
+        }
+    });
+}); };
+exports.getUtxoWithAmount = getUtxoWithAmount;
 //# sourceMappingURL=utxoHelper.js.map

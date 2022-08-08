@@ -69,8 +69,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.barToAbarAmount = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
+var testHelpers_1 = require("../../evm/testHelpers");
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var bigNumber_1 = require("../../services/bigNumber");
 var factory_1 = __importDefault(require("../../services/cacheStore/factory"));
@@ -80,7 +81,8 @@ var utils_1 = require("../../services/utils");
 var utxoHelper_1 = require("../../services/utxoHelper");
 var Keypair = __importStar(require("../keypair"));
 var Network = __importStar(require("../network"));
-var sdkAsset_1 = require("../sdkAsset");
+var Asset = __importStar(require("../sdkAsset"));
+var Transaction = __importStar(require("../transaction"));
 var Builder = __importStar(require("../transaction/builder"));
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, anonKeys, axfrPublicKey, axfrSpendKey, axfrViewKey, formattedAnonKeys, err_1;
@@ -350,7 +352,7 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
                 maps = _a.sent();
                 usedAssets = maps.usedAssets;
                 assetCode = usedAssets[0];
-                return [4 /*yield*/, (0, sdkAsset_1.getAssetDetails)(assetCode)];
+                return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
             case 5:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
@@ -503,7 +505,7 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
                 commitmentKey = commitmentKeys_1[_i];
                 commitmentEntity = commitmentsMap[commitmentKey];
                 commitmentAxfrPublicKey = commitmentEntity[0], commitmentNumericAssetType = commitmentEntity[1], commitmentAmountInWei = commitmentEntity[2];
-                return [4 /*yield*/, (0, sdkAsset_1.getAssetCode)(commitmentNumericAssetType)];
+                return [4 /*yield*/, Asset.getAssetCode(commitmentNumericAssetType)];
             case 2:
                 commitmentAssetType = _a.sent();
                 commitmentAmount = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(commitmentAmountInWei.toString()), 6).toFormat(6);
@@ -542,6 +544,40 @@ additionalOwnedAbarItems) {
     });
 };
 exports.getAbarTransferFee = getAbarTransferFee;
+var barToAbarAmount = function (walletInfo, amount, assetCode, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
+    var assetBlindRules, transactionBuilder, sendResultHandle, asset, decimals, utxoNumbers, utxoToUse, barToAbarResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, walletInfo.address, amount, assetCode, assetBlindRules)];
+            case 1:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, Transaction.submitTransaction(transactionBuilder)];
+            case 2:
+                sendResultHandle = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 501 ~ sendResultHandle', sendResultHandle);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+            case 3:
+                _a.sent();
+                return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
+            case 4:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                return [4 /*yield*/, (0, utxoHelper_1.getUtxoWithAmount)(walletInfo, utxoNumbers, assetCode)];
+            case 5:
+                utxoToUse = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 510 ~ utxoToUse', utxoToUse);
+                return [4 /*yield*/, (0, exports.barToAbar)(walletInfo, [utxoToUse.sid], receiverAxfrPublicKey)];
+            case 6:
+                barToAbarResult = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 508 ~ barToAbarResult', barToAbarResult);
+                return [2 /*return*/, barToAbarResult];
+        }
+    });
+}); };
+exports.barToAbarAmount = barToAbarAmount;
 var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, transactionBuilder, utxoDataList, axfrPublicKey, error_8, error_9, _i, utxoDataList_1, utxoItem, sid, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, seed, feeInputs, error_10, commitments, barToAbarData;
     var _a;
@@ -927,7 +963,7 @@ var getBalanceMaps = function (unspentAbars, anonKeys) { return __awaiter(void 0
                 openedAbarItem = _b.sent();
                 amount = openedAbarItem.amount, assetType = openedAbarItem.assetType;
                 if (!!assetDetailsMap[assetType]) return [3 /*break*/, 4];
-                return [4 /*yield*/, (0, sdkAsset_1.getAssetDetails)(assetType)];
+                return [4 /*yield*/, Asset.getAssetDetails(assetType)];
             case 3:
                 asset = _b.sent();
                 usedAssets.push(assetType);

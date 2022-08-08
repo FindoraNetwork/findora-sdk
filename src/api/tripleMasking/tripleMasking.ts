@@ -1132,7 +1132,6 @@ export const getSendAtxo = async (
   }
 
   const sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
-  //  console.log('🚀 ~ file: tripleMasking.ts ~ line 1065 ~ sortedUtxoList', sortedUtxoList);
 
   let sum = BigInt(0);
 

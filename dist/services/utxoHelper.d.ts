@@ -39,5 +39,7 @@ export declare const addUtxo: (walletInfo: WalletKeypar, addSids: number[]) => P
  * @depricated
  */
 export declare const getSendUtxoLegacy: (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
+export declare const getSendUtxoForAmount: (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
 export declare const getSendUtxo: (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
 export declare const addUtxoInputs: (utxoSids: UtxoOutputItem[]) => Promise<UtxoInputsInfo>;
+export declare const getUtxoWithAmount: (walletInfo: WalletKeypar, utxoNumbers: BigInt, assetCode: string) => Promise<UtxoOutputItem>;

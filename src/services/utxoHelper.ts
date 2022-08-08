@@ -246,50 +246,50 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 /**
  * @depricated
  */
-export const getSendUtxoLegacy = (
-  code: string,
-  amount: BigInt,
-  utxoDataList: AddUtxoItem[],
-): UtxoOutputItem[] => {
-  let balance = amount;
+// export const getSendUtxoLegacy = (
+//   code: string,
+//   amount: BigInt,
+//   utxoDataList: AddUtxoItem[],
+// ): UtxoOutputItem[] => {
+//   let balance = amount;
 
-  const result = [];
+//   const result = [];
 
-  for (let i = 0; i < utxoDataList.length; i++) {
-    const assetItem = utxoDataList[i];
+//   for (let i = 0; i < utxoDataList.length; i++) {
+//     const assetItem = utxoDataList[i];
 
-    if (assetItem.body.asset_type === code) {
-      const _amount = BigInt(assetItem.body.amount);
+//     if (assetItem.body.asset_type === code) {
+//       const _amount = BigInt(assetItem.body.amount);
 
-      if (balance <= BigInt(0)) {
-        break;
-      } else if (BigInt(_amount) >= balance) {
-        result.push({
-          amount: balance,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-        break;
-      } else {
-        balance = BigInt(Number(balance) - Number(_amount));
+//       if (balance <= BigInt(0)) {
+//         break;
+//       } else if (BigInt(_amount) >= balance) {
+//         result.push({
+//           amount: balance,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//         break;
+//       } else {
+//         balance = BigInt(Number(balance) - Number(_amount));
 
-        result.push({
-          amount: _amount,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-      }
-    }
-  }
+//         result.push({
+//           amount: _amount,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//       }
+//     }
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
 export const getSendUtxoForAmount = (
   code: string,

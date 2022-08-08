@@ -83,6 +83,7 @@ var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var api_1 = require("./api");
+var testHelpers_1 = require("./evm/testHelpers");
 var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
@@ -90,7 +91,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1395,7 +1396,7 @@ var createTestBars = function (senderOne) {
                 case 6:
                     resultHandle = _a.sent();
                     console.log('send fra result handle!!', resultHandle);
-                    return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
                 case 7:
                     _a.sent();
                     _a.label = 8;
@@ -1483,6 +1484,55 @@ var barToAbar = function (sids) { return __awaiter(void 0, void 0, void 0, funct
                 _i++;
                 return [3 /*break*/, 6];
             case 9: return [2 /*return*/, givenCommitments];
+        }
+    });
+}); };
+var barToAbarAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, pkey, walletInfo, anonKeys, amount, assetCode, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, _i, givenCommitments_2, givenCommitment, balances;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0:
+                password = '1234';
+                pkey = PKEY_MINE;
+                return [4 /*yield*/, createTestBars(pkey)];
+            case 1:
+                _b.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 2:
+                walletInfo = _b.sent();
+                anonKeys = __assign({}, myAbarAnonKeys);
+                console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys receiver', anonKeys);
+                amount = '31.23';
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 3:
+                assetCode = _b.sent();
+                return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(walletInfo, amount, assetCode, anonKeys.axfrPublicKey)];
+            case 4:
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
+                console.log('🚀 ~ file: run.ts ~ line 1187 ~ barToAbar barToAbatData', JSON.stringify(barToAbarData, null, 2));
+                console.log('🚀 ~ file: run.ts ~ line 1188 ~ barToAbar usedSids', usedSids.join(','));
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 5:
+                resultHandle = _b.sent();
+                console.log('send bar to abar result handle!!', resultHandle);
+                givenCommitments = barToAbarData.commitments;
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 6:
+                _b.sent();
+                _i = 0, givenCommitments_2 = givenCommitments;
+                _b.label = 7;
+            case 7:
+                if (!(_i < givenCommitments_2.length)) return [3 /*break*/, 10];
+                givenCommitment = givenCommitments_2[_i];
+                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment])];
+            case 8:
+                balances = _b.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1291 ~ barToAbar ~ balances for the new commitments', JSON.stringify(balances, null, 2));
+                _b.label = 9;
+            case 9:
+                _i++;
+                return [3 /*break*/, 7];
+            case 10: return [2 /*return*/, givenCommitments];
         }
     });
 }); };
@@ -2155,28 +2205,16 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
-var testBlockWait = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys1, walletInfo, senderOne, resultS, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, TMI.getAnonKeys()];
-            case 1:
-                anonKeys1 = _a.sent();
-                return [4 /*yield*/, TMI.createNewKeypair()];
-            case 2:
-                walletInfo = _a.sent();
-                senderOne = walletInfo.privateStr;
-                return [4 /*yield*/, TMI.createTestBars(senderOne)];
-            case 3:
-                resultS = _a.sent();
-                return [4 /*yield*/, TMI.abarToBar(senderOne, anonKeys1)];
-            case 4:
-                result = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
-                return [2 /*return*/];
-        }
-    });
-}); };
+// const testBlockWait = async () => {
+//   // const result = await waitForBlockChange(2);
+//   // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+//   const anonKeys1 = await TMI.getAnonKeys();
+//   const walletInfo = await TMI.createNewKeypair();
+//   const senderOne = walletInfo.privateStr!;
+//   const resultS = await TMI.createTestBars(senderOne);
+//   const result = await TMI.abarToBar(senderOne, anonKeys1);
+//   console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
+// };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
         var addr;
@@ -2235,5 +2273,6 @@ function approveToken() {
 // abarToAbarCustomOneFraAtxoForFee();
 // 4. PASSING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
-testBlockWait();
+// testBlockWait();
+barToAbarAmount();
 //# sourceMappingURL=run.js.map
