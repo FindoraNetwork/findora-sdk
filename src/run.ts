@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-import * as TMI from './tripleMasking/tripleMasking.integration';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -1268,7 +1268,8 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
 
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     console.log('send fra result handle!!', resultHandle);
-    await sleep(waitingTimeBeforeCheckTxStatus);
+
+    await waitForBlockChange();
   }
 
   return true;
@@ -1370,6 +1371,54 @@ const barToAbar = async (sids: number[]) => {
 
     // const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
     // console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
+  }
+
+  return givenCommitments;
+};
+
+const barToAbarAmount = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  await createTestBars(pkey);
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const anonKeys = { ...myAbarAnonKeys };
+
+  console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys receiver', anonKeys);
+
+  const amount = '31.23';
+  const assetCode = await Asset.getFraAssetCode();
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sids: usedSids,
+  } = await TripleMasking.barToAbarAmount(walletInfo, amount, assetCode, anonKeys.axfrPublicKey);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1187 ~ barToAbar barToAbatData',
+    JSON.stringify(barToAbarData, null, 2),
+  );
+  console.log('🚀 ~ file: run.ts ~ line 1188 ~ barToAbar usedSids', usedSids.join(','));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('send bar to abar result handle!!', resultHandle);
+
+  const givenCommitments = barToAbarData.commitments;
+
+  await waitForBlockChange(2);
+
+  for (const givenCommitment of givenCommitments) {
+    const balances = await TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment]);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1291 ~ barToAbar ~ balances for the new commitments',
+      JSON.stringify(balances, null, 2),
+    );
   }
 
   return givenCommitments;
@@ -2122,16 +2171,16 @@ const testIt = async () => {
   console.log('result', result);
 };
 
-const testBlockWait = async () => {
-  // const result = await waitForBlockChange(2);
-  // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
-  const anonKeys1 = await TMI.getAnonKeys();
-  const walletInfo = await TMI.createNewKeypair();
-  const senderOne = walletInfo.privateStr!;
-  const resultS = await TMI.createTestBars(senderOne);
-  const result = await TMI.abarToBar(senderOne, anonKeys1);
-  console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
-};
+// const testBlockWait = async () => {
+//   // const result = await waitForBlockChange(2);
+//   // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+//   const anonKeys1 = await TMI.getAnonKeys();
+//   const walletInfo = await TMI.createNewKeypair();
+//   const senderOne = walletInfo.privateStr!;
+//   const resultS = await TMI.createTestBars(senderOne);
+//   const result = await TMI.abarToBar(senderOne, anonKeys1);
+//   console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
+// };
 
 async function approveToken() {
   // const webLinkedInfo = {
@@ -2221,4 +2270,6 @@ async function approveToken() {
 // 4. PASSING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
 
-testBlockWait();
+// testBlockWait();
+
+barToAbarAmount();

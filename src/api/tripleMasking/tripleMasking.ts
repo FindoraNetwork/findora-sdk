@@ -1,5 +1,6 @@
 import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { CACHE_ENTRIES } from '../../config/cache';
+import { waitForBlockChange } from '../../evm/testHelpers';
 import Sdk from '../../Sdk';
 import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
@@ -8,10 +9,11 @@ import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString } from '../../services/utils';
-import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
+import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
-import { getAssetCode, getAssetDetails } from '../sdkAsset';
+import * as Asset from '../sdkAsset';
+import * as Transaction from '../transaction';
 import * as Builder from '../transaction/builder';
 
 interface BalanceInfo {
@@ -276,7 +278,7 @@ const getAbarTransferInputPayload = async (
   const { usedAssets } = maps;
   const [assetCode] = usedAssets;
 
-  const asset = await getAssetDetails(assetCode);
+  const asset = await Asset.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
 
   const result = {
@@ -442,7 +444,7 @@ const processAbarToAbarCommitmentResponse = async (
     const commitmentEntity = commitmentsMap[commitmentKey];
     const [commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei] = commitmentEntity;
 
-    const commitmentAssetType = await getAssetCode(commitmentNumericAssetType);
+    const commitmentAssetType = await Asset.getAssetCode(commitmentNumericAssetType);
 
     const commitmentAmount = fromWei(createBigNumber(commitmentAmountInWei.toString()), 6).toFormat(6);
 
@@ -477,6 +479,40 @@ export const getAbarTransferFee = async (
   const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
 
   return calculatedFee;
+};
+
+export const barToAbarAmount = async (
+  walletInfo: Keypair.WalletKeypar,
+  amount: string,
+  assetCode: string,
+  receiverAxfrPublicKey: string,
+): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
+  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const transactionBuilder = await Transaction.sendToAddress(
+    walletInfo,
+    walletInfo.address,
+    amount,
+    assetCode,
+    assetBlindRules,
+  );
+
+  const sendResultHandle = await Transaction.submitTransaction(transactionBuilder);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 501 ~ sendResultHandle', sendResultHandle);
+
+  await waitForBlockChange();
+
+  const asset = await Asset.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+  const utxoToUse = await getUtxoWithAmount(walletInfo, utxoNumbers, assetCode);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 510 ~ utxoToUse', utxoToUse);
+
+  const barToAbarResult = await barToAbar(walletInfo, [utxoToUse.sid], receiverAxfrPublicKey);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 508 ~ barToAbarResult', barToAbarResult);
+
+  return barToAbarResult;
 };
 
 export const barToAbar = async (
@@ -865,7 +901,7 @@ export const getBalanceMaps = async (
     const { amount, assetType } = openedAbarItem;
 
     if (!assetDetailsMap[assetType]) {
-      const asset = await getAssetDetails(assetType);
+      const asset = await Asset.getAssetDetails(assetType);
       usedAssets.push(assetType);
       assetDetailsMap[assetType] = asset;
     }
