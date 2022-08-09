@@ -69,7 +69,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getUtxoWithAmount = exports.addUtxoInputs = exports.getSendUtxo = exports.getSendUtxoForAmount = exports.getSendUtxoLegacy = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = exports.filterUtxoByCode = void 0;
+exports.getUtxoWithAmount = exports.addUtxoInputs = exports.getSendUtxo = exports.getSendUtxoForAmount = exports.addUtxo = exports.getUtxoItem = exports.decryptUtxoItem = exports.filterUtxoByCode = void 0;
 var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
@@ -266,43 +266,44 @@ exports.addUtxo = addUtxo;
 /**
  * @depricated
  */
-var getSendUtxoLegacy = function (code, amount, utxoDataList) {
-    var balance = amount;
-    var result = [];
-    for (var i = 0; i < utxoDataList.length; i++) {
-        var assetItem = utxoDataList[i];
-        if (assetItem.body.asset_type === code) {
-            var _amount = BigInt(assetItem.body.amount);
-            if (balance <= BigInt(0)) {
-                break;
-            }
-            else if (BigInt(_amount) >= balance) {
-                result.push({
-                    amount: balance,
-                    originAmount: _amount,
-                    sid: assetItem.sid,
-                    utxo: __assign({}, assetItem.utxo),
-                    ownerMemo: assetItem.ownerMemo,
-                    memoData: assetItem.memoData,
-                });
-                break;
-            }
-            else {
-                balance = BigInt(Number(balance) - Number(_amount));
-                result.push({
-                    amount: _amount,
-                    originAmount: _amount,
-                    sid: assetItem.sid,
-                    utxo: __assign({}, assetItem.utxo),
-                    ownerMemo: assetItem.ownerMemo,
-                    memoData: assetItem.memoData,
-                });
-            }
-        }
-    }
-    return result;
-};
-exports.getSendUtxoLegacy = getSendUtxoLegacy;
+// export const getSendUtxoLegacy = (
+//   code: string,
+//   amount: BigInt,
+//   utxoDataList: AddUtxoItem[],
+// ): UtxoOutputItem[] => {
+//   let balance = amount;
+//   const result = [];
+//   for (let i = 0; i < utxoDataList.length; i++) {
+//     const assetItem = utxoDataList[i];
+//     if (assetItem.body.asset_type === code) {
+//       const _amount = BigInt(assetItem.body.amount);
+//       if (balance <= BigInt(0)) {
+//         break;
+//       } else if (BigInt(_amount) >= balance) {
+//         result.push({
+//           amount: balance,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//         break;
+//       } else {
+//         balance = BigInt(Number(balance) - Number(_amount));
+//         result.push({
+//           amount: _amount,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//       }
+//     }
+//   }
+//   return result;
+// };
 var getSendUtxoForAmount = function (code, amount, utxoDataList) {
     var result = [];
     var filteredUtxoList = (0, exports.filterUtxoByCode)(code, utxoDataList);

@@ -65,11 +65,20 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.barToAbarAmount = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getAmountFromCommitments = exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.barToAbar = exports.barToAbarAmount = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.abarToAbarAmount = exports.getAbarToAbarAmountPayload = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var testHelpers_1 = require("../../evm/testHelpers");
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -367,17 +376,162 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
         }
     });
 }); };
-var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, 
-// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-additionalOwnedAbarItems) {
+var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, givenCommitment, ownedAbarsResponseFee, additionalOwnedAbarItemFee, expectedFee, additionalAmountForFee;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
+            case 1:
+                asset = _a.sent();
+                decimals = asset.assetRules.decimals;
+                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                return [4 /*yield*/, (0, exports.getUnspentAbars)(anonKeysSender, givenCommitmentsList)];
+            case 2:
+                unspentAbars = _a.sent();
+                return [4 /*yield*/, (0, exports.getBalanceMaps)(unspentAbars, anonKeysSender)];
+            case 3:
+                balancesMaps = _a.sent();
+                atxoMap = balancesMaps.atxoMap;
+                filteredFraAtxoList = [];
+                filteredAssetAtxoList = atxoMap[assetCode] || [];
+                if (!filteredAssetAtxoList.length) {
+                    throw new Error("There is no any abar for asset " + assetCode + " available for " + anonKeysSender.axfrPublicKey);
+                }
+                return [4 /*yield*/, Asset.getFraAssetCode()];
+            case 4:
+                fraAssetCode = _a.sent();
+                isFraTransfer = assetCode === fraAssetCode;
+                if (!isFraTransfer) {
+                    filteredFraAtxoList = atxoMap[fraAssetCode] || [];
+                }
+                if (!isFraTransfer && !filteredFraAtxoList.length) {
+                    throw new Error("There is no any FRA abar to cover the fee for " + anonKeysSender.axfrPublicKey);
+                }
+                assetCommitments = filteredAssetAtxoList.map(function (atxoItem) { return atxoItem.commitment; });
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 331 ~ assetCommitments', assetCommitments);
+                fraCommitments = filteredFraAtxoList.map(function (atxoItem) { return atxoItem.commitment; });
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 332 ~ fraCommitments', fraCommitments);
+                return [4 /*yield*/, (0, exports.getSendAtxo)(assetCode, utxoNumbers, assetCommitments, anonKeysSender)];
+            case 5:
+                atxoListToSend = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 338 ~ atxoListToSend', atxoListToSend);
+                if (!atxoListToSend.length) {
+                    throw new Error("Sender " + anonKeysSender.axfrPublicKey + " does not have enough abars to send " + amount + " of " + assetCode);
+                }
+                additionalOwnedAbarItems = [];
+                commitmentsToSend = [];
+                commitmentsForFee = [];
+                _i = 0, atxoListToSend_1 = atxoListToSend;
+                _a.label = 6;
+            case 6:
+                if (!(_i < atxoListToSend_1.length)) return [3 /*break*/, 9];
+                atxoItem = atxoListToSend_1[_i];
+                givenCommitment = atxoItem.commitment;
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 7:
+                ownedAbarsResponseTwo = _a.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                commitmentsToSend.push(givenCommitment);
+                _a.label = 8;
+            case 8:
+                _i++;
+                return [3 /*break*/, 6];
+            case 9: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
+            case 10:
+                calculatedFee = _a.sent();
+                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
+                balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
+                isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
+                if (!isMoreFeeNeeded) {
+                    return [2 /*return*/, {
+                            commitmentsToSend: commitmentsToSend,
+                            commitmentsForFee: commitmentsForFee,
+                            additionalAmountForFee: '0',
+                        }];
+                }
+                allCommitmentsForFee = fraCommitments;
+                if (isFraTransfer) {
+                    allCommitmentsForFee = assetCommitments.filter(function (commitment) { return !atxoListToSend.map(function (atxoItem) { return atxoItem.commitment; }).includes(commitment); });
+                }
+                idx = 0;
+                _a.label = 11;
+            case 11:
+                if (!isMoreFeeNeeded) return [3 /*break*/, 14];
+                givenCommitment = allCommitmentsForFee === null || allCommitmentsForFee === void 0 ? void 0 : allCommitmentsForFee[idx];
+                if (!givenCommitment) {
+                    throw new Error("You still need " + calculatedFee + " FRA to cover the fee");
+                }
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 12:
+                ownedAbarsResponseFee = _a.sent();
+                additionalOwnedAbarItemFee = ownedAbarsResponseFee[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
+                return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
+            case 13:
+                calculatedFee = _a.sent();
+                balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
+                isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
+                idx += 1;
+                commitmentsForFee.push(givenCommitment);
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee);
+                return [3 /*break*/, 11];
+            case 14:
+                console.log('returning calculatedFee', calculatedFee);
+                return [4 /*yield*/, (0, exports.getAmountFromCommitments)(fraAssetCode, commitmentsForFee, anonKeysSender)];
+            case 15:
+                expectedFee = _a.sent();
+                additionalAmountForFee = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(expectedFee.toString()), 6).toFormat(6);
+                return [2 /*return*/, {
+                        commitmentsToSend: commitmentsToSend,
+                        commitmentsForFee: commitmentsForFee,
+                        additionalAmountForFee: additionalAmountForFee,
+                    }];
+        }
+    });
+}); };
+exports.getAbarToAbarAmountPayload = getAbarToAbarAmountPayload;
+var abarToAbarAmount = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, commitmentsToSend, commitmentsForFee, allCommitments, additionalOwnedAbarItems, _i, allCommitments_1, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, abarToAbarResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, exports.getAbarToAbarAmountPayload)(anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList)];
+            case 1:
+                payload = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 453 ~ payload', payload);
+                commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee;
+                allCommitments = __spreadArray(__spreadArray([], commitmentsToSend, true), commitmentsForFee, true);
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 458 ~ allCommitments', allCommitments);
+                additionalOwnedAbarItems = [];
+                _i = 0, allCommitments_1 = allCommitments;
+                _a.label = 2;
+            case 2:
+                if (!(_i < allCommitments_1.length)) return [3 /*break*/, 5];
+                givenCommitment = allCommitments_1[_i];
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 3:
+                ownedAbarsResponseTwo = _a.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _a.label = 4;
+            case 4:
+                _i++;
+                return [3 /*break*/, 2];
+            case 5: return [4 /*yield*/, (0, exports.abarToAbar)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
+            case 6:
+                abarToAbarResult = _a.sent();
+                return [2 /*return*/, abarToAbarResult];
+        }
+    });
+}); };
+exports.abarToAbarAmount = abarToAbarAmount;
+var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var calculatedFee, balanceAfterSendToBN, isMoreFeeNeeded, msg, anonTransferOperationBuilder, commitmentsMap, processedCommitmentsMap, abarToAbarData;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, 
-                    // ownedAbarToUseAsSource,
-                    additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
                 case 1:
                     calculatedFee = _a.sent();
                     console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
@@ -387,9 +541,7 @@ additionalOwnedAbarItems) {
                         msg = "Could not process abar transfer. More fee are needed. Required amount at least \"" + calculatedFee + " FRA\"";
                         throw new Error(msg);
                     }
-                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, 
-                        // ownedAbarToUseAsSource,
-                        additionalOwnedAbarItems)];
+                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
                 case 2:
                     anonTransferOperationBuilder = _a.sent();
                     try {
@@ -523,17 +675,13 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
         }
     });
 }); };
-var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, 
-// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-additionalOwnedAbarItems) {
+var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, 
-                    // ownedAbarToUseAsSource,
-                    additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     expectedFee = anonTransferOperationBuilder.get_expected_fee();
@@ -688,9 +836,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
     });
 }); };
 exports.barToAbar = barToAbar;
-var abarToBar = function (anonKeysSender, receiverWalletInfo, 
-// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
+var abarToBar = function (anonKeysSender, receiverWalletInfo, additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder, receiverXfrPublicKey, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -1192,7 +1338,7 @@ var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awai
                 balancesMaps = _a.sent();
                 atxoMap = balancesMaps.atxoMap;
                 filteredUtxoList = atxoMap[code];
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
+                // console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
                 if (!filteredUtxoList) {
                     return [2 /*return*/, []];
                 }
@@ -1217,4 +1363,31 @@ var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awai
     });
 }); };
 exports.getSendAtxo = getSendAtxo;
+var getAmountFromCommitments = function (code, commitments, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var unspentAbars, balancesMaps, atxoMap, filteredUtxoList, sortedUtxoList, sum, _i, sortedUtxoList_2, assetItem, _amount;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, exports.getUnspentAbars)(anonKeys, commitments)];
+            case 1:
+                unspentAbars = _a.sent();
+                return [4 /*yield*/, (0, exports.getBalanceMaps)(unspentAbars, anonKeys)];
+            case 2:
+                balancesMaps = _a.sent();
+                atxoMap = balancesMaps.atxoMap;
+                filteredUtxoList = atxoMap[code];
+                if (!filteredUtxoList) {
+                    return [2 /*return*/, []];
+                }
+                sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
+                sum = BigInt(0);
+                for (_i = 0, sortedUtxoList_2 = sortedUtxoList; _i < sortedUtxoList_2.length; _i++) {
+                    assetItem = sortedUtxoList_2[_i];
+                    _amount = BigInt(assetItem.amount);
+                    sum = sum + _amount;
+                }
+                return [2 /*return*/, sum];
+        }
+    });
+}); };
+exports.getAmountFromCommitments = getAmountFromCommitments;
 //# sourceMappingURL=tripleMasking.js.map
