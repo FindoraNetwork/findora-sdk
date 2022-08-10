@@ -1263,7 +1263,7 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
     const transactionBuilder = await Transaction.sendToAddress(
       walletInfo,
       toWalletInfo.address,
-      `0.5${amount}`,
+      `${amount}`,
       assetCode,
       assetBlindRules,
     );
@@ -2108,11 +2108,7 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   const customAssetSids = await getSidsForAsset(pkey, derivedAssetCode);
   console.log('🚀 ~ file: run.ts ~ line 1574 ~ abarToAbar ~ customAssetSids', customAssetSids);
 
-  // const [cAssetSidOne, cAssetSidTwo] = customAssetSids;
-
-  // const customAssetCommitmentsList = await barToAbar([cAssetSidOne, cAssetSidTwo]);
   const customAssetCommitmentsList = await barToAbar(customAssetSids, pkey);
-  // const customAssetCommitmentsList: string[] = [];
 
   const fraAssetSids = await getSidsForAsset(pkey, fraCode);
   const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
@@ -2128,7 +2124,8 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   // const fraAssetCommitmentsList = await barToAbar(fraAssetSids);
 
   await waitForBlockChange(2);
-  const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+  // const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
 
   //   if (!isFraTransfer && !fraCommitments.length) {
   // const givenCommitmentsListSender = [...customAssetCommitmentsList];
@@ -2138,7 +2135,7 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   for (let givenCommitment of givenCommitmentsListSender) {
     const balancesCommitment = await TripleMasking.getBalance(anonKeysSender, [givenCommitment]);
     console.log(
-      '🚀 ~ file: run.ts ~ line 1617 ~ abarToAbar ~ balancesCommitment to be used',
+      '🚀 ~ file: run.ts ~ line 2138 ~ abarToAbar ~ balancesCommitment to be used',
       balancesCommitment,
     );
     const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -2158,8 +2155,9 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
-    '31',
-    derivedAssetCode,
+    '3.12',
+    // derivedAssetCode,
+    fraAssetCode,
     givenCommitmentsListSender,
   );
 

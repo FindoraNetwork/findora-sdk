@@ -1389,7 +1389,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 5)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(1, 9);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "0.5" + amount, assetCode, assetBlindRules)];
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "" + amount, assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2180,7 +2180,7 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 // const fraAssetCommitmentsList = await barToAbar([fAssetSidOne, fAssetSidTwo], pkey);
                 // const fraAssetCommitmentsList = await barToAbar(fraAssetSids);
                 _c.sent();
-                givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
+                givenCommitmentsListSender = __spreadArray([], fraAssetCommitmentsList, true);
                 additionalOwnedAbarItems = [];
                 _i = 0, givenCommitmentsListSender_5 = givenCommitmentsListSender;
                 _c.label = 12;
@@ -2190,7 +2190,7 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, [givenCommitment])];
             case 13:
                 balancesCommitment = _c.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1617 ~ abarToAbar ~ balancesCommitment to be used', balancesCommitment);
+                console.log('🚀 ~ file: run.ts ~ line 2138 ~ abarToAbar ~ balancesCommitment to be used', balancesCommitment);
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 14:
                 ownedAbarsResponseTwo = _c.sent();
@@ -2207,7 +2207,9 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
             case 18:
                 fraBalanceBeforeAbarToAbar = _c.sent();
                 console.log('🚀 ~ file: run.ts ~ line 2253 ~ abarToBar ~ fraBalanceBeforeAbarToAbar', fraBalanceBeforeAbarToAbar);
-                return [4 /*yield*/, api_1.TripleMasking.abarToAbarAmount(anonKeysSender, anonKeysReceiver.axfrPublicKey, '31', derivedAssetCode, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToAbarAmount(anonKeysSender, anonKeysReceiver.axfrPublicKey, '3.12', 
+                    // derivedAssetCode,
+                    fraAssetCode, givenCommitmentsListSender)];
             case 19:
                 _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
                 // const result = await TripleMasking.getAbarToAbarAmountPayload(
