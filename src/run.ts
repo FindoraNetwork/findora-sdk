@@ -2117,7 +2117,10 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   const fraAssetSids = await getSidsForAsset(pkey, fraCode);
   const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
 
-  const fraAssetCommitmentsList = await barToAbar([fAssetSidOne, fAssetSidTwo, fAssetSidThree], pkey);
+  const fraAssetCommitmentsList = await barToAbar(
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    pkey,
+  );
 
   // throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
   // const fraAssetCommitmentsList = await barToAbar([fAssetSidOne, fAssetSidTwo], pkey);
@@ -2155,15 +2158,9 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
-    '35',
+    '31',
     derivedAssetCode,
     givenCommitmentsListSender,
-  );
-
-  const fraBalanceAfterAbarToAbar = await Account.getBalance(walletInfo, fraAssetCode);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 2164 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ fraBalanceAfterAbarToAbar',
-    fraBalanceAfterAbarToAbar,
   );
 
   // const result = await TripleMasking.getAbarToAbarAmountPayload(
@@ -2209,6 +2206,13 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   await waitForBlockChange(2);
 
   console.log('now checking balances\n\n\n');
+
+  const fraBalanceAfterAbarToAbar = await Account.getBalance(walletInfo, fraAssetCode);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2164 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ fraBalanceAfterAbarToAbar',
+    fraBalanceAfterAbarToAbar,
+  );
 
   const { commitmentsMap } = abarToAbarData;
 
