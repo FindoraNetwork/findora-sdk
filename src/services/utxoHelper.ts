@@ -246,45 +246,75 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 /**
  * @depricated
  */
-export const getSendUtxoLegacy = (
+// export const getSendUtxoLegacy = (
+//   code: string,
+//   amount: BigInt,
+//   utxoDataList: AddUtxoItem[],
+// ): UtxoOutputItem[] => {
+//   let balance = amount;
+
+//   const result = [];
+
+//   for (let i = 0; i < utxoDataList.length; i++) {
+//     const assetItem = utxoDataList[i];
+
+//     if (assetItem.body.asset_type === code) {
+//       const _amount = BigInt(assetItem.body.amount);
+
+//       if (balance <= BigInt(0)) {
+//         break;
+//       } else if (BigInt(_amount) >= balance) {
+//         result.push({
+//           amount: balance,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//         break;
+//       } else {
+//         balance = BigInt(Number(balance) - Number(_amount));
+
+//         result.push({
+//           amount: _amount,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//       }
+//     }
+//   }
+
+//   return result;
+// };
+
+export const getSendUtxoForAmount = (
   code: string,
   amount: BigInt,
   utxoDataList: AddUtxoItem[],
 ): UtxoOutputItem[] => {
-  let balance = amount;
-
   const result = [];
 
-  for (let i = 0; i < utxoDataList.length; i++) {
-    const assetItem = utxoDataList[i];
+  const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
 
-    if (assetItem.body.asset_type === code) {
-      const _amount = BigInt(assetItem.body.amount);
+  console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ amount', amount);
+  for (const assetItem of filteredUtxoList) {
+    const _amount = BigInt(assetItem.body.amount);
+    console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ _amount', _amount);
 
-      if (balance <= BigInt(0)) {
-        break;
-      } else if (BigInt(_amount) >= balance) {
-        result.push({
-          amount: balance,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-        break;
-      } else {
-        balance = BigInt(Number(balance) - Number(_amount));
-
-        result.push({
-          amount: _amount,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-      }
+    if (_amount === amount) {
+      result.push({
+        amount: _amount,
+        originAmount: _amount,
+        sid: assetItem.sid,
+        utxo: { ...assetItem.utxo },
+        ownerMemo: assetItem.ownerMemo,
+        memoData: assetItem.memoData,
+      });
+      break;
     }
   }
 
@@ -295,22 +325,13 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
   const result = [];
 
   const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
-  // console.log('🚀 ~ file: utxoHelper.ts ~ line 298 ~ filteredUtxoList', filteredUtxoList);
   const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
-  // console.log('🚀 ~ file: utxoHelper.ts ~ line 299 ~ sortedUtxoList', sortedUtxoList);
 
   let sum = BigInt(0);
 
   for (const assetItem of sortedUtxoList) {
-    // for (const assetItem of filteredUtxoList) {
     const _amount = BigInt(assetItem.body.amount);
 
-    // if (assetItem.sid in [8, 11, 14]) {
-    //   console.log('we got broken? sid');
-    //   continue;
-    // }
-
-    // console.log(JSON.stringify(assetItem.utxo));
     sum = sum + _amount;
     const credit = BigInt(Number(sum) - Number(amount));
     const remainedDebt = _amount - credit;
@@ -380,4 +401,29 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
   const res = { inputParametersList, inputAmount };
 
   return res;
+};
+
+export const getUtxoWithAmount = async (
+  walletInfo: WalletKeypar,
+  utxoNumbers: BigInt,
+  assetCode: string,
+): Promise<UtxoOutputItem> => {
+  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
+  if (!sids) {
+    console.log('ERROR no sids available');
+    throw new Error(
+      `could not get an utxo with an amount of ${utxoNumbers} for asset code ${assetCode}. No sids available`,
+    );
+  }
+
+  const utxoDataList = await addUtxo(walletInfo, sids);
+
+  const sendUtxoList = getSendUtxoForAmount(assetCode, utxoNumbers, utxoDataList);
+  const [utxoInput] = sendUtxoList;
+
+  if (!utxoInput) {
+    throw new Error(`could not get an utxo with an amount of ${utxoNumbers} for asset code ${assetCode}`);
+  }
+
+  return utxoInput;
 };

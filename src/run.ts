@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-import * as TMI from './tripleMasking/tripleMasking.integration';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -278,6 +278,7 @@ const createNewKeypair = async () => {
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
   console.log('new wallet info', walletInfo);
+  return walletInfo;
 };
 
 /**
@@ -1255,7 +1256,8 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   for (let i = 0; i < 5; i++) {
-    const amount = getRandomNumber(10, 20);
+    // const amount = getRandomNumber(10, 20);
+    const amount = getRandomNumber(1, 9);
     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
 
     const transactionBuilder = await Transaction.sendToAddress(
@@ -1268,7 +1270,8 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
 
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     console.log('send fra result handle!!', resultHandle);
-    await sleep(waitingTimeBeforeCheckTxStatus);
+
+    await waitForBlockChange();
   }
 
   return true;
@@ -1299,10 +1302,10 @@ export const getSidsForAsset = async (senderOne: string, assetCode: string) => {
   return customAssetSids;
 };
 
-const barToAbar = async (sids: number[]) => {
+const barToAbar = async (sids: number[], pkey = PKEY_MINE) => {
   const password = '1234';
 
-  const pkey = PKEY_MINE;
+  // const pkey = PKEY_MINE;
 
   // await createTestBars(pkey);
 
@@ -1370,6 +1373,54 @@ const barToAbar = async (sids: number[]) => {
 
     // const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
     // console.log('🚀 ~ file: run.ts ~ line 1223 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
+  }
+
+  return givenCommitments;
+};
+
+const barToAbarAmount = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  await createTestBars(pkey);
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const anonKeys = { ...myAbarAnonKeys };
+
+  console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys receiver', anonKeys);
+
+  const amount = '31.23';
+  const assetCode = await Asset.getFraAssetCode();
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sids: usedSids,
+  } = await TripleMasking.barToAbarAmount(walletInfo, amount, assetCode, anonKeys.axfrPublicKey);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1187 ~ barToAbar barToAbatData',
+    JSON.stringify(barToAbarData, null, 2),
+  );
+  console.log('🚀 ~ file: run.ts ~ line 1188 ~ barToAbar usedSids', usedSids.join(','));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('send bar to abar result handle!!', resultHandle);
+
+  const givenCommitments = barToAbarData.commitments;
+
+  await waitForBlockChange(2);
+
+  for (const givenCommitment of givenCommitments) {
+    const balances = await TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment]);
+
+    console.log(
+      '🚀 ~ file: run.ts ~ line 1291 ~ barToAbar ~ balances for the new commitments',
+      JSON.stringify(balances, null, 2),
+    );
   }
 
   return givenCommitments;
@@ -1494,7 +1545,8 @@ export const defineCustomAsset = async (senderOne: string, assetCode: string) =>
   const handle = await Transaction.submitTransaction(assetBuilder);
   console.log('New asset ', assetCode, ' created, handle', handle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  await waitForBlockChange();
+  // await sleep(waitingTimeBeforeCheckTxStatus);
 };
 
 export const issueCustomAsset = async (
@@ -1512,7 +1564,9 @@ export const issueCustomAsset = async (
   const handleIssue = await Transaction.submitTransaction(assetBuilderIssue);
 
   console.log('Asset ', assetCode, ' issued, handle', handleIssue);
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+
+  await waitForBlockChange();
 };
 
 export const createTestBarsMulti = async (
@@ -2027,6 +2081,169 @@ const abarToAbarCustomMultipleFraAtxoForFee = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
 };
 
+const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
+  const anonKeysSender = { ...myAbarAnonKeys };
+
+  const anonKeysReceiver = {
+    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+    axfrSpendKey:
+      'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+  };
+
+  // const pkey = PKEY_MINE;
+
+  const walletInfo = await createNewKeypair();
+  const pkey = walletInfo.privateStr!;
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const fraCode = await Asset.getFraAssetCode();
+  const assetCode = await Asset.getRandomAssetCode();
+  const derivedAssetCode = await Asset.getDerivedAssetCode(assetCode);
+
+  await createTestBars(pkey);
+  await createTestBarsMulti(pkey, assetCode, derivedAssetCode);
+
+  const customAssetSids = await getSidsForAsset(pkey, derivedAssetCode);
+  console.log('🚀 ~ file: run.ts ~ line 1574 ~ abarToAbar ~ customAssetSids', customAssetSids);
+
+  const customAssetCommitmentsList = await barToAbar(customAssetSids, pkey);
+
+  const fraAssetSids = await getSidsForAsset(pkey, fraCode);
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    pkey,
+  );
+
+  // throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
+  // const fraAssetCommitmentsList = await barToAbar([fAssetSidOne, fAssetSidTwo], pkey);
+
+  // const fraAssetCommitmentsList = await barToAbar(fraAssetSids);
+
+  await waitForBlockChange(2);
+  // const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+
+  //   if (!isFraTransfer && !fraCommitments.length) {
+  // const givenCommitmentsListSender = [...customAssetCommitmentsList];
+
+  const additionalOwnedAbarItems = [];
+
+  for (let givenCommitment of givenCommitmentsListSender) {
+    const balancesCommitment = await TripleMasking.getBalance(anonKeysSender, [givenCommitment]);
+    console.log(
+      '🚀 ~ file: run.ts ~ line 2138 ~ abarToAbar ~ balancesCommitment to be used',
+      balancesCommitment,
+    );
+    const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+  }
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+  const fraBalanceBeforeAbarToAbar = await Account.getBalance(walletInfo, fraAssetCode);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2253 ~ abarToBar ~ fraBalanceBeforeAbarToAbar',
+    fraBalanceBeforeAbarToAbar,
+  );
+
+  const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    '3.12',
+    // derivedAssetCode,
+    fraAssetCode,
+    givenCommitmentsListSender,
+  );
+
+  // const result = await TripleMasking.getAbarToAbarAmountPayload(
+  //   anonKeysSender,
+  //   anonKeysReceiver.axfrPublicKey,
+  //   '35',
+  //   derivedAssetCode,
+  //   givenCommitmentsListSender,
+  // );
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 2138 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ result',
+  //   result,
+  // );
+
+  // await waitForBlockChange();
+
+  // const { commitmentsForFee, commitmentsToSend, additionalAmountForFee } = result;
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 2153 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ additionalAmountForFee',
+  //   additionalAmountForFee,
+  // );
+  // const balancesToSend = await TripleMasking.getBalance(anonKeysSender, commitmentsToSend);
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 2154 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ balancesToSend',
+  //   balancesToSend,
+  // );
+  // const balancesForFee = await TripleMasking.getBalance(anonKeysSender, commitmentsForFee);
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 2156 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ balancesForFee',
+  //   balancesForFee,
+  // );
+
+  console.log('🚀 ~ file: run.ts ~ line 1388 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+
+  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+
+  console.log('transfer abar result handle!!', resultHandle);
+
+  // console.log(
+  //   `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver commitments`,
+  // );
+
+  await waitForBlockChange(2);
+
+  console.log('now checking balances\n\n\n');
+
+  const fraBalanceAfterAbarToAbar = await Account.getBalance(walletInfo, fraAssetCode);
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2164 ~ abarToAbarCustomMultipleFraAtxoForFeeSendAmount ~ fraBalanceAfterAbarToAbar',
+    fraBalanceAfterAbarToAbar,
+  );
+
+  const { commitmentsMap } = abarToAbarData;
+
+  const retrivedCommitmentsListReceiver = [];
+
+  for (const commitmentsMapEntry of commitmentsMap) {
+    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+
+    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+      givenCommitmentsListSender.push(commitmentKey);
+    }
+
+    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+      retrivedCommitmentsListReceiver.push(commitmentKey);
+    }
+  }
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1419 ~ abarToAbar ~ retrivedCommitmentsListReceiver',
+    retrivedCommitmentsListReceiver,
+  );
+  console.log(
+    '🚀 ~ file: run.ts ~ line 1423 ~ abarToAbar ~ givenCommitmentsListSender',
+    givenCommitmentsListSender,
+  );
+
+  const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
+  console.log('🚀 ~ file: run.ts ~ line 1428 ~ abarToAbar ~ balancesSender', balancesSender);
+
+  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver);
+  console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+};
+
 const abarToBar = async () => {
   const password = '1234';
 
@@ -2122,16 +2339,16 @@ const testIt = async () => {
   console.log('result', result);
 };
 
-const testBlockWait = async () => {
-  // const result = await waitForBlockChange(2);
-  // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
-  const anonKeys1 = await TMI.getAnonKeys();
-  const walletInfo = await TMI.createNewKeypair();
-  const senderOne = walletInfo.privateStr!;
-  const resultS = await TMI.createTestBars(senderOne);
-  const result = await TMI.abarToBar(senderOne, anonKeys1);
-  console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
-};
+// const testBlockWait = async () => {
+//   // const result = await waitForBlockChange(2);
+//   // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+//   const anonKeys1 = await TMI.getAnonKeys();
+//   const walletInfo = await TMI.createNewKeypair();
+//   const senderOne = walletInfo.privateStr!;
+//   const resultS = await TMI.createTestBars(senderOne);
+//   const result = await TMI.abarToBar(senderOne, anonKeys1);
+//   console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
+// };
 
 async function approveToken() {
   // const webLinkedInfo = {
@@ -2221,4 +2438,7 @@ async function approveToken() {
 // 4. PASSING: this one has multiple fra txo and it is also failing
 // abarToAbarCustomMultipleFraAtxoForFee();
 
-testBlockWait();
+// testBlockWait();
+
+// barToAbarAmount();
+abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
