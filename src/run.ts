@@ -1336,15 +1336,15 @@ const barToAbar = async (sids: number[], pkey = PKEY_MINE) => {
     sids: usedSids,
   } = await TripleMasking.barToAbar(walletInfo, sortedSids, anonKeys.axfrPublicKey);
 
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1187 ~ barToAbar barToAbatData',
-    JSON.stringify(barToAbarData, null, 2),
-  );
-  console.log('🚀 ~ file: run.ts ~ line 1188 ~ barToAbar usedSids', usedSids.join(','));
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 1187 ~ barToAbar barToAbatData',
+  //   JSON.stringify(barToAbarData, null, 2),
+  // // );
+  // console.log('🚀 ~ file: run.ts ~ line 1188 ~ barToAbar usedSids', usedSids.join(','));
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
-  console.log('send bar to abar result handle!!', resultHandle);
+  // console.log('send bar to abar result handle!!', resultHandle);
 
   const givenCommitments = barToAbarData.commitments;
 
@@ -2124,8 +2124,8 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   // const fraAssetCommitmentsList = await barToAbar(fraAssetSids);
 
   await waitForBlockChange(2);
-  // const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
-  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+  const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+  // const givenCommitmentsListSender = [...fraAssetCommitmentsList];
 
   //   if (!isFraTransfer && !fraCommitments.length) {
   // const givenCommitmentsListSender = [...customAssetCommitmentsList];
@@ -2242,6 +2242,113 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
 
   const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrivedCommitmentsListReceiver);
   console.log('🚀 ~ file: run.ts ~ line 1431 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+};
+
+const abarToBarCustomSendAmount = async () => {
+  const anonKeysSender = { ...myAbarAnonKeys };
+
+  const walletInfo = await createNewKeypair();
+  const pkey = walletInfo.privateStr!;
+
+  const toWalletInfo = await createNewKeypair();
+  const toPkey = toWalletInfo.privateStr!;
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+  const assetCode = await Asset.getRandomAssetCode();
+  const derivedAssetCode = await Asset.getDerivedAssetCode(assetCode);
+
+  await createTestBars(pkey);
+  await createTestBarsMulti(pkey, assetCode, derivedAssetCode);
+
+  const customAssetSids = await getSidsForAsset(pkey, derivedAssetCode);
+  const customAssetCommitmentsList = await barToAbar(customAssetSids, pkey);
+
+  const fraAssetSids = await getSidsForAsset(pkey, fraAssetCode);
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    pkey,
+  );
+
+  await waitForBlockChange(2);
+
+  const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+  // const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+
+  // const assetCodeToUse = fraAssetCode;
+  const assetCodeToUse = derivedAssetCode;
+
+  const balancesSenderBefore = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
+
+  const assetBalanceBeforeAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+
+  const fraBalanceBeforeAbarToBar = await Account.getBalance(toWalletInfo, fraAssetCode);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2279 ~ abarToBarCustomSendAmount ~ fraBalanceBeforeAbarToBar',
+    fraBalanceBeforeAbarToBar,
+  );
+
+  const { transactionBuilder, abarToBarData, remainderCommitements, spentCommitments } =
+    await TripleMasking.abarToBarAmount(
+      anonKeysSender,
+      toWalletInfo,
+      '12.15',
+      assetCodeToUse,
+      givenCommitmentsListSender,
+    );
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  await waitForBlockChange();
+
+  console.log('🚀 ~ file: run.ts ~ line 2306 ~ abarToBarData', JSON.stringify(abarToBarData, null, 2));
+
+  console.log('abar to bar result handle!!', resultHandle);
+
+  await waitForBlockChange(2);
+
+  console.log('now checking balances\n\n\n');
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2282 ~ abarToBarCustomSendAmount ~ balancesSenderBefore',
+    balancesSenderBefore,
+  );
+
+  const balancesSenderAfter = await TripleMasking.getBalance(anonKeysSender, [
+    ...givenCommitmentsListSender,
+    ...remainderCommitements,
+  ]);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2319 ~ abarToBarCustomSendAmount ~ balancesSenderAfter',
+    balancesSenderAfter,
+  );
+
+  // const assetBalanceAfterAbarToBar = await Account.getBalance(toWalletInfo, derivedAssetCode);
+  // console.log(
+  //   '🚀 ~ file: run.ts ~ line 2305 ~ abarToBarCustomSendAmount ~ assetBalanceAfterAbarToBar',
+  //   assetBalanceAfterAbarToBar,
+  // );
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2277 ~ abarToBarCustomSendAmount ~ assetBalanceBeforeAbarToBar',
+    assetBalanceBeforeAbarToBar,
+  );
+
+  const fraBalanceAfterAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2307 ~ abarToBarCustomSendAmount ~ assetBalanceAfterAbarToBar',
+    fraBalanceAfterAbarToBar,
+  );
+
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2294 ~ abarToBarCustomSendAmount ~ spentCommitments',
+    spentCommitments,
+  );
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2294 ~ abarToBarCustomSendAmount ~ remainderCommitements',
+    remainderCommitements,
+  );
 };
 
 const abarToBar = async () => {
@@ -2441,4 +2548,5 @@ async function approveToken() {
 // testBlockWait();
 
 // barToAbarAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+abarToBarCustomSendAmount();
