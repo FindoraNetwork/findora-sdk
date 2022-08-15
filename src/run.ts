@@ -1391,7 +1391,7 @@ const barToAbarAmount = async () => {
 
   console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys receiver', anonKeys);
 
-  const amount = '31.23';
+  const amount = '1.23';
   const assetCode = await Asset.getFraAssetCode();
 
   const {
@@ -2569,7 +2569,7 @@ async function approveToken() {
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
-abarToAbarFraOneFraAtxoForFee();
+// abarToAbarFraOneFraAtxoForFee();
 
 // 2. this one has multiple fra atxo
 // abarToAbarFraMultipleFraAtxoForFee();
@@ -2583,7 +2583,7 @@ abarToAbarFraOneFraAtxoForFee();
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-// barToAbarAmount();
+barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();

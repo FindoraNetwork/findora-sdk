@@ -1501,7 +1501,7 @@ var barToAbarAmount = function () { return __awaiter(void 0, void 0, void 0, fun
                 walletInfo = _b.sent();
                 anonKeys = __assign({}, myAbarAnonKeys);
                 console.log('🚀 ~file: run.ts ~ line 1202 ~ barToAbar ~ anonKeys receiver', anonKeys);
-                amount = '31.23';
+                amount = '1.23';
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 3:
                 assetCode = _b.sent();
@@ -2594,7 +2594,7 @@ function approveToken() {
 // testBlockWait();
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
-abarToAbarFraOneFraAtxoForFee();
+// abarToAbarFraOneFraAtxoForFee();
 // 2. this one has multiple fra atxo
 // abarToAbarFraMultipleFraAtxoForFee();
 // 3. this one sends custom asset and uses one fra atxo for fee
@@ -2603,7 +2603,7 @@ abarToAbarFraOneFraAtxoForFee();
 // abarToAbarCustomMultipleFraAtxoForFee();
 // New TM methods (examples)
 // 1. Send an exact amount from bar to abar
-// barToAbarAmount();
+barToAbarAmount();
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();
 // abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
