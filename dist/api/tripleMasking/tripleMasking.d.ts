@@ -31,6 +31,11 @@ export declare const getAbarToAbarAmountPayload: (anonKeysSender: FindoraWallet.
     commitmentsForFee: string[];
     additionalAmountForFee: string;
 }>;
+export declare const getAbarToBarAmountPayload: (anonKeysSender: FindoraWallet.FormattedAnonKeys, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
+    commitmentsToSend: string[];
+    commitmentsForFee: string[];
+    additionalAmountForFee: string;
+}>;
 export declare const abarToAbarAmount: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
     anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
@@ -43,6 +48,13 @@ export declare const prepareAnonTransferOperationBuilder: (anonKeysSender: Findo
 export declare const getAbarTransferFee: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<string>;
 export declare const barToAbarAmount: (walletInfo: Keypair.WalletKeypar, amount: string, assetCode: string, receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sids: number[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
+export declare const abarToBarAmount: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
+    remainderCommitements: string[];
+    spentCommitments: string[];
+    transactionBuilder: TransactionBuilder;
+    abarToBarData: FindoraWallet.AbarToBarData;
+    receiverWalletInfo: Keypair.WalletKeypar;
+}>;
 export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[]) => Promise<{
     transactionBuilder: TransactionBuilder;
     abarToBarData: FindoraWallet.AbarToBarData;
