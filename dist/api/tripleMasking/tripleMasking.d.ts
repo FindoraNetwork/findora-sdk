@@ -4,6 +4,12 @@ interface BalanceInfo {
     assetType: string;
     amount: string;
 }
+interface AtxoMapItem {
+    amount: string;
+    atxoSid: string;
+    assetType: string;
+    commitment: string;
+}
 interface AnonWalletBalanceInfo {
     axfrPublicKey: string;
     balances: BalanceInfo[];
@@ -20,12 +26,22 @@ export interface ProcessedCommitmentsMap {
 export declare const genAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;
 export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, commitments: string[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarData>;
 export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string) => Promise<boolean>;
+export declare const getAbarToAbarAmountPayload: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
+    commitmentsToSend: string[];
+    commitmentsForFee: string[];
+    additionalAmountForFee: string;
+}>;
+export declare const abarToAbarAmount: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
+    anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
+    abarToAbarData: FindoraWallet.AbarToAbarData;
+}>;
 export declare const abarToAbar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<{
     anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
 }>;
 export declare const prepareAnonTransferOperationBuilder: (anonKeysSender: FindoraWallet.FormattedAnonKeys, axfrPublicKeyReceiverString: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<import("findora-wallet-wasm/web").AnonTransferOperationBuilder>;
 export declare const getAbarTransferFee: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<string>;
+export declare const barToAbarAmount: (walletInfo: Keypair.WalletKeypar, amount: string, assetCode: string, receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sids: number[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[]) => Promise<{
     transactionBuilder: TransactionBuilder;
@@ -37,12 +53,6 @@ export declare const getNullifierHashesFromCommitments: (anonKeys: FindoraWallet
 export declare const getUnspentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const getSpentAbars: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<FindoraWallet.OwnedAbarItem[]>;
 export declare const openAbar: (abar: FindoraWallet.OwnedAbarItem, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.OpenedAbarInfo>;
-interface AtxoMapItem {
-    amount: string;
-    atxoSid: string;
-    assetType: string;
-    commitment: string;
-}
 export declare const getBalanceMaps: (unspentAbars: FindoraWallet.OwnedAbarItem[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
     assetDetailsMap: {
         [key: string]: FindoraWallet.IAsset;
@@ -70,4 +80,5 @@ export declare const getSendAtxo: (code: string, amount: BigInt, commitments: st
     sid: string;
     commitment: string;
 }[]>;
+export declare const getAmountFromCommitments: (code: string, commitments: string[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<bigint | never[]>;
 export {};

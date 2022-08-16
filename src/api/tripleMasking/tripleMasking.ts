@@ -1,5 +1,6 @@
 import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { CACHE_ENTRIES } from '../../config/cache';
+import { waitForBlockChange } from '../../evm/testHelpers';
 import Sdk from '../../Sdk';
 import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
 import Cache from '../../services/cacheStore/factory';
@@ -8,15 +9,23 @@ import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString } from '../../services/utils';
-import { addUtxo, AddUtxoItem } from '../../services/utxoHelper';
+import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
-import { getAssetCode, getAssetDetails } from '../sdkAsset';
+import * as Asset from '../sdkAsset';
+import * as Transaction from '../transaction';
 import * as Builder from '../transaction/builder';
 
 interface BalanceInfo {
   assetType: string;
   amount: string;
+}
+
+interface AtxoMapItem {
+  amount: string;
+  atxoSid: string;
+  assetType: string;
+  commitment: string;
 }
 
 interface AnonWalletBalanceInfo {
@@ -276,7 +285,7 @@ const getAbarTransferInputPayload = async (
   const { usedAssets } = maps;
   const [assetCode] = usedAssets;
 
-  const asset = await getAssetDetails(assetCode);
+  const asset = await Asset.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
 
   const result = {
@@ -290,18 +299,194 @@ const getAbarTransferInputPayload = async (
   return { ...result };
 };
 
+export const getAbarToAbarAmountPayload = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
+  amount: string,
+  assetCode: string,
+  givenCommitmentsList: string[],
+) => {
+  const asset = await Asset.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+  const unspentAbars = await getUnspentAbars(anonKeysSender, givenCommitmentsList);
+  const balancesMaps = await getBalanceMaps(unspentAbars, anonKeysSender);
+  const { atxoMap } = balancesMaps;
+
+  let filteredFraAtxoList: AtxoMapItem[] = [];
+
+  const filteredAssetAtxoList = atxoMap[assetCode] || [];
+
+  if (!filteredAssetAtxoList.length) {
+    throw new Error(
+      `There is no any abar for asset ${assetCode} available for ${anonKeysSender.axfrPublicKey}`,
+    );
+  }
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  if (!isFraTransfer) {
+    filteredFraAtxoList = atxoMap[fraAssetCode] || [];
+  }
+
+  if (!isFraTransfer && !filteredFraAtxoList.length) {
+    throw new Error(`There is no any FRA abar to cover the fee for ${anonKeysSender.axfrPublicKey}`);
+  }
+
+  const assetCommitments = filteredAssetAtxoList.map(atxoItem => atxoItem.commitment);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 331 ~ assetCommitments', assetCommitments);
+  const fraCommitments = filteredFraAtxoList.map(atxoItem => atxoItem.commitment);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 332 ~ fraCommitments', fraCommitments);
+
+  const atxoListToSend = await getSendAtxo(assetCode, utxoNumbers, assetCommitments, anonKeysSender);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 338 ~ atxoListToSend', atxoListToSend);
+
+  if (!atxoListToSend.length) {
+    throw new Error(
+      `Sender ${anonKeysSender.axfrPublicKey} does not have enough abars to send ${amount} of ${assetCode}`,
+    );
+  }
+
+  const additionalOwnedAbarItems = [];
+
+  const commitmentsToSend: string[] = [];
+  const commitmentsForFee: string[] = [];
+
+  for (let atxoItem of atxoListToSend) {
+    const givenCommitment = atxoItem.commitment;
+    const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+    commitmentsToSend.push(givenCommitment);
+  }
+
+  let calculatedFee = await getAbarTransferFee(
+    anonKeysSender,
+    anonPubKeyReceiver,
+    amount,
+    additionalOwnedAbarItems,
+  );
+
+  console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
+
+  let balanceAfterSendToBN = createBigNumber(calculatedFee);
+
+  let isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
+
+  if (!isMoreFeeNeeded) {
+    return {
+      commitmentsToSend,
+      commitmentsForFee,
+      additionalAmountForFee: '0',
+    };
+  }
+  let allCommitmentsForFee: string[] = fraCommitments;
+
+  if (isFraTransfer) {
+    allCommitmentsForFee = assetCommitments.filter(
+      commitment => !atxoListToSend.map(atxoItem => atxoItem.commitment).includes(commitment),
+    );
+  }
+
+  let idx = 0;
+
+  while (isMoreFeeNeeded) {
+    const givenCommitment = allCommitmentsForFee?.[idx];
+
+    if (!givenCommitment) {
+      throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
+    }
+    const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
+
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+
+    balanceAfterSendToBN = createBigNumber(calculatedFee);
+
+    isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
+    idx += 1;
+
+    commitmentsForFee.push(givenCommitment);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee);
+  }
+
+  console.log('returning calculatedFee', calculatedFee);
+
+  const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
+
+  const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+
+  return {
+    commitmentsToSend,
+    commitmentsForFee,
+    additionalAmountForFee,
+  };
+};
+
+export const abarToAbarAmount = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
+  amount: string,
+  assetCode: string,
+  givenCommitmentsList: string[],
+) => {
+  const payload = await getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonPubKeyReceiver,
+    amount,
+    assetCode,
+    givenCommitmentsList,
+  );
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 453 ~ payload', payload);
+
+  const { commitmentsToSend, commitmentsForFee } = payload;
+
+  const allCommitments = [...commitmentsToSend, ...commitmentsForFee];
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 458 ~ allCommitments', allCommitments);
+
+  const additionalOwnedAbarItems = [];
+
+  for (let givenCommitment of allCommitments) {
+    const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+  }
+
+  const abarToAbarResult = await abarToAbar(
+    anonKeysSender,
+    anonPubKeyReceiver,
+    amount,
+    additionalOwnedAbarItems,
+  );
+
+  return abarToAbarResult;
+};
+
 export const abarToAbar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -320,7 +505,6 @@ export const abarToAbar = async (
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -442,7 +626,7 @@ const processAbarToAbarCommitmentResponse = async (
     const commitmentEntity = commitmentsMap[commitmentKey];
     const [commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei] = commitmentEntity;
 
-    const commitmentAssetType = await getAssetCode(commitmentNumericAssetType);
+    const commitmentAssetType = await Asset.getAssetCode(commitmentNumericAssetType);
 
     const commitmentAmount = fromWei(createBigNumber(commitmentAmountInWei.toString()), 6).toFormat(6);
 
@@ -461,14 +645,12 @@ export const getAbarTransferFee = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
     abarAmountToTransfer,
-    // ownedAbarToUseAsSource,
     additionalOwnedAbarItems,
   );
 
@@ -477,6 +659,40 @@ export const getAbarTransferFee = async (
   const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
 
   return calculatedFee;
+};
+
+export const barToAbarAmount = async (
+  walletInfo: Keypair.WalletKeypar,
+  amount: string,
+  assetCode: string,
+  receiverAxfrPublicKey: string,
+): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
+  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  const transactionBuilder = await Transaction.sendToAddress(
+    walletInfo,
+    walletInfo.address,
+    amount,
+    assetCode,
+    assetBlindRules,
+  );
+
+  const sendResultHandle = await Transaction.submitTransaction(transactionBuilder);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 501 ~ sendResultHandle', sendResultHandle);
+
+  await waitForBlockChange();
+
+  const asset = await Asset.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+  const utxoToUse = await getUtxoWithAmount(walletInfo, utxoNumbers, assetCode);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 510 ~ utxoToUse', utxoToUse);
+
+  const barToAbarResult = await barToAbar(walletInfo, [utxoToUse.sid], receiverAxfrPublicKey);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 508 ~ barToAbarResult', barToAbarResult);
+
+  return barToAbarResult;
 };
 
 export const barToAbar = async (
@@ -589,7 +805,6 @@ export const barToAbar = async (
 export const abarToBar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
   receiverWalletInfo: Keypair.WalletKeypar,
-  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
 ) => {
   let transactionBuilder = await Builder.getTransactionBuilder();
@@ -835,13 +1050,6 @@ export const openAbar = async (
   return item;
 };
 
-interface AtxoMapItem {
-  amount: string;
-  atxoSid: string;
-  assetType: string;
-  commitment: string;
-}
-
 export const getBalanceMaps = async (
   unspentAbars: FindoraWallet.OwnedAbarItem[],
   anonKeys: FindoraWallet.FormattedAnonKeys,
@@ -865,7 +1073,7 @@ export const getBalanceMaps = async (
     const { amount, assetType } = openedAbarItem;
 
     if (!assetDetailsMap[assetType]) {
-      const asset = await getAssetDetails(assetType);
+      const asset = await Asset.getAssetDetails(assetType);
       usedAssets.push(assetType);
       assetDetailsMap[assetType] = asset;
     }
@@ -947,10 +1155,7 @@ export const getAbarBalance = async (
 
 export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
   const getOwnedAbarsResponse = await Network.getOwnedAbars(givenCommitment);
-  // console.log(
-  //   `🚀 ~ file: tripleMasking.ts ~ line 926 ~ getOwnedAbars ~ getOwnedAbarsResponse for commitment ${givenCommitment}`,
-  //   getOwnedAbarsResponse,
-  // );
+
   const { response: ownedAbarsResponse, error } = getOwnedAbarsResponse;
 
   if (error) {
@@ -1089,14 +1294,13 @@ export const getSendAtxo = async (
   const { atxoMap } = balancesMaps;
 
   const filteredUtxoList = atxoMap[code];
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
 
   if (!filteredUtxoList) {
     return [];
   }
 
   const sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
-  //  console.log('🚀 ~ file: tripleMasking.ts ~ line 1065 ~ sortedUtxoList', sortedUtxoList);
 
   let sum = BigInt(0);
 
@@ -1119,4 +1323,32 @@ export const getSendAtxo = async (
   }
 
   return sum >= amount ? result : [];
+};
+
+export const getAmountFromCommitments = async (
+  code: string,
+  commitments: string[],
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+) => {
+  const unspentAbars = await getUnspentAbars(anonKeys, commitments);
+  const balancesMaps = await getBalanceMaps(unspentAbars, anonKeys);
+  const { atxoMap } = balancesMaps;
+
+  const filteredUtxoList = atxoMap[code];
+
+  if (!filteredUtxoList) {
+    return [];
+  }
+
+  const sortedUtxoList = mergeSortAtxoList(filteredUtxoList);
+
+  let sum = BigInt(0);
+
+  for (let assetItem of sortedUtxoList) {
+    const _amount = BigInt(assetItem.amount);
+
+    sum = sum + _amount;
+  }
+
+  return sum;
 };

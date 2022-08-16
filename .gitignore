@@ -8,3 +8,4 @@ docs
 yarn.lock
 cache/
 .env*
+.gitconfig
