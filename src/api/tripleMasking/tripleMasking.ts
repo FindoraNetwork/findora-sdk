@@ -370,6 +370,13 @@ export const getAbarToAbarAmountPayload = async (
     additionalOwnedAbarItems,
   );
 
+  const totalFeeEstimate = await getTotalAbarTransferFee(
+    anonKeysSender,
+    anonPubKeyReceiver,
+    amount,
+    additionalOwnedAbarItems,
+  );
+
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   let balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -380,7 +387,7 @@ export const getAbarToAbarAmountPayload = async (
     return {
       commitmentsToSend,
       commitmentsForFee,
-      additionalAmountForFee: '0',
+      additionalAmountForFee: totalFeeEstimate,
     };
   }
   let allCommitmentsForFee: string[] = fraCommitments;
@@ -440,7 +447,7 @@ export const getAbarToAbarAmountPayload = async (
   return {
     commitmentsToSend,
     commitmentsForFee,
-    additionalAmountForFee,
+    additionalAmountForFee: totalFeeEstimate,
   };
 };
 
@@ -618,7 +625,7 @@ export const prepareAnonTransferOperationBuilder = async (
     }
   }
 
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
+  // console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     const ledger = await getLedger();
@@ -687,6 +694,28 @@ export const getAbarTransferFee = async (
   );
 
   const expectedFee = anonTransferOperationBuilder.get_expected_fee();
+
+  const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+
+  return calculatedFee;
+};
+
+export const getTotalAbarTransferFee = async (
+  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonPubKeyReceiver: string,
+  abarAmountToTransfer: string,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+) => {
+  const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
+    anonKeysSender,
+    anonPubKeyReceiver,
+    abarAmountToTransfer,
+    additionalOwnedAbarItems,
+  );
+
+  const expectedFee = anonTransferOperationBuilder.get_total_fee_estimate();
+
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 719 ~ total expectedFee', expectedFee);
 
   const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
 
