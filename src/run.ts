@@ -1263,7 +1263,7 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
     const transactionBuilder = await Transaction.sendToAddress(
       walletInfo,
       toWalletInfo.address,
-      `1.8${amount}`,
+      `1.2${amount}`,
       assetCode,
       assetBlindRules,
     );
@@ -2037,6 +2037,21 @@ const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
     fraBalanceBeforeAbarToAbar,
   );
 
+  const payload = await TripleMasking.getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    '3.15',
+    fraCode,
+    givenCommitmentsListSender,
+  );
+
+  const { additionalAmountForFee: totalExpectedFee } = payload;
+
+  log(
+    '🚀 ~ file: run.ts ~ line 2048 ~ abarToAbarFraMultipleFraAtxoForFeeSendAmount ~ totalExpectedFee',
+    totalExpectedFee,
+  );
+
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
@@ -2149,6 +2164,21 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   console.log(
     '🚀 ~ file: run.ts ~ line 2253 ~ abarToBar ~ fraBalanceBeforeAbarToAbar',
     fraBalanceBeforeAbarToAbar,
+  );
+
+  const payload = await TripleMasking.getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    '23.14',
+    derivedAssetCode,
+    givenCommitmentsListSender,
+  );
+
+  const { additionalAmountForFee: totalExpectedFee } = payload;
+
+  log(
+    '🚀 ~ file: run.ts ~ line 2048 ~ abarToAbarFraMultipleFraAtxoForFeeSendAmount ~ totalExpectedFee',
+    totalExpectedFee,
   );
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
@@ -2383,6 +2413,69 @@ const abarToBarFraSendAmount = async () => {
   );
 };
 
+const abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee = async () => {
+  const anonKeysSender = { ...myAbarAnonKeys };
+
+  const anonKeysReceiver = {
+    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+    axfrSpendKey:
+      'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+  };
+
+  const walletInfo = await createNewKeypair();
+  const pkey = walletInfo.privateStr!;
+
+  const fraCode = await Asset.getFraAssetCode();
+  await createTestBars(pkey);
+
+  const fraAssetSids = await getSidsForAsset(pkey, fraCode);
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    pkey,
+  );
+
+  await waitForBlockChange();
+  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+
+  const additionalOwnedAbarItems = [];
+
+  for (let givenCommitment of givenCommitmentsListSender) {
+    const balancesCommitment = await TripleMasking.getBalance(anonKeysSender, [givenCommitment]);
+    console.log(
+      '🚀 ~ file: run.ts ~ line 2138 ~ abarToAbar ~ balancesCommitment to be used',
+      balancesCommitment,
+    );
+    const ownedAbarsResponseTwo = await TripleMasking.getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+  }
+
+  const fraBalanceBeforeAbarToAbar = await Account.getBalance(walletInfo, fraCode);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2253 ~ abarToBar ~ fraBalanceBeforeAbarToAbar',
+    fraBalanceBeforeAbarToAbar,
+  );
+
+  const payload = await TripleMasking.getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    '3.15',
+    fraCode,
+    givenCommitmentsListSender,
+  );
+  console.log(
+    '🚀 ~ file: run.ts ~ line 2047 ~ abarToAbarFraMultipleFraAtxoForFeeSendAmount ~ payload',
+    payload,
+  );
+
+  return;
+};
+
 const abarToBar = async () => {
   const password = '1234';
 
@@ -2583,12 +2676,15 @@ async function approveToken() {
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-barToAbarAmount();
+// barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
 
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();
 // abarToBarFraSendAmount();
+
+// Total fee test
+// abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee();
