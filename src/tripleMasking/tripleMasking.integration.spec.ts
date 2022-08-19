@@ -1,11 +1,11 @@
 import * as Integration from './tripleMasking.integration';
 
-import * as FW from '../types/findoraWallet';
+import * as FindoraWallet from '../types/findoraWallet';
 const extendedExecutionTimeout = 180000;
 
-let anonKeys1: FW.FindoraWallet.FormattedAnonKeys;
-let anonKeys2: FW.FindoraWallet.FormattedAnonKeys;
-let anonKeys3: FW.FindoraWallet.FormattedAnonKeys;
+let anonKeys1: FindoraWallet.FormattedAnonKeys;
+let anonKeys2: FindoraWallet.FormattedAnonKeys;
+let anonKeys3: FindoraWallet.FormattedAnonKeys;
 
 let senderOne = '';
 let asset1Code = '';

@@ -1,4 +1,4 @@
-import * as FW from '../../types/findoraWallet';
+import * as FindoraWallet from '../../types/findoraWallet';
 export interface ResultError {
     message: string;
     code?: number;
@@ -66,7 +66,7 @@ export declare type UtxoResponse = {
 export interface UtxoDataResult extends NetworkAxiosDataResult {
     response?: UtxoResponse;
 }
-export declare type OwnedResponseAbarItem = [string, FW.FindoraWallet.OwnedAbar];
+export declare type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
 export declare type OwnedAbarsResponse = OwnedResponseAbarItem;
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
     response?: OwnedAbarsResponse;
@@ -75,7 +75,7 @@ export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResul
     response?: boolean;
 }
 export declare type AssetTokenResponse = {
-    properties: FW.FindoraWallet.IPureAsset;
+    properties: FindoraWallet.IPureAsset;
 };
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
     response?: AssetTokenResponse;

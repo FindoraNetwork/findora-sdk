@@ -3,7 +3,7 @@ import * as KeypairApi from '../api/keypair';
 import * as NetworkApi from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 import * as Asset from '../api/sdkAsset/sdkAsset';
-import * as FW from '../types/findoraWallet';
+import * as FindoraWallet from '../types/findoraWallet';
 import * as Fee from './fee';
 import * as Ledger from './ledger/ledgerWrapper';
 import { LedgerForNode } from './ledger/nodeLedger';
@@ -73,7 +73,7 @@ describe('fee (unit test)', () => {
         .spyOn(Ledger, 'getLedger')
         .mockImplementation(jest.fn(() => Promise.resolve(fakedLedger)));
 
-      const asset = { foo: 1 } as unknown as FW.FindoraWallet.IAsset;
+      const asset = { foo: 1 } as unknown as FindoraWallet.IAsset;
       const res = await Fee.getAssetTracingPolicies(asset);
       expect(res).toBe(tPol);
 

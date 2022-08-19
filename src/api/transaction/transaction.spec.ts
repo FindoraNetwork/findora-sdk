@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/extend-expect';
 import * as Fee from '../../services/fee';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
 import { TransactionBuilder, TransferOperationBuilder, XfrPublicKey } from '../../services/ledger/types';
-import * as FW from '../../types/findoraWallet';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import * as NetworkTypes from '../network/types';
@@ -173,7 +173,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -287,7 +287,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -372,7 +372,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -462,7 +462,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -569,7 +569,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -704,7 +704,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
@@ -818,7 +818,7 @@ describe('transaction (unit test)', () => {
       });
 
       const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
-        return Promise.resolve(assetDetails as FW.FindoraWallet.IAsset);
+        return Promise.resolve(assetDetails as FindoraWallet.IAsset);
       });
 
       const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {

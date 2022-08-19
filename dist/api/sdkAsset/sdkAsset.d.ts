@@ -1,4 +1,4 @@
-import * as FW from '../../types/findoraWallet';
+import * as FindoraWallet from '../../types/findoraWallet';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 export interface AssetRules {
@@ -112,4 +112,4 @@ export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, 
  * @returns An instance of **TransactionBuilder** from {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger }
  */
 export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: string, assetBlindRules: AssetBlindRules, assetDecimals?: number | undefined) => Promise<TransactionBuilder>;
-export declare const getAssetDetails: (assetCode: string) => Promise<FW.FindoraWallet.IAsset>;
+export declare const getAssetDetails: (assetCode: string) => Promise<FindoraWallet.IAsset>;

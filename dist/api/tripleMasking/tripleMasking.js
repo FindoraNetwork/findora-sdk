@@ -599,7 +599,7 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
 };
 exports.abarToAbar = abarToAbar;
 var prepareAnonTransferOperationBuilder = function (anonKeysSender, axfrPublicKeyReceiverString, abarAmountToTransfer, 
-// ownedAbarToUseAsSource: FW.FindoraWallet.OwnedAbarItem,
+// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
 additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
