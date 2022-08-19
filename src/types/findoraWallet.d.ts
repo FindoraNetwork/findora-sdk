@@ -1,4 +1,4 @@
-declare namespace FindoraWallet {
+export declare namespace FindoraWallet {
   export interface IAssetRules {
     decimals: number;
     transferable: boolean;
@@ -56,7 +56,7 @@ declare namespace FindoraWallet {
     privateKey?: string;
   }
 
-  interface FormattedAnonKeys {
+  export interface FormattedAnonKeys {
     axfrSpendKey: string;
     axfrPublicKey: string;
     axfrViewKey: string;
@@ -71,7 +71,7 @@ declare namespace FindoraWallet {
     anonKeysSender: FormattedAnonKeys;
   }
 
-  interface ProcessedCommitmentsMap {
+  export interface ProcessedCommitmentsMap {
     commitmentKey: string;
     commitmentAxfrPublicKey: string;
     commitmentAssetType: string;

@@ -10,6 +10,7 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString } from '../../services/utils';
 import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
+import * as FW from '../../types/FindoraWallet';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
 import * as Asset from '../sdkAsset';
@@ -44,7 +45,7 @@ export interface ProcessedCommitmentsMap {
   commitmentAmount: string;
 }
 
-export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> => {
+export const genAnonKeys = async (): Promise<FW.FindoraWallet.FormattedAnonKeys> => {
   const ledger = await getLedger();
 
   try {
@@ -91,7 +92,7 @@ export const saveBarToAbarToCache = async (
   sid: number,
   commitments: string[],
   receiverAxfrPublicKey: string,
-): Promise<FindoraWallet.BarToAbarData> => {
+): Promise<FW.FindoraWallet.BarToAbarData> => {
   const cacheDataToSave: CacheItem = {};
 
   const cacheEntryName = `${CACHE_ENTRIES.BAR_TO_ABAR}_${walletInfo.address}`;
@@ -129,7 +130,7 @@ export const saveBarToAbarToCache = async (
 
 export const saveOwnedAbarsToCache = async (
   walletInfo: Keypair.WalletKeypar,
-  ownedAbars: FindoraWallet.OwnedAbarItem[],
+  ownedAbars: FW.FindoraWallet.OwnedAbarItem[],
   savePath?: string,
 ): Promise<boolean> => {
   const cacheDataToSave: CacheItem = {};
@@ -170,7 +171,7 @@ export const saveOwnedAbarsToCache = async (
   return true;
 };
 
-const getAbarFromJson = async (ownedAbar: FindoraWallet.OwnedAbar) => {
+const getAbarFromJson = async (ownedAbar: FW.FindoraWallet.OwnedAbar) => {
   const ledger = await getLedger();
 
   let myOwnedAbar;
@@ -234,7 +235,7 @@ const getMyMTLeafInfo = async (atxoSid: string) => {
   return myMTLeafInfo;
 };
 
-export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys) => {
+export const getAnonKeypairFromJson = async (anonKeys: FW.FindoraWallet.FormattedAnonKeys) => {
   let aXfrSpendKeyConverted;
   let axfrViewKeyConverted;
   let axfrPublicKeyConverted;
@@ -269,8 +270,8 @@ const getAnonPubKeyFromString = async (anonPubKey: string): Promise<AXfrPubKey> 
 };
 
 const getAbarTransferInputPayload = async (
-  ownedAbarItem: FindoraWallet.OwnedAbarItem,
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  ownedAbarItem: FW.FindoraWallet.OwnedAbarItem,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
   const { abarData } = ownedAbarItem;
 
@@ -300,7 +301,7 @@ const getAbarTransferInputPayload = async (
 };
 
 export const getAbarToAbarAmountPayload = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   amount: string,
   assetCode: string,
@@ -452,7 +453,7 @@ export const getAbarToAbarAmountPayload = async (
 };
 
 export const getAbarToBarAmountPayload = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   amount: string,
   assetCode: string,
   givenCommitmentsList: string[],
@@ -476,7 +477,7 @@ export const getAbarToBarAmountPayload = async (
 };
 
 export const abarToAbarAmount = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   amount: string,
   assetCode: string,
@@ -517,10 +518,10 @@ export const abarToAbarAmount = async (
 };
 
 export const abarToAbar = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+  additionalOwnedAbarItems: FW.FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
@@ -565,7 +566,7 @@ export const abarToAbar = async (
 
   const processedCommitmentsMap = await processAbarToAbarCommitmentResponse(commitmentsMap);
 
-  const abarToAbarData: FindoraWallet.AbarToAbarData = {
+  const abarToAbarData: FW.FindoraWallet.AbarToAbarData = {
     anonKeysSender,
     anonPubKeyReceiver,
     commitmentsMap: processedCommitmentsMap,
@@ -575,11 +576,11 @@ export const abarToAbar = async (
 };
 
 export const prepareAnonTransferOperationBuilder = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   axfrPublicKeyReceiverString: string,
   abarAmountToTransfer: string,
-  // ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+  // ownedAbarToUseAsSource: FW.FindoraWallet.OwnedAbarItem,
+  additionalOwnedAbarItems: FW.FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
@@ -681,10 +682,10 @@ const processAbarToAbarCommitmentResponse = async (
 };
 
 export const getAbarTransferFee = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+  additionalOwnedAbarItems: FW.FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
@@ -701,10 +702,10 @@ export const getAbarTransferFee = async (
 };
 
 export const getTotalAbarTransferFee = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   anonPubKeyReceiver: string,
   abarAmountToTransfer: string,
-  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
+  additionalOwnedAbarItems: FW.FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
@@ -727,7 +728,7 @@ export const barToAbarAmount = async (
   amount: string,
   assetCode: string,
   receiverAxfrPublicKey: string,
-): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
+): Promise<FW.FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
   const transactionBuilder = await Transaction.sendToAddress(
@@ -760,7 +761,7 @@ export const barToAbar = async (
   walletInfo: Keypair.WalletKeypar,
   sids: number[],
   receiverAxfrPublicKey: string,
-): Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
+): Promise<FW.FindoraWallet.BarToAbarResult<TransactionBuilder>> => {
   const ledger = await getLedger();
   let transactionBuilder = await Builder.getTransactionBuilder();
 
@@ -848,7 +849,7 @@ export const barToAbar = async (
     throw new Error(`list of commitments strings is empty `);
   }
 
-  const barToAbarData: FindoraWallet.BarToAbarData = {
+  const barToAbarData: FW.FindoraWallet.BarToAbarData = {
     receiverAxfrPublicKey,
     commitments: commitments.commitments,
   };
@@ -864,7 +865,7 @@ export const barToAbar = async (
 };
 
 export const abarToBarAmount = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   receiverXfrPublicKey: string,
   amount: string,
   assetCode: string,
@@ -932,9 +933,9 @@ export const abarToBarAmount = async (
 };
 
 export const abarToBar = async (
-  anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: FW.FindoraWallet.FormattedAnonKeys,
   receiverXfrPublicKey: string,
-  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
+  additionalOwnedAbarItems: FW.FindoraWallet.OwnedAbarItem[],
 ) => {
   let transactionBuilder = await Builder.getTransactionBuilder();
 
@@ -990,7 +991,7 @@ export const abarToBar = async (
     throw new Error(`could not build txn "${err as Error}"`);
   }
 
-  const abarToBarData: FindoraWallet.AbarToBarData = {
+  const abarToBarData: FW.FindoraWallet.AbarToBarData = {
     anonKeysSender,
   };
 
@@ -1014,7 +1015,7 @@ export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
 };
 
 export const getNullifierHashesFromCommitments = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const { axfrSpendKey, axfrPublicKey } = anonKeys;
@@ -1022,7 +1023,7 @@ export const getNullifierHashesFromCommitments = async (
   const nullifierHashes: string[] = [];
 
   for (const givenCommitment of givenCommitmentsList) {
-    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+    let ownedAbarsResponse: FW.FindoraWallet.OwnedAbarItem[] = [];
 
     try {
       ownedAbarsResponse = await getOwnedAbars(givenCommitment);
@@ -1055,15 +1056,15 @@ export const getNullifierHashesFromCommitments = async (
 };
 
 export const getUnspentAbars = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const { axfrSpendKey, axfrPublicKey } = anonKeys;
 
-  const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
+  const unspentAbars: FW.FindoraWallet.OwnedAbarItem[] = [];
 
   for (const givenCommitment of givenCommitmentsList) {
-    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+    let ownedAbarsResponse: FW.FindoraWallet.OwnedAbarItem[] = [];
 
     try {
       ownedAbarsResponse = await getOwnedAbars(givenCommitment);
@@ -1099,15 +1100,15 @@ export const getUnspentAbars = async (
 };
 
 export const getSpentAbars = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const { axfrSpendKey, axfrPublicKey } = anonKeys;
 
-  const spentAbars: FindoraWallet.OwnedAbarItem[] = [];
+  const spentAbars: FW.FindoraWallet.OwnedAbarItem[] = [];
 
   for (const givenCommitment of givenCommitmentsList) {
-    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+    let ownedAbarsResponse: FW.FindoraWallet.OwnedAbarItem[] = [];
 
     try {
       ownedAbarsResponse = await getOwnedAbars(givenCommitment);
@@ -1143,9 +1144,9 @@ export const getSpentAbars = async (
 };
 
 export const openAbar = async (
-  abar: FindoraWallet.OwnedAbarItem,
-  anonKeys: FindoraWallet.FormattedAnonKeys,
-): Promise<FindoraWallet.OpenedAbarInfo> => {
+  abar: FW.FindoraWallet.OwnedAbarItem,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
+): Promise<FW.FindoraWallet.OpenedAbarInfo> => {
   const ledger = await getLedger();
 
   const { abarData } = abar;
@@ -1159,7 +1160,7 @@ export const openAbar = async (
 
   const { aXfrSpendKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
 
-  const openedAbar: FindoraWallet.OpenedAbar = ledger.get_open_abar(
+  const openedAbar: FW.FindoraWallet.OpenedAbar = ledger.get_open_abar(
     myOwnedAbar,
     abarOwnerMemo,
     axfrSpendKey,
@@ -1180,10 +1181,10 @@ export const openAbar = async (
 };
 
 export const getBalanceMaps = async (
-  unspentAbars: FindoraWallet.OwnedAbarItem[],
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  unspentAbars: FW.FindoraWallet.OwnedAbarItem[],
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
-  const assetDetailsMap: { [key: string]: FindoraWallet.IAsset } = {};
+  const assetDetailsMap: { [key: string]: FW.FindoraWallet.IAsset } = {};
   const balancesMap: { [key: string]: string } = {};
 
   const atxoMap: { [key: string]: AtxoMapItem[] } = {};
@@ -1227,7 +1228,7 @@ export const getBalanceMaps = async (
 };
 
 export const getBalance = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const unspentAbars = await getUnspentAbars(anonKeys, givenCommitmentsList);
@@ -1236,7 +1237,7 @@ export const getBalance = async (
 };
 
 export const getSpentBalance = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const unspentAbars = await getSpentAbars(anonKeys, givenCommitmentsList);
@@ -1245,7 +1246,7 @@ export const getSpentBalance = async (
 };
 
 export const getAllAbarBalances = async (
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
   const spentBalances = await getSpentBalance(anonKeys, givenCommitmentsList);
@@ -1258,8 +1259,8 @@ export const getAllAbarBalances = async (
 };
 
 export const getAbarBalance = async (
-  unspentAbars: FindoraWallet.OwnedAbarItem[],
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  unspentAbars: FW.FindoraWallet.OwnedAbarItem[],
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
   const maps = await getBalanceMaps(unspentAbars, anonKeys);
   const { axfrPublicKey } = anonKeys;
@@ -1282,7 +1283,7 @@ export const getAbarBalance = async (
   return balanceInfo;
 };
 
-export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWallet.OwnedAbarItem[]> => {
+export const getOwnedAbars = async (givenCommitment: string): Promise<FW.FindoraWallet.OwnedAbarItem[]> => {
   const getOwnedAbarsResponse = await Network.getOwnedAbars(givenCommitment);
 
   const { response: ownedAbarsResponse, error } = getOwnedAbarsResponse;
@@ -1315,7 +1316,7 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
 
 export const genNullifierHash = async (
   atxoSid: string,
-  ownedAbar: FindoraWallet.OwnedAbar,
+  ownedAbar: FW.FindoraWallet.OwnedAbar,
   axfrSpendKey: string,
 ) => {
   const ledger = await getLedger();
@@ -1414,7 +1415,7 @@ export const getSendAtxo = async (
   code: string,
   amount: BigInt,
   commitments: string[],
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
   const result = [];
 
@@ -1457,7 +1458,7 @@ export const getSendAtxo = async (
 export const getAmountFromCommitments = async (
   code: string,
   commitments: string[],
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
   const unspentAbars = await getUnspentAbars(anonKeys, commitments);
   const balancesMaps = await getBalanceMaps(unspentAbars, anonKeys);

@@ -8,6 +8,7 @@ import {
   XPublicKey,
 } from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
+import * as FW from '../../types/FindoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
@@ -41,7 +42,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let ownerMemoDataResult: OwnerMemoDataResult;
-    let anonKeys: FindoraWallet.FormattedAnonKeys;
+    let anonKeys: FW.FindoraWallet.FormattedAnonKeys;
 
     let clientAssetRecord: ClientAssetRecordLight;
     let ownerMemo: OwnerMemoLight;
@@ -381,8 +382,8 @@ describe('triple masking (unit test)', () => {
     let givenCommitment: string;
     let ownedAbars: OwnedAbarsDataResult;
     let atxoSid: string;
-    let ownedAbar: FindoraWallet.OwnedAbar;
-    let abarData: FindoraWallet.OwnedAbarData;
+    let ownedAbar: FW.FindoraWallet.OwnedAbar;
+    let abarData: FW.FindoraWallet.OwnedAbarData;
 
     let spyGetLedger: jest.SpyInstance;
     let spyGetAXfrPublicKeyByBase64: jest.SpyInstance;
@@ -457,7 +458,7 @@ describe('triple masking (unit test)', () => {
   describe('genAnonKeys', () => {
     let nodeLedger: NodeLedger.LedgerForNode;
     let anonKeys: AnonKeys;
-    let formattedAnonKeys: FindoraWallet.FormattedAnonKeys;
+    let formattedAnonKeys: FW.FindoraWallet.FormattedAnonKeys;
 
     let spyGetLedger: jest.SpyInstance;
     let spyGenAnonKeys: jest.SpyInstance;
@@ -523,7 +524,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let commitments: string[];
-    let anonKeys: FindoraWallet.FormattedAnonKeys;
+    let anonKeys: FW.FindoraWallet.FormattedAnonKeys;
 
     let spyConsoleLog: jest.SpyInstance;
     let spyCacheRead: jest.SpyInstance;
@@ -539,7 +540,7 @@ describe('triple masking (unit test)', () => {
         axfrSecretKey: 'axfrSecretKey',
         decKey: 'decKey',
         encKey: 'encKey',
-      } as unknown as FindoraWallet.FormattedAnonKeys;
+      } as unknown as FW.FindoraWallet.FormattedAnonKeys;
       spyConsoleLog = jest.spyOn(console, 'log');
       spyCacheRead = jest.spyOn(Cache, 'read');
       spyCacheWrite = jest.spyOn(Cache, 'write');
@@ -605,10 +606,10 @@ describe('triple masking (unit test)', () => {
     let spyConsoleLog: jest.SpyInstance;
     let spyCacheRead: jest.SpyInstance;
     let spyCacheWrite: jest.SpyInstance;
-    let ownedAbars: FindoraWallet.OwnedAbarItem[];
+    let ownedAbars: FW.FindoraWallet.OwnedAbarItem[];
 
     let atxoSid: string;
-    let ownedAbar: FindoraWallet.OwnedAbar;
+    let ownedAbar: FW.FindoraWallet.OwnedAbar;
     let givenCommitment: string;
 
     beforeEach(() => {

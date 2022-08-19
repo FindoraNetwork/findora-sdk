@@ -1,6 +1,7 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import * as AssetApi from '../api/sdkAsset';
+import * as FW from '../types/findoraWallet';
 import { getLedger } from './ledger/ledgerWrapper';
 import {
   ClientAssetRecord,
@@ -35,7 +36,7 @@ export const getEmptyTransferBuilder = async (): Promise<TransferOperationBuilde
   return ledger.TransferOperationBuilder.new();
 };
 
-export const getAssetTracingPolicies = async (asset: FindoraWallet.IAsset) => {
+export const getAssetTracingPolicies = async (asset: FW.FindoraWallet.IAsset) => {
   const ledger = await getLedger();
 
   const tracingPolicies = ledger.AssetType.from_json({ properties: asset }).get_tracing_policies();

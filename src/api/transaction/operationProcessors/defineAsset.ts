@@ -1,4 +1,5 @@
 import { DEFAULT_ASSET_RULES } from '../../../config/asset';
+import * as FW from '../../../types/findoraWallet';
 import * as Keypair from '../../keypair';
 import { DefineAssetOperation, TxOperation } from '../types';
 
@@ -7,7 +8,7 @@ export interface ProcessedDefineAsset {
   from: string[];
   to: string[];
   type: string;
-  assetRules: FindoraWallet.IAssetRules;
+  assetRules: FW.FindoraWallet.IAssetRules;
   originalOperation?: TxOperation;
 }
 

@@ -1,5 +1,6 @@
 import * as Integration from './integration';
 
+import * as FindoraWallet from './types/findoraWallet';
 const extendedExecutionTimeout = 180000;
 
 describe(`Findora SDK integration (integration test)`, () => {

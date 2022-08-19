@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import * as FW from '../../types/findoraWallet';
 export interface ResultError {
   message: string;
   code?: number;
@@ -80,7 +81,7 @@ export interface UtxoDataResult extends NetworkAxiosDataResult {
   response?: UtxoResponse;
 }
 
-export type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
+export type OwnedResponseAbarItem = [string, FW.FindoraWallet.OwnedAbar];
 
 export type OwnedAbarsResponse = OwnedResponseAbarItem;
 
@@ -93,7 +94,7 @@ export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResul
 }
 
 export type AssetTokenResponse = {
-  properties: FindoraWallet.IPureAsset;
+  properties: FW.FindoraWallet.IPureAsset;
 };
 
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {

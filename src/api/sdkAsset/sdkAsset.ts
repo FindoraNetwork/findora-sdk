@@ -2,6 +2,7 @@ import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
+import * as FW from '../../types/findoraWallet';
 import * as Builder from '../transaction/builder';
 
 import {
@@ -394,7 +395,7 @@ export const issueAsset = async (
   return transactionBuilder;
 };
 
-export const getAssetDetails = async (assetCode: string): Promise<FindoraWallet.IAsset> => {
+export const getAssetDetails = async (assetCode: string): Promise<FW.FindoraWallet.IAsset> => {
   let result;
 
   try {

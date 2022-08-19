@@ -5,6 +5,7 @@ import Sdk from '../Sdk';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { log } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
+import * as FW from '../types/findoraWallet';
 
 dotenv.config();
 
@@ -100,7 +101,7 @@ export const getAnonKeys = async () => {
  */
 const barToAbarBalances = async (
   walletInfo: Keypair.WalletKeypar,
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: FW.FindoraWallet.FormattedAnonKeys,
   givenCommitment: string,
   balance: string,
 ) => {
@@ -132,7 +133,10 @@ const barToAbarBalances = async (
 /**
  * Given a commitment, check if nullifier is spent
  */
-export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
+export const validateSpent = async (
+  AnonKeys: FW.FindoraWallet.FormattedAnonKeys,
+  givenCommitment: string,
+) => {
   const anonKeys = { ...AnonKeys };
   const axfrKeyPair = anonKeys.axfrSpendKey;
 
@@ -151,7 +155,7 @@ export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, g
  */
 export const barToAbar = async (
   senderOne: string,
-  AnonKeys: FindoraWallet.FormattedAnonKeys,
+  AnonKeys: FW.FindoraWallet.FormattedAnonKeys,
   isBalanceCheck: boolean,
   givenSid = 0,
 ) => {
@@ -217,8 +221,8 @@ export const barToAbar = async (
  */
 export const abarToAbar = async (
   senderOne: string,
-  AnonKeys1: FindoraWallet.FormattedAnonKeys,
-  AnonKeys2: FindoraWallet.FormattedAnonKeys,
+  AnonKeys1: FW.FindoraWallet.FormattedAnonKeys,
+  AnonKeys2: FW.FindoraWallet.FormattedAnonKeys,
 ) => {
   log('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
 
@@ -305,7 +309,7 @@ export const abarToAbar = async (
 /**
  * ABAR To BAR conversion Integration Test for FRA
  */
-export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => {
+export const abarToBar = async (senderOne: string, AnonKeys: FW.FindoraWallet.FormattedAnonKeys) => {
   log('//////////////// ABAR To BAR conversion //////////////// ');
 
   const pkey = senderOne;
@@ -501,8 +505,8 @@ export const createTestBarsMulti = async (
  */
 export const abarToAbarMulti = async (
   senderOne: string,
-  AnonKeys1: FindoraWallet.FormattedAnonKeys,
-  AnonKeys2: FindoraWallet.FormattedAnonKeys,
+  AnonKeys1: FW.FindoraWallet.FormattedAnonKeys,
+  AnonKeys2: FW.FindoraWallet.FormattedAnonKeys,
   asset1Code: string,
 ) => {
   log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');

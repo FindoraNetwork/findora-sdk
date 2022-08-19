@@ -12,6 +12,7 @@ import {
   TransferOperationBuilder,
   XfrKeyPair,
 } from '../../services/ledger/types';
+import * as FW from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import * as NetworkTypes from '../network/types';
@@ -1107,7 +1108,7 @@ describe('sdkAsset (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
@@ -1199,7 +1200,7 @@ describe('sdkAsset (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
@@ -1280,7 +1281,7 @@ describe('sdkAsset (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
@@ -1338,7 +1339,7 @@ describe('sdkAsset (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
@@ -1403,7 +1404,7 @@ describe('sdkAsset (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {

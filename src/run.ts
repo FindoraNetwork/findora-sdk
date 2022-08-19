@@ -2277,7 +2277,7 @@ const abarToBarCustomSendAmount = async () => {
   const { transactionBuilder, abarToBarData, remainderCommitements, spentCommitments } =
     await TripleMasking.abarToBarAmount(
       anonKeysSender,
-      toWalletInfo,
+      toWalletInfo.publickey,
       '12.15',
       assetCodeToUse,
       givenCommitmentsListSender,
@@ -2361,7 +2361,7 @@ const abarToBarFraSendAmount = async () => {
   const { transactionBuilder, abarToBarData, remainderCommitements, spentCommitments } =
     await TripleMasking.abarToBarAmount(
       anonKeysSender,
-      toWalletInfo,
+      toWalletInfo.publickey,
       '2.16',
       assetCodeToUse,
       givenCommitmentsListSender,
@@ -2496,14 +2496,14 @@ const abarToBar = async () => {
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
   console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
 
-  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
+  const { transactionBuilder, abarToBarData, receiverXfrPublicKey } = await TripleMasking.abarToBar(
     anonKeysSender,
-    walletInfo,
+    walletInfo.publickey,
     [ownedAbarToUseAsSource],
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverXfrPublicKey', receiverXfrPublicKey);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
@@ -2571,16 +2571,16 @@ const testIt = async () => {
   console.log('result', result);
 };
 
-// const testBlockWait = async () => {
-//   // const result = await waitForBlockChange(2);
-//   // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
-//   const anonKeys1 = await TMI.getAnonKeys();
-//   const walletInfo = await TMI.createNewKeypair();
-//   const senderOne = walletInfo.privateStr!;
-//   const resultS = await TMI.createTestBars(senderOne);
-//   const result = await TMI.abarToBar(senderOne, anonKeys1);
-//   console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
-// };
+const testBlockWait = async () => {
+  const result = await waitForBlockChange();
+  // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
+  // const anonKeys1 = await TMI.getAnonKeys();
+  // const walletInfo = await TMI.createNewKeypair();
+  // const senderOne = walletInfo.privateStr!;
+  // const resultS = await TMI.createTestBars(senderOne);
+  // const result = await TMI.abarToBar(senderOne, anonKeys1);
+  // console.log('🚀 ~ file: run.ts ~ line 2133 ~ testBlockWait ~ result', result);
+};
 
 async function approveToken() {
   // const webLinkedInfo = {
@@ -2658,7 +2658,7 @@ async function approveToken() {
 
 // testTransferToYourself();
 
-// testBlockWait();
+testBlockWait();
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
@@ -2680,7 +2680,7 @@ async function approveToken() {
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
 
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();

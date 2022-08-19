@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom/extend-expect';
-
 import * as Fee from '../../services/fee';
 import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
+import * as FW from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as SdkAsset from '../sdkAsset/sdkAsset';
 import * as Builder from '../transaction/builder';
@@ -412,7 +412,7 @@ describe('staking (unit test)', () => {
         assetRules: {
           decimals,
         },
-      } as unknown as FindoraWallet.IAsset;
+      } as unknown as FW.FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
