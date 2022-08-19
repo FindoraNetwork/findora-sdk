@@ -1,3 +1,4 @@
+import * as FW from '../../types/findoraWallet';
 import { ProcessedTx } from './operationProcessors/index';
 export interface TxInput {
     Absolute: number;
@@ -111,7 +112,7 @@ export interface IssueAssetOperation {
 }
 export interface DefineAssetOperation {
     body: {
-        asset: FindoraWallet.IPureAsset;
+        asset: FW.FindoraWallet.IPureAsset;
     };
     pubkey: {
         key: string;
