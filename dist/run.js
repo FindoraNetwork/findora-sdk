@@ -2362,7 +2362,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 14:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '12.15', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '12.15', assetCodeToUse, givenCommitmentsListSender)];
             case 15:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2429,7 +2429,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 9:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '2.16', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '2.16', assetCodeToUse, givenCommitmentsListSender)];
             case 10:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2523,7 +2523,7 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee = function () { return 
     });
 }); };
 var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle;
+    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverXfrPublicKey, resultHandle;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -2543,11 +2543,11 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
                 console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource])];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [ownedAbarToUseAsSource])];
             case 3:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverXfrPublicKey = _a.receiverXfrPublicKey;
                 console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-                console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
+                console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverXfrPublicKey', receiverXfrPublicKey);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 4:
                 resultHandle = _b.sent();
@@ -2628,6 +2628,48 @@ function approveToken() {
         });
     });
 }
+function testCommitment() {
+    return __awaiter(this, void 0, void 0, function () {
+        var data2, atxoSid, myMemoData, anonKeysReceiver, ledger, aXfrKeyPair, abarOwnerMemo2, a2, commitmentInBase64, commitement58;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    data2 = [
+                        33,
+                        {
+                            point: 'd4koAbY2p-9fu5KOSkcmlRtefgqmwrIlm--3gx0KLjU=',
+                            ctext: [
+                                153, 62, 220, 132, 222, 139, 46, 13, 77, 111, 92, 117, 139, 60, 245, 53, 247, 132, 69, 227, 69, 186,
+                                173, 123, 147, 193, 177, 244, 148, 26, 186, 90, 19, 157, 1, 113, 170, 113, 165, 15, 76, 15, 83, 82,
+                                138, 161, 98, 95, 34, 54, 118, 251, 30, 232, 104, 241, 101, 249, 228, 103, 153, 149, 249, 145, 174,
+                                179, 176, 156, 255, 163, 40, 26, 105, 206, 199, 37, 102, 217, 160, 234, 79, 197, 103, 171, 213, 122,
+                                14, 204,
+                            ],
+                        },
+                    ];
+                    atxoSid = data2[0], myMemoData = data2[1];
+                    anonKeysReceiver = {
+                        axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+                        axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+                        axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    };
+                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.getAXfrPrivateKeyByBase64(anonKeysReceiver.axfrSpendKey)];
+                case 2:
+                    aXfrKeyPair = _a.sent();
+                    abarOwnerMemo2 = ledger.AxfrOwnerMemo.from_json(myMemoData);
+                    a2 = ledger.try_decrypt_axfr_memo(abarOwnerMemo2, aXfrKeyPair);
+                    console.log('🚀 ~ file: run.ts ~ line 2656 ~ testCommitment ~ a2', a2);
+                    commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
+                    commitement58 = ledger.base64_to_base58(commitmentInBase64);
+                    console.log('🚀 ~ file: run.ts ~ line 2667 ~ testCommitment ~ commitement58', commitement58);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // approveToken();
 // testIt();
 // getFraBalance();
@@ -2679,10 +2721,11 @@ function approveToken() {
 // barToAbarAmount();
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();
-// abarToBarFraSendAmount();
+abarToBarFraSendAmount();
 // Total fee test
 // abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee();
+// testCommitment();
 //# sourceMappingURL=run.js.map
