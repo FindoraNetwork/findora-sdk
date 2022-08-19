@@ -325,11 +325,10 @@ export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.Forma
   log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
   log('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
 
-  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
-    anonKeysSender,
-    walletInfo,
-    [ownedAbarToUseAsSource, ownedAbarToUseAsSourceOne],
-  );
+  const { transactionBuilder } = await TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [
+    ownedAbarToUseAsSource,
+    ownedAbarToUseAsSourceOne,
+  ]);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 

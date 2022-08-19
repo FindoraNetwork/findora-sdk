@@ -184,7 +184,7 @@ const getAbarFromJson = async (ownedAbar: FindoraWallet.OwnedAbar) => {
   return myOwnedAbar;
 };
 
-const getAbarOwnerMemo = async (atxoSid: string) => {
+export const getAbarOwnerMemo = async (atxoSid: string) => {
   const ledger = await getLedger();
 
   const abarOwnerMemoResult = await Network.getAbarOwnerMemo(atxoSid);
@@ -234,7 +234,7 @@ const getMyMTLeafInfo = async (atxoSid: string) => {
   return myMTLeafInfo;
 };
 
-const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys) => {
+export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys) => {
   let aXfrSpendKeyConverted;
   let axfrViewKeyConverted;
   let axfrPublicKeyConverted;
@@ -865,7 +865,7 @@ export const barToAbar = async (
 
 export const abarToBarAmount = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  receiverWalletInfo: Keypair.WalletKeypar,
+  receiverXfrPublicKey: string,
   amount: string,
   assetCode: string,
   givenCommitmentsList: string[],
@@ -889,7 +889,7 @@ export const abarToBarAmount = async (
   const amountToSendInWei = BigInt(toWei(amount, decimals).toString());
 
   const _resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
-  await waitForBlockChange(2);
+  await waitForBlockChange();
 
   const { commitmentsMap } = abarToAbarData;
 
@@ -916,10 +916,6 @@ export const abarToBarAmount = async (
 
   const allCommitments = [...retrivedCommitmentsListReceiver];
 
-  // const balancesReceiver = await getBalance(anonKeysSender, retrivedCommitmentsListReceiver);
-
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ balancesReceiver', balancesReceiver);
-
   const additionalOwnedAbarItems = [];
 
   for (let givenCommitment of allCommitments) {
@@ -930,19 +926,19 @@ export const abarToBarAmount = async (
     additionalOwnedAbarItems.push(additionalOwnedAbarItem);
   }
 
-  const abarToBarResult = await abarToBar(anonKeysSender, receiverWalletInfo, additionalOwnedAbarItems);
+  const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
 
   return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
 };
 
 export const abarToBar = async (
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
-  receiverWalletInfo: Keypair.WalletKeypar,
+  receiverXfrPublicKey: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
 ) => {
   let transactionBuilder = await Builder.getTransactionBuilder();
 
-  const receiverXfrPublicKey = await Keypair.getXfrPublicKeyByBase64(receiverWalletInfo.publickey);
+  const receiverXfrPublicKeyConverted = await Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey);
 
   const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
 
@@ -956,7 +952,7 @@ export const abarToBar = async (
       abarPayloadSource.abarOwnerMemo,
       abarPayloadSource.myMTLeafInfo,
       aXfrSpendKeySender,
-      receiverXfrPublicKey,
+      receiverXfrPublicKeyConverted,
       false,
       false,
     );
@@ -974,7 +970,7 @@ export const abarToBar = async (
         abarPayloadNext.abarOwnerMemo,
         abarPayloadNext.myMTLeafInfo,
         aXfrSpendKeySender,
-        receiverXfrPublicKey,
+        receiverXfrPublicKeyConverted,
         false,
         false,
       );
@@ -998,7 +994,7 @@ export const abarToBar = async (
     anonKeysSender,
   };
 
-  return { transactionBuilder, abarToBarData, receiverWalletInfo };
+  return { transactionBuilder, abarToBarData, receiverXfrPublicKey };
 };
 
 export const isNullifierHashSpent = async (hash: string): Promise<boolean> => {
