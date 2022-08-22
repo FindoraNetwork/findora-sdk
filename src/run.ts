@@ -2277,7 +2277,7 @@ const abarToBarCustomSendAmount = async () => {
   const { transactionBuilder, abarToBarData, remainderCommitements, spentCommitments } =
     await TripleMasking.abarToBarAmount(
       anonKeysSender,
-      toWalletInfo,
+      toWalletInfo.publickey,
       '12.15',
       assetCodeToUse,
       givenCommitmentsListSender,
@@ -2361,7 +2361,7 @@ const abarToBarFraSendAmount = async () => {
   const { transactionBuilder, abarToBarData, remainderCommitements, spentCommitments } =
     await TripleMasking.abarToBarAmount(
       anonKeysSender,
-      toWalletInfo,
+      toWalletInfo.publickey,
       '2.16',
       assetCodeToUse,
       givenCommitmentsListSender,
@@ -2496,14 +2496,14 @@ const abarToBar = async () => {
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
   console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
 
-  const { transactionBuilder, abarToBarData, receiverWalletInfo } = await TripleMasking.abarToBar(
+  const { transactionBuilder, abarToBarData, receiverXfrPublicKey } = await TripleMasking.abarToBar(
     anonKeysSender,
-    walletInfo,
+    walletInfo.publickey,
     [ownedAbarToUseAsSource],
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
+  // console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 

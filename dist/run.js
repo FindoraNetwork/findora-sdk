@@ -2362,7 +2362,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 14:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '12.15', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '12.15', assetCodeToUse, givenCommitmentsListSender)];
             case 15:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2429,7 +2429,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 9:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '2.16', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '2.16', assetCodeToUse, givenCommitmentsListSender)];
             case 10:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2523,7 +2523,7 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee = function () { return 
     });
 }); };
 var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle;
+    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverXfrPublicKey, resultHandle;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -2543,11 +2543,10 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
                 console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource])];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [ownedAbarToUseAsSource])];
             case 3:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverXfrPublicKey = _a.receiverXfrPublicKey;
                 console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-                console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 4:
                 resultHandle = _b.sent();
