@@ -23,10 +23,10 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -330,7 +330,30 @@ const transferFraToSingleAddress = async (amount: string) => {
 
   console.log('send fra result handle!!', resultHandle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  await waitForBlockChange();
+  await waitForBlockChange();
+
+  const height = 45;
+  const blockDetailsResult = await Network.getBlock(height);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult',
+    JSON.stringify(blockDetailsResult, null, 2),
+  );
+
+  const h = resultHandle;
+
+  const txStatus = await Network.getTransactionStatus(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus',
+    JSON.stringify(txStatus, null, 2),
+  );
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const dataResult = await Network.getHashSwap(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult',
+    JSON.stringify(dataResult, null, 2),
+  );
 
   const submitResult = await Network.getTransactionStatus(resultHandle);
   console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
@@ -2656,9 +2679,9 @@ async function approveToken() {
 // myFunc16(); // tx list
 // getAnonTxList();
 
-// testTransferToYourself();
+testTransferToYourself();
 
-testBlockWait();
+// testBlockWait();
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee

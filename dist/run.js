@@ -99,10 +99,10 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -388,7 +388,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
  * Send fra to a single address
  */
 var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, submitResult, sidsResultNew, sidsNew, sortedSidsNew, balanceNew;
+    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, height, blockDetailsResult, h, txStatus, dataResult, submitResult, sidsResultNew, sidsNew, sortedSidsNew, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -424,15 +424,32 @@ var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, vo
             case 7:
                 resultHandle = _a.sent();
                 console.log('send fra result handle!!', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 8:
                 _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 9:
+                _a.sent();
+                height = 45;
+                return [4 /*yield*/, api_1.Network.getBlock(height)];
+            case 10:
+                blockDetailsResult = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult', JSON.stringify(blockDetailsResult, null, 2));
+                h = resultHandle;
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
+            case 11:
+                txStatus = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus', JSON.stringify(txStatus, null, 2));
+                return [4 /*yield*/, api_1.Network.getHashSwap(h)];
+            case 12:
+                dataResult = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult', JSON.stringify(dataResult, null, 2));
+                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
+            case 13:
                 submitResult = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
                 return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 10:
+            case 14:
                 sidsResultNew = _a.sent();
                 sidsNew = sidsResultNew.response;
                 if (!sidsNew) {
@@ -441,7 +458,7 @@ var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, vo
                 sortedSidsNew = sids.sort(function (a, b) { return b - a; });
                 console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 11:
+            case 15:
                 balanceNew = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
                 return [2 /*return*/];
@@ -2664,8 +2681,8 @@ function approveToken() {
 // ethProtocol();
 // myFunc16(); // tx list
 // getAnonTxList();
-// testTransferToYourself();
-testBlockWait();
+testTransferToYourself();
+// testBlockWait();
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
 // abarToAbarFraOneFraAtxoForFee();
