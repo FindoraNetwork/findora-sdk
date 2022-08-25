@@ -1,3 +1,4 @@
+import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { TransactionBuilder } from '../../services/ledger/types';
 import * as Keypair from '../keypair';
 interface BalanceInfo {
@@ -25,7 +26,17 @@ export interface ProcessedCommitmentsMap {
 }
 export declare const genAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;
 export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, sid: number, commitments: string[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarData>;
+<<<<<<< HEAD
 export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string) => Promise<boolean>;
+=======
+export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string | undefined) => Promise<boolean>;
+export declare const getAbarOwnerMemo: (atxoSid: string) => Promise<import("findora-wallet-wasm/nodejs").AxfrOwnerMemo | import("findora-wallet-wasm/bundler").AxfrOwnerMemo>;
+export declare const getAnonKeypairFromJson: (anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
+    aXfrSpendKeyConverted: import("findora-wallet-wasm/web").AXfrKeyPair;
+    axfrPublicKeyConverted: AXfrPubKey;
+    axfrViewKeyConverted: import("findora-wallet-wasm/web").AXfrViewKey;
+}>;
+>>>>>>> e67537b692cde8c6e2e12880ec71904db2664e1a
 export declare const getAbarToAbarAmountPayload: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
     commitmentsToSend: string[];
     commitmentsForFee: string[];
@@ -49,17 +60,17 @@ export declare const getAbarTransferFee: (anonKeysSender: FindoraWallet.Formatte
 export declare const getTotalAbarTransferFee: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, abarAmountToTransfer: string, additionalOwnedAbarItems?: FindoraWallet.OwnedAbarItem[]) => Promise<string>;
 export declare const barToAbarAmount: (walletInfo: Keypair.WalletKeypar, amount: string, assetCode: string, receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
 export declare const barToAbar: (walletInfo: Keypair.WalletKeypar, sids: number[], receiverAxfrPublicKey: string) => Promise<FindoraWallet.BarToAbarResult<TransactionBuilder>>;
-export declare const abarToBarAmount: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
+export declare const abarToBarAmount: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverXfrPublicKey: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
     remainderCommitements: string[];
     spentCommitments: string[];
     transactionBuilder: TransactionBuilder;
     abarToBarData: FindoraWallet.AbarToBarData;
-    receiverWalletInfo: Keypair.WalletKeypar;
+    receiverXfrPublicKey: string;
 }>;
-export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverWalletInfo: Keypair.WalletKeypar, additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[]) => Promise<{
+export declare const abarToBar: (anonKeysSender: FindoraWallet.FormattedAnonKeys, receiverXfrPublicKey: string, additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[]) => Promise<{
     transactionBuilder: TransactionBuilder;
     abarToBarData: FindoraWallet.AbarToBarData;
-    receiverWalletInfo: Keypair.WalletKeypar;
+    receiverXfrPublicKey: string;
 }>;
 export declare const isNullifierHashSpent: (hash: string) => Promise<boolean>;
 export declare const getNullifierHashesFromCommitments: (anonKeys: FindoraWallet.FormattedAnonKeys, givenCommitmentsList: string[]) => Promise<string[]>;

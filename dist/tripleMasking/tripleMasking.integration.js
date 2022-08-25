@@ -378,52 +378,55 @@ exports.abarToAbar = abarToAbar;
  * ABAR To BAR conversion Integration Test for FRA
  */
 var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, anonKeysSender, givenCommitment, givenCommitmentOne, balance, ownedAbarsResponse, ownedAbarToUseAsSource, ownedAbarsResponseOne, ownedAbarToUseAsSourceOne, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle, balanceNew, balanceChangeF, balanceChange, err, anonBalances, err, anonBalSpent, anonBalanceValue, err, isNullifierHashSpent, err;
-    var _b, _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
+    var pkey, walletInfo, anonKeysSender, givenCommitment, givenCommitmentOne, balance, ownedAbarsResponse, ownedAbarToUseAsSource, ownedAbarsResponseOne, ownedAbarToUseAsSourceOne, transactionBuilder, resultHandle, balanceNew, balanceChangeF, balanceChange, err, anonBalances, err, anonBalSpent, anonBalanceValue, err, isNullifierHashSpent, err;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
                 (0, utils_1.log)('//////////////// ABAR To BAR conversion //////////////// ');
                 pkey = senderOne;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
-                walletInfo = _d.sent();
+                walletInfo = _c.sent();
                 anonKeysSender = __assign({}, AnonKeys);
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false)];
             case 2:
-                givenCommitment = (_d.sent());
+                givenCommitment = (_c.sent());
                 return [4 /*yield*/, (0, exports.barToAbar)(senderOne, anonKeysSender, false)];
             case 3:
-                givenCommitmentOne = (_d.sent());
+                givenCommitmentOne = (_c.sent());
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
             case 4:
-                balance = _d.sent();
+                balance = _c.sent();
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 5:
-                ownedAbarsResponse = _d.sent();
+                ownedAbarsResponse = _c.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponse[0];
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentOne)];
             case 6:
-                ownedAbarsResponseOne = _d.sent();
+                ownedAbarsResponseOne = _c.sent();
                 ownedAbarToUseAsSourceOne = ownedAbarsResponseOne[0];
                 (0, utils_1.log)('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
                 (0, utils_1.log)('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource, ownedAbarToUseAsSourceOne])];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [
+                        ownedAbarToUseAsSource,
+                        ownedAbarToUseAsSourceOne,
+                    ])];
             case 7:
-                _a = _d.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
+                transactionBuilder = (_c.sent()).transactionBuilder;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 8:
-                resultHandle = _d.sent();
+                resultHandle = _c.sent();
                 (0, utils_1.log)('abar to bar result handle!!!', resultHandle);
                 // Check BAR and ABAR balances, and nullifier spending
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 9:
                 // Check BAR and ABAR balances, and nullifier spending
-                _d.sent();
+                _c.sent();
                 (0, utils_1.log)('Old BAR balance for public key: ', walletInfo.address, ' is ', balance, ' FRA');
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
             case 10:
-                balanceNew = _d.sent();
+                balanceNew = _c.sent();
                 (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
                 balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
                 balanceChange = Math.floor(balanceChangeF);
@@ -436,9 +439,9 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment])];
             case 11:
-                anonBalances = _d.sent();
+                anonBalances = _c.sent();
                 (0, utils_1.log)('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
-                if (!((_c = (_b = anonBalances === null || anonBalances === void 0 ? void 0 : anonBalances.spentBalances) === null || _b === void 0 ? void 0 : _b.balances) === null || _c === void 0 ? void 0 : _c.length)) {
+                if (!((_b = (_a = anonBalances === null || anonBalances === void 0 ? void 0 : anonBalances.spentBalances) === null || _a === void 0 ? void 0 : _a.balances) === null || _b === void 0 ? void 0 : _b.length)) {
                     err = 'ERROR No ABAR spent balances available';
                     (0, utils_1.log)(err);
                     return [2 /*return*/, err];
@@ -452,7 +455,7 @@ var abarToBar = function (senderOne, AnonKeys) { return __awaiter(void 0, void 0
                 }
                 return [4 /*yield*/, (0, exports.validateSpent)(anonKeysSender, givenCommitment)];
             case 12:
-                isNullifierHashSpent = _d.sent();
+                isNullifierHashSpent = _c.sent();
                 if (!isNullifierHashSpent) {
                     err = 'ERROR Nullifier hash of sender still unspent';
                     (0, utils_1.log)(err);
