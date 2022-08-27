@@ -6,6 +6,8 @@ import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { log } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
 
+import { create as createBigNumber } from '../services/bigNumber';
+
 dotenv.config();
 
 const envConfigFile = process.env.INTEGRATION_ENV_NAME
@@ -16,16 +18,11 @@ const envConfig = require(`${envConfigFile}.json`);
 
 const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
 
-/**
- * Prior to using SDK we have to initialize its environment configuration
- */
 const sdkEnv = {
   hostUrl: envHostUrl,
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
-
-const waitingTimeBeforeCheckTxStatus = 19000;
 
 log('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
 
@@ -37,6 +34,25 @@ const { mainFaucet } = walletKeys;
 
 const password = 'yourSecretPassword';
 
+export const getRandomAssetCode = async () => {
+  const asset1Code = await Asset.getRandomAssetCode();
+  return asset1Code;
+};
+
+export const getDerivedAssetCode = async (asset1Code: string) => {
+  const derivedAsset1Code = await Asset.getDerivedAssetCode(asset1Code);
+  return derivedAsset1Code;
+};
+
+export const getAnonKeys = async () => {
+  log('//////////////// Generate Anon Keys //////////////// ');
+
+  const myAnonKeys = await TripleMasking.genAnonKeys();
+
+  log('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
+  return myAnonKeys;
+};
+
 export const createNewKeypair = async () => {
   const mm = await Keypair.getMnemonic(24);
 
@@ -47,14 +63,156 @@ export const createNewKeypair = async () => {
   return walletInfo;
 };
 
-/**
- * Create FRA Test BARs for Single Asset Integration Test
- */
-export const createTestBars = async (senderOne: string) => {
+export const defineCustomAsset = async (senderOne: string, assetCode: string) => {
+  const pkey = senderOne;
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const assetBuilder = await Asset.defineAsset(walletInfo, assetCode);
+  const handle = await Transaction.submitTransaction(assetBuilder);
+  log('New asset ', assetCode, ' created, handle', handle);
+
+  await waitForBlockChange();
+};
+
+export const issueCustomAsset = async (
+  senderOne: string,
+  assetCode: string,
+  derivedAssetCode: string,
+  amount: string,
+) => {
+  const pkey = senderOne;
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  const assetBlindRules = { isAmountBlind: false };
+  const assetBuilderIssue = await Asset.issueAsset(walletInfo, derivedAssetCode, amount, assetBlindRules);
+
+  const handleIssue = await Transaction.submitTransaction(assetBuilderIssue);
+
+  log('Asset ', assetCode, ' issued, handle', handleIssue);
+
+  await waitForBlockChange();
+};
+
+const barToAbarBalances = async (
+  walletInfo: Keypair.WalletKeypar,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitments: string[],
+  balance: string,
+  givenBalanceChange: string,
+  assetCode: string,
+  extraSpent?: string,
+) => {
+  const fraAssetCode = await Asset.getFraAssetCode();
+  const isFraCheck = fraAssetCode === assetCode;
+
+  await waitForBlockChange();
+
+  const balanceNew = await Account.getBalance(walletInfo, assetCode);
+  log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ` ${assetCode}`);
+  log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ` ${assetCode}`);
+
+  const balanceChangeF = parseFloat(balance.replace(/,/g, '')) - parseFloat(balanceNew.replace(/,/g, ''));
+  log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ` ${assetCode}`);
+
+  const realBalanceChange = createBigNumber(createBigNumber(balanceChangeF).toPrecision(7));
+
+  const expectedBalanceChange = createBigNumber(givenBalanceChange);
+  let expectedBarBalanceChange = expectedBalanceChange.toPrecision(7);
+
+  if (isFraCheck) {
+    const barToBarFeeAmount = createBigNumber('0.02'); // current bar to abar fee
+    const extraSpentAmount = createBigNumber(extraSpent || '0');
+
+    expectedBarBalanceChange = expectedBalanceChange
+      .plus(barToBarFeeAmount)
+      .plus(extraSpentAmount)
+      .toPrecision(7);
+  }
+
+  if (!realBalanceChange.isEqualTo(expectedBarBalanceChange)) {
+    const message = `BAR balance of ${realBalanceChange.toString()} does not match expected value ${expectedBarBalanceChange.toString()}`;
+    log(message);
+    throw new Error(message);
+  }
+
+  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitments);
+  const anonBalUnspent = anonBalances.unSpentBalances.balances[0].amount;
+  const anonBalanceValue = anonBalUnspent.replace(/,/g, '');
+  log('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ` ${assetCode}`);
+
+  const realAnonBalanceValue = createBigNumber(anonBalanceValue);
+  if (!realAnonBalanceValue.isEqualTo(expectedBalanceChange)) {
+    const message = `ABAR balance does not match expected value, real is ${realAnonBalanceValue.toString()} and expected is ${expectedBalanceChange.toString()}`;
+    log(message);
+    throw new Error(message);
+  }
+
+  return true;
+};
+
+export const validateSpent = async (
+  AnonKeys: FindoraWallet.FormattedAnonKeys,
+  givenCommitments: string[],
+) => {
+  const anonKeys = { ...AnonKeys };
+  const axfrKeyPair = anonKeys.axfrSpendKey;
+
+  for (const givenCommitment of givenCommitments) {
+    const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
+    const [ownedAbarItem] = ownedAbarsResponse;
+    const { abarData } = ownedAbarItem;
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair);
+    const result = await TripleMasking.isNullifierHashSpent(hash);
+
+    if (!result) {
+      throw new Error(`hash for commitment ${givenCommitment} is still unspent`);
+    }
+  }
+  return true;
+};
+
+export const getSidsForSingleAsset = async (senderOne: string, assetCode: string) => {
+  log(`//////////////// Get sids for asset ${assetCode} //////////////// `);
+  const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
+
+  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
+  if (!sids) {
+    console.log('ERROR no sids available');
+    return [];
+  }
+
+  const utxoDataList = await addUtxo(walletInfo, sids);
+
+  const customAssetSids = [];
+  for (const utxoItem of utxoDataList) {
+    const utxoAsset = utxoItem['body']['asset_type'];
+
+    if (utxoAsset === assetCode) {
+      customAssetSids.push(utxoItem['sid']);
+    }
+  }
+  return customAssetSids;
+};
+
+export const createTestBars = async (givenSenderOne?: string, amount = '210', iterations = 4) => {
   log('////////////////  Create Test Bars //////////////// ');
 
   const pkey = mainFaucet;
-  const toPkeyMine = senderOne;
+  let toPkeyMine = givenSenderOne;
+
+  if (!givenSenderOne) {
+    const senderWalletInfo = await createNewKeypair();
+
+    toPkeyMine = senderWalletInfo.privateStr!;
+  }
+
+  if (!toPkeyMine) {
+    throw new Error('Sender private key is not specified');
+  }
+  const formattedAmount = createBigNumber(amount);
+  const expectedBalance = formattedAmount.multipliedBy(iterations);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
@@ -63,124 +221,120 @@ export const createTestBars = async (senderOne: string) => {
   const assetCode = fraCode;
   const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-  //  const amount = getRandomNumber(100, 200);
-
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < iterations; i++) {
     const transactionBuilder = await Transaction.sendToAddress(
       walletInfo,
       toWalletInfo.address,
-      '210',
+      amount,
       assetCode,
       assetBlindRules,
     );
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
-    log('send fra result handle!!', resultHandle);
-    // await sleep(waitingTimeBeforeCheckTxStatus);
+    log('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
 
     await waitForBlockChange();
   }
 
-  return true;
-};
+  await waitForBlockChange();
 
-/**
- * Generate and return new set of Anon Keys
- */
-export const getAnonKeys = async () => {
-  log('//////////////// Generate Anon Keys //////////////// ');
+  const assetBalance = await Account.getBalance(toWalletInfo, fraCode);
 
-  const myAnonKeys = await TripleMasking.genAnonKeys();
+  log(`🚀 ~ createTestBars ~ "${fraCode}" assetBalance `, assetBalance);
 
-  log('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
-  return myAnonKeys;
-};
+  const cleanedBalanceValue = assetBalance.replace(/,/g, '');
+  log('🚀 ~ createTestBars ~ cleanedBalanceValue', cleanedBalanceValue);
 
-/**
- * Balance check for BAR to ABAR conversion Integration Test
- */
-const barToAbarBalances = async (
-  walletInfo: Keypair.WalletKeypar,
-  anonKeys: FindoraWallet.FormattedAnonKeys,
-  givenCommitment: string,
-  balance: string,
-) => {
-  const balanceNew = await Account.getBalance(walletInfo);
-  log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ' FRA');
-  log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChangeF = parseFloat(balance.replace(/,/g, '')) - parseFloat(balanceNew.replace(/,/g, ''));
-  const balanceChange = Math.floor(balanceChangeF);
-  log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
+  const realBalance = createBigNumber(cleanedBalanceValue);
 
-  if (balanceChange != 210) {
-    log('BAR balance does not match expected value');
-    return false;
+  log('🚀 ~ createTestBars ~ realBalance', realBalance.toString());
+  log('🚀 ~ createTestBars ~ expectedBalance', expectedBalance.toString());
+
+  const isFunded = expectedBalance.isEqualTo(realBalance);
+
+  if (!isFunded) {
+    const errorMessage = `Expected FRA balance is ${expectedBalance.toString()} but we have ${realBalance.toString()}`;
+    throw Error(errorMessage);
   }
 
-  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys, [givenCommitment]);
-  const anonBalUnspent = anonBalances.unSpentBalances.balances[0].amount;
-  const anonBalanceValue = parseInt(anonBalUnspent.replace(/,/g, ''), 10);
-  log('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ' FRA');
-
-  if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-    log('ABAR balance does not match expected value');
-    return false;
-  }
-
-  return true;
+  return isFunded;
 };
 
-/**
- * Given a commitment, check if nullifier is spent
- */
-export const validateSpent = async (AnonKeys: FindoraWallet.FormattedAnonKeys, givenCommitment: string) => {
-  const anonKeys = { ...AnonKeys };
-  const axfrKeyPair = anonKeys.axfrSpendKey;
-
-  // const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitment);
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-  const [ownedAbarItem] = ownedAbarsResponse;
-  const { abarData } = ownedAbarItem;
-  const { atxoSid, ownedAbar } = abarData;
-
-  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair);
-  return await TripleMasking.isNullifierHashSpent(hash);
-};
-
-/**
- * BAR to ABAR conversion
- */
 export const barToAbar = async (
-  senderOne: string,
-  AnonKeys: FindoraWallet.FormattedAnonKeys,
-  isBalanceCheck: boolean,
-  givenSid = 0,
+  givenSenderOne?: string,
+  AnonKeys?: FindoraWallet.FormattedAnonKeys,
+  givenSids?: number[],
+  givenBalanceChange?: string,
+  givenAssetCode?: string,
+  isBalanceCheck = true,
 ) => {
   log('////////////////  BAR To ABAR conversion //////////////// ');
 
-  const pkey = senderOne;
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const balance = await Account.getBalance(walletInfo);
+  const anonKeys = AnonKeys ? { ...AnonKeys } : { ...(await getAnonKeys()) };
 
-  let sid = givenSid;
-  if (givenSid === 0) {
-    const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-    const { response: sids } = sidsResult;
-    if (!sids) {
-      log('ERROR no sids available');
-      return false;
-    }
-    const sortedSids = sids.sort((a, b) => b - a);
-    log('🚀 ~ barToAbar ~ sortedSids', sortedSids);
-    [sid] = sortedSids;
+  let senderOne = givenSenderOne;
+
+  if (!givenSenderOne) {
+    const senderWalletInfo = await createNewKeypair();
+
+    senderOne = senderWalletInfo.privateStr!;
   }
 
-  const anonKeys = { ...AnonKeys };
+  if (!senderOne) {
+    throw new Error('Sender private key is not specified');
+  }
+
+  let sids = givenSids;
+  let balanceChange = givenBalanceChange;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
+
+  const weOnlyHaveSid = givenSids && !givenBalanceChange;
+  const weOnlyHaveBalanceChange = !givenSids && givenBalanceChange;
+
+  const weHaveUncomplete = weOnlyHaveSid || weOnlyHaveBalanceChange;
+
+  if (weHaveUncomplete) {
+    throw new Error('either both SID and BALANCE CHANGE must be provided or none of them');
+  }
+
+  let assetCode = givenAssetCode;
+
+  if (!givenAssetCode) {
+    assetCode = await Asset.getFraAssetCode();
+  }
+
+  if (!assetCode) {
+    throw new Error('We dont have asset code and cant check the balance');
+  }
+
+  let balance = await Account.getBalance(walletInfo, assetCode);
+
+  if (!givenSids && !givenBalanceChange) {
+    await createTestBars(senderOne, '10', 2);
+    const fraSids = await getSidsForSingleAsset(senderOne, assetCode);
+    log('🚀 ~ all fraAssetSids', fraSids);
+
+    const fraSid = fraSids.sort((a, b) => a - b)[0];
+    sids = [fraSid];
+    log('🚀 ~ sids to use ', sids);
+    balanceChange = '10';
+    log('🚀 ~ balanceChange to use', balanceChange);
+
+    balance = await Account.getBalance(walletInfo);
+  }
+
+  if (!sids || !balanceChange) {
+    throw new Error('no sid or balance change exist. cant perform bar to abar');
+  }
+
+  log('🚀 ~ final balanceChange', balanceChange);
+  log('🚀 ~ final sids ', sids);
 
   const {
     transactionBuilder,
     barToAbarData,
     sids: usedSids,
-  } = await TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey);
+  } = await TripleMasking.barToAbar(walletInfo, sids, anonKeys.axfrPublicKey);
 
   log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   log('🚀 ~ usedSids', usedSids.join(','));
@@ -189,55 +343,46 @@ export const barToAbar = async (
 
   log('send bar to abar result handle!!', resultHandle);
 
-  const [givenCommitment] = barToAbarData.commitments;
+  const givenCommitments = barToAbarData.commitments;
 
-  // await sleep(waitingTimeBeforeCheckTxStatus);
   await waitForBlockChange();
 
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-
-  log('🚀 ~ barToAbar ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
-
-  const ownedAbarsSaveResult = await TripleMasking.saveOwnedAbarsToCache(walletInfo, ownedAbarsResponse);
-  log('🚀 ~ barToAbar ~ ownedAbarsSaveResult', ownedAbarsSaveResult);
-
   if (isBalanceCheck) {
-    const balanceResult = await barToAbarBalances(walletInfo, anonKeys, givenCommitment, balance);
-    if (!balanceResult) {
-      return false;
-    }
-    return true;
-  } else {
-    return givenCommitment;
+    await barToAbarBalances(walletInfo, anonKeys, givenCommitments, balance, balanceChange, assetCode);
   }
+
+  return givenCommitments;
 };
 
-/**
- * Single Asset Anonymous Transfer (ABAR To ABAR) Integration Test
- */
-export const abarToAbar = async (
-  senderOne: string,
-  AnonKeys1: FindoraWallet.FormattedAnonKeys,
-  AnonKeys2: FindoraWallet.FormattedAnonKeys,
-) => {
+export const abarToAbar = async () => {
   log('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
+  const senderWalletInfo = await createNewKeypair();
+  const senderOne = senderWalletInfo.privateStr!;
 
-  const anonKeysSender = { ...AnonKeys1 };
-  const anonKeysReceiver = { ...AnonKeys2 };
+  const anonKeysSender = await getAnonKeys();
+  const anonKeysReceiver = await getAnonKeys();
 
-  const givenCommitmentToTransfer = (await barToAbar(senderOne, anonKeysSender, false)) as string;
+  const fraAssetCode = await Asset.getFraAssetCode();
 
-  log('🚀 ~ abarToAbar ~ givenCommitmentToTransfer', givenCommitmentToTransfer);
-  const givenCommitmentsListSender = [givenCommitmentToTransfer];
+  await createTestBars(senderOne, '10', 2);
+  const fraSids = await getSidsForSingleAsset(senderOne, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraSids);
 
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentToTransfer);
+  const fraSid = fraSids.sort((a, b) => b - a)[0];
+
+  const givenCommitmentsToTransfer = await barToAbar(senderOne, anonKeysSender, [fraSid], '10', fraAssetCode);
+
+  log('🚀 ~ abarToAbar ~ givenCommitmentsToTransfer', givenCommitmentsToTransfer);
+  const givenCommitmentsListSender = [...givenCommitmentsToTransfer];
+
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentsToTransfer[0]);
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
-    '50',
+    '8',
     [ownedAbarToUseAsSource],
   );
 
@@ -247,14 +392,11 @@ export const abarToAbar = async (
 
   log('transfer abar result handle!!', resultHandle);
 
-  log(
-    `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver commitments`,
-  );
+  log(`will wait for the next block and then check balances for both sender and receiver commitments`);
 
-  // await sleep(waitingTimeBeforeCheckTxStatus);
-  await waitForBlockChange();
+  await waitForBlockChange(2);
 
-  log('now checking balances\n\n\n');
+  log('//////////////// now checking balances ///////////////////\n\n\n');
 
   const { commitmentsMap } = abarToAbarData;
 
@@ -275,262 +417,99 @@ export const abarToAbar = async (
   log('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
   log('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
 
-  // Check ABAR balances and nullifier spending for sender and receiver
   const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
-  log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
+  log('🚀 ~ abarToAbar ~ balancesSender', JSON.stringify(balancesSender, null, 2));
 
   const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver);
-  log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+  log('🚀 ~ abarToAbar ~ balancesReceiver', JSON.stringify(balancesReceiver, null, 2));
 
   const balSender = balancesSender.balances[0].amount;
-  const balanceSender = parseInt(balSender.replace(/,/g, ''), 10);
+  console.log('🚀 ~ balSender', balSender);
+  const balanceSender = balSender.replace(/,/g, '');
 
   const balReceiver = balancesReceiver.balances[0].amount;
-  const balanceReceiver = parseInt(balReceiver.replace(/,/g, ''), 10);
+  console.log('🚀 ~ balReceiver', balReceiver);
 
-  if (balanceSender != 158 || balanceReceiver != 50) {
-    log('ABAR balances does not match expected value');
-    return false;
+  const balanceReceiver = balReceiver.replace(/,/g, '');
+
+  const expectedBalanceSender = createBigNumber('1.2');
+  const expectedBalanceReceiver = createBigNumber('8');
+  const realBalanceSender = createBigNumber(balanceSender);
+  const realBalanceReceiver = createBigNumber(balanceReceiver);
+
+  if (!realBalanceSender.isEqualTo(expectedBalanceSender)) {
+    const message = `sender ABAR balance ${expectedBalanceSender.toString()} does not match expected ${realBalanceSender.toString()}`;
+    log(message);
+    throw new Error(message);
   }
 
-  const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitmentToTransfer);
-  if (!isNullifierHashSpent) {
-    log('Nullifier hash of sender still unspent');
-    return false;
+  if (!realBalanceReceiver.isEqualTo(expectedBalanceReceiver)) {
+    const message = `receiver ABAR balance ${expectedBalanceReceiver.toString()} does not match expected ${realBalanceReceiver.toString()}`;
+    log(message);
+    throw new Error(message);
   }
+
+  // it would throw an error if it is unspent
+  await validateSpent(anonKeysSender, givenCommitmentsToTransfer);
 
   return true;
 };
 
-/**
- * ABAR To BAR conversion Integration Test for FRA
- */
-export const abarToBar = async (senderOne: string, AnonKeys: FindoraWallet.FormattedAnonKeys) => {
-  log('//////////////// ABAR To BAR conversion //////////////// ');
-
-  const pkey = senderOne;
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const anonKeysSender = { ...AnonKeys };
-
-  const givenCommitment = (await barToAbar(senderOne, anonKeysSender, false)) as string;
-  const givenCommitmentOne = (await barToAbar(senderOne, anonKeysSender, false)) as string;
-
-  const balance = await Account.getBalance(walletInfo);
-
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-  const [ownedAbarToUseAsSource] = ownedAbarsResponse;
-
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
-  const [ownedAbarToUseAsSourceOne] = ownedAbarsResponseOne;
-  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
-
-  const { transactionBuilder } = await TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [
-    ownedAbarToUseAsSource,
-    ownedAbarToUseAsSourceOne,
-  ]);
-
-  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
-
-  log('abar to bar result handle!!!', resultHandle);
-
-  // Check BAR and ABAR balances, and nullifier spending
-  await waitForBlockChange();
-
-  log('Old BAR balance for public key: ', walletInfo.address, ' is ', balance, ' FRA');
-
-  const balanceNew = await Account.getBalance(walletInfo);
-  log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
-  const balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
-  const balanceChange = Math.floor(balanceChangeF);
-  log('Change of BAR balance (non formatted)', balanceChange);
-  log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
-
-  if (balanceChange != 419 && balanceChange != 420) {
-    const err = `ERROR BAR balance does not match expected value of ${balanceChange}`;
-    log(err);
-    return err;
-  }
-
-  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [givenCommitment]);
-  log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
-  if (!anonBalances?.spentBalances?.balances?.length) {
-    const err = 'ERROR No ABAR spent balances available';
-    log(err);
-    return err;
-  }
-
-  const anonBalSpent = anonBalances.spentBalances.balances[0].amount;
-  const anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
-
-  if (anonBalanceValue != 210 && anonBalanceValue != 209) {
-    const err = 'ERROR ABAR balance does not match expected value';
-    log(err);
-    return err;
-  }
-
-  const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitment);
-  if (!isNullifierHashSpent) {
-    const err = 'ERROR Nullifier hash of sender still unspent';
-    log(err);
-    return err;
-  }
-
-  return true;
-};
-
-/**
- * Define and Issue a custom asset
- */
-export const defineIssueCustomAsset = async (
-  senderOne: string,
-  assetCode: string,
-  derivedAssetCode: string,
-) => {
-  const pkey = senderOne;
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  const assetBuilder = await Asset.defineAsset(walletInfo, assetCode);
-  const handle = await Transaction.submitTransaction(assetBuilder);
-  log('New asset ', assetCode, ' created, handle', handle);
-
-  // await sleep(waitingTimeBeforeCheckTxStatus);
-  await waitForBlockChange();
-
-  const assetBlindRules = { isAmountBlind: false };
-  const assetBuilderIssue = await Asset.issueAsset(walletInfo, derivedAssetCode, '1000', assetBlindRules);
-
-  const handleIssue = await Transaction.submitTransaction(assetBuilderIssue);
-
-  log('Asset ', assetCode, ' issued, handle', handleIssue);
-
-  // await sleep(waitingTimeBeforeCheckTxStatus);
-  await waitForBlockChange();
-};
-
-/**
- * Get available SIDs for a given custom asset and FRA
- */
-export const getSidsForAsset = async (senderOne: string, assetCode: string) => {
-  const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
-  const fraCode = await Asset.getFraAssetCode();
-
-  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
-  const sidsResult = sids;
-  if (!sidsResult) {
-    log('ERROR no sids available');
-    return [[], []];
-  }
-
-  const utxoDataList = await addUtxo(walletInfo, sidsResult);
-
-  const fraSids = [];
-  const customAssetSids = [];
-  for (const utxoItem of utxoDataList) {
-    const utxoAsset = utxoItem['body']['asset_type'];
-    if (utxoAsset === fraCode) {
-      fraSids.push(utxoItem['sid']);
-    }
-
-    if (utxoAsset === assetCode) {
-      customAssetSids.push(utxoItem['sid']);
-    }
-  }
-  log('FRA Sids: ', fraSids, '; Custom Asset Sids: ', customAssetSids);
-
-  return [fraSids, customAssetSids];
-};
-
-/**
- * Create FRA Test BARs and Issue Custom Asset for Multi Asset Integration Test
- */
-export const createTestBarsMulti = async (
-  senderOne: string,
-  asset1Code: string,
-  derivedAsset1Code: string,
-) => {
-  log('//////////////// Issue Custom Asset and Create Test Bars //////////////// ');
-
-  const pkey = mainFaucet;
-  const toPkeyMine = senderOne;
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
-
-  const fraCode = await Asset.getFraAssetCode();
-  const assetCode = fraCode;
-  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-
-  const transactionBuilder = await Transaction.sendToAddress(
-    walletInfo,
-    toWalletInfo.address,
-    '210',
-    assetCode,
-    assetBlindRules,
-  );
-  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
-  log('send fra result handle!!', resultHandle);
-
-  const balance1Old = await Account.getBalance(toWalletInfo, derivedAsset1Code);
-  await defineIssueCustomAsset(senderOne, asset1Code, derivedAsset1Code);
-
-  const balance1New = await Account.getBalance(toWalletInfo, derivedAsset1Code);
-  const balance1ChangeF =
-    parseFloat(balance1New.replace(/,/g, '')) - parseFloat(balance1Old.replace(/,/g, ''));
-  const balance1Change = Math.floor(balance1ChangeF);
-
-  log(
-    'Custom Asset1 Old Balance = ',
-    balance1Old,
-    '; Custom Asset1 New Balance = ',
-    balance1New,
-    '; Custom Asset1 Balance Change = ',
-    balance1ChangeF,
-  );
-
-  if (balance1Change != 1000) {
-    log('Custom Asset BAR balance does not match expected value');
-    return false;
-  }
-
-  return true;
-};
-
-/**
- * Multi/Custom Asset Anonymous Transfer (ABAR To ABAR) Integration Test
- */
-export const abarToAbarMulti = async (
-  senderOne: string,
-  AnonKeys1: FindoraWallet.FormattedAnonKeys,
-  AnonKeys2: FindoraWallet.FormattedAnonKeys,
-  asset1Code: string,
-) => {
+export const abarToAbarMulti = async () => {
   log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
+  const anonKeysSender = await getAnonKeys();
+  const anonKeysReceiver = await getAnonKeys();
 
-  const anonKeysSender = { ...AnonKeys1 };
-  const anonKeysReceiver = { ...AnonKeys2 };
+  const asset1Code = await Asset.getRandomAssetCode();
 
-  const [_fraSids, customAssetSids] = await getSidsForAsset(senderOne, asset1Code);
+  const senderWalletInfo = await createNewKeypair();
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const senderOne = senderWalletInfo.privateStr!;
+  const derivedAssetCode = await Asset.getDerivedAssetCode(asset1Code);
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(senderOne, '10', 5);
+
+  log('//////////////// defining and issuing custom asset ////////////// ');
+  await defineCustomAsset(senderOne, asset1Code);
+  await issueCustomAsset(senderOne, asset1Code, derivedAssetCode, '10');
+  await issueCustomAsset(senderOne, asset1Code, derivedAssetCode, '5');
+  await issueCustomAsset(senderOne, asset1Code, derivedAssetCode, '20');
+
+  const customAssetSids = await getSidsForSingleAsset(senderOne, derivedAssetCode);
+  log('🚀 ~ all customAssetSids', customAssetSids);
+
   const customAssetSid = customAssetSids.sort((a, b) => b - a)[0];
-  const givenCommitmentToTransfer = (await barToAbar(
+
+  const givenCommitmentsToTransfer = await barToAbar(
     senderOne,
     anonKeysSender,
-    false,
-    customAssetSid,
-  )) as string;
+    [customAssetSid],
+    '20',
+    derivedAssetCode,
+  );
 
-  const [fraSids, _customAssetSids] = await getSidsForAsset(senderOne, asset1Code);
-  const fraSid = fraSids.sort((a, b) => b - a)[0];
-  const givenCommitmentsToPayFee = [(await barToAbar(senderOne, anonKeysSender, false, fraSid)) as string];
+  await waitForBlockChange();
 
-  log('🚀 ~ abarToAbar ~ Given ABAR commitment To Transfer', givenCommitmentToTransfer);
-  log('🚀 ~ abarToAbar ~ Given FRA ABAR Commitment', givenCommitmentsToPayFee);
+  const fraSids = await getSidsForSingleAsset(senderOne, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraSids);
 
-  const givenCommitmentsListSender = [givenCommitmentToTransfer, ...givenCommitmentsToPayFee];
+  const fraSid = fraSids.sort((a, b) => a - b)[0];
 
+  const givenCommitmentsToPayFee = await barToAbar(senderOne, anonKeysSender, [fraSid], '10', fraAssetCode);
+
+  log('🚀 ~ abarToAbarMulti ~ Given ABAR commitments To Transfer', givenCommitmentsToTransfer);
+  log('🚀 ~ abarToAbarMulti ~ Given FRA ABAR Commitment', givenCommitmentsToPayFee);
+
+  const givenCommitmentsListSender = [givenCommitmentsToTransfer[0], ...givenCommitmentsToPayFee];
+
+  const balancesSenderBefore = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
+  log('🚀 ~ abarToAbarMulti ~ balancesSenderBefore', JSON.stringify(balancesSenderBefore, null, 2));
   const additionalOwnedAbarItems = [];
 
-  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentToTransfer);
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentsToTransfer[0]);
 
   const [ownedAbarToUseAsSource] = ownedAbarsResponseOne;
 
@@ -547,8 +526,7 @@ export const abarToAbarMulti = async (
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
     anonKeysReceiver.axfrPublicKey,
-    '1000',
-    // ownedAbarToUseAsSource,
+    '2',
     additionalOwnedAbarItems,
   );
 
@@ -558,14 +536,11 @@ export const abarToAbarMulti = async (
 
   log('transfer abar result handle!!', resultHandle);
 
-  log(
-    `will wait for ${waitingTimeBeforeCheckTxStatus}ms and then check balances for both sender and receiver commitments`,
-  );
+  log(`will wait for the next block and then check balances for both sender and receiver commitments`);
 
-  // await sleep(waitingTimeBeforeCheckTxStatus);
   await waitForBlockChange(2);
 
-  log('now checking balances\n\n\n');
+  log('////////////////////// now checking balances///////////////////// \n\n\n');
 
   const { commitmentsMap } = abarToAbarData;
 
@@ -583,66 +558,873 @@ export const abarToAbarMulti = async (
     }
   }
 
-  log('🚀 ~ abarToAbar ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
-  log('🚀 ~ abarToAbar ~ givenCommitmentsListSender', givenCommitmentsListSender);
+  log('🚀 ~ abarToAbarMulti ~ retrievedCommitmentsListReceiver', retrievedCommitmentsListReceiver);
+  log('🚀 ~ abarToAbarMulti ~ givenCommitmentsListSender', givenCommitmentsListSender);
 
-  // Check ABAR balances and nullifier spending for sender and receiver
+  log('////////////////// checking sender balances ///////////////////////');
   const balancesSender = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
-  log('🚀 ~ abarToAbar ~ balancesSender', balancesSender);
-
-  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver);
-  log('🚀 ~ abarToAbar ~ balancesReceiver', balancesReceiver);
+  log('🚀 ~ abarToAbarMulti ~ balancesSender', JSON.stringify(balancesSender, null, 2));
 
   const fraBalSend = balancesSender.balances[0].amount;
-  const fraBalanceSender = parseInt(fraBalSend.replace(/,/g, ''), 10);
+  const fraBalanceSender = fraBalSend.replace(/,/g, '');
+  console.log('🚀 ~ abarToAbarMulti ~ fraBalanceSender', fraBalanceSender);
 
-  const customBalReceive = balancesReceiver.balances[0].amount;
-  const customBalanceReceiver = parseInt(customBalReceive.replace(/,/g, ''), 10);
+  const fraBalanceSenderConverted = createBigNumber(fraBalanceSender);
+  const minimumExpectedSenderFraBalance = createBigNumber('8.8'); // 10 - fee (about 1.2 fra) = 8.8
 
-  const senderCustomBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, [
-    givenCommitmentToTransfer,
-  ]);
+  if (!fraBalanceSenderConverted.isGreaterThanOrEqualTo(minimumExpectedSenderFraBalance)) {
+    const message = 'Sender FRA ABAR balance does not match expected value';
+    log(message);
+    throw new Error(message);
+  }
 
-  log('🚀 Custom Asset spent balances for sender after transfer', senderCustomBalances.spentBalances);
+  const senderCustomBalances = await TripleMasking.getAllAbarBalances(
+    anonKeysSender,
+    givenCommitmentsToTransfer,
+  );
+  console.log('🚀 ~ abarToAbarMulti ~ senderCustomBalances', JSON.stringify(senderCustomBalances, null, 2));
 
   if (!senderCustomBalances?.spentBalances?.balances?.length) {
-    log('No ABAR spent balances available');
-    return false;
+    const message = 'No ABAR spent balances available';
+    log(message);
+    throw new Error(message);
   }
+
   const sendercustomSpent = senderCustomBalances.spentBalances.balances[0].amount;
-  const customSpentSender = parseInt(sendercustomSpent.replace(/,/g, ''), 10);
+  console.log('🚀 ~ abarToAbarMulti  ~ sendercustomSpent', sendercustomSpent);
+  const customSpentSender = sendercustomSpent.replace(/,/g, '');
+  console.log('🚀 ~ abarToAbarMulti ~ customSpentSender', customSpentSender);
 
-  if (customSpentSender != 1000 || customBalanceReceiver != 1000) {
-    log('ABAR balances does not match expected value');
-    return false;
+  const customBalanceSenderConverted = createBigNumber(customSpentSender);
+  const expectedSenderCustomBalance = createBigNumber('20');
+
+  if (!customBalanceSenderConverted.isEqualTo(expectedSenderCustomBalance)) {
+    const message = 'ABAR balances does not match expected value';
+    log(message);
+    throw new Error(message);
   }
 
-  if (fraBalanceSender != 209 && fraBalanceSender != 208) {
-    log('Sender FRA ABAR balance does not match expected value');
-    return false;
+  log('////////////////// checking receiver balances ///////////////////////');
+  const balancesReceiver = await TripleMasking.getBalance(anonKeysReceiver, retrievedCommitmentsListReceiver);
+  log('🚀 ~ balancesReceiver', JSON.stringify(balancesReceiver, null, 2));
+
+  const customBalReceive = balancesReceiver.balances[0].amount;
+  const customBalanceReceiver = customBalReceive.replace(/,/g, '');
+
+  const customBalanceReceiverConverted = createBigNumber(customBalanceReceiver);
+  const expectedReceiverCustomBalance = createBigNumber('2');
+
+  if (!customBalanceReceiverConverted.isEqualTo(expectedReceiverCustomBalance)) {
+    const message = 'Receiver custom balance does not match expected value';
+    log(message);
+    throw new Error(message);
   }
 
-  const isNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitmentToTransfer);
-  if (!isNullifierHashSpent) {
-    log('Custom Asset Nullifier hash of sender still unspent');
-    return false;
+  log('////////////////// checking spent validation ///////////////////////');
+
+  // it would throw an error if it is unspent
+  await validateSpent(anonKeysSender, givenCommitmentsToTransfer);
+
+  // it would throw an error if it is unspent
+  await validateSpent(anonKeysSender, givenCommitmentsToPayFee);
+
+  return true;
+};
+
+export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
+  const anonKeysSender = await getAnonKeys();
+  const anonKeysReceiver = await getAnonKeys();
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 5);
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  // we ignore first sid to have even amount
+  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    '40', // it is a total of 4 sids. needed to verify the balance change of anon wallet
+    fraAssetCode,
+  );
+
+  await waitForBlockChange();
+
+  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+
+  log('////////////////////// bar to abar is done, sending abar to abar //////////////');
+  const assetCodeToUse = fraAssetCode;
+  const amountToSend = '23.15';
+
+  const payload = await TripleMasking.getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  const { additionalAmountForFee: totalExpectedFee } = payload;
+
+  log('totalExpectedFee for abar to abar', totalExpectedFee);
+
+  const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+
+  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+
+  log('transfer abar result handle!!', resultHandle);
+
+  await waitForBlockChange(2);
+
+  log('/////////////////// now checking balances //////////// \n\n\n ');
+  const { commitmentsMap } = abarToAbarData;
+
+  const retrivedCommitmentsListReceiver = [];
+
+  for (const commitmentsMapEntry of commitmentsMap) {
+    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+
+    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+      givenCommitmentsListSender.push(commitmentKey);
+    }
+
+    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+      retrivedCommitmentsListReceiver.push(commitmentKey);
+    }
   }
 
-  const isFraNullifierHashSpent = await validateSpent(anonKeysSender, givenCommitmentsToPayFee[0]);
-  if (!isFraNullifierHashSpent) {
-    log('FRA Nullifier hash of sender still unspent');
-    return false;
+  const balancesReceiverAfter = await TripleMasking.getBalance(
+    anonKeysReceiver,
+    retrivedCommitmentsListReceiver,
+  );
+  log('receiver balances after abar to abar', JSON.stringify(balancesReceiverAfter, null, 2));
+
+  const receiverExpectedFraAbarBalanceTransfer = createBigNumber(amountToSend);
+
+  const fraAbarAmountAfterTransfer = balancesReceiverAfter?.balances.find(
+    element => element.assetType === assetCodeToUse,
+  )?.amount;
+
+  if (!fraAbarAmountAfterTransfer) {
+    throw new Error(
+      `Receiver is expected to have ${receiverExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${fraAbarAmountAfterTransfer}'`,
+    );
+  }
+
+  const realReceiverFraAbarBalance = createBigNumber(fraAbarAmountAfterTransfer);
+
+  const isReceiverHasProperFraBalanceAfter = realReceiverFraAbarBalance.isEqualTo(
+    receiverExpectedFraAbarBalanceTransfer,
+  );
+
+  if (!isReceiverHasProperFraBalanceAfter) {
+    throw new Error(
+      `Receiver is expected to have ${receiverExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${realReceiverFraAbarBalance.toString()}'`,
+    );
+  }
+
+  const balancesSenderAfter = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
+  log('sender balances after abar to abar', JSON.stringify(balancesSenderAfter, null, 2));
+
+  const senderExpectedFraAbarBalanceTransfer = createBigNumber('15.65'); // 40 - 23.15 = 15.85 - 1.2 total fee = 15.65
+
+  const fraAbarAmountAfterTransferSender = balancesSenderAfter?.balances.find(
+    element => element.assetType === assetCodeToUse,
+  )?.amount;
+
+  if (!fraAbarAmountAfterTransferSender) {
+    throw new Error(
+      `Sender is expected to have ${senderExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${fraAbarAmountAfterTransferSender}'`,
+    );
+  }
+
+  const realSenderFraAbarBalanceAfter = createBigNumber(fraAbarAmountAfterTransferSender);
+
+  const isSenderHasProperFraBalanceAfter = realSenderFraAbarBalanceAfter.isGreaterThanOrEqualTo(
+    senderExpectedFraAbarBalanceTransfer,
+  );
+
+  if (!isSenderHasProperFraBalanceAfter) {
+    throw new Error(
+      `Sender is expected to have at least ${senderExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${realSenderFraAbarBalanceAfter.toString()}'`,
+    );
   }
 
   return true;
 };
 
-export const getRandomAssetCode = async () => {
-  const asset1Code = await Asset.getRandomAssetCode();
-  return asset1Code;
+export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
+  const anonKeysSender = await getAnonKeys();
+  const anonKeysReceiver = await getAnonKeys();
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const assetCode = await Asset.getRandomAssetCode();
+  const derivedAssetCode = await Asset.getDerivedAssetCode(assetCode);
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const assetCodeToUse = derivedAssetCode;
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 5);
+
+  log('//////////////// defining and issuing custom asset ////////////// ');
+  await defineCustomAsset(pkey, assetCode);
+  await issueCustomAsset(pkey, assetCode, assetCodeToUse, '10');
+  await issueCustomAsset(pkey, assetCode, assetCodeToUse, '5');
+  await issueCustomAsset(pkey, assetCode, assetCodeToUse, '20');
+
+  const expectedSenderBalance = createBigNumber('35');
+
+  const assetBalance = await Account.getBalance(senderWalletInfo, assetCodeToUse);
+
+  log(`sender bar "${assetCodeToUse}" assetBalance before transfer (after issuing the asset)`, assetBalance);
+
+  const realSenderBalance = createBigNumber(assetBalance);
+  const isSenderFunded = expectedSenderBalance.isEqualTo(realSenderBalance);
+
+  if (!isSenderFunded) {
+    const errorMessage = `Expected bar ${assetCodeToUse} balance is ${expectedSenderBalance.toString()} but it has ${realSenderBalance.toString()}`;
+    throw Error(errorMessage);
+  }
+
+  log('//////////////// bar to abar custom asset transfer ///////////////// ');
+
+  const customAssetSids = await getSidsForSingleAsset(pkey, assetCodeToUse);
+  log('🚀 ~ all customAssetSids', customAssetSids);
+
+  const customAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [...customAssetSids],
+    '35',
+    derivedAssetCode,
+  );
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  // we ignore first sid to have even amount
+  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    '40',
+    fraAssetCode,
+  );
+
+  await waitForBlockChange();
+
+  const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+
+  log('////////////////////// bar to abar is done, sending abar to abar //////////////');
+  const amountToSend = '22.14';
+
+  const payload = await TripleMasking.getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  const { additionalAmountForFee: totalExpectedFee } = payload;
+
+  log('totalExpectedFee for abar to abar', totalExpectedFee);
+
+  const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
+    anonKeysSender,
+    anonKeysReceiver.axfrPublicKey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  log('🚀 ~ abarToAbarData', JSON.stringify(abarToAbarData, null, 2));
+
+  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+
+  log('transfer abar result handle!!', resultHandle);
+
+  await waitForBlockChange();
+
+  log('/////////////////// now checking balances //////////// \n\n\n ');
+  const { commitmentsMap } = abarToAbarData;
+
+  const retrivedCommitmentsListReceiver = [];
+
+  for (const commitmentsMapEntry of commitmentsMap) {
+    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+
+    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+      givenCommitmentsListSender.push(commitmentKey);
+    }
+
+    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+      retrivedCommitmentsListReceiver.push(commitmentKey);
+    }
+  }
+
+  const balancesReceiverAfter = await TripleMasking.getBalance(
+    anonKeysReceiver,
+    retrivedCommitmentsListReceiver,
+  );
+  log('receiver balances after abar to abar', JSON.stringify(balancesReceiverAfter, null, 2));
+
+  const receiverExpectedCustomAbarBalanceTransfer = createBigNumber(amountToSend);
+
+  const customAbarAmountAfterTransfer = balancesReceiverAfter?.balances.find(
+    element => element.assetType === assetCodeToUse,
+  )?.amount;
+
+  if (!customAbarAmountAfterTransfer) {
+    throw new Error(
+      `Receiver is expected to have ${receiverExpectedCustomAbarBalanceTransfer.toString()} ABAR custom but it has '${customAbarAmountAfterTransfer}'`,
+    );
+  }
+
+  const realReceiverCustomAbarBalance = createBigNumber(customAbarAmountAfterTransfer);
+
+  const isReceiverHasProperCustomBalanceAfter = realReceiverCustomAbarBalance.isEqualTo(
+    receiverExpectedCustomAbarBalanceTransfer,
+  );
+
+  if (!isReceiverHasProperCustomBalanceAfter) {
+    throw new Error(
+      `Receiver is expected to have ${receiverExpectedCustomAbarBalanceTransfer.toString()} ABAR custom but it has '${realReceiverCustomAbarBalance.toString()}'`,
+    );
+  }
+
+  const balancesSenderAfter = await TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender);
+  log('sender balances after abar to abar', JSON.stringify(balancesSenderAfter, null, 2));
+
+  const senderExpectedFraAbarBalanceTransfer = createBigNumber('38.5'); // 40 - 1.5 total fee = 38.5
+
+  const fraAbarAmountAfterTransferSender = balancesSenderAfter?.balances.find(
+    element => element.assetType === fraAssetCode,
+  )?.amount;
+
+  if (!fraAbarAmountAfterTransferSender) {
+    throw new Error(
+      `Sender is expected to have ${senderExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${fraAbarAmountAfterTransferSender}'`,
+    );
+  }
+
+  const realSenderFraAbarBalanceAfter = createBigNumber(fraAbarAmountAfterTransferSender);
+
+  const isSenderHasProperFraBalanceAfter = realSenderFraAbarBalanceAfter.isGreaterThanOrEqualTo(
+    senderExpectedFraAbarBalanceTransfer,
+  );
+
+  if (!isSenderHasProperFraBalanceAfter) {
+    throw new Error(
+      `Sender is expected to have at least ${senderExpectedFraAbarBalanceTransfer.toString()} ABAR FRA but it has '${realSenderFraAbarBalanceAfter.toString()}'`,
+    );
+  }
+
+  const senderExpectedCustomAbarBalanceTransfer = createBigNumber('12.86'); // 35 - 22.14 = 12.86
+
+  const customAbarAmountAfterTransferSender = balancesSenderAfter?.balances.find(
+    element => element.assetType === assetCodeToUse,
+  )?.amount;
+
+  if (!customAbarAmountAfterTransferSender) {
+    throw new Error(
+      `Sender is expected to have ${senderExpectedCustomAbarBalanceTransfer.toString()} custom ABAR but it has '${customAbarAmountAfterTransferSender}'`,
+    );
+  }
+
+  const realSenderCustomAbarBalanceAfter = createBigNumber(customAbarAmountAfterTransferSender);
+
+  const isSenderHasProperCustomBalanceAfter = realSenderCustomAbarBalanceAfter.isEqualTo(
+    senderExpectedCustomAbarBalanceTransfer,
+  );
+
+  if (!isSenderHasProperCustomBalanceAfter) {
+    throw new Error(
+      `Sender is expected to have ${senderExpectedCustomAbarBalanceTransfer.toString()} custom ABAR but it has '${realSenderCustomAbarBalanceAfter.toString()}'`,
+    );
+  }
+
+  return true;
 };
 
-export const getDerivedAssetCode = async (asset1Code: string) => {
-  const derivedAsset1Code = await Asset.getDerivedAssetCode(asset1Code);
-  return derivedAsset1Code;
+export const abarToBar = async () => {
+  log('//////////////// ABAR To BAR conversion //////////////// ');
+  const anonKeysSender = await getAnonKeys();
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+
+  // we create 4 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 4);
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  // we ignore first sid to have even amount
+  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
+
+  const givenCommitments = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    '30',
+    fraAssetCode,
+  );
+  console.log('🚀 ~ givenCommitments', givenCommitments);
+
+  const [givenCommitment, givenCommitmentOne] = givenCommitments;
+
+  const balance = await Account.getBalance(walletInfo);
+
+  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
+  const [ownedAbarToUseAsSource] = ownedAbarsResponse;
+
+  const ownedAbarsResponseOne = await TripleMasking.getOwnedAbars(givenCommitmentOne);
+  const [ownedAbarToUseAsSourceOne] = ownedAbarsResponseOne;
+
+  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
+  log('🚀 ~ abarToBar ~ ownedAbarToUseAsSourceOne', ownedAbarToUseAsSourceOne);
+
+  const { transactionBuilder } = await TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [
+    ownedAbarToUseAsSource,
+    ownedAbarToUseAsSourceOne,
+  ]);
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  log('abar to bar result handle!!!', resultHandle);
+
+  await waitForBlockChange(2);
+
+  log('/////////////////// now checking balances //////////// \n\n\n ');
+
+  const balanceNew = await Account.getBalance(walletInfo);
+  log('Old BAR balance for public key: ', walletInfo.address, ' is ', balance, ' FRA');
+  log('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, ' FRA');
+
+  const balanceChangeF = parseFloat(balanceNew.replace(/,/g, '')) - parseFloat(balance.replace(/,/g, ''));
+  log('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, ' FRA');
+
+  const givenBalanceChange = '20';
+  const realBalanceChange = createBigNumber(createBigNumber(balanceChangeF).toPrecision(7));
+
+  const expectedBalanceChange = createBigNumber(givenBalanceChange);
+  const expectedBarBalanceChange = expectedBalanceChange;
+
+  if (!realBalanceChange.isEqualTo(expectedBarBalanceChange)) {
+    const message = `BAR balance of ${realBalanceChange.toString()} does not match expected value ${expectedBarBalanceChange.toString()}`;
+    log(message);
+    throw new Error(message);
+  }
+
+  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysSender, givenCommitments);
+  log('🚀 ~ abarToAbar ~ spentBalances after transfer', anonBalances.spentBalances);
+  if (!anonBalances?.spentBalances?.balances?.length) {
+    const err = 'ERROR No ABAR spent balances available';
+    log(err);
+    throw new Error(err);
+  }
+
+  const anonBalSpent = anonBalances.spentBalances.balances[0].amount;
+  const anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
+
+  const realAnonBalanceValue = createBigNumber(anonBalanceValue);
+  if (!realAnonBalanceValue.isEqualTo(expectedBalanceChange)) {
+    const message = `ABAR balance does not match expected value, real is ${realAnonBalanceValue.toString()} and expected is ${expectedBalanceChange.toString()}`;
+    log(message);
+    throw new Error(message);
+  }
+
+  // it would throw an error if it is unspent
+  await validateSpent(anonKeysSender, [givenCommitment, givenCommitmentOne]);
+
+  return true;
+};
+
+export const abarToBarCustomSendAmount = async () => {
+  const anonKeysSender = await getAnonKeys();
+
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const toWalletInfo = await createNewKeypair();
+
+  const assetCode = await Asset.getRandomAssetCode();
+  const derivedAssetCode = await Asset.getDerivedAssetCode(assetCode);
+
+  const senderOne = pkey;
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const assetCodeToUse = derivedAssetCode;
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 5);
+
+  log('//////////////// defining and issuing custom asset ////////////// ');
+  await defineCustomAsset(senderOne, assetCode);
+  await issueCustomAsset(senderOne, assetCode, assetCodeToUse, '10');
+  await issueCustomAsset(senderOne, assetCode, assetCodeToUse, '5');
+  await issueCustomAsset(senderOne, assetCode, assetCodeToUse, '20');
+
+  const expectedSenderBalance = createBigNumber('35');
+
+  const assetBalance = await Account.getBalance(senderWalletInfo, assetCodeToUse);
+
+  log(`sender bar "${assetCodeToUse}" assetBalance before transfer (after issuing the asset)`, assetBalance);
+
+  const realSenderBalance = createBigNumber(assetBalance);
+  const isSenderFunded = expectedSenderBalance.isEqualTo(realSenderBalance);
+
+  if (!isSenderFunded) {
+    const errorMessage = `Expected bar ${assetCodeToUse} balance is ${expectedSenderBalance.toString()} but it has ${realSenderBalance.toString()}`;
+    throw Error(errorMessage);
+  }
+
+  log('//////////////// bar to abar custom asset transfer ///////////////// ');
+
+  const customAssetSids = await getSidsForSingleAsset(pkey, assetCodeToUse);
+  log('🚀 ~ all customAssetSids', customAssetSids);
+
+  const customAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    customAssetSids,
+    '35',
+    derivedAssetCode,
+  );
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  // we ignore first sid to have even amount
+  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    '40',
+    fraAssetCode,
+  );
+  await waitForBlockChange();
+
+  const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
+
+  log('////////////////////// bar to abar is done, sending abar to bar //////////////');
+  const amountToSend = '12.15';
+
+  const assetBalanceBeforeAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+
+  const receiverAssetBalanceBeforeTransfer = createBigNumber(assetBalanceBeforeAbarToBar);
+  const isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo(
+    createBigNumber('0'),
+  );
+  if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
+    throw new Error(
+      `Receiver must have 0 balance of the asset but it has ${receiverAssetBalanceBeforeTransfer.toString()}`,
+    );
+  }
+
+  const { transactionBuilder, remainderCommitements, spentCommitments } = await TripleMasking.abarToBarAmount(
+    anonKeysSender,
+    toWalletInfo.publickey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  log('abar to bar result handle!!', resultHandle);
+
+  await waitForBlockChange(2);
+
+  log('/////////////////// now checking balances //////////// \n\n\n ');
+
+  const balancesSenderAfter = await TripleMasking.getBalance(anonKeysSender, [
+    ...givenCommitmentsListSender,
+    ...remainderCommitements,
+  ]);
+
+  log('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
+
+  const expectedFraAbarMinimumAmountAfterTransfer = createBigNumber('38'); // assuming 2 FRA was spent for fee, so at least 38 FRA min
+  const expectedCustomAbarAmountAfterTransfer = createBigNumber('22.85'); // has to be 35 - 12.15 = 22.85
+
+  const fraAbarAmountAfterTransfer = balancesSenderAfter?.balances.find(
+    element => element.assetType === fraAssetCode,
+  )?.amount;
+
+  if (!fraAbarAmountAfterTransfer) {
+    throw new Error(
+      `Sender is expected to have ${expectedFraAbarMinimumAmountAfterTransfer.toString()} ABAR FRA but it has '${fraAbarAmountAfterTransfer}'`,
+    );
+  }
+
+  const customAbarAmountAfterTransfer = balancesSenderAfter?.balances.find(
+    element => element.assetType === assetCodeToUse,
+  )?.amount;
+
+  if (!customAbarAmountAfterTransfer) {
+    throw new Error(
+      `Sender is expected to have ${expectedCustomAbarAmountAfterTransfer.toString()} ABAR custom asset but it has '${customAbarAmountAfterTransfer}'`,
+    );
+  }
+
+  const senderAssetBalanceAfterTransfer = createBigNumber(customAbarAmountAfterTransfer);
+
+  const isSenderHasProperAssetBalanceAfterTransfer = senderAssetBalanceAfterTransfer.isEqualTo(
+    expectedCustomAbarAmountAfterTransfer,
+  );
+
+  if (!isSenderHasProperAssetBalanceAfterTransfer) {
+    throw new Error(
+      `Sender must have 22.5 balance of the asset but it has ${senderAssetBalanceAfterTransfer.toString()}`,
+    );
+  }
+
+  const senderFraBalanceAfterTransfer = createBigNumber(fraAbarAmountAfterTransfer);
+
+  const isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(
+    expectedFraAbarMinimumAmountAfterTransfer,
+  );
+
+  if (!isSenderHasProperFraBalanceAfterTransfer) {
+    throw new Error(
+      `Sender must have at least ${expectedFraAbarMinimumAmountAfterTransfer.toString()} balance but it has ${senderFraBalanceAfterTransfer.toString()}`,
+    );
+  }
+
+  log('//////////// checking receiver bar balance //////////');
+  const assetBalanceAfterAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+  log('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
+
+  const receiverAssetBalanceAfterTransfer = createBigNumber(assetBalanceAfterAbarToBar);
+
+  const isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo(
+    createBigNumber(amountToSend),
+  );
+
+  if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
+    throw new Error(
+      `Receiver must have ${amountToSend} balance of the asset but it has ${receiverAssetBalanceAfterTransfer.toString()}`,
+    );
+  }
+
+  log('🚀 ~ spentCommitments', spentCommitments);
+  log('🚀 ~ remainderCommitements', remainderCommitements);
+  return true;
+};
+
+export const abarToBarFraSendAmount = async () => {
+  const anonKeysSender = await getAnonKeys();
+
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const toWalletInfo = await createNewKeypair();
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const assetCodeToUse = fraAssetCode;
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 5);
+
+  const assetBalance = await Account.getBalance(senderWalletInfo, fraAssetCode);
+
+  log(`sender bar "${assetCodeToUse}" assetBalance before transfer`, assetBalance);
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  // we ignore first sid to have even amount
+  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+
+  const fraAssetCommitmentsList = await barToAbar(
+    pkey,
+    anonKeysSender,
+    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    '40', // it is a total of 4 sids. needed to verify the balance change of anon wallet
+    fraAssetCode,
+  );
+
+  await waitForBlockChange();
+
+  const givenCommitmentsListSender = [...fraAssetCommitmentsList];
+
+  log('////////////////////// bar to abar is done, sending abar to bar //////////////');
+  const amountToSend = '2.16';
+
+  const assetBalanceBeforeAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+
+  const receiverAssetBalanceBeforeTransfer = createBigNumber(assetBalanceBeforeAbarToBar);
+  const isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo(
+    createBigNumber('0'),
+  );
+  if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
+    throw new Error(
+      `Receiver must have 0 balance of the asset but it has ${receiverAssetBalanceBeforeTransfer.toString()}`,
+    );
+  }
+
+  const { transactionBuilder, remainderCommitements, spentCommitments } = await TripleMasking.abarToBarAmount(
+    anonKeysSender,
+    toWalletInfo.publickey,
+    amountToSend,
+    assetCodeToUse,
+    givenCommitmentsListSender,
+  );
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  console.log('abar to bar result handle!!', resultHandle);
+
+  await waitForBlockChange(2);
+
+  console.log('/////////////////// now checking balances //////////// \n\n\n ');
+
+  const balancesSenderAfter = await TripleMasking.getBalance(anonKeysSender, [
+    ...givenCommitmentsListSender,
+    ...remainderCommitements,
+  ]);
+
+  log('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
+
+  // 40 - 2.16 = 37.84 assuming 1.15 FRA was spent for fee, so at least 36.69 is a min FRA amount it must have
+  const expectedFraAbarMinimumAmountAfterTransfer = createBigNumber('36.69');
+
+  const fraAbarAmountAfterTransfer = balancesSenderAfter?.balances.find(
+    element => element.assetType === fraAssetCode,
+  )?.amount;
+
+  if (!fraAbarAmountAfterTransfer) {
+    throw new Error(
+      `Sender is expected to have ${expectedFraAbarMinimumAmountAfterTransfer.toString()} ABAR FRA but it has '${fraAbarAmountAfterTransfer}'`,
+    );
+  }
+
+  const senderFraBalanceAfterTransfer = createBigNumber(fraAbarAmountAfterTransfer);
+
+  const isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(
+    expectedFraAbarMinimumAmountAfterTransfer,
+  );
+
+  if (!isSenderHasProperFraBalanceAfterTransfer) {
+    throw new Error(
+      `Sender must have at least ${expectedFraAbarMinimumAmountAfterTransfer.toString()} balance but it has ${senderFraBalanceAfterTransfer.toString()}`,
+    );
+  }
+
+  log('//////////// checking receiver bar balance //////////');
+  const assetBalanceAfterAbarToBar = await Account.getBalance(toWalletInfo, assetCodeToUse);
+  log('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
+
+  const receiverAssetBalanceAfterTransfer = createBigNumber(assetBalanceAfterAbarToBar);
+
+  const isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo(
+    createBigNumber(amountToSend),
+  );
+
+  if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
+    throw new Error(
+      `Receiver must have ${amountToSend} balance of the asset but it has ${receiverAssetBalanceAfterTransfer.toString()}`,
+    );
+  }
+
+  log('🚀 ~ spentCommitments', spentCommitments);
+  log('🚀 ~ remainderCommitements', remainderCommitements);
+
+  return true;
+};
+
+export const barToAbarAmount = async () => {
+  const anonKeysSender = await getAnonKeys();
+  const senderWalletInfo = await createNewKeypair();
+  const pkey = senderWalletInfo.privateStr!;
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+  await createTestBars(pkey, '10', 5);
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+
+  const amount = '35';
+
+  const balance = await Account.getBalance(senderWalletInfo);
+  console.log('🚀 ~ balance', balance);
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sids: usedSids,
+  } = await TripleMasking.barToAbarAmount(
+    senderWalletInfo,
+    amount,
+    fraAssetCode,
+    anonKeysSender.axfrPublicKey,
+  );
+
+  log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+  log('🚀 ~ usedSids', usedSids.join(','));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  log('send bar to abar result handle!!', resultHandle);
+  const givenCommitments = barToAbarData.commitments;
+
+  await waitForBlockChange();
+
+  const minimalFeeForBarToBar = '0.01'; // minimal fee for a bar to bar transfer, when we transfer to ourselves to make exact amount
+
+  const extraSpent = minimalFeeForBarToBar;
+
+  await barToAbarBalances(
+    senderWalletInfo,
+    anonKeysSender,
+    givenCommitments,
+    balance,
+    amount,
+    fraAssetCode,
+    extraSpent,
+  );
+
+  return true;
 };
