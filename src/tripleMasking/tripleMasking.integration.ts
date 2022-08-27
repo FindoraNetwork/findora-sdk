@@ -193,7 +193,7 @@ export const getSidsForSingleAsset = async (senderOne: string, assetCode: string
       customAssetSids.push(utxoItem['sid']);
     }
   }
-  return customAssetSids;
+  return customAssetSids.sort((a, b) => a - b);
 };
 
 export const createTestBars = async (givenSenderOne?: string, amount = '210', iterations = 4) => {
@@ -647,13 +647,12 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  // we ignore first sid to have even amount
-  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
 
   const fraAssetCommitmentsList = await barToAbar(
     pkey,
     anonKeysSender,
-    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
     '40', // it is a total of 4 sids. needed to verify the balance change of anon wallet
     fraAssetCode,
   );
@@ -825,14 +824,15 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  // we ignore first sid to have even amount
-  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
+
+  const expectedFraBalanceAfterBarToAbar = '40';
 
   const fraAssetCommitmentsList = await barToAbar(
     pkey,
     anonKeysSender,
-    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
-    '40',
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    expectedFraBalanceAfterBarToAbar,
     fraAssetCode,
   );
 
@@ -869,7 +869,7 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
 
   log('transfer abar result handle!!', resultHandle);
 
-  await waitForBlockChange();
+  await waitForBlockChange(2);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
   const { commitmentsMap } = abarToAbarData;
@@ -988,13 +988,12 @@ export const abarToBar = async () => {
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  // we ignore first sid to have even amount
-  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree] = fraAssetSids;
 
   const givenCommitments = await barToAbar(
     pkey,
     anonKeysSender,
-    [fAssetSidTwo, fAssetSidThree, fAssetSidFour],
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree],
     '30',
     fraAssetCode,
   );
@@ -1127,13 +1126,12 @@ export const abarToBarCustomSendAmount = async () => {
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  // we ignore first sid to have even amount
-  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
 
   const fraAssetCommitmentsList = await barToAbar(
     pkey,
     anonKeysSender,
-    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
     '40',
     fraAssetCode,
   );
@@ -1271,13 +1269,12 @@ export const abarToBarFraSendAmount = async () => {
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  // we ignore first sid to have even amount
-  const [_fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive] = fraAssetSids;
+  const [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour] = fraAssetSids;
 
   const fraAssetCommitmentsList = await barToAbar(
     pkey,
     anonKeysSender,
-    [fAssetSidTwo, fAssetSidThree, fAssetSidFour, fAssetSidFive],
+    [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour],
     '40', // it is a total of 4 sids. needed to verify the balance change of anon wallet
     fraAssetCode,
   );
