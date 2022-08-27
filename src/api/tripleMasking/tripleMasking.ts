@@ -273,6 +273,7 @@ const getAbarTransferInputPayload = async (
   ownedAbarItem: FindoraWallet.OwnedAbarItem,
   anonKeysSender: FindoraWallet.FormattedAnonKeys,
 ) => {
+  // @todo add try catch
   const { abarData } = ownedAbarItem;
 
   const { atxoSid, ownedAbar } = abarData;
@@ -441,9 +442,9 @@ export const getAbarToAbarAmountPayload = async (
 
   console.log('returning calculatedFee', calculatedFee);
 
-  const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
+  // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
 
-  const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+  // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
 
   return {
     commitmentsToSend,
