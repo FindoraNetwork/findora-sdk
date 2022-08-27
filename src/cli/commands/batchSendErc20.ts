@@ -4,13 +4,6 @@ import Web3 from 'web3';
 import { getPayloadWithGas, timeLog } from '../../evm/testHelpers';
 import { log, now, readFile, writeFile } from '../../services/utils';
 
-const envConfigFile = `../../../.env_erc_distribution`;
-
-const envConfig = require(`${envConfigFile}.json`);
-
-const { rpc: rpcParams } = envConfig;
-const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
-
 let networkId: number;
 let accounts: string[];
 
@@ -123,6 +116,23 @@ const sendTxToAccount = async (
 export const runBatchSendERC20 = async (filePath: string) => {
   let data;
   let parsedListOfRecievers;
+
+  const envConfigFile = process.env.INTEGRATION_ENV_NAME
+    ? `../../../.env_erc_distribution_${process.env.INTEGRATION_ENV_NAME}`
+    : `../../../.env_erc_distribution`;
+
+  const fullPathToConfig = `${envConfigFile}.json`;
+  const envConfig = require(`${fullPathToConfig}`);
+
+  const { rpc: rpcParams } = envConfig;
+
+  const { rpcUrl = 'http://127.0.0.1:8545', mnemonic } = rpcParams;
+
+  if (!rpcParams || rpcParams?.mnemonic === 'XXX XX') {
+    throw new Error(
+      `'mnemonic' was not found in the file at path ${fullPathToConfig}. check your configuration file`,
+    );
+  }
 
   try {
     data = await readFile(filePath);

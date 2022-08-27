@@ -379,7 +379,7 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
     });
 }); };
 var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, totalFeeEstimate, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, givenCommitment, ownedAbarsResponseFee, additionalOwnedAbarItemFee, expectedFee, additionalAmountForFee;
+    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, totalFeeEstimate, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, givenCommitment, ownedAbarsResponseFee, additionalOwnedAbarItemFee;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
@@ -486,10 +486,8 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 13];
             case 16:
                 console.log('returning calculatedFee', calculatedFee);
-                return [4 /*yield*/, (0, exports.getAmountFromCommitments)(fraAssetCode, commitmentsForFee, anonKeysSender)];
-            case 17:
-                expectedFee = _a.sent();
-                additionalAmountForFee = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(expectedFee.toString()), 6).toFormat(6);
+                // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
+                // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
                 return [2 /*return*/, {
                         commitmentsToSend: commitmentsToSend,
                         commitmentsForFee: commitmentsForFee,
