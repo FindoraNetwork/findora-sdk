@@ -1546,7 +1546,6 @@ export const defineCustomAsset = async (senderOne: string, assetCode: string) =>
   console.log('New asset ', assetCode, ' created, handle', handle);
 
   await waitForBlockChange();
-  // await sleep(waitingTimeBeforeCheckTxStatus);
 };
 
 export const issueCustomAsset = async (
@@ -2676,11 +2675,11 @@ async function approveToken() {
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-// barToAbarAmount();
+barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
-// abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount(); // +
 
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();

@@ -2678,9 +2678,9 @@ function approveToken() {
 // barToAbarAmount();
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
-// abarToBarCustomSendAmount();
+abarToBarCustomSendAmount();
 // abarToBarFraSendAmount();
 // Total fee test
 // abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee();
