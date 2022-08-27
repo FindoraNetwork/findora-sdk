@@ -942,9 +942,7 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
     });
 }); };
 exports.abarToBarAmount = abarToBarAmount;
-var abarToBar = function (anonKeysSender, receiverXfrPublicKey, 
-// receiverWalletInfo: Keypair.WalletKeypar,
-additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
+var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder, receiverXfrPublicKeyConverted, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
     return __generator(this, function (_a) {
         switch (_a.label) {

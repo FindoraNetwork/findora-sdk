@@ -99,10 +99,10 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -2604,6 +2604,28 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
+var txHashTest = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var tendermintHash, hashSwapResult, response, explorerHash;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                tendermintHash = '44d8c650a8b962b40e3d3fd180872232b77e5e8be42614cf106fd1d2ed15f1c5';
+                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2576 ~ txHashTest ~ tendermintHash', tendermintHash);
+                return [4 /*yield*/, api_1.Network.getHashSwap(tendermintHash)];
+            case 1:
+                hashSwapResult = _c.sent();
+                (0, utils_1.log)('hashSwapResult', JSON.stringify(hashSwapResult));
+                response = hashSwapResult.response;
+                if (!response) {
+                    throw new Error('could not fetch hashswap, no response received');
+                }
+                explorerHash = (_b = (_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.txs) === null || _b === void 0 ? void 0 : _b[0].hash;
+                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2588 ~ txHashTest ~ explorerHash', explorerHash);
+                return [2 /*return*/];
+        }
+    });
+}); };
 // const testBlockWait = async () => {
 //   // const result = await waitForBlockChange(2);
 //   // log('🚀 ~ file: run.ts ~ line 2126 ~ testBlockWait ~ result', result);
@@ -2724,8 +2746,9 @@ function testCommitment() {
 // abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();
-abarToBarFraSendAmount();
+// abarToBarFraSendAmount();
 // Total fee test
 // abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee();
 // testCommitment();
+txHashTest();
 //# sourceMappingURL=run.js.map
