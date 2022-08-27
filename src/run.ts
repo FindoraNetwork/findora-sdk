@@ -1546,7 +1546,6 @@ export const defineCustomAsset = async (senderOne: string, assetCode: string) =>
   console.log('New asset ', assetCode, ' created, handle', handle);
 
   await waitForBlockChange();
-  // await sleep(waitingTimeBeforeCheckTxStatus);
 };
 
 export const issueCustomAsset = async (
@@ -2503,7 +2502,7 @@ const abarToBar = async () => {
   );
 
   console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-  console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverXfrPublicKey', receiverXfrPublicKey);
+  // console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
@@ -2754,11 +2753,11 @@ async function testCommitment() {
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-// barToAbarAmount();
+barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
-// abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-// abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount(); // +
 
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();
