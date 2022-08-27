@@ -4,29 +4,6 @@ import { waitForBlockChange } from '../evm/testHelpers';
 
 const extendedExecutionTimeout = 180000;
 
-// // let anonKeys1: FindoraWallet.FormattedAnonKeys;
-// // let anonKeys2: FindoraWallet.FormattedAnonKeys;
-// // let anonKeys3: FindoraWallet.FormattedAnonKeys;
-
-// // let senderOne = '';
-// // let asset1Code = '';
-// // let derivedAsset1Code = '';
-
-// // beforeAll(async (done: any) => {
-// //   const walletInfo = await Integration.createNewKeypair();
-// //   anonKeys1 = await Integration.getAnonKeys();
-// //   anonKeys2 = await Integration.getAnonKeys();
-// //   anonKeys3 = await Integration.getAnonKeys();
-
-// //   senderOne = walletInfo.privateStr!;
-
-// //   asset1Code = await Integration.getRandomAssetCode();
-// //   derivedAsset1Code = await Integration.getDerivedAssetCode(asset1Code);
-
-// //   await waitForBlockChange();
-// //   done();
-// // }, extendedExecutionTimeout);
-
 afterAll(async (done: any) => {
   console.log('after all - just waiting for 3 blocks to have all pending requests finished (if any)');
   await waitForBlockChange(3);
