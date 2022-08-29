@@ -444,14 +444,10 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
             case 9: return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
             case 10:
                 calculatedFee = _a.sent();
-<<<<<<< HEAD
-                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
-=======
                 return [4 /*yield*/, (0, exports.getTotalAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
             case 11:
                 totalFeeEstimate = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
+                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 if (!isMoreFeeNeeded) {
@@ -664,13 +660,8 @@ additionalOwnedAbarItems) {
                     return [3 /*break*/, 11];
                 case 10:
                     error_7 = _a.sent();
-<<<<<<< HEAD
                     throw new Error("Could not add an output for abar transfer operation\", Error - ".concat(error_7.message));
-                case 12: return [2 /*return*/, anonTransferOperationBuilder];
-=======
-                    throw new Error("Could not add an output for abar transfer operation\", Error - " + error_7.message);
                 case 11: return [2 /*return*/, anonTransferOperationBuilder];
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
             }
         });
     });
@@ -955,9 +946,7 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
     });
 }); };
 exports.abarToBarAmount = abarToBarAmount;
-var abarToBar = function (anonKeysSender, receiverXfrPublicKey, 
-// receiverWalletInfo: Keypair.WalletKeypar,
-additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
+var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder, receiverXfrPublicKeyConverted, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
     return __generator(this, function (_a) {
         switch (_a.label) {

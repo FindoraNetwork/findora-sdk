@@ -1393,11 +1393,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 5)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(1, 9);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-<<<<<<< HEAD
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "".concat(amount), assetCode, assetBlindRules)];
-=======
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2" + amount, assetCode, assetBlindRules)];
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2".concat(amount), assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -1772,15 +1768,9 @@ var abarToAbarFraOneFraAtxoForFee = function () { return __awaiter(void 0, void 
             case 12:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-<<<<<<< HEAD
                 console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-=======
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 13:
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
                 _c.sent();
                 console.log('now checking balances\n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
@@ -1865,15 +1855,9 @@ var abarToAbarFraMultipleFraAtxoForFee = function () { return __awaiter(void 0, 
             case 12:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-<<<<<<< HEAD
                 console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-=======
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 13:
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
                 _c.sent();
                 console.log('now checking balances\n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
@@ -1975,13 +1959,8 @@ var abarToAbarCustomOneFraAtxoForFee = function () { return __awaiter(void 0, vo
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-<<<<<<< HEAD
                 console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-=======
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
             case 18:
                 _c.sent();
                 console.log('now checking balances\n\n\n');
@@ -2084,13 +2063,8 @@ var abarToAbarCustomMultipleFraAtxoForFee = function () { return __awaiter(void 
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-<<<<<<< HEAD
                 console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-=======
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
->>>>>>> 556d8d6d30e751db70a0dd6d789947ba306dea4c
             case 18:
                 _c.sent();
                 console.log('now checking balances\n\n\n');
@@ -2392,7 +2366,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 14:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '12.15', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '12.15', assetCodeToUse, givenCommitmentsListSender)];
             case 15:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2459,7 +2433,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
             case 9:
                 assetBalanceBeforeAbarToBar = _b.sent();
-                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo, '2.16', assetCodeToUse, givenCommitmentsListSender)];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, '2.16', assetCodeToUse, givenCommitmentsListSender)];
             case 10:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -2553,7 +2527,7 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee = function () { return 
     });
 }); };
 var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverWalletInfo, resultHandle;
+    var password, pkey, walletInfo, anonKeysSender, givenCommitmentOne, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, transactionBuilder, abarToBarData, receiverXfrPublicKey, resultHandle;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -2573,11 +2547,10 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 ownedAbarsResponseOne = _b.sent();
                 ownedAbarToUseAsSource = ownedAbarsResponseOne[0];
                 console.log('🚀 ~ file: run.ts ~ line 1396 ~ abarToBar ~ ownedAbarToUseAsSource', ownedAbarToUseAsSource);
-                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo, [ownedAbarToUseAsSource])];
+                return [4 /*yield*/, api_1.TripleMasking.abarToBar(anonKeysSender, walletInfo.publickey, [ownedAbarToUseAsSource])];
             case 3:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverWalletInfo = _a.receiverWalletInfo;
+                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, abarToBarData = _a.abarToBarData, receiverXfrPublicKey = _a.receiverXfrPublicKey;
                 console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ abarToBarData', abarToBarData);
-                console.log('🚀 ~ file: run.ts ~ line 1413 ~ abarToBar ~ receiverWalletInfo', receiverWalletInfo);
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
             case 4:
                 resultHandle = _b.sent();
