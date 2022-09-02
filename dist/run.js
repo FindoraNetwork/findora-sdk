@@ -2679,10 +2679,10 @@ function approveToken() {
 // abarToAbarCustomMultipleFraAtxoForFee();
 // New TM methods (examples)
 // 1. Send an exact amount from bar to abar
-// barToAbarAmount();
+barToAbarAmount();
 // 2. Send exact amount from abar to abar `abarToBarAmount`
-// abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+// abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
+// abarToAbarCustomMultipleFraAtxoForFeeSendAmount(); // +
 // 3. Abar to bar with exact amount (both for fra and for custom asset)
 // abarToBarCustomSendAmount();
 // abarToBarFraSendAmount();

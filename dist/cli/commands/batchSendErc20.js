@@ -56,10 +56,6 @@ var truffle_hdwallet_provider_1 = __importDefault(require("truffle-hdwallet-prov
 var web3_1 = __importDefault(require("web3"));
 var testHelpers_1 = require("../../evm/testHelpers");
 var utils_1 = require("../../services/utils");
-var envConfigFile = "../../../.env_erc_distribution";
-var envConfig = require("".concat(envConfigFile, ".json"));
-var rpcParams = envConfig.rpc;
-var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
 var networkId;
 var accounts;
 var isCsvValid = function (parsedListOfRecievers) {
@@ -142,37 +138,49 @@ var sendTxToAccount = function (senderAccount, receiverAccount, amountToSend, we
     });
 }); };
 var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, parsedListOfRecievers, err_1, error_2, provider, web3, sendInfo, errorsInfo, senderAccount, receiversList, i, recieverInfo, _a, txHash, txReceipt, error_3, errorMessage;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+    var data, parsedListOfRecievers, envConfigFile, fullPathToConfig, envConfig, rpcParams, _a, rpcUrl, mnemonic, err_1, error_2, provider, web3, sendInfo, errorsInfo, senderAccount, receiversList, i, recieverInfo, _b, txHash, txReceipt, error_3, errorMessage;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
             case 0:
-                _b.trys.push([0, 2, , 3]);
-                return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
+                envConfigFile = process.env.INTEGRATION_ENV_NAME
+                    ? "../../../.env_erc_distribution_".concat(process.env.INTEGRATION_ENV_NAME)
+                    : "../../../.env_erc_distribution";
+                fullPathToConfig = "".concat(envConfigFile, ".json");
+                envConfig = require("".concat(fullPathToConfig));
+                rpcParams = envConfig.rpc;
+                _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
+                if (!rpcParams || (rpcParams === null || rpcParams === void 0 ? void 0 : rpcParams.mnemonic) === 'XXX XX') {
+                    throw new Error("'mnemonic' was not found in the file at path ".concat(fullPathToConfig, ". check your configuration file"));
+                }
+                _c.label = 1;
             case 1:
-                data = _b.sent();
-                return [3 /*break*/, 3];
+                _c.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
             case 2:
-                err_1 = _b.sent();
-                throw Error('Could not read file "file.csv" ');
+                data = _c.sent();
+                return [3 /*break*/, 4];
             case 3:
-                _b.trys.push([3, 5, , 6]);
-                return [4 /*yield*/, (0, neat_csv_1.default)(data)];
+                err_1 = _c.sent();
+                throw Error('Could not read file "file.csv" ');
             case 4:
-                parsedListOfRecievers = _b.sent();
-                return [3 /*break*/, 6];
+                _c.trys.push([4, 6, , 7]);
+                return [4 /*yield*/, (0, neat_csv_1.default)(data)];
             case 5:
-                error_2 = _b.sent();
-                throw Error('Could not parse file "file.csv" ');
+                parsedListOfRecievers = _c.sent();
+                return [3 /*break*/, 7];
             case 6:
+                error_2 = _c.sent();
+                throw Error('Could not parse file "file.csv" ');
+            case 7:
                 (0, utils_1.log)('parsedListOfRecievers', parsedListOfRecievers);
                 provider = new truffle_hdwallet_provider_1.default(mnemonic, rpcUrl, 0, mnemonic.length);
                 web3 = new web3_1.default(provider);
                 return [4 /*yield*/, web3.eth.getAccounts()];
-            case 7:
-                accounts = _b.sent();
-                return [4 /*yield*/, web3.eth.net.getId()];
             case 8:
-                networkId = _b.sent();
+                accounts = _c.sent();
+                return [4 /*yield*/, web3.eth.net.getId()];
+            case 9:
+                networkId = _c.sent();
                 sendInfo = [];
                 errorsInfo = [];
                 senderAccount = accounts[0];
@@ -184,35 +192,35 @@ var runBatchSendERC20 = function (filePath) { return __awaiter(void 0, void 0, v
                 }
                 receiversList = getRecieversList(parsedListOfRecievers);
                 i = 0;
-                _b.label = 9;
-            case 9:
-                if (!(i < receiversList.length)) return [3 /*break*/, 14];
-                recieverInfo = receiversList[i];
-                _b.label = 10;
+                _c.label = 10;
             case 10:
-                _b.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, sendTxToAccount(senderAccount, recieverInfo.address, "".concat(recieverInfo.numbers), web3)];
+                if (!(i < receiversList.length)) return [3 /*break*/, 15];
+                recieverInfo = receiversList[i];
+                _c.label = 11;
             case 11:
-                _a = _b.sent(), txHash = _a.txHash, txReceipt = _a.txReceipt;
+                _c.trys.push([11, 13, , 14]);
+                return [4 /*yield*/, sendTxToAccount(senderAccount, recieverInfo.address, "".concat(recieverInfo.numbers), web3)];
+            case 12:
+                _b = _c.sent(), txHash = _b.txHash, txReceipt = _b.txReceipt;
                 sendInfo.push({
                     txHash: txHash,
                     recieverInfo: __assign({}, recieverInfo),
                     txReceipt: txReceipt,
                 });
                 (0, utils_1.log)("".concat(i + 1, ": Tx hash is \"").concat(txHash, "\""));
-                return [3 /*break*/, 13];
-            case 12:
-                error_3 = _b.sent();
+                return [3 /*break*/, 14];
+            case 13:
+                error_3 = _c.sent();
                 errorMessage = "".concat(i + 1, ": !! ERROR!! - could not send a transaction to ").concat(recieverInfo.address, ". Error: - ").concat(error_3.message, ". Skipping....");
                 errorsInfo.push(errorMessage);
                 (0, utils_1.log)(errorMessage);
-                return [3 /*break*/, 13];
-            case 13:
+                return [3 /*break*/, 14];
+            case 14:
                 i += 1;
-                return [3 /*break*/, 9];
-            case 14: return [4 /*yield*/, writeDistributionLog(sendInfo, errorsInfo)];
-            case 15:
-                _b.sent();
+                return [3 /*break*/, 10];
+            case 15: return [4 /*yield*/, writeDistributionLog(sendInfo, errorsInfo)];
+            case 16:
+                _c.sent();
                 (0, utils_1.log)("Batch Send Log ", JSON.stringify(sendInfo, null, 2));
                 (0, utils_1.log)("Batch Send Errors Log ", JSON.stringify(errorsInfo, null, 2));
                 return [2 /*return*/];
