@@ -2678,9 +2678,8 @@ async function approveToken() {
 // myFunc16(); // tx list
 // getAnonTxList();
 
-testTransferToYourself();
-
-// testBlockWait();
+// testTransferToYourself();
+getAnonKeys();
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
@@ -2698,7 +2697,7 @@ testTransferToYourself();
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-barToAbarAmount();
+// barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
