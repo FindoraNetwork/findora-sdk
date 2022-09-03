@@ -1,6 +1,7 @@
 import { WalletKeypar } from '../api/keypair';
 import * as Network from '../api/network';
 import * as AssetApi from '../api/sdkAsset';
+import * as FindoraWallet from '../types/findoraWallet';
 import { getLedger } from './ledger/ledgerWrapper';
 import {
   ClientAssetRecord,

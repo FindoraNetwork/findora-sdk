@@ -1,3 +1,4 @@
+import * as FindoraWallet from '../../../types/findoraWallet';
 import { DefineAssetOperation, TxOperation } from '../types';
 export interface ProcessedDefineAsset {
     defineAsset: DefineAssetOperation;

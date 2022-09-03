@@ -5,6 +5,7 @@ import Sdk from '../Sdk';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { log } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
+import * as FindoraWallet from '../types/findoraWallet';
 
 import { create as createBigNumber } from '../services/bigNumber';
 
