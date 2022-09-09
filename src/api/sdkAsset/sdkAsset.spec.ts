@@ -12,6 +12,7 @@ import {
   TransferOperationBuilder,
   XfrKeyPair,
 } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import * as NetworkTypes from '../network/types';

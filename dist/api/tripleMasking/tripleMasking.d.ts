@@ -1,5 +1,6 @@
 import { AXfrPubKey } from 'findora-wallet-wasm/web';
 import { TransactionBuilder } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as Keypair from '../keypair';
 interface BalanceInfo {
     assetType: string;

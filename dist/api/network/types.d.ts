@@ -1,3 +1,4 @@
+import * as FindoraWallet from '../../types/findoraWallet';
 export interface ResultError {
     message: string;
     code?: number;

@@ -3,6 +3,7 @@ import * as KeypairApi from '../api/keypair';
 import * as NetworkApi from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';
 import * as Asset from '../api/sdkAsset/sdkAsset';
+import * as FindoraWallet from '../types/findoraWallet';
 import * as Fee from './fee';
 import * as Ledger from './ledger/ledgerWrapper';
 import { LedgerForNode } from './ledger/nodeLedger';

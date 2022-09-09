@@ -1,27 +1,24 @@
-declare namespace FindoraWallet {
-  export interface IAssetRules {
+export interface IAssetRules {
     decimals: number;
     transferable: boolean;
     updatable: boolean;
     transfer_multisig_rules: any;
     max_units: null | number;
     tracing_policies: any[];
-  }
-  export interface ILedgerAsset {
+}
+export interface ILedgerAsset {
     memo: string;
-  }
-
-  export interface IPureAsset extends ILedgerAsset {
+}
+export interface IPureAsset extends ILedgerAsset {
     code: {
-      val: number[];
+        val: number[];
     };
     issuer: {
-      key: string;
+        key: string;
     };
     asset_rules: IAssetRules;
-  }
-
-  export interface IAsset extends ILedgerAsset {
+}
+export interface IAsset extends ILedgerAsset {
     address: string;
     code: string;
     issuer: string;
@@ -32,116 +29,98 @@ declare namespace FindoraWallet {
     options?: IAssetCustomOptions;
     ownerMemo?: any;
     record?: any;
-  }
-
-  export interface IAssetCustomOptions {
+}
+export interface IAssetCustomOptions {
     builtIn: boolean;
     owned: boolean;
-  }
-
-  export interface IAssetCustom {
+}
+export interface IAssetCustom {
     options?: IAssetCustomOptions;
     assetCode: string;
     nickname: string;
     nicknames: string[];
     address: string;
-  }
-
-  export interface IWallet {
+}
+export interface IWallet {
     keyStore?: Uint8Array | string;
     publickey?: string;
     address?: string;
     name?: string;
     keypair?: any;
     privateKey?: string;
-  }
-
-  interface FormattedAnonKeys {
+}
+export interface FormattedAnonKeys {
     axfrSpendKey: string;
     axfrPublicKey: string;
     axfrViewKey: string;
-  }
-
-  export interface BarToAbarData {
+}
+export interface BarToAbarData {
     receiverAxfrPublicKey: string;
     commitments: string[];
-  }
-
-  export interface AbarToBarData {
+}
+export interface AbarToBarData {
     anonKeysSender: FormattedAnonKeys;
-  }
-
-  interface ProcessedCommitmentsMap {
+}
+export interface ProcessedCommitmentsMap {
     commitmentKey: string;
     commitmentAxfrPublicKey: string;
     commitmentAssetType: string;
     commitmentAmount: string;
-  }
-
-  export interface AbarToAbarData {
+}
+export interface AbarToAbarData {
     anonKeysSender: FormattedAnonKeys;
     anonPubKeyReceiver: string;
     commitmentsMap: ProcessedCommitmentsMap[];
-  }
-
-  export interface BarToAbarResult<T> {
+}
+export interface BarToAbarResult<T> {
     transactionBuilder: T;
     barToAbarData: BarToAbarData;
     sids: number[];
-    // sid: string;
-  }
-
-  export interface AnonKeysResponse<T> {
+}
+export interface AnonKeysResponse<T> {
     keysInstance: T;
     formatted: FormattedAnonKeys;
-  }
-
-  export interface OwnedAbar {
+}
+export interface OwnedAbar {
     commitment: string;
-  }
-
-  export interface OwnedAbarData {
+}
+export interface OwnedAbarData {
     atxoSid: string;
     ownedAbar: OwnedAbar;
-  }
-
-  export interface OwnedAbarItem {
+}
+export interface OwnedAbarItem {
     commitment: string;
     abarData: OwnedAbarData;
-  }
-
-  export type MTleafNode = {
+}
+export declare type MTleafNode = {
     siblings1: string;
     siblings2: string;
     is_left_child: number;
     is_right_child: number;
-  };
-
-  export interface OpenedAbar {
+};
+export interface OpenedAbar {
     amount: string;
     asset_type: number[];
     blind: string;
     pub_key: string;
     owner_memo: {
-      blind_share: string;
-      lock: {
-        ciphertext: string;
-        ephemeral_public_key: string;
-      };
+        blind_share: string;
+        lock: {
+            ciphertext: string;
+            ephemeral_public_key: string;
+        };
     };
     mt_leaf_info: {
-      path: {
-        nodes: MTleafNode[];
-      };
-      root: string;
-      root_version: string;
-      uid: string;
+        path: {
+            nodes: MTleafNode[];
+        };
+        root: string;
+        root_version: string;
+        uid: string;
     };
-  }
-
-  export interface OpenedAbarInfo {
+}
+export interface OpenedAbarInfo {
     abar: OpenedAbar;
     amount: string;
     assetType: string;
-  }
 }

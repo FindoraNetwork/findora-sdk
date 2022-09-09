@@ -330,7 +330,30 @@ const transferFraToSingleAddress = async (amount: string) => {
 
   console.log('send fra result handle!!', resultHandle);
 
-  await sleep(waitingTimeBeforeCheckTxStatus);
+  await waitForBlockChange();
+  await waitForBlockChange();
+
+  const height = 45;
+  const blockDetailsResult = await Network.getBlock(height);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult',
+    JSON.stringify(blockDetailsResult, null, 2),
+  );
+
+  const h = resultHandle;
+
+  const txStatus = await Network.getTransactionStatus(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus',
+    JSON.stringify(txStatus, null, 2),
+  );
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const dataResult = await Network.getHashSwap(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult',
+    JSON.stringify(dataResult, null, 2),
+  );
 
   const submitResult = await Network.getTransactionStatus(resultHandle);
   console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
@@ -2734,8 +2757,7 @@ async function testCommitment() {
 // getAnonTxList();
 
 // testTransferToYourself();
-
-// testBlockWait();
+getAnonKeys();
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
@@ -2753,7 +2775,7 @@ async function testCommitment() {
 // New TM methods (examples)
 
 // 1. Send an exact amount from bar to abar
-barToAbarAmount();
+// barToAbarAmount();
 
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
