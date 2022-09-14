@@ -1456,7 +1456,18 @@ const testIt = async () => {
     return false;
   }
   const last = response.pop();
+
+  if (!last) {
+    return false;
+  }
   log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
+
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeysReceiver);
+  console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
+
+  const decryptedF = await TripleMasking.decryptAbarMemo(response[0], anonKeysReceiver);
+  console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decryptedF', decryptedF);
+
   return true;
   // console.log('🚀 ~ file: run.ts ~ line 1449 ~ testIt ~ result', result.response?.[0]);
 };

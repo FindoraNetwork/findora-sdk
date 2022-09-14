@@ -1525,7 +1525,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysReceiver, result, error, response, last;
+    var anonKeysReceiver, result, error, response, last, decrypted, decryptedF;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -1548,7 +1548,18 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
                     return [2 /*return*/, false];
                 }
                 last = response.pop();
+                if (!last) {
+                    return [2 /*return*/, false];
+                }
                 (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
+                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeysReceiver)];
+            case 2:
+                decrypted = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
+                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(response[0], anonKeysReceiver)];
+            case 3:
+                decryptedF = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decryptedF', decryptedF);
                 return [2 /*return*/, true];
         }
     });

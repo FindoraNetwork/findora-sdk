@@ -124,3 +124,13 @@ export interface OpenedAbarInfo {
     amount: string;
     assetType: string;
 }
+export interface AbarMemoData {
+    point: string;
+    ctext: number[];
+}
+export declare type AbarMemoItem = [string, AbarMemoData];
+export interface DecryptedAbarMemoData {
+    atxoSid: string;
+    decryptedAbar: Uint8Array;
+    owner: FormattedAnonKeys;
+}

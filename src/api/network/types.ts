@@ -615,14 +615,7 @@ export interface BlockHeightParams {
   blockType?: string;
 }
 
-export interface AbarMemoData {
-  point: string;
-  ctext: number[];
-}
-
-export type AbarMemoItem = [string, AbarMemoData];
-
-export type AbarMemoResponse = OwnedResponseAbarItem[];
+export type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
 
 export interface AbarMemoDataResult extends NetworkAxiosDataResult {
   response?: AbarMemoResponse;
