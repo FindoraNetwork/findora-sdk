@@ -481,3 +481,12 @@ export interface BlockHeightResult extends NetworkAxiosDataResult {
 export interface BlockHeightParams {
     blockType?: string;
 }
+export interface AbarMemoData {
+    point: string;
+    ctext: number[];
+}
+export declare type AbarMemoItem = [string, AbarMemoData];
+export declare type AbarMemoResponse = OwnedResponseAbarItem[];
+export interface AbarMemoDataResult extends NetworkAxiosDataResult {
+    response?: AbarMemoResponse;
+}

@@ -614,3 +614,16 @@ export interface BlockHeightResult extends NetworkAxiosDataResult {
 export interface BlockHeightParams {
   blockType?: string;
 }
+
+export interface AbarMemoData {
+  point: string;
+  ctext: number[];
+}
+
+export type AbarMemoItem = [string, AbarMemoData];
+
+export type AbarMemoResponse = OwnedResponseAbarItem[];
+
+export interface AbarMemoDataResult extends NetworkAxiosDataResult {
+  response?: AbarMemoResponse;
+}

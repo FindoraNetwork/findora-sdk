@@ -527,6 +527,18 @@ export const getOwnedAbars = async (
   return dataResult;
 };
 
+export const getAbarMemos = async (
+  startSid: string,
+  endSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.AbarMemoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_memos`;
+
+  const params = { start: startSid.trim(), end: endSid.trim() };
+  const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
 export const checkNullifierHashSpent = async (
   hash: string,
   config?: Types.NetworkAxiosConfig,
