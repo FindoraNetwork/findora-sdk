@@ -1010,13 +1010,14 @@ describe('transaction (unit test)', function () {
     });
     describe('getTxList', function () {
         it('returns a list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, totalTxQuantity, dataResult, txList, processedTxList, spyGetTxList, spyGetTxListFromResponse, spyProcesseTxInfoList, result;
+            var address, type, page, transparent, totalTxQuantity, dataResult, txList, processedTxList, spyGetTxList, spyGetTxListFromResponse, spyProcesseTxInfoList, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         address = 'fra123';
                         type = 'to';
                         page = 2;
+                        transparent = 'transparent';
                         totalTxQuantity = 5;
                         dataResult = {
                             response: {
@@ -1047,7 +1048,7 @@ describe('transaction (unit test)', function () {
                         return [4 /*yield*/, Transaction.getTxList(address, type, page)];
                     case 1:
                         result = _a.sent();
-                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page);
+                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
                         expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
                         expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
                         expect(result).toEqual({
@@ -1062,13 +1063,14 @@ describe('transaction (unit test)', function () {
             });
         }); });
         it('throws an error if it can not fetch a list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, dataResult, spyGetTxList;
+            var address, type, page, transparent, dataResult, spyGetTxList;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         address = 'fra123';
                         type = 'to';
                         page = 2;
+                        transparent = 'transparent';
                         dataResult = {};
                         spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(function () {
                             return Promise.resolve(dataResult);
@@ -1082,13 +1084,14 @@ describe('transaction (unit test)', function () {
             });
         }); });
         it('throws an error if there is no list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, totalTxQuantity, dataResult, txList, spyGetTxList, spyGetTxListFromResponse;
+            var address, type, page, transparent, totalTxQuantity, dataResult, txList, spyGetTxList, spyGetTxListFromResponse;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         address = 'fra123';
                         type = 'to';
                         page = 2;
+                        transparent = 'transparent';
                         totalTxQuantity = 5;
                         dataResult = {
                             response: {
@@ -1107,7 +1110,7 @@ describe('transaction (unit test)', function () {
                         return [4 /*yield*/, expect(Transaction.getTxList(address, type, page)).rejects.toThrow('Could not get a list of transactions from the server response')];
                     case 1:
                         _a.sent();
-                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page);
+                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
                         expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
                         spyGetTxList.mockRestore();
                         spyGetTxListFromResponse.mockRestore();

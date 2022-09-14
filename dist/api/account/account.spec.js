@@ -269,7 +269,7 @@ describe('account (unit test)', function () {
                     case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(walletInfo.publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));
@@ -290,7 +290,7 @@ describe('account (unit test)', function () {
                     case 0: return [4 /*yield*/, Keypair.restoreFromPrivateKey(pkey, password)];
                     case 1:
                         walletInfo = _a.sent();
-                        url = hostUrl + ":8667/get_owned_utxos/" + walletInfo.publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(walletInfo.publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.status(500));
                         }));
@@ -309,7 +309,7 @@ describe('account (unit test)', function () {
                     case 1:
                         walletInfo = _a.sent();
                         publickey = 'gMwGfoP1B98ZRBRFvCJyv48fJLoRgzcoWH4Vd4Acqyk=';
-                        url = hostUrl + ":8667/get_owned_utxos/" + publickey;
+                        url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(publickey);
                         server.use(msw_1.rest.get(url, function (_req, res, ctx) {
                             return res(ctx.json(sids));
                         }));

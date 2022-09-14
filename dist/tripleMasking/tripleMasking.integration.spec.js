@@ -63,7 +63,7 @@ afterAll(function (done) { return __awaiter(void 0, void 0, void 0, function () 
         switch (_a.label) {
             case 0:
                 console.log('after all - just waiting for 3 blocks to have all pending requests finished (if any)');
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 1:
                 _a.sent();
                 done();

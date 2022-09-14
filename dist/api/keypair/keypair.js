@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getXPrivateKeyByBase64 = exports.getXPublicKeyByBase64 = exports.getAXfrViewKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
+exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -62,18 +62,17 @@ var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
  * @throws `An error returned by Ledger with a prefix added by SDK`
  */
 var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, privateStr;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
-                    return [2 /*return*/, privateStr];
+                    return [2 /*return*/, ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '')];
                 }
                 catch (err) {
-                    throw new Error("could not get priv key string, \"" + err + "\" ");
+                    throw new Error("could not get priv key string, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -95,7 +94,7 @@ var getPublicKeyStr = function (keypair) { return __awaiter(void 0, void 0, void
                     return [2 /*return*/, publickey];
                 }
                 catch (err) {
-                    throw new Error("could not get pub key string, \"" + err + "\" ");
+                    throw new Error("could not get pub key string, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -103,18 +102,17 @@ var getPublicKeyStr = function (keypair) { return __awaiter(void 0, void 0, void
 }); };
 exports.getPublicKeyStr = getPublicKeyStr;
 var getAddress = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
-                    return [2 /*return*/, address];
+                    return [2 /*return*/, ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair))];
                 }
                 catch (err) {
-                    throw new Error("could not get address string, \"" + err + "\" ");
+                    throw new Error("could not get address string, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -122,18 +120,17 @@ var getAddress = function (keypair) { return __awaiter(void 0, void 0, void 0, f
 }); };
 exports.getAddress = getAddress;
 var getAddressByPublicKey = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    address = ledger.base64_to_bech32(publicKey);
-                    return [2 /*return*/, address];
+                    return [2 /*return*/, ledger.base64_to_bech32(publicKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get address by public key, \"" + err + "\" ");
+                    throw new Error("could not get address by public key, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -144,18 +141,17 @@ exports.getAddressByPublicKey = getAddressByPublicKey;
  * @todo Add unit test
  */
 var getXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, toPublickey;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    toPublickey = ledger.public_key_from_base64(publicKey);
-                    return [2 /*return*/, toPublickey];
+                    return [2 /*return*/, ledger.public_key_from_base64(publicKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get xfr public key by base64, \"" + err + "\" ");
+                    throw new Error("could not get xfr public key by base64, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -166,18 +162,17 @@ exports.getXfrPublicKeyByBase64 = getXfrPublicKeyByBase64;
  * @todo Add unit test
  */
 var getPublicKeyByXfr = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, toPublickey;
+    var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 try {
-                    toPublickey = ledger.public_key_to_base64(publicKey);
-                    return [2 /*return*/, toPublickey];
+                    return [2 /*return*/, ledger.public_key_to_base64(publicKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get base64 public key by xfr, \"" + err + "\" ");
+                    throw new Error("could not get base64 public key by xfr, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -195,7 +190,7 @@ var getAXfrPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, v
                     return [2 /*return*/, ledger.axfr_pubkey_from_string(publicKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get AXfrPubKey by base64 public key, \"" + err + "\" ");
+                    throw new Error("could not get AXfrPubKey by base64 public key, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -213,14 +208,14 @@ var getAXfrPrivateKeyByBase64 = function (privateKey) { return __awaiter(void 0,
                     return [2 /*return*/, ledger.axfr_keypair_from_string(privateKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get AXfrKeyPair from the string, \"" + err + "\" ");
+                    throw new Error("could not get AXfrKeyPair from the string, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
     });
 }); };
 exports.getAXfrPrivateKeyByBase64 = getAXfrPrivateKeyByBase64;
-var getAXfrViewKeyByBase64 = function (privateKey) { return __awaiter(void 0, void 0, void 0, function () {
+var getAxfrPubKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -228,54 +223,16 @@ var getAXfrViewKeyByBase64 = function (privateKey) { return __awaiter(void 0, vo
             case 1:
                 ledger = _a.sent();
                 try {
-                    return [2 /*return*/, ledger.axfr_viewkey_from_string(privateKey)];
+                    return [2 /*return*/, ledger.axfr_pubkey_from_string(publicKey)];
                 }
                 catch (err) {
-                    throw new Error("could not get AXfrViewKey from the string, \"" + err + "\" ");
+                    throw new Error("could not get XPublicKey by base64 public key, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
     });
 }); };
-exports.getAXfrViewKeyByBase64 = getAXfrViewKeyByBase64;
-var getXPublicKeyByBase64 = function (publicKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, toPublickey;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                try {
-                    toPublickey = ledger.x_pubkey_from_string(publicKey);
-                    return [2 /*return*/, toPublickey];
-                }
-                catch (err) {
-                    throw new Error("could not get XPublicKey by base64 public key, \"" + err + "\" ");
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.getXPublicKeyByBase64 = getXPublicKeyByBase64;
-var getXPrivateKeyByBase64 = function (privateKey) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, toPrivateKey;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                try {
-                    toPrivateKey = ledger.x_secretkey_from_string(privateKey);
-                    return [2 /*return*/, toPrivateKey];
-                }
-                catch (err) {
-                    throw new Error("could not get XSecretKey by base64 private key, \"" + err + "\" ");
-                }
-                return [2 /*return*/];
-        }
-    });
-}); };
-exports.getXPrivateKeyByBase64 = getXPrivateKeyByBase64;
+exports.getAxfrPubKeyByBase64 = getAxfrPubKeyByBase64;
 var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, publickey;
     return __generator(this, function (_a) {
@@ -291,7 +248,7 @@ var getAddressPublicAndKey = function (address) { return __awaiter(void 0, void 
                         }];
                 }
                 catch (err) {
-                    throw new Error("could not create a LightWalletKeypair, \"" + err + "\" ");
+                    throw new Error("could not create a LightWalletKeypair, \"".concat(err, "\" "));
                 }
                 return [2 /*return*/];
         }
@@ -332,12 +289,12 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                toSend = "\"" + privateStr + "\"";
+                toSend = "\"".concat(privateStr, "\"");
                 try {
                     keypair = ledger.create_keypair_from_secret(toSend);
                 }
                 catch (error) {
-                    throw new Error("could not restore keypair. details: \"" + error.message + "\"");
+                    throw new Error("could not restore keypair. details: \"".concat(error, "\""));
                 }
                 if (!keypair) {
                     throw new Error('could not restore keypair. Keypair is empty');
@@ -361,14 +318,19 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
     });
 }); };
 exports.restoreFromPrivateKey = restoreFromPrivateKey;
-var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 0, void 0, void 0, function () {
+var restoreFromMnemonic = function (mnemonic, password, isFraAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, keypair, keyPairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+                if (isFraAddress) {
+                    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
+                }
+                else {
+                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+                }
                 return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
             case 2:
                 keyPairStr = _a.sent();
@@ -421,7 +383,7 @@ var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 
                     }];
             case 6:
                 err_1 = _a.sent();
-                throw new Error("could not restore keypair from the key string. Details: \"" + err_1.message + "\"");
+                throw new Error("could not restore keypair from the key string. Details: \"".concat(err_1.message, "\""));
             case 7: return [2 /*return*/];
         }
     });
@@ -441,7 +403,7 @@ var restoreFromKeystoreString = function (keyStoreString, password) { return __a
                 return [2 /*return*/, result];
             case 2:
                 err_2 = _a.sent();
-                throw new Error("could not restore keypair from the key store string. Details: \"" + err_2.message + "\"");
+                throw new Error("could not restore keypair from the key store string. Details: \"".concat(err_2.message, "\""));
             case 3: return [2 /*return*/];
         }
     });
@@ -478,7 +440,7 @@ var createKeypair = function (password) { return __awaiter(void 0, void 0, void 
                     }];
             case 6:
                 err_3 = _a.sent();
-                throw new Error("could not create a WalletKeypar, \"" + err_3 + "\" ");
+                throw new Error("could not create a WalletKeypar, \"".concat(err_3, "\" "));
             case 7: return [2 /*return*/];
         }
     });
@@ -499,7 +461,7 @@ var getMnemonic = function (desiredLength, mnemonicLang) {
                         return [2 /*return*/, result];
                     }
                     catch (err) {
-                        throw new Error("could not generate custom mnemonic. Details are: \"" + err + "\"");
+                        throw new Error("could not generate custom mnemonic. Details are: \"".concat(err, "\""));
                     }
                     return [2 /*return*/];
             }

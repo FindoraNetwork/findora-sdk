@@ -39,15 +39,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runRestoreWallet = void 0;
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
-var runRestoreWallet = function (mnemonicString) { return __awaiter(void 0, void 0, void 0, function () {
+var runRestoreWallet = function (mnemonicString, isFraAddress) { return __awaiter(void 0, void 0, void 0, function () {
     var password, mm, walletInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '123';
-                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"" + mnemonicString + "\"");
+                (0, utils_1.log)("\uD83D\uDE80 ~ mnemonic to be used: \"".concat(mnemonicString, "\""));
                 mm = mnemonicString.split(' ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, isFraAddress)];
             case 1:
                 walletInfo = _a.sent();
                 (0, utils_1.log)('🚀 ~ restored wallet info: ', walletInfo);

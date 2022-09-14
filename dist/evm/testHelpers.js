@@ -105,10 +105,10 @@ var msToTime = function (s) {
     sTime = (sTime - secs) / 60;
     var mins = sTime % 60;
     var hrs = (sTime - mins) / 60;
-    var formattedHours = hrs > 0 ? hrs + "h " : '';
-    var formattedMinutes = mins > 0 ? mins + "m " : '';
-    var formattedSeconds = secs > 0 ? secs + "." + ms + "s" : ms + "ms";
-    var result = "" + formattedHours + formattedMinutes + formattedSeconds;
+    var formattedHours = hrs > 0 ? "".concat(hrs, "h ") : '';
+    var formattedMinutes = mins > 0 ? "".concat(mins, "m ") : '';
+    var formattedSeconds = secs > 0 ? "".concat(secs, ".").concat(ms, "s") : "".concat(ms, "ms");
+    var result = "".concat(formattedHours).concat(formattedMinutes).concat(formattedSeconds);
     return result;
 };
 exports.msToTime = msToTime;
@@ -117,13 +117,13 @@ var timeLog = function (label, data) {
     var extraData = typeof data === 'object' ? JSON.stringify(data, null, 2) : data === false ? '' : data;
     var sinceStart = currentTime - start;
     var sinceLastOperation = currentTime - lastOperation;
-    var formattedLabel = label ? label + " " : '';
-    var lastLog = data === false ? '' : "took " + (0, exports.msToTime)(sinceLastOperation) + " ";
-    var totalTime = "-> Total run time " + (0, exports.msToTime)(sinceStart);
-    var formattedExtra = extraData ? "with data - " + extraData + " " : '';
-    var formattedTestName = currentTestName ? "Test \"" + currentTestName + "\" -> " : '';
+    var formattedLabel = label ? "".concat(label, " ") : '';
+    var lastLog = data === false ? '' : "took ".concat((0, exports.msToTime)(sinceLastOperation), " ");
+    var totalTime = "-> Total run time ".concat((0, exports.msToTime)(sinceStart));
+    var formattedExtra = extraData ? "with data - ".concat(extraData, " ") : '';
+    var formattedTestName = currentTestName ? "Test \"".concat(currentTestName, "\" -> ") : '';
     logsCount += 1;
-    var messageToLog = logsCount + ". " + formattedTestName + formattedLabel + formattedExtra + lastLog + totalTime;
+    var messageToLog = "".concat(logsCount, ". ").concat(formattedTestName).concat(formattedLabel).concat(formattedExtra).concat(lastLog).concat(totalTime);
     testLogs.push(messageToLog);
     lastOperation = currentTime;
 };
@@ -138,7 +138,7 @@ var setCurrentTestName = function (testName) {
 };
 exports.setCurrentTestName = setCurrentTestName;
 var afterEachLog = function () {
-    var msg = "Test \"" + currentTestName + "\" is finished";
+    var msg = "Test \"".concat(currentTestName, "\" is finished");
     (0, exports.setCurrentTestName)('');
     (0, exports.timeLog)(msg, false);
 };
@@ -174,7 +174,7 @@ var waitForBlockChange = function (numberOfBlocksToWait) {
                     initialBlockData = _b.sent();
                     initialBlock = ((_a = initialBlockData.response) === null || _a === void 0 ? void 0 : _a.result) || '';
                     initialBlockNumber = parseInt(initialBlock, 16);
-                    (0, utils_1.log)("waiting for " + numberOfBlocksToWait + " blocks");
+                    (0, utils_1.log)("waiting for ".concat(numberOfBlocksToWait, " blocks"));
                     updatedBlockNumber = initialBlockNumber;
                     return [4 /*yield*/, (0, utils_1.wait)(function () { return __awaiter(void 0, void 0, void 0, function () {
                             var currentBlockData, currentBlock, currentBlockNumber, blockDifference, _isBlockChanged;
@@ -195,7 +195,7 @@ var waitForBlockChange = function (numberOfBlocksToWait) {
                         }); }, 1000)];
                 case 2:
                     _b.sent();
-                    (0, utils_1.log)("waited from block " + initialBlockNumber + " until block " + updatedBlockNumber);
+                    (0, utils_1.log)("waited from block ".concat(initialBlockNumber, " until block ").concat(updatedBlockNumber));
                     return [2 /*return*/];
             }
         });

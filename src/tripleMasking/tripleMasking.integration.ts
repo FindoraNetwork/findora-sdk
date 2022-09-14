@@ -57,7 +57,7 @@ export const getAnonKeys = async () => {
 export const createNewKeypair = async () => {
   const mm = await Keypair.getMnemonic(24);
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
 
   log('new wallet info', walletInfo);
 
@@ -156,7 +156,7 @@ export const validateSpent = async (
   givenCommitments: string[],
 ) => {
   const anonKeys = { ...AnonKeys };
-  const axfrKeyPair = anonKeys.axfrSpendKey;
+  const axfrKeyPair = anonKeys.axfrSecretKey;
 
   for (const givenCommitment of givenCommitments) {
     const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);

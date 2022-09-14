@@ -117,14 +117,14 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 CliCommands.runFund(address, amountToFund);
                 break;
             case COMMANDS.CREATE_WALLET:
-                CliCommands.runCreateWallet();
+                CliCommands.runCreateWallet(false);
                 break;
             case COMMANDS.RESTORE_WALLET:
                 if (!mnemonicString) {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.RESTORE_WALLET]);
                     break;
                 }
-                CliCommands.runRestoreWallet(mnemonicString);
+                CliCommands.runRestoreWallet(mnemonicString, false);
                 break;
             case COMMANDS.BATCH_SEND_ERC20:
                 if (!filePath) {
@@ -145,7 +145,7 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_AND_SAVE_WALLETS]);
                     break;
                 }
-                CliCommands.runCreateAndSaveWallets(numberOfWallets);
+                CliCommands.runCreateAndSaveWallets(numberOfWallets, false);
                 break;
             default:
                 showHelp();

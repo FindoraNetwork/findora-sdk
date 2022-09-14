@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runCreateWallet = void 0;
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
-var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, function () {
+var runCreateWallet = function (fra_address) { return __awaiter(void 0, void 0, void 0, function () {
     var password, mm, walletInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -48,8 +48,8 @@ var runCreateWallet = function () { return __awaiter(void 0, void 0, void 0, fun
                 return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"".concat(mm.join(' '), "\""));
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, fra_address)];
             case 2:
                 walletInfo = _a.sent();
                 (0, utils_1.log)('🚀 ~ new wallet info: ', walletInfo);

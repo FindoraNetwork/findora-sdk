@@ -118,14 +118,13 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 var password = '123';
-console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
+console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = _d === void 0 ? '' : _d, _e = _a.PKEY_MINE2, PKEY_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE3, PKEY_MINE3 = _f === void 0 ? '' : _f, _g = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _g === void 0 ? '' : _g, _h = _a.ENG_PKEY, ENG_PKEY = _h === void 0 ? '' : _h, _j = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _k === void 0 ? '' : _k, _l = _a.M_STRING, M_STRING = _l === void 0 ? '' : _l, _m = _a.FRA_ADDRESS, FRA_ADDRESS = _m === void 0 ? '' : _m, _o = _a.ETH_PRIVATE, ETH_PRIVATE = _o === void 0 ? '' : _o, _p = _a.ETH_ADDRESS, ETH_ADDRESS = _p === void 0 ? '' : _p;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 var myAbarAnonKeys = {
     axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-    axfrSpendKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-    axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
+    axfrSecretKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
 };
 var myGivenCommitmentsList = [
     'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
@@ -159,7 +158,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
                 mm = mString.split(' ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
             case 1:
                 newWallet = _a.sent();
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -376,7 +375,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 1:
                 mm = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
             case 2:
                 walletInfo = _a.sent();
                 console.log('new wallet info', walletInfo);
@@ -476,7 +475,7 @@ var testTransferToYourself = function () { return __awaiter(void 0, void 0, void
             case 1:
                 if (!(_i < amounts_1.length)) return [3 /*break*/, 4];
                 amount = amounts_1[_i];
-                console.log("Sending amount of " + amount + " FRA");
+                console.log("Sending amount of ".concat(amount, " FRA"));
                 return [4 /*yield*/, transferFraToSingleAddress(amount)];
             case 2:
                 _a.sent();
@@ -813,7 +812,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 4:
                 console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
+                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
                 _d.label = 5;
             case 5:
                 _d.trys.push([5, 7, , 8]);
@@ -917,7 +916,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1040,7 +1039,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1121,7 +1120,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
                 if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatusClaim);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatusClaim);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1198,7 +1197,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleSend + ". Response was: ", transactionStatusSend);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleSend, ". Response was: "), transactionStatusSend);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1255,7 +1254,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
                 if (!txnSIDDelegate) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleDelegate + ". Response was: ", transactionStatusDelegate);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleDelegate, ". Response was: "), transactionStatusDelegate);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1361,7 +1360,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
             case 1:
                 result = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
+                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ ".concat(methodName, " ~ result"), result);
                 return [2 /*return*/];
         }
     });
@@ -1406,7 +1405,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 5)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(1, 9);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2" + amount, assetCode, assetBlindRules)];
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2".concat(amount), assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -1430,7 +1429,7 @@ var getSidsForAsset = function (senderOne, assetCode) { return __awaiter(void 0,
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.log("//////////////// Get sids for asset " + assetCode + " //////////////// ");
+                console.log("//////////////// Get sids for asset ".concat(assetCode, " //////////////// "));
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(senderOne, password)];
             case 1:
                 walletInfo = _a.sent();
@@ -1559,7 +1558,7 @@ var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, fun
             case 0:
                 anonKeys = __assign({}, myAbarAnonKeys);
                 givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
-                axfrSecretKey = anonKeys.axfrSpendKey;
+                axfrSecretKey = anonKeys.axfrSecretKey;
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 1:
                 ownedAbarsResponse = _a.sent();
@@ -1601,8 +1600,7 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
             case 0:
                 anonKeys = {
                     axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    axfrViewKey: '',
+                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
                     name: 'AnonWallet2',
                 };
                 givenCommitmentsList = [
@@ -1733,8 +1731,7 @@ var abarToAbarFraOneFraAtxoForFee = function () { return __awaiter(void 0, void 
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -1781,7 +1778,7 @@ var abarToAbarFraOneFraAtxoForFee = function () { return __awaiter(void 0, void 
             case 12:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 13:
                 _c.sent();
@@ -1820,8 +1817,7 @@ var abarToAbarFraMultipleFraAtxoForFee = function () { return __awaiter(void 0, 
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -1868,7 +1864,7 @@ var abarToAbarFraMultipleFraAtxoForFee = function () { return __awaiter(void 0, 
             case 12:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 13:
                 _c.sent();
@@ -1907,8 +1903,7 @@ var abarToAbarCustomOneFraAtxoForFee = function () { return __awaiter(void 0, vo
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -1972,7 +1967,7 @@ var abarToAbarCustomOneFraAtxoForFee = function () { return __awaiter(void 0, vo
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 18:
                 _c.sent();
@@ -2011,8 +2006,7 @@ var abarToAbarCustomMultipleFraAtxoForFee = function () { return __awaiter(void 
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -2076,7 +2070,7 @@ var abarToAbarCustomMultipleFraAtxoForFee = function () { return __awaiter(void 
             case 17:
                 resultHandle = _c.sent();
                 console.log('transfer abar result handle!!', resultHandle);
-                console.log("will wait for " + waitingTimeBeforeCheckTxStatus + "ms and then check balances for both sender and receiver commitments");
+                console.log("will wait for ".concat(waitingTimeBeforeCheckTxStatus, "ms and then check balances for both sender and receiver commitments"));
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 18:
                 _c.sent();
@@ -2115,8 +2109,7 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function () { return __awaite
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -2217,8 +2210,7 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 anonKeysSender = __assign({}, myAbarAnonKeys);
                 anonKeysReceiver = {
                     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                    axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+                    axfrSecretKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
                 };
                 return [4 /*yield*/, createNewKeypair()];
             case 1:
@@ -2551,8 +2543,7 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 walletInfo = _b.sent();
                 anonKeysSender = {
                     axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
-                    axfrSpendKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
-                    axfrViewKey: '',
+                    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
                 };
                 givenCommitmentOne = 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=';
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitmentOne)];
@@ -2579,8 +2570,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
             case 0:
                 anonKeysSender = {
                     axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-                    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-                    axfrViewKey: '',
+                    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
                 };
                 subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E';
                 return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
@@ -2597,7 +2587,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
     function isCoinBase(fraAddress) {
-        console.log("we are going to call leger with " + fraAddress);
+        console.log("we are going to call leger with ".concat(fraAddress));
         // return false;
         var addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
         return false;

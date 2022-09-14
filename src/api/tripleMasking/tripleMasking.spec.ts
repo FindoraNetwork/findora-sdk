@@ -42,7 +42,7 @@ describe('triple masking (unit test)', () => {
     let sid: number;
     let walletInfo: KeypairApi.WalletKeypar;
     let ownerMemoDataResult: OwnerMemoDataResult;
-    let anonKeys: FindoraWallet.FormattedAnonKeys;
+    let anonKeys: { axfrSecretKey: string; axfrPublicKey: string };
 
     let clientAssetRecord: ClientAssetRecordLight;
     let ownerMemo: OwnerMemoLight;
@@ -76,13 +76,8 @@ describe('triple masking (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
       anonKeys = {
-        // axfrPublicKey: 'axfrPublicKey',
-        // axfrSecretKey: 'axfrSecretKey',
-        // decKey: 'decKey',
-        // encKey: 'encKey',
         axfrPublicKey: 'pub_key',
-        axfrSpendKey: 'spend_key',
-        axfrViewKey: 'view_key',
+        axfrSecretKey: 'secret_key',
       };
 
       clientAssetRecord = {
@@ -136,7 +131,6 @@ describe('triple masking (unit test)', () => {
       spyAddUtxo = jest.spyOn(UtxoHelper, 'addUtxo');
       spyGetOwnerMemo = jest.spyOn(NetworkApi, 'getOwnerMemo');
       spyGetAXfrPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getAXfrPublicKeyByBase64');
-      spyGetXPublicKeyByBase64 = jest.spyOn(KeypairApi, 'getXPublicKeyByBase64');
       spyAddOperationBarToAbar = jest.spyOn(transactionBuilder, 'add_operation_bar_to_abar');
       spyGetCommitments = jest.spyOn(transactionBuilder, 'get_commitments');
       spySaveBarToAbarToCache = jest.spyOn(TripleMasking, 'saveBarToAbarToCache');
@@ -469,17 +463,13 @@ describe('triple masking (unit test)', () => {
         free: jest.fn(() => {}),
         to_json: jest.fn(() => {}),
         pub_key: 'pub_key',
-        spend_key: 'spend_key',
-        view_key: 'view_key',
+        secret_key: 'secret_key',
         // dec_key: 'dec_key',
         // enc_key: 'enc_key',
       };
       formattedAnonKeys = {
         axfrPublicKey: anonKeys.pub_key,
-        axfrSpendKey: anonKeys.spend_key,
-        axfrViewKey: anonKeys.view_key,
-        // decKey: anonKeys.dec_key,
-        // encKey: anonKeys.enc_key,
+        axfrSecretKey: anonKeys.secret_key,
       };
       nodeLedger = {
         foo: 'node',
@@ -538,8 +528,6 @@ describe('triple masking (unit test)', () => {
       anonKeys = {
         axfrPublicKey: 'axfrPublicKey',
         axfrSecretKey: 'axfrSecretKey',
-        decKey: 'decKey',
-        encKey: 'encKey',
       } as unknown as FindoraWallet.FormattedAnonKeys;
       spyConsoleLog = jest.spyOn(console, 'log');
       spyCacheRead = jest.spyOn(Cache, 'read');
@@ -554,7 +542,7 @@ describe('triple masking (unit test)', () => {
         anonKeys.axfrPublicKey,
       );
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys,
+        receiverAxfrPublicKey: anonKeys.axfrPublicKey,
         commitments,
       });
 
@@ -571,7 +559,7 @@ describe('triple masking (unit test)', () => {
         anonKeys.axfrPublicKey,
       );
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys,
+        receiverAxfrPublicKey: anonKeys.axfrPublicKey,
         commitments,
       });
 
@@ -590,7 +578,7 @@ describe('triple masking (unit test)', () => {
         anonKeys.axfrPublicKey,
       );
       expect(result).toMatchObject({
-        anonKeysFormatted: anonKeys,
+        receiverAxfrPublicKey: anonKeys.axfrPublicKey,
         commitments,
       });
 

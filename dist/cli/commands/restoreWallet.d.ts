@@ -1,1 +1,1 @@
-export declare const runRestoreWallet: (mnemonicString: string) => Promise<void>;
+export declare const runRestoreWallet: (mnemonicString: string, isFraAddress: boolean) => Promise<void>;

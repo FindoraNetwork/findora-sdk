@@ -6,7 +6,7 @@ const extendedExecutionTimeout = 180000;
 
 afterAll(async (done: any) => {
   console.log('after all - just waiting for 3 blocks to have all pending requests finished (if any)');
-  await waitForBlockChange(3);
+  await waitForBlockChange(2);
   done();
 }, extendedExecutionTimeout);
 

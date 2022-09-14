@@ -69,9 +69,8 @@ const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
   axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-  axfrSpendKey:
+  axfrSecretKey:
     'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-  axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 
 const myGivenCommitmentsList = [
@@ -107,7 +106,7 @@ const getFraBalance = async () => {
 
   const mm = mString.split(' ');
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+  const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
 
   const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -275,7 +274,7 @@ const createNewKeypair = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
 
   console.log('new wallet info', walletInfo);
   return walletInfo;
@@ -1454,7 +1453,7 @@ const validateUnspent = async () => {
 
   const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
 
-  const axfrSecretKey = anonKeys.axfrSpendKey;
+  const axfrSecretKey = anonKeys.axfrSecretKey;
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
   console.log(
@@ -1509,8 +1508,7 @@ const getAbarBalance = async () => {
   // Anon Walet 2
   const anonKeys = {
     axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    axfrViewKey: '',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
     name: 'AnonWallet2',
   };
 
@@ -1628,9 +1626,8 @@ const abarToAbarFraOneFraAtxoForFee = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -1720,9 +1717,8 @@ const abarToAbarFraMultipleFraAtxoForFee = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -1812,9 +1808,8 @@ const abarToAbarCustomOneFraAtxoForFee = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -1914,9 +1909,8 @@ const abarToAbarCustomMultipleFraAtxoForFee = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -2016,9 +2010,8 @@ const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -2136,9 +2129,8 @@ const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
 
   const anonKeysReceiver = {
     axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-    axfrSpendKey:
+    axfrSecretKey:
       'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
   };
 
   const walletInfo = await createNewKeypair();
@@ -2507,8 +2499,7 @@ const abarToBar = async () => {
 
   const anonKeysSender = {
     axfrPublicKey: 'T_0kQOWEToeg53Q8dS8eej91sJKVBEV2f7rs7Btz5CY=',
-    axfrSpendKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
-    axfrViewKey: '',
+    axfrSecretKey: 'HVdrTiyyL6dFBqq7HvPjYgACG1eIF6-pgvc-OomswAhP_SRA5YROh6DndDx1Lx56P3WwkpUERXZ_uuzsG3PkJg==',
   };
 
   const givenCommitmentOne = 'yUUf9lK7V-7t36rk1_2Omsl11hi_CJe4VNExbcXuiTQ=';
@@ -2536,8 +2527,7 @@ const getAnonTxList = async () => {
   // anon wallet 1
   const anonKeysSender = {
     axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    axfrViewKey: '',
+    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
   };
 
   // Anon Walet 2
