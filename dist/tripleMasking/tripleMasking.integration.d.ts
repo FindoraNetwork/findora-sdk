@@ -1,4 +1,5 @@
 import { Keypair } from '../api';
+import * as FindoraWallet from '../types/findoraWallet';
 export declare const getRandomAssetCode: () => Promise<string>;
 export declare const getDerivedAssetCode: (asset1Code: string) => Promise<string>;
 export declare const getAnonKeys: () => Promise<FindoraWallet.FormattedAnonKeys>;

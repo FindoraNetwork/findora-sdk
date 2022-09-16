@@ -1215,7 +1215,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
             case 20:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('abar to bar result handle!!', resultHandle);
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(4)];
             case 21:
                 _d.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');

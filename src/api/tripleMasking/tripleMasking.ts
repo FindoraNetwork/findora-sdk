@@ -10,6 +10,7 @@ import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString } from '../../services/utils';
 import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as Keypair from '../keypair';
 import * as Network from '../network';
 import * as Asset from '../sdkAsset';

@@ -1,5 +1,6 @@
 import { WalletKeypar } from '../api/keypair';
 import * as AssetApi from '../api/sdkAsset';
+import * as FindoraWallet from '../types/findoraWallet';
 import { ClientAssetRecord, FeeInputs, OwnerMemo, TransferOperationBuilder, TxoRef, XfrKeyPair, XfrPublicKey } from './ledger/types';
 import { UtxoInputsInfo } from './utxoHelper';
 interface FeeInputPayloadType {

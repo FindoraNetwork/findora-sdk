@@ -1,3 +1,4 @@
+import * as FindoraWallet from '../../types/findoraWallet';
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 import { WalletKeypar } from '../keypair';
 export interface AssetRules {

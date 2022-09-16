@@ -5,6 +5,7 @@ import Sdk from '../Sdk';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { log } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
+import * as FindoraWallet from '../types/findoraWallet';
 
 import { create as createBigNumber } from '../services/bigNumber';
 
@@ -1166,7 +1167,7 @@ export const abarToBarCustomSendAmount = async () => {
 
   log('abar to bar result handle!!', resultHandle);
 
-  await waitForBlockChange(2);
+  await waitForBlockChange(4);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
 

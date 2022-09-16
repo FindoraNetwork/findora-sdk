@@ -2,6 +2,7 @@ import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as Builder from '../transaction/builder';
 
 import {

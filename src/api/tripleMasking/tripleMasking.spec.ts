@@ -8,6 +8,7 @@ import {
   XPublicKey,
 } from '../../services/ledger/types';
 import * as UtxoHelper from '../../services/utxoHelper';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
 import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
