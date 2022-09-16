@@ -2679,7 +2679,7 @@ function approveToken() {
 // abarToAbarCustomMultipleFraAtxoForFee();
 // New TM methods (examples)
 // 1. Send an exact amount from bar to abar
-barToAbarAmount();
+// barToAbarAmount();
 // 2. Send exact amount from abar to abar `abarToBarAmount`
 // abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
 // abarToAbarCustomMultipleFraAtxoForFeeSendAmount(); // +

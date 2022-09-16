@@ -67,7 +67,8 @@
     "start": "concurrently npm:start:*",
     "start-b": "concurrently npm:start-b:*",
     "cli": "yarn cli:build && yarn cli:run \"$npm_config\"",
-    "update-wasm": "yarn upgrade findora-wallet-wasm"
+    "update-wasm": "yarn upgrade findora-wallet-wasm",
+    "web3-token-abi": "node ./web3TokenAbi.js"
   },
   "lint-staged": {
     "./src/**/*.ts": [
@@ -94,7 +95,7 @@
     "@types/tmp": "^0.2.0",
     "@types/ws": "^7.4.0",
     "@typescript-eslint/eslint-plugin": "^4.5.0",
-    "@typescript-eslint/parser": "^4.5.0",
+    "@typescript-eslint/parser": "^5.37.0",
     "buffer": "^6.0.3",
     "concurrently": "^6.0.1",
     "eslint": "^7.5",
