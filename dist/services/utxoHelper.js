@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -87,21 +91,21 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
                 }
                 catch (error) {
                     err = error;
-                    throw new Error("Can not get client asset record. Details: \"" + err.message + "\"");
+                    throw new Error("Can not get client asset record. Details: \"".concat(err.message, "\""));
                 }
                 return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 2:
                 memoDataResult = _a.sent();
                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
                 }
                 try {
                     ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
                 }
                 catch (error) {
                     err = error;
-                    throw new Error("Can not decode owner memo. Details: \"" + err.message + "\"");
+                    throw new Error("Can not decode owner memo. Details: \"".concat(err.message, "\""));
                 }
                 _a.label = 3;
             case 3:
@@ -113,14 +117,14 @@ var decryptUtxoItem = function (sid, walletInfo, utxoData, memoData) { return __
             case 5:
                 error_1 = _a.sent();
                 err = error_1;
-                throw new Error("Can not open client asset record to decode. Details: \"" + err.message + "\"");
+                throw new Error("Can not open client asset record to decode. Details: \"".concat(err.message, "\""));
             case 6:
                 try {
                     decryptedAsetType = ledger.asset_type_from_jsvalue(decryptAssetData.asset_type);
                 }
                 catch (error) {
                     err = error;
-                    throw new Error("Can not decrypt asset type. Details: \"" + err.message + "\"");
+                    throw new Error("Can not decrypt asset type. Details: \"".concat(err.message, "\""));
                 }
                 decryptAssetData.asset_type = decryptedAsetType;
                 decryptAssetData.amount = BigInt(decryptAssetData.amount);
@@ -145,20 +149,20 @@ var getUtxoItem = function (sid, walletInfo, cachedItem) { return __awaiter(void
                 if (cachedItem) {
                     return [2 /*return*/, cachedItem];
                 }
-                console.log("Fetching sid \"" + sid + "\"");
+                console.log("Fetching sid \"".concat(sid, "\""));
                 return [4 /*yield*/, Network.getUtxo(sid)];
             case 1:
                 utxoDataResult = _a.sent();
                 utxoData = utxoDataResult.response, utxoError = utxoDataResult.error;
                 if (utxoError || !utxoData) {
-                    throw new Error("Could not fetch utxo data for sid \"" + sid + "\", Error - " + (utxoError === null || utxoError === void 0 ? void 0 : utxoError.message));
+                    throw new Error("Could not fetch utxo data for sid \"".concat(sid, "\", Error - ").concat(utxoError === null || utxoError === void 0 ? void 0 : utxoError.message));
                 }
                 return [4 /*yield*/, Network.getOwnerMemo(sid)];
             case 2:
                 memoDataResult = _a.sent();
                 memoData = memoDataResult.response, memoError = memoDataResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
                 }
                 return [4 /*yield*/, (0, exports.decryptUtxoItem)(sid, walletInfo, utxoData, memoData)];
             case 3:
@@ -176,8 +180,8 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
             case 0:
                 utxoDataList = [];
                 cacheDataToSave = {};
-                cacheEntryName = cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address;
-                fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
+                cacheEntryName = "".concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletInfo.address);
+                fullPathToCacheEntry = "".concat(Sdk_1.default.environment.cachePath, "/").concat(cacheEntryName, ".json");
                 try {
                     if (window && (window === null || window === void 0 ? void 0 : window.document)) {
                         fullPathToCacheEntry = cacheEntryName;
@@ -194,7 +198,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
             case 3:
                 error_2 = _a.sent();
                 err = error_2;
-                throw new Error("Error reading the cache, \"" + err.message + "\"");
+                throw new Error("Error reading the cache, \"".concat(err.message, "\""));
             case 4:
                 i = 0;
                 _a.label = 5;
@@ -204,16 +208,16 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.label = 6;
             case 6:
                 _a.trys.push([6, 8, , 9]);
-                return [4 /*yield*/, (0, exports.getUtxoItem)(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_" + sid])];
+                return [4 /*yield*/, (0, exports.getUtxoItem)(sid, walletInfo, utxoDataCache === null || utxoDataCache === void 0 ? void 0 : utxoDataCache["sid_".concat(sid)])];
             case 7:
                 item = _a.sent();
                 utxoDataList.push(item);
-                cacheDataToSave["sid_" + item.sid] = item;
+                cacheDataToSave["sid_".concat(item.sid)] = item;
                 return [3 /*break*/, 9];
             case 8:
                 error_3 = _a.sent();
                 err = error_3;
-                console.log("Could not process addUtxo for sid " + sid + ", Details: \"" + err.message + "\"");
+                console.log("Could not process addUtxo for sid ".concat(sid, ", Details: \"").concat(err.message, "\""));
                 return [3 /*break*/, 9];
             case 9:
                 i++;
@@ -227,7 +231,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
             case 12:
                 error_4 = _a.sent();
                 err = error_4;
-                console.log("Could not write cache for utxoData, \"" + err.message + "\"");
+                console.log("Could not write cache for utxoData, \"".concat(err.message, "\""));
                 return [3 /*break*/, 13];
             case 13: return [2 /*return*/, utxoDataList];
         }
@@ -291,7 +295,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     }
                     catch (error) {
                         err = error;
-                        throw new Error("Can not get client asset record. Details: \"" + err.message + "\"");
+                        throw new Error("Can not get client asset record. Details: \"".concat(err.message, "\""));
                     }
                     txoRef = void 0;
                     try {
@@ -299,7 +303,7 @@ var addUtxoInputs = function (utxoSids) { return __awaiter(void 0, void 0, void 
                     }
                     catch (error) {
                         err = error;
-                        throw new Error("Can not convert given sid id to a BigInt, \"" + item.sid + "\", Details - \"" + err.message + "\"");
+                        throw new Error("Can not convert given sid id to a BigInt, \"".concat(item.sid, "\", Details - \"").concat(err.message, "\""));
                     }
                     inputParameters = {
                         txoRef: txoRef,

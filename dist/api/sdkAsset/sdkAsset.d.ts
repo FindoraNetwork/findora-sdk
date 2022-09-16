@@ -45,7 +45,7 @@ export declare const getAssetCode: (val: number[]) => Promise<string>;
  */
 export declare const getRandomAssetCode: () => Promise<string>;
 export declare const getDefaultAssetRules: () => Promise<LedgerAssetRules>;
-export declare const getAssetRules: (newAssetRules?: AssetRules | undefined) => Promise<LedgerAssetRules>;
+export declare const getAssetRules: (newAssetRules?: AssetRules) => Promise<LedgerAssetRules>;
 export declare const getDefineAssetTransactionBuilder: (walletKeypair: XfrKeyPair, assetName: string, assetRules: LedgerAssetRules, assetMemo?: string) => Promise<TransactionBuilder>;
 export declare const getIssueAssetTransactionBuilder: (walletKeypair: XfrKeyPair, assetName: string, amountToIssue: string, assetBlindRules: AssetBlindRules, assetDecimals: number) => Promise<TransactionBuilder>;
 /**
@@ -76,7 +76,7 @@ export declare const getIssueAssetTransactionBuilder: (walletKeypair: XfrKeyPair
  *
  * @returns An instance of **TransactionBuilder** from {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger }
  */
-export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string | undefined, newAssetRules?: AssetRules | undefined) => Promise<TransactionBuilder>;
+export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, assetMemo?: string, newAssetRules?: AssetRules) => Promise<TransactionBuilder>;
 /**
  * Issue some anount of a custom asset
  *
@@ -107,5 +107,5 @@ export declare const defineAsset: (walletInfo: WalletKeypar, assetName: string, 
  *
  * @returns An instance of **TransactionBuilder** from {@link https://git@github.com:FindoraNetwork/wasm-js-bindings.git | Ledger }
  */
-export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: string, assetBlindRules: AssetBlindRules, assetDecimals?: number | undefined) => Promise<TransactionBuilder>;
+export declare const issueAsset: (walletInfo: WalletKeypar, assetName: string, amountToIssue: string, assetBlindRules: AssetBlindRules, assetDecimals?: number) => Promise<TransactionBuilder>;
 export declare const getAssetDetails: (assetCode: string) => Promise<FindoraWallet.IAsset>;

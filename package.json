@@ -120,15 +120,15 @@
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#testnet-evm-v0.2.2",
+    "findora-wallet-wasm": "/Users/muniz/Desktop/wasm",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
     "minimist": "^1.2.5",
+    "neat-csv": "^6.0.1",
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "util": "^0.12.4",
-    "web3": "^1.5.2",
-    "neat-csv": "^6.0.1"
+    "web3": "^1.5.2"
   }
 }

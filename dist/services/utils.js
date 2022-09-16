@@ -78,7 +78,7 @@ var log = function (message) {
     for (var _i = 1; _i < arguments.length; _i++) {
         rest[_i - 1] = arguments[_i];
     }
-    console.log("\"" + (0, exports.now)() + "\" - " + message, (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
+    console.log("\"".concat((0, exports.now)(), "\" - ").concat(message), (Array.isArray(rest) && rest.length) || Object.keys(rest).length ? rest : '');
 };
 exports.log = log;
 //# sourceMappingURL=utils.js.map

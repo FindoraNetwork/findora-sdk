@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -313,7 +317,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 3;
             case 3:
@@ -325,14 +329,14 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
             case 5:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"defineTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 6:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -385,7 +389,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 3;
             case 3:
@@ -397,14 +401,14 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
             case 5:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"" + e.message + "\"");
+                throw new Error("Could not get \"issueAssetTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 6:
                 try {
                     transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
                 }
                 catch (err) {
                     e = err;
-                    throw new Error("Could not add transfer operation, Error: \"" + e.message + "\"");
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -424,11 +428,11 @@ var getAssetDetails = function (assetCode) { return __awaiter(void 0, void 0, vo
             case 2:
                 err_3 = _a.sent();
                 e = err_3;
-                throw new Error("Could not get asset token: \"" + e.message + "\"");
+                throw new Error("Could not get asset token: \"".concat(e.message, "\""));
             case 3:
                 assetResult = result.response, submitError = result.error;
                 if (submitError) {
-                    throw new Error("Could not get asset details: \"" + submitError.message + "\"");
+                    throw new Error("Could not get asset details: \"".concat(submitError.message, "\""));
                 }
                 if (!assetResult) {
                     throw new Error("Could not get asset details - asset result is missing");
