@@ -156,3 +156,8 @@ export interface DecryptedAbarMemoData {
   decryptedAbar: Uint8Array;
   owner: FormattedAnonKeys;
 }
+
+export interface AtxoCommitmentItem {
+  atxoSid: string;
+  commitment: string;
+}

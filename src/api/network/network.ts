@@ -555,3 +555,13 @@ export const getConfig = async (config?: Types.NetworkAxiosConfig) => {
   const dataResult = await apiGet(configServerUrl, config);
   return dataResult;
 };
+
+export const getAbarCommitment = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.AbarCommitmentDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_commitment/${atxoSid.trim()}`;
+
+  const dataResult = await apiGet(url, { ...config });
+  return dataResult;
+};
