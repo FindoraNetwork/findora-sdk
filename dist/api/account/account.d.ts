@@ -12,7 +12,7 @@ export declare const getAssetBalance: (walletKeypair: WalletKeypar, assetCode: s
  * @param assetCode
  * @returns
  */
-export declare const getBalanceInWei: (walletKeypair: WalletKeypar, assetCode?: string | undefined) => Promise<BigNumberValue>;
+export declare const getBalanceInWei: (walletKeypair: WalletKeypar, assetCode?: string) => Promise<BigNumberValue>;
 /**
  * Get the balance of the specific asset for the given user
  *
@@ -32,7 +32,7 @@ export declare const getBalanceInWei: (walletKeypair: WalletKeypar, assetCode?: 
  *
  * @returns Result of transaction submission to the network
  */
-export declare const getBalance: (walletKeypair: WalletKeypar, assetCode?: string | undefined) => Promise<string>;
+export declare const getBalance: (walletKeypair: WalletKeypar, assetCode?: string) => Promise<string>;
 export declare const create: (password: string) => Promise<WalletKeypar>;
 export declare const processIssuedRecordItem: (issuedRecord: IssuedRecord) => Promise<ProcessedIssuedRecord>;
 export declare const processIssuedRecordList: (issuedRecords: IssuedRecord[]) => Promise<ProcessedIssuedRecord[]>;

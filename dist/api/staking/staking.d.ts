@@ -71,7 +71,7 @@ export declare const unStake: (walletInfo: WalletKeypar, amount: string, validat
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const delegate: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, validator: string, assetBlindRules?: AssetApi.AssetBlindRules | undefined) => Promise<TransactionBuilder>;
+export declare const delegate: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, validator: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 /**
  * Claim FRA Token Rewards
  *

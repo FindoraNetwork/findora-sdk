@@ -4,9 +4,11 @@ import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
 import { Erc20 } from './types/Erc20';
+import { PrismXXAsset } from './types/PrismXXAsset';
 import { SimBridge } from './types/SimBridge';
 
 import Erc20Abi from './abis/Erc20.json';
+import PrismXXAssetAbi from './abis/PrismXXAsset.json';
 import SimBridgeAbi from './abis/SimBridge.json';
 
 import BigNumber from 'bignumber.js';
@@ -30,6 +32,10 @@ interface MyContract<T> extends Contract {
 
 const getErc20Contract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(Erc20Abi as AbiItem[], address) as unknown as MyContract<Erc20>;
+};
+
+const getPrismXXAssetContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(PrismXXAssetAbi as AbiItem[], address) as unknown as MyContract<PrismXXAsset>;
 };
 
 const getSimBridgeContract = (web3: Web3, address: string) => {
@@ -76,8 +82,9 @@ const getCurrentBalance = async (web3: Web3, account: string): Promise<string> =
 export {
   getWeb3,
   getErc20Contract,
+  getPrismXXAssetContract,
+  getSimBridgeContract,
   calculationDecimalsAmount,
   toHex,
-  getSimBridgeContract,
   getCurrentBalance,
 };

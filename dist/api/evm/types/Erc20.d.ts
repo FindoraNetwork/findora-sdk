@@ -33,12 +33,12 @@ export interface MethodConstantReturnContext<TCallReturn> {
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
 export declare type ContractContext = Web3ContractContext<Erc20, Erc20MethodNames, Erc20EventsContext, Erc20Events>;
-export declare type Erc20Events = 'Approval' | 'Transfer' | 'Deposit' | 'Withdrawal';
+export declare type Erc20Events = 'Approval' | 'Transfer';
 export interface Erc20EventsContext {
     Approval(parameters: {
         filter?: {
-            src?: string | string[];
-            guy?: string | string[];
+            owner?: string | string[];
+            spender?: string | string[];
         };
         fromBlock?: number;
         toBlock?: 'latest' | number;
@@ -46,50 +46,86 @@ export interface Erc20EventsContext {
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
     Transfer(parameters: {
         filter?: {
-            src?: string | string[];
-            dst?: string | string[];
-        };
-        fromBlock?: number;
-        toBlock?: 'latest' | number;
-        topics?: string[];
-    }, callback?: (error: Error, event: EventData) => void): EventResponse;
-    Deposit(parameters: {
-        filter?: {
-            dst?: string | string[];
-        };
-        fromBlock?: number;
-        toBlock?: 'latest' | number;
-        topics?: string[];
-    }, callback?: (error: Error, event: EventData) => void): EventResponse;
-    Withdrawal(parameters: {
-        filter?: {
-            src?: string | string[];
+            from?: string | string[];
+            to?: string | string[];
         };
         fromBlock?: number;
         toBlock?: 'latest' | number;
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export declare type Erc20MethodNames = 'name' | 'decimals' | 'balanceOf' | 'symbol' | 'allowance' | 'deposit' | 'withdraw' | 'totalSupply' | 'approve' | 'transfer' | 'transferFrom';
+export declare type Erc20MethodNames = 'new' | 'allowance' | 'approve' | 'balanceOf' | 'decimals' | 'decreaseAllowance' | 'increaseAllowance' | 'name' | 'symbol' | 'totalSupply' | 'transfer' | 'transferFrom';
 export interface ApprovalEventEmittedResponse {
-    src: string;
-    guy: string;
-    wad: string;
+    owner: string;
+    spender: string;
+    value: string;
 }
 export interface TransferEventEmittedResponse {
-    src: string;
-    dst: string;
-    wad: string;
-}
-export interface DepositEventEmittedResponse {
-    dst: string;
-    wad: string;
-}
-export interface WithdrawalEventEmittedResponse {
-    src: string;
-    wad: string;
+    from: string;
+    to: string;
+    value: string;
 }
 export interface Erc20 {
+    /**
+     * Payable: false
+     * Constant: false
+     * StateMutability: nonpayable
+     * Type: constructor
+     * @param name Type: string, Indexed: false
+     * @param symbol Type: string, Indexed: false
+     */
+    'new'(name: string, symbol: string): MethodReturnContext;
+    /**
+     * Payable: false
+     * Constant: true
+     * StateMutability: view
+     * Type: function
+     * @param owner Type: address, Indexed: false
+     * @param spender Type: address, Indexed: false
+     */
+    allowance(owner: string, spender: string): MethodConstantReturnContext<string>;
+    /**
+     * Payable: false
+     * Constant: false
+     * StateMutability: nonpayable
+     * Type: function
+     * @param spender Type: address, Indexed: false
+     * @param amount Type: uint256, Indexed: false
+     */
+    approve(spender: string, amount: string): MethodReturnContext;
+    /**
+     * Payable: false
+     * Constant: true
+     * StateMutability: view
+     * Type: function
+     * @param account Type: address, Indexed: false
+     */
+    balanceOf(account: string): MethodConstantReturnContext<string>;
+    /**
+     * Payable: false
+     * Constant: true
+     * StateMutability: view
+     * Type: function
+     */
+    decimals(): MethodConstantReturnContext<string>;
+    /**
+     * Payable: false
+     * Constant: false
+     * StateMutability: nonpayable
+     * Type: function
+     * @param spender Type: address, Indexed: false
+     * @param subtractedValue Type: uint256, Indexed: false
+     */
+    decreaseAllowance(spender: string, subtractedValue: string): MethodReturnContext;
+    /**
+     * Payable: false
+     * Constant: false
+     * StateMutability: nonpayable
+     * Type: function
+     * @param spender Type: address, Indexed: false
+     * @param addedValue Type: uint256, Indexed: false
+     */
+    increaseAllowance(spender: string, addedValue: string): MethodReturnContext;
     /**
      * Payable: false
      * Constant: true
@@ -103,46 +139,7 @@ export interface Erc20 {
      * StateMutability: view
      * Type: function
      */
-    decimals(): MethodConstantReturnContext<string>;
-    /**
-     * Payable: false
-     * Constant: true
-     * StateMutability: view
-     * Type: function
-     * @param parameter0 Type: address, Indexed: false
-     */
-    balanceOf(parameter0: string): MethodConstantReturnContext<string>;
-    /**
-     * Payable: false
-     * Constant: true
-     * StateMutability: view
-     * Type: function
-     */
     symbol(): MethodConstantReturnContext<string>;
-    /**
-     * Payable: false
-     * Constant: true
-     * StateMutability: view
-     * Type: function
-     * @param parameter0 Type: address, Indexed: false
-     * @param parameter1 Type: address, Indexed: false
-     */
-    allowance(parameter0: string, parameter1: string): MethodConstantReturnContext<string>;
-    /**
-     * Payable: true
-     * Constant: false
-     * StateMutability: payable
-     * Type: function
-     */
-    deposit(): MethodPayableReturnContext;
-    /**
-     * Payable: false
-     * Constant: false
-     * StateMutability: nonpayable
-     * Type: function
-     * @param wad Type: uint256, Indexed: false
-     */
-    withdraw(wad: string): MethodReturnContext;
     /**
      * Payable: false
      * Constant: true
@@ -155,27 +152,18 @@ export interface Erc20 {
      * Constant: false
      * StateMutability: nonpayable
      * Type: function
-     * @param guy Type: address, Indexed: false
-     * @param wad Type: uint256, Indexed: false
+     * @param recipient Type: address, Indexed: false
+     * @param amount Type: uint256, Indexed: false
      */
-    approve(guy: string, wad: string): MethodReturnContext;
+    transfer(recipient: string, amount: string): MethodReturnContext;
     /**
      * Payable: false
      * Constant: false
      * StateMutability: nonpayable
      * Type: function
-     * @param dst Type: address, Indexed: false
-     * @param wad Type: uint256, Indexed: false
+     * @param sender Type: address, Indexed: false
+     * @param recipient Type: address, Indexed: false
+     * @param amount Type: uint256, Indexed: false
      */
-    transfer(dst: string, wad: string): MethodReturnContext;
-    /**
-     * Payable: false
-     * Constant: false
-     * StateMutability: nonpayable
-     * Type: function
-     * @param src Type: address, Indexed: false
-     * @param dst Type: address, Indexed: false
-     * @param wad Type: uint256, Indexed: false
-     */
-    transferFrom(src: string, dst: string, wad: string): MethodReturnContext;
+    transferFrom(sender: string, recipient: string, amount: string): MethodReturnContext;
 }

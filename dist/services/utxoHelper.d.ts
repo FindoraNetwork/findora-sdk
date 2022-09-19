@@ -32,8 +32,8 @@ export interface UtxoInputsInfo {
     inputAmount: BigInt;
 }
 export declare const filterUtxoByCode: (code: string, utxoDataList: AddUtxoItem[]) => AddUtxoItem[];
-export declare const decryptUtxoItem: (sid: number, walletInfo: WalletKeypar, utxoData: UtxoResponse, memoData?: OwnedMemoResponse | undefined) => Promise<AddUtxoItem>;
-export declare const getUtxoItem: (sid: number, walletInfo: WalletKeypar, cachedItem?: AddUtxoItem | undefined) => Promise<AddUtxoItem>;
+export declare const decryptUtxoItem: (sid: number, walletInfo: WalletKeypar, utxoData: UtxoResponse, memoData?: OwnedMemoResponse) => Promise<AddUtxoItem>;
+export declare const getUtxoItem: (sid: number, walletInfo: WalletKeypar, cachedItem?: AddUtxoItem) => Promise<AddUtxoItem>;
 export declare const addUtxo: (walletInfo: WalletKeypar, addSids: number[]) => Promise<AddUtxoItem[]>;
 /**
  * @depricated
