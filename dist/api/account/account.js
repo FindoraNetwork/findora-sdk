@@ -12,11 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -89,7 +85,7 @@ var getAssetBalance = function (walletKeypair, assetCode, sids) { return __await
             case 2:
                 err_1 = _a.sent();
                 e = err_1;
-                throw new Error("Could not get list of addUtxo, Details: \"".concat(e.message, "\""));
+                throw new Error("Could not get list of addUtxo, Details: \"" + e.message + "\"");
             case 3:
                 if (!utxoDataList.length) {
                     return [2 /*return*/, (0, bigNumber_1.create)(0)];
@@ -138,7 +134,7 @@ var getBalanceInWei = function (walletKeypair, assetCode) { return __awaiter(voi
             case 5:
                 err_2 = _a.sent();
                 e = err_2;
-                throw new Error("Could not fetch balance in wei for \"".concat(assetCodeToUse, "\". Error - ").concat(e.message));
+                throw new Error("Could not fetch balance in wei for \"" + assetCodeToUse + "\". Error - " + e.message);
             case 6: return [2 /*return*/];
         }
     });
@@ -182,7 +178,7 @@ var getBalance = function (walletKeypair, assetCode) { return __awaiter(void 0, 
             case 4:
                 err_3 = _a.sent();
                 e = err_3;
-                throw new Error("Could not fetch balance for \"".concat(assetCodeToUse, "\". Error - ").concat(e.message));
+                throw new Error("Could not fetch balance for \"" + assetCodeToUse + "\". Error - " + e.message);
             case 5: return [2 /*return*/];
         }
     });
@@ -201,7 +197,7 @@ var create = function (password) { return __awaiter(void 0, void 0, void 0, func
             case 2:
                 err_4 = _a.sent();
                 e = err_4;
-                throw new Error("Could not create a new account. \"".concat(e.message, "\""));
+                throw new Error("Could not create a new account. \"" + e.message + "\"");
             case 3: return [2 /*return*/, walletKeyPair];
         }
     });
