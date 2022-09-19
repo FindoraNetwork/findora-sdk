@@ -102,4 +102,5 @@ export declare const getSendAtxo: (code: string, amount: BigInt, commitments: st
     commitment: string;
 }[]>;
 export declare const getAmountFromCommitments: (code: string, commitments: string[], anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<bigint | never[]>;
+export declare const decryptAbarMemo: (abarMemoItem: FindoraWallet.AbarMemoItem, anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<FindoraWallet.DecryptedAbarMemoData | false>;
 export {};

@@ -306,6 +306,7 @@ var getSidsForSingleAsset = function (senderOne, assetCode) { return __awaiter(v
     });
 }); };
 exports.getSidsForSingleAsset = getSidsForSingleAsset;
+// External Tests
 var createTestBars = function (givenSenderOne, amount, iterations) {
     if (amount === void 0) { amount = '210'; }
     if (iterations === void 0) { iterations = 4; }
@@ -361,8 +362,11 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                 case 11: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
                 case 12:
                     _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, fraCode)];
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
                 case 13:
+                    _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, fraCode)];
+                case 14:
                     assetBalance = _a.sent();
                     (0, utils_1.log)("\uD83D\uDE80 ~ createTestBars ~ \"".concat(fraCode, "\" assetBalance "), assetBalance);
                     cleanedBalanceValue = assetBalance.replace(/,/g, '');
@@ -482,8 +486,8 @@ var barToAbar = function (givenSenderOne, AnonKeys, givenSids, givenBalanceChang
     });
 };
 exports.barToAbar = barToAbar;
-var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var senderWalletInfo, senderOne, anonKeysSender, anonKeysReceiver, fraAssetCode, fraSids, fraSid, givenCommitmentsToTransfer, givenCommitmentsListSender, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrievedCommitmentsListReceiver, _i, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver, balSender, balanceSender, balReceiver, balanceReceiver, expectedBalanceSender, expectedBalanceReceiver, realBalanceSender, realBalanceReceiver, message, message;
+var abarToAbar = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var senderWalletInfo, senderOne, anonKeysSender, generatedAnonKeysReceiver, anonKeysReceiver, fraAssetCode, fraSids, fraSid, givenCommitmentsToTransfer, givenCommitmentsListSender, ownedAbarsResponseOne, ownedAbarToUseAsSource, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrievedCommitmentsListReceiver, _i, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, balancesReceiver, balSender, balanceSender, balReceiver, balanceReceiver, expectedBalanceSender, expectedBalanceReceiver, realBalanceSender, realBalanceReceiver, message, message;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -497,7 +501,9 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                 anonKeysSender = _b.sent();
                 return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 3:
-                anonKeysReceiver = _b.sent();
+                generatedAnonKeysReceiver = _b.sent();
+                anonKeysReceiver = givenAnonKeysReceiver
+                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
                 return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 4:
                 fraAssetCode = _b.sent();
@@ -583,8 +589,8 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
     });
 }); };
 exports.abarToAbar = abarToAbar;
-var abarToAbarMulti = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, anonKeysReceiver, asset1Code, senderWalletInfo, fraAssetCode, senderOne, derivedAssetCode, customAssetSids, customAssetSid, givenCommitmentsToTransfer, fraSids, fraSid, givenCommitmentsToPayFee, givenCommitmentsListSender, balancesSenderBefore, additionalOwnedAbarItems, ownedAbarsResponseOne, ownedAbarToUseAsSource, _i, givenCommitmentsToPayFee_1, givenCommitmentToPayFee, ownedAbarsResponseFee, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrievedCommitmentsListReceiver, _b, commitmentsMap_2, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, fraBalSend, fraBalanceSender, fraBalanceSenderConverted, minimumExpectedSenderFraBalance, message, senderCustomBalances, message, sendercustomSpent, customSpentSender, customBalanceSenderConverted, expectedSenderCustomBalance, message, balancesReceiver, customBalReceive, customBalanceReceiver, customBalanceReceiverConverted, expectedReceiverCustomBalance, message;
+var abarToAbarMulti = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, generatedAnonKeysReceiver, anonKeysReceiver, asset1Code, senderWalletInfo, fraAssetCode, senderOne, derivedAssetCode, customAssetSids, customAssetSid, givenCommitmentsToTransfer, fraSids, fraSid, givenCommitmentsToPayFee, givenCommitmentsListSender, balancesSenderBefore, additionalOwnedAbarItems, ownedAbarsResponseOne, ownedAbarToUseAsSource, _i, givenCommitmentsToPayFee_1, givenCommitmentToPayFee, ownedAbarsResponseFee, additionalOwnedAbarItem, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrievedCommitmentsListReceiver, _b, commitmentsMap_2, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesSender, fraBalSend, fraBalanceSender, fraBalanceSenderConverted, minimumExpectedSenderFraBalance, message, senderCustomBalances, message, sendercustomSpent, customSpentSender, customBalanceSenderConverted, expectedSenderCustomBalance, message, balancesReceiver, customBalReceive, customBalanceReceiver, customBalanceReceiverConverted, expectedReceiverCustomBalance, message;
     var _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
@@ -595,7 +601,9 @@ var abarToAbarMulti = function () { return __awaiter(void 0, void 0, void 0, fun
                 anonKeysSender = _e.sent();
                 return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 2:
-                anonKeysReceiver = _e.sent();
+                generatedAnonKeysReceiver = _e.sent();
+                anonKeysReceiver = givenAnonKeysReceiver
+                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 3:
                 asset1Code = _e.sent();
@@ -765,17 +773,19 @@ var abarToAbarMulti = function () { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.abarToAbarMulti = abarToAbarMulti;
-var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, anonKeysReceiver, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fraAssetCommitmentsList, givenCommitmentsListSender, assetCodeToUse, amountToSend, payload, totalExpectedFee, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _i, commitmentsMap_3, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesReceiverAfter, receiverExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransfer, realReceiverFraAbarBalance, isReceiverHasProperFraBalanceAfter, balancesSenderAfter, senderExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransferSender, realSenderFraAbarBalanceAfter, isSenderHasProperFraBalanceAfter;
+var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var generatedAnonKeysReceiver, anonKeysReceiver, anonKeysSender, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fraAssetCommitmentsList, givenCommitmentsListSender, assetCodeToUse, amountToSend, payload, totalExpectedFee, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _i, commitmentsMap_3, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesReceiverAfter, receiverExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransfer, realReceiverFraAbarBalance, isReceiverHasProperFraBalanceAfter, balancesSenderAfter, senderExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransferSender, realSenderFraAbarBalanceAfter, isSenderHasProperFraBalanceAfter;
     var _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 1:
-                anonKeysSender = _d.sent();
+                generatedAnonKeysReceiver = _d.sent();
+                anonKeysReceiver = givenAnonKeysReceiver
+                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
                 return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 2:
-                anonKeysReceiver = _d.sent();
+                anonKeysSender = _d.sent();
                 return [4 /*yield*/, (0, exports.createNewKeypair)()];
             case 3:
                 senderWalletInfo = _d.sent();
@@ -867,17 +877,19 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function () { return __awaite
     });
 }); };
 exports.abarToAbarFraMultipleFraAtxoForFeeSendAmount = abarToAbarFraMultipleFraAtxoForFeeSendAmount;
-var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, anonKeysReceiver, senderWalletInfo, pkey, assetCode, derivedAssetCode, fraAssetCode, assetCodeToUse, expectedSenderBalance, assetBalance, realSenderBalance, isSenderFunded, errorMessage, customAssetSids, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, expectedFraBalanceAfterBarToAbar, fraAssetCommitmentsList, givenCommitmentsListSender, amountToSend, payload, totalExpectedFee, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _i, commitmentsMap_4, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesReceiverAfter, receiverExpectedCustomAbarBalanceTransfer, customAbarAmountAfterTransfer, realReceiverCustomAbarBalance, isReceiverHasProperCustomBalanceAfter, balancesSenderAfter, senderExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransferSender, realSenderFraAbarBalanceAfter, isSenderHasProperFraBalanceAfter, senderExpectedCustomAbarBalanceTransfer, customAbarAmountAfterTransferSender, realSenderCustomAbarBalanceAfter, isSenderHasProperCustomBalanceAfter;
+var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var generatedAnonKeysReceiver, anonKeysReceiver, anonKeysSender, senderWalletInfo, pkey, assetCode, derivedAssetCode, fraAssetCode, assetCodeToUse, expectedSenderBalance, assetBalance, realSenderBalance, isSenderFunded, errorMessage, customAssetSids, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, expectedFraBalanceAfterBarToAbar, fraAssetCommitmentsList, givenCommitmentsListSender, amountToSend, payload, totalExpectedFee, _a, anonTransferOperationBuilder, abarToAbarData, resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, _i, commitmentsMap_4, commitmentsMapEntry, commitmentKey, commitmentAxfrPublicKey, balancesReceiverAfter, receiverExpectedCustomAbarBalanceTransfer, customAbarAmountAfterTransfer, realReceiverCustomAbarBalance, isReceiverHasProperCustomBalanceAfter, balancesSenderAfter, senderExpectedFraAbarBalanceTransfer, fraAbarAmountAfterTransferSender, realSenderFraAbarBalanceAfter, isSenderHasProperFraBalanceAfter, senderExpectedCustomAbarBalanceTransfer, customAbarAmountAfterTransferSender, realSenderCustomAbarBalanceAfter, isSenderHasProperCustomBalanceAfter;
     var _b, _c, _d;
     return __generator(this, function (_e) {
         switch (_e.label) {
             case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 1:
-                anonKeysSender = _e.sent();
+                generatedAnonKeysReceiver = _e.sent();
+                anonKeysReceiver = givenAnonKeysReceiver
+                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
                 return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 2:
-                anonKeysReceiver = _e.sent();
+                anonKeysSender = _e.sent();
                 return [4 /*yield*/, (0, exports.createNewKeypair)()];
             case 3:
                 senderWalletInfo = _e.sent();
@@ -1354,13 +1366,15 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.abarToBarFraSendAmount = abarToBarFraSendAmount;
-var barToAbarAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, amount, balance, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, minimalFeeForBarToBar, extraSpent;
+var barToAbarAmount = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
+    var generatedAnonKeysReceiver, anonKeysReceiver, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, amount, balance, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, minimalFeeForBarToBar, extraSpent;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
             case 1:
-                anonKeysSender = _b.sent();
+                generatedAnonKeysReceiver = _b.sent();
+                anonKeysReceiver = givenAnonKeysReceiver
+                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
                 return [4 /*yield*/, (0, exports.createNewKeypair)()];
             case 2:
                 senderWalletInfo = _b.sent();
@@ -1383,7 +1397,7 @@ var barToAbarAmount = function () { return __awaiter(void 0, void 0, void 0, fun
             case 6:
                 balance = _b.sent();
                 console.log('🚀 ~ balance', balance);
-                return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysSender.axfrPublicKey)];
+                return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.axfrPublicKey)];
             case 7:
                 _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
                 (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
@@ -1398,7 +1412,7 @@ var barToAbarAmount = function () { return __awaiter(void 0, void 0, void 0, fun
                 _b.sent();
                 minimalFeeForBarToBar = '0.01';
                 extraSpent = minimalFeeForBarToBar;
-                return [4 /*yield*/, barToAbarBalances(senderWalletInfo, anonKeysSender, givenCommitments, balance, amount, fraAssetCode, extraSpent)];
+                return [4 /*yield*/, barToAbarBalances(senderWalletInfo, anonKeysReceiver, givenCommitments, balance, amount, fraAssetCode, extraSpent)];
             case 10:
                 _b.sent();
                 return [2 /*return*/, true];

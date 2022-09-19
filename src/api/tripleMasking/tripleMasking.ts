@@ -1483,3 +1483,31 @@ export const getAmountFromCommitments = async (
 
   return sum;
 };
+
+export const decryptAbarMemo = async (
+  abarMemoItem: FindoraWallet.AbarMemoItem,
+  anonKeys: FindoraWallet.FormattedAnonKeys,
+): Promise<FindoraWallet.DecryptedAbarMemoData | false> => {
+  const ledger = await getLedger();
+
+  const [atxoSid, myMemoData] = abarMemoItem;
+
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey);
+
+  const abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
+
+  let decryptedAbar: Uint8Array;
+
+  try {
+    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair);
+  } catch (error) {
+    return false;
+  }
+  const result = {
+    atxoSid,
+    decryptedAbar,
+    owner: anonKeys,
+  };
+
+  return result;
+};
