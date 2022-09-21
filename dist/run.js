@@ -82,6 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
+var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1525,20 +1526,22 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysReceiver, result, error, response, last, decrypted, decryptedF;
+    var anonKeys, transferResult, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                anonKeysReceiver = {
+                anonKeys = {
                     axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
                     axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
                     axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
                     name: 'AnonWallet2',
                 };
-                return [4 /*yield*/, api_1.Network.getAbarMemos('10', '100')];
+                return [4 /*yield*/, TMI.barToAbarAmount()];
             case 1:
+                transferResult = _a.sent();
+                return [4 /*yield*/, api_1.Network.getAbarMemos('10', '100')];
+            case 2:
                 result = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1449 ~ testIt ~ result', result);
                 error = result.error, response = result.response;
                 if (error) {
                     (0, utils_1.log)('error', error);
@@ -1552,14 +1555,18 @@ var testIt = function () { return __awaiter(void 0, void 0, void 0, function () 
                     return [2 /*return*/, false];
                 }
                 (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
-                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeysReceiver)];
-            case 2:
-                decrypted = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
-                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(response[0], anonKeysReceiver)];
+                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeys)];
             case 3:
-                decryptedF = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decryptedF', decryptedF);
+                decrypted = _a.sent();
+                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
+                if (!decrypted) {
+                    throw new Error('can not proceed as the abar must be decrypted!');
+                }
+                ownedAbarAtxoSid = last[0];
+                return [4 /*yield*/, api_1.TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid)];
+            case 4:
+                commitmentData = _a.sent();
+                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
                 return [2 /*return*/, true];
         }
     });

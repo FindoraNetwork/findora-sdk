@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -669,4 +669,18 @@ var getConfig = function (config) { return __awaiter(void 0, void 0, void 0, fun
     });
 }); };
 exports.getConfig = getConfig;
+var getAbarCommitment = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = getQueryRoute() + "/get_abar_commitment/" + atxoSid.trim();
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getAbarCommitment = getAbarCommitment;
 //# sourceMappingURL=network.js.map

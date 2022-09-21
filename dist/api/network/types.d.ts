@@ -485,3 +485,6 @@ export declare type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
 export interface AbarMemoDataResult extends NetworkAxiosDataResult {
     response?: AbarMemoResponse;
 }
+export interface AbarCommitmentDataResult extends NetworkAxiosDataResult {
+    response?: string;
+}
