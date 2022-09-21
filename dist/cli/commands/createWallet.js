@@ -48,7 +48,7 @@ var runCreateWallet = function (fra_address) { return __awaiter(void 0, void 0, 
                 return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"".concat(mm.join(' '), "\""));
+                (0, utils_1.log)("\uD83D\uDE80 ~ new mnemonic: \"" + mm.join(' ') + "\"");
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, fra_address)];
             case 2:
                 walletInfo = _a.sent();

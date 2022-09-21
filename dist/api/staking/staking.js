@@ -121,7 +121,7 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not create transfer operation with fee, Error: \"".concat(e.message, "\""));
+                        throw new Error("Could not create transfer operation with fee, Error: \"" + e.message + "\"");
                     }
                     _a.label = 2;
                 case 2:
@@ -133,7 +133,7 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                 case 4:
                     error_1 = _a.sent();
                     e = error_1;
-                    throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"".concat(e.message, "\""));
+                    throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
                 case 5:
                     try {
                         if (isFullUnstake) {
@@ -145,14 +145,14 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add staking unStake operation, Error: \"".concat(e.message, "\""));
+                        throw new Error("Could not add staking unStake operation, Error: \"" + e.message + "\"");
                     }
                     try {
                         transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
                     }
                     catch (error) {
                         e = error;
-                        throw new Error("Could not add transfer to unStake operation, Error: \"".concat(e.message, "\""));
+                        throw new Error("Could not add transfer to unStake operation, Error: \"" + e.message + "\"");
                     }
                     try {
                         transactionBuilder = transactionBuilder.build();
@@ -160,7 +160,7 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     }
                     catch (err) {
                         console.log('sendToMany error in build and sign ', err);
-                        throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                        throw new Error("could not build and sign txn \"" + err.message + "\"");
                     }
                     return [2 /*return*/, transactionBuilder];
             }
@@ -230,7 +230,7 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
-                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -273,7 +273,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not create transfer operation, Error: \"".concat(e.message, "\""));
+                    throw new Error("Could not create transfer operation, Error: \"" + e.message + "\"");
                 }
                 _a.label = 2;
             case 2:
@@ -285,7 +285,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
             case 4:
                 error_2 = _a.sent();
                 e = error_2;
-                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"".concat(e.message, "\""));
+                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"" + e.message + "\"");
             case 5:
                 try {
                     transactionBuilder = transactionBuilder
@@ -294,7 +294,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 }
                 catch (error) {
                     e = error;
-                    throw new Error("Could not add staking claim operation, Error: \"".concat(e.message, "\""));
+                    throw new Error("Could not add staking claim operation, Error: \"" + e.message + "\"");
                 }
                 try {
                     transactionBuilder = transactionBuilder.build();
@@ -302,7 +302,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
-                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                    throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
                 return [2 /*return*/, transactionBuilder];
         }
@@ -327,7 +327,7 @@ var calculateComissionRate = function (validatorAddress, commissionRate) {
         return commissionRateView;
     }
     catch (error) {
-        console.log("Could not calculate comission rate for validator \"".concat(validatorAddress, "\". Error: \"").concat(error.message, "\""));
+        console.log("Could not calculate comission rate for validator \"" + validatorAddress + "\". Error: \"" + error.message + "\"");
         return '0';
     }
 };
@@ -363,7 +363,7 @@ var getValidatorList = function () { return __awaiter(void 0, void 0, void 0, fu
                     return [2 /*return*/, { validators: validatorsOrdered }];
                 }
                 catch (err) {
-                    throw new Error("Could not get validators list', \"".concat(err.message, "\""));
+                    throw new Error("Could not get validators list', \"" + err.message + "\"");
                 }
                 return [2 /*return*/];
         }
@@ -405,7 +405,7 @@ var getDelegateInfo = function (address) { return __awaiter(void 0, void 0, void
                 return [2 /*return*/, __assign(__assign({}, delegateInfoResponse), { bond_entries: bond_entries })];
             case 4:
                 err_1 = _b.sent();
-                throw new Error("Could not get delegation info', \"".concat(err_1.message, "\""));
+                throw new Error("Could not get delegation info', \"" + err_1.message + "\"");
             case 5: return [2 /*return*/];
         }
     });

@@ -23,10 +23,10 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -100,13 +100,17 @@ const getFraBalance = async () => {
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
 
+  // const myKey = PKEY_MINE;
+  const myKey = PKEY_MINE2;
+
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
+  // const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
+  const newWallet = await Keypair.restoreFromPrivateKey(myKey, password);
 
   const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -393,7 +397,9 @@ const transferFraToSingleRecepient = async () => {
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -2634,7 +2640,10 @@ async function approveToken() {
 // approveToken();
 
 // testIt();
+
 // getFraBalance();
+// transferFraToSingleRecepient();
+
 // getAnonKeys(); // +
 // createTestBars();
 // barToAbar(); // ++
@@ -2652,7 +2661,6 @@ async function approveToken() {
 // getDelegateInfo();
 // getTransferBuilderOperation();
 // createNewKeypair();
-// transferFraToSingleRecepient();
 // transferFraToSingleAddress();
 // transferFraToMultipleRecepients();
 // transferCustomAssetToSingleRecepient();

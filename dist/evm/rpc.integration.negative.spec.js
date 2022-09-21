@@ -68,9 +68,9 @@ require("@testing-library/jest-dom/extend-expect");
 var Network = __importStar(require("../api/network/network"));
 var testHelpers_1 = require("./testHelpers");
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../.env_rpc_".concat(process.env.RPC_ENV_NAME)
+    ? "../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../.env_example";
-var envConfig = require("".concat(envConfigFile, ".json"));
+var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a;
 var extendedExecutionTimeout = 600000;
@@ -92,13 +92,13 @@ var getTestResult = function (msgId, method, extraParams) { return __awaiter(voi
                 return [4 /*yield*/, Network.sendRpcCall(rpcUrl, payload)];
             case 1:
                 result = _a.sent();
-                (0, testHelpers_1.timeLog)("Send an RPC call for \"".concat(method, "\""));
+                (0, testHelpers_1.timeLog)("Send an RPC call for \"" + method + "\"");
                 (0, testHelpers_1.assertResultResponse)(result);
                 return [2 /*return*/, result];
         }
     });
 }); };
-describe("Api Endpoint (rpc test negative) for \"".concat(rpcUrl, "\""), function () {
+describe("Api Endpoint (rpc test negative) for \"" + rpcUrl + "\"", function () {
     describe('notSupportedMethod', function () {
         it('Returns a proper error code when requested method was not found', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
