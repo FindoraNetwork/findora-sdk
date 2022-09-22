@@ -1206,7 +1206,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour], '40', fraAssetCode)];
             case 16:
                 fraAssetCommitmentsList = _d.sent();
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 17:
                 _d.sent();
                 givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
