@@ -8,6 +8,20 @@ const IAS = 1;
 
 export type RangeResult = [number, number];
 
+const getFirstGap = (dataList: number[]) => {
+  // in case of data = [212, 211, 68, 67, 66, 5, 4, 3];
+  // it should return
+  // result = [210, 69]
+  const gapStart = 210;
+  const gapEnd = 69;
+  const gapLength = gapStart - gapEnd; // it is 141
+
+  const calculatedGapLength =
+    gapLength > MAX_SUPPORTED_CHUNK_SIZE ? gapStart - MAX_SUPPORTED_CHUNK_SIZE : gapEnd;
+
+  return [gapStart, calculatedGapLength]; // [210, 110]
+};
+
 const getRangeWithoutData = (mas: number): RangeResult => {
   let start = -1;
 
@@ -53,6 +67,7 @@ export const getRangeWithGaps = (
   let start = -1;
   let end = -1;
 
+  const [gapStart, gapEnd] = getFirstGap(processedList);
   return [start, end];
 };
 
