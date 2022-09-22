@@ -1158,7 +1158,7 @@ export const abarToBarCustomSendAmount = async () => {
     '40',
     fraAssetCode,
   );
-  await waitForBlockChange();
+  await waitForBlockChange(2);
 
   const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
 
