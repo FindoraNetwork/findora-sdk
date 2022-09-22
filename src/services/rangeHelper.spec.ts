@@ -3,48 +3,146 @@ import * as rangeHelper from './rangeHelper';
 
 describe('rangeHelper (unit test)', () => {
   describe('getRange', () => {
-    let end: number;
-    let currentEnd: number; // the end number of the user currently has
+    describe('1. no processed data given', () => {
+      const processedData: number[] = [];
 
-    it('get range by the end number: minimal level', async () => {
-      end = Math.floor(Math.random() * 100) + 1; // 1 - 100
-      // @TODO if end = 1;
+      it('case 1.A: it returns range of [MAS-100, MAS] ', async () => {
+        const currentMas = 112;
 
-      const range = rangeHelper.getRange(end);
-      expect(range).toEqual([end, 1]);
+        const expectedStart = 12;
+        const expectedEnd = 112;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
+
+      it('case 1.B: it returns range of [MAS-100 > 0 ? MAS-100 : IAS, MAS] ', async () => {
+        const currentMas = 58;
+
+        const expectedStart = 1;
+        const expectedEnd = 58;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
     });
 
-    it('get range by the end number: outside minimal level', async () => {
-      end = Math.floor(Math.random() * 900) + 101; // 101 - 1000
+    describe('2. given processed data has no gaps and ends with IAS', () => {
+      const processedData: number[] = [5, 4, 3, 2, 1];
 
-      const range = rangeHelper.getRange(end);
-      expect(range).toEqual([end, end - 100 + 1]);
+      it('case 2.A: it returns range of [MAS-100, MAS] ', async () => {
+        const currentMas = 112;
+
+        const expectedStart = 12;
+        const expectedEnd = 112;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
+
+      it('case 2.B: it returns range of [MAS-100 > 0 ? MAS-100 : IAS, MAS] ', async () => {
+        const currentMas = 58;
+
+        const expectedStart = 6;
+        const expectedEnd = 58;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
     });
 
-    it('get range by the end number: the current end number "lower than" the end number, the gap under 100', async () => {
-      let gap = Math.floor(Math.random() * 100) + 1;
-      end = Math.floor(Math.random() * 1000) + 101; // 101 - 1000
-      currentEnd = end - gap;
+    describe('3. given processed data has no gaps and ends with a number > IAS', () => {
+      const processedData: number[] = [5, 4, 3];
 
-      const range = rangeHelper.getRange(end, currentEnd);
-      expect(range).toEqual([end, currentEnd + 1]);
+      it('case 3.A: it returns range of [IAS, LOWEST_PROCESSED-1] ', async () => {
+        const currentMas = 112;
+
+        const expectedStart = 1; // IAS
+        const expectedEnd = 2; // LOWEST_PROCESSED = 3
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
+
+      it('case 3.B: it returns range of [(LOWEST_PROCESSED-1)-IAS > 100 ? LOWEST_PROCESSED-1-100 : IAS, LOWEST_PROCESSED-1] ', async () => {
+        const processedData: number[] = [212, 211, 210];
+        const currentMas = 300;
+
+        const expectedStart = 109; // 210 - 1 = 209 and 209 - 100 = 109
+        const expectedEnd = 209; // 210 - 1
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
     });
 
-    it('get range by the end number: the current end number "lower than" the end number, the gap over 100', async () => {
-      end = Math.floor(Math.random() * 400) + 601; // 600 - 1000
-      currentEnd = Math.floor(Math.random() * 500) + 1; // 1 - 500
+    describe('4. given processed data has gaps ', () => {
+      const processedData: number[] = [212, 211, 68, 67, 66, 5, 4, 3];
 
-      const range = rangeHelper.getRange(end, currentEnd);
-      expect(range).toEqual([end, end - 100 + 1]);
+      it('case 4.A: it returns range of [FIRST_NON_SEQUENT-1-100, FIRST_NON_SEQUENT-1] ', async () => {
+        const currentMas = 312;
+
+        const expectedStart = 110; // FIRST_NON_SEQUENT-1-100 = 211 - 1 - 100 = 110
+        const expectedEnd = 210; // FIRST_NON_SEQUENT-1 = 211 - 1 = 210
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
+
+      it('case 4.B: it returns range of [FIRST_NON_SEQUENT-1-100 <= NEXT_SEQ_LAST_ITEM ? NEXT_SEQ_LAST_ITEM+1 :FIRST_NON_SEQUENT-1-100 , FIRST_NON_SEQUENT-1] ', async () => {
+        const processedData: number[] = [112, 111, 68, 67, 66, 5, 4, 3];
+        const currentMas = 212;
+
+        const expectedStart = 69;
+        const expectedEnd = 110;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
     });
 
-    it('get range by the end number: the current end number "higher than" the end number', async () => {
-      let addNum = Math.floor(Math.random() * 100) + 1;
-      end = Math.floor(Math.random() * 1000) + 1;
-      currentEnd = end + addNum;
+    // let end: number;
+    // let currentEnd: number; // the end number of the user currently has
 
-      const range = rangeHelper.getRange(end, currentEnd);
-      expect(range).toEqual([]);
-    });
+    // it('get range by the end number: minimal level', async () => {
+    //   end = Math.floor(Math.random() * 100) + 1; // 1 - 100
+    //   // @TODO if end = 1;
+
+    //   const range = rangeHelper.getRange(end);
+    //   expect(range).toEqual([end, 1]);
+    // });
+
+    // it('get range by the end number: outside minimal level', async () => {
+    //   end = Math.floor(Math.random() * 900) + 101; // 101 - 1000
+
+    //   const range = rangeHelper.getRange(end);
+    //   expect(range).toEqual([end, end - 100 + 1]);
+    // });
+
+    // it('get range by the end number: the current end number "lower than" the end number, the gap under 100', async () => {
+    //   let gap = Math.floor(Math.random() * 100) + 1;
+    //   end = Math.floor(Math.random() * 1000) + 101; // 101 - 1000
+    //   currentEnd = end - gap;
+
+    //   const range = rangeHelper.getRange(end, currentEnd);
+    //   expect(range).toEqual([end, currentEnd + 1]);
+    // });
+
+    // it('get range by the end number: the current end number "lower than" the end number, the gap over 100', async () => {
+    //   end = Math.floor(Math.random() * 400) + 601; // 600 - 1000
+    //   currentEnd = Math.floor(Math.random() * 500) + 1; // 1 - 500
+
+    //   const range = rangeHelper.getRange(end, currentEnd);
+    //   expect(range).toEqual([end, end - 100 + 1]);
+    // });
+
+    // it('get range by the end number: the current end number "higher than" the end number', async () => {
+    //   let addNum = Math.floor(Math.random() * 100) + 1;
+    //   end = Math.floor(Math.random() * 1000) + 1;
+    //   currentEnd = end + addNum;
+
+    //   const range = rangeHelper.getRange(end, currentEnd);
+    //   expect(range).toEqual([]);
+    // });
   });
 });
