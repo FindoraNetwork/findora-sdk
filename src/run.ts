@@ -47,6 +47,11 @@ const password = '123';
 
 console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
+const aaa = Evm.fraAddressToHashAddress('1V1iYLXRUiy8BI2pTVlnUV0lKMgQniotdd3nzFl0Bao='.toLocaleUpperCase());
+console.log(aaa);
+
+process.exit(-1);
+
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
@@ -1632,4 +1637,4 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 // approveToken();
-testIt();
+// testIt();
