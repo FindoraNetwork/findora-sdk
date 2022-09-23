@@ -58,3 +58,4 @@ export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkA
 export declare const getAbarMemos: (startSid: string, endSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbarMemoDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig) => Promise<Types.CheckNullifierHashSpentDataResult>;
 export declare const getConfig: (config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
+export declare const getAbarCommitment: (atxoSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbarCommitmentDataResult>;

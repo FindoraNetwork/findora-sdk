@@ -378,15 +378,15 @@ const transferFraToSingleAddress = async (amount: string) => {
   console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
 };
 
-const testTransferToYourself = async () => {
-  // const amounts = ['1', '0.5', '0.4', '0.9'];
-  const amounts = ['0.3'];
+// const testTransferToYourself = async () => {
+//   // const amounts = ['1', '0.5', '0.4', '0.9'];
+//   const amounts = ['0.3'];
 
-  for (const amount of amounts) {
-    console.log(`Sending amount of ${amount} FRA`);
-    await transferFraToSingleAddress(amount);
-  }
-};
+//   for (const amount of amounts) {
+//     console.log(`Sending amount of ${amount} FRA`);
+//     await transferFraToSingleAddress(amount);
+//   }
+// };
 
 /**
  * Send fra to a single recepient
@@ -1436,7 +1436,8 @@ const getAnonTxList = async () => {
 };
 
 const testIt = async () => {
-  const anonKeysReceiver = {
+  // run it as INTEGRATION_ENV_NAME=local yarn start:once
+  const anonKeys = {
     axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
     axfrSpendKey:
       'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
@@ -1444,12 +1445,13 @@ const testIt = async () => {
     name: 'AnonWallet2',
   };
 
-  // const transferResult = await TMI.barToAbarAmount(anonKeysReceiver);
-  // console.log('🚀 ~ file: run.ts ~ line 1445 ~ testIt ~ transferResult', transferResult);
-  // const result = await Network.getAbarMemos('100', '200');
-  const result = await Network.getAbarMemos('10', '100');
+  // with this option it should thrown an error!
+  const transferResult = await TMI.barToAbarAmount();
 
-  console.log('🚀 ~ file: run.ts ~ line 1449 ~ testIt ~ result', result);
+  // with this option it should pass
+  // const transferResult = await TMI.barToAbarAmount(anonKeys);
+
+  const result = await Network.getAbarMemos('10', '100');
 
   const { error, response } = result;
 
@@ -1467,14 +1469,20 @@ const testIt = async () => {
   }
   log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
 
-  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeysReceiver);
-  console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
+  log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
 
-  const decryptedF = await TripleMasking.decryptAbarMemo(response[0], anonKeysReceiver);
-  console.log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decryptedF', decryptedF);
+  if (!decrypted) {
+    throw new Error('can not proceed as the abar must be decrypted!');
+  }
+
+  // we proceed only if decrypted is true! if last item does not belong to the anonKeys then we should have an error
+  const [ownedAbarAtxoSid] = last;
+
+  const commitmentData = await TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid);
+  log('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
 
   return true;
-  // console.log('🚀 ~ file: run.ts ~ line 1449 ~ testIt ~ result', result.response?.[0]);
 };
 
 const txHashTest = async () => {

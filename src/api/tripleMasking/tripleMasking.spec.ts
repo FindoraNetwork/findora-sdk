@@ -14,7 +14,7 @@ import * as UtxoHelper from '../../services/utxoHelper';
 import * as FindoraWallet from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as NetworkApi from '../network/network';
-import { OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
+import { AbarCommitmentDataResult, OwnedAbarsDataResult, OwnerMemoDataResult } from '../network/types';
 import * as Builder from '../transaction/builder';
 import * as TripleMasking from './tripleMasking';
 
@@ -697,6 +697,58 @@ describe('triple masking (unit test)', () => {
       expect(spyAxfrOwnerMemoFromJson).toHaveBeenCalledWith(abarMemoItem[1]);
       expect(spyTryDecryptAxfrMemo).toHaveBeenCalledWith(axfrOwnerMemo, aXfrKeyPair);
       expect(result).toBe(false);
+    });
+  });
+
+  describe('getCommitmentByAtxoSid', () => {
+    let nodeLedger: NodeLedger.LedgerForNode;
+    let atxoSid: string;
+    let base64str: string;
+    let base58str: string;
+    let commitementResult: AbarCommitmentDataResult;
+
+    let spyGetLedger: jest.SpyInstance;
+    let spyGetAbarCommitment: jest.SpyInstance;
+    beforeEach(() => {
+      atxoSid = '1';
+      base64str = '_4pOM5YjB1BoXF3DdIkoE-o8eGSktwSrThZ9nC0ommI=';
+      base58str = 'JCXHJFv4YUpAU55FFfC5tyr8kfYpmnubJobpXiAYuhX7';
+
+      nodeLedger = {
+        base64_to_base58: jest.fn(() => {}),
+      } as unknown as NodeLedger.LedgerForNode;
+      commitementResult = { response: base64str };
+      spyGetLedger = jest.spyOn(NodeLedger, 'default');
+      spyGetAbarCommitment = jest.spyOn(NetworkApi, 'getAbarCommitment');
+    });
+
+    it('throw an error if could not get commitment by atxo sid. [Network.getAbarCommitment]', async () => {
+      commitementResult.error = new Error('getAbarCommitment network error');
+
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAbarCommitment.mockImplementationOnce(() => Promise.resolve(commitementResult));
+      await expect(TripleMasking.getCommitmentByAtxoSid(atxoSid)).rejects.toThrow(
+        `could not get commitment by atxo sid. details: ${commitementResult.error.message}`,
+      );
+    });
+
+    it('throw an error if could not get commitment by atxo sid. no response retrieved from [Network.getAbarCommitment]', async () => {
+      commitementResult.response = undefined;
+
+      spyGetLedger.mockImplementationOnce(() => Promise.resolve(nodeLedger));
+      spyGetAbarCommitment.mockImplementationOnce(() => Promise.resolve(commitementResult));
+      await expect(TripleMasking.getCommitmentByAtxoSid(atxoSid)).rejects.toThrow(
+        `could not get commitment by atxo sid. no response retrieved`,
+      );
+    });
+
+    it('return a instance of AtxoCommitmentItem include the successfully decrypted commitment', async () => {
+      spyGetAbarCommitment.mockImplementationOnce(() => Promise.resolve(commitementResult));
+      const result = await TripleMasking.getCommitmentByAtxoSid(atxoSid);
+
+      expect(spyGetAbarCommitment).toBeCalledWith(atxoSid);
+      expect(result.atxoSid).toBe(atxoSid);
+      expect(result.commitment).toBe(base58str);
     });
   });
 });

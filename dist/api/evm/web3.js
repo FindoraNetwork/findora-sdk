@@ -39,10 +39,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getErc20Contract = exports.getWeb3 = void 0;
+exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getNFT1155Contract = exports.getNFT721Contract = exports.getErc20Contract = exports.getWeb3 = void 0;
 var ethers_1 = require("ethers");
 var web3_1 = __importDefault(require("web3"));
 var Erc20_json_1 = __importDefault(require("./abis/Erc20.json"));
+var NFT1155_json_1 = __importDefault(require("./abis/NFT1155.json"));
+var NFT721_json_1 = __importDefault(require("./abis/NFT721.json"));
 var PrismXXAsset_json_1 = __importDefault(require("./abis/PrismXXAsset.json"));
 var SimBridge_json_1 = __importDefault(require("./abis/SimBridge.json"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
@@ -56,6 +58,14 @@ var getErc20Contract = function (web3, address) {
     return new web3.eth.Contract(Erc20_json_1.default, address);
 };
 exports.getErc20Contract = getErc20Contract;
+var getNFT721Contract = function (web3, address) {
+    return new web3.eth.Contract(NFT721_json_1.default, address);
+};
+exports.getNFT721Contract = getNFT721Contract;
+var getNFT1155Contract = function (web3, address) {
+    return new web3.eth.Contract(NFT1155_json_1.default, address);
+};
+exports.getNFT1155Contract = getNFT1155Contract;
 var getPrismXXAssetContract = function (web3, address) {
     return new web3.eth.Contract(PrismXXAsset_json_1.default, address);
 };

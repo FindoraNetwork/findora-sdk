@@ -8,7 +8,7 @@ import { CacheItem } from '../../services/cacheStore/types';
 import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { generateSeedString } from '../../services/utils';
+import { generateSeedString, log } from '../../services/utils';
 import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
 import * as FindoraWallet from '../../types/findoraWallet';
 import * as Keypair from '../keypair';
@@ -1510,4 +1510,36 @@ export const decryptAbarMemo = async (
   };
 
   return result;
+};
+
+export const getCommitmentByAtxoSid = async (atxoSid: string): Promise<FindoraWallet.AtxoCommitmentItem> => {
+  const ledger = await getLedger();
+
+  const commitementResult = await Network.getAbarCommitment(`${atxoSid}`);
+  console.log(
+    '🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult',
+    commitementResult,
+  );
+
+  const { error, response } = commitementResult;
+
+  if (error) {
+    log('error', error);
+    throw new Error(`could not get commitment by atxo sid. details: ${(error as Error).message}`);
+  }
+  if (!response) {
+    throw new Error(`could not get commitment by atxo sid. no response retrieved`);
+  }
+
+  const commitmentInBase58 = ledger.base64_to_base58(response);
+
+  // console.log(
+  //   '🚀 ~ file: tripleMasking.ts ~ line 1531 ~ getCommitmentByAtxoSid ~ commitmentInBase58',
+  //   commitmentInBase58,
+  // );
+
+  return {
+    atxoSid,
+    commitment: commitmentInBase58,
+  };
 };
