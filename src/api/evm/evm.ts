@@ -187,12 +187,10 @@ export const frc20ToBar = async (
 export const approveNFT = async (
   tokenAddress: string,
   deckAddress: string,
-  price: string,
   tokenId: string,
   nftType: string,
   web3WalletInfo: IWebLinkedInfo,
 ) => {
-  console.table([tokenAddress, deckAddress, price]);
   const web3 = getWeb3(web3WalletInfo.rpcUrl);
 
   let contractData = '';

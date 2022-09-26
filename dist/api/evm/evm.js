@@ -230,12 +230,11 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
     });
 }); };
 exports.frc20ToBar = frc20ToBar;
-var approveNFT = function (tokenAddress, deckAddress, price, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contractData, nft721Contract, nft1155Contract, nonce, gasPrice, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                console.table([tokenAddress, deckAddress, price]);
                 web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
                 contractData = '';
                 if (nftType == '721') {
