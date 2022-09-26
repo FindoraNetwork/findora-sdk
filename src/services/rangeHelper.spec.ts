@@ -100,49 +100,46 @@ describe('rangeHelper (unit test)', () => {
         expect(range).toEqual([expectedStart, expectedEnd]);
       });
     });
+  });
+  describe('getFirstNonConsecutive', () => {
+    it('case 5.A: it returns default values for non-complete consecutive descending array', async () => {
+      const processedData: number[] = [112, 111, 110, 109, 108];
 
-    // let end: number;
-    // let currentEnd: number; // the end number of the user currently has
+      const expectedValue = -1;
+      const expectedIndex = -1;
 
-    // it('get range by the end number: minimal level', async () => {
-    //   end = Math.floor(Math.random() * 100) + 1; // 1 - 100
-    //   // @TODO if end = 1;
+      const data = rangeHelper.getFirstNonConsecutive(processedData);
+      expect(data).toEqual([expectedValue, expectedIndex]);
+    });
 
-    //   const range = rangeHelper.getRange(end);
-    //   expect(range).toEqual([end, 1]);
-    // });
+    it('case 5.B: it returns a very first element with its index for non-complete consecutive ascending array', async () => {
+      const processedData: number[] = [108, 109, 100, 111];
 
-    // it('get range by the end number: outside minimal level', async () => {
-    //   end = Math.floor(Math.random() * 900) + 101; // 101 - 1000
+      const expectedValue = 108;
+      const expectedIndex = 0;
 
-    //   const range = rangeHelper.getRange(end);
-    //   expect(range).toEqual([end, end - 100 + 1]);
-    // });
+      const data = rangeHelper.getFirstNonConsecutive(processedData);
+      expect(data).toEqual([expectedValue, expectedIndex]);
+    });
 
-    // it('get range by the end number: the current end number "lower than" the end number, the gap under 100', async () => {
-    //   let gap = Math.floor(Math.random() * 100) + 1;
-    //   end = Math.floor(Math.random() * 1000) + 101; // 101 - 1000
-    //   currentEnd = end - gap;
+    it('case 5.C: it returns default values for complete consecutive descending array', async () => {
+      const processedData: number[] = [5, 4, 3, 2, 1];
 
-    //   const range = rangeHelper.getRange(end, currentEnd);
-    //   expect(range).toEqual([end, currentEnd + 1]);
-    // });
+      const expectedValue = -1;
+      const expectedIndex = -1;
 
-    // it('get range by the end number: the current end number "lower than" the end number, the gap over 100', async () => {
-    //   end = Math.floor(Math.random() * 400) + 601; // 600 - 1000
-    //   currentEnd = Math.floor(Math.random() * 500) + 1; // 1 - 500
+      const data = rangeHelper.getFirstNonConsecutive(processedData);
+      expect(data).toEqual([expectedValue, expectedIndex]);
+    });
 
-    //   const range = rangeHelper.getRange(end, currentEnd);
-    //   expect(range).toEqual([end, end - 100 + 1]);
-    // });
+    it('case 5.D: it returns a very first element with its index for complete consecutive ascending array', async () => {
+      const processedData: number[] = [1, 2, 3, 4, 5];
 
-    // it('get range by the end number: the current end number "higher than" the end number', async () => {
-    //   let addNum = Math.floor(Math.random() * 100) + 1;
-    //   end = Math.floor(Math.random() * 1000) + 1;
-    //   currentEnd = end + addNum;
+      const expectedValue = 1;
+      const expectedIndex = 0;
 
-    //   const range = rangeHelper.getRange(end, currentEnd);
-    //   expect(range).toEqual([]);
-    // });
+      const data = rangeHelper.getFirstNonConsecutive(processedData);
+      expect(data).toEqual([expectedValue, expectedIndex]);
+    });
   });
 });

@@ -8,18 +8,13 @@ const IAS = 1;
 
 export type RangeResult = [number, number];
 
-const getFirstGap = (dataList: number[]) => {
-  // in case of data = [212, 211, 68, 67, 66, 5, 4, 3];
-  // it should return
-  // result = [210, 69]
-  const gapStart = 210;
-  const gapEnd = 69;
-  const gapLength = gapStart - gapEnd; // it is 141
-
-  const calculatedGapLength =
-    gapLength > MAX_SUPPORTED_CHUNK_SIZE ? gapStart - MAX_SUPPORTED_CHUNK_SIZE : gapEnd;
-
-  return [gapStart, calculatedGapLength]; // [210, 110]
+export const getFirstNonConsecutive = (dataList: number[]) => {
+  for (let i = 0; i < dataList.length - 1; i++) {
+    if (dataList[i] - dataList[i + 1] !== 1) {
+      return [dataList[i], i];
+    }
+  }
+  return [-1, -1];
 };
 
 const getRangeWithoutData = (mas: number): RangeResult => {
@@ -58,17 +53,21 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
   return [start, end];
 };
 
-export const getRangeWithGaps = (
-  mas: number,
-  first: number,
-  last: number,
-  processedList: number[],
-): RangeResult => {
+export const getRangeWithGaps = (processedList: number[]): RangeResult => {
   let start = -1;
-  let end = -1;
+  let end = -2;
+  const [firstNonConsecutive, firstIndex] = getFirstNonConsecutive(processedList);
+  const gapStart = firstNonConsecutive - 1;
 
-  const [gapStart, gapEnd] = getFirstGap(processedList);
-  return [start, end];
+  const remainedList = processedList.slice(firstIndex + 1);
+
+  const [gapEnd] = remainedList; // case 4.A
+  const gapLength = gapStart - gapEnd;
+
+  const calculatedGapEnd =
+    gapLength > MAX_SUPPORTED_CHUNK_SIZE ? gapStart - MAX_SUPPORTED_CHUNK_SIZE : gapEnd + 1; // case 4.B
+
+  return [calculatedGapEnd, gapStart];
 };
 
 export const getRange = (mas: number, processedList?: number[]): RangeResult => {
@@ -91,7 +90,7 @@ export const getRange = (mas: number, processedList?: number[]): RangeResult => 
     return getRangeWithoutGaps(mas, first, last);
   }
 
-  [start, end] = getRangeWithGaps(mas, first, last, processedList);
+  [start, end] = getRangeWithGaps(processedList);
 
   return [start, end];
 };
