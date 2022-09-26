@@ -184,6 +184,55 @@ export const frc20ToBar = async (
   }
 };
 
+export const approveNFT = async (
+  tokenAddress: string,
+  deckAddress: string,
+  price: string,
+  tokenId: string,
+  nftType: string,
+  web3WalletInfo: IWebLinkedInfo,
+) => {
+  console.table([tokenAddress, deckAddress, price]);
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+
+  let contractData = '';
+
+  if (nftType == '721') {
+    const nft721Contract = getNFT721Contract(web3, tokenAddress);
+    contractData = nft721Contract.methods.approve(deckAddress, tokenId).encodeABI();
+  }
+  if (nftType == '1155') {
+    const nft1155Contract = getNFT1155Contract(web3, tokenAddress);
+    contractData = nft1155Contract.methods.setApprovalForAll(deckAddress, true).encodeABI();
+  }
+
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
+
+  const estimategas = await web3.eth.estimateGas({
+    to: web3WalletInfo.account,
+    data: contractData,
+  });
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: tokenAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    gasLimit: web3.utils.toHex(3000000),
+    gas: web3.utils.toHex(estimategas),
+    nonce: nonce,
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn?.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
+};
+
 export const frcNftToBar = async (
   bridgeAddress: string,
   recipientAddress: string,
