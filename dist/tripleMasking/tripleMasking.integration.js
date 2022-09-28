@@ -70,9 +70,9 @@ var utxoHelper_1 = require("../services/utxoHelper");
 var bigNumber_1 = require("../services/bigNumber");
 dotenv_1.default.config();
 var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../../.env_tm_integration_" + process.env.INTEGRATION_ENV_NAME
+    ? "../../.env_tm_integration_".concat(process.env.INTEGRATION_ENV_NAME)
     : "../../.env_example";
-var envConfig = require(envConfigFile + ".json");
+var envConfig = require("".concat(envConfigFile, ".json"));
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 var sdkEnv = {
     hostUrl: envHostUrl,
@@ -80,7 +80,7 @@ var sdkEnv = {
     cachePath: './cache',
 };
 (0, utils_1.log)('🚀 ~ Findora Sdk is configured to use:', sdkEnv);
-(0, utils_1.log)("Connecting to \"" + sdkEnv.hostUrl + "\"");
+(0, utils_1.log)("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet;
 var password = 'yourSecretPassword';
@@ -202,10 +202,10 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitments, balanc
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo, assetCode)];
             case 3:
                 balanceNew = _a.sent();
-                (0, utils_1.log)('Old BAR balance for public key ', walletInfo.address, ' is ', balance, " " + assetCode);
-                (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, " " + assetCode);
+                (0, utils_1.log)('Old BAR balance for public key ', walletInfo.address, ' is ', balance, " ".concat(assetCode));
+                (0, utils_1.log)('New BAR balance for public key ', walletInfo.address, ' is ', balanceNew, " ".concat(assetCode));
                 balanceChangeF = parseFloat(balance.replace(/,/g, '')) - parseFloat(balanceNew.replace(/,/g, ''));
-                (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, " " + assetCode);
+                (0, utils_1.log)('Change of BAR balance for public key ', walletInfo.address, ' is ', balanceChangeF, " ".concat(assetCode));
                 realBalanceChange = (0, bigNumber_1.create)((0, bigNumber_1.create)(balanceChangeF).toPrecision(7));
                 expectedBalanceChange = (0, bigNumber_1.create)(givenBalanceChange);
                 expectedBarBalanceChange = expectedBalanceChange.toPrecision(7);
@@ -218,7 +218,7 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitments, balanc
                         .toPrecision(7);
                 }
                 if (!realBalanceChange.isEqualTo(expectedBarBalanceChange)) {
-                    message = "BAR balance of " + realBalanceChange.toString() + " does not match expected value " + expectedBarBalanceChange.toString();
+                    message = "BAR balance of ".concat(realBalanceChange.toString(), " does not match expected value ").concat(expectedBarBalanceChange.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
@@ -227,10 +227,10 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitments, balanc
                 anonBalances = _a.sent();
                 anonBalUnspent = anonBalances.unSpentBalances.balances[0].amount;
                 anonBalanceValue = anonBalUnspent.replace(/,/g, '');
-                (0, utils_1.log)('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, " " + assetCode);
+                (0, utils_1.log)('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, " ".concat(assetCode));
                 realAnonBalanceValue = (0, bigNumber_1.create)(anonBalanceValue);
                 if (!realAnonBalanceValue.isEqualTo(expectedBalanceChange)) {
-                    message = "ABAR balance does not match expected value, real is " + realAnonBalanceValue.toString() + " and expected is " + expectedBalanceChange.toString();
+                    message = "ABAR balance does not match expected value, real is ".concat(realAnonBalanceValue.toString(), " and expected is ").concat(expectedBalanceChange.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
@@ -263,7 +263,7 @@ var validateSpent = function (AnonKeys, givenCommitments) { return __awaiter(voi
             case 4:
                 result = _a.sent();
                 if (!result) {
-                    throw new Error("hash for commitment " + givenCommitment + " is still unspent");
+                    throw new Error("hash for commitment ".concat(givenCommitment, " is still unspent"));
                 }
                 _a.label = 5;
             case 5:
@@ -279,7 +279,7 @@ var getSidsForSingleAsset = function (senderOne, assetCode) { return __awaiter(v
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                (0, utils_1.log)("//////////////// Get sids for asset " + assetCode + " //////////////// ");
+                (0, utils_1.log)("//////////////// Get sids for asset ".concat(assetCode, " //////////////// "));
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(senderOne, password)];
             case 1:
                 walletInfo = _a.sent();
@@ -364,7 +364,7 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                     return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, fraCode)];
                 case 13:
                     assetBalance = _a.sent();
-                    (0, utils_1.log)("\uD83D\uDE80 ~ createTestBars ~ \"" + fraCode + "\" assetBalance ", assetBalance);
+                    (0, utils_1.log)("\uD83D\uDE80 ~ createTestBars ~ \"".concat(fraCode, "\" assetBalance "), assetBalance);
                     cleanedBalanceValue = assetBalance.replace(/,/g, '');
                     (0, utils_1.log)('🚀 ~ createTestBars ~ cleanedBalanceValue', cleanedBalanceValue);
                     realBalance = (0, bigNumber_1.create)(cleanedBalanceValue);
@@ -372,7 +372,7 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                     (0, utils_1.log)('🚀 ~ createTestBars ~ expectedBalance', expectedBalance.toString());
                     isFunded = expectedBalance.isEqualTo(realBalance);
                     if (!isFunded) {
-                        errorMessage = "Expected FRA balance is " + expectedBalance.toString() + " but we have " + realBalance.toString();
+                        errorMessage = "Expected FRA balance is ".concat(expectedBalance.toString(), " but we have ").concat(realBalance.toString());
                         throw Error(errorMessage);
                     }
                     return [2 /*return*/, isFunded];
@@ -564,12 +564,12 @@ var abarToAbar = function () { return __awaiter(void 0, void 0, void 0, function
                 realBalanceSender = (0, bigNumber_1.create)(balanceSender);
                 realBalanceReceiver = (0, bigNumber_1.create)(balanceReceiver);
                 if (!realBalanceSender.isEqualTo(expectedBalanceSender)) {
-                    message = "sender ABAR balance " + expectedBalanceSender.toString() + " does not match expected " + realBalanceSender.toString();
+                    message = "sender ABAR balance ".concat(expectedBalanceSender.toString(), " does not match expected ").concat(realBalanceSender.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
                 if (!realBalanceReceiver.isEqualTo(expectedBalanceReceiver)) {
-                    message = "receiver ABAR balance " + expectedBalanceReceiver.toString() + " does not match expected " + realBalanceReceiver.toString();
+                    message = "receiver ABAR balance ".concat(expectedBalanceReceiver.toString(), " does not match expected ").concat(realBalanceReceiver.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
@@ -841,12 +841,12 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function () { return __awaite
                 receiverExpectedFraAbarBalanceTransfer = (0, bigNumber_1.create)(amountToSend);
                 fraAbarAmountAfterTransfer = (_b = balancesReceiverAfter === null || balancesReceiverAfter === void 0 ? void 0 : balancesReceiverAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _b === void 0 ? void 0 : _b.amount;
                 if (!fraAbarAmountAfterTransfer) {
-                    throw new Error("Receiver is expected to have " + receiverExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + fraAbarAmountAfterTransfer + "'");
+                    throw new Error("Receiver is expected to have ".concat(receiverExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransfer, "'"));
                 }
                 realReceiverFraAbarBalance = (0, bigNumber_1.create)(fraAbarAmountAfterTransfer);
                 isReceiverHasProperFraBalanceAfter = realReceiverFraAbarBalance.isEqualTo(receiverExpectedFraAbarBalanceTransfer);
                 if (!isReceiverHasProperFraBalanceAfter) {
-                    throw new Error("Receiver is expected to have " + receiverExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + realReceiverFraAbarBalance.toString() + "'");
+                    throw new Error("Receiver is expected to have ".concat(receiverExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(realReceiverFraAbarBalance.toString(), "'"));
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
             case 14:
@@ -855,12 +855,12 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function () { return __awaite
                 senderExpectedFraAbarBalanceTransfer = (0, bigNumber_1.create)('15.65');
                 fraAbarAmountAfterTransferSender = (_c = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _c === void 0 ? void 0 : _c.amount;
                 if (!fraAbarAmountAfterTransferSender) {
-                    throw new Error("Sender is expected to have " + senderExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + fraAbarAmountAfterTransferSender + "'");
+                    throw new Error("Sender is expected to have ".concat(senderExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransferSender, "'"));
                 }
                 realSenderFraAbarBalanceAfter = (0, bigNumber_1.create)(fraAbarAmountAfterTransferSender);
                 isSenderHasProperFraBalanceAfter = realSenderFraAbarBalanceAfter.isGreaterThanOrEqualTo(senderExpectedFraAbarBalanceTransfer);
                 if (!isSenderHasProperFraBalanceAfter) {
-                    throw new Error("Sender is expected to have at least " + senderExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + realSenderFraAbarBalanceAfter.toString() + "'");
+                    throw new Error("Sender is expected to have at least ".concat(senderExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(realSenderFraAbarBalanceAfter.toString(), "'"));
                 }
                 return [2 /*return*/, true];
         }
@@ -914,11 +914,11 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo, assetCodeToUse)];
             case 12:
                 assetBalance = _e.sent();
-                (0, utils_1.log)("sender bar \"" + assetCodeToUse + "\" assetBalance before transfer (after issuing the asset)", assetBalance);
+                (0, utils_1.log)("sender bar \"".concat(assetCodeToUse, "\" assetBalance before transfer (after issuing the asset)"), assetBalance);
                 realSenderBalance = (0, bigNumber_1.create)(assetBalance);
                 isSenderFunded = expectedSenderBalance.isEqualTo(realSenderBalance);
                 if (!isSenderFunded) {
-                    errorMessage = "Expected bar " + assetCodeToUse + " balance is " + expectedSenderBalance.toString() + " but it has " + realSenderBalance.toString();
+                    errorMessage = "Expected bar ".concat(assetCodeToUse, " balance is ").concat(expectedSenderBalance.toString(), " but it has ").concat(realSenderBalance.toString());
                     throw Error(errorMessage);
                 }
                 (0, utils_1.log)('//////////////// bar to abar custom asset transfer ///////////////// ');
@@ -981,12 +981,12 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 receiverExpectedCustomAbarBalanceTransfer = (0, bigNumber_1.create)(amountToSend);
                 customAbarAmountAfterTransfer = (_b = balancesReceiverAfter === null || balancesReceiverAfter === void 0 ? void 0 : balancesReceiverAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _b === void 0 ? void 0 : _b.amount;
                 if (!customAbarAmountAfterTransfer) {
-                    throw new Error("Receiver is expected to have " + receiverExpectedCustomAbarBalanceTransfer.toString() + " ABAR custom but it has '" + customAbarAmountAfterTransfer + "'");
+                    throw new Error("Receiver is expected to have ".concat(receiverExpectedCustomAbarBalanceTransfer.toString(), " ABAR custom but it has '").concat(customAbarAmountAfterTransfer, "'"));
                 }
                 realReceiverCustomAbarBalance = (0, bigNumber_1.create)(customAbarAmountAfterTransfer);
                 isReceiverHasProperCustomBalanceAfter = realReceiverCustomAbarBalance.isEqualTo(receiverExpectedCustomAbarBalanceTransfer);
                 if (!isReceiverHasProperCustomBalanceAfter) {
-                    throw new Error("Receiver is expected to have " + receiverExpectedCustomAbarBalanceTransfer.toString() + " ABAR custom but it has '" + realReceiverCustomAbarBalance.toString() + "'");
+                    throw new Error("Receiver is expected to have ".concat(receiverExpectedCustomAbarBalanceTransfer.toString(), " ABAR custom but it has '").concat(realReceiverCustomAbarBalance.toString(), "'"));
                 }
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, givenCommitmentsListSender)];
             case 23:
@@ -995,22 +995,22 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function () { return __awa
                 senderExpectedFraAbarBalanceTransfer = (0, bigNumber_1.create)('38.5');
                 fraAbarAmountAfterTransferSender = (_c = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === fraAssetCode; })) === null || _c === void 0 ? void 0 : _c.amount;
                 if (!fraAbarAmountAfterTransferSender) {
-                    throw new Error("Sender is expected to have " + senderExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + fraAbarAmountAfterTransferSender + "'");
+                    throw new Error("Sender is expected to have ".concat(senderExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransferSender, "'"));
                 }
                 realSenderFraAbarBalanceAfter = (0, bigNumber_1.create)(fraAbarAmountAfterTransferSender);
                 isSenderHasProperFraBalanceAfter = realSenderFraAbarBalanceAfter.isGreaterThanOrEqualTo(senderExpectedFraAbarBalanceTransfer);
                 if (!isSenderHasProperFraBalanceAfter) {
-                    throw new Error("Sender is expected to have at least " + senderExpectedFraAbarBalanceTransfer.toString() + " ABAR FRA but it has '" + realSenderFraAbarBalanceAfter.toString() + "'");
+                    throw new Error("Sender is expected to have at least ".concat(senderExpectedFraAbarBalanceTransfer.toString(), " ABAR FRA but it has '").concat(realSenderFraAbarBalanceAfter.toString(), "'"));
                 }
                 senderExpectedCustomAbarBalanceTransfer = (0, bigNumber_1.create)('12.86');
                 customAbarAmountAfterTransferSender = (_d = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _d === void 0 ? void 0 : _d.amount;
                 if (!customAbarAmountAfterTransferSender) {
-                    throw new Error("Sender is expected to have " + senderExpectedCustomAbarBalanceTransfer.toString() + " custom ABAR but it has '" + customAbarAmountAfterTransferSender + "'");
+                    throw new Error("Sender is expected to have ".concat(senderExpectedCustomAbarBalanceTransfer.toString(), " custom ABAR but it has '").concat(customAbarAmountAfterTransferSender, "'"));
                 }
                 realSenderCustomAbarBalanceAfter = (0, bigNumber_1.create)(customAbarAmountAfterTransferSender);
                 isSenderHasProperCustomBalanceAfter = realSenderCustomAbarBalanceAfter.isEqualTo(senderExpectedCustomAbarBalanceTransfer);
                 if (!isSenderHasProperCustomBalanceAfter) {
-                    throw new Error("Sender is expected to have " + senderExpectedCustomAbarBalanceTransfer.toString() + " custom ABAR but it has '" + realSenderCustomAbarBalanceAfter.toString() + "'");
+                    throw new Error("Sender is expected to have ".concat(senderExpectedCustomAbarBalanceTransfer.toString(), " custom ABAR but it has '").concat(realSenderCustomAbarBalanceAfter.toString(), "'"));
                 }
                 return [2 /*return*/, true];
         }
@@ -1091,7 +1091,7 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 expectedBalanceChange = (0, bigNumber_1.create)(givenBalanceChange);
                 expectedBarBalanceChange = expectedBalanceChange;
                 if (!realBalanceChange.isEqualTo(expectedBarBalanceChange)) {
-                    message = "BAR balance of " + realBalanceChange.toString() + " does not match expected value " + expectedBarBalanceChange.toString();
+                    message = "BAR balance of ".concat(realBalanceChange.toString(), " does not match expected value ").concat(expectedBarBalanceChange.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
@@ -1108,7 +1108,7 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
                 anonBalanceValue = parseInt(anonBalSpent.replace(/,/g, ''), 10);
                 realAnonBalanceValue = (0, bigNumber_1.create)(anonBalanceValue);
                 if (!realAnonBalanceValue.isEqualTo(expectedBalanceChange)) {
-                    message = "ABAR balance does not match expected value, real is " + realAnonBalanceValue.toString() + " and expected is " + expectedBalanceChange.toString();
+                    message = "ABAR balance does not match expected value, real is ".concat(realAnonBalanceValue.toString(), " and expected is ").concat(expectedBalanceChange.toString());
                     (0, utils_1.log)(message);
                     throw new Error(message);
                 }
@@ -1170,11 +1170,11 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo, assetCodeToUse)];
             case 12:
                 assetBalance = _d.sent();
-                (0, utils_1.log)("sender bar \"" + assetCodeToUse + "\" assetBalance before transfer (after issuing the asset)", assetBalance);
+                (0, utils_1.log)("sender bar \"".concat(assetCodeToUse, "\" assetBalance before transfer (after issuing the asset)"), assetBalance);
                 realSenderBalance = (0, bigNumber_1.create)(assetBalance);
                 isSenderFunded = expectedSenderBalance.isEqualTo(realSenderBalance);
                 if (!isSenderFunded) {
-                    errorMessage = "Expected bar " + assetCodeToUse + " balance is " + expectedSenderBalance.toString() + " but it has " + realSenderBalance.toString();
+                    errorMessage = "Expected bar ".concat(assetCodeToUse, " balance is ").concat(expectedSenderBalance.toString(), " but it has ").concat(realSenderBalance.toString());
                     throw Error(errorMessage);
                 }
                 (0, utils_1.log)('//////////////// bar to abar custom asset transfer ///////////////// ');
@@ -1185,73 +1185,76 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, customAssetSids, '35', derivedAssetCode)];
             case 14:
                 customAssetCommitmentsList = _d.sent();
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 15:
+                _d.sent();
                 (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
                 return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
-            case 15:
+            case 16:
                 fraAssetSids = _d.sent();
                 (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
                 fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2], fAssetSidFour = fraAssetSids[3];
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour], '40', fraAssetCode)];
-            case 16:
-                fraAssetCommitmentsList = _d.sent();
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 17:
+                fraAssetCommitmentsList = _d.sent();
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 18:
                 _d.sent();
                 givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
                 (0, utils_1.log)('////////////////////// bar to abar is done, sending abar to bar //////////////');
                 amountToSend = '12.15';
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
-            case 18:
+            case 19:
                 assetBalanceBeforeAbarToBar = _d.sent();
                 receiverAssetBalanceBeforeTransfer = (0, bigNumber_1.create)(assetBalanceBeforeAbarToBar);
                 isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo((0, bigNumber_1.create)('0'));
                 if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
-                    throw new Error("Receiver must have 0 balance of the asset but it has " + receiverAssetBalanceBeforeTransfer.toString());
+                    throw new Error("Receiver must have 0 balance of the asset but it has ".concat(receiverAssetBalanceBeforeTransfer.toString()));
                 }
                 return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, amountToSend, assetCodeToUse, givenCommitmentsListSender)];
-            case 19:
+            case 20:
                 _a = _d.sent(), transactionBuilder = _a.transactionBuilder, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 20:
+            case 21:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('abar to bar result handle!!', resultHandle);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(4)];
-            case 21:
+            case 22:
                 _d.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
-            case 22:
+            case 23:
                 balancesSenderAfter = _d.sent();
                 (0, utils_1.log)('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
                 expectedFraAbarMinimumAmountAfterTransfer = (0, bigNumber_1.create)('38');
                 expectedCustomAbarAmountAfterTransfer = (0, bigNumber_1.create)('22.85');
                 fraAbarAmountAfterTransfer = (_b = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === fraAssetCode; })) === null || _b === void 0 ? void 0 : _b.amount;
                 if (!fraAbarAmountAfterTransfer) {
-                    throw new Error("Sender is expected to have " + expectedFraAbarMinimumAmountAfterTransfer.toString() + " ABAR FRA but it has '" + fraAbarAmountAfterTransfer + "'");
+                    throw new Error("Sender is expected to have ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransfer, "'"));
                 }
                 customAbarAmountAfterTransfer = (_c = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _c === void 0 ? void 0 : _c.amount;
                 if (!customAbarAmountAfterTransfer) {
-                    throw new Error("Sender is expected to have " + expectedCustomAbarAmountAfterTransfer.toString() + " ABAR custom asset but it has '" + customAbarAmountAfterTransfer + "'");
+                    throw new Error("Sender is expected to have ".concat(expectedCustomAbarAmountAfterTransfer.toString(), " ABAR custom asset but it has '").concat(customAbarAmountAfterTransfer, "'"));
                 }
                 senderAssetBalanceAfterTransfer = (0, bigNumber_1.create)(customAbarAmountAfterTransfer);
                 isSenderHasProperAssetBalanceAfterTransfer = senderAssetBalanceAfterTransfer.isEqualTo(expectedCustomAbarAmountAfterTransfer);
                 if (!isSenderHasProperAssetBalanceAfterTransfer) {
-                    throw new Error("Sender must have 22.5 balance of the asset but it has " + senderAssetBalanceAfterTransfer.toString());
+                    throw new Error("Sender must have 22.5 balance of the asset but it has ".concat(senderAssetBalanceAfterTransfer.toString()));
                 }
                 senderFraBalanceAfterTransfer = (0, bigNumber_1.create)(fraAbarAmountAfterTransfer);
                 isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(expectedFraAbarMinimumAmountAfterTransfer);
                 if (!isSenderHasProperFraBalanceAfterTransfer) {
-                    throw new Error("Sender must have at least " + expectedFraAbarMinimumAmountAfterTransfer.toString() + " balance but it has " + senderFraBalanceAfterTransfer.toString());
+                    throw new Error("Sender must have at least ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " balance but it has ").concat(senderFraBalanceAfterTransfer.toString()));
                 }
                 (0, utils_1.log)('//////////// checking receiver bar balance //////////');
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
-            case 23:
+            case 24:
                 assetBalanceAfterAbarToBar = _d.sent();
                 (0, utils_1.log)('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
                 receiverAssetBalanceAfterTransfer = (0, bigNumber_1.create)(assetBalanceAfterAbarToBar);
                 isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo((0, bigNumber_1.create)(amountToSend));
                 if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
-                    throw new Error("Receiver must have " + amountToSend + " balance of the asset but it has " + receiverAssetBalanceAfterTransfer.toString());
+                    throw new Error("Receiver must have ".concat(amountToSend, " balance of the asset but it has ").concat(receiverAssetBalanceAfterTransfer.toString()));
                 }
                 (0, utils_1.log)('🚀 ~ spentCommitments', spentCommitments);
                 (0, utils_1.log)('🚀 ~ remainderCommitements', remainderCommitements);
@@ -1287,7 +1290,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo, fraAssetCode)];
             case 6:
                 assetBalance = _c.sent();
-                (0, utils_1.log)("sender bar \"" + assetCodeToUse + "\" assetBalance before transfer", assetBalance);
+                (0, utils_1.log)("sender bar \"".concat(assetCodeToUse, "\" assetBalance before transfer"), assetBalance);
                 (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
                 return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
             case 7:
@@ -1310,7 +1313,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 receiverAssetBalanceBeforeTransfer = (0, bigNumber_1.create)(assetBalanceBeforeAbarToBar);
                 isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo((0, bigNumber_1.create)('0'));
                 if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
-                    throw new Error("Receiver must have 0 balance of the asset but it has " + receiverAssetBalanceBeforeTransfer.toString());
+                    throw new Error("Receiver must have 0 balance of the asset but it has ".concat(receiverAssetBalanceBeforeTransfer.toString()));
                 }
                 return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, amountToSend, assetCodeToUse, givenCommitmentsListSender)];
             case 11:
@@ -1330,12 +1333,12 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 expectedFraAbarMinimumAmountAfterTransfer = (0, bigNumber_1.create)('36.69');
                 fraAbarAmountAfterTransfer = (_b = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === fraAssetCode; })) === null || _b === void 0 ? void 0 : _b.amount;
                 if (!fraAbarAmountAfterTransfer) {
-                    throw new Error("Sender is expected to have " + expectedFraAbarMinimumAmountAfterTransfer.toString() + " ABAR FRA but it has '" + fraAbarAmountAfterTransfer + "'");
+                    throw new Error("Sender is expected to have ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransfer, "'"));
                 }
                 senderFraBalanceAfterTransfer = (0, bigNumber_1.create)(fraAbarAmountAfterTransfer);
                 isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(expectedFraAbarMinimumAmountAfterTransfer);
                 if (!isSenderHasProperFraBalanceAfterTransfer) {
-                    throw new Error("Sender must have at least " + expectedFraAbarMinimumAmountAfterTransfer.toString() + " balance but it has " + senderFraBalanceAfterTransfer.toString());
+                    throw new Error("Sender must have at least ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " balance but it has ").concat(senderFraBalanceAfterTransfer.toString()));
                 }
                 (0, utils_1.log)('//////////// checking receiver bar balance //////////');
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
@@ -1345,7 +1348,7 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
                 receiverAssetBalanceAfterTransfer = (0, bigNumber_1.create)(assetBalanceAfterAbarToBar);
                 isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo((0, bigNumber_1.create)(amountToSend));
                 if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
-                    throw new Error("Receiver must have " + amountToSend + " balance of the asset but it has " + receiverAssetBalanceAfterTransfer.toString());
+                    throw new Error("Receiver must have ".concat(amountToSend, " balance of the asset but it has ").concat(receiverAssetBalanceAfterTransfer.toString()));
                 }
                 (0, utils_1.log)('🚀 ~ spentCommitments', spentCommitments);
                 (0, utils_1.log)('🚀 ~ remainderCommitements', remainderCommitements);
