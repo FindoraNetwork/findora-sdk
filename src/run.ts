@@ -1441,12 +1441,13 @@ const testIt = async () => {
   };
 
   // with this option it should thrown an error!
-  const transferResult = await TMI.barToAbarAmount();
+  // const transferResult = await TMI.barToAbarAmount();
 
   // with this option it should pass
-  // const transferResult = await TMI.barToAbarAmount(anonKeys);
+  const transferResult = await TMI.barToAbarAmount(anonKeys);
 
-  const result = await Network.getAbarMemos('10', '100');
+  const result = await Network.getAbarMemos('1', '10');
+  console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
 
   const { error, response } = result;
 
@@ -1476,6 +1477,18 @@ const testIt = async () => {
 
   const commitmentData = await TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid);
   log('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
+
+  const maxAtxoSidResult = await Network.getMaxAtxoSid();
+  log('max atxo sid result is ', maxAtxoSidResult);
+
+  const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+  if (masError) {
+    log('error!', masError);
+    throw new Error('could not get mas');
+  }
+
+  console.log(`Current MAS = ${masResponse}`);
 
   return true;
 };
@@ -1537,44 +1550,44 @@ async function approveToken() {
 }
 
 async function testCommitment() {
-  const syncedCommitmentsData = [
-    {
-      axfrPublicKey: 'keyOne=',
-      unprocessed: [85, 84, 83, 82, 81, 80], // it is unprocessed in current session only! other ranges, like 76..76 and so on, those are taken care of separately
-      processed: {
-        atxo_86: 'owned_commitment_1',
-        atxo_79: false,
-        atxo_78: false,
-        atxo_77: 'owned_commitment_2',
-        atxo_65: false,
-        atxo_64: false,
-        atxo_58: false,
-        atxo_57: false,
-        atxo_56: false,
-      },
-    },
-    {
-      axfrPublicKey: 'keyTwo=',
-      unprocessed: [],
-      processed: {
-        atxo_86: false,
-        atxo_85: false,
-        atxo_84: false,
-        atxo_83: false,
-        atxo_82: false,
-        atxo_81: false,
-        atxo_80: false,
-        atxo_79: false,
-        atxo_78: false,
-        atxo_77: false,
-        atxo_65: false,
-        atxo_64: false,
-        atxo_58: false,
-        atxo_57: false,
-        atxo_56: false,
-      },
-    },
-  ];
+  // const syncedCommitmentsData = [
+  //   {
+  //     axfrPublicKey: 'keyOne=',
+  //     unprocessed: [85, 84, 83, 82, 81, 80], // it is unprocessed in current session only! other ranges, like 76..76 and so on, those are taken care of separately
+  //     processed: {
+  //       atxo_86: 'owned_commitment_1',
+  //       atxo_79: false,
+  //       atxo_78: false,
+  //       atxo_77: 'owned_commitment_2',
+  //       atxo_65: false,
+  //       atxo_64: false,
+  //       atxo_58: false,
+  //       atxo_57: false,
+  //       atxo_56: false,
+  //     },
+  //   },
+  //   {
+  //     axfrPublicKey: 'keyTwo=',
+  //     unprocessed: [],
+  //     processed: {
+  //       atxo_86: false,
+  //       atxo_85: false,
+  //       atxo_84: false,
+  //       atxo_83: false,
+  //       atxo_82: false,
+  //       atxo_81: false,
+  //       atxo_80: false,
+  //       atxo_79: false,
+  //       atxo_78: false,
+  //       atxo_77: false,
+  //       atxo_65: false,
+  //       atxo_64: false,
+  //       atxo_58: false,
+  //       atxo_57: false,
+  //       atxo_56: false,
+  //     },
+  //   },
+  // ];
   // http://127.0.0.1:8667/get_abar_memos?start=0&end=100
   const data2 = [
     33,
@@ -1640,4 +1653,4 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 // approveToken();
-// testIt();
+testIt();
