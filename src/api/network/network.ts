@@ -565,3 +565,12 @@ export const getAbarCommitment = async (
   const dataResult = await apiGet(url, { ...config });
   return dataResult;
 };
+
+export const getMaxAtxoSid = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.MaxAtxoSidDataResult> => {
+  const url = `${getQueryRoute()}/get_max_atxo_sid`;
+
+  const dataResult = await apiGet(url, { ...config });
+  return dataResult;
+};

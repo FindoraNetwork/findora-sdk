@@ -624,3 +624,7 @@ export interface AbarMemoDataResult extends NetworkAxiosDataResult {
 export interface AbarCommitmentDataResult extends NetworkAxiosDataResult {
   response?: string;
 }
+
+export interface MaxAtxoSidDataResult extends NetworkAxiosDataResult {
+  response?: string;
+}
