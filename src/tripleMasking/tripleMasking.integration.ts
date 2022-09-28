@@ -235,6 +235,9 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     log('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
 
     await waitForBlockChange();
+    if ((i + 1) % 3 == 0) {
+      await waitForBlockChange();
+    }
   }
 
   await waitForBlockChange();
@@ -1143,6 +1146,7 @@ export const abarToBarCustomSendAmount = async () => {
     '35',
     derivedAssetCode,
   );
+  await waitForBlockChange(2);
 
   log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
