@@ -47,7 +47,7 @@ const password = '123';
 
 console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
-const aaa = Evm.fraAddressToHashAddress('1V1iYLXRUiy8BI2pTVlnUV0lKMgQniotdd3nzFl0Bao='.toLocaleUpperCase());
+const aaa = Evm.fraAddressToHashAddress('fra19rtfg2g58x6jfyckwfuk7katp6arjvs60wr8lqrt88he7ya7fsdq6gdxmr');
 console.log(aaa);
 
 process.exit(-1);

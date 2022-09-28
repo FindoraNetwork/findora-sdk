@@ -86,7 +86,7 @@ var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, voi
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
+                tokenAddress = ethereumjs_abi_1.default.rawEncode(['bytes32', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
                 tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
                 return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
         }
