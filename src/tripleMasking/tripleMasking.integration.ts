@@ -234,10 +234,12 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     log('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
 
-    await waitForBlockChange();
-    if ((i + 1) % 3 == 0) {
-      await waitForBlockChange();
-    }
+    const additionalBlocksToWait = (i + 1) % 3 === 0 ? 2 : 0;
+
+    await waitForBlockChange(1 + additionalBlocksToWait);
+    // if ((i + 1) % 3 == 0) {
+    //   await waitForBlockChange();
+    // }
   }
 
   await waitForBlockChange();

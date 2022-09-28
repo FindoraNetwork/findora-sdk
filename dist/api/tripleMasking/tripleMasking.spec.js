@@ -12,11 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -203,7 +199,7 @@ describe('triple masking (unit test)', function () {
                         });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.reject(new Error('addUtxo error')); });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not fetch utxo for sids ".concat(sid))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not fetch utxo for sids " + sid)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -224,7 +220,7 @@ describe('triple masking (unit test)', function () {
                         spyGetOwnerMemo.mockImplementationOnce(function () {
                             return Promise.resolve(ownerMemoDataResult);
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not fetch memo data for sid \"".concat(sid, "\", Error - Error: ").concat(ownerMemoDataResult.error.message))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not fetch memo data for sid \"" + sid + "\", Error - Error: " + ownerMemoDataResult.error.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -249,7 +245,7 @@ describe('triple masking (unit test)', function () {
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () {
                             throw fromJsonError;
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not get decode memo data or get assetRecord\", Error - Error: ".concat(fromJsonError.message))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not get decode memo data or get assetRecord\", Error - Error: " + fromJsonError.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -275,7 +271,7 @@ describe('triple masking (unit test)', function () {
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () {
                             throw fromJsonError;
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not get decode memo data or get assetRecord\", Error - Error: ".concat(fromJsonError.message))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not get decode memo data or get assetRecord\", Error - Error: " + fromJsonError.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -299,7 +295,7 @@ describe('triple masking (unit test)', function () {
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.reject(getAXfrPublicKeyByBase64Error); });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not convert AXfrPublicKey\", Error - Error: Could not convert Anon Public Key from string\", Error - ".concat(getAXfrPublicKeyByBase64Error.message))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not convert AXfrPublicKey\", Error - Error: Could not convert Anon Public Key from string\", Error - " + getAXfrPublicKeyByBase64Error.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -326,7 +322,7 @@ describe('triple masking (unit test)', function () {
                         spyAddOperationBarToAbar.mockImplementationOnce(function () {
                             throw addOperationBarToAbarError;
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not add bar to abar operation\", Error - Error: ".concat(addOperationBarToAbarError.message))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not add bar to abar operation\", Error - Error: " + addOperationBarToAbarError.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -354,7 +350,7 @@ describe('triple masking (unit test)', function () {
                         spyGetCommitments.mockImplementationOnce(function () {
                             throw getCommitmentsError;
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not get a list of commitments strings \"Error: ".concat(getCommitmentsError.message, "\" "))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not get a list of commitments strings \"Error: " + getCommitmentsError.message + "\" ")];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -408,7 +404,7 @@ describe('triple masking (unit test)', function () {
                         spyTransactionBuilderBuild.mockImplementationOnce(function () {
                             throw saveBarToAbarToCacheError;
                         });
-                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not build and sign txn \"Error: ".concat(saveBarToAbarToCacheError.message, "\""))];
+                        return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("could not build and sign txn \"Error: " + saveBarToAbarToCacheError.message + "\"")];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
@@ -507,7 +503,7 @@ describe('triple masking (unit test)', function () {
                         abar = result[0];
                         expect(abar).toHaveProperty('commitment', givenCommitment);
                         expect(abar).toHaveProperty('abarData', abarData);
-                        expect(abar.abarData).toHaveProperty('atxoSid', "".concat(atxoSid));
+                        expect(abar.abarData).toHaveProperty('atxoSid', "" + atxoSid);
                         expect(abar.abarData).toHaveProperty('ownedAbar', ownedAbar);
                         expect(spyGetOwnedAbars).toHaveBeenCalledWith(givenCommitment);
                         return [2 /*return*/];
@@ -649,7 +645,7 @@ describe('triple masking (unit test)', function () {
                             receiverAxfrPublicKey: anonKeys.axfrPublicKey,
                             commitments: commitments,
                         });
-                        expect(spyConsoleLog).toHaveBeenCalledWith("Error reading the abarDataCache for ".concat(walletInfo.address, ". Creating an empty object now"));
+                        expect(spyConsoleLog).toHaveBeenCalledWith("Error reading the abarDataCache for " + walletInfo.address + ". Creating an empty object now");
                         return [2 /*return*/];
                 }
             });
@@ -668,7 +664,7 @@ describe('triple masking (unit test)', function () {
                             receiverAxfrPublicKey: anonKeys.axfrPublicKey,
                             commitments: commitments,
                         });
-                        expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for abarDataCache, \"".concat(cacheWriteError.message, "\""));
+                        expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for abarDataCache, \"" + cacheWriteError.message + "\"");
                         return [2 /*return*/];
                 }
             });
@@ -726,7 +722,7 @@ describe('triple masking (unit test)', function () {
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(false);
-                        expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for ownedAbarsCache, \"".concat(cacheWriteError.message, "\""));
+                        expect(spyConsoleLog).toHaveBeenCalledWith("Could not write cache for ownedAbarsCache, \"" + cacheWriteError.message + "\"");
                         return [2 /*return*/];
                 }
             });
@@ -843,7 +839,7 @@ describe('triple masking (unit test)', function () {
                         commitementResult.error = new Error('getAbarCommitment network error');
                         spyGetLedger.mockImplementationOnce(function () { return Promise.resolve(nodeLedger); });
                         spyGetAbarCommitment.mockImplementationOnce(function () { return Promise.resolve(commitementResult); });
-                        return [4 /*yield*/, expect(TripleMasking.getCommitmentByAtxoSid(atxoSid)).rejects.toThrow("could not get commitment by atxo sid. details: ".concat(commitementResult.error.message))];
+                        return [4 /*yield*/, expect(TripleMasking.getCommitmentByAtxoSid(atxoSid)).rejects.toThrow("could not get commitment by atxo sid. details: " + commitementResult.error.message)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/];
