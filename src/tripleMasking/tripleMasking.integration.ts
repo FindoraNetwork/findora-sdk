@@ -1122,6 +1122,8 @@ export const abarToBarCustomSendAmount = async () => {
     derivedAssetCode,
   );
 
+  await waitForBlockChange(2);
+
   log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
