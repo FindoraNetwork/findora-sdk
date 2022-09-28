@@ -34,7 +34,7 @@ export const hashAddressTofraAddress = async (addresss: string) => {
   const ledger = await getLedger();
 
   const tokenAddress = ethereumjsAbi.rawEncode(
-    ['bytes32', 'address'],
+    ['address', 'address'],
     ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss],
   );
 
