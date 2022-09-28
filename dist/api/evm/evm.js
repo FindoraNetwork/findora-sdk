@@ -62,7 +62,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.approveNFT = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.approveNFT = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
@@ -93,6 +93,20 @@ var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, voi
     });
 }); };
 exports.hashAddressTofraAddress = hashAddressTofraAddress;
+var hashAddressTofraAddressByNFT = function (addresss, tokenId) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tokenAddress, tokenAddressHex;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address', 'uint256'], ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId]);
+                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
+                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+        }
+    });
+}); };
+exports.hashAddressTofraAddressByNFT = hashAddressTofraAddressByNFT;
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {

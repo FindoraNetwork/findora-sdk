@@ -38,8 +38,19 @@ export const hashAddressTofraAddress = async (addresss: string) => {
     ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss],
   );
 
-  // 0x0000000000000000000000000000000000000000000000000000000000000077
-  // 0x0000000000000000000000000000000000000000000000000000000000000077
+  const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
+
+  return ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(tokenAddressHex));
+};
+
+export const hashAddressTofraAddressByNFT = async (addresss: string, tokenId: string) => {
+  const ledger = await getLedger();
+
+  const tokenAddress = ethereumjsAbi.rawEncode(
+    ['address', 'address', 'uint256'],
+    ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId],
+  );
+
   const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
 
   return ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(tokenAddressHex));
