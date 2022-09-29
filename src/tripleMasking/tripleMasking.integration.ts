@@ -8,6 +8,7 @@ import { addUtxo } from '../services/utxoHelper';
 import * as FindoraWallet from '../types/findoraWallet';
 
 import { create as createBigNumber } from '../services/bigNumber';
+import { add } from 'lodash';
 
 dotenv.config();
 
@@ -234,7 +235,8 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     log('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
 
-    await waitForBlockChange();
+    const additional_block_waittime = (i + 1) % 3 === 0 ? 1 : 0;
+    await waitForBlockChange(1 + additional_block_waittime);
   }
 
   await waitForBlockChange();
@@ -1143,6 +1145,7 @@ export const abarToBarCustomSendAmount = async () => {
     '35',
     derivedAssetCode,
   );
+  await waitForBlockChange(2);
 
   log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
