@@ -46,7 +46,7 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
-  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
@@ -94,7 +94,7 @@ const getFraBalance = async () => {
   // const pkey = ENG_PKEY;
 
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');

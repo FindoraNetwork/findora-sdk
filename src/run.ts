@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-import * as TMI from './tripleMasking/tripleMasking.integration';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -50,7 +50,8 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
-  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
@@ -95,42 +96,54 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '12345';
 
-  const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = PKEY_MINE;
-  //  const pkey = PKEY_MINE2;
-  // const pkey = PKEY_MINE3;
-  // const pkey = ENG_PKEY;
+  const isFra = false;
 
-  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
-  // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
+  console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  const mm = mString.split(' ');
+  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+  );
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const newWalletMine1 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+    password,
+  );
 
-  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+  const newWalletMine2 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
+    password,
+  );
 
-  const balance = await Account.getBalance(faucetWalletInfo);
-  const balanceNew = await Account.getBalance(newWallet);
-
-  const fraCode = await Asset.getFraAssetCode();
-  console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
+  const balanceFaucet = await Account.getBalance(faucetWalletInfo);
+  const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+  const balanceNewMine2 = await Account.getBalance(newWalletMine2);
 
   console.log('\n');
 
-  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+  console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
+  console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
   console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
+  console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+  console.log('newWalletMine1.address ', newWalletMine1.address);
+  console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
 
-  console.log('newWallet.address (from mnenmonic)', newWallet.address);
-  console.log('newWallet.privateStr', newWallet.privateStr);
+  console.log('\n');
+  console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+  console.log('newWalletMine2.address', newWalletMine2.address);
+  console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
 
   console.log('\n');
 
-  console.log('balance from restored from pkey IS', balance);
-  console.log('balance from restored using mnemonic IS', balanceNew);
+  console.log('balance from restored faucet IS', balanceFaucet);
+  console.log('balance from restored MINE1 IS', balanceNewMine1);
+  console.log('balance from restored MINE2 IS', balanceNewMine2);
+
   console.log('\n');
   console.log('\n');
 };
@@ -373,15 +386,15 @@ const transferFraToSingleAddress = async (amount: string) => {
   console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
 };
 
-// const testTransferToYourself = async () => {
-//   // const amounts = ['1', '0.5', '0.4', '0.9'];
-//   const amounts = ['0.3'];
+const testTransferToYourself = async () => {
+  // const amounts = ['1', '0.5', '0.4', '0.9'];
+  const amounts = ['0.3'];
 
-//   for (const amount of amounts) {
-//     console.log(`Sending amount of ${amount} FRA`);
-//     await transferFraToSingleAddress(amount);
-//   }
-// };
+  for (const amount of amounts) {
+    console.log(`Sending amount of ${amount} FRA`);
+    await transferFraToSingleAddress(amount);
+  }
+};
 
 /**
  * Send fra to a single recepient
@@ -1430,7 +1443,7 @@ const getAnonTxList = async () => {
   // console.log('!anon txList', txList);
 };
 
-const testIt = async () => {
+const testItSync = async () => {
   // run it as INTEGRATION_ENV_NAME=local yarn start:once
   const anonKeys = {
     axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
@@ -1444,7 +1457,7 @@ const testIt = async () => {
   // const transferResult = await TMI.barToAbarAmount();
 
   // with this option it should pass
-  const transferResult = await TMI.barToAbarAmount(anonKeys);
+  // const transferResult = await TMI.barToAbarAmount(anonKeys);
 
   const result = await Network.getAbarMemos('1', '10');
   console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
@@ -1550,45 +1563,6 @@ async function approveToken() {
 }
 
 async function testCommitment() {
-  // const syncedCommitmentsData = [
-  //   {
-  //     axfrPublicKey: 'keyOne=',
-  //     unprocessed: [85, 84, 83, 82, 81, 80], // it is unprocessed in current session only! other ranges, like 76..76 and so on, those are taken care of separately
-  //     processed: {
-  //       atxo_86: 'owned_commitment_1',
-  //       atxo_79: false,
-  //       atxo_78: false,
-  //       atxo_77: 'owned_commitment_2',
-  //       atxo_65: false,
-  //       atxo_64: false,
-  //       atxo_58: false,
-  //       atxo_57: false,
-  //       atxo_56: false,
-  //     },
-  //   },
-  //   {
-  //     axfrPublicKey: 'keyTwo=',
-  //     unprocessed: [],
-  //     processed: {
-  //       atxo_86: false,
-  //       atxo_85: false,
-  //       atxo_84: false,
-  //       atxo_83: false,
-  //       atxo_82: false,
-  //       atxo_81: false,
-  //       atxo_80: false,
-  //       atxo_79: false,
-  //       atxo_78: false,
-  //       atxo_77: false,
-  //       atxo_65: false,
-  //       atxo_64: false,
-  //       atxo_58: false,
-  //       atxo_57: false,
-  //       atxo_56: false,
-  //     },
-  //   },
-  // ];
-  // http://127.0.0.1:8667/get_abar_memos?start=0&end=100
   const data2 = [
     33,
     {
@@ -1653,4 +1627,4 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 // approveToken();
-testIt();
+testItSync();
