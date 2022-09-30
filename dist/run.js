@@ -1671,5 +1671,6 @@ function testCommitment() {
     });
 }
 // approveToken();
-testItSync();
+// testItSync();
+getFraBalance();
 //# sourceMappingURL=run.js.map
