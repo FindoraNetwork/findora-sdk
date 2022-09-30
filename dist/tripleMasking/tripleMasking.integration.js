@@ -311,7 +311,7 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
     if (amount === void 0) { amount = '210'; }
     if (iterations === void 0) { iterations = 4; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var pkey, toPkeyMine, senderWalletInfo, formattedAmount, expectedBalance, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, i, transactionBuilder, resultHandle, assetBalance, cleanedBalanceValue, realBalance, isFunded, errorMessage;
+        var pkey, toPkeyMine, senderWalletInfo, formattedAmount, expectedBalance, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, i, transactionBuilder, resultHandle, additional_block_waittime, assetBalance, cleanedBalanceValue, realBalance, isFunded, errorMessage;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -352,7 +352,8 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                 case 8:
                     resultHandle = _a.sent();
                     (0, utils_1.log)('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+                    additional_block_waittime = (i + 1) % 3 === 0 ? 1 : 0;
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(1 + additional_block_waittime)];
                 case 9:
                     _a.sent();
                     _a.label = 10;
@@ -1197,23 +1198,26 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, customAssetSids, '35', derivedAssetCode)];
             case 14:
                 customAssetCommitmentsList = _d.sent();
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 15:
+                _d.sent();
                 (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
                 return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
-            case 15:
+            case 16:
                 fraAssetSids = _d.sent();
                 (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
                 fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2], fAssetSidFour = fraAssetSids[3];
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour], '40', fraAssetCode)];
-            case 16:
+            case 17:
                 fraAssetCommitmentsList = _d.sent();
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
-            case 17:
+            case 18:
                 _d.sent();
                 givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
                 (0, utils_1.log)('////////////////////// bar to abar is done, sending abar to bar //////////////');
                 amountToSend = '12.15';
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
-            case 18:
+            case 19:
                 assetBalanceBeforeAbarToBar = _d.sent();
                 receiverAssetBalanceBeforeTransfer = (0, bigNumber_1.create)(assetBalanceBeforeAbarToBar);
                 isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo((0, bigNumber_1.create)('0'));
@@ -1221,18 +1225,18 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                     throw new Error("Receiver must have 0 balance of the asset but it has " + receiverAssetBalanceBeforeTransfer.toString());
                 }
                 return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, amountToSend, assetCodeToUse, givenCommitmentsListSender)];
-            case 19:
+            case 20:
                 _a = _d.sent(), transactionBuilder = _a.transactionBuilder, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 20:
+            case 21:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('abar to bar result handle!!', resultHandle);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(4)];
-            case 21:
+            case 22:
                 _d.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
-            case 22:
+            case 23:
                 balancesSenderAfter = _d.sent();
                 (0, utils_1.log)('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
                 expectedFraAbarMinimumAmountAfterTransfer = (0, bigNumber_1.create)('38');
@@ -1257,7 +1261,7 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 }
                 (0, utils_1.log)('//////////// checking receiver bar balance //////////');
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
-            case 23:
+            case 24:
                 assetBalanceAfterAbarToBar = _d.sent();
                 (0, utils_1.log)('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
                 receiverAssetBalanceAfterTransfer = (0, bigNumber_1.create)(assetBalanceAfterAbarToBar);

@@ -1627,4 +1627,5 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 // approveToken();
-testItSync();
+// testItSync();
+getFraBalance();
