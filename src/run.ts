@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+// // import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -95,8 +95,10 @@ const getFraBalance = async () => {
   const password = '12345';
 
   const pkey = PKEY_LOCAL_FAUCET;
+  console.log('🚀 ~ file: run.ts ~ line 99 ~ getFraBalance ~ pkey', pkey);
   // const pkey = PKEY_MINE;
-  //  const pkey = PKEY_MINE2;
+  const pkeyMine2 = PKEY_MINE2;
+  console.log('🚀 ~ file: run.ts ~ line 102 ~ getFraBalance ~ pkeyMine2', pkeyMine2);
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
 
@@ -109,13 +111,14 @@ const getFraBalance = async () => {
 
   const mm = mString.split(' ');
 
-  // const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
-  const newWallet = await Keypair.restoreFromPrivateKey(myKey, password);
+  const newWalletMine1 = await Keypair.restoreFromMnemonic(mm, password, false);
+  const newWalletMine2 = await Keypair.restoreFromPrivateKey(pkeyMine2, password);
 
   const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
-  const balance = await Account.getBalance(faucetWalletInfo);
-  const balanceNew = await Account.getBalance(newWallet);
+  const balanceFaucet = await Account.getBalance(faucetWalletInfo);
+  const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+  const balanceNewMine2 = await Account.getBalance(newWalletMine2);
 
   const fraCode = await Asset.getFraAssetCode();
   console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
@@ -127,13 +130,20 @@ const getFraBalance = async () => {
 
   console.log('\n');
 
-  console.log('newWallet.address (from mnenmonic)', newWallet.address);
-  console.log('newWallet.privateStr', newWallet.privateStr);
+  console.log('newWalletMine1.address (from mnenmonic)', newWalletMine1.address);
+  console.log('newWalletMine1.privateStr (from mnenmonic)', newWalletMine1.privateStr);
 
   console.log('\n');
 
-  console.log('balance from restored from pkey IS', balance);
-  console.log('balance from restored using mnemonic IS', balanceNew);
+  console.log('newWalletMine2.address', newWalletMine2.address);
+  console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
+
+  console.log('\n');
+
+  console.log('balance from restored from pkey faucet IS', balanceFaucet);
+  console.log('balance from restored using mnemonic MINE1 IS', balanceNewMine1);
+  console.log('balance from restored using pkey MINE2 IS', balanceNewMine2);
+
   console.log('\n');
   console.log('\n');
 };
