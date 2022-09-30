@@ -1489,7 +1489,7 @@ export const decryptAbarMemo = async (
 
   const [atxoSid, myMemoData] = abarMemoItem;
 
-  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey);
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSecretKey);
 
   const abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
 

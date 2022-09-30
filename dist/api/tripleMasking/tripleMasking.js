@@ -1495,7 +1495,7 @@ var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 
             case 1:
                 ledger = _a.sent();
                 atxoSid = abarMemoItem[0], myMemoData = abarMemoItem[1];
-                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey)];
+                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSecretKey)];
             case 2:
                 aXfrKeyPair = _a.sent();
                 abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
