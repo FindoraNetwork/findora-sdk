@@ -50,7 +50,8 @@ console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
-  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
@@ -94,55 +95,56 @@ const getFraAssetCode = async () => {
 const getFraBalance = async () => {
   const password = '12345';
 
-  const pkey = PKEY_LOCAL_FAUCET;
-  console.log('🚀 ~ file: run.ts ~ line 99 ~ getFraBalance ~ pkey', pkey);
-  // const pkey = PKEY_MINE;
-  const pkeyMine2 = PKEY_MINE2;
-  console.log('🚀 ~ file: run.ts ~ line 102 ~ getFraBalance ~ pkeyMine2', pkeyMine2);
-  // const pkey = PKEY_MINE3;
-  // const pkey = ENG_PKEY;
+  const isFra = false;
 
-  // const myKey = PKEY_MINE;
-  const myKey = PKEY_MINE2;
+  console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE;
-  // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
+  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+    isFra,
+  );
 
-  const mm = mString.split(' ');
+  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const newWalletMine1 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+    password,
+    isFra,
+  );
 
-  const newWalletMine1 = await Keypair.restoreFromMnemonic(mm, password, false);
-  const newWalletMine2 = await Keypair.restoreFromPrivateKey(pkeyMine2, password);
-
-  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+  const newWalletMine2 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
+    password,
+    isFra,
+  );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
   const balanceNewMine1 = await Account.getBalance(newWalletMine1);
   const balanceNewMine2 = await Account.getBalance(newWalletMine2);
 
-  const fraCode = await Asset.getFraAssetCode();
-  console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
-
   console.log('\n');
 
-  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+  console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
+  console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
   console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
-
-  console.log('newWalletMine1.address (from mnenmonic)', newWalletMine1.address);
-  console.log('newWalletMine1.privateStr (from mnenmonic)', newWalletMine1.privateStr);
+  console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+  console.log('newWalletMine1.address ', newWalletMine1.address);
+  console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
 
   console.log('\n');
-
+  console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
   console.log('newWalletMine2.address', newWalletMine2.address);
   console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
 
   console.log('\n');
 
-  console.log('balance from restored from pkey faucet IS', balanceFaucet);
-  console.log('balance from restored using mnemonic MINE1 IS', balanceNewMine1);
-  console.log('balance from restored using pkey MINE2 IS', balanceNewMine2);
+  console.log('balance from restored faucet IS', balanceFaucet);
+  console.log('balance from restored MINE1 IS', balanceNewMine1);
+  console.log('balance from restored MINE2 IS', balanceNewMine2);
 
   console.log('\n');
   console.log('\n');
@@ -2651,7 +2653,7 @@ async function approveToken() {
 
 // testIt();
 
-// getFraBalance();
+getFraBalance();
 // transferFraToSingleRecepient();
 
 // getAnonKeys(); // +
@@ -2687,7 +2689,7 @@ async function approveToken() {
 // getAnonTxList();
 
 // testTransferToYourself();
-getAnonKeys();
+// getAnonKeys();
 
 // Abar to abar transfers
 // 1. this one has one fra atxo used both for transfer and fee
