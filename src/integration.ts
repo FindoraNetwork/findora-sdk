@@ -304,6 +304,53 @@ export const sendFraTransactionSubmit = async () => {
   return isItRight;
 };
 
+export const sendFraConfidentialTransactionSubmit = async () => {
+  log('////////////////  sendFraConfidentialTransactionSubmit //////////////// ');
+
+  const pkey = mainFaucet;
+
+  const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
+
+  const toWalletInfo = await KeypairApi.createKeypair(password);
+
+  const receiverBalanceBeforeTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
+
+  const assetBlindRules = { isTypeBlind: true, isAmountBlind: true };
+
+  const numbers = '0.2';
+
+  const assetCode = await AssetApi.getFraAssetCode();
+
+  const transactionBuilder = await TransactionApi.sendToAddress(
+    walletInfo,
+    toWalletInfo.address,
+    numbers,
+    assetCode,
+    assetBlindRules,
+  );
+
+  const resultHandle = await TransactionApi.submitTransaction(transactionBuilder);
+
+  const isTxSend = await getTxSid('send', resultHandle);
+
+  if (!isTxSend) {
+    log(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
+    return false;
+  }
+
+  const receiverBalanceAfterTransfer = await AccountApi.getBalanceInWei(toWalletInfo);
+
+  const isItRight = isNumberChangedBy(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
+
+  const peterCheckResult = `Peter balance should be 0.200000 and now it is ${formatFromWei(
+    receiverBalanceAfterTransfer,
+  )}, so this is "${isItRight}" `;
+
+  log('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
+
+  return isItRight;
+};
+
 export const sendFraToMultipleReceiversTransactionSubmit = async () => {
   const pkey = mainFaucet;
 

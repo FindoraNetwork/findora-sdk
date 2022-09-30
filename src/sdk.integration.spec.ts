@@ -39,6 +39,14 @@ describe(`Findora SDK integration (integration test)`, () => {
       extendedExecutionTimeout * 2,
     );
     it(
+      'Should send FRA to the reciever with confidential amount and asset type',
+      async () => {
+        const result = await Integration.sendFraConfidentialTransactionSubmit();
+        expect(result).toBe(true);
+      },
+      extendedExecutionTimeout * 2,
+    );
+    it(
       'Should send FRA to multiple recievers',
       async () => {
         const result = await Integration.sendFraToMultipleReceiversTransactionSubmit();
