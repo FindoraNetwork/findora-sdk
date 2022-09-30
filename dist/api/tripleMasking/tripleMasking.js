@@ -78,7 +78,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAmountFromCommitments = exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.abarToBarAmount = exports.barToAbar = exports.barToAbarAmount = exports.getTotalAbarTransferFee = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.abarToAbarAmount = exports.getAbarToBarAmountPayload = exports.getAbarToAbarAmountPayload = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
+exports.getCommitmentByAtxoSid = exports.decryptAbarMemo = exports.getAmountFromCommitments = exports.getSendAtxo = exports.genNullifierHash = exports.getOwnedAbars = exports.getAbarBalance = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getBalanceMaps = exports.openAbar = exports.getSpentAbars = exports.getUnspentAbars = exports.getNullifierHashesFromCommitments = exports.isNullifierHashSpent = exports.abarToBar = exports.abarToBarAmount = exports.barToAbar = exports.barToAbarAmount = exports.getTotalAbarTransferFee = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.abarToAbar = exports.abarToAbarAmount = exports.getAbarToBarAmountPayload = exports.getAbarToAbarAmountPayload = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = exports.saveOwnedAbarsToCache = exports.saveBarToAbarToCache = exports.genAnonKeys = void 0;
 var cache_1 = require("../../config/cache");
 var testHelpers_1 = require("../../evm/testHelpers");
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -1487,4 +1487,64 @@ var getAmountFromCommitments = function (code, commitments, anonKeys) { return _
     });
 }); };
 exports.getAmountFromCommitments = getAmountFromCommitments;
+var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, atxoSid, myMemoData, aXfrKeyPair, abarOwnerMemo, decryptedAbar, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                atxoSid = abarMemoItem[0], myMemoData = abarMemoItem[1];
+                return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey)];
+            case 2:
+                aXfrKeyPair = _a.sent();
+                abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
+                try {
+                    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair);
+                }
+                catch (error) {
+                    return [2 /*return*/, false];
+                }
+                result = {
+                    atxoSid: atxoSid,
+                    decryptedAbar: decryptedAbar,
+                    owner: anonKeys,
+                };
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+exports.decryptAbarMemo = decryptAbarMemo;
+var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, commitementResult, error, response, commitmentInBase58;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Network.getAbarCommitment("" + atxoSid)];
+            case 2:
+                commitementResult = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult', commitementResult);
+                error = commitementResult.error, response = commitementResult.response;
+                if (error) {
+                    (0, utils_1.log)('error', error);
+                    throw new Error("could not get commitment by atxo sid. details: " + error.message);
+                }
+                if (!response) {
+                    throw new Error("could not get commitment by atxo sid. no response retrieved");
+                }
+                commitmentInBase58 = ledger.base64_to_base58(response);
+                // console.log(
+                //   '🚀 ~ file: tripleMasking.ts ~ line 1531 ~ getCommitmentByAtxoSid ~ commitmentInBase58',
+                //   commitmentInBase58,
+                // );
+                return [2 /*return*/, {
+                        atxoSid: atxoSid,
+                        commitment: commitmentInBase58,
+                    }];
+        }
+    });
+}); };
+exports.getCommitmentByAtxoSid = getCommitmentByAtxoSid;
 //# sourceMappingURL=tripleMasking.js.map

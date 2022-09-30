@@ -142,3 +142,21 @@ export interface OpenedAbarInfo {
   amount: string;
   assetType: string;
 }
+
+export interface AbarMemoData {
+  point: string;
+  ctext: number[];
+}
+
+export type AbarMemoItem = [string, AbarMemoData];
+
+export interface DecryptedAbarMemoData {
+  atxoSid: string;
+  decryptedAbar: Uint8Array;
+  owner: FormattedAnonKeys;
+}
+
+export interface AtxoCommitmentItem {
+  atxoSid: string;
+  commitment: string;
+}

@@ -55,5 +55,8 @@ export declare const getRpcPayload: <T>(msgId: number, method: string, extraPara
 };
 export declare const getLatestBlock: (extraParams?: Types.BlockHeightParams | undefined, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.BlockHeightResult>;
 export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.OwnedAbarsDataResult>;
+export declare const getAbarMemos: (startSid: string, endSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbarMemoDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.CheckNullifierHashSpentDataResult>;
 export declare const getConfig: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.NetworkAxiosDataResult>;
+export declare const getAbarCommitment: (atxoSid: string, config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.AbarCommitmentDataResult>;
+export declare const getMaxAtxoSid: (config?: Types.NetworkAxiosConfig | undefined) => Promise<Types.MaxAtxoSidDataResult>;

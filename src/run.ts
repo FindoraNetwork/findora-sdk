@@ -1431,27 +1431,11 @@ const getAnonTxList = async () => {
   // anon wallet 1
   const anonKeysSender = {
     axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
+    axfrViewKey: '',
   };
 
-  // Anon Walet 2
-  // const anonKeysSender = {
-  //   axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-  //   axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-  //   decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
-  //   encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
-  //   name: 'AnonWallet2',
-  // };
-
   const subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E'; // 9.98 spent - a1
-  // const subject = '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G'; // 9.98 - a2?
-
-  // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-  // const subject = '4P1iTuvWEFiM8Hfethb8CvuBMC6NncwsB7Je7MdziAwr'; // spent commitment
-  // const subject = 'BQ9eqeQVJowbtiUs7C3nXgvzytgGq2ZviKuTL7Gqe2zi'; // spent commitment
-
-  // const hashes = [subject];
-  // const txList = await Transaction.getAnonTxList(hashes, 'to');
 
   const hashes = await TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject]);
   const txList = await Transaction.getAnonTxList(hashes, 'from');
@@ -1462,29 +1446,86 @@ const getAnonTxList = async () => {
   // console.log('!anon txList', txList);
 };
 
-const testIt = async () => {
-  const findoraWasm = await getLedger();
+const testItSync = async () => {
+  // run it as INTEGRATION_ENV_NAME=local yarn start:once
+  const anonKeys = {
+    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+    axfrSpendKey:
+      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+    name: 'AnonWallet2',
+  };
 
-  function isCoinBase(fraAddress: string) {
-    console.log(`we are going to call leger with ${fraAddress}`);
-    // return false;
+  // with this option it should thrown an error!
+  // const transferResult = await TMI.barToAbarAmount();
 
-    const addressInBase64 = findoraWasm.bech32_to_base64(fraAddress);
+  // with this option it should pass
+  // const transferResult = await TMI.barToAbarAmount(anonKeys);
 
+  const result = await Network.getAbarMemos('1', '10');
+  console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
+
+  const { error, response } = result;
+
+  if (error) {
+    log('error', error);
+    throw new Error('could not get abar memos');
+  }
+  if (!response) {
     return false;
+  }
+  const last = response.pop();
 
-    // return [findoraWasm.get_coinbase_principal_address(), findoraWasm.get_coinbase_address()].includes(
-    //   addressInBase64,
-    // );
+  if (!last) {
+    return false;
+  }
+  log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
+
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
+  log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
+
+  if (!decrypted) {
+    throw new Error('can not proceed as the abar must be decrypted!');
   }
 
-  const aaa1 = '3a42pm482SV4wgPk9ibZ5vq7iuoMVSqzqV2x1hvWRcSZ';
-  const aaa2 = 'DNnXvLm6eMEuVf7xe48arKug6BhGHTMBQy5rF4W6WHFm';
-  const aaa3 = 'fra1ngv43xvre25pwtuynrh4ua4fhxn9mye6nh8kakcjdgc6ghger0cquazydn';
+  // we proceed only if decrypted is true! if last item does not belong to the anonKeys then we should have an error
+  const [ownedAbarAtxoSid] = last;
 
-  const result = isCoinBase(aaa1);
+  const commitmentData = await TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid);
+  log('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
 
-  console.log('result', result);
+  const maxAtxoSidResult = await Network.getMaxAtxoSid();
+  log('max atxo sid result is ', maxAtxoSidResult);
+
+  const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+  if (masError) {
+    log('error!', masError);
+    throw new Error('could not get mas');
+  }
+
+  console.log(`Current MAS = ${masResponse}`);
+
+  return true;
+};
+
+const txHashTest = async () => {
+  const tendermintHash = '44d8c650a8b962b40e3d3fd180872232b77e5e8be42614cf106fd1d2ed15f1c5';
+
+  log('🚀 ~ file: run.ts ~ line 2576 ~ txHashTest ~ tendermintHash', tendermintHash);
+
+  const hashSwapResult = await Network.getHashSwap(tendermintHash);
+
+  log('hashSwapResult', JSON.stringify(hashSwapResult));
+
+  const { response } = hashSwapResult;
+
+  if (!response) {
+    throw new Error('could not fetch hashswap, no response received');
+  }
+
+  const explorerHash = response?.result?.txs?.[0].hash;
+  log('🚀 ~ file: run.ts ~ line 2588 ~ txHashTest ~ explorerHash', explorerHash);
 };
 
 async function approveToken() {
@@ -1524,73 +1565,69 @@ async function approveToken() {
   console.log(addr);
 }
 
+async function testCommitment() {
+  const data2 = [
+    33,
+    {
+      point: 'd4koAbY2p-9fu5KOSkcmlRtefgqmwrIlm--3gx0KLjU=',
+      ctext: [
+        153, 62, 220, 132, 222, 139, 46, 13, 77, 111, 92, 117, 139, 60, 245, 53, 247, 132, 69, 227, 69, 186,
+        173, 123, 147, 193, 177, 244, 148, 26, 186, 90, 19, 157, 1, 113, 170, 113, 165, 15, 76, 15, 83, 82,
+        138, 161, 98, 95, 34, 54, 118, 251, 30, 232, 104, 241, 101, 249, 228, 103, 153, 149, 249, 145, 174,
+        179, 176, 156, 255, 163, 40, 26, 105, 206, 199, 37, 102, 217, 160, 234, 79, 197, 103, 171, 213, 122,
+        14, 204,
+      ],
+    },
+  ];
+
+  const [atxoSid, myMemoData] = data2;
+
+  const anonKeysReceiver = {
+    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+    axfrSpendKey:
+      'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+  };
+
+  // const atxoSidM = '33';
+  // const abarOwnerMemo = await TripleMasking.getAbarOwnerMemo(atxoSidM);
+
+  const ledger = await getLedger();
+
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeysReceiver.axfrSpendKey);
+
+  // const a = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair); // Axf
+  const abarOwnerMemo2 = ledger.AxfrOwnerMemo.from_json(myMemoData);
+
+  let decryptedAbar;
+
+  try {
+    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo2, aXfrKeyPair); // Axf
+  } catch (error) {
+    console.log('that is not owned by the given anonymous wallet');
+  }
+  console.log('🚀 ~ file: run.ts ~ line 2703 ~ testCommitment ~ decryptedAbar', decryptedAbar);
+  // const [amount, assetType] = decryptedAbar;
+
+  // http://127.0.0.1:8667/get_abar_commitment/0) <- atxoSid
+
+  const commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
+
+  const commitement58 = ledger.base64_to_base58(commitmentInBase64);
+  console.log('🚀 ~ file: run.ts ~ line 2667 ~ testCommitment ~ commitement58', commitement58);
+  //  curl http://127.0.0.1:8667/get_abar_commitment/0                                                                                                           [08:18:31pm]
+  // "EYSkMoa1SFefat0xPtZsblG5GnMTcgm45eDBcfKw9Uo="⏎
+
+  // HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs
+
+  // {
+  //   "commitmentKey": "HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs",
+  //   "commitmentAxfrPublicKey": "-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=",
+  //   "commitmentAssetType": "j7srJTB5XrQBaRNpdE5SFWcQFUmRipmWUV4X4qkL-jc=",
+  //   "commitmentAmount": "23.140000"
+  // },
+
+  // to store or continue parse_axfr_memo/decrypt_axfr_memo
+}
 // approveToken();
-
-// testIt();
-
-getFraBalance();
-// transferFraToSingleRecepient();
-
-// getAnonKeys(); // +
-// createTestBars();
-// barToAbar(); // ++
-// getUnspentAbars(); // +
-// getAbarBalance(); // +
-// getFee();
-// abarToAbar(); // ++
-// abarToBar(); // +
-// validateUnspent(); // +
-// getCustomAssetBala9r8HN7YmJdg4mcbBRnBAiq5vu1cHaBDE49dnKamGbmbX);
-// defineCustomAsset();
-// issueCustomAsset();
-// getStateCommitment();
-// getValidatorList();
-// getDelegateInfo();
-// getTransferBuilderOperation();
-// createNewKeypair();
-// transferFraToSingleAddress();
-// transferFraToMultipleRecepients();
-// transferCustomAssetToSingleRecepient();
-// transferCustomAssetToMultipleRecepients();
-// getCustomAssetDetails();
-// getTransactionStatus();
-// getBlockDetails();
-// delegateFraTransactionSubmit();
-// delegateFraTransactionAiindClaimRewards();
-// unstakeFraTransactionSubmit();
-// sendEvmToAccount();
-// ethProtocol();
-// myFunc16(); // tx list
-// getAnonTxList();
-
-// testTransferToYourself();
-// getAnonKeys();
-
-// Abar to abar transfers
-// 1. this one has one fra atxo used both for transfer and fee
-// abarToAbarFraOneFraAtxoForFee();
-
-// 2. this one has multiple fra atxo
-// abarToAbarFraMultipleFraAtxoForFee();
-
-// 3. this one sends custom asset and uses one fra atxo for fee
-// abarToAbarCustomOneFraAtxoForFee();
-
-// 4. this one sends custom asset and has multiple fra atxo
-// abarToAbarCustomMultipleFraAtxoForFee();
-
-// New TM methods (examples)
-
-// 1. Send an exact amount from bar to abar
-// barToAbarAmount();
-
-// 2. Send exact amount from abar to abar `abarToBarAmount`
-// abarToAbarFraMultipleFraAtxoForFeeSendAmount(); // +
-// abarToAbarCustomMultipleFraAtxoForFeeSendAmount(); // +
-
-// 3. Abar to bar with exact amount (both for fra and for custom asset)
-// abarToBarCustomSendAmount();
-// abarToBarFraSendAmount();
-
-// Total fee test
-// abarToAbarFraMultipleFraAtxoForFeeSendAmountTotalFee();
+// testItSync();

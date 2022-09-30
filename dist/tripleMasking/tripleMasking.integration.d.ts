@@ -10,11 +10,11 @@ export declare const validateSpent: (AnonKeys: FindoraWallet.FormattedAnonKeys, 
 export declare const getSidsForSingleAsset: (senderOne: string, assetCode: string) => Promise<number[]>;
 export declare const createTestBars: (givenSenderOne?: string | undefined, amount?: string, iterations?: number) => Promise<true>;
 export declare const barToAbar: (givenSenderOne?: string | undefined, AnonKeys?: FindoraWallet.FormattedAnonKeys | undefined, givenSids?: number[] | undefined, givenBalanceChange?: string | undefined, givenAssetCode?: string | undefined, isBalanceCheck?: boolean) => Promise<string[]>;
-export declare const abarToAbar: () => Promise<boolean>;
-export declare const abarToAbarMulti: () => Promise<boolean>;
-export declare const abarToAbarFraMultipleFraAtxoForFeeSendAmount: () => Promise<boolean>;
-export declare const abarToAbarCustomMultipleFraAtxoForFeeSendAmount: () => Promise<boolean>;
+export declare const abarToAbar: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;
+export declare const abarToAbarMulti: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;
+export declare const abarToAbarFraMultipleFraAtxoForFeeSendAmount: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;
+export declare const abarToAbarCustomMultipleFraAtxoForFeeSendAmount: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;
 export declare const abarToBar: () => Promise<boolean>;
 export declare const abarToBarCustomSendAmount: () => Promise<boolean>;
 export declare const abarToBarFraSendAmount: () => Promise<boolean>;
-export declare const barToAbarAmount: () => Promise<boolean>;
+export declare const barToAbarAmount: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;

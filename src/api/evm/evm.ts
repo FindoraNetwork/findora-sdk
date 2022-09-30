@@ -18,6 +18,8 @@ import * as Transaction from '../transaction';
 import {
   calculationDecimalsAmount,
   getErc20Contract,
+  getNFT1155Contract,
+  getNFT721Contract,
   getSimBridgeContract,
   getWeb3,
   IWebLinkedInfo,
@@ -34,6 +36,19 @@ export const hashAddressTofraAddress = async (addresss: string) => {
   const tokenAddress = ethereumjsAbi.rawEncode(
     ['address', 'address'],
     ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss],
+  );
+
+  const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
+
+  return ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(tokenAddressHex));
+};
+
+export const hashAddressTofraAddressByNFT = async (addresss: string, tokenId: string) => {
+  const ledger = await getLedger();
+
+  const tokenAddress = ethereumjsAbi.rawEncode(
+    ['address', 'address', 'uint256'],
+    ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId],
   );
 
   const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
@@ -156,6 +171,103 @@ export const frc20ToBar = async (
   const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
   const gasPrice = await web3.eth.getGasPrice();
   const contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
+
+  const estimategas = await web3.eth.estimateGas({
+    to: web3WalletInfo.account,
+    data: contractData,
+  });
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: bridgeAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    gasLimit: web3.utils.toHex(3000000),
+    gas: web3.utils.toHex(estimategas),
+    nonce: nonce,
+    // value: web3.utils.toHex(convertAmount),
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
+};
+
+export const approveNFT = async (
+  tokenAddress: string,
+  deckAddress: string,
+  tokenId: string,
+  nftType: string,
+  web3WalletInfo: IWebLinkedInfo,
+) => {
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+
+  let contractData = '';
+
+  if (nftType == '721') {
+    const nft721Contract = getNFT721Contract(web3, tokenAddress);
+    contractData = nft721Contract.methods.approve(deckAddress, tokenId).encodeABI();
+  }
+  if (nftType == '1155') {
+    const nft1155Contract = getNFT1155Contract(web3, tokenAddress);
+    contractData = nft1155Contract.methods.setApprovalForAll(deckAddress, true).encodeABI();
+  }
+
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
+
+  const estimategas = await web3.eth.estimateGas({
+    to: web3WalletInfo.account,
+    data: contractData,
+  });
+
+  const txParams = {
+    from: web3WalletInfo.account,
+    to: tokenAddress,
+    gasPrice: web3.utils.toHex(gasPrice),
+    gasLimit: web3.utils.toHex(3000000),
+    gas: web3.utils.toHex(estimategas),
+    nonce: nonce,
+    data: contractData,
+    chainId: web3WalletInfo.chainId,
+  };
+
+  const signed_txn = await web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr);
+  if (signed_txn?.rawTransaction) {
+    return await web3.eth.sendSignedTransaction(signed_txn?.rawTransaction);
+  } else {
+    throw Error('fail frc20ToBar');
+  }
+};
+
+export const frcNftToBar = async (
+  bridgeAddress: string,
+  recipientAddress: string,
+  tokenAddress: string,
+  tokenAmount: string,
+  tokenId: string,
+  nftType: string,
+  web3WalletInfo: IWebLinkedInfo,
+): Promise<TransactionReceipt | any> => {
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+  const contract = getSimBridgeContract(web3, bridgeAddress);
+
+  const findoraTo = fraAddressToHashAddress(recipientAddress);
+  let contractData = '';
+
+  if (nftType == '721') {
+    contractData = contract.methods.depositFRC721(tokenAddress, findoraTo, tokenId).encodeABI();
+  }
+  if (nftType == '1155') {
+    contractData = contract.methods.depositFRC1155(tokenAddress, findoraTo, tokenId, tokenAmount).encodeABI();
+  }
+
+  const nonce = await web3.eth.getTransactionCount(web3WalletInfo.account);
+  const gasPrice = await web3.eth.getGasPrice();
 
   const estimategas = await web3.eth.estimateGas({
     to: web3WalletInfo.account,

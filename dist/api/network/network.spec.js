@@ -1325,5 +1325,54 @@ describe('network (unit test)', function () {
             });
         }); });
     });
+    describe('getAbarMemos', function () {
+        var startSid = '1';
+        var endSid = '4';
+        var url = hostUrl + ":8667/get_abar_memos";
+        it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var abarMemoDataResponse, spyApiGet, result, response;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        abarMemoDataResponse = [
+                            [1, { point: '1', ctext: [1, 2, 3] }],
+                            [2, { point: '2', ctext: [4, 5, 6] }],
+                            [3, { point: '3', ctext: [7, 8, 9] }],
+                            [4, { point: '4', ctext: [10, 11, 12] }],
+                        ];
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.json(abarMemoDataResponse));
+                        }));
+                        spyApiGet = jest.spyOn(network, 'apiGet');
+                        return [4 /*yield*/, network.getAbarMemos(startSid, endSid, testConfig)];
+                    case 1:
+                        result = _a.sent();
+                        response = result.response;
+                        expect(result).toHaveProperty('response');
+                        expect(result).not.toHaveProperty('error');
+                        expect(response).toEqual(abarMemoDataResponse);
+                        expect(spyApiGet).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { start: startSid, end: endSid } }));
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('returns an error in case of a user error', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var dataResult;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        server.use(msw_1.rest.get(url, function (_req, res, ctx) {
+                            return res(ctx.status(404));
+                        }));
+                        return [4 /*yield*/, network.getAbarMemos(startSid, endSid, testConfig)];
+                    case 1:
+                        dataResult = _a.sent();
+                        expect(dataResult).not.toHaveProperty('response');
+                        expect(dataResult).toHaveProperty('error');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
 });
 //# sourceMappingURL=network.spec.js.map

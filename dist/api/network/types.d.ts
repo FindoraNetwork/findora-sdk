@@ -481,3 +481,13 @@ export interface BlockHeightResult extends NetworkAxiosDataResult {
 export interface BlockHeightParams {
     blockType?: string;
 }
+export declare type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
+export interface AbarMemoDataResult extends NetworkAxiosDataResult {
+    response?: AbarMemoResponse;
+}
+export interface AbarCommitmentDataResult extends NetworkAxiosDataResult {
+    response?: string;
+}
+export interface MaxAtxoSidDataResult extends NetworkAxiosDataResult {
+    response?: string;
+}

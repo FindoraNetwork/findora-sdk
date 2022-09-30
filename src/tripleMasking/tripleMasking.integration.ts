@@ -197,6 +197,7 @@ export const getSidsForSingleAsset = async (senderOne: string, assetCode: string
   return customAssetSids.sort((a, b) => a - b);
 };
 
+// External Tests
 export const createTestBars = async (givenSenderOne?: string, amount = '210', iterations = 4) => {
   log('////////////////  Create Test Bars //////////////// ');
 
@@ -236,6 +237,7 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     await waitForBlockChange();
   }
 
+  await waitForBlockChange();
   await waitForBlockChange();
 
   const assetBalance = await Account.getBalance(toWalletInfo, fraCode);
@@ -355,13 +357,17 @@ export const barToAbar = async (
   return givenCommitments;
 };
 
-export const abarToAbar = async () => {
+export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
   log('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
   const senderWalletInfo = await createNewKeypair();
   const senderOne = senderWalletInfo.privateStr!;
 
   const anonKeysSender = await getAnonKeys();
-  const anonKeysReceiver = await getAnonKeys();
+
+  const generatedAnonKeysReceiver = await getAnonKeys();
+  const anonKeysReceiver = givenAnonKeysReceiver
+    ? { ...givenAnonKeysReceiver }
+    : { ...generatedAnonKeysReceiver };
 
   const fraAssetCode = await Asset.getFraAssetCode();
 
@@ -456,10 +462,14 @@ export const abarToAbar = async () => {
   return true;
 };
 
-export const abarToAbarMulti = async () => {
+export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
   log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
   const anonKeysSender = await getAnonKeys();
-  const anonKeysReceiver = await getAnonKeys();
+
+  const generatedAnonKeysReceiver = await getAnonKeys();
+  const anonKeysReceiver = givenAnonKeysReceiver
+    ? { ...givenAnonKeysReceiver }
+    : { ...generatedAnonKeysReceiver };
 
   const asset1Code = await Asset.getRandomAssetCode();
 
@@ -632,9 +642,15 @@ export const abarToAbarMulti = async () => {
   return true;
 };
 
-export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
+export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
+  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
+) => {
+  const generatedAnonKeysReceiver = await getAnonKeys();
+  const anonKeysReceiver = givenAnonKeysReceiver
+    ? { ...givenAnonKeysReceiver }
+    : { ...generatedAnonKeysReceiver };
+
   const anonKeysSender = await getAnonKeys();
-  const anonKeysReceiver = await getAnonKeys();
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -771,9 +787,15 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async () => {
   return true;
 };
 
-export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async () => {
+export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
+  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
+) => {
+  const generatedAnonKeysReceiver = await getAnonKeys();
+  const anonKeysReceiver = givenAnonKeysReceiver
+    ? { ...givenAnonKeysReceiver }
+    : { ...generatedAnonKeysReceiver };
+
   const anonKeysSender = await getAnonKeys();
-  const anonKeysReceiver = await getAnonKeys();
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -1371,8 +1393,12 @@ export const abarToBarFraSendAmount = async () => {
   return true;
 };
 
-export const barToAbarAmount = async () => {
-  const anonKeysSender = await getAnonKeys();
+export const barToAbarAmount = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
+  const generatedAnonKeysReceiver = await getAnonKeys();
+  const anonKeysReceiver = givenAnonKeysReceiver
+    ? { ...givenAnonKeysReceiver }
+    : { ...generatedAnonKeysReceiver };
+
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -1399,7 +1425,7 @@ export const barToAbarAmount = async () => {
     senderWalletInfo,
     amount,
     fraAssetCode,
-    anonKeysSender.axfrPublicKey,
+    anonKeysReceiver.axfrPublicKey,
   );
 
   log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
@@ -1418,7 +1444,7 @@ export const barToAbarAmount = async () => {
 
   await barToAbarBalances(
     senderWalletInfo,
-    anonKeysSender,
+    anonKeysReceiver,
     givenCommitments,
     balance,
     amount,
