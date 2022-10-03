@@ -37,14 +37,20 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
   let end = -1;
 
   if (last === IAS) {
-    [start, end] = getRangeWithoutData(mas);
+    const r = getRangeWithoutData(mas);
+    console.log('🚀 ~ file: rangeHelper.ts ~ line 41 ~ getRangeWithoutGaps ~ r', r);
+    const [start, end] = r;
 
     // case 2.A
     if (start > first) {
       return [start, end];
     }
+    // case 5.D
+    // @todo add logic to return -1
+    const realFirst = first >= end ? end : first + 1;
+
     // case 2.B
-    return [first + 1, end];
+    return [realFirst, end];
   }
 
   // case 3.A and 3.B
