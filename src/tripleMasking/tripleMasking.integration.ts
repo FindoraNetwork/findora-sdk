@@ -1394,7 +1394,10 @@ export const abarToBarFraSendAmount = async () => {
   return true;
 };
 
-export const barToAbarAmount = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
+export const barToAbarAmount = async (
+  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
+  amountToSend = '35',
+) => {
   const generatedAnonKeysReceiver = await getAnonKeys();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
@@ -1413,10 +1416,10 @@ export const barToAbarAmount = async (givenAnonKeysReceiver?: FindoraWallet.Form
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraAssetSids);
 
-  const amount = '35';
+  const amount = amountToSend;
 
   const balance = await Account.getBalance(senderWalletInfo);
-  console.log('🚀 ~ balance', balance);
+  console.log('🚀 ~ sender balance', balance);
 
   const {
     transactionBuilder,

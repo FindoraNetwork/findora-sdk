@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1534,15 +1534,20 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var testItSync = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData, maxAtxoSidResult, masError, masResponse;
+    var anonKeys1, anonKeys2, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData, maxAtxoSidResult, masError, masResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                anonKeys = {
+                anonKeys1 = {
                     axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
                     axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
                     axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
                     name: 'AnonWallet2',
+                };
+                anonKeys2 = {
+                    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+                    axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+                    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
                 };
                 return [4 /*yield*/, api_1.Network.getAbarMemos('1', '10')];
             case 1:
@@ -1561,7 +1566,7 @@ var testItSync = function () { return __awaiter(void 0, void 0, void 0, function
                     return [2 /*return*/, false];
                 }
                 (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
-                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeys)];
+                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeys1)];
             case 2:
                 decrypted = _a.sent();
                 (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
@@ -1670,7 +1675,84 @@ function testCommitment() {
         });
     });
 }
+function runAbarCreating(iterations) {
+    if (iterations === void 0) { iterations = 20; }
+    return __awaiter(this, void 0, void 0, function () {
+        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet, transferResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    anonKeys1 = {
+                        axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+                        axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+                        axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+                        name: 'AnonWallet1',
+                    };
+                    anonKeys2 = {
+                        axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+                        axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+                        axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
+                        name: 'AnonWallet2',
+                    };
+                    wallets = [anonKeys1, anonKeys2];
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < iterations)) return [3 /*break*/, 5];
+                    console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION " + i);
+                    return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
+                case 2:
+                    maxAtxoSidResult = _a.sent();
+                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
+                    if (masError) {
+                        (0, utils_1.log)('error!', masError);
+                        throw new Error('could not get mas');
+                    }
+                    console.log("=======   ========= ======= Current MAS = " + masResponse);
+                    walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
+                    amountToSend = walletIndex ? '35' : '25';
+                    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+                    currentWallet = wallets[walletIndex];
+                    console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
+                    return [4 /*yield*/, TMI.barToAbarAmount(currentWallet, amountToSend)];
+                case 3:
+                    transferResult = _a.sent();
+                    _a.label = 4;
+                case 4:
+                    i = i + 1;
+                    return [3 /*break*/, 1];
+                case 5: return [2 /*return*/];
+            }
+        });
+    });
+}
+function getMas() {
+    return __awaiter(this, void 0, void 0, function () {
+        var maxAtxoSidResult, masError, masResponse, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
+                case 1:
+                    maxAtxoSidResult = _a.sent();
+                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
+                    if (masError) {
+                        (0, utils_1.log)('error!', masError);
+                        throw new Error('could not get mas');
+                    }
+                    console.log("Current MAS = " + masResponse);
+                    return [4 /*yield*/, api_1.Network.getAbarMemos('1', '20')];
+                case 2:
+                    result = _a.sent();
+                    console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
+// getAnonKeys();
+runAbarCreating(50);
+// getMas();
 //# sourceMappingURL=run.js.map
