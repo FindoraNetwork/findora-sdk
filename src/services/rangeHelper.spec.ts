@@ -39,12 +39,37 @@ describe('rangeHelper (unit test)', () => {
         const range = rangeHelper.getRange(currentMas, processedData);
         expect(range).toEqual([expectedStart, expectedEnd]);
       });
+      it('case 2.Aa: it returns range of [MAS, MAS] ', async () => {
+        const currentMas = 5;
+
+        const expectedStart = 5;
+        const expectedEnd = 5;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
 
       it('case 2.B: it returns range of [MAS-100 > 0 ? MAS-100 : IAS, MAS] ', async () => {
         const currentMas = 58;
 
         const expectedStart = 6;
         const expectedEnd = 58;
+
+        const range = rangeHelper.getRange(currentMas, processedData);
+        expect(range).toEqual([expectedStart, expectedEnd]);
+      });
+      it('case 2.C: it returns range of [MAS, MAS] when all data processed ', async () => {
+        const processedData: number[] = [
+          109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88,
+          87, 86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63,
+          62, 61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38,
+          37, 36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13,
+          12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
+        ];
+        const currentMas = 109;
+
+        const expectedStart = 109;
+        const expectedEnd = 109;
 
         const range = rangeHelper.getRange(currentMas, processedData);
         expect(range).toEqual([expectedStart, expectedEnd]);
@@ -101,6 +126,7 @@ describe('rangeHelper (unit test)', () => {
       });
     });
   });
+
   describe('getFirstNonConsecutive', () => {
     it('case 5.A: it returns default values for non-complete consecutive descending array', async () => {
       const processedData: number[] = [112, 111, 110, 109, 108];
@@ -131,22 +157,7 @@ describe('rangeHelper (unit test)', () => {
       const data = rangeHelper.getFirstNonConsecutive(processedData);
       expect(data).toEqual([expectedValue, expectedIndex]);
     });
-    it('case 5.d: it returns range of [MAS, MAS] when all data processed ', async () => {
-      const processedData: number[] = [
-        109, 108, 107, 106, 105, 104, 103, 102, 101, 100, 99, 98, 97, 96, 95, 94, 93, 92, 91, 90, 89, 88, 87,
-        86, 85, 84, 83, 82, 81, 80, 79, 78, 77, 76, 75, 74, 73, 72, 71, 70, 69, 68, 67, 66, 65, 64, 63, 62,
-        61, 60, 59, 58, 57, 56, 55, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37,
-        36, 35, 34, 33, 32, 31, 30, 29, 28, 27, 26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12,
-        11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1,
-      ];
-      const currentMas = 109;
 
-      const expectedStart = -1;
-      const expectedEnd = -1;
-
-      const range = rangeHelper.getRange(currentMas, processedData);
-      expect(range).toEqual([expectedStart, expectedEnd]);
-    });
     it('case 5.D: it returns a very first element with its index for complete consecutive ascending array', async () => {
       const processedData: number[] = [1, 2, 3, 4, 5];
 

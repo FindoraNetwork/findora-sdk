@@ -1704,6 +1704,6 @@ async function getMas() {
 // approveToken();
 // testItSync();
 // getFraBalance();
-// getAnonKeys();
-runAbarCreating(50);
+getAnonKeys();
+// runAbarCreating(50);
 // getMas();
