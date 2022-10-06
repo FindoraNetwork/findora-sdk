@@ -33,7 +33,6 @@ var getRangeWithoutGaps = function (mas, first, last) {
     var end = -1;
     if (last === IAS) {
         var r = getRangeWithoutData(mas);
-        console.log('🚀 ~ file: rangeHelper.ts ~ line 41 ~ getRangeWithoutGaps ~ r', r);
         var start_1 = r[0], end_1 = r[1];
         // case 2.A
         if (start_1 > first) {

@@ -38,7 +38,6 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
 
   if (last === IAS) {
     const r = getRangeWithoutData(mas);
-    console.log('🚀 ~ file: rangeHelper.ts ~ line 41 ~ getRangeWithoutGaps ~ r', r);
     const [start, end] = r;
 
     // case 2.A
