@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-import * as TMI from './tripleMasking/tripleMasking.integration';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -1673,17 +1673,9 @@ async function runAbarCreating(iterations = 20) {
     console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
     const currentWallet = wallets[walletIndex];
     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
-    const transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+
+    // const transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
   }
-  // with this option it should thrown an error!
-
-  // const transferResult = await TMI.barToAbarAmount();
-
-  // with this option it should pass
-  // const transferResult = await TMI.barToAbarAmount(anonKeys);
-
-  // const result = await Network.getAbarMemos('1', '10');
-  // console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
 }
 
 async function getMas() {
@@ -1703,7 +1695,7 @@ async function getMas() {
 }
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
-runAbarCreating(2);
+// runAbarCreating(10);
 // getMas();
