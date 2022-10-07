@@ -1370,58 +1370,61 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.abarToBarFraSendAmount = abarToBarFraSendAmount;
-var barToAbarAmount = function (givenAnonKeysReceiver) { return __awaiter(void 0, void 0, void 0, function () {
-    var generatedAnonKeysReceiver, anonKeysReceiver, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, amount, balance, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, minimalFeeForBarToBar, extraSpent;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
-            case 1:
-                generatedAnonKeysReceiver = _b.sent();
-                anonKeysReceiver = givenAnonKeysReceiver
-                    ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
-                return [4 /*yield*/, (0, exports.createNewKeypair)()];
-            case 2:
-                senderWalletInfo = _b.sent();
-                pkey = senderWalletInfo.privateStr;
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 3:
-                fraAssetCode = _b.sent();
-                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
-                return [4 /*yield*/, (0, exports.createTestBars)(pkey, '10', 5)];
-            case 4:
-                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
-                _b.sent();
-                (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
-                return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
-            case 5:
-                fraAssetSids = _b.sent();
-                (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
-                amount = '35';
-                return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo)];
-            case 6:
-                balance = _b.sent();
-                console.log('🚀 ~ balance', balance);
-                return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.axfrPublicKey)];
-            case 7:
-                _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
-                (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-                (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 8:
-                resultHandle = _b.sent();
-                (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
-                givenCommitments = barToAbarData.commitments;
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 9:
-                _b.sent();
-                minimalFeeForBarToBar = '0.01';
-                extraSpent = minimalFeeForBarToBar;
-                return [4 /*yield*/, barToAbarBalances(senderWalletInfo, anonKeysReceiver, givenCommitments, balance, amount, fraAssetCode, extraSpent)];
-            case 10:
-                _b.sent();
-                return [2 /*return*/, true];
-        }
+var barToAbarAmount = function (givenAnonKeysReceiver, amountToSend) {
+    if (amountToSend === void 0) { amountToSend = '35'; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var generatedAnonKeysReceiver, anonKeysReceiver, senderWalletInfo, pkey, fraAssetCode, fraAssetSids, amount, balance, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments, minimalFeeForBarToBar, extraSpent;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
+                case 1:
+                    generatedAnonKeysReceiver = _b.sent();
+                    anonKeysReceiver = givenAnonKeysReceiver
+                        ? __assign({}, givenAnonKeysReceiver) : __assign({}, generatedAnonKeysReceiver);
+                    return [4 /*yield*/, (0, exports.createNewKeypair)()];
+                case 2:
+                    senderWalletInfo = _b.sent();
+                    pkey = senderWalletInfo.privateStr;
+                    return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                case 3:
+                    fraAssetCode = _b.sent();
+                    // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                    return [4 /*yield*/, (0, exports.createTestBars)(pkey, '10', 5)];
+                case 4:
+                    // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                    _b.sent();
+                    (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
+                    return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
+                case 5:
+                    fraAssetSids = _b.sent();
+                    (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
+                    amount = amountToSend;
+                    return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo)];
+                case 6:
+                    balance = _b.sent();
+                    console.log('🚀 ~ sender balance', balance);
+                    return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.axfrPublicKey)];
+                case 7:
+                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
+                    (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                    (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
+                    return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+                case 8:
+                    resultHandle = _b.sent();
+                    (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
+                    givenCommitments = barToAbarData.commitments;
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+                case 9:
+                    _b.sent();
+                    minimalFeeForBarToBar = '0.01';
+                    extraSpent = minimalFeeForBarToBar;
+                    return [4 /*yield*/, barToAbarBalances(senderWalletInfo, anonKeysReceiver, givenCommitments, balance, amount, fraAssetCode, extraSpent)];
+                case 10:
+                    _b.sent();
+                    return [2 /*return*/, true];
+            }
+        });
     });
-}); };
+};
 exports.barToAbarAmount = barToAbarAmount;
 //# sourceMappingURL=tripleMasking.integration.js.map

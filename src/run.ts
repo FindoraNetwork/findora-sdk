@@ -1445,7 +1445,7 @@ const getAnonTxList = async () => {
 
 const testItSync = async () => {
   // run it as INTEGRATION_ENV_NAME=local yarn start:once
-  const anonKeys = {
+  const anonKeys1 = {
     axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
     axfrSpendKey:
       'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
@@ -1453,6 +1453,12 @@ const testItSync = async () => {
     name: 'AnonWallet2',
   };
 
+  const anonKeys2 = {
+    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+    axfrSpendKey:
+      '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
+  };
   // with this option it should thrown an error!
   // const transferResult = await TMI.barToAbarAmount();
 
@@ -1478,7 +1484,7 @@ const testItSync = async () => {
   }
   log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
 
-  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys1);
   log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
 
   if (!decrypted) {
@@ -1626,6 +1632,70 @@ async function testCommitment() {
 
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
+
+async function runAbarCreating(iterations = 20) {
+  const anonKeys1 = {
+    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+    axfrSpendKey:
+      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+    name: 'AnonWallet1',
+  };
+
+  const anonKeys2 = {
+    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+    axfrSpendKey:
+      '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
+    name: 'AnonWallet2',
+  };
+
+  const wallets = [anonKeys1, anonKeys2];
+
+  for (let i = 0; i < iterations; i = i + 1) {
+    console.log(`-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ${i}`);
+    const maxAtxoSidResult = await Network.getMaxAtxoSid();
+
+    // log('max atxo sid result is ', maxAtxoSidResult);
+
+    const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+    if (masError) {
+      log('error!', masError);
+      throw new Error('could not get mas');
+    }
+
+    console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
+
+    const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
+    const amountToSend = walletIndex ? '35' : '25';
+
+    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+    const currentWallet = wallets[walletIndex];
+    console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
+
+    // const transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+  }
+}
+
+async function getMas() {
+  const maxAtxoSidResult = await Network.getMaxAtxoSid();
+
+  const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+  if (masError) {
+    log('error!', masError);
+    throw new Error('could not get mas');
+  }
+
+  console.log(`Current MAS = ${masResponse}`);
+
+  const result = await Network.getAbarMemos('1', '20');
+  console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
+}
 // approveToken();
 // testItSync();
 getFraBalance();
+// getAnonKeys();
+// runAbarCreating(10);
+// getMas();

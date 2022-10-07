@@ -17,4 +17,4 @@ export declare const abarToAbarCustomMultipleFraAtxoForFeeSendAmount: (givenAnon
 export declare const abarToBar: () => Promise<boolean>;
 export declare const abarToBarCustomSendAmount: () => Promise<boolean>;
 export declare const abarToBarFraSendAmount: () => Promise<boolean>;
-export declare const barToAbarAmount: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined) => Promise<boolean>;
+export declare const barToAbarAmount: (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys | undefined, amountToSend?: string) => Promise<boolean>;

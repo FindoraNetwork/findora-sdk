@@ -37,14 +37,18 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
   let end = -1;
 
   if (last === IAS) {
-    [start, end] = getRangeWithoutData(mas);
+    const r = getRangeWithoutData(mas);
+    const [start, end] = r;
 
     // case 2.A
     if (start > first) {
       return [start, end];
     }
+    // case 2.Aa and 2.C
+    const realFirst = first >= end ? end : first + 1;
+
     // case 2.B
-    return [first + 1, end];
+    return [realFirst, end];
   }
 
   // case 3.A and 3.B
@@ -54,8 +58,6 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
 };
 
 export const getRangeWithGaps = (processedList: number[]): RangeResult => {
-  let start = -1;
-  let end = -2;
   const [firstNonConsecutive, firstIndex] = getFirstNonConsecutive(processedList);
   const gapStart = firstNonConsecutive - 1;
 
