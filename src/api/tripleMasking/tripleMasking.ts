@@ -612,7 +612,7 @@ export const prepareAnonTransferOperationBuilder = async (
   const addedInputs = [];
 
   for (const ownedAbarItemOne of additionalOwnedAbars) {
-    if (addedInputs.length > 4) {
+    if (addedInputs.length >= 4) {
       break;
     }
 
