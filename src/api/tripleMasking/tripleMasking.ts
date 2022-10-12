@@ -608,10 +608,11 @@ export const prepareAnonTransferOperationBuilder = async (
   }
 
   const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+
   const addedInputs = [];
 
   for (const ownedAbarItemOne of additionalOwnedAbars) {
-    if (addedInputs.length >= 5) {
+    if (addedInputs.length > 4) {
       break;
     }
 

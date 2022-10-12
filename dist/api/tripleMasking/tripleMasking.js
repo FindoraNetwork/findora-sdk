@@ -631,7 +631,7 @@ additionalOwnedAbarItems) {
                 case 5:
                     if (!(_i < additionalOwnedAbars_1.length)) return [3 /*break*/, 8];
                     ownedAbarItemOne = additionalOwnedAbars_1[_i];
-                    if (addedInputs.length >= 5) {
+                    if (addedInputs.length > 4) {
                         return [3 /*break*/, 8];
                     }
                     console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
