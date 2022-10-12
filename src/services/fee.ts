@@ -76,7 +76,7 @@ export const getTransferOperation = async (
         ownerMemo?.clone(),
         tracingPolicies,
         walletInfo.keypair,
-        amount,
+        BigInt(amount.toString()),
       );
     } else {
       transferOp = transferOp.add_input_no_tracing(
@@ -84,7 +84,7 @@ export const getTransferOperation = async (
         assetRecord,
         ownerMemo?.clone(),
         walletInfo.keypair,
-        amount,
+        BigInt(amount.toString()),
       );
     }
   });
@@ -98,7 +98,7 @@ export const getTransferOperation = async (
 
     if (isTraceable) {
       transferOp = transferOp.add_output_with_tracing(
-        utxoNumbers,
+        BigInt(utxoNumbers.toString()),
         toPublickey,
         tracingPolicies,
         assetCode,
@@ -107,7 +107,7 @@ export const getTransferOperation = async (
       );
     } else {
       transferOp = transferOp.add_output_no_tracing(
-        utxoNumbers,
+        BigInt(utxoNumbers.toString()),
         toPublickey,
         assetCode,
         !!blindIsAmount,
