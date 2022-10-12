@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1472,16 +1472,62 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 anonKeys = {
-                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    axfrViewKey: '',
-                    name: 'AnonWallet2',
+                    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+                    axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+                    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+                    name: 'SyncAnonWallet1',
                 };
                 givenCommitmentsList = [
-                    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-                    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
-                    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
-                    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+                    '12AsxButufAsH2sbvSYWtGHCsqAY49DYD792Rr5GtMbC',
+                    '12NQoff4npyetya5HFbdvLGPPo2cHq7G4VqBX1t7a2iq',
+                    '25HuDFrb4tENgQZiQM58BetzVwWZxtvnfid539uSrZzE',
+                    '2EUdtQjJEJxgF4nTQLaL3FpZQWY9Mkk6xcesp9PUU6QE',
+                    '2Jkm6fNn5G5Nyvhu5YYvP2SKJNoxH1PkA66M7SUABqUq',
+                    '2SgwD2zQbWui64j6jEL7dXhkHotzurDtbCk6sjJyAHXT',
+                    '2WTVJ8reWXf4DVvFcHAsTJN86WQCKUKD1MEWgAmTtBDp',
+                    '2WjPz73jpaaUtNSMDUXEiG3DJNae6nsLLT28SYinwKMU',
+                    '2dyMQjAj3Fua3aSozjvTW3QWw3mmFMLvdCLamQ1EB3bQ',
+                    '2eYEYDqAiWGknS3WccMUVCcWzfKG3SfHSdVKMyUkgeC9',
+                    '2gteDJmBg8dwV8p4Yaz7XGK1bfShzHJPziRocC3jKG6N',
+                    '2qEZPRBYajACHaRC7XHep2WUM7U3y13vdnnnRVp6ocem',
+                    '39Z6nS17pDUmvP926C5SotrwJdfzmpqQC5rtjU16v3sH',
+                    '3C7JomBB2SujUYd3pGhsQn8gBfugd6dt6a2YVd93hJRe',
+                    '3DugpXoK5LUKAudzvEQMUjAyM7jnQBxae3onKseDiuzH',
+                    '3GcYL1z4kRmZEGY5RJgMdBtnCCQYJsmAo7uUpfKtZtkD',
+                    '3HemMoFQdfaQa3FyC9A3AsWBri1S8dYDbuaSYXi1yBC5',
+                    '3QkTP1GRYem8fXcXZFvQw1Gk3xdASBLwXefVKhmvP88t',
+                    '3Sr3fiQnctQzE8iWiRh7az4dqc2aJcMLV9wBoNstNbUh',
+                    '3aEhcsA4wCPpQPUmWpZSfTwU12HzrjJUzcEKs4MenDpt',
+                    '3hM81fd9pprrabVjhiMTu3Nxshi9Q1Fag5CcKwAknoyC',
+                    '3iybaZs5DaQtbJ7oh8oUZRMqnkdLRRX77NUyawBKa3nP',
+                    '3tevR6F4FmWD6axFs6u3XzHeGWXP9Lu5RisWs1PjSNPw',
+                    '3us4ohuQhgDQaWfTmGHEAiykjKPnZmcuQbCmeHGTuf6H',
+                    '46Z3qFkDe3n6SyrMGmRdQnj3wn83qRs9iBXnWjs2ev89',
+                    '4C6McwT7drhNX4BWJqi4nihBWtScbQmxe6QwuHCLgz6D',
+                    '4NCRPgowqtaFFAM1KNzq6ALXaRTbZCCY7rQS5tFW69Aa',
+                    '4NDQnfTQ3B9LEE7NqBKCjpmXARsJKv1cD6whqV7VJ7KD',
+                    '4RndR3Y9nLfmutwGkXrCgQbg2S4waDXY9urthLin7Hke',
+                    '4Um67Par439upVim7SsAYNraJXzpf14Y9NGsnxp3vVFA',
+                    '4WaMsrkabVzHn4RLthRxDdqE4hvsctCwAK2ryXdq2fCh',
+                    '4e3ibz4Z2bu8so8mW1M4Gq6Uhpuc4Cdu9vY28zeuojET',
+                    '4uh1EXBbj4u5NjjZVkF4PvWjoBgFwYuzwDpm6vk7pBnx',
+                    '54jaasTWHR1BuX9Dd61BbbezkCzpcRWwTNqBe31ynaYV',
+                    '55EDn1ejbbTMz5k1Cz9rTDXvijqEqhaPhZ33WUGbMby8',
+                    '5CnEqrUmiCMzz5cdRdLob6nCGJxudSEVb2AmHYEZhdKM',
+                    '5LWoASwLbqcfX8T5LwkAfyiveTTrRvQRpz5e1qwBWMZS',
+                    '5Nz7Zv2hAcD3KXKFudrzTKSWg2ZCXfGuyNkkLDMRxtTb',
+                    '5VFBG4LMxVsKfSfmcNkdooKcZTzNhhxatSn9Mo2fSu3s',
+                    '5X7p237MjTL9XLSZRbwMKSStyo46jBnMfCq2DmusxpCD',
+                    '5cDuxFQEnU4bhKxkm8KEKEj9m8Y1qwY3WLQ1VCMU5ovk',
+                    '5gwhR2PFedWLCwGkvpmr71P1KU8pKLYRU5gVYYGni5z3',
+                    '5qijopLCnW1FvLrBDXEkbeZdDnLmTRd5WUbBLCatV2x5',
+                    '5sGNPuhEdP4hp7bJnx8NEVZHSoeAzz8nvnikoN4JSjUa',
+                    '5vb6iQ716rdbQ25zi692ZsS3TdXHoPcN85ZDJJcB6g8j',
+                    '5wPcfZggtsVheM9UUJLkDQmPsFHabUsmf3uAjDsJrbWS',
+                    '641ZCrhqDs2cARJp9Z5Ym3KnSDWpB2yXj9pT6jexS152',
+                    '65ccwYAiSf2FsJ67gZK5Wud8SLJxc61gwWrsbYAPgLbQ',
+                    '68ttbU6AS7kdjn1T2ZN88G6BCXE58TQinoX57XfARoFB',
+                    '6CsbiFcpv6nQDSZhKNLP57kY7vfYZVGUdxMGPpXQ7BTr',
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
@@ -1678,7 +1724,7 @@ function testCommitment() {
 function runAbarCreating(iterations) {
     if (iterations === void 0) { iterations = 20; }
     return __awaiter(this, void 0, void 0, function () {
-        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
+        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet, _transferResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1698,7 +1744,7 @@ function runAbarCreating(iterations) {
                     i = 0;
                     _a.label = 1;
                 case 1:
-                    if (!(i < iterations)) return [3 /*break*/, 4];
+                    if (!(i < iterations)) return [3 /*break*/, 5];
                     console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION " + i);
                     return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
                 case 2:
@@ -1710,15 +1756,18 @@ function runAbarCreating(iterations) {
                     }
                     console.log("=======   ========= ======= Current MAS = " + masResponse);
                     walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-                    amountToSend = walletIndex ? '35' : '25';
+                    amountToSend = walletIndex ? '20' : '10';
                     console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
-                    _a.label = 3;
+                    return [4 /*yield*/, TMI.barToAbarAmount(currentWallet, amountToSend)];
                 case 3:
+                    _transferResult = _a.sent();
+                    _a.label = 4;
+                case 4:
                     i = i + 1;
                     return [3 /*break*/, 1];
-                case 4: return [2 /*return*/];
+                case 5: return [2 /*return*/];
             }
         });
     });
@@ -1748,8 +1797,9 @@ function getMas() {
 }
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
+getAbarBalance();
 //# sourceMappingURL=run.js.map

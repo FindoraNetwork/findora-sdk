@@ -238,8 +238,7 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     await waitForBlockChange(1 + additional_block_waittime);
   }
 
-  await waitForBlockChange();
-  await waitForBlockChange();
+  await waitForBlockChange(3);
 
   const assetBalance = await Account.getBalance(toWalletInfo, fraCode);
 

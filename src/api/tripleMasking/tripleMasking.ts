@@ -608,11 +608,17 @@ export const prepareAnonTransferOperationBuilder = async (
   }
 
   const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+  const addedInputs = [];
 
   for (const ownedAbarItemOne of additionalOwnedAbars) {
+    if (addedInputs.length >= 5) {
+      break;
+    }
+
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
-    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
+    console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
         abarPayloadNext.myOwnedAbar,
@@ -621,13 +627,15 @@ export const prepareAnonTransferOperationBuilder = async (
         abarPayloadNext.myMTLeafInfo,
       );
     } catch (error) {
+      console.log('eee', error);
       throw new Error(
         `Could not add an additional input for abar transfer operation", Error - ${(error as Error).message}`,
       );
     }
+    addedInputs.push(ownedAbarItemOne);
   }
 
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     const ledger = await getLedger();

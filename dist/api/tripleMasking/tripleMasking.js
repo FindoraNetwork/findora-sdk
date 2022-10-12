@@ -601,7 +601,7 @@ var prepareAnonTransferOperationBuilder = function (anonKeysSender, axfrPublicKe
 additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var anonTransferOperationBuilder, aXfrSpendKeySender, axfrPublicKeyReceiver, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadOne, toAmount, _i, additionalOwnedAbars_1, ownedAbarItemOne, abarPayloadNext, ledger, amountAssetType, error_7;
+        var anonTransferOperationBuilder, aXfrSpendKeySender, axfrPublicKeyReceiver, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadOne, toAmount, addedInputs, _i, additionalOwnedAbars_1, ownedAbarItemOne, abarPayloadNext, ledger, amountAssetType, error_7;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, Builder.getAnonTransferOperationBuilder()];
@@ -625,37 +625,47 @@ additionalOwnedAbarItems) {
                         throw new Error("Could not add an input for abar transfer operation\", Error - " + error.message);
                     }
                     toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, abarPayloadOne.decimals).toString());
+                    addedInputs = [];
                     _i = 0, additionalOwnedAbars_1 = additionalOwnedAbars;
                     _a.label = 5;
                 case 5:
                     if (!(_i < additionalOwnedAbars_1.length)) return [3 /*break*/, 8];
                     ownedAbarItemOne = additionalOwnedAbars_1[_i];
+                    if (addedInputs.length >= 5) {
+                        return [3 /*break*/, 8];
+                    }
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
                 case 6:
                     abarPayloadNext = _a.sent();
-                    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
+                    console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, aXfrSpendKeySender, abarPayloadNext.myMTLeafInfo);
                     }
                     catch (error) {
+                        console.log('eee', error);
                         throw new Error("Could not add an additional input for abar transfer operation\", Error - " + error.message);
                     }
+                    addedInputs.push(ownedAbarItemOne);
                     _a.label = 7;
                 case 7:
                     _i++;
                     return [3 /*break*/, 5];
                 case 8:
-                    _a.trys.push([8, 10, , 11]);
-                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
+                    _a.label = 9;
                 case 9:
+                    _a.trys.push([9, 11, , 12]);
+                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 10:
                     ledger = _a.sent();
                     amountAssetType = ledger.open_abar(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender);
                     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, amountAssetType.asset_type, axfrPublicKeyReceiver);
-                    return [3 /*break*/, 11];
-                case 10:
+                    return [3 /*break*/, 12];
+                case 11:
                     error_7 = _a.sent();
                     throw new Error("Could not add an output for abar transfer operation\", Error - " + error_7.message);
-                case 11: return [2 /*return*/, anonTransferOperationBuilder];
+                case 12: return [2 /*return*/, anonTransferOperationBuilder];
             }
         });
     });
