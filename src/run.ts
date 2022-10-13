@@ -1362,56 +1362,12 @@ const getAbarBalance = async () => {
   };
 
   const givenCommitmentsList = [
-    '12AsxButufAsH2sbvSYWtGHCsqAY49DYD792Rr5GtMbC',
-    '12NQoff4npyetya5HFbdvLGPPo2cHq7G4VqBX1t7a2iq',
-    '25HuDFrb4tENgQZiQM58BetzVwWZxtvnfid539uSrZzE',
-    '2EUdtQjJEJxgF4nTQLaL3FpZQWY9Mkk6xcesp9PUU6QE',
-    '2Jkm6fNn5G5Nyvhu5YYvP2SKJNoxH1PkA66M7SUABqUq',
-    '2SgwD2zQbWui64j6jEL7dXhkHotzurDtbCk6sjJyAHXT',
-    '2WTVJ8reWXf4DVvFcHAsTJN86WQCKUKD1MEWgAmTtBDp',
-    '2WjPz73jpaaUtNSMDUXEiG3DJNae6nsLLT28SYinwKMU',
-    '2dyMQjAj3Fua3aSozjvTW3QWw3mmFMLvdCLamQ1EB3bQ',
-    '2eYEYDqAiWGknS3WccMUVCcWzfKG3SfHSdVKMyUkgeC9',
-    '2gteDJmBg8dwV8p4Yaz7XGK1bfShzHJPziRocC3jKG6N',
-    '2qEZPRBYajACHaRC7XHep2WUM7U3y13vdnnnRVp6ocem',
-    '39Z6nS17pDUmvP926C5SotrwJdfzmpqQC5rtjU16v3sH',
-    '3C7JomBB2SujUYd3pGhsQn8gBfugd6dt6a2YVd93hJRe',
-    '3DugpXoK5LUKAudzvEQMUjAyM7jnQBxae3onKseDiuzH',
-    '3GcYL1z4kRmZEGY5RJgMdBtnCCQYJsmAo7uUpfKtZtkD',
-    '3HemMoFQdfaQa3FyC9A3AsWBri1S8dYDbuaSYXi1yBC5',
-    '3QkTP1GRYem8fXcXZFvQw1Gk3xdASBLwXefVKhmvP88t',
-    '3Sr3fiQnctQzE8iWiRh7az4dqc2aJcMLV9wBoNstNbUh',
-    '3aEhcsA4wCPpQPUmWpZSfTwU12HzrjJUzcEKs4MenDpt',
-    '3hM81fd9pprrabVjhiMTu3Nxshi9Q1Fag5CcKwAknoyC',
-    '3iybaZs5DaQtbJ7oh8oUZRMqnkdLRRX77NUyawBKa3nP',
-    '3tevR6F4FmWD6axFs6u3XzHeGWXP9Lu5RisWs1PjSNPw',
-    '3us4ohuQhgDQaWfTmGHEAiykjKPnZmcuQbCmeHGTuf6H',
-    '46Z3qFkDe3n6SyrMGmRdQnj3wn83qRs9iBXnWjs2ev89',
-    '4C6McwT7drhNX4BWJqi4nihBWtScbQmxe6QwuHCLgz6D',
-    '4NCRPgowqtaFFAM1KNzq6ALXaRTbZCCY7rQS5tFW69Aa',
-    '4NDQnfTQ3B9LEE7NqBKCjpmXARsJKv1cD6whqV7VJ7KD',
-    '4RndR3Y9nLfmutwGkXrCgQbg2S4waDXY9urthLin7Hke',
-    '4Um67Par439upVim7SsAYNraJXzpf14Y9NGsnxp3vVFA',
-    '4WaMsrkabVzHn4RLthRxDdqE4hvsctCwAK2ryXdq2fCh',
-    '4e3ibz4Z2bu8so8mW1M4Gq6Uhpuc4Cdu9vY28zeuojET',
-    '4uh1EXBbj4u5NjjZVkF4PvWjoBgFwYuzwDpm6vk7pBnx',
-    '54jaasTWHR1BuX9Dd61BbbezkCzpcRWwTNqBe31ynaYV',
-    '55EDn1ejbbTMz5k1Cz9rTDXvijqEqhaPhZ33WUGbMby8',
-    '5CnEqrUmiCMzz5cdRdLob6nCGJxudSEVb2AmHYEZhdKM',
-    '5LWoASwLbqcfX8T5LwkAfyiveTTrRvQRpz5e1qwBWMZS',
-    '5Nz7Zv2hAcD3KXKFudrzTKSWg2ZCXfGuyNkkLDMRxtTb',
-    '5VFBG4LMxVsKfSfmcNkdooKcZTzNhhxatSn9Mo2fSu3s',
-    '5X7p237MjTL9XLSZRbwMKSStyo46jBnMfCq2DmusxpCD',
-    '5cDuxFQEnU4bhKxkm8KEKEj9m8Y1qwY3WLQ1VCMU5ovk',
-    '5gwhR2PFedWLCwGkvpmr71P1KU8pKLYRU5gVYYGni5z3',
-    '5qijopLCnW1FvLrBDXEkbeZdDnLmTRd5WUbBLCatV2x5',
-    '5sGNPuhEdP4hp7bJnx8NEVZHSoeAzz8nvnikoN4JSjUa',
-    '5vb6iQ716rdbQ25zi692ZsS3TdXHoPcN85ZDJJcB6g8j',
-    '5wPcfZggtsVheM9UUJLkDQmPsFHabUsmf3uAjDsJrbWS',
-    '641ZCrhqDs2cARJp9Z5Ym3KnSDWpB2yXj9pT6jexS152',
-    '65ccwYAiSf2FsJ67gZK5Wud8SLJxc61gwWrsbYAPgLbQ',
-    '68ttbU6AS7kdjn1T2ZN88G6BCXE58TQinoX57XfARoFB',
-    '6CsbiFcpv6nQDSZhKNLP57kY7vfYZVGUdxMGPpXQ7BTr',
+    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
+    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
+    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
+    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
+    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
+    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
   ];
 
   // const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
@@ -1705,6 +1661,6 @@ async function getMas() {
 // testItSync();
 // getFraBalance();
 // getAnonKeys();
-// runAbarCreating(10);
+// runAbarCreating(5);
 // getMas();
 getAbarBalance();

@@ -72,6 +72,16 @@ export const getRangeWithGaps = (processedList: number[]): RangeResult => {
   return [calculatedGapEnd, gapStart];
 };
 
+export const itHasGaps = (processedList: number[]) => {
+  const dataLength = processedList?.length || 0;
+
+  const first = processedList[0];
+  const last = processedList[dataLength - 1];
+
+  const itHasNoGaps = first - dataLength === last - 1;
+  return !itHasNoGaps;
+};
+
 export const getRange = (mas: number, processedList?: number[]): RangeResult => {
   let start = -1;
   let end = -1;
@@ -86,7 +96,8 @@ export const getRange = (mas: number, processedList?: number[]): RangeResult => 
   const first = processedList[0];
   const last = processedList[dataLength - 1];
 
-  const itHasNoGaps = first - dataLength === last - 1;
+  // const itHasNoGaps = first - dataLength === last - 1;
+  const itHasNoGaps = !itHasGaps(processedList);
 
   if (itHasNoGaps) {
     return getRangeWithoutGaps(mas, first, last);
