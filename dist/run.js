@@ -1712,7 +1712,7 @@ function runAbarCreating(iterations) {
                     }
                     console.log("=======   ========= ======= Current MAS = " + masResponse);
                     walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-                    amountToSend = walletIndex ? '20' : '10';
+                    amountToSend = walletIndex ? '10' : '10';
                     console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
@@ -1755,7 +1755,7 @@ function getMas() {
 // testItSync();
 // getFraBalance();
 // getAnonKeys();
-// runAbarCreating(5);
+runAbarCreating(2);
 // getMas();
-getAbarBalance();
+// getAbarBalance();
 //# sourceMappingURL=run.js.map

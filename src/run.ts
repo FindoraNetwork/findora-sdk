@@ -1632,7 +1632,7 @@ async function runAbarCreating(iterations = 20) {
     console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
 
     const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-    const amountToSend = walletIndex ? '20' : '10';
+    const amountToSend = walletIndex ? '10' : '10';
 
     console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
     const currentWallet = wallets[walletIndex];
@@ -1661,6 +1661,6 @@ async function getMas() {
 // testItSync();
 // getFraBalance();
 // getAnonKeys();
-// runAbarCreating(5);
+runAbarCreating(20);
 // getMas();
-getAbarBalance();
+// getAbarBalance();
