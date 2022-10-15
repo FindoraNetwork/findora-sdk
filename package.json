@@ -24,7 +24,7 @@
   "scripts": {
     "buildAll": "tsc && webpack --mode production",
     "build": "tsc",
-    "test:sdk:integration": " jest --forceExit  --detectOpenHandles sdk.integration.spec.ts",
+    "test:sdk:integration": "jest --forceExit  --detectOpenHandles sdk.integration.spec.ts",
     "test:evm:integration:contract": "jest --detectOpenHandles contract",
     "test:evm:integration:rpc:watch": "jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.spec.ts ",
     "test:evm:integration:rpc:negative": "jest --detectOpenHandles --watch -t 'rpc test' rpc.integration.negative.spec.ts ",
