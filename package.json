@@ -31,7 +31,7 @@
     "test:evm:integration:rpc:no_tx": "jest --detectOpenHandles  --watch -t 'rpc test' rpc.integration.no_tx.spec.ts ",
     "test:evm:integration:rpc:all": "jest --detectOpenHandles rpc.integration ",
     "test:evm:integration:all": "jest --forceExit --detectOpenHandles rpc.integration contract ",
-    "test:tm:integration": " jest --forceExit  --detectOpenHandles tripleMasking.integration.spec.ts",
+    "test:tm:integration": "jest --forceExit  --detectOpenHandles tripleMasking.integration.spec.ts",
     "test": "jest --watch --detectOpenHandles",
     "test:sdk:unit": "jest -t '(unit test)' --testPathIgnorePatterns=\\contract\\|integration",
     "test:sdk:integration:local": "INTEGRATION_ENV_NAME=local yarn test:sdk:integration",
