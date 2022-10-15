@@ -365,13 +365,21 @@ export const getAbarToAbarAmountPayload = async (
     commitmentsToSend.push(givenCommitment);
   }
 
-  let calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
+  console.log('🚀 🚀 🚀 🚀 🚀  A1  we should see it - before calling total abar transfer fee');
+  let calculatedFee;
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+    throw new Error('aaaaaa!!!!!');
+  }
 
+  console.log('🚀 🚀 🚀 🚀 🚀  A2  we should see it - before calling total abar transfer fee');
   const totalFeeEstimate = await getTotalAbarTransferFee(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -416,7 +424,7 @@ export const getAbarToAbarAmountPayload = async (
     const givenCommitment = allCommitmentsForFeeSorted?.[idx];
 
     if (!givenCommitment) {
-      throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
+      throw new Error(`You still need ${calculatedFee} FRA to cover the fee 3`);
     }
     const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
 
@@ -424,6 +432,7 @@ export const getAbarToAbarAmountPayload = async (
 
     additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
 
+    console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
     calculatedFee = await getAbarTransferFee(
       anonKeysSender,
       anonPubKeyReceiver,
@@ -524,6 +533,7 @@ export const abarToAbar = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
+  console.log('🚀 🚀 🚀 🚀 🚀  A4  we should see it - before calling total abar transfer fee');
   const calculatedFee = await getAbarTransferFee(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -542,6 +552,7 @@ export const abarToAbar = async (
     throw new Error(msg);
   }
 
+  console.log('🚀 🚀 🚀 🚀 🚀  B3  we should see it - before calling prepare anon transfer builder');
   let anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -613,7 +624,11 @@ export const prepareAnonTransferOperationBuilder = async (
 
   for (const ownedAbarItemOne of additionalOwnedAbars) {
     if (addedInputs.length >= 4) {
-      break;
+      console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
+      console.log('🚀 🚀 🚀 🚀 🚀  C  we should see it - before breaking from adding inputs');
+      throw new Error('Amount you are tryin to send is to big to send at once. Please try a smaller amount');
+
+      // break;
     }
 
     console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
@@ -697,6 +712,7 @@ export const getAbarTransferFee = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
+  console.log('🚀 🚀 🚀 🚀 🚀  B2  we should see it - before calling prepare anon transfer builder');
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -717,6 +733,7 @@ export const getTotalAbarTransferFee = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
+  console.log('🚀 🚀 🚀 🚀 🚀  B1  we should see it - before calling prepare anon transfer builder');
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -898,11 +915,14 @@ export const abarToBarAmount = async (
   const asset = await Asset.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
   const amountToSendInWei = BigInt(toWei(amount, decimals).toString());
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 901 ~ amountToSendInWei', amountToSendInWei);
 
   const _resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ _resultHandle', _resultHandle);
   await waitForBlockChange();
 
   const { commitmentsMap } = abarToAbarData;
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 908 ~ abarToAbarData', abarToAbarData);
 
   const retrivedCommitmentsListReceiver = [];
 
@@ -926,11 +946,13 @@ export const abarToBarAmount = async (
   }
 
   const allCommitments = [...retrivedCommitmentsListReceiver];
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 932 ~ allCommitments', allCommitments);
 
   const additionalOwnedAbarItems = [];
 
   for (let givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 938 ~ ownedAbarsResponseTwo', ownedAbarsResponseTwo);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
 
@@ -938,6 +960,7 @@ export const abarToBarAmount = async (
   }
 
   const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
+  console.log('🚀 🚀 🚀 ~ file: tripleMasking.ts ~ line 946 ~ abarToBarResult', abarToBarResult);
 
   return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
 };
@@ -1319,7 +1342,7 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       ownedAbar: { ...ownedAbar },
     },
   };
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
 
   return [abar];
 };

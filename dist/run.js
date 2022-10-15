@@ -1713,7 +1713,6 @@ function runAbarCreating(iterations) {
                     console.log("=======   ========= ======= Current MAS = " + masResponse);
                     walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
                     amountToSend = walletIndex ? '10' : '10';
-                    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
                     return [4 /*yield*/, TMI.barToAbarAmount(currentWallet, amountToSend)];
@@ -1754,8 +1753,8 @@ function getMas() {
 // approveToken();
 // testItSync();
 // getFraBalance();
-// getAnonKeys();
-runAbarCreating(2);
+getAnonKeys();
+// runAbarCreating(20);
 // getMas();
 // getAbarBalance();
 //# sourceMappingURL=run.js.map

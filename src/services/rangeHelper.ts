@@ -4,7 +4,7 @@ const MAX_SUPPORTED_CHUNK_SIZE = 100;
 // by default we process data all the way back till a very first atxo=1
 // but later we can configure that to have a different value (in case of a specific block height is needed)
 // Initial Atxo Sid should be read from the const for time being but later it would be a part of Sdk Init process
-const IAS = 1;
+const IAS = 0;
 
 export type RangeResult = [number, number];
 
@@ -74,6 +74,10 @@ export const getRangeWithGaps = (processedList: number[]): RangeResult => {
 
 export const itHasGaps = (processedList: number[]) => {
   const dataLength = processedList?.length || 0;
+
+  if (!dataLength) {
+    return false;
+  }
 
   const first = processedList[0];
   const last = processedList[dataLength - 1];
