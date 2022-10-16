@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1680,7 +1680,7 @@ function testCommitment() {
 function runAbarCreating(iterations) {
     if (iterations === void 0) { iterations = 20; }
     return __awaiter(this, void 0, void 0, function () {
-        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet, _transferResult;
+        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1700,7 +1700,7 @@ function runAbarCreating(iterations) {
                     i = 0;
                     _a.label = 1;
                 case 1:
-                    if (!(i < iterations)) return [3 /*break*/, 5];
+                    if (!(i < iterations)) return [3 /*break*/, 4];
                     console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION " + i);
                     return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
                 case 2:
@@ -1715,14 +1715,11 @@ function runAbarCreating(iterations) {
                     amountToSend = walletIndex ? '10' : '10';
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
-                    return [4 /*yield*/, TMI.barToAbarAmount(currentWallet, amountToSend)];
+                    _a.label = 3;
                 case 3:
-                    _transferResult = _a.sent();
-                    _a.label = 4;
-                case 4:
                     i = i + 1;
                     return [3 /*break*/, 1];
-                case 5: return [2 /*return*/];
+                case 4: return [2 /*return*/];
             }
         });
     });
@@ -1752,9 +1749,9 @@ function getMas() {
 }
 // approveToken();
 // testItSync();
-// getFraBalance();
-getAnonKeys();
-// runAbarCreating(20);
+getFraBalance();
+// getAnonKeys();
+// runAbarCreating(200);
 // getMas();
 // getAbarBalance();
 //# sourceMappingURL=run.js.map
