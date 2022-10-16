@@ -379,7 +379,7 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
     });
 }); };
 var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, error_7, totalFeeEstimate, error_8, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, givenCommitment, calculatedFee_1, ownedAbarsResponseFee, additionalOwnedAbarItemFee, error_9;
+    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, error_7, totalFeeEstimate, error_8, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, givenCommitment, calculatedFee_1, error_9, ownedAbarsResponseFee, additionalOwnedAbarItemFee;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
@@ -489,27 +489,40 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 if (!isMoreFeeNeeded) return [3 /*break*/, 25];
                 givenCommitment = allCommitmentsForFeeSorted === null || allCommitmentsForFeeSorted === void 0 ? void 0 : allCommitmentsForFeeSorted[idx];
                 calculatedFee_1 = void 0;
+                _a.label = 20;
+            case 20:
+                _a.trys.push([20, 22, , 23]);
+                return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
+            case 21:
+                calculatedFee_1 = _a.sent();
+                return [3 /*break*/, 23];
+            case 22:
+                error_9 = _a.sent();
+                console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_9);
+                throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+            case 23:
                 if (!givenCommitment) {
                     throw new Error("You still need " + calculatedFee_1 + " FRA to cover the fee 3");
                 }
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
-            case 20:
+            case 24:
                 ownedAbarsResponseFee = _a.sent();
                 additionalOwnedAbarItemFee = ownedAbarsResponseFee[0];
                 additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
                 console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
-                _a.label = 21;
-            case 21:
-                _a.trys.push([21, 23, , 24]);
-                return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
-            case 22:
-                calculatedFee_1 = _a.sent();
-                return [3 /*break*/, 24];
-            case 23:
-                error_9 = _a.sent();
-                console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_9);
-                throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
-            case 24:
+                // try {
+                //   calculatedFee = await getAbarTransferFee(
+                //     anonKeysSender,
+                //     anonPubKeyReceiver,
+                //     amount,
+                //     additionalOwnedAbarItems,
+                //   );
+                // } catch (error) {
+                //   console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+                //   throw new Error(
+                //     'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+                //   );
+                // }
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee_1);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 idx += 1;

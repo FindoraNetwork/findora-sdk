@@ -435,17 +435,6 @@ export const getAbarToAbarAmountPayload = async (
     const givenCommitment = allCommitmentsForFeeSorted?.[idx];
 
     let calculatedFee;
-    if (!givenCommitment) {
-      throw new Error(`You still need ${calculatedFee} FRA to cover the fee 3`);
-    }
-    const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
-
-    const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
-
-    additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
-
-    console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
-
     try {
       calculatedFee = await getAbarTransferFee(
         anonKeysSender,
@@ -459,6 +448,30 @@ export const getAbarToAbarAmountPayload = async (
         'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
       );
     }
+    if (!givenCommitment) {
+      throw new Error(`You still need ${calculatedFee} FRA to cover the fee 3`);
+    }
+    const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
+
+    console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
+
+    // try {
+    //   calculatedFee = await getAbarTransferFee(
+    //     anonKeysSender,
+    //     anonPubKeyReceiver,
+    //     amount,
+    //     additionalOwnedAbarItems,
+    //   );
+    // } catch (error) {
+    //   console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+    //   throw new Error(
+    //     'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    //   );
+    // }
     balanceAfterSendToBN = createBigNumber(calculatedFee);
 
     isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
