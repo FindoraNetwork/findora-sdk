@@ -376,17 +376,28 @@ export const getAbarToAbarAmountPayload = async (
     );
   } catch (error) {
     console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
-    throw new Error('aaaaaa!!!!!');
+    throw new Error(
+      'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
   }
 
   console.log('🚀 🚀 🚀 🚀 🚀  A2  we should see it - before calling total abar transfer fee');
-  const totalFeeEstimate = await getTotalAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
 
+  let totalFeeEstimate;
+
+  try {
+    totalFeeEstimate = await getTotalAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+    throw new Error(
+      'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   let balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -423,6 +434,7 @@ export const getAbarToAbarAmountPayload = async (
   while (isMoreFeeNeeded) {
     const givenCommitment = allCommitmentsForFeeSorted?.[idx];
 
+    let calculatedFee;
     if (!givenCommitment) {
       throw new Error(`You still need ${calculatedFee} FRA to cover the fee 3`);
     }
@@ -433,13 +445,20 @@ export const getAbarToAbarAmountPayload = async (
     additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
 
     console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
-    calculatedFee = await getAbarTransferFee(
-      anonKeysSender,
-      anonPubKeyReceiver,
-      amount,
-      additionalOwnedAbarItems,
-    );
 
+    try {
+      calculatedFee = await getAbarTransferFee(
+        anonKeysSender,
+        anonPubKeyReceiver,
+        amount,
+        additionalOwnedAbarItems,
+      );
+    } catch (error) {
+      console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+      throw new Error(
+        'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+      );
+    }
     balanceAfterSendToBN = createBigNumber(calculatedFee);
 
     isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
@@ -534,13 +553,20 @@ export const abarToAbar = async (
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
   console.log('🚀 🚀 🚀 🚀 🚀  A4  we should see it - before calling total abar transfer fee');
-  const calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    abarAmountToTransfer,
-    additionalOwnedAbarItems,
-  );
-
+  let calculatedFee;
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      abarAmountToTransfer,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
+    throw new Error(
+      'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   const balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -626,7 +652,7 @@ export const prepareAnonTransferOperationBuilder = async (
     if (addedInputs.length >= 4) {
       console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
       console.log('🚀 🚀 🚀 🚀 🚀  C  we should see it - before breaking from adding inputs');
-      throw new Error('Amount you are tryin to send is to big to send at once. Please try a smaller amount');
+      throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
 
       // break;
     }

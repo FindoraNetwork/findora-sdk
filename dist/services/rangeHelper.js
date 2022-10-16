@@ -64,7 +64,6 @@ var itHasGaps = function (processedList) {
         return false;
     }
     var first = processedList[0];
-    console.log('🚀 ~ file: rangeHelper.ts ~ line 83 ~ itHasGaps ~ processedList', processedList);
     var last = processedList[dataLength - 1];
     var itHasNoGaps = first - dataLength === last - 1;
     return !itHasNoGaps;
