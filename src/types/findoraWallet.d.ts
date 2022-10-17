@@ -27,7 +27,7 @@ declare namespace FindoraWallet {
     issuer: string;
     memo: string;
     assetRules: IAssetRules;
-    numbers: BigInt;
+    numbers: bigint;
     name: string;
     options?: IAssetCustomOptions;
     ownerMemo?: any;

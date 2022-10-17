@@ -8,6 +8,7 @@ import {
   assertResultResponse,
   getRpcPayload,
   setCurrentTestName,
+  SuperSimpleObject,
   timeLog,
   timeStart,
 } from './testHelpers';
@@ -26,7 +27,7 @@ const { rpcUrl = 'http://127.0.0.1:8545' } = rpcParams;
 afterAll(afterAllLog);
 afterEach(afterEachLog);
 
-const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: T) => {
+const getTestResult = async <N extends SuperSimpleObject, T>(msgId: number, method: string, extraParams?: T) => {
   const payload = getRpcPayload<typeof extraParams>(msgId, method, extraParams);
 
   timeStart();
@@ -34,7 +35,7 @@ const getTestResult = async <N, T>(msgId: number, method: string, extraParams?: 
   timeLog(`Send an RPC call for "${method}"`);
 
   assertResultResponse(result);
-  assertBasicResult<N>(result, msgId);
+  assertBasicResult<N>(result, msgId);  
 
   return result;
 };

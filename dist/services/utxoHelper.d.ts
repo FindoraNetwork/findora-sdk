@@ -12,24 +12,24 @@ export interface AddUtxoItem extends LedgerUtxoItem {
     memoData: OwnedMemoResponse | undefined;
 }
 export interface UtxoOutputItem extends LedgerUtxoItem {
-    originAmount: BigInt;
-    amount: BigInt;
+    originAmount: bigint;
+    amount: bigint;
     memoData: OwnedMemoResponse | undefined;
 }
 export interface UtxoInputParameter {
     txoRef: LedgerTxoRef;
     assetRecord: LedgerClientAssetRecord;
     ownerMemo: LedgerOwnerMemo | undefined;
-    amount: BigInt;
+    amount: bigint;
     memoData: OwnedMemoResponse | undefined;
     sid: number;
 }
 export interface UtxoInputsInfo {
     inputParametersList: UtxoInputParameter[];
-    inputAmount: BigInt;
+    inputAmount: bigint;
 }
 export declare const decryptUtxoItem: (sid: number, walletInfo: WalletKeypar, utxoData: UtxoResponse, memoData?: OwnedMemoResponse) => Promise<AddUtxoItem>;
 export declare const getUtxoItem: (sid: number, walletInfo: WalletKeypar, cachedItem?: AddUtxoItem) => Promise<AddUtxoItem>;
 export declare const addUtxo: (walletInfo: WalletKeypar, addSids: number[]) => Promise<AddUtxoItem[]>;
-export declare const getSendUtxo: (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
+export declare const getSendUtxo: (code: string, amount: bigint, utxoDataList: AddUtxoItem[]) => UtxoOutputItem[];
 export declare const addUtxoInputs: (utxoSids: UtxoOutputItem[]) => Promise<UtxoInputsInfo>;

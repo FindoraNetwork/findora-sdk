@@ -6,7 +6,7 @@ import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledge
 import { addUtxo, addUtxoInputs, getSendUtxo, UtxoInputParameter, UtxoInputsInfo } from './utxoHelper';
 
 export interface ReciverInfo {
-  utxoNumbers: BigInt;
+  utxoNumbers: bigint;
   toPublickey: XfrPublicKey;
   assetBlindRules?: AssetApi.AssetBlindRules;
 }

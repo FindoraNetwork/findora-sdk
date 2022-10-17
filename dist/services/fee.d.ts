@@ -3,7 +3,7 @@ import * as AssetApi from '../api/sdkAsset';
 import { TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import { UtxoInputsInfo } from './utxoHelper';
 export interface ReciverInfo {
-    utxoNumbers: BigInt;
+    utxoNumbers: bigint;
     toPublickey: XfrPublicKey;
     assetBlindRules?: AssetApi.AssetBlindRules;
 }

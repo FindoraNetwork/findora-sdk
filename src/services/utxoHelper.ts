@@ -25,8 +25,8 @@ export interface AddUtxoItem extends LedgerUtxoItem {
 }
 
 export interface UtxoOutputItem extends LedgerUtxoItem {
-  originAmount: BigInt;
-  amount: BigInt;
+  originAmount: bigint;
+  amount: bigint;
   memoData: OwnedMemoResponse | undefined;
 }
 
@@ -34,14 +34,14 @@ export interface UtxoInputParameter {
   txoRef: LedgerTxoRef;
   assetRecord: LedgerClientAssetRecord;
   ownerMemo: LedgerOwnerMemo | undefined;
-  amount: BigInt;
+  amount: bigint;
   memoData: OwnedMemoResponse | undefined;
   sid: number;
 }
 
 export interface UtxoInputsInfo {
   inputParametersList: UtxoInputParameter[];
-  inputAmount: BigInt;
+  inputAmount: bigint;
 }
 
 export const decryptUtxoItem = async (
@@ -196,7 +196,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 };
 
 // creates a list of utxo like object, which are suitable for the required send operation
-export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
+export const getSendUtxo = (code: string, amount: bigint, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
   let balance = amount;
 
   const result = [];

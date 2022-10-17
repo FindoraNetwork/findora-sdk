@@ -7,7 +7,7 @@
     "baseUrl": "./",
     "declaration": true,
     "esModuleInterop": true,
-    "lib": ["es2015", "es2016", "es2017", "dom"],
+    "lib": ["es2015", "es2016", "es2017","es2020", "dom"],
     "module": "commonjs",
     "typeRoots": ["node_modules/@types", "src/types"],
     "moduleResolution": "node",

@@ -45,7 +45,7 @@ export const getFraAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
-export const getMinimalFee = async (): Promise<BigInt> => {
+export const getMinimalFee = async (): Promise<bigint> => {
   const ledger = await getLedger();
   const fee = ledger.fra_get_minimal_fee();
   return fee;
