@@ -8,4 +8,4 @@ docs
 yarn.lock
 cache/
 .env*
-.vscode
+
