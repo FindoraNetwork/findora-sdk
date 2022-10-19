@@ -1661,6 +1661,6 @@ async function getMas() {
 // testItSync();
 getFraBalance();
 // getAnonKeys();
-// runAbarCreating(200);
+// runAbarCreating(10);
 // getMas();
 // getAbarBalance();

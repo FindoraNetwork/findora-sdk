@@ -1751,7 +1751,7 @@ function getMas() {
 // testItSync();
 getFraBalance();
 // getAnonKeys();
-// runAbarCreating(200);
+// runAbarCreating(10);
 // getMas();
 // getAbarBalance();
 //# sourceMappingURL=run.js.map
