@@ -438,32 +438,26 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 _i++;
                 return [3 /*break*/, 6];
             case 9:
-                console.log('🚀 🚀 🚀 🚀 🚀  A1  we should see it - before calling total abar transfer fee');
-                _a.label = 10;
-            case 10:
-                _a.trys.push([10, 12, , 13]);
+                _a.trys.push([9, 11, , 12]);
                 return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
-            case 11:
+            case 10:
                 calculatedFee = _a.sent();
-                return [3 /*break*/, 13];
-            case 12:
+                return [3 /*break*/, 12];
+            case 11:
                 error_7 = _a.sent();
                 console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_7);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
-            case 13:
-                console.log('🚀 🚀 🚀 🚀 🚀  A2  we should see it - before calling total abar transfer fee');
-                _a.label = 14;
-            case 14:
-                _a.trys.push([14, 16, , 17]);
+            case 12:
+                _a.trys.push([12, 14, , 15]);
                 return [4 /*yield*/, (0, exports.getTotalAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
-            case 15:
+            case 13:
                 totalFeeEstimate = _a.sent();
-                return [3 /*break*/, 17];
-            case 16:
+                return [3 /*break*/, 15];
+            case 14:
                 error_8 = _a.sent();
                 console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_8);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
-            case 17:
+            case 15:
                 console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
@@ -481,55 +475,41 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 idx = 0;
                 feeUtxoNumbers = BigInt((0, bigNumber_1.toWei)(calculatedFee, 6).toString());
                 return [4 /*yield*/, (0, exports.getSendAtxo)(fraAssetCode, feeUtxoNumbers, allCommitmentsForFee, anonKeysSender)];
-            case 18:
+            case 16:
                 feeAtxoListToSend = _a.sent();
                 allCommitmentsForFeeSorted = feeAtxoListToSend.map(function (atxoItem) { return atxoItem.commitment; });
-                _a.label = 19;
-            case 19:
-                if (!isMoreFeeNeeded) return [3 /*break*/, 25];
+                _a.label = 17;
+            case 17:
+                if (!isMoreFeeNeeded) return [3 /*break*/, 23];
                 givenCommitment = allCommitmentsForFeeSorted === null || allCommitmentsForFeeSorted === void 0 ? void 0 : allCommitmentsForFeeSorted[idx];
                 calculatedFee_1 = void 0;
-                _a.label = 20;
-            case 20:
-                _a.trys.push([20, 22, , 23]);
+                _a.label = 18;
+            case 18:
+                _a.trys.push([18, 20, , 21]);
                 return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
-            case 21:
+            case 19:
                 calculatedFee_1 = _a.sent();
-                return [3 /*break*/, 23];
-            case 22:
+                return [3 /*break*/, 21];
+            case 20:
                 error_9 = _a.sent();
                 console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_9);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
-            case 23:
+            case 21:
                 if (!givenCommitment) {
                     throw new Error("You still need " + calculatedFee_1 + " FRA to cover the fee 3");
                 }
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
-            case 24:
+            case 22:
                 ownedAbarsResponseFee = _a.sent();
                 additionalOwnedAbarItemFee = ownedAbarsResponseFee[0];
                 additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
-                console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
-                // try {
-                //   calculatedFee = await getAbarTransferFee(
-                //     anonKeysSender,
-                //     anonPubKeyReceiver,
-                //     amount,
-                //     additionalOwnedAbarItems,
-                //   );
-                // } catch (error) {
-                //   console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
-                //   throw new Error(
-                //     'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
-                //   );
-                // }
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee_1);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 idx += 1;
                 commitmentsForFee.push(givenCommitment);
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee_1);
-                return [3 /*break*/, 19];
-            case 25:
+                return [3 /*break*/, 17];
+            case 23:
                 console.log('returning calculatedFee', calculatedFee);
                 // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
                 // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
@@ -601,19 +581,16 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    console.log('🚀 🚀 🚀 🚀 🚀  A4  we should see it - before calling total abar transfer fee');
-                    _a.label = 1;
-                case 1:
-                    _a.trys.push([1, 3, , 4]);
+                    _a.trys.push([0, 2, , 3]);
                     return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
-                case 2:
+                case 1:
                     calculatedFee = _a.sent();
-                    return [3 /*break*/, 4];
-                case 3:
+                    return [3 /*break*/, 3];
+                case 2:
                     error_10 = _a.sent();
                     console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_10);
                     throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
-                case 4:
+                case 3:
                     console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                     isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
@@ -621,9 +598,8 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                         msg = "Could not process abar transfer. More fee are needed. Required amount at least \"" + calculatedFee + " FRA\"";
                         throw new Error(msg);
                     }
-                    console.log('🚀 🚀 🚀 🚀 🚀  B3  we should see it - before calling prepare anon transfer builder');
                     return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
-                case 5:
+                case 4:
                     anonTransferOperationBuilder = _a.sent();
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.build();
@@ -640,7 +616,7 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                         throw new Error("Could not get a list of commitments strings \"" + err.message + "\" ");
                     }
                     return [4 /*yield*/, processAbarToAbarCommitmentResponse(commitmentsMap)];
-                case 6:
+                case 5:
                     processedCommitmentsMap = _a.sent();
                     abarToAbarData = {
                         anonKeysSender: anonKeysSender,
@@ -690,9 +666,7 @@ additionalOwnedAbarItems) {
                     ownedAbarItemOne = additionalOwnedAbars_1[_i];
                     if (addedInputs.length >= 4) {
                         console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
-                        console.log('🚀 🚀 🚀 🚀 🚀  C  we should see it - before breaking from adding inputs');
                         throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
-                        // break;
                     }
                     console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
@@ -772,9 +746,7 @@ var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmoun
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log('🚀 🚀 🚀 🚀 🚀  B2  we should see it - before calling prepare anon transfer builder');
-                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     expectedFee = anonTransferOperationBuilder.get_expected_fee();
@@ -791,9 +763,7 @@ var getTotalAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abar
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    console.log('🚀 🚀 🚀 🚀 🚀  B1  we should see it - before calling prepare anon transfer builder');
-                    return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
+                case 0: return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     expectedFee = anonTransferOperationBuilder.get_total_fee_estimate();

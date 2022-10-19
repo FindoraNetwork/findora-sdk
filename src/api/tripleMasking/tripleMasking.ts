@@ -365,7 +365,6 @@ export const getAbarToAbarAmountPayload = async (
     commitmentsToSend.push(givenCommitment);
   }
 
-  console.log('🚀 🚀 🚀 🚀 🚀  A1  we should see it - before calling total abar transfer fee');
   let calculatedFee;
   try {
     calculatedFee = await getAbarTransferFee(
@@ -380,8 +379,6 @@ export const getAbarToAbarAmountPayload = async (
       'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
     );
   }
-
-  console.log('🚀 🚀 🚀 🚀 🚀  A2  we should see it - before calling total abar transfer fee');
 
   let totalFeeEstimate;
 
@@ -457,21 +454,6 @@ export const getAbarToAbarAmountPayload = async (
 
     additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
 
-    console.log('🚀 🚀 🚀 🚀 🚀  A3  we should see it - before calling total abar transfer fee');
-
-    // try {
-    //   calculatedFee = await getAbarTransferFee(
-    //     anonKeysSender,
-    //     anonPubKeyReceiver,
-    //     amount,
-    //     additionalOwnedAbarItems,
-    //   );
-    // } catch (error) {
-    //   console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
-    //   throw new Error(
-    //     'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
-    //   );
-    // }
     balanceAfterSendToBN = createBigNumber(calculatedFee);
 
     isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
@@ -565,8 +547,8 @@ export const abarToAbar = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  console.log('🚀 🚀 🚀 🚀 🚀  A4  we should see it - before calling total abar transfer fee');
   let calculatedFee;
+
   try {
     calculatedFee = await getAbarTransferFee(
       anonKeysSender,
@@ -591,7 +573,6 @@ export const abarToAbar = async (
     throw new Error(msg);
   }
 
-  console.log('🚀 🚀 🚀 🚀 🚀  B3  we should see it - before calling prepare anon transfer builder');
   let anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -664,10 +645,7 @@ export const prepareAnonTransferOperationBuilder = async (
   for (const ownedAbarItemOne of additionalOwnedAbars) {
     if (addedInputs.length >= 4) {
       console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
-      console.log('🚀 🚀 🚀 🚀 🚀  C  we should see it - before breaking from adding inputs');
       throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
-
-      // break;
     }
 
     console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
@@ -751,7 +729,6 @@ export const getAbarTransferFee = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  console.log('🚀 🚀 🚀 🚀 🚀  B2  we should see it - before calling prepare anon transfer builder');
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
@@ -772,7 +749,6 @@ export const getTotalAbarTransferFee = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  console.log('🚀 🚀 🚀 🚀 🚀  B1  we should see it - before calling prepare anon transfer builder');
   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
     anonKeysSender,
     anonPubKeyReceiver,
