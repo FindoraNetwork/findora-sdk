@@ -640,7 +640,6 @@ export const prepareAnonTransferOperationBuilder = async (
 
   for (const ownedAbarItemOne of additionalOwnedAbars) {
     if (addedInputs.length >= 4) {
-      console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
       throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
     }
 
@@ -662,8 +661,6 @@ export const prepareAnonTransferOperationBuilder = async (
     }
     addedInputs.push(ownedAbarItemOne);
   }
-
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     const ledger = await getLedger();

@@ -80,7 +80,6 @@ var getRange = function (mas, processedList) {
     }
     var first = processedList[0];
     var last = processedList[dataLength - 1];
-    // const itHasNoGaps = first - dataLength === last - 1;
     var itHasNoGaps = !(0, exports.itHasGaps)(processedList);
     if (itHasNoGaps) {
         return (0, exports.getRangeWithoutGaps)(mas, first, last);

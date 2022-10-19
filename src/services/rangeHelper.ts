@@ -100,7 +100,6 @@ export const getRange = (mas: number, processedList?: number[]): RangeResult => 
   const first = processedList[0];
   const last = processedList[dataLength - 1];
 
-  // const itHasNoGaps = first - dataLength === last - 1;
   const itHasNoGaps = !itHasGaps(processedList);
 
   if (itHasNoGaps) {

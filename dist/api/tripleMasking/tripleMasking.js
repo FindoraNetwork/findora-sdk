@@ -661,7 +661,6 @@ additionalOwnedAbarItems) {
                     if (!(_i < additionalOwnedAbars_1.length)) return [3 /*break*/, 8];
                     ownedAbarItemOne = additionalOwnedAbars_1[_i];
                     if (addedInputs.length >= 4) {
-                        console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
                         throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
                     }
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
@@ -681,20 +680,17 @@ additionalOwnedAbarItems) {
                     _i++;
                     return [3 /*break*/, 5];
                 case 8:
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
-                    _a.label = 9;
-                case 9:
-                    _a.trys.push([9, 11, , 12]);
+                    _a.trys.push([8, 10, , 11]);
                     return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 10:
+                case 9:
                     ledger = _a.sent();
                     amountAssetType = ledger.open_abar(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender);
                     anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, amountAssetType.asset_type, axfrPublicKeyReceiver);
-                    return [3 /*break*/, 12];
-                case 11:
+                    return [3 /*break*/, 11];
+                case 10:
                     error_11 = _a.sent();
                     throw new Error("Could not add an output for abar transfer operation\", Error - " + error_11.message);
-                case 12: return [2 /*return*/, anonTransferOperationBuilder];
+                case 11: return [2 /*return*/, anonTransferOperationBuilder];
             }
         });
     });
