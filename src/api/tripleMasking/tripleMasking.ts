@@ -374,7 +374,6 @@ export const getAbarToAbarAmountPayload = async (
       additionalOwnedAbarItems,
     );
   } catch (error) {
-    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
     throw new Error(
       'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
     );
@@ -390,7 +389,6 @@ export const getAbarToAbarAmountPayload = async (
       additionalOwnedAbarItems,
     );
   } catch (error) {
-    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
     throw new Error(
       'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
     );
@@ -440,7 +438,6 @@ export const getAbarToAbarAmountPayload = async (
         additionalOwnedAbarItems,
       );
     } catch (error) {
-      console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
       throw new Error(
         'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
       );
@@ -557,7 +554,6 @@ export const abarToAbar = async (
       additionalOwnedAbarItems,
     );
   } catch (error) {
-    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error);
     throw new Error(
       'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
     );

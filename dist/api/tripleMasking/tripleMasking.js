@@ -445,7 +445,6 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 12];
             case 11:
                 error_7 = _a.sent();
-                console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_7);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 12:
                 _a.trys.push([12, 14, , 15]);
@@ -455,7 +454,6 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 15];
             case 14:
                 error_8 = _a.sent();
-                console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_8);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 15:
                 console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
@@ -492,7 +490,6 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 21];
             case 20:
                 error_9 = _a.sent();
-                console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_9);
                 throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 21:
                 if (!givenCommitment) {
@@ -588,7 +585,6 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                     return [3 /*break*/, 3];
                 case 2:
                     error_10 = _a.sent();
-                    console.log('🚀 🚀 🚀 🚀 🚀 yes, we should catch this error ', error_10);
                     throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
                 case 3:
                     console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
