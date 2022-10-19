@@ -1472,16 +1472,18 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
         switch (_a.label) {
             case 0:
                 anonKeys = {
-                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    axfrViewKey: '',
-                    name: 'AnonWallet2',
+                    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+                    axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+                    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+                    name: 'SyncAnonWallet1',
                 };
                 givenCommitmentsList = [
-                    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-                    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
-                    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
-                    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+                    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
+                    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
+                    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
+                    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
+                    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
+                    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
@@ -1710,8 +1712,7 @@ function runAbarCreating(iterations) {
                     }
                     console.log("=======   ========= ======= Current MAS = " + masResponse);
                     walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-                    amountToSend = walletIndex ? '35' : '25';
-                    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+                    amountToSend = walletIndex ? '10' : '10';
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
                     _a.label = 3;
@@ -1752,4 +1753,5 @@ getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
+// getAbarBalance();
 //# sourceMappingURL=run.js.map

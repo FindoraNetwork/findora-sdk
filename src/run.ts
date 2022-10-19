@@ -1353,58 +1353,22 @@ const getUnspentAbars = async () => {
 const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
-  // Anon Walet 1
-  // const anonKeys = {
-  //   axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-  //   axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-  //   decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-  //   encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
-  // };
-
-  // Anon Walet 3
-  // const anonKeys = {
-  //   axfrPublicKey: '5kJ1D8ZGmaHbyv4Yfn3q94oYAgV8km5dkiBHWPMU2b8=',
-  //   axfrSecretKey: 'VDj-QNt0UEilrJsXa69HduAnfsXpZqYabXC_ozqiCwTmQnUPxkaZodvK_hh-fer3ihgCBXySbl2SIEdY8xTZvw==',
-  //   decKey: 'KLzfPV-ft7m114DsUBt_ZblsdbCFqhIzkTWd9rZBN3w=',
-  //   encKey: 'k9L1_NnjjZu6jpkKZXrmsRi2Vta0LuLGsk2y4Hk0akI=',
-  //   name: 'AnonWallet3',
-  // };
-
-  // Anon Walet 2
   const anonKeys = {
-    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    axfrViewKey: '',
-    name: 'AnonWallet2',
+    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+    axfrSpendKey:
+      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+    name: 'SyncAnonWallet1',
   };
 
-  // const anonKeys = {
-  //   axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-  //   axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-  //   decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
-  //   encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
-  // };
-
   const givenCommitmentsList = [
-    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
-    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
-    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
+    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
+    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
+    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
+    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
+    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
   ];
-
-  // console.log(
-  //   '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check',
-  //   givenCommitmentsList,
-  // );
-
-  // const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
-  // console.log(
-  //   '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
-  //   JSON.stringify(spentAbars, null, 2),
-  // );
-
-  // const a = await TripleMasking.openAbar(spentAbars[0], anonKeys);
-  // console.log('🚀 ~ file: run.ts ~ line 1325 ~ getAbarBalance ~ a', a);
 
   // const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
   const balances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList);
@@ -1668,13 +1632,13 @@ async function runAbarCreating(iterations = 20) {
     console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
 
     const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-    const amountToSend = walletIndex ? '35' : '25';
+    const amountToSend = walletIndex ? '10' : '10';
 
-    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+    // console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
     const currentWallet = wallets[walletIndex];
     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
 
-    // const transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+    // const _transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
   }
 }
 
@@ -1699,3 +1663,4 @@ getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
+// getAbarBalance();

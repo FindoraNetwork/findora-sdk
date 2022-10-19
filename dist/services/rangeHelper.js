@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRange = exports.getRangeWithGaps = exports.getRangeWithoutGaps = exports.getFirstNonConsecutive = void 0;
+exports.getRange = exports.itHasGaps = exports.getRangeWithGaps = exports.getRangeWithoutGaps = exports.getFirstNonConsecutive = void 0;
 // it should come from a constant file. move it there later
 var MAX_SUPPORTED_CHUNK_SIZE = 100;
 // by default we process data all the way back till a very first atxo=1
 // but later we can configure that to have a different value (in case of a specific block height is needed)
 // Initial Atxo Sid should be read from the const for time being but later it would be a part of Sdk Init process
-var IAS = 1;
+var IAS = 0;
 var getFirstNonConsecutive = function (dataList) {
     for (var i = 0; i < dataList.length - 1; i++) {
         if (dataList[i] - dataList[i + 1] !== 1) {
@@ -58,6 +58,17 @@ var getRangeWithGaps = function (processedList) {
     return [calculatedGapEnd, gapStart];
 };
 exports.getRangeWithGaps = getRangeWithGaps;
+var itHasGaps = function (processedList) {
+    var dataLength = (processedList === null || processedList === void 0 ? void 0 : processedList.length) || 0;
+    if (!dataLength) {
+        return false;
+    }
+    var first = processedList[0];
+    var last = processedList[dataLength - 1];
+    var itHasNoGaps = first - dataLength === last - 1;
+    return !itHasNoGaps;
+};
+exports.itHasGaps = itHasGaps;
 var getRange = function (mas, processedList) {
     var _a;
     var start = -1;
@@ -69,7 +80,7 @@ var getRange = function (mas, processedList) {
     }
     var first = processedList[0];
     var last = processedList[dataLength - 1];
-    var itHasNoGaps = first - dataLength === last - 1;
+    var itHasNoGaps = !(0, exports.itHasGaps)(processedList);
     if (itHasNoGaps) {
         return (0, exports.getRangeWithoutGaps)(mas, first, last);
     }

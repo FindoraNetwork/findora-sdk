@@ -360,14 +360,11 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                 case 10:
                     i++;
                     return [3 /*break*/, 6];
-                case 11: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+                case 11: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
                 case 12:
                     _a.sent();
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-                case 13:
-                    _a.sent();
                     return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, fraCode)];
-                case 14:
+                case 13:
                     assetBalance = _a.sent();
                     (0, utils_1.log)("\uD83D\uDE80 ~ createTestBars ~ \"" + fraCode + "\" assetBalance ", assetBalance);
                     cleanedBalanceValue = assetBalance.replace(/,/g, '');
