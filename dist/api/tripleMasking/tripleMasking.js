@@ -666,12 +666,11 @@ additionalOwnedAbarItems) {
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
                 case 6:
                     abarPayloadNext = _a.sent();
-                    console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
                     try {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, aXfrSpendKeySender, abarPayloadNext.myMTLeafInfo);
                     }
                     catch (error) {
-                        console.log('eee', error);
+                        console.log('platform error', error);
                         throw new Error("Could not add an additional input for abar transfer operation\", Error - " + error.message);
                     }
                     addedInputs.push(ownedAbarItemOne);

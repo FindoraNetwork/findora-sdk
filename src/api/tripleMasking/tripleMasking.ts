@@ -645,7 +645,6 @@ export const prepareAnonTransferOperationBuilder = async (
 
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
-    console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
         abarPayloadNext.myOwnedAbar,
@@ -654,7 +653,7 @@ export const prepareAnonTransferOperationBuilder = async (
         abarPayloadNext.myMTLeafInfo,
       );
     } catch (error) {
-      console.log('eee', error);
+      console.log('platform error', error);
       throw new Error(
         `Could not add an additional input for abar transfer operation", Error - ${(error as Error).message}`,
       );
