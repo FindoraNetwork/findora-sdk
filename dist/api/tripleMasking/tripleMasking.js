@@ -664,7 +664,6 @@ additionalOwnedAbarItems) {
                         console.log('🚀 ~ file: tripleMasking.ts ~ line 618 ~ addedInputs', addedInputs);
                         throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
                     }
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
                     return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
                 case 6:
                     abarPayloadNext = _a.sent();
@@ -932,16 +931,13 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
                 asset = _c.sent();
                 decimals = asset.assetRules.decimals;
                 amountToSendInWei = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 901 ~ amountToSendInWei', amountToSendInWei);
                 return [4 /*yield*/, Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
             case 4:
                 _resultHandle = _c.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ _resultHandle', _resultHandle);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
             case 5:
                 _c.sent();
                 commitmentsMap = abarToAbarData.commitmentsMap;
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 908 ~ abarToAbarData', abarToAbarData);
                 retrivedCommitmentsListReceiver = [];
                 remainderCommitements = [];
                 for (_i = 0, commitmentsMap_1 = commitmentsMap; _i < commitmentsMap_1.length; _i++) {
@@ -960,7 +956,6 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
                     remainderCommitements.push(commitmentKey);
                 }
                 allCommitments = __spreadArray([], retrivedCommitmentsListReceiver, true);
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 932 ~ allCommitments', allCommitments);
                 additionalOwnedAbarItems = [];
                 _b = 0, allCommitments_2 = allCommitments;
                 _c.label = 6;
@@ -970,7 +965,6 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
             case 7:
                 ownedAbarsResponseTwo = _c.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 938 ~ ownedAbarsResponseTwo', ownedAbarsResponseTwo);
                 additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
                 additionalOwnedAbarItems.push(additionalOwnedAbarItem);
                 _c.label = 8;
@@ -980,7 +974,6 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
             case 9: return [4 /*yield*/, (0, exports.abarToBar)(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems)];
             case 10:
                 abarToBarResult = _c.sent();
-                console.log('🚀 🚀 🚀 ~ file: tripleMasking.ts ~ line 946 ~ abarToBarResult', abarToBarResult);
                 return [2 /*return*/, __assign(__assign({}, abarToBarResult), { remainderCommitements: remainderCommitements, spentCommitments: givenCommitmentsListSender })];
         }
     });
@@ -1387,7 +1380,6 @@ var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0
                         ownedAbar: __assign({}, ownedAbar),
                     },
                 };
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
                 return [2 /*return*/, [abar]];
         }
     });

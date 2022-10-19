@@ -644,7 +644,6 @@ export const prepareAnonTransferOperationBuilder = async (
       throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
     }
 
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 615 ~ addedInputs.length', addedInputs.length);
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
     console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
@@ -926,14 +925,11 @@ export const abarToBarAmount = async (
   const asset = await Asset.getAssetDetails(assetCode);
   const decimals = asset.assetRules.decimals;
   const amountToSendInWei = BigInt(toWei(amount, decimals).toString());
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 901 ~ amountToSendInWei', amountToSendInWei);
 
   const _resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ _resultHandle', _resultHandle);
   await waitForBlockChange();
 
   const { commitmentsMap } = abarToAbarData;
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 908 ~ abarToAbarData', abarToAbarData);
 
   const retrivedCommitmentsListReceiver = [];
 
@@ -957,13 +953,11 @@ export const abarToBarAmount = async (
   }
 
   const allCommitments = [...retrivedCommitmentsListReceiver];
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 932 ~ allCommitments', allCommitments);
 
   const additionalOwnedAbarItems = [];
 
   for (let givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 938 ~ ownedAbarsResponseTwo', ownedAbarsResponseTwo);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
 
@@ -971,7 +965,6 @@ export const abarToBarAmount = async (
   }
 
   const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
-  console.log('🚀 🚀 🚀 ~ file: tripleMasking.ts ~ line 946 ~ abarToBarResult', abarToBarResult);
 
   return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
 };
@@ -1353,7 +1346,6 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       ownedAbar: { ...ownedAbar },
     },
   };
-  console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
 
   return [abar];
 };
