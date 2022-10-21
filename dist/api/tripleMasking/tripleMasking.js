@@ -492,9 +492,6 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 error_9 = _a.sent();
                 throw new Error('3 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 21:
-                // if (!givenCommitment) {
-                //   throw new Error(`You still need ${calculatedFeeA} FRA to cover the fee 3`);
-                // }
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFeeA);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 if (isMoreFeeNeeded && !givenCommitment) {
@@ -514,8 +511,6 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 17];
             case 24:
                 console.log('returning calculatedFeeA', calculatedFeeA);
-                // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
-                // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
                 return [2 /*return*/, {
                         commitmentsToSend: commitmentsToSend,
                         commitmentsForFee: commitmentsForFee,

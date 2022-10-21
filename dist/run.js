@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1763,10 +1763,10 @@ function getMas() {
 }
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
 // getAbarBalance();
-testFailure();
+// testFailure();
 //# sourceMappingURL=run.js.map
