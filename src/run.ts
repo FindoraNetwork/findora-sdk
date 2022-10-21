@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -1642,6 +1642,11 @@ async function runAbarCreating(iterations = 20) {
   }
 }
 
+async function testFailure() {
+  const result = await TMI.abarToBarCustomSendAmount();
+  console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+}
+
 async function getMas() {
   const maxAtxoSidResult = await Network.getMaxAtxoSid();
 
@@ -1659,8 +1664,9 @@ async function getMas() {
 }
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
 // getAbarBalance();
+testFailure();

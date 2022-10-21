@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+var TMI = __importStar(require("./tripleMasking/tripleMasking.integration"));
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1724,6 +1724,20 @@ function runAbarCreating(iterations) {
         });
     });
 }
+function testFailure() {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, TMI.abarToBarCustomSendAmount()];
+                case 1:
+                    result = _a.sent();
+                    console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function getMas() {
     return __awaiter(this, void 0, void 0, function () {
         var maxAtxoSidResult, masError, masResponse, result;
@@ -1749,9 +1763,10 @@ function getMas() {
 }
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();
 // getAbarBalance();
+testFailure();
 //# sourceMappingURL=run.js.map
