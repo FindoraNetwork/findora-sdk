@@ -72,77 +72,109 @@ afterAll(function (done) { return __awaiter(void 0, void 0, void 0, function () 
     });
 }); }, extendedExecutionTimeout);
 describe("Triple Masking Integration (integration test)", function () {
-    // describe('Single Asset Integration Test (BAR to BAR)', () => {
-    //   it(
-    //     'Should create test BARs with simple FRA transfer',
-    //     async () => {
-    //       const result = await Integration.createTestBars();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout,
-    //   );
-    // });
-    // describe('BAR to ABAR transfer', () => {
-    //   it(
-    //     'Should convert BAR to ABAR (single sid), and verify balances of BAR and ABAR',
-    //     async () => {
-    //       const result = await Integration.barToAbar();
-    //       expect(!!result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout,
-    //   );
-    //   it(
-    //     'Should send exact amount of FRA from BAR to ABAR, and verify balances of BAR and ABAR',
-    //     async () => {
-    //       const result = await Integration.barToAbarAmount();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout,
-    //   );
-    // });
-    // describe('ABAR to ABAR transfer', () => {
-    //   it(
-    //     'Should do anonymous transfer using only FRA and verify ABAR and BAR balances',
-    //     async () => {
-    //       const result = await Integration.abarToAbar();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout * 2,
-    //   );
-    //   it(
-    //     'Should do multi asset anonymous transfer, and verify ABAR and BAR balances',
-    //     async () => {
-    //       const result = await Integration.abarToAbarMulti();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout * 2,
-    //   );
-    //   it(
-    //     'Should send exact amount of FRA asset from ABAR to ABAR, and verify both ABAR balances',
-    //     async () => {
-    //       const result = await Integration.abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout * 2,
-    //   );
-    //   it(
-    //     'Should send exact amount of custom asset from ABAR to ABAR, and verify both ABAR balances',
-    //     async () => {
-    //       const result = await Integration.abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
-    //       expect(result).toBe(true);
-    //     },
-    //     extendedExecutionTimeout * 2,
-    //   );
-    // });
+    describe('Single Asset Integration Test (BAR to BAR)', function () {
+        it('Should create test BARs with simple FRA transfer', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.createTestBars()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('BAR to ABAR transfer', function () {
+        it('Should convert BAR to ABAR (single sid), and verify balances of BAR and ABAR', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.barToAbar()];
+                    case 1:
+                        result = _a.sent();
+                        expect(!!result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+        it('Should send exact amount of FRA from BAR to ABAR, and verify balances of BAR and ABAR', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.barToAbarAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+    });
+    describe('ABAR to ABAR transfer', function () {
+        it('Should do anonymous transfer using only FRA and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToAbar()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should do multi asset anonymous transfer, and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToAbarMulti()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should send exact amount of FRA asset from ABAR to ABAR, and verify both ABAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToAbarFraMultipleFraAtxoForFeeSendAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should send exact amount of custom asset from ABAR to ABAR, and verify both ABAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToAbarCustomMultipleFraAtxoForFeeSendAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+    });
     describe('ABAR to BAR transfer', function () {
-        // it(
-        //   'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
-        //   async () => {
-        //     const result = await Integration.abarToBar();
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout,
-        // );
+        it('Should convert ABAR to BAR, and verify balances of ABAR and BAR', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToBar()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
         it('Should send exact amount of custom asset from ABAR to BAR, and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {
@@ -155,14 +187,18 @@ describe("Triple Masking Integration (integration test)", function () {
                 }
             });
         }); }, extendedExecutionTimeout * 2);
-        // it(
-        //   'Should send exact amount of FRA asset from ABAR to BAR, and verify ABAR and BAR balances',
-        //   async () => {
-        //     const result = await Integration.abarToBarFraSendAmount();
-        //     expect(result).toBe(true);
-        //   },
-        //   extendedExecutionTimeout * 2,
-        // );
+        it('Should send exact amount of FRA asset from ABAR to BAR, and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToBarFraSendAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
     });
 });
 //# sourceMappingURL=tripleMasking.integration.spec.js.map
