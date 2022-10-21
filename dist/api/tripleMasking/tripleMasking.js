@@ -379,7 +379,7 @@ var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { ret
     });
 }); };
 var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, error_7, totalFeeEstimate, error_8, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, givenCommitment, calculatedFee_1, error_9, ownedAbarsResponseFee, additionalOwnedAbarItemFee;
+    var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, error_7, totalFeeEstimate, error_8, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, calculatedFeeA, givenCommitment, myCalculatedFee, error_9, ownedAbarsResponseFee, additionalOwnedAbarItemFee;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
@@ -445,7 +445,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 12];
             case 11:
                 error_7 = _a.sent();
-                throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+                throw new Error('1 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 12:
                 _a.trys.push([12, 14, , 15]);
                 return [4 /*yield*/, (0, exports.getTotalAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
@@ -454,7 +454,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 return [3 /*break*/, 15];
             case 14:
                 error_8 = _a.sent();
-                throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+                throw new Error('2 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 15:
                 console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
@@ -478,36 +478,42 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 allCommitmentsForFeeSorted = feeAtxoListToSend.map(function (atxoItem) { return atxoItem.commitment; });
                 _a.label = 17;
             case 17:
-                if (!isMoreFeeNeeded) return [3 /*break*/, 23];
+                if (!isMoreFeeNeeded) return [3 /*break*/, 24];
                 givenCommitment = allCommitmentsForFeeSorted === null || allCommitmentsForFeeSorted === void 0 ? void 0 : allCommitmentsForFeeSorted[idx];
-                calculatedFee_1 = void 0;
                 _a.label = 18;
             case 18:
                 _a.trys.push([18, 20, , 21]);
                 return [4 /*yield*/, (0, exports.getAbarTransferFee)(anonKeysSender, anonPubKeyReceiver, amount, additionalOwnedAbarItems)];
             case 19:
-                calculatedFee_1 = _a.sent();
+                myCalculatedFee = _a.sent();
+                calculatedFeeA = myCalculatedFee;
                 return [3 /*break*/, 21];
             case 20:
                 error_9 = _a.sent();
-                throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+                throw new Error('3 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 21:
-                if (!givenCommitment) {
-                    throw new Error("You still need " + calculatedFee_1 + " FRA to cover the fee 3");
+                // if (!givenCommitment) {
+                //   throw new Error(`You still need ${calculatedFeeA} FRA to cover the fee 3`);
+                // }
+                balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFeeA);
+                isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
+                if (isMoreFeeNeeded && !givenCommitment) {
+                    throw new Error("You still need " + calculatedFeeA + " FRA to cover the fee 3");
                 }
+                if (!givenCommitment) return [3 /*break*/, 23];
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
             case 22:
                 ownedAbarsResponseFee = _a.sent();
                 additionalOwnedAbarItemFee = ownedAbarsResponseFee[0];
                 additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
-                balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee_1);
-                isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
-                idx += 1;
                 commitmentsForFee.push(givenCommitment);
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee_1);
-                return [3 /*break*/, 17];
+                _a.label = 23;
             case 23:
-                console.log('returning calculatedFee', calculatedFee);
+                idx += 1;
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFeeA);
+                return [3 /*break*/, 17];
+            case 24:
+                console.log('returning calculatedFeeA', calculatedFeeA);
                 // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
                 // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
                 return [2 /*return*/, {
@@ -585,7 +591,7 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                     return [3 /*break*/, 3];
                 case 2:
                     error_10 = _a.sent();
-                    throw new Error('The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+                    throw new Error('4 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
                 case 3:
                     console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
