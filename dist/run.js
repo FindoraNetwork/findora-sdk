@@ -1724,20 +1724,10 @@ function runAbarCreating(iterations) {
         });
     });
 }
-function testFailure() {
-    return __awaiter(this, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, TMI.abarToBarCustomSendAmount()];
-                case 1:
-                    result = _a.sent();
-                    console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
-                    return [2 /*return*/];
-            }
-        });
-    });
-}
+// async function testFailure() {
+//   const result = await TMI.abarToBarCustomSendAmount();
+//   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+// }
 function getMas() {
     return __awaiter(this, void 0, void 0, function () {
         var maxAtxoSidResult, masError, masResponse, result;

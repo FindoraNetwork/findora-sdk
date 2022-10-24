@@ -1642,10 +1642,10 @@ async function runAbarCreating(iterations = 20) {
   }
 }
 
-async function testFailure() {
-  const result = await TMI.abarToBarCustomSendAmount();
-  console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
-}
+// async function testFailure() {
+//   const result = await TMI.abarToBarCustomSendAmount();
+//   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+// }
 
 async function getMas() {
   const maxAtxoSidResult = await Network.getMaxAtxoSid();
