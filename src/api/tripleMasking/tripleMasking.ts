@@ -360,20 +360,34 @@ export const getAbarToAbarAmountPayload = async (
     commitmentsToSend.push(givenCommitment);
   }
 
-  let calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
+  let calculatedFee;
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '1 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
 
-  const totalFeeEstimate = await getTotalAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
+  let totalFeeEstimate;
 
+  try {
+    totalFeeEstimate = await getTotalAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '2 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   let balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -407,39 +421,47 @@ export const getAbarToAbarAmountPayload = async (
 
   const allCommitmentsForFeeSorted = feeAtxoListToSend.map(atxoItem => atxoItem.commitment);
 
+  let calculatedFeeA;
+
   while (isMoreFeeNeeded) {
     const givenCommitment = allCommitmentsForFeeSorted?.[idx];
 
-    if (!givenCommitment) {
-      throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
+    try {
+      const myCalculatedFee = await getAbarTransferFee(
+        anonKeysSender,
+        anonPubKeyReceiver,
+        amount,
+        additionalOwnedAbarItems,
+      );
+      calculatedFeeA = myCalculatedFee;
+    } catch (error) {
+      throw new Error(
+        '3 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+      );
     }
-    const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
 
-    const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
-
-    additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
-
-    calculatedFee = await getAbarTransferFee(
-      anonKeysSender,
-      anonPubKeyReceiver,
-      amount,
-      additionalOwnedAbarItems,
-    );
-
-    balanceAfterSendToBN = createBigNumber(calculatedFee);
-
+    balanceAfterSendToBN = createBigNumber(calculatedFeeA);
     isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
+
+    if (isMoreFeeNeeded && !givenCommitment) {
+      throw new Error(`You still need ${calculatedFeeA} FRA to cover the fee 3`);
+    }
+
+    if (givenCommitment) {
+      const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
+
+      const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
+
+      additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
+      commitmentsForFee.push(givenCommitment);
+    }
+
     idx += 1;
 
-    commitmentsForFee.push(givenCommitment);
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFeeA);
   }
 
-  console.log('returning calculatedFee', calculatedFee);
-
-  // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
-
-  // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+  console.log('returning calculatedFeeA', calculatedFeeA);
 
   return {
     commitmentsToSend,
@@ -519,13 +541,20 @@ export const abarToAbar = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  const calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    abarAmountToTransfer,
-    additionalOwnedAbarItems,
-  );
+  let calculatedFee;
 
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      abarAmountToTransfer,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '4 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   const balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -604,10 +633,15 @@ export const prepareAnonTransferOperationBuilder = async (
 
   const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
 
+  const addedInputs = [];
+
   for (const ownedAbarItemOne of additionalOwnedAbars) {
+    if (addedInputs.length >= 4) {
+      throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
+    }
+
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
-    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
         abarPayloadNext.myOwnedAbar,
@@ -616,13 +650,13 @@ export const prepareAnonTransferOperationBuilder = async (
         abarPayloadNext.myMTLeafInfo,
       );
     } catch (error) {
+      console.log('platform error', error);
       throw new Error(
         `Could not add an additional input for abar transfer operation", Error - ${(error as Error).message}`,
       );
     }
+    addedInputs.push(ownedAbarItemOne);
   }
-
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     const ledger = await getLedger();
@@ -1307,7 +1341,6 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       ownedAbar: { ...ownedAbar },
     },
   };
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
 
   return [abar];
 };

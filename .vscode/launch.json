@@ -9,6 +9,12 @@
       "name": "Run npm start",
       "request": "launch",
       "type": "node-terminal"
+    },
+    {
+      "command": "INTEGRATION_ENV_NAME=local yarn start:once ",
+      "name": "Run yarn start:once",
+      "request": "launch",
+      "type": "node-terminal"
     }
   ]
 }

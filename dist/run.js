@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -109,7 +113,7 @@ var sdkEnv = {
  */
 Sdk_1.default.init(sdkEnv);
 var password = '123';
-console.log("Connecting to \"" + sdkEnv.hostUrl + "\"");
+console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = _d === void 0 ? '' : _d, _e = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE2, PKEY_MINE2 = _f === void 0 ? '' : _f, _g = _a.PKEY_MINE3, PKEY_MINE3 = _g === void 0 ? '' : _g, _h = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _h === void 0 ? '' : _h, _j = _a.ENG_PKEY, ENG_PKEY = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _k === void 0 ? '' : _k, _l = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _l === void 0 ? '' : _l, _m = _a.M_STRING, M_STRING = _m === void 0 ? '' : _m, _o = _a.FRA_ADDRESS, FRA_ADDRESS = _o === void 0 ? '' : _o, _p = _a.ETH_PRIVATE, ETH_PRIVATE = _p === void 0 ? '' : _p, _q = _a.ETH_ADDRESS, ETH_ADDRESS = _q === void 0 ? '' : _q;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -474,7 +478,7 @@ var testTransferToYourself = function () { return __awaiter(void 0, void 0, void
             case 1:
                 if (!(_i < amounts_1.length)) return [3 /*break*/, 4];
                 amount = amounts_1[_i];
-                console.log("Sending amount of " + amount + " FRA");
+                console.log("Sending amount of ".concat(amount, " FRA"));
                 return [4 /*yield*/, transferFraToSingleAddress(amount)];
             case 2:
                 _a.sent();
@@ -813,7 +817,7 @@ var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function (
             case 4:
                 console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
                 existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = existingContent + "\nFUNCTION STARTED: " + new Date();
+                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
                 _d.label = 5;
             case 5:
                 _d.trys.push([5, 7, , 8]);
@@ -917,7 +921,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1040,7 +1044,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatus);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1121,7 +1125,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
                 txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
                 if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle " + resultHandle + ". Response was: ", transactionStatusClaim);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatusClaim);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1198,7 +1202,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
                 if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleSend + ". Response was: ", transactionStatusSend);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleSend, ". Response was: "), transactionStatusSend);
                     return [2 /*return*/, false];
                 }
                 return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
@@ -1255,7 +1259,7 @@ var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0,
                 txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
                 console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
                 if (!txnSIDDelegate) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle " + resultHandleDelegate + ". Response was: ", transactionStatusDelegate);
+                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleDelegate, ". Response was: "), transactionStatusDelegate);
                     return [2 /*return*/, false];
                 }
                 console.log('waiting for 5 blocks before checking rewards');
@@ -1361,7 +1365,7 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
                 return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
             case 1:
                 result = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ " + methodName + " ~ result", result);
+                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ ".concat(methodName, " ~ result"), result);
                 return [2 /*return*/];
         }
     });
@@ -1406,7 +1410,7 @@ var createTestBars = function (senderOne) {
                     if (!(i < 5)) return [3 /*break*/, 9];
                     amount = (0, utils_1.getRandomNumber)(1, 9);
                     console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2" + amount, assetCode, assetBlindRules)];
+                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2".concat(amount), assetCode, assetBlindRules)];
                 case 5:
                     transactionBuilder = _a.sent();
                     return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
@@ -1475,13 +1479,15 @@ var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, func
                 anonKeys = {
                     axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
                     axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    name: 'AnonWallet2',
+                    name: 'SyncAnonWallet1',
                 };
                 givenCommitmentsList = [
-                    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-                    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
-                    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
-                    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+                    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
+                    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
+                    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
+                    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
+                    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
+                    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
                 ];
                 return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
             case 1:
@@ -1534,7 +1540,7 @@ var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var testItSync = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData, maxAtxoSidResult, masError, masResponse;
+    var anonKeys, anonKeys2, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData, maxAtxoSidResult, masError, masResponse;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -1542,6 +1548,11 @@ var testItSync = function () { return __awaiter(void 0, void 0, void 0, function
                     axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
                     axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
                     name: 'AnonWallet2',
+                };
+                anonKeys2 = {
+                    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+                    axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+                    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
                 };
                 return [4 /*yield*/, api_1.Network.getAbarMemos('1', '10')];
             case 1:
@@ -1581,7 +1592,7 @@ var testItSync = function () { return __awaiter(void 0, void 0, void 0, function
                     (0, utils_1.log)('error!', masError);
                     throw new Error('could not get mas');
                 }
-                console.log("Current MAS = " + masResponse);
+                console.log("Current MAS = ".concat(masResponse));
                 return [2 /*return*/, true];
         }
     });
@@ -1669,7 +1680,86 @@ function testCommitment() {
         });
     });
 }
+function runAbarCreating(iterations) {
+    if (iterations === void 0) { iterations = 20; }
+    return __awaiter(this, void 0, void 0, function () {
+        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    anonKeys1 = {
+                        axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
+                        axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
+                        axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+                        name: 'AnonWallet1',
+                    };
+                    anonKeys2 = {
+                        axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
+                        axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
+                        axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
+                        name: 'AnonWallet2',
+                    };
+                    wallets = [anonKeys1, anonKeys2];
+                    i = 0;
+                    _a.label = 1;
+                case 1:
+                    if (!(i < iterations)) return [3 /*break*/, 4];
+                    console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ".concat(i));
+                    return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
+                case 2:
+                    maxAtxoSidResult = _a.sent();
+                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
+                    if (masError) {
+                        (0, utils_1.log)('error!', masError);
+                        throw new Error('could not get mas');
+                    }
+                    console.log("=======   ========= ======= Current MAS = ".concat(masResponse));
+                    walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
+                    amountToSend = walletIndex ? '10' : '10';
+                    currentWallet = wallets[walletIndex];
+                    console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
+                    _a.label = 3;
+                case 3:
+                    i = i + 1;
+                    return [3 /*break*/, 1];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+}
+// async function testFailure() {
+//   const result = await TMI.abarToBarCustomSendAmount();
+//   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+// }
+function getMas() {
+    return __awaiter(this, void 0, void 0, function () {
+        var maxAtxoSidResult, masError, masResponse, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
+                case 1:
+                    maxAtxoSidResult = _a.sent();
+                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
+                    if (masError) {
+                        (0, utils_1.log)('error!', masError);
+                        throw new Error('could not get mas');
+                    }
+                    console.log("Current MAS = ".concat(masResponse));
+                    return [4 /*yield*/, api_1.Network.getAbarMemos('1', '20')];
+                case 2:
+                    result = _a.sent();
+                    console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // approveToken();
 // testItSync();
 getFraBalance();
+// getAnonKeys();
+// runAbarCreating(10);
+// getMas();
+// getAbarBalance();
+// testFailure();
 //# sourceMappingURL=run.js.map

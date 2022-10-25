@@ -118,6 +118,7 @@ export const getTransferOperation = async (
     const blindIsType = assetBlindRules?.isTypeBlind;
 
     if (isTraceable) {
+      // @ts-ignore
       transferOp = transferOp.add_output_with_tracing(
         utxoNumbers,
         toPublickey,

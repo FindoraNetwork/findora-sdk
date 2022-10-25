@@ -12,7 +12,11 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -198,7 +202,7 @@ describe('network (unit test)', function () {
     });
     describe('getOwnedSids', function () {
         var address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
-        var url = hostUrl + ":8667/get_owned_utxos/" + address;
+        var url = "".concat(hostUrl, ":8667/get_owned_utxos/").concat(address);
         it('returns properly formatted utxo sids data for multiple sids', function () { return __awaiter(void 0, void 0, void 0, function () {
             var mySids, dataResult, response;
             return __generator(this, function (_a) {
@@ -316,7 +320,7 @@ describe('network (unit test)', function () {
     });
     describe('getRelatedSids', function () {
         var address = 'mhlYmYPKqBcvhJjvXnapuaZdkzqdz27bEmoxpF0ZG_A=';
-        var url = hostUrl + ":8667/get_related_txns/" + address;
+        var url = "".concat(hostUrl, ":8667/get_related_txns/").concat(address);
         it('returns properly formatted utxo sids data for multiple sids', function () { return __awaiter(void 0, void 0, void 0, function () {
             var mySids, dataResult, response;
             return __generator(this, function (_a) {
@@ -434,7 +438,7 @@ describe('network (unit test)', function () {
     });
     describe('getUtxo', function () {
         var sid = 42;
-        var url = hostUrl + ":8668/utxo_sid/" + sid;
+        var url = "".concat(hostUrl, ":8668/utxo_sid/").concat(sid);
         it('returns properly formatted utxo data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myUtxo, myUtxoResponse, dataResult, response, utxo;
             return __generator(this, function (_a) {
@@ -500,7 +504,7 @@ describe('network (unit test)', function () {
     });
     describe('getOwnerMemo', function () {
         var sid = 1234342;
-        var url = hostUrl + ":8667/get_owner_memo/" + sid;
+        var url = "".concat(hostUrl, ":8667/get_owner_memo/").concat(sid);
         it('returns properly formatted owner memo data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myLock, myResponse, dataResult, response, lock;
             return __generator(this, function (_a) {
@@ -567,7 +571,7 @@ describe('network (unit test)', function () {
         }); });
     });
     describe('getStateCommitment', function () {
-        var url = hostUrl + ":8668/global_state";
+        var url = "".concat(hostUrl, ":8668/global_state");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, dataResult, response, _a, first, height, third;
             return __generator(this, function (_b) {
@@ -674,7 +678,7 @@ describe('network (unit test)', function () {
         });
     });
     describe('submitTransaction', function () {
-        var url = hostUrl + ":8669/submit_transaction";
+        var url = "".concat(hostUrl, ":8669/submit_transaction");
         it('returns properly formatted response', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, myData, spy, spyPost, myNewData, dataResult;
             return __generator(this, function (_a) {
@@ -757,7 +761,7 @@ describe('network (unit test)', function () {
     });
     describe('getAssetToken', function () {
         var assetCode = 'foo';
-        var url = hostUrl + ":8668/asset_token/" + assetCode;
+        var url = "".concat(hostUrl, ":8668/asset_token/").concat(assetCode);
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var assetProperties, myResponse, dataResult, response, properties;
             return __generator(this, function (_a) {
@@ -826,7 +830,7 @@ describe('network (unit test)', function () {
     });
     describe('getIssuedRecords', function () {
         var address = 'foo';
-        var url = hostUrl + ":8667/get_issued_records/" + address;
+        var url = "".concat(hostUrl, ":8667/get_issued_records/").concat(address);
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var issuedRecord, myResponse, dataResult, response, firstRecord;
             return __generator(this, function (_a) {
@@ -893,7 +897,7 @@ describe('network (unit test)', function () {
     });
     describe('getTransactionStatus', function () {
         var handle = 'foo';
-        var url = hostUrl + ":8669/txn_status/" + handle;
+        var url = "".concat(hostUrl, ":8669/txn_status/").concat(handle);
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, dataResult, response;
             return __generator(this, function (_a) {
@@ -953,7 +957,7 @@ describe('network (unit test)', function () {
     });
     describe('getBlock', function () {
         var height = 12;
-        var url = hostUrl + ":26657/block";
+        var url = "".concat(hostUrl, ":26657/block");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result;
             return __generator(this, function (_a) {
@@ -1022,7 +1026,7 @@ describe('network (unit test)', function () {
     });
     describe('getHashSwap', function () {
         var hash = 'abc123';
-        var url = hostUrl + ":26657/tx_search";
+        var url = "".concat(hostUrl, ":26657/tx_search");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result, _a, txs, total_count;
             return __generator(this, function (_b) {
@@ -1051,7 +1055,7 @@ describe('network (unit test)', function () {
                         _a = result, txs = _a.txs, total_count = _a.total_count;
                         expect(txs === null || txs === void 0 ? void 0 : txs.length).toBe(1);
                         expect(total_count).toBe(1);
-                        expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { query: "\"tx.prehash='" + hash + "'\"" } }));
+                        expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { query: "\"tx.prehash='".concat(hash, "'\"") } }));
                         spy.mockRestore();
                         return [2 /*return*/];
                 }
@@ -1096,7 +1100,7 @@ describe('network (unit test)', function () {
         var address = 'foo';
         var type = 'to';
         var page = 1;
-        var url = hostUrl + ":26657/tx_search";
+        var url = "".concat(hostUrl, ":26657/tx_search");
         it('returns properly formatted data with default page equals to 1 and check type = "to"', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result, _a, txs, total_count;
             return __generator(this, function (_b) {
@@ -1214,7 +1218,7 @@ describe('network (unit test)', function () {
     });
     describe('getTransactionDetails', function () {
         var hash = 'abc123';
-        var url = hostUrl + ":26657/tx";
+        var url = "".concat(hostUrl, ":26657/tx");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var myResponse, spy, dataResult, response, result, tx;
             return __generator(this, function (_a) {
@@ -1240,7 +1244,7 @@ describe('network (unit test)', function () {
                         expect(result).toHaveProperty('tx');
                         tx = result.tx;
                         expect(tx).toEqual('assd123abcdf');
-                        expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { hash: "0x" + hash } }));
+                        expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { hash: "0x".concat(hash) } }));
                         spy.mockRestore();
                         return [2 /*return*/];
                 }
@@ -1283,7 +1287,7 @@ describe('network (unit test)', function () {
     });
     describe('getOwnedAbars', function () {
         var randomizedPubKey = 'randomizedPubKey';
-        var url = hostUrl + ":8667/owned_abars/" + randomizedPubKey;
+        var url = "".concat(hostUrl, ":8667/owned_abars/").concat(randomizedPubKey);
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var ownedAbar, myResponse, spyApiGet, result, response;
             return __generator(this, function (_a) {
@@ -1328,7 +1332,7 @@ describe('network (unit test)', function () {
     describe('getAbarMemos', function () {
         var startSid = '1';
         var endSid = '4';
-        var url = hostUrl + ":8667/get_abar_memos";
+        var url = "".concat(hostUrl, ":8667/get_abar_memos");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
             var abarMemoDataResponse, spyApiGet, result, response;
             return __generator(this, function (_a) {

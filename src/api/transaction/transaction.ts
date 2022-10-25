@@ -313,6 +313,7 @@ export const sendToManyV2 = async (
  */
 export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {
   const submitData = transactionBuilder.transaction();
+  console.log(submitData);
 
   let result;
 

@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -126,7 +130,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                 memoDataResult = _a.sent();
                                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                                 if (memoError) {
-                                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
                                 }
                                 utxoNumbers = utxoNumbers + BigInt(amount.toString());
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
@@ -148,6 +152,7 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                     if (isTraceable) {
+                        // @ts-ignore
                         transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                     else {
@@ -190,7 +195,7 @@ var getPayloadForFeeInputs = function (walletInfo, utxoInputs) { return __awaite
                                 memoDataResult = _a.sent();
                                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                                 if (memoError) {
-                                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError.message);
+                                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError.message));
                                 }
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
                                 feeInputsPayload.push({

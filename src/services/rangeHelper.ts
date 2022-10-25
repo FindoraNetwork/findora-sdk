@@ -4,7 +4,7 @@ const MAX_SUPPORTED_CHUNK_SIZE = 100;
 // by default we process data all the way back till a very first atxo=1
 // but later we can configure that to have a different value (in case of a specific block height is needed)
 // Initial Atxo Sid should be read from the const for time being but later it would be a part of Sdk Init process
-const IAS = 1;
+const IAS = 0;
 
 export type RangeResult = [number, number];
 
@@ -37,14 +37,18 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
   let end = -1;
 
   if (last === IAS) {
-    [start, end] = getRangeWithoutData(mas);
+    const r = getRangeWithoutData(mas);
+    const [start, end] = r;
 
     // case 2.A
     if (start > first) {
       return [start, end];
     }
+    // case 2.Aa and 2.C
+    const realFirst = first >= end ? end : first + 1;
+
     // case 2.B
-    return [first + 1, end];
+    return [realFirst, end];
   }
 
   // case 3.A and 3.B
@@ -54,8 +58,6 @@ export const getRangeWithoutGaps = (mas: number, first: number, last: number): R
 };
 
 export const getRangeWithGaps = (processedList: number[]): RangeResult => {
-  let start = -1;
-  let end = -2;
   const [firstNonConsecutive, firstIndex] = getFirstNonConsecutive(processedList);
   const gapStart = firstNonConsecutive - 1;
 
@@ -68,6 +70,20 @@ export const getRangeWithGaps = (processedList: number[]): RangeResult => {
     gapLength > MAX_SUPPORTED_CHUNK_SIZE ? gapStart - MAX_SUPPORTED_CHUNK_SIZE : gapEnd + 1; // case 4.B
 
   return [calculatedGapEnd, gapStart];
+};
+
+export const itHasGaps = (processedList: number[]) => {
+  const dataLength = processedList?.length || 0;
+
+  if (!dataLength) {
+    return false;
+  }
+
+  const first = processedList[0];
+  const last = processedList[dataLength - 1];
+
+  const itHasNoGaps = first - dataLength === last - 1;
+  return !itHasNoGaps;
 };
 
 export const getRange = (mas: number, processedList?: number[]): RangeResult => {
@@ -84,7 +100,7 @@ export const getRange = (mas: number, processedList?: number[]): RangeResult => 
   const first = processedList[0];
   const last = processedList[dataLength - 1];
 
-  const itHasNoGaps = first - dataLength === last - 1;
+  const itHasNoGaps = !itHasGaps(processedList);
 
   if (itHasNoGaps) {
     return getRangeWithoutGaps(mas, first, last);
