@@ -1065,6 +1065,7 @@ describe('transaction (unit test)', () => {
       const address = 'fra123';
       const type = 'to';
       const page = 2;
+      const transparent = 'transparent';
 
       const totalTxQuantity = 5;
 
@@ -1102,7 +1103,7 @@ describe('transaction (unit test)', () => {
 
       const result = await Transaction.getTxList(address, type, page);
 
-      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page);
+      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
       expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
       expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
       expect(result).toEqual({
@@ -1118,6 +1119,7 @@ describe('transaction (unit test)', () => {
       const address = 'fra123';
       const type = 'to';
       const page = 2;
+      const transparent = 'transparent';
 
       const dataResult = {} as unknown as NetworkTypes.TxListDataResult;
 
@@ -1135,6 +1137,7 @@ describe('transaction (unit test)', () => {
       const address = 'fra123';
       const type = 'to';
       const page = 2;
+      const transparent = 'transparent';
 
       const totalTxQuantity = 5;
 
@@ -1160,7 +1163,7 @@ describe('transaction (unit test)', () => {
         'Could not get a list of transactions from the server response',
       );
 
-      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page);
+      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
       expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
 
       spyGetTxList.mockRestore();

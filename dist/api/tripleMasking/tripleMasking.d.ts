@@ -30,9 +30,8 @@ export declare const saveBarToAbarToCache: (walletInfo: Keypair.WalletKeypar, si
 export declare const saveOwnedAbarsToCache: (walletInfo: Keypair.WalletKeypar, ownedAbars: FindoraWallet.OwnedAbarItem[], savePath?: string | undefined) => Promise<boolean>;
 export declare const getAbarOwnerMemo: (atxoSid: string) => Promise<import("findora-wallet-wasm/nodejs").AxfrOwnerMemo | import("findora-wallet-wasm/bundler").AxfrOwnerMemo>;
 export declare const getAnonKeypairFromJson: (anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
-    aXfrSpendKeyConverted: import("findora-wallet-wasm/web").AXfrKeyPair;
+    aXfrSecretKeyConverted: import("findora-wallet-wasm/web").AXfrKeyPair;
     axfrPublicKeyConverted: AXfrPubKey;
-    axfrViewKeyConverted: import("findora-wallet-wasm/web").AXfrViewKey;
 }>;
 export declare const getAbarToAbarAmountPayload: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
     commitmentsToSend: string[];

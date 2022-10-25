@@ -49,16 +49,14 @@ export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> =>
   const ledger = await getLedger();
 
   try {
-    const anonKeys = await ledger.gen_anon_keys();
+    const anonKeys = ledger.gen_anon_keys();
 
     const axfrPublicKey = anonKeys.pub_key;
-    const axfrSpendKey = anonKeys.spend_key;
-    const axfrViewKey = anonKeys.view_key;
+    const axfrSecretKey = anonKeys.secret_key;
 
     const formattedAnonKeys = {
       axfrPublicKey,
-      axfrSpendKey,
-      axfrViewKey,
+      axfrSecretKey,
     };
 
     try {
@@ -236,15 +234,13 @@ const getMyMTLeafInfo = async (atxoSid: string) => {
 };
 
 export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys) => {
-  let aXfrSpendKeyConverted;
-  let axfrViewKeyConverted;
+  let aXfrSecretKeyConverted;
   let axfrPublicKeyConverted;
 
-  const { axfrSpendKey, axfrPublicKey, axfrViewKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   try {
-    aXfrSpendKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSpendKey); // AXfrSpendKey
-    axfrViewKeyConverted = await Keypair.getAXfrViewKeyByBase64(axfrViewKey); // axfrViewKey
+    aXfrSecretKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey); // AXfrSpendKey
 
     axfrPublicKeyConverted = await getAnonPubKeyFromString(axfrPublicKey); // AXfrPubKey
   } catch (error) {
@@ -252,9 +248,8 @@ export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAn
   }
 
   return {
-    aXfrSpendKeyConverted,
+    aXfrSecretKeyConverted,
     axfrPublicKeyConverted,
-    axfrViewKeyConverted,
   };
 };
 
@@ -614,7 +609,7 @@ export const prepareAnonTransferOperationBuilder = async (
 ) => {
   let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
-  const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+  const { aXfrSecretKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
 
   const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
 
@@ -682,6 +677,8 @@ export const prepareAnonTransferOperationBuilder = async (
       `Could not add an output for abar transfer operation", Error - ${(error as Error).message}`,
     );
   }
+
+  anonTransferOperationBuilder = anonTransferOperationBuilder.add_keypair(aXfrSpendKeySender);
 
   return anonTransferOperationBuilder;
 };
@@ -976,7 +973,7 @@ export const abarToBar = async (
 
   const receiverXfrPublicKeyConverted = await Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey);
 
-  const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+  const { aXfrSecretKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
 
   const [ownedAbarToUseAsSource, ...additionalOwnedAbars] = additionalOwnedAbarItems;
 
@@ -1053,7 +1050,7 @@ export const getNullifierHashesFromCommitments = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const nullifierHashes: string[] = [];
 
@@ -1082,7 +1079,7 @@ export const getNullifierHashesFromCommitments = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     nullifierHashes.push(hash);
   }
@@ -1094,7 +1091,7 @@ export const getUnspentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
@@ -1122,7 +1119,7 @@ export const getUnspentAbars = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     const isAbarSpent = await isNullifierHashSpent(hash);
 
@@ -1138,7 +1135,7 @@ export const getSpentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const spentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
@@ -1166,7 +1163,7 @@ export const getSpentAbars = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     const isAbarSpent = await isNullifierHashSpent(hash);
 
@@ -1193,7 +1190,7 @@ export const openAbar = async (
 
   const myMTLeafInfo = await getMyMTLeafInfo(atxoSid);
 
-  const { aXfrSpendKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
+  const { aXfrSecretKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
 
   const openedAbar: FindoraWallet.OpenedAbar = ledger.get_open_abar(
     myOwnedAbar,
@@ -1525,7 +1522,7 @@ export const decryptAbarMemo = async (
 
   const [atxoSid, myMemoData] = abarMemoItem;
 
-  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey);
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSecretKey);
 
   const abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
 

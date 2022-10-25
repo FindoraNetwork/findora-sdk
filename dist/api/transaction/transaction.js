@@ -151,7 +151,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                 catch (error) {
                     e = error;
                     console.log('Full error (main)', error);
-                    throw new Error("Could not create transfer operation (main), Error: \"" + e.message + "\"");
+                    throw new Error("Could not create transfer operation (main), Error: \"" + e + "\"");
                 }
                 _a.label = 7;
             case 7:
@@ -360,6 +360,7 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
         switch (_a.label) {
             case 0:
                 submitData = transactionBuilder.transaction();
+                console.log(submitData);
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);

@@ -109,6 +109,18 @@ describe("Findora SDK integration (integration test)", function () {
                 }
             });
         }); }, extendedExecutionTimeout * 2);
+        it('Should send FRA to the reciever with confidential amount and asset type', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.sendFraConfidentialTransactionSubmit()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
         it('Should send FRA to multiple recievers', function () { return __awaiter(void 0, void 0, void 0, function () {
             var result;
             return __generator(this, function (_a) {

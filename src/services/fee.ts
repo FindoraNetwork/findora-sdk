@@ -97,7 +97,7 @@ export const getTransferOperation = async (
         ownerMemo?.clone(),
         tracingPolicies,
         walletInfo.keypair,
-        amount,
+        BigInt(amount.toString()),
       );
     } else {
       transferOp = transferOp.add_input_no_tracing(
@@ -105,7 +105,7 @@ export const getTransferOperation = async (
         assetRecord,
         ownerMemo?.clone(),
         walletInfo.keypair,
-        amount,
+        BigInt(amount.toString()),
       );
     }
   });
@@ -118,8 +118,9 @@ export const getTransferOperation = async (
     const blindIsType = assetBlindRules?.isTypeBlind;
 
     if (isTraceable) {
+      // @ts-ignore
       transferOp = transferOp.add_output_with_tracing(
-        utxoNumbers,
+        BigInt(utxoNumbers.toString()),
         toPublickey,
         tracingPolicies,
         assetCode,
@@ -128,7 +129,7 @@ export const getTransferOperation = async (
       );
     } else {
       transferOp = transferOp.add_output_no_tracing(
-        utxoNumbers,
+        BigInt(utxoNumbers.toString()),
         toPublickey,
         assetCode,
         !!blindIsAmount,
@@ -259,7 +260,7 @@ export const getFeeInputs = async (
 
   feeInputsPayload.forEach(payloadItem => {
     const { amount, txoRef, assetRecord, ownerMemo, keypair } = payloadItem;
-    feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
+    feeInputs = feeInputs.append2(BigInt(amount.toString()), txoRef, assetRecord, ownerMemo, keypair);
   });
 
   return feeInputs;

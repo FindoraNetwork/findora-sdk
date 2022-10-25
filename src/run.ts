@@ -12,7 +12,7 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
-// import * as TMI from './tripleMasking/tripleMasking.integration';
+// // import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
@@ -70,9 +70,8 @@ const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
   axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-  axfrSpendKey:
+  axfrSecretKey:
     'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-  axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 
 const myGivenCommitmentsList = [
@@ -104,18 +103,21 @@ const getFraBalance = async () => {
   const faucetWalletInfo = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
     password,
+    isFra,
   );
 
   // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   const newWalletMine1 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
     password,
+    isFra,
   );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   const newWalletMine2 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
     password,
+    isFra,
   );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
@@ -288,7 +290,7 @@ const createNewKeypair = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
 
   console.log('new wallet info', walletInfo);
   return walletInfo;
@@ -407,7 +409,9 @@ const transferFraToSingleRecepient = async () => {
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -1318,7 +1322,7 @@ const validateUnspent = async () => {
 
   const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
 
-  const axfrSecretKey = anonKeys.axfrSpendKey;
+  const axfrSecretKey = anonKeys.axfrSecretKey;
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
   console.log(
@@ -1354,10 +1358,8 @@ const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
   const anonKeys = {
-    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-    axfrSpendKey:
-      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
     name: 'SyncAnonWallet1',
   };
 
@@ -1391,9 +1393,9 @@ const getFee = async () => {
 const getAnonTxList = async () => {
   // anon wallet 1
   const anonKeysSender = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    axfrViewKey: '',
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+    name: 'AnonWallet2',
   };
 
   const subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E'; // 9.98 spent - a1
@@ -1409,11 +1411,9 @@ const getAnonTxList = async () => {
 
 const testItSync = async () => {
   // run it as INTEGRATION_ENV_NAME=local yarn start:once
-  const anonKeys1 = {
-    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-    axfrSpendKey:
-      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+  const anonKeys = {
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
     name: 'AnonWallet2',
   };
 
@@ -1448,7 +1448,7 @@ const testItSync = async () => {
   }
   log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
 
-  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys1);
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
   log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
 
   if (!decrypted) {

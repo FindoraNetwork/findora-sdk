@@ -108,7 +108,7 @@ export const sendToMany = async (
 
     console.log('Full error (main)', error);
 
-    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation (main), Error: "${e}"`);
   }
 
   let transactionBuilder;
@@ -313,6 +313,7 @@ export const sendToManyV2 = async (
  */
 export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {
   const submitData = transactionBuilder.transaction();
+  console.log(submitData);
 
   let result;
 

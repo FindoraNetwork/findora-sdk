@@ -1,4 +1,4 @@
-import { AXfrKeyPair, AXfrPubKey, AXfrViewKey, XfrKeyPair, XfrPublicKey, XPublicKey, XSecretKey } from '../../services/ledger/types';
+import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
  *
@@ -75,9 +75,7 @@ export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<Xfr
 export declare const getPublicKeyByXfr: (publicKey: XfrPublicKey) => Promise<string>;
 export declare const getAXfrPublicKeyByBase64: (publicKey: string) => Promise<AXfrPubKey>;
 export declare const getAXfrPrivateKeyByBase64: (privateKey: string) => Promise<AXfrKeyPair>;
-export declare const getAXfrViewKeyByBase64: (privateKey: string) => Promise<AXfrViewKey>;
-export declare const getXPublicKeyByBase64: (publicKey: string) => Promise<XPublicKey>;
-export declare const getXPrivateKeyByBase64: (privateKey: string) => Promise<XSecretKey>;
+export declare const getAxfrPubKeyByBase64: (publicKey: string) => Promise<AXfrPubKey>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.
@@ -107,7 +105,7 @@ export declare const getAddressPublicAndKey: (address: string) => Promise<LightW
  *
  */
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
-export declare const restoreFromMnemonic: (mnemonic: string[], password: string) => Promise<WalletKeypar>;
+export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress: boolean) => Promise<WalletKeypar>;
 export declare const restoreFromKeystore: (keyStore: Uint8Array, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromKeystoreString: (keyStoreString: string, password: string) => Promise<WalletKeypar>;
 export declare const createKeypair: (password: string) => Promise<WalletKeypar>;

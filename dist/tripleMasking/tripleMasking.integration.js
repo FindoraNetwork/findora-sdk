@@ -130,7 +130,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
             case 2:
                 walletInfo = _a.sent();
                 (0, utils_1.log)('new wallet info', walletInfo);
@@ -246,7 +246,7 @@ var validateSpent = function (AnonKeys, givenCommitments) { return __awaiter(voi
         switch (_a.label) {
             case 0:
                 anonKeys = __assign({}, AnonKeys);
-                axfrKeyPair = anonKeys.axfrSpendKey;
+                axfrKeyPair = anonKeys.axfrSecretKey;
                 _i = 0, givenCommitments_1 = givenCommitments;
                 _a.label = 1;
             case 1:

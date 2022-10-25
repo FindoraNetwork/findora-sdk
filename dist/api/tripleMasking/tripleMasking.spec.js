@@ -84,7 +84,6 @@ describe('triple masking (unit test)', function () {
         var walletInfo;
         var ownerMemoDataResult;
         var anonKeys;
-        var axfrOwnerMemo;
         var clientAssetRecord;
         var ownerMemo;
         var ledgerClientAssetRecord;
@@ -118,17 +117,8 @@ describe('triple masking (unit test)', function () {
                 address: 'myAddress',
             };
             anonKeys = {
-                // axfrPublicKey: 'axfrPublicKey',
-                // axfrSecretKey: 'axfrSecretKey',
-                // decKey: 'decKey',
-                // encKey: 'encKey',
                 axfrPublicKey: 'pub_key',
-                axfrSpendKey: 'spend_key',
-                axfrViewKey: 'view_key',
-            };
-            axfrOwnerMemo = {
-                free: jest.fn(function () { }),
-                clone: jest.fn(function () { return undefined; }),
+                axfrSecretKey: 'secret_key',
             };
             clientAssetRecord = {
                 a: 'clientAssetRecord',
@@ -136,13 +126,10 @@ describe('triple masking (unit test)', function () {
             ledgerClientAssetRecord = {
                 from_json: jest.fn(function () { return clientAssetRecord; }),
             };
-            ledgerAxfrOwnerMemo = {
-                from_json: jest.fn(function () { return axfrOwnerMemo; }),
-            };
             nodeLedger = {
                 foo: 'node',
                 ClientAssetRecord: ledgerClientAssetRecord,
-                AxfrOwnerMemo: ledgerAxfrOwnerMemo,
+                // AxfrOwnerMemo: ledgerAxfrOwnerMemo,
             };
             ownerMemoDataResult = {
                 response: {
@@ -440,7 +427,7 @@ describe('triple masking (unit test)', function () {
                         expect(spyLedgerOwnerMemoFromJson).toHaveBeenCalledWith(ownerMemoDataResult.response);
                         expect(spyLedgerClientAssetRecordFromJson).toHaveBeenCalledWith(myUtxo[0].utxo);
                         expect(spyGetAXfrPublicKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrPublicKey);
-                        expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(seedString, walletInfo.keypair, returnAxfrPublicKey, BigInt(sid), clientAssetRecord, axfrOwnerMemo === null || axfrOwnerMemo === void 0 ? void 0 : axfrOwnerMemo.clone());
+                        expect(spyAddOperationBarToAbar).toHaveBeenCalledWith(seedString, walletInfo.keypair, returnAxfrPublicKey, BigInt(sid), clientAssetRecord);
                         expect(spyGetCommitments).toHaveBeenCalled();
                         expect(result.transactionBuilder).toBe(transactionBuilder);
                         expect(result.barToAbarData.commitments).toBe(commitments.commitments);
@@ -523,17 +510,13 @@ describe('triple masking (unit test)', function () {
                 free: jest.fn(function () { }),
                 to_json: jest.fn(function () { }),
                 pub_key: 'pub_key',
-                spend_key: 'spend_key',
-                view_key: 'view_key',
+                secret_key: 'secret_key',
                 // dec_key: 'dec_key',
                 // enc_key: 'enc_key',
             };
             formattedAnonKeys = {
                 axfrPublicKey: anonKeys.pub_key,
-                axfrSpendKey: anonKeys.spend_key,
-                axfrViewKey: anonKeys.view_key,
-                // decKey: anonKeys.dec_key,
-                // encKey: anonKeys.enc_key,
+                axfrSecretKey: anonKeys.secret_key,
             };
             nodeLedger = {
                 foo: 'node',
@@ -611,8 +594,6 @@ describe('triple masking (unit test)', function () {
             anonKeys = {
                 axfrPublicKey: 'axfrPublicKey',
                 axfrSecretKey: 'axfrSecretKey',
-                decKey: 'decKey',
-                encKey: 'encKey',
             };
             spyConsoleLog = jest.spyOn(console, 'log');
             spyCacheRead = jest.spyOn(factory_1.default, 'read');
@@ -625,7 +606,10 @@ describe('triple masking (unit test)', function () {
                     case 0: return [4 /*yield*/, TripleMasking.saveBarToAbarToCache(walletInfo, sid, commitments, anonKeys.axfrPublicKey)];
                     case 1:
                         result = _a.sent();
-                        expect(result).toMatchObject({});
+                        expect(result).toMatchObject({
+                            receiverAxfrPublicKey: anonKeys.axfrPublicKey,
+                            commitments: commitments,
+                        });
                         expect(spyConsoleLog).toHaveBeenCalledWith('for browser mode a default fullPathToCacheEntry was used');
                         return [2 /*return*/];
                 }
@@ -753,8 +737,7 @@ describe('triple masking (unit test)', function () {
             };
             anonKeys = {
                 axfrPublicKey: 'B91aXbGvCpuAPh41AY-H8d2Fdjz8-DWaEkSly4JnVGI=',
-                axfrSpendKey: 'vxifa_sD2NXhEaYBpg5DEs0RfkLojzQ6fiXVrIdZvzjLGcOPktxWZuyYMJV8JkeAZ_AGmwO211DiIz6ymNrhCAfdWl2xrwqbgD4eNQGPh_HdhXY8_Pg1mhJEpcuCZ1Ri',
-                axfrViewKey: 'yxnDj5LcVmbsmDCVfCZHgGfwBpsDttdQ4iM-spja4Qg=',
+                axfrSecretKey: 'vxifa_sD2NXhEaYBpg5DEs0RfkLojzQ6fiXVrIdZvzjLGcOPktxWZuyYMJV8JkeAZ_AGmwO211DiIz6ymNrhCAfdWl2xrwqbgD4eNQGPh_HdhXY8_Pg1mhJEpcuCZ1Ri',
             };
             abarMemoItem = [
                 '10',
@@ -780,7 +763,7 @@ describe('triple masking (unit test)', function () {
                         return [4 /*yield*/, TripleMasking.decryptAbarMemo(abarMemoItem, anonKeys)];
                     case 1:
                         result = _a.sent();
-                        expect(spyGetAXfrPrivateKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrSpendKey);
+                        expect(spyGetAXfrPrivateKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrSecretKey);
                         expect(spyAxfrOwnerMemoFromJson).toHaveBeenCalledWith(abarMemoItem[1]);
                         expect(spyTryDecryptAxfrMemo).toHaveBeenCalledWith(axfrOwnerMemo, aXfrKeyPair);
                         expect(result).not.toBe(false);
@@ -804,7 +787,7 @@ describe('triple masking (unit test)', function () {
                         return [4 /*yield*/, TripleMasking.decryptAbarMemo(abarMemoItem, anonKeys)];
                     case 1:
                         result = _a.sent();
-                        expect(spyGetAXfrPrivateKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrSpendKey);
+                        expect(spyGetAXfrPrivateKeyByBase64).toHaveBeenCalledWith(anonKeys.axfrSecretKey);
                         expect(spyAxfrOwnerMemoFromJson).toHaveBeenCalledWith(abarMemoItem[1]);
                         expect(spyTryDecryptAxfrMemo).toHaveBeenCalledWith(axfrOwnerMemo, aXfrKeyPair);
                         expect(result).toBe(false);
