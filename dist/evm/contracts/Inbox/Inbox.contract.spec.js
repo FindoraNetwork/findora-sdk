@@ -45,9 +45,9 @@ var web3_1 = __importDefault(require("web3"));
 var testHelpers_1 = require("../../testHelpers");
 var compile_1 = require("./compile");
 var envConfigFile = process.env.RPC_ENV_NAME
-    ? "../../../../.env_rpc_".concat(process.env.RPC_ENV_NAME)
+    ? "../../../../.env_rpc_" + process.env.RPC_ENV_NAME
     : "../../../../.env_example";
-var envConfig = require("".concat(envConfigFile, ".json"));
+var envConfig = require(envConfigFile + ".json");
 var rpcParams = envConfig.rpc;
 var _a = rpcParams.rpcUrl, rpcUrl = _a === void 0 ? 'http://127.0.0.1:8545' : _a, mnemonic = rpcParams.mnemonic;
 var extendedExecutionTimeout = 600000;
@@ -85,7 +85,7 @@ beforeEach(function () { return __awaiter(void 0, void 0, void 0, function () {
         }
     });
 }); }, extendedExecutionTimeout);
-describe("Inbox (contract test) \"".concat(rpcUrl, "\""), function () {
+describe("Inbox (contract test) \"" + rpcUrl + "\"", function () {
     it('deploys a contract successfully', function () {
         (0, testHelpers_1.setCurrentTestName)('deploys a contract successfully');
         (0, testHelpers_1.timeStart)();

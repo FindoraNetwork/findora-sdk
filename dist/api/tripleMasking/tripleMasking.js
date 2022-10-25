@@ -12,11 +12,7 @@ var __assign = (this && this.__assign) || function () {
 };
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -116,12 +112,12 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
                         anonKeys.free();
                     }
                     catch (error) {
-                        throw new Error("could not get release the anonymous keys instance  \"".concat(error.message, "\" "));
+                        throw new Error("could not get release the anonymous keys instance  \"" + error.message + "\" ");
                     }
                     return [2 /*return*/, formattedAnonKeys];
                 }
                 catch (err) {
-                    throw new Error("could not get anon keys, \"".concat(err, "\" "));
+                    throw new Error("could not get anon keys, \"" + err + "\" ");
                 }
                 return [2 /*return*/];
         }
@@ -129,7 +125,7 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
 }); };
 exports.genAnonKeys = genAnonKeys;
 var resolvePathToCacheEntry = function (cacheEntryName) {
-    var fullPathToCacheEntry = "".concat(Sdk_1.default.environment.cachePath, "/").concat(cacheEntryName, ".json");
+    var fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cacheEntryName + ".json";
     try {
         if (window && (window === null || window === void 0 ? void 0 : window.document)) {
             fullPathToCacheEntry = cacheEntryName;
@@ -146,7 +142,7 @@ var saveBarToAbarToCache = function (walletInfo, sid, commitments, receiverAxfrP
         switch (_a.label) {
             case 0:
                 cacheDataToSave = {};
-                cacheEntryName = "".concat(cache_1.CACHE_ENTRIES.BAR_TO_ABAR, "_").concat(walletInfo.address);
+                cacheEntryName = cache_1.CACHE_ENTRIES.BAR_TO_ABAR + "_" + walletInfo.address;
                 fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
                 abarDataCache = {};
                 _a.label = 1;
@@ -158,14 +154,14 @@ var saveBarToAbarToCache = function (walletInfo, sid, commitments, receiverAxfrP
                 return [3 /*break*/, 4];
             case 3:
                 error_1 = _a.sent();
-                console.log("Error reading the abarDataCache for ".concat(walletInfo.address, ". Creating an empty object now"));
+                console.log("Error reading the abarDataCache for " + walletInfo.address + ". Creating an empty object now");
                 return [3 /*break*/, 4];
             case 4:
                 barToAbarData = {
                     receiverAxfrPublicKey: receiverAxfrPublicKey,
                     commitments: commitments,
                 };
-                cacheDataToSave["sid_".concat(sid)] = barToAbarData;
+                cacheDataToSave["sid_" + sid] = barToAbarData;
                 _a.label = 5;
             case 5:
                 _a.trys.push([5, 7, , 8]);
@@ -176,7 +172,7 @@ var saveBarToAbarToCache = function (walletInfo, sid, commitments, receiverAxfrP
             case 7:
                 error_2 = _a.sent();
                 err = error_2;
-                console.log("Could not write cache for abarDataCache, \"".concat(err.message, "\""));
+                console.log("Could not write cache for abarDataCache, \"" + err.message + "\"");
                 return [3 /*break*/, 8];
             case 8: return [2 /*return*/, barToAbarData];
         }
@@ -189,13 +185,13 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
         switch (_a.label) {
             case 0:
                 cacheDataToSave = {};
-                cacheEntryName = "".concat(cache_1.CACHE_ENTRIES.OWNED_ABARS, "_").concat(walletInfo.address);
+                cacheEntryName = cache_1.CACHE_ENTRIES.OWNED_ABARS + "_" + walletInfo.address;
                 fullPathToCacheEntry = resolvePathToCacheEntry(cacheEntryName);
                 resolvedFullPathToCacheEntry = savePath || fullPathToCacheEntry;
                 ownedAbarItem = ownedAbars[0];
                 abarData = ownedAbarItem.abarData;
                 atxoSid = abarData.atxoSid;
-                cacheDataToSave["atxoSid_".concat(atxoSid)] = ownedAbars;
+                cacheDataToSave["atxoSid_" + atxoSid] = ownedAbars;
                 abarDataCache = {};
                 _a.label = 1;
             case 1:
@@ -206,7 +202,7 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
                 return [3 /*break*/, 4];
             case 3:
                 error_3 = _a.sent();
-                console.log("Error reading the ownedAbarsCache for ".concat(walletInfo.address, ". Creating an empty object now"));
+                console.log("Error reading the ownedAbarsCache for " + walletInfo.address + ". Creating an empty object now");
                 return [3 /*break*/, 4];
             case 4:
                 _a.trys.push([4, 6, , 7]);
@@ -217,7 +213,7 @@ var saveOwnedAbarsToCache = function (walletInfo, ownedAbars, savePath) { return
             case 6:
                 error_4 = _a.sent();
                 err = error_4;
-                console.log("Could not write cache for ownedAbarsCache, \"".concat(err.message, "\""));
+                console.log("Could not write cache for ownedAbarsCache, \"" + err.message + "\"");
                 return [2 /*return*/, false];
             case 7: return [2 /*return*/, true];
         }
@@ -235,7 +231,7 @@ var getAbarFromJson = function (ownedAbar) { return __awaiter(void 0, void 0, vo
                     myOwnedAbar = ledger.abar_from_json(ownedAbar);
                 }
                 catch (error) {
-                    throw new Error("Could not decode myOwnedAbar data\", Error - ".concat(error));
+                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error);
                 }
                 return [2 /*return*/, myOwnedAbar];
         }
@@ -253,13 +249,13 @@ var getAbarOwnerMemo = function (atxoSid) { return __awaiter(void 0, void 0, voi
                 abarOwnerMemoResult = _a.sent();
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch abar memo data for sid \"".concat(atxoSid, "\", Error - ").concat(memoError.message));
+                    throw new Error("Could not fetch abar memo data for sid \"" + atxoSid + "\", Error - " + memoError.message);
                 }
                 try {
                     abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
                 }
                 catch (error) {
-                    throw new Error("Could not get decode abar memo data\", Error - ".concat(error.message));
+                    throw new Error("Could not get decode abar memo data\", Error - " + error.message);
                 }
                 return [2 /*return*/, abarOwnerMemo];
         }
@@ -278,16 +274,16 @@ var getMyMTLeafInfo = function (atxoSid) { return __awaiter(void 0, void 0, void
                 mTLeafInfoResult = _a.sent();
                 mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
                 if (mTLeafInfoError) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"".concat(atxoSid, "\", Error - ").concat(mTLeafInfoError.message));
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
                 }
                 if (!mTLeafInfo) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"".concat(atxoSid, "\", Error - mTLeafInfo is empty"));
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
                 }
                 try {
                     myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
                 }
                 catch (error) {
-                    throw new Error("Could not decode myMTLeafInfo data\", Error - ".concat(error.message));
+                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
                 }
                 return [2 /*return*/, myMTLeafInfo];
         }
@@ -311,7 +307,7 @@ var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void
                 return [3 /*break*/, 5];
             case 4:
                 error_5 = _a.sent();
-                throw new Error("Could not convert AnonKeyPair from JSON\", Error - ".concat(error_5.message));
+                throw new Error("Could not convert AnonKeyPair from JSON\", Error - " + error_5.message);
             case 5: return [2 /*return*/, {
                     aXfrSecretKeyConverted: aXfrSecretKeyConverted,
                     axfrPublicKeyConverted: axfrPublicKeyConverted,
@@ -332,7 +328,7 @@ var getAnonPubKeyFromString = function (anonPubKey) { return __awaiter(void 0, v
                 return [3 /*break*/, 3];
             case 2:
                 error_6 = _a.sent();
-                throw new Error("Could not convert Anon Public Key from string\", Error - ".concat(error_6.message));
+                throw new Error("Could not convert Anon Public Key from string\", Error - " + error_6.message);
             case 3: return [2 /*return*/, axfrPublicKeyConverted];
         }
     });
@@ -392,7 +388,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 filteredFraAtxoList = [];
                 filteredAssetAtxoList = atxoMap[assetCode] || [];
                 if (!filteredAssetAtxoList.length) {
-                    throw new Error("There is no any abar for asset ".concat(assetCode, " available for ").concat(anonKeysSender.axfrPublicKey));
+                    throw new Error("There is no any abar for asset " + assetCode + " available for " + anonKeysSender.axfrPublicKey);
                 }
                 return [4 /*yield*/, Asset.getFraAssetCode()];
             case 4:
@@ -402,7 +398,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                     filteredFraAtxoList = atxoMap[fraAssetCode] || [];
                 }
                 if (!isFraTransfer && !filteredFraAtxoList.length) {
-                    throw new Error("There is no any FRA abar to cover the fee for ".concat(anonKeysSender.axfrPublicKey));
+                    throw new Error("There is no any FRA abar to cover the fee for " + anonKeysSender.axfrPublicKey);
                 }
                 assetCommitments = filteredAssetAtxoList.map(function (atxoItem) { return atxoItem.commitment; });
                 fraCommitments = filteredFraAtxoList.map(function (atxoItem) { return atxoItem.commitment; });
@@ -411,7 +407,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 atxoListToSend = _a.sent();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 338 ~ atxoListToSend', atxoListToSend);
                 if (!atxoListToSend.length) {
-                    throw new Error("Sender ".concat(anonKeysSender.axfrPublicKey, " does not have enough abars to send ").concat(amount, " of ").concat(assetCode));
+                    throw new Error("Sender " + anonKeysSender.axfrPublicKey + " does not have enough abars to send " + amount + " of " + assetCode);
                 }
                 additionalOwnedAbarItems = [];
                 commitmentsToSend = [];
@@ -451,7 +447,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 error_8 = _a.sent();
                 throw new Error('2 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 15:
-                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
+                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 if (!isMoreFeeNeeded) {
@@ -490,7 +486,7 @@ var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, a
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFeeA);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 if (isMoreFeeNeeded && !givenCommitment) {
-                    throw new Error("You still need ".concat(calculatedFeeA, " FRA to cover the fee 3"));
+                    throw new Error("You still need " + calculatedFeeA + " FRA to cover the fee 3");
                 }
                 if (!givenCommitment) return [3 /*break*/, 23];
                 return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
@@ -583,11 +579,11 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                     error_10 = _a.sent();
                     throw new Error('4 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
                 case 3:
-                    console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
+                    console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need " + calculatedFee + " more FRA to pay fee");
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                     isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                     if (isMoreFeeNeeded) {
-                        msg = "Could not process abar transfer. More fee are needed. Required amount at least \"".concat(calculatedFee, " FRA\"");
+                        msg = "Could not process abar transfer. More fee are needed. Required amount at least \"" + calculatedFee + " FRA\"";
                         throw new Error(msg);
                     }
                     return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
@@ -599,13 +595,13 @@ var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTrans
                     catch (error) {
                         console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
                         console.log('Full Error: ', error);
-                        throw new Error("Could not build and sign abar transfer operation\", Error - ".concat(error));
+                        throw new Error("Could not build and sign abar transfer operation\", Error - " + error);
                     }
                     try {
                         commitmentsMap = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_commitment_map();
                     }
                     catch (err) {
-                        throw new Error("Could not get a list of commitments strings \"".concat(err.message, "\" "));
+                        throw new Error("Could not get a list of commitments strings \"" + err.message + "\" ");
                     }
                     return [4 /*yield*/, processAbarToAbarCommitmentResponse(commitmentsMap)];
                 case 5:
@@ -647,7 +643,7 @@ additionalOwnedAbarItems) {
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender, abarPayloadOne.myMTLeafInfo);
                     }
                     catch (error) {
-                        throw new Error("Could not add an input for abar transfer operation\", Error - ".concat(error.message));
+                        throw new Error("Could not add an input for abar transfer operation\", Error - " + error.message);
                     }
                     toAmount = BigInt((0, bigNumber_1.toWei)(abarAmountToTransfer, abarPayloadOne.decimals).toString());
                     addedInputs = [];
@@ -667,7 +663,7 @@ additionalOwnedAbarItems) {
                     }
                     catch (error) {
                         console.log('platform error', error);
-                        throw new Error("Could not add an additional input for abar transfer operation\", Error - ".concat(error.message));
+                        throw new Error("Could not add an additional input for abar transfer operation\", Error - " + error.message);
                     }
                     addedInputs.push(ownedAbarItemOne);
                     _a.label = 7;
@@ -684,7 +680,7 @@ additionalOwnedAbarItems) {
                     return [3 /*break*/, 11];
                 case 10:
                     error_11 = _a.sent();
-                    throw new Error("Could not add an output for abar transfer operation\", Error - ".concat(error_11.message));
+                    throw new Error("Could not add an output for abar transfer operation\", Error - " + error_11.message);
                 case 11:
                     anonTransferOperationBuilder = anonTransferOperationBuilder.add_keypair(aXfrSpendKeySender);
                     return [2 /*return*/, anonTransferOperationBuilder];
@@ -718,7 +714,7 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
                     commitmentKey: commitmentKey,
                     commitmentAxfrPublicKey: commitmentAxfrPublicKey,
                     commitmentAssetType: commitmentAssetType,
-                    commitmentAmount: "".concat(commitmentAmount),
+                    commitmentAmount: "" + commitmentAmount,
                 });
                 _a.label = 3;
             case 3:
@@ -818,7 +814,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 return [3 /*break*/, 6];
             case 5:
                 error_12 = _b.sent();
-                throw new Error("Could not convert AXfrPublicKey\", Error - ".concat(error_12));
+                throw new Error("Could not convert AXfrPublicKey\", Error - " + error_12);
             case 6:
                 _b.trys.push([6, 8, , 9]);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, sids)];
@@ -827,7 +823,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 return [3 /*break*/, 9];
             case 8:
                 error_13 = _b.sent();
-                throw new Error("could not fetch utxo for sids ".concat(sids.join(',')));
+                throw new Error("could not fetch utxo for sids " + sids.join(','));
             case 9:
                 _i = 0, utxoDataList_1 = utxoDataList;
                 _b.label = 10;
@@ -840,7 +836,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 memoDataResult = _b.sent();
                 myMemoData = memoDataResult.response, memoError = memoDataResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch memo data for sid \"".concat(sid, "\", Error - ").concat(memoError));
+                    throw new Error("Could not fetch memo data for sid \"" + sid + "\", Error - " + memoError);
                 }
                 ownerMemo = void 0;
                 assetRecord = void 0;
@@ -849,7 +845,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                     assetRecord = ledger.ClientAssetRecord.from_json(utxoItem.utxo);
                 }
                 catch (error) {
-                    throw new Error("Could not get decode memo data or get assetRecord\", Error - ".concat(error));
+                    throw new Error("Could not get decode memo data or get assetRecord\", Error - " + error);
                 }
                 seed = (0, utils_1.generateSeedString)();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 537 ~ seed', seed);
@@ -857,7 +853,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                     transactionBuilder = transactionBuilder.add_operation_bar_to_abar(seed, walletInfo.keypair, axfrPublicKey, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone());
                 }
                 catch (error) {
-                    throw new Error("Could not add bar to abar operation\", Error - ".concat(error));
+                    throw new Error("Could not add bar to abar operation\", Error - " + error);
                 }
                 _b.label = 12;
             case 12:
@@ -871,7 +867,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 return [3 /*break*/, 16];
             case 15:
                 error_14 = _b.sent();
-                throw new Error("Could not get fee inputs for bar to abar operation\", Error - ".concat(error_14));
+                throw new Error("Could not get fee inputs for bar to abar operation\", Error - " + error_14);
             case 16:
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
@@ -879,14 +875,14 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                 }
                 catch (error) {
                     console.log('Full error', error);
-                    throw new Error("Could not add fee for bar to abar operation\", Error - ".concat(error));
+                    throw new Error("Could not add fee for bar to abar operation\", Error - " + error);
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
                     // console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
                 }
                 catch (err) {
-                    throw new Error("could not get a list of commitments strings \"".concat(err, "\" "));
+                    throw new Error("could not get a list of commitments strings \"" + err + "\" ");
                 }
                 if (!((_a = commitments === null || commitments === void 0 ? void 0 : commitments.commitments) === null || _a === void 0 ? void 0 : _a.length)) {
                     throw new Error("list of commitments strings is empty ");
@@ -900,7 +896,7 @@ var barToAbar = function (walletInfo, sids, receiverAxfrPublicKey) { return __aw
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
                 }
                 catch (err) {
-                    throw new Error("could not build and sign txn \"".concat(err, "\""));
+                    throw new Error("could not build and sign txn \"" + err + "\"");
                 }
                 return [2 /*return*/, { transactionBuilder: transactionBuilder, barToAbarData: barToAbarData, sids: sids }];
         }
@@ -994,7 +990,7 @@ var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedA
                 }
                 catch (error) {
                     console.log('Error adding Abar to bar', error);
-                    throw new Error("Could not add abar to bar operation\", Error - ".concat(error));
+                    throw new Error("Could not add abar to bar operation\", Error - " + error);
                 }
                 _i = 0, additionalOwnedAbars_2 = additionalOwnedAbars;
                 _a.label = 5;
@@ -1009,7 +1005,7 @@ var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedA
                 }
                 catch (error) {
                     console.log('Error from the backend:', error);
-                    throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - ".concat(error.message));
+                    throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - " + error.message);
                 }
                 _a.label = 7;
             case 7:
@@ -1020,7 +1016,7 @@ var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedA
                     transactionBuilder = transactionBuilder.build();
                 }
                 catch (err) {
-                    throw new Error("could not build txn \"".concat(err, "\""));
+                    throw new Error("could not build txn \"" + err + "\"");
                 }
                 abarToBarData = {
                     anonKeysSender: anonKeysSender,
@@ -1039,10 +1035,10 @@ var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, vo
                 checkSpentResult = _a.sent();
                 checkSpentResponse = checkSpentResult.response, checkSpentError = checkSpentResult.error;
                 if (checkSpentError) {
-                    throw new Error("Could not check if hash \"".concat(hash, " is spent\", Error - ").concat(checkSpentError.message));
+                    throw new Error("Could not check if hash \"" + hash + " is spent\", Error - " + checkSpentError.message);
                 }
                 if (checkSpentResponse === undefined) {
-                    throw new Error("Could not check if hash \"".concat(hash, " is spent\", Error - Response is undefined"));
+                    throw new Error("Could not check if hash \"" + hash + " is spent\", Error - Response is undefined");
                 }
                 return [2 /*return*/, checkSpentResponse];
         }
@@ -1071,7 +1067,7 @@ var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList
                 return [3 /*break*/, 5];
             case 4:
                 error_15 = _a.sent();
-                console.log("getOwnedAbars for '".concat(axfrPublicKey, "'->'").concat(givenCommitment, "' returned an error. ").concat(error_15.message), console.log('Full Error', error_15));
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_15.message, console.log('Full Error', error_15));
                 return [3 /*break*/, 7];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -1115,7 +1111,7 @@ var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __await
                 return [3 /*break*/, 5];
             case 4:
                 error_16 = _a.sent();
-                console.log("getOwnedAbars for '".concat(axfrPublicKey, "'->'").concat(givenCommitment, "' returned an error. ").concat(error_16.message), console.log('Full Error', error_16));
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_16.message, console.log('Full Error', error_16));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -1164,7 +1160,7 @@ var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter
                 return [3 /*break*/, 5];
             case 4:
                 error_17 = _a.sent();
-                console.log("getOwnedAbars for '".concat(axfrPublicKey, "'->'").concat(givenCommitment, "' returned an error. ").concat(error_17.message), console.log('Full Error', error_17));
+                console.log("getOwnedAbars for '" + axfrPublicKey + "'->'" + givenCommitment + "' returned an error. " + error_17.message, console.log('Full Error', error_17));
                 return [3 /*break*/, 8];
             case 5:
                 ownedAbarItem = ownedAbarsResponse[0];
@@ -1390,14 +1386,14 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                 abarOwnerMemoResult = _a.sent();
                 myMemoData = abarOwnerMemoResult.response, memoError = abarOwnerMemoResult.error;
                 if (memoError) {
-                    throw new Error("Could not fetch abar memo data for sid (genNullifierHash) \"".concat(atxoSid, "\", Error - ").concat(memoError.message));
+                    throw new Error("Could not fetch abar memo data for sid (genNullifierHash) \"" + atxoSid + "\", Error - " + memoError.message);
                 }
                 try {
                     abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
                 }
                 catch (error) {
                     console.log('error!', error);
-                    throw new Error("Could not get decode abar memo data 1\", Error - ".concat(error.message));
+                    throw new Error("Could not get decode abar memo data 1\", Error - " + error.message);
                 }
                 return [4 /*yield*/, Keypair.getAXfrPrivateKeyByBase64(axfrSpendKey)];
             case 3:
@@ -1407,29 +1403,29 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                 mTLeafInfoResult = _a.sent();
                 mTLeafInfo = mTLeafInfoResult.response, mTLeafInfoError = mTLeafInfoResult.error;
                 if (mTLeafInfoError) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"".concat(atxoSid, "\", Error - ").concat(mTLeafInfoError.message));
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - " + mTLeafInfoError.message);
                 }
                 if (!mTLeafInfo) {
-                    throw new Error("Could not fetch mTLeafInfo data for sid \"".concat(atxoSid, "\", Error - mTLeafInfo is empty"));
+                    throw new Error("Could not fetch mTLeafInfo data for sid \"" + atxoSid + "\", Error - mTLeafInfo is empty");
                 }
                 try {
                     myMTLeafInfo = ledger.MTLeafInfo.from_json(mTLeafInfo);
                 }
                 catch (error) {
-                    throw new Error("Could not decode myMTLeafInfo data\", Error - ".concat(error.message));
+                    throw new Error("Could not decode myMTLeafInfo data\", Error - " + error.message);
                 }
                 try {
                     myOwnedAbar = ledger.abar_from_json(ownedAbar);
                 }
                 catch (error) {
-                    throw new Error("Could not decode myOwnedAbar data\", Error - ".concat(error));
+                    throw new Error("Could not decode myOwnedAbar data\", Error - " + error);
                 }
                 try {
                     hash = ledger.gen_nullifier_hash(myOwnedAbar, abarOwnerMemo, aXfrKeyPair, myMTLeafInfo);
                     return [2 /*return*/, hash];
                 }
                 catch (err) {
-                    throw new Error("Could not get nullifier hash\", Error - ".concat(err.message));
+                    throw new Error("Could not get nullifier hash\", Error - " + err.message);
                 }
                 return [2 /*return*/];
         }
@@ -1560,14 +1556,14 @@ var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                return [4 /*yield*/, Network.getAbarCommitment("".concat(atxoSid))];
+                return [4 /*yield*/, Network.getAbarCommitment("" + atxoSid)];
             case 2:
                 commitementResult = _a.sent();
                 console.log('🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult', commitementResult);
                 error = commitementResult.error, response = commitementResult.response;
                 if (error) {
                     (0, utils_1.log)('error', error);
-                    throw new Error("could not get commitment by atxo sid. details: ".concat(error.message));
+                    throw new Error("could not get commitment by atxo sid. details: " + error.message);
                 }
                 if (!response) {
                     throw new Error("could not get commitment by atxo sid. no response retrieved");
