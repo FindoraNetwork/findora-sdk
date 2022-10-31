@@ -82,7 +82,7 @@ var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 var utils_1 = require("./services/utils");
 var UtxoHelper = __importStar(require("./services/utxoHelper"));
-// // import * as TMI from './tripleMasking/tripleMasking.integration';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
 /**
@@ -1684,16 +1684,12 @@ function runAbarCreating(iterations) {
             switch (_a.label) {
                 case 0:
                     anonKeys1 = {
-                        axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-                        axfrSpendKey: 'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-                        axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
-                        name: 'AnonWallet1',
+                        axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+                        axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
                     };
                     anonKeys2 = {
-                        axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
-                        axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
-                        axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
-                        name: 'AnonWallet2',
+                        axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+                        axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
                     };
                     wallets = [anonKeys1, anonKeys2];
                     i = 0;
@@ -1754,7 +1750,7 @@ function getMas() {
 // testItSync();
 getFraBalance();
 // getAnonKeys();
-// runAbarCreating(10);
+// runAbarCreating(2);
 // getMas();
 // getAbarBalance();
 // testFailure();

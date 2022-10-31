@@ -204,6 +204,15 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     console.log('sendToMany error in build and sign ', err);
                     throw new Error("could not build and sign txn \"" + err.message + "\"");
                 }
+                try {
+                    if ('sign_origin' in transactionBuilder) {
+                        transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                    }
+                }
+                catch (err) {
+                    console.log('sendToMany error in signOrigin ', err);
+                    throw new Error("could not signOrigin txn \"" + err.message + "\"");
+                }
                 return [2 /*return*/, transactionBuilder];
         }
     });

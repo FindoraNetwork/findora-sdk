@@ -161,6 +161,16 @@ export const sendToMany = async (
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
+
+  try {
+    if ('sign_origin' in transactionBuilder) {
+      transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    }
+  } catch (err) {
+    console.log('sendToMany error in signOrigin ', err);
+    throw new Error(`could not signOrigin txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
