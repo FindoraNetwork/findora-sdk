@@ -84,6 +84,11 @@ var sdkEnv = {
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet;
 var password = 'yourSecretPassword';
+var DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
+var GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR = process.env.BLOCKS_TO_WAIT_AFTER_ABAR;
+var BLOCKS_TO_WAIT_AFTER_ABAR = GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR
+    ? +GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR
+    : DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR;
 var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
     var asset1Code;
     return __generator(this, function (_a) {
@@ -196,10 +201,8 @@ var barToAbarBalances = function (walletInfo, anonKeys, givenCommitments, balanc
             case 1:
                 fraAssetCode = _a.sent();
                 isFraCheck = fraAssetCode === assetCode;
-                // lets have at least 2 blocks here
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 2:
-                // lets have at least 2 blocks here
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo, assetCode)];
             case 3:
@@ -363,11 +366,8 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                 case 10:
                     i++;
                     return [3 /*break*/, 6];
-                case 11: 
-                // that is really slowing things down if it has 3 blocks
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                case 11: return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
                 case 12:
-                    // that is really slowing things down if it has 3 blocks
                     _a.sent();
                     return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, fraCode)];
                 case 13:
@@ -476,10 +476,8 @@ var barToAbar = function (givenSenderOne, AnonKeys, givenSids, givenBalanceChang
                     resultHandle = _d.sent();
                     (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
                     givenCommitments = barToAbarData.commitments;
-                    // we need to wait for a few blocks here. 1 is not enough
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
                 case 16:
-                    // we need to wait for a few blocks here. 1 is not enough
                     _d.sent();
                     if (!isBalanceCheck) return [3 /*break*/, 18];
                     return [4 /*yield*/, barToAbarBalances(walletInfo, anonKeys, givenCommitments, balance, balanceChange, assetCode)];
@@ -539,7 +537,7 @@ var abarToAbar = function (givenAnonKeysReceiver) { return __awaiter(void 0, voi
                 resultHandle = _b.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
                 (0, utils_1.log)("will wait for the next block and then check balances for both sender and receiver commitments");
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 11:
                 _b.sent();
                 (0, utils_1.log)('//////////////// now checking balances ///////////////////\n\n\n');
@@ -693,10 +691,8 @@ var abarToAbarMulti = function (givenAnonKeysReceiver) { return __awaiter(void 0
                 resultHandle = _e.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
                 (0, utils_1.log)("will wait for the next block and then check balances for both sender and receiver commitments");
-                // 2 might be not enough
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 24:
-                // 2 might be not enough
                 _e.sent();
                 (0, utils_1.log)('////////////////////// now checking balances///////////////////// \n\n\n');
                 commitmentsMap = abarToAbarData.commitmentsMap;
@@ -830,10 +826,8 @@ var abarToAbarFraMultipleFraAtxoForFeeSendAmount = function (givenAnonKeysReceiv
             case 10:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
-                // 2 might be not enough
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 11:
-                // 2 might be not enough
                 _d.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 commitmentsMap = abarToAbarData.commitmentsMap;
@@ -971,10 +965,8 @@ var abarToAbarCustomMultipleFraAtxoForFeeSendAmount = function (givenAnonKeysRec
             case 19:
                 resultHandle = _e.sent();
                 (0, utils_1.log)('transfer abar result handle!!', resultHandle);
-                // 2 migh be not enough
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 20:
-                // 2 migh be not enough
                 _e.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 commitmentsMap = abarToAbarData.commitmentsMap;
@@ -1090,10 +1082,8 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
             case 12:
                 resultHandle = _c.sent();
                 (0, utils_1.log)('abar to bar result handle!!!', resultHandle);
-                // 2 might be not enough
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 13:
-                // 2 might be not enough
                 _c.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
@@ -1202,8 +1192,6 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
                 return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, customAssetSids, '35', derivedAssetCode)];
             case 14:
                 customAssetCommitmentsList = _d.sent();
-                // we dont need it here as it is already in barToAbar
-                // await waitForBlockChange(2);
                 (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
                 return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
             case 15:
@@ -1231,10 +1219,8 @@ var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, v
             case 19:
                 resultHandle = _d.sent();
                 (0, utils_1.log)('abar to bar result handle!!', resultHandle);
-                // maybe 3 is enough?
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(4)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 20:
-                // maybe 3 is enough?
                 _d.sent();
                 (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
@@ -1334,10 +1320,8 @@ var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void
             case 11:
                 resultHandle = _c.sent();
                 console.log('abar to bar result handle!!', resultHandle);
-                // 2 might be not enough
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
             case 12:
-                // 2 might be not enough
                 _c.sent();
                 console.log('/////////////////// now checking balances //////////// \n\n\n ');
                 return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
@@ -1414,10 +1398,8 @@ var barToAbarAmount = function (givenAnonKeysReceiver, amountToSend) {
                     resultHandle = _b.sent();
                     (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
                     givenCommitments = barToAbarData.commitments;
-                    // need to wait at least 2
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
                 case 9:
-                    // need to wait at least 2
                     _b.sent();
                     minimalFeeForBarToBar = '0.01';
                     extraSpent = minimalFeeForBarToBar;

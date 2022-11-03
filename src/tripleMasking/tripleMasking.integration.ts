@@ -35,6 +35,14 @@ const { mainFaucet } = walletKeys;
 
 const password = 'yourSecretPassword';
 
+const DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
+
+const GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR = process.env.BLOCKS_TO_WAIT_AFTER_ABAR;
+
+const BLOCKS_TO_WAIT_AFTER_ABAR = GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR
+  ? +GIVEN_BLOCKS_TO_WAIT_AFTER_ABAR
+  : DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR;
+
 export const getRandomAssetCode = async () => {
   const asset1Code = await Asset.getRandomAssetCode();
   return asset1Code;
@@ -106,8 +114,7 @@ const barToAbarBalances = async (
   const fraAssetCode = await Asset.getFraAssetCode();
   const isFraCheck = fraAssetCode === assetCode;
 
-  // lets have at least 2 blocks here
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   const balanceNew = await Account.getBalance(walletInfo, assetCode);
   log('Old BAR balance for public key ', walletInfo.address, ' is ', balance, ` ${assetCode}`);
@@ -242,8 +249,7 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     await waitForBlockChange(1 + additional_block_waittime);
   }
 
-  // that is really slowing things down if it has 3 blocks
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   const assetBalance = await Account.getBalance(toWalletInfo, fraCode);
 
@@ -353,8 +359,7 @@ export const barToAbar = async (
 
   const givenCommitments = barToAbarData.commitments;
 
-  // we need to wait for a few blocks here. 1 is not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   if (isBalanceCheck) {
     await barToAbarBalances(walletInfo, anonKeys, givenCommitments, balance, balanceChange, assetCode);
@@ -407,7 +412,7 @@ export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.Formatted
 
   log(`will wait for the next block and then check balances for both sender and receiver commitments`);
 
-  await waitForBlockChange(2);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('//////////////// now checking balances ///////////////////\n\n\n');
 
@@ -508,9 +513,6 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
     derivedAssetCode,
   );
 
-  // we dont need that as it is in barToAbar lets comment out
-  // await waitForBlockChange();
-
   const fraSids = await getSidsForSingleAsset(senderOne, fraAssetCode);
   log('🚀 ~ all fraAssetSids', fraSids);
 
@@ -556,8 +558,7 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
 
   log(`will wait for the next block and then check balances for both sender and receiver commitments`);
 
-  // 2 might be not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('////////////////////// now checking balances///////////////////// \n\n\n');
 
@@ -682,9 +683,6 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
     fraAssetCode,
   );
 
-  // we dont need that as it is in barToAbar lets comment out
-  // await waitForBlockChange();
-
   const givenCommitmentsListSender = [...fraAssetCommitmentsList];
 
   log('////////////////////// bar to abar is done, sending abar to abar //////////////');
@@ -717,8 +715,7 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
 
   log('transfer abar result handle!!', resultHandle);
 
-  // 2 might be not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
   const { commitmentsMap } = abarToAbarData;
@@ -869,9 +866,6 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
     fraAssetCode,
   );
 
-  // we dont need that as it is in barToAbar lets comment out
-  // await waitForBlockChange();
-
   const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
 
   log('////////////////////// bar to abar is done, sending abar to abar //////////////');
@@ -903,8 +897,7 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
 
   log('transfer abar result handle!!', resultHandle);
 
-  // 2 migh be not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
   const { commitmentsMap } = abarToAbarData;
@@ -1056,8 +1049,7 @@ export const abarToBar = async () => {
 
   log('abar to bar result handle!!!', resultHandle);
 
-  // 2 might be not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
 
@@ -1157,9 +1149,6 @@ export const abarToBarCustomSendAmount = async () => {
     derivedAssetCode,
   );
 
-  // we dont need it here as it is already in barToAbar
-  // await waitForBlockChange(2);
-
   log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
   const fraAssetSids = await getSidsForSingleAsset(pkey, fraAssetCode);
@@ -1174,9 +1163,6 @@ export const abarToBarCustomSendAmount = async () => {
     '40',
     fraAssetCode,
   );
-
-  // we dont need it here as it is already in barToAbar
-  // await waitForBlockChange(2);
 
   const givenCommitmentsListSender = [...customAssetCommitmentsList, ...fraAssetCommitmentsList];
 
@@ -1207,8 +1193,7 @@ export const abarToBarCustomSendAmount = async () => {
 
   log('abar to bar result handle!!', resultHandle);
 
-  // maybe 3 is enough?
-  await waitForBlockChange(4);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   log('/////////////////// now checking balances //////////// \n\n\n ');
 
@@ -1321,9 +1306,6 @@ export const abarToBarFraSendAmount = async () => {
     fraAssetCode,
   );
 
-  // we dont need it here as it is already in barToAbar
-  // await waitForBlockChange();
-
   const givenCommitmentsListSender = [...fraAssetCommitmentsList];
 
   log('////////////////////// bar to abar is done, sending abar to bar //////////////');
@@ -1353,8 +1335,7 @@ export const abarToBarFraSendAmount = async () => {
 
   console.log('abar to bar result handle!!', resultHandle);
 
-  // 2 might be not enough
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   console.log('/////////////////// now checking balances //////////// \n\n\n ');
 
@@ -1458,8 +1439,7 @@ export const barToAbarAmount = async (
   log('send bar to abar result handle!!', resultHandle);
   const givenCommitments = barToAbarData.commitments;
 
-  // need to wait at least 2
-  await waitForBlockChange(3);
+  await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);
 
   const minimalFeeForBarToBar = '0.01'; // minimal fee for a bar to bar transfer, when we transfer to ourselves to make exact amount
 
