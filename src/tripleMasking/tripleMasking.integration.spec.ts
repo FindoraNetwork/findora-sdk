@@ -2,7 +2,7 @@ import * as Integration from './tripleMasking.integration';
 
 import { waitForBlockChange } from '../evm/testHelpers';
 
-const extendedExecutionTimeout = 180000;
+const extendedExecutionTimeout = 360000;
 
 afterAll(async (done: any) => {
   console.log('after all - just waiting for 3 blocks to have all pending requests finished (if any)');
