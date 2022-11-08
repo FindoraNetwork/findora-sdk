@@ -1750,9 +1750,29 @@ function getMas() {
         });
     });
 }
+function prism() {
+    return __awaiter(this, void 0, void 0, function () {
+        var web3, erc20Contract, name;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    web3 = api_1.Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+                    return [4 /*yield*/, api_1.Evm.getErc20Contract(web3, '0x6f47a5ea06f3AD7Ce9750E54a7B968e37e79c8F1')];
+                case 1:
+                    erc20Contract = _a.sent();
+                    return [4 /*yield*/, erc20Contract.methods.name().call()];
+                case 2:
+                    name = _a.sent();
+                    console.log('erc20 token name: ', name);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+prism();
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();

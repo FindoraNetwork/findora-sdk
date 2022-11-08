@@ -84,7 +84,7 @@ const calculationDecimalsAmount = async (
   if (type === 'toWei') {
     return new BigNumber(amount).times(power).toString(10);
   }
-  return new BigNumber(amount).div(power).toFormat(Number(erc20Decimals));
+  return new BigNumber(amount).div(power).toFormat(4);
 };
 
 const getCurrentBalance = async (web3: Web3, account: string): Promise<string> => {

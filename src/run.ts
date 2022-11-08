@@ -1693,9 +1693,21 @@ async function getMas() {
   const result = await Network.getAbarMemos('1', '20');
   console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
 }
+
+async function prism() {
+  const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+  const erc20Contract = await Evm.getErc20Contract(web3, '0x6f47a5ea06f3AD7Ce9750E54a7B968e37e79c8F1');
+
+  const name = await erc20Contract.methods.name().call();
+
+  console.log('erc20 token name: ', name);
+}
+
+prism();
+
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(10);
 // getMas();

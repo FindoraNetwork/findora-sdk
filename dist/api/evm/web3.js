@@ -100,7 +100,7 @@ var calculationDecimalsAmount = function (contract, web3, from, to, amount, type
                 if (type === 'toWei') {
                     return [2 /*return*/, new bignumber_js_1.default(amount).times(power).toString(10)];
                 }
-                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(Number(erc20Decimals))];
+                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(4)];
         }
     });
 }); };
