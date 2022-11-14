@@ -26,7 +26,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -1695,12 +1696,35 @@ async function getMas() {
 }
 
 async function prism() {
-  const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
-  const erc20Contract = await Evm.getErc20Contract(web3, '0x6f47a5ea06f3AD7Ce9750E54a7B968e37e79c8F1');
+  // const { response: displayCheckpointData, error } = await Network.getConfig();
 
-  const name = await erc20Contract.methods.name().call();
+  // if (error) throw error;
 
-  console.log('erc20 token name: ', name);
+  // if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+
+  // const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+
+  // const prismProxyContract = await Evm.getPrismProxyContract(
+  //   web3,
+  //   displayCheckpointData.prism_bridge_address,
+  // );
+  // const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+
+  // const prismContract = await Evm.getSimBridgeContract(web3, prismBridgeAddress);
+
+  // const [ledgerAddress, assetAddress] = await Promise.all([
+  //   prismContract.methods.ledger_contract().call(),
+  //   prismContract.methods.asset_contract().call(),
+  // ]);
+
+  // console.log(ledgerAddress, assetAddress, prismBridgeAddress);
+
+  // const name = await erc20Contract.methods.name().call();
+
+  // console.log('erc20 token name: ', name);
+
+  const result = await Evm.getPrismConfig();
+  console.log(result);
 }
 
 prism();

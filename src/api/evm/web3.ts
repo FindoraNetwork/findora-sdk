@@ -6,12 +6,14 @@ import { Contract } from 'web3-eth-contract';
 import { Erc20 } from './types/Erc20';
 import { NFT1155 } from './types/NFT1155';
 import { NFT721 } from './types/NFT721';
+import { PrismProxy } from './types/PrismProxy';
 import { PrismXXAsset } from './types/PrismXXAsset';
 import { SimBridge } from './types/SimBridge';
 
 import Erc20Abi from './abis/Erc20.json';
 import NFT1155Abi from './abis/NFT1155.json';
 import NFT721Abi from './abis/NFT721.json';
+import PrismProxyAbi from './abis/PrismProxy.json';
 import PrismXXAssetAbi from './abis/PrismXXAsset.json';
 import SimBridgeAbi from './abis/SimBridge.json';
 
@@ -36,6 +38,10 @@ interface MyContract<T> extends Contract {
 
 const getErc20Contract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(Erc20Abi as AbiItem[], address) as unknown as MyContract<Erc20>;
+};
+
+const getPrismProxyContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(PrismProxyAbi as AbiItem[], address) as unknown as MyContract<PrismProxy>;
 };
 
 const getNFT721Contract = (web3: Web3, address: string) => {
@@ -94,6 +100,7 @@ const getCurrentBalance = async (web3: Web3, account: string): Promise<string> =
 export {
   getWeb3,
   getErc20Contract,
+  getPrismProxyContract,
   getNFT721Contract,
   getNFT1155Contract,
   getPrismXXAssetContract,

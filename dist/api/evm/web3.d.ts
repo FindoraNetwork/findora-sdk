@@ -3,6 +3,7 @@ import { Contract } from 'web3-eth-contract';
 import { Erc20 } from './types/Erc20';
 import { NFT1155 } from './types/NFT1155';
 import { NFT721 } from './types/NFT721';
+import { PrismProxy } from './types/PrismProxy';
 import { PrismXXAsset } from './types/PrismXXAsset';
 import { SimBridge } from './types/SimBridge';
 export interface IWebLinkedInfo {
@@ -16,6 +17,7 @@ interface MyContract<T> extends Contract {
     methods: T;
 }
 declare const getErc20Contract: (web3: Web3, address: string) => MyContract<Erc20>;
+declare const getPrismProxyContract: (web3: Web3, address: string) => MyContract<PrismProxy>;
 declare const getNFT721Contract: (web3: Web3, address: string) => MyContract<NFT721>;
 declare const getNFT1155Contract: (web3: Web3, address: string) => MyContract<NFT1155>;
 declare const getPrismXXAssetContract: (web3: Web3, address: string) => MyContract<PrismXXAsset>;
@@ -23,4 +25,4 @@ declare const getSimBridgeContract: (web3: Web3, address: string) => MyContract<
 declare const toHex: (covertThis: string, padding: number) => string;
 declare const calculationDecimalsAmount: (contract: MyContract<Erc20>, web3: Web3, from: string, to: string, amount: string, type: 'toWei' | 'formWei') => Promise<string>;
 declare const getCurrentBalance: (web3: Web3, account: string) => Promise<string>;
-export { getWeb3, getErc20Contract, getNFT721Contract, getNFT1155Contract, getPrismXXAssetContract, getSimBridgeContract, calculationDecimalsAmount, toHex, getCurrentBalance, };
+export { getWeb3, getErc20Contract, getPrismProxyContract, getNFT721Contract, getNFT1155Contract, getPrismXXAssetContract, getSimBridgeContract, calculationDecimalsAmount, toHex, getCurrentBalance, };

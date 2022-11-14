@@ -9,6 +9,11 @@ export declare const hashAddressTofraAddressByNFT: (addresss: string, tokenId: s
 export declare const fraToBar: (bridgeAddress: string, recipientAddress: string, amount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare const approveToken: (tokenAddress: string, deckAddress: string, price: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
 export declare const frc20ToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
+export declare function getPrismConfig(): Promise<{
+    ledgerAddress: string;
+    assetAddress: string;
+    prismBridgeAddress: string;
+}>;
 export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
 export declare const frcNftToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare const tokenBalance: (web3WalletInfo: IWebLinkedInfo, tokenAddress: string, decimals: boolean, account: string) => Promise<string>;

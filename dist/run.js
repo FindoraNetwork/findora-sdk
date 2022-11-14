@@ -97,7 +97,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'https://dev-qa04.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -1752,18 +1753,13 @@ function getMas() {
 }
 function prism() {
     return __awaiter(this, void 0, void 0, function () {
-        var web3, erc20Contract, name;
+        var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    web3 = api_1.Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
-                    return [4 /*yield*/, api_1.Evm.getErc20Contract(web3, '0x6f47a5ea06f3AD7Ce9750E54a7B968e37e79c8F1')];
+                case 0: return [4 /*yield*/, api_1.Evm.getPrismConfig()];
                 case 1:
-                    erc20Contract = _a.sent();
-                    return [4 /*yield*/, erc20Contract.methods.name().call()];
-                case 2:
-                    name = _a.sent();
-                    console.log('erc20 token name: ', name);
+                    result = _a.sent();
+                    console.log(result);
                     return [2 /*return*/];
             }
         });

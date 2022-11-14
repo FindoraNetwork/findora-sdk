@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -91,6 +91,7 @@ var getRpcRoute = function () {
     var url = "".concat(hostUrl, ":").concat(rpcPort);
     return url;
 };
+exports.getRpcRoute = getRpcRoute;
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
     var axiosResponse, err_1, e, myResponse, e;
     return __generator(this, function (_a) {
@@ -577,7 +578,7 @@ var sendRpcCallV2 = function (givenPayload, config) { return __awaiter(void 0, v
                     method: 'eth_protocolVersion',
                     params: [],
                 };
-                url = "".concat(getRpcRoute());
+                url = "".concat((0, exports.getRpcRoute)());
                 payload = __assign(__assign({}, defaultPayload), givenPayload);
                 return [4 /*yield*/, (0, exports.apiPost)(url, payload, __assign({}, config))];
             case 1:
@@ -656,12 +657,12 @@ var checkNullifierHashSpent = function (hash, config) { return __awaiter(void 0,
 }); };
 exports.checkNullifierHashSpent = checkNullifierHashSpent;
 var getConfig = function (config) { return __awaiter(void 0, void 0, void 0, function () {
-    var configServerUrl, dataResult;
+    var url, dataResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                configServerUrl = Sdk_1.default.environment.configServerUrl;
-                return [4 /*yield*/, (0, exports.apiGet)(configServerUrl, config)];
+                url = "".concat(getLedgerRoute(), "/display_checkpoint");
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
                 return [2 /*return*/, dataResult];

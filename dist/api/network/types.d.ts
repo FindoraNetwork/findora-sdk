@@ -491,3 +491,33 @@ export interface AbarCommitmentDataResult extends NetworkAxiosDataResult {
 export interface MaxAtxoSidDataResult extends NetworkAxiosDataResult {
     response?: string;
 }
+export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
+    response?: {
+        evm_substate_height: number;
+        disable_evm_block_height: number;
+        enable_frc20_height: number;
+        evm_first_block_height: number;
+        zero_amount_fix_height: number;
+        apy_fix_height: number;
+        overflow_fix_height: number;
+        second_fix_height: number;
+        apy_v7_upgrade_height: number;
+        ff_addr_extra_fix_height: number;
+        nonconfidential_balance_fix_height: number;
+        unbond_block_cnt: number;
+        prismxx_inital_height: number;
+        enable_triple_masking_height: number;
+        fix_prism_mint_pay: number;
+        fix_exec_code: number;
+        fix_unpaid_delegation_height: number;
+        fix_undelegation_missing_reward_height: number;
+        evm_checktx_nonce: number;
+        utxo_checktx_height: number;
+        utxo_asset_prefix_height: number;
+        prism_bridge_address: string;
+        nonce_bug_fix_height: number;
+        proper_gas_set_height: number;
+        fix_delegators_am_height: number;
+        validators_limit_v2_height: number;
+    };
+}

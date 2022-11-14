@@ -48,7 +48,7 @@ const getExplorerApiRoute = (): string => {
   return url;
 };
 
-const getRpcRoute = (): string => {
+export const getRpcRoute = (): string => {
   const { hostUrl, rpcPort } = Sdk.environment;
 
   const url = `${hostUrl}:${rpcPort}`;
@@ -550,9 +550,11 @@ export const checkNullifierHashSpent = async (
   return dataResult;
 };
 
-export const getConfig = async (config?: Types.NetworkAxiosConfig) => {
-  const { configServerUrl } = Sdk.environment;
-  const dataResult = await apiGet(configServerUrl, config);
+export const getConfig = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.DisplayCheckpointDataResult> => {
+  const url = `${getLedgerRoute()}/display_checkpoint`;
+  const dataResult = await apiGet(url, config);
   return dataResult;
 };
 

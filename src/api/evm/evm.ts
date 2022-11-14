@@ -20,6 +20,8 @@ import {
   getErc20Contract,
   getNFT1155Contract,
   getNFT721Contract,
+  getPrismProxyContract,
+  getPrismXXAssetContract,
   getSimBridgeContract,
   getWeb3,
   IWebLinkedInfo,
@@ -196,6 +198,28 @@ export const frc20ToBar = async (
     throw Error('fail frc20ToBar');
   }
 };
+
+export async function getPrismConfig() {
+  const { response: displayCheckpointData, error } = await Network.getConfig();
+
+  if (error) throw error;
+
+  if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+
+  const web3 = getWeb3(Network.getRpcRoute());
+
+  const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
+  const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+
+  const prismContract = await getSimBridgeContract(web3, prismBridgeAddress);
+
+  const [ledgerAddress, assetAddress] = await Promise.all([
+    prismContract.methods.ledger_contract().call(),
+    prismContract.methods.asset_contract().call(),
+  ]);
+
+  return { ledgerAddress, assetAddress, prismBridgeAddress };
+}
 
 export const approveNFT = async (
   tokenAddress: string,
