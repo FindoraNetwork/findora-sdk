@@ -12,7 +12,7 @@ export declare const frc20ToBar: (bridgeAddress: string, recipientAddress: strin
 export declare function getPrismConfig(): Promise<{
     ledgerAddress: string;
     assetAddress: string;
-    prismBridgeAddress: string;
+    bridgeAddress: string;
 }>;
 export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
 export declare const frcNftToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;

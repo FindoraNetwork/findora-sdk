@@ -246,7 +246,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
 exports.frc20ToBar = frc20ToBar;
 function getPrismConfig() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, displayCheckpointData, error, web3, prismProxyContract, prismBridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
+        var _a, displayCheckpointData, error, web3, prismProxyContract, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, api_1.Network.getConfig()];
@@ -262,8 +262,8 @@ function getPrismConfig() {
                     prismProxyContract = _c.sent();
                     return [4 /*yield*/, prismProxyContract.methods.prismBridgeAddress().call()];
                 case 3:
-                    prismBridgeAddress = _c.sent();
-                    return [4 /*yield*/, (0, web3_2.getSimBridgeContract)(web3, prismBridgeAddress)];
+                    bridgeAddress = _c.sent();
+                    return [4 /*yield*/, (0, web3_2.getSimBridgeContract)(web3, bridgeAddress)];
                 case 4:
                     prismContract = _c.sent();
                     return [4 /*yield*/, Promise.all([
@@ -272,7 +272,7 @@ function getPrismConfig() {
                         ])];
                 case 5:
                     _b = _c.sent(), ledgerAddress = _b[0], assetAddress = _b[1];
-                    return [2 /*return*/, { ledgerAddress: ledgerAddress, assetAddress: assetAddress, prismBridgeAddress: prismBridgeAddress }];
+                    return [2 /*return*/, { ledgerAddress: ledgerAddress, assetAddress: assetAddress, bridgeAddress: bridgeAddress }];
             }
         });
     });

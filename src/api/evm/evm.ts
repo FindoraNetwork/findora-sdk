@@ -209,16 +209,16 @@ export async function getPrismConfig() {
   const web3 = getWeb3(Network.getRpcRoute());
 
   const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
-  const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+  const bridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
 
-  const prismContract = await getSimBridgeContract(web3, prismBridgeAddress);
+  const prismContract = await getSimBridgeContract(web3, bridgeAddress);
 
   const [ledgerAddress, assetAddress] = await Promise.all([
     prismContract.methods.ledger_contract().call(),
     prismContract.methods.asset_contract().call(),
   ]);
 
-  return { ledgerAddress, assetAddress, prismBridgeAddress };
+  return { ledgerAddress, assetAddress, bridgeAddress };
 }
 
 export const approveNFT = async (
