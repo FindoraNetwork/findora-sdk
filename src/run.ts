@@ -1598,24 +1598,10 @@ async function testCommitment() {
 }
 
 async function runAbarCreating(iterations = 20) {
-  // const anonKeys1 = {
-  //   axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-  //   axfrSpendKey:
-  //     'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-  //   axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
-  //   name: 'AnonWallet1',
-  // };
   const anonKeys1 = {
     axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
     axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
   };
-  // const anonKeys2 = {
-  //   axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
-  //   axfrSpendKey:
-  //     '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
-  //   axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
-  //   name: 'AnonWallet2',
-  // };
 
   const anonKeys2 = {
     axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
@@ -1627,8 +1613,6 @@ async function runAbarCreating(iterations = 20) {
   for (let i = 0; i < iterations; i = i + 1) {
     console.log(`-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ${i}`);
     const maxAtxoSidResult = await Network.getMaxAtxoSid();
-
-    // log('max atxo sid result is ', maxAtxoSidResult);
 
     const { error: masError, response: masResponse } = maxAtxoSidResult;
 

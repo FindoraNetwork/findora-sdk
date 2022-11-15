@@ -57,7 +57,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var Integration = __importStar(require("./tripleMasking.integration"));
 var testHelpers_1 = require("../evm/testHelpers");
-var extendedExecutionTimeout = 180000;
+var extendedExecutionTimeout = 540000;
 afterAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
