@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -755,7 +759,7 @@ describe('utxoHelper (unit test)', function () {
                         spyCacheWrite = jest.spyOn(factory_1.default, 'write').mockImplementation(function () {
                             return Promise.resolve(true);
                         });
-                        fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address + ".json";
+                        fullPathToCacheEntry = "".concat(Sdk_1.default.environment.cachePath, "/").concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletInfo.address, ".json");
                         return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, addSids)];
                     case 1:
                         result = _a.sent();
@@ -784,7 +788,7 @@ describe('utxoHelper (unit test)', function () {
                             keypair: 'senderKeypair',
                             address: 'myAddress',
                         };
-                        fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address + ".json";
+                        fullPathToCacheEntry = "".concat(Sdk_1.default.environment.cachePath, "/").concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletInfo.address, ".json");
                         return [4 /*yield*/, expect(UtxoHelper.addUtxo(walletInfo, addSids)).rejects.toThrow('Error reading the cache')];
                     case 1:
                         _a.sent();
@@ -833,7 +837,7 @@ describe('utxoHelper (unit test)', function () {
                         spyCacheWrite = jest.spyOn(factory_1.default, 'write').mockImplementation(function () {
                             return Promise.resolve(true);
                         });
-                        fullPathToCacheEntry = Sdk_1.default.environment.cachePath + "/" + cache_1.CACHE_ENTRIES.UTXO_DATA + "_" + walletInfo.address + ".json";
+                        fullPathToCacheEntry = "".concat(Sdk_1.default.environment.cachePath, "/").concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletInfo.address, ".json");
                         return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, addSids)];
                     case 1:
                         result = _a.sent();
