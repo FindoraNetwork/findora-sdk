@@ -32,7 +32,7 @@ export declare const getAbarOwnerMemo: (atxoSid: string) => Promise<import("find
 export declare const getAnonKeypairFromJson: (anonKeys: FindoraWallet.FormattedAnonKeys) => Promise<{
     aXfrSpendKeyConverted: import("findora-wallet-wasm/web").AXfrKeyPair;
     axfrPublicKeyConverted: AXfrPubKey;
-    axfrViewKeyConverted: import("findora-wallet-wasm/web").AXfrViewKey;
+    axfrViewKeyConverted: AXfrViewKey;
 }>;
 export declare const getAbarToAbarAmountPayload: (anonKeysSender: FindoraWallet.FormattedAnonKeys, anonPubKeyReceiver: string, amount: string, assetCode: string, givenCommitmentsList: string[]) => Promise<{
     commitmentsToSend: string[];
