@@ -63,7 +63,7 @@ const main = async () => {
       CliCommands.runFund(address, amountToFund);
       break;
     case COMMANDS.CREATE_WALLET:
-      CliCommands.runCreateWallet();
+      CliCommands.runCreateWallet(false);
       break;
     case COMMANDS.RESTORE_WALLET:
       if (!mnemonicString) {
@@ -71,7 +71,7 @@ const main = async () => {
         break;
       }
 
-      CliCommands.runRestoreWallet(mnemonicString);
+      CliCommands.runRestoreWallet(mnemonicString, false);
       break;
 
     case COMMANDS.BATCH_SEND_ERC20:
@@ -96,7 +96,7 @@ const main = async () => {
         break;
       }
 
-      CliCommands.runCreateAndSaveWallets(numberOfWallets);
+      CliCommands.runCreateAndSaveWallets(numberOfWallets, false);
       break;
     default:
       showHelp();

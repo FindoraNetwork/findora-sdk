@@ -39,7 +39,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runCreateAndSaveWallets = void 0;
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
-var runCreateAndSaveWallets = function (amount) {
+var runCreateAndSaveWallets = function (amount, isFraAddress) {
     if (amount === void 0) { amount = 5; }
     return __awaiter(void 0, void 0, void 0, function () {
         var sendersWallets, password, i, mm, newWalletInfo, data, resultSenders;
@@ -55,7 +55,7 @@ var runCreateAndSaveWallets = function (amount) {
                     return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
                 case 2:
                     mm = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, isFraAddress)];
                 case 3:
                     newWalletInfo = _a.sent();
                     (0, utils_1.log)("\"".concat(i, "\". Created sender wallet \"").concat(newWalletInfo.address, "\" (\"").concat(newWalletInfo.privateStr, "\")"));

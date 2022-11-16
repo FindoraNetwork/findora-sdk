@@ -71,9 +71,8 @@ const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
   axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-  axfrSpendKey:
+  axfrSecretKey:
     'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-  axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 
 const myGivenCommitmentsList = [
@@ -105,18 +104,21 @@ const getFraBalance = async () => {
   const faucetWalletInfo = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
     password,
+    isFra,
   );
 
   // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   const newWalletMine1 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
     password,
+    isFra,
   );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   const newWalletMine2 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
     password,
+    isFra,
   );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
@@ -289,7 +291,7 @@ const createNewKeypair = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
 
   console.log('new wallet info', walletInfo);
   return walletInfo;
@@ -408,7 +410,9 @@ const transferFraToSingleRecepient = async () => {
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -1319,7 +1323,7 @@ const validateUnspent = async () => {
 
   const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
 
-  const axfrSecretKey = anonKeys.axfrSpendKey;
+  const axfrSecretKey = anonKeys.axfrSecretKey;
   const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
   console.log(
@@ -1354,58 +1358,20 @@ const getUnspentAbars = async () => {
 const getAbarBalance = async () => {
   // const anonKeys = { ...myAbarAnonKeys };
 
-  // Anon Walet 1
-  // const anonKeys = {
-  //   axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-  //   axfrSecretKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-  //   decKey: 'oAOZEUWKbgjv8OVtlL5PJYrNnV1KDtW3PCyZc30SW0Y=',
-  //   encKey: 'eT39SV2et8ONJsN0kCEPJkNQys89UlFUsdPpY2x5qR8=',
-  // };
-
-  // Anon Walet 3
-  // const anonKeys = {
-  //   axfrPublicKey: '5kJ1D8ZGmaHbyv4Yfn3q94oYAgV8km5dkiBHWPMU2b8=',
-  //   axfrSecretKey: 'VDj-QNt0UEilrJsXa69HduAnfsXpZqYabXC_ozqiCwTmQnUPxkaZodvK_hh-fer3ihgCBXySbl2SIEdY8xTZvw==',
-  //   decKey: 'KLzfPV-ft7m114DsUBt_ZblsdbCFqhIzkTWd9rZBN3w=',
-  //   encKey: 'k9L1_NnjjZu6jpkKZXrmsRi2Vta0LuLGsk2y4Hk0akI=',
-  //   name: 'AnonWallet3',
-  // };
-
-  // Anon Walet 2
   const anonKeys = {
     axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSpendKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    axfrViewKey: '',
-    name: 'AnonWallet2',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+    name: 'SyncAnonWallet1',
   };
 
-  // const anonKeys = {
-  //   axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-  //   axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-  //   decKey: '8Fuq0EdUlv9IwULCuU5eao9SzkVGEe8rWPoDIuJiEVw=',
-  //   encKey: 'cWQG_4BMhKZ_hmsnfY4JyHDWCT4pF6OMz4sHlkzEzG8=',
-  // };
-
   const givenCommitmentsList = [
-    // '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E', // 9.98 spent - a1
-    // 'J9GaEtp4wG1nCm2SdDHUju6VZD6JhAmcYa5ae9y6kMT6', // 10.900000 - a1
-    // 'NxL2RAScj8vnSpnNFczaK8iu7ZCLRwB8Wq8fzKGMUgp', // 12 spent - a1
-    '3cPUB1No27iS1vCXeik53gnxQVwpU6iZPX5mywx68A8G', // 9.98 - a2?
+    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
+    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
+    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
+    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
+    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
+    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
   ];
-
-  // console.log(
-  //   '🚀 ~ file: run.ts ~ line 1298 ~ getAbarBalance ~ givenCommitmentsList to check',
-  //   givenCommitmentsList,
-  // );
-
-  // const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
-  // console.log(
-  //   '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
-  //   JSON.stringify(spentAbars, null, 2),
-  // );
-
-  // const a = await TripleMasking.openAbar(spentAbars[0], anonKeys);
-  // console.log('🚀 ~ file: run.ts ~ line 1325 ~ getAbarBalance ~ a', a);
 
   // const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
   const balances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList);
@@ -1428,9 +1394,9 @@ const getFee = async () => {
 const getAnonTxList = async () => {
   // anon wallet 1
   const anonKeysSender = {
-    axfrPublicKey: 'oDosEZB9uq4joxcM6xE993XHdSwBs90z2DEzg7QzSus=',
-    axfrSpendKey: 'Gsppgb5TA__Lsry9TMe9hBZdn_VOU4FS1oCaHrdLHQCgOiwRkH26riOjFwzrET33dcd1LAGz3TPYMTODtDNK6w==',
-    axfrViewKey: '',
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
+    name: 'AnonWallet2',
   };
 
   const subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E'; // 9.98 spent - a1
@@ -1446,11 +1412,9 @@ const getAnonTxList = async () => {
 
 const testItSync = async () => {
   // run it as INTEGRATION_ENV_NAME=local yarn start:once
-  const anonKeys1 = {
-    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-    axfrSpendKey:
-      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
+  const anonKeys = {
+    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
+    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
     name: 'AnonWallet2',
   };
 
@@ -1485,7 +1449,7 @@ const testItSync = async () => {
   }
   log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
 
-  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys1);
+  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
   log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
 
   if (!decrypted) {
@@ -1636,19 +1600,13 @@ async function testCommitment() {
 
 async function runAbarCreating(iterations = 20) {
   const anonKeys1 = {
-    axfrPublicKey: 'IRE1O70AtP-ehpNO9pwtHJnKyvansgrjq_Wiq8CjTt8=',
-    axfrSpendKey:
-      'DryF7dCO65PIKUVZAeI6Fjfvz_Li5AP3IG-IlkT93XBC4P_W1fEHtExkYBoP7azhoaahL56jphJxJhXlcuUOCyERNTu9ALT_noaTTvacLRyZysr2p7IK46v1oqvAo07f',
-    axfrViewKey: 'QuD_1tXxB7RMZGAaD-2s4aGmoS-eo6YScSYV5XLlDgs=',
-    name: 'AnonWallet1',
+    axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+    axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
   };
 
   const anonKeys2 = {
-    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
-    axfrSpendKey:
-      '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
-    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
-    name: 'AnonWallet2',
+    axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+    axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
   };
 
   const wallets = [anonKeys1, anonKeys2];
@@ -1656,8 +1614,6 @@ async function runAbarCreating(iterations = 20) {
   for (let i = 0; i < iterations; i = i + 1) {
     console.log(`-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ${i}`);
     const maxAtxoSidResult = await Network.getMaxAtxoSid();
-
-    // log('max atxo sid result is ', maxAtxoSidResult);
 
     const { error: masError, response: masResponse } = maxAtxoSidResult;
 
@@ -1669,15 +1625,20 @@ async function runAbarCreating(iterations = 20) {
     console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
 
     const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-    const amountToSend = walletIndex ? '35' : '25';
+    const amountToSend = walletIndex ? '10' : '10';
 
-    console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+    // console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
     const currentWallet = wallets[walletIndex];
     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
 
-    // const transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+    // const _transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
   }
 }
+
+// async function testFailure() {
+//   const result = await TMI.abarToBarCustomSendAmount();
+//   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+// }
 
 async function getMas() {
   const maxAtxoSidResult = await Network.getMaxAtxoSid();
@@ -1733,5 +1694,7 @@ prism();
 // testItSync();
 // getFraBalance();
 // getAnonKeys();
-// runAbarCreating(10);
+// runAbarCreating(2);
 // getMas();
+// getAbarBalance();
+// testFailure();

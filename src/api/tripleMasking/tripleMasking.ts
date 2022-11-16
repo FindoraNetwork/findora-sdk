@@ -1,4 +1,5 @@
 import { AXfrPubKey } from 'findora-wallet-wasm/web';
+
 import { CACHE_ENTRIES } from '../../config/cache';
 import { waitForBlockChange } from '../../evm/testHelpers';
 import Sdk from '../../Sdk';
@@ -49,16 +50,14 @@ export const genAnonKeys = async (): Promise<FindoraWallet.FormattedAnonKeys> =>
   const ledger = await getLedger();
 
   try {
-    const anonKeys = await ledger.gen_anon_keys();
+    const anonKeys = ledger.gen_anon_keys();
 
     const axfrPublicKey = anonKeys.pub_key;
-    const axfrSpendKey = anonKeys.spend_key;
-    const axfrViewKey = anonKeys.view_key;
+    const axfrSecretKey = anonKeys.secret_key;
 
     const formattedAnonKeys = {
       axfrPublicKey,
-      axfrSpendKey,
-      axfrViewKey,
+      axfrSecretKey,
     };
 
     try {
@@ -236,15 +235,13 @@ const getMyMTLeafInfo = async (atxoSid: string) => {
 };
 
 export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAnonKeys) => {
-  let aXfrSpendKeyConverted;
-  let axfrViewKeyConverted;
+  let aXfrSecretKeyConverted;
   let axfrPublicKeyConverted;
 
-  const { axfrSpendKey, axfrPublicKey, axfrViewKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   try {
-    aXfrSpendKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSpendKey); // AXfrSpendKey
-    axfrViewKeyConverted = await Keypair.getAXfrViewKeyByBase64(axfrViewKey); // axfrViewKey
+    aXfrSecretKeyConverted = await Keypair.getAXfrPrivateKeyByBase64(axfrSecretKey); // AXfrSpendKey
 
     axfrPublicKeyConverted = await getAnonPubKeyFromString(axfrPublicKey); // AXfrPubKey
   } catch (error) {
@@ -252,9 +249,8 @@ export const getAnonKeypairFromJson = async (anonKeys: FindoraWallet.FormattedAn
   }
 
   return {
-    aXfrSpendKeyConverted,
+    aXfrSecretKeyConverted,
     axfrPublicKeyConverted,
-    axfrViewKeyConverted,
   };
 };
 
@@ -355,7 +351,7 @@ export const getAbarToAbarAmountPayload = async (
   const commitmentsToSend: string[] = [];
   const commitmentsForFee: string[] = [];
 
-  for (let atxoItem of atxoListToSend) {
+  for (const atxoItem of atxoListToSend) {
     const givenCommitment = atxoItem.commitment;
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
@@ -365,20 +361,34 @@ export const getAbarToAbarAmountPayload = async (
     commitmentsToSend.push(givenCommitment);
   }
 
-  let calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
+  let calculatedFee;
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '1 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
 
-  const totalFeeEstimate = await getTotalAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    amount,
-    additionalOwnedAbarItems,
-  );
+  let totalFeeEstimate;
 
+  try {
+    totalFeeEstimate = await getTotalAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      amount,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '2 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   let balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -412,39 +422,47 @@ export const getAbarToAbarAmountPayload = async (
 
   const allCommitmentsForFeeSorted = feeAtxoListToSend.map(atxoItem => atxoItem.commitment);
 
+  let calculatedFeeA;
+
   while (isMoreFeeNeeded) {
     const givenCommitment = allCommitmentsForFeeSorted?.[idx];
 
-    if (!givenCommitment) {
-      throw new Error(`You still need ${calculatedFee} FRA to cover the fee`);
+    try {
+      const myCalculatedFee = await getAbarTransferFee(
+        anonKeysSender,
+        anonPubKeyReceiver,
+        amount,
+        additionalOwnedAbarItems,
+      );
+      calculatedFeeA = myCalculatedFee;
+    } catch (error) {
+      throw new Error(
+        '3 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+      );
     }
-    const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
 
-    const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
-
-    additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
-
-    calculatedFee = await getAbarTransferFee(
-      anonKeysSender,
-      anonPubKeyReceiver,
-      amount,
-      additionalOwnedAbarItems,
-    );
-
-    balanceAfterSendToBN = createBigNumber(calculatedFee);
-
+    balanceAfterSendToBN = createBigNumber(calculatedFeeA);
     isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
+
+    if (isMoreFeeNeeded && !givenCommitment) {
+      throw new Error(`You still need ${calculatedFeeA} FRA to cover the fee 3`);
+    }
+
+    if (givenCommitment) {
+      const ownedAbarsResponseFee = await getOwnedAbars(givenCommitment);
+
+      const [additionalOwnedAbarItemFee] = ownedAbarsResponseFee;
+
+      additionalOwnedAbarItems.push(additionalOwnedAbarItemFee);
+      commitmentsForFee.push(givenCommitment);
+    }
+
     idx += 1;
 
-    commitmentsForFee.push(givenCommitment);
-    console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFee);
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFeeA);
   }
 
-  console.log('returning calculatedFee', calculatedFee);
-
-  // const expectedFee = await getAmountFromCommitments(fraAssetCode, commitmentsForFee, anonKeysSender);
-
-  // const additionalAmountForFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
+  console.log('returning calculatedFeeA', calculatedFeeA);
 
   return {
     commitmentsToSend,
@@ -500,7 +518,7 @@ export const abarToAbarAmount = async (
 
   const additionalOwnedAbarItems = [];
 
-  for (let givenCommitment of allCommitments) {
+  for (const givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
@@ -524,13 +542,20 @@ export const abarToAbar = async (
   abarAmountToTransfer: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
 ) => {
-  const calculatedFee = await getAbarTransferFee(
-    anonKeysSender,
-    anonPubKeyReceiver,
-    abarAmountToTransfer,
-    additionalOwnedAbarItems,
-  );
+  let calculatedFee;
 
+  try {
+    calculatedFee = await getAbarTransferFee(
+      anonKeysSender,
+      anonPubKeyReceiver,
+      abarAmountToTransfer,
+      additionalOwnedAbarItems,
+    );
+  } catch (error) {
+    throw new Error(
+      '4 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+    );
+  }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
 
   const balanceAfterSendToBN = createBigNumber(calculatedFee);
@@ -585,7 +610,7 @@ export const prepareAnonTransferOperationBuilder = async (
 ) => {
   let anonTransferOperationBuilder = await Builder.getAnonTransferOperationBuilder();
 
-  const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+  const { aXfrSecretKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
 
   const axfrPublicKeyReceiver = await getAnonPubKeyFromString(axfrPublicKeyReceiverString);
 
@@ -609,10 +634,15 @@ export const prepareAnonTransferOperationBuilder = async (
 
   const toAmount = BigInt(toWei(abarAmountToTransfer, abarPayloadOne.decimals).toString());
 
+  const addedInputs = [];
+
   for (const ownedAbarItemOne of additionalOwnedAbars) {
+    if (addedInputs.length >= 4) {
+      throw new Error('Amount you are trying to send is to big to send at once. Please try a smaller amount');
+    }
+
     const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
 
-    // console.log('prepare anon transfer - adding additional input ', abarPayloadNext);
     try {
       anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(
         abarPayloadNext.myOwnedAbar,
@@ -621,13 +651,13 @@ export const prepareAnonTransferOperationBuilder = async (
         abarPayloadNext.myMTLeafInfo,
       );
     } catch (error) {
+      console.log('platform error', error);
       throw new Error(
         `Could not add an additional input for abar transfer operation", Error - ${(error as Error).message}`,
       );
     }
+    addedInputs.push(ownedAbarItemOne);
   }
-
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 406 ~ toAmount', toAmount);
 
   try {
     const ledger = await getLedger();
@@ -648,6 +678,8 @@ export const prepareAnonTransferOperationBuilder = async (
       `Could not add an output for abar transfer operation", Error - ${(error as Error).message}`,
     );
   }
+
+  anonTransferOperationBuilder = anonTransferOperationBuilder.add_keypair(aXfrSpendKeySender);
 
   return anonTransferOperationBuilder;
 };
@@ -920,7 +952,7 @@ export const abarToBarAmount = async (
 
   const additionalOwnedAbarItems = [];
 
-  for (let givenCommitment of allCommitments) {
+  for (const givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
@@ -942,7 +974,7 @@ export const abarToBar = async (
 
   const receiverXfrPublicKeyConverted = await Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey);
 
-  const { aXfrSpendKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+  const { aXfrSecretKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
 
   const [ownedAbarToUseAsSource, ...additionalOwnedAbars] = additionalOwnedAbarItems;
 
@@ -1019,7 +1051,7 @@ export const getNullifierHashesFromCommitments = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const nullifierHashes: string[] = [];
 
@@ -1048,7 +1080,7 @@ export const getNullifierHashesFromCommitments = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     nullifierHashes.push(hash);
   }
@@ -1060,7 +1092,7 @@ export const getUnspentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const unspentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
@@ -1088,7 +1120,7 @@ export const getUnspentAbars = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     const isAbarSpent = await isNullifierHashSpent(hash);
 
@@ -1104,7 +1136,7 @@ export const getSpentAbars = async (
   anonKeys: FindoraWallet.FormattedAnonKeys,
   givenCommitmentsList: string[],
 ) => {
-  const { axfrSpendKey, axfrPublicKey } = anonKeys;
+  const { axfrSecretKey, axfrPublicKey } = anonKeys;
 
   const spentAbars: FindoraWallet.OwnedAbarItem[] = [];
 
@@ -1132,7 +1164,7 @@ export const getSpentAbars = async (
 
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+    const hash = await genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
 
     const isAbarSpent = await isNullifierHashSpent(hash);
 
@@ -1159,7 +1191,7 @@ export const openAbar = async (
 
   const myMTLeafInfo = await getMyMTLeafInfo(atxoSid);
 
-  const { aXfrSpendKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
+  const { aXfrSecretKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
 
   const openedAbar: FindoraWallet.OpenedAbar = ledger.get_open_abar(
     myOwnedAbar,
@@ -1310,7 +1342,6 @@ export const getOwnedAbars = async (givenCommitment: string): Promise<FindoraWal
       ownedAbar: { ...ownedAbar },
     },
   };
-  // console.log('🚀 ~ file: tripleMasking.ts ~ line 840 ~ getOwnedAbars ~ abar', abar);
 
   return [abar];
 };
@@ -1406,8 +1437,8 @@ const mergeSortAtxoList = (arr: AtxoMapItem[]): AtxoMapItem[] => {
   if (arr.length < 2) return arr;
   const middleIdx = Math.floor(arr.length / 2);
 
-  let left = arr.splice(0, middleIdx);
-  let right = arr.splice(0);
+  const left = arr.splice(0, middleIdx);
+  const right = arr.splice(0);
 
   return mergeAtxoList(mergeSortAtxoList(left), mergeSortAtxoList(right));
 };
@@ -1435,7 +1466,7 @@ export const getSendAtxo = async (
 
   let sum = BigInt(0);
 
-  for (let assetItem of sortedUtxoList) {
+  for (const assetItem of sortedUtxoList) {
     const _amount = BigInt(assetItem.amount);
 
     sum = sum + _amount;
@@ -1475,7 +1506,7 @@ export const getAmountFromCommitments = async (
 
   let sum = BigInt(0);
 
-  for (let assetItem of sortedUtxoList) {
+  for (const assetItem of sortedUtxoList) {
     const _amount = BigInt(assetItem.amount);
 
     sum = sum + _amount;
@@ -1492,7 +1523,7 @@ export const decryptAbarMemo = async (
 
   const [atxoSid, myMemoData] = abarMemoItem;
 
-  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSpendKey);
+  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSecretKey);
 
   const abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
 

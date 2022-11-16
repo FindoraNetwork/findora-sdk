@@ -4,9 +4,9 @@ import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
 import * as Keypair from '../../api/keypair/keypair';
-import * as SdkAssetApi from '../../api/sdkAsset/sdkAsset';
-import * as NetworkTypes from '../../api/network/types';
 import * as NetworkApi from '../../api/network/network';
+import * as NetworkTypes from '../../api/network/types';
+import * as SdkAssetApi from '../../api/sdkAsset/sdkAsset';
 import Sdk from '../../Sdk';
 import * as bigNumber from '../../services/bigNumber';
 import { MemoryCacheProvider } from '../../services/cacheStore/providers';

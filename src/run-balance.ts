@@ -65,9 +65,8 @@ const CustomAssetCode = CUSTOM_ASSET_CODE;
 
 const myAbarAnonKeys = {
   axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-  axfrSpendKey:
+  axfrSecretKey:
     'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-  axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
 };
 
 const myGivenCommitmentsList = [
@@ -99,7 +98,7 @@ const getFraBalance = async () => {
 
   const mm = mString.split(' ');
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+  const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
 
   const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -161,7 +160,7 @@ const validateUnspent = async () => {
     //   JSON.stringify(spentAbars, null, 2),
     // );
 
-    const axfrSecretKey = anonKeys.axfrSpendKey;
+    const axfrSecretKey = anonKeys.axfrSecretKey;
     const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
 
     console.log(

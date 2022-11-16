@@ -1,5 +1,4 @@
 import Base64 from 'js-base64';
-
 import _get from 'lodash/get';
 
 import { TxInfo } from '../network/types';

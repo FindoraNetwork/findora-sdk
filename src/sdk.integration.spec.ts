@@ -1,6 +1,5 @@
 import * as Integration from './integration';
 
-import * as FindoraWallet from './types/findoraWallet';
 const extendedExecutionTimeout = 180000;
 
 describe(`Findora SDK integration (integration test)`, () => {
@@ -35,6 +34,14 @@ describe(`Findora SDK integration (integration test)`, () => {
       'Should send FRA to the reciever',
       async () => {
         const result = await Integration.sendFraTransactionSubmit();
+        expect(result).toBe(true);
+      },
+      extendedExecutionTimeout * 2,
+    );
+    it(
+      'Should send FRA to the reciever with confidential amount and asset type',
+      async () => {
+        const result = await Integration.sendFraConfidentialTransactionSubmit();
         expect(result).toBe(true);
       },
       extendedExecutionTimeout * 2,

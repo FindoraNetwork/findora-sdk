@@ -37,13 +37,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var testHelpers_1 = require("../evm/testHelpers");
-var extendedExecutionTimeout = 180000;
+var extendedExecutionTimeout = 540000;
 afterAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 console.log('after all - just waiting for 3 blocks to have all pending requests finished (if any)');
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(3)];
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 1:
                 _a.sent();
                 done();

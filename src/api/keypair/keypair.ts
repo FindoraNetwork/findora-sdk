@@ -1,13 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import {
-  AXfrKeyPair,
-  AXfrPubKey,
-  AXfrViewKey,
-  XfrKeyPair,
-  XfrPublicKey,
-  XPublicKey,
-  XSecretKey,
-} from '../../services/ledger/types';
+import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -77,8 +69,7 @@ export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => 
   const ledger = await getLedger();
 
   try {
-    const privateStr = ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
-    return privateStr;
+    return ledger.get_priv_key_str(keypair).replace(/^"|"$/g, '');
   } catch (err) {
     throw new Error(`could not get priv key string, "${err}" `);
   }
@@ -101,8 +92,7 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const address = ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
-    return address;
+    return ledger.public_key_to_bech32(ledger.get_pk_from_keypair(keypair));
   } catch (err) {
     throw new Error(`could not get address string, "${err}" `);
   }
@@ -111,8 +101,7 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const address = ledger.base64_to_bech32(publicKey);
-    return address;
+    return ledger.base64_to_bech32(publicKey);
   } catch (err) {
     throw new Error(`could not get address by public key, "${err}" `);
   }
@@ -124,8 +113,7 @@ export const getAddressByPublicKey = async (publicKey: string): Promise<string> 
 export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   try {
-    const toPublickey = ledger.public_key_from_base64(publicKey);
-    return toPublickey;
+    return ledger.public_key_from_base64(publicKey);
   } catch (err) {
     throw new Error(`could not get xfr public key by base64, "${err}" `);
   }
@@ -137,8 +125,7 @@ export const getXfrPublicKeyByBase64 = async (publicKey: string): Promise<XfrPub
 export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string> => {
   const ledger = await getLedger();
   try {
-    const toPublickey = ledger.public_key_to_base64(publicKey);
-    return toPublickey;
+    return ledger.public_key_to_base64(publicKey);
   } catch (err) {
     throw new Error(`could not get base64 public key by xfr, "${err}" `);
   }
@@ -162,32 +149,12 @@ export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXf
   }
 };
 
-export const getAXfrViewKeyByBase64 = async (privateKey: string): Promise<AXfrViewKey> => {
+export const getAxfrPubKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
   const ledger = await getLedger();
   try {
-    return ledger.axfr_viewkey_from_string(privateKey);
-  } catch (err) {
-    throw new Error(`could not get AXfrViewKey from the string, "${err}" `);
-  }
-};
-
-export const getXPublicKeyByBase64 = async (publicKey: string): Promise<XPublicKey> => {
-  const ledger = await getLedger();
-  try {
-    const toPublickey = ledger.x_pubkey_from_string(publicKey);
-    return toPublickey;
+    return ledger.axfr_pubkey_from_string(publicKey);
   } catch (err) {
     throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
-  }
-};
-
-export const getXPrivateKeyByBase64 = async (privateKey: string): Promise<XSecretKey> => {
-  const ledger = await getLedger();
-  try {
-    const toPrivateKey = ledger.x_secretkey_from_string(privateKey);
-    return toPrivateKey;
-  } catch (err) {
-    throw new Error(`could not get XSecretKey by base64 private key, "${err}" `);
   }
 };
 
@@ -243,7 +210,7 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
   try {
     keypair = ledger.create_keypair_from_secret(toSend);
   } catch (error) {
-    throw new Error(`could not restore keypair. details: "${(error as Error).message}"`);
+    throw new Error(`could not restore keypair. details: "${error as Error}"`);
   }
 
   if (!keypair) {
@@ -265,10 +232,19 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
   };
 };
 
-export const restoreFromMnemonic = async (mnemonic: string[], password: string): Promise<WalletKeypar> => {
+export const restoreFromMnemonic = async (
+  mnemonic: string[],
+  password: string,
+  isFraAddress: boolean,
+): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+  let keypair: XfrKeyPair;
+  if (isFraAddress) {
+    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
+  } else {
+    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+  }
   const keyPairStr = await getPrivateKeyStr(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 

@@ -1,6 +1,6 @@
 {
   "name": "@findora-network/findora-sdk.js",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "The JavaScript SDK for Findora Network",
   "license": "ISC",
   "author": "Findora Network",
@@ -107,7 +107,7 @@
     "husky": "^4.3.6",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
-    "msw": "^0.28.1",
+    "msw": "^0.48.2",
     "nodemon": "^2.0.7",
     "path-browserify": "^1.0.1",
     "prettier": "^2.2.1",

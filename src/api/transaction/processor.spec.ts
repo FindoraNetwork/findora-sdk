@@ -5,8 +5,8 @@ import _get from 'lodash/get';
 import { TxInfo } from '../network/types';
 import * as helpers from './helpers';
 import * as OperationProcessors from './operationProcessors';
-import * as Types from './types';
 import * as Processor from './processor';
+import * as Types from './types';
 
 describe('processor (unit test)', () => {
   const myTime = 'foo';
@@ -39,7 +39,7 @@ describe('processor (unit test)', () => {
       const spyGetTxOperationsList = jest
         .spyOn(helpers, 'getTxOperationsList')
         .mockImplementation((_: Types.ParsedTx) => {
-          return operationsList as Types.TxOperation[];
+          return operationsList;
         });
 
       const spyGetOperationProcessor = jest
@@ -91,7 +91,7 @@ describe('processor (unit test)', () => {
       const spyGetTxOperationsList = jest
         .spyOn(helpers, 'getTxOperationsList')
         .mockImplementation((_: Types.ParsedTx) => {
-          return operationsList as Types.TxOperation[];
+          return operationsList;
         });
 
       const spyGetOperationProcessor = jest

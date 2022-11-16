@@ -1,1 +1,1 @@
-export declare const runCreateWallet: () => Promise<void>;
+export declare const runCreateWallet: (fra_address: boolean) => Promise<void>;

@@ -14,12 +14,11 @@ import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
 import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
-
 import {
   calculationDecimalsAmount,
   getErc20Contract,
-  getNFT1155Contract,
   getNFT721Contract,
+  getNFT1155Contract,
   getPrismProxyContract,
   getPrismXXAssetContract,
   getSimBridgeContract,
@@ -326,15 +325,15 @@ export const tokenBalance = async (
 ): Promise<string> => {
   const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const erc20Contract = getErc20Contract(web3, tokenAddress);
-  let contractData = erc20Contract.methods.balanceOf(account).encodeABI();
+  const contractData = erc20Contract.methods.balanceOf(account).encodeABI();
 
-  let txParams = {
+  const txParams = {
     from: web3WalletInfo.account,
     to: tokenAddress,
     data: contractData,
   };
 
-  let callResultHex = await web3.eth.call(txParams);
+  const callResultHex = await web3.eth.call(txParams);
   let balance = web3.utils.hexToNumberString(callResultHex);
 
   if (decimals) {

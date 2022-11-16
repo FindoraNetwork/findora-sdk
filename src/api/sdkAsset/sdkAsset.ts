@@ -2,17 +2,16 @@ import { DEFAULT_ASSET_RULES } from '../../config/asset';
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import * as FindoraWallet from '../../types/findoraWallet';
-import * as Builder from '../transaction/builder';
-
 import {
   AssetRules as LedgerAssetRules,
   TransactionBuilder,
   XfrKeyPair,
   XfrPublicKey,
 } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import { getAddressByPublicKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
+import * as Builder from '../transaction/builder';
 
 export interface AssetRules {
   transferable: boolean;

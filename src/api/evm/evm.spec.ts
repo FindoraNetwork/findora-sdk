@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
+
 import BigNumber from 'bignumber.js';
 
 import { getLedger } from '../../services/ledger/ledgerWrapper';
@@ -50,8 +51,8 @@ describe('evm (unit test)', () => {
       const ethAddress = 'myValidaotrAddress'; // findoraNetwork.columbus.relayer;
       const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-      let funcName = 'withdrawFRA';
-      let convertAmount = new BigNumber(amount).times(10 ** 18).toString();
+      const funcName = 'withdrawFRA';
+      const convertAmount = new BigNumber(amount).times(10 ** 18).toString();
       // if (assetCode !== 'FRA') {
       //   funcName = 'withdrawERC20';
       //   convertAmount = await YsSdk.web3.calculationDecimalsAmount(

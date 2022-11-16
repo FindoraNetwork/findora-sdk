@@ -62,7 +62,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
+exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraConfidentialTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
 var api_1 = require("./api");
 var testHelpers_1 = require("./evm/testHelpers");
 var Sdk_1 = __importDefault(require("./Sdk"));
@@ -359,6 +359,51 @@ var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.sendFraTransactionSubmit = sendFraTransactionSubmit;
+var sendFraConfidentialTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var pkey, walletInfo, toWalletInfo, receiverBalanceBeforeTransfer, assetBlindRules, numbers, assetCode, transactionBuilder, resultHandle, isTxSend, receiverBalanceAfterTransfer, isItRight, peterCheckResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                (0, utils_1.log)('////////////////  sendFraConfidentialTransactionSubmit //////////////// ');
+                pkey = mainFaucet;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
+            case 2:
+                toWalletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 3:
+                receiverBalanceBeforeTransfer = _a.sent();
+                assetBlindRules = { isTypeBlind: true, isAmountBlind: true };
+                numbers = '0.2';
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 4:
+                assetCode = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbers, assetCode, assetBlindRules)];
+            case 5:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 6:
+                resultHandle = _a.sent();
+                return [4 /*yield*/, getTxSid('send', resultHandle)];
+            case 7:
+                isTxSend = _a.sent();
+                if (!isTxSend) {
+                    (0, utils_1.log)("\uD83D\uDE80  ~ sendFraTransactionSubmit ~ Could not submit send");
+                    return [2 /*return*/, false];
+                }
+                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
+            case 8:
+                receiverBalanceAfterTransfer = _a.sent();
+                isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
+                peterCheckResult = "Peter balance should be 0.200000 and now it is ".concat((0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer), ", so this is \"").concat(isItRight, "\" ");
+                (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
+                return [2 /*return*/, isItRight];
+        }
+    });
+}); };
+exports.sendFraConfidentialTransactionSubmit = sendFraConfidentialTransactionSubmit;
 var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, aliceWalletInfo, petereWalletInfo, aliceBalanceBeforeTransfer, peterBalanceBeforeTransfer, assetBlindRules, numbersForAlice, numbersForPeter, assetCode, recieversInfo, transactionBuilder, resultHandle, isTxSend, aliceBalanceAfterTransfer, peterBalanceAfterTransfer, isItRightAlice, isItRightPeter, aliceCheckResult, peterCheckResult;
     return __generator(this, function (_a) {

@@ -86,8 +86,7 @@ var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
 var myAbarAnonKeys = {
     axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
-    axfrSpendKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
-    axfrViewKey: '-I2CQRY2kUMFJU4ttlzt3DssUm4r-5OJevJI9o8zlQk=',
+    axfrSecretKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
 };
 var myGivenCommitmentsList = [
     // 'FYKxtmrH4SoXvVTf82wNz6PVqWdbo1kJcmYpcgctnvH5', // 6
@@ -110,7 +109,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
             case 1:
                 newWallet = _a.sent();
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -173,7 +172,7 @@ var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, fun
                 if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 7];
                 givenCommitment = givenCommitmentsList_1[_i];
                 console.log("processing ".concat(givenCommitment));
-                axfrSecretKey = anonKeys.axfrSpendKey;
+                axfrSecretKey = anonKeys.axfrSecretKey;
                 return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
             case 3:
                 ownedAbarsResponse = _a.sent();

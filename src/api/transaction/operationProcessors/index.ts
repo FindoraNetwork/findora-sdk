@@ -11,7 +11,6 @@ import { processDelegation, ProcessedDelegation } from './delegation';
 import { ProcessedIssueAsset, processIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset, processTransferAsset } from './transferAsset';
 import { ProcessedUndelegation, processUndelegation } from './undelegation';
-
 import { processUnsupported, Unsupported } from './unsupported';
 
 export type ProcessedTx =

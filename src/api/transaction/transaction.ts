@@ -108,7 +108,7 @@ export const sendToMany = async (
 
     console.log('Full error (main)', error);
 
-    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation (main), Error: "${e}"`);
   }
 
   let transactionBuilder;
@@ -161,6 +161,16 @@ export const sendToMany = async (
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
+
+  try {
+    if ('sign_origin' in transactionBuilder) {
+      transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    }
+  } catch (err) {
+    console.log('sendToMany error in signOrigin ', err);
+    throw new Error(`could not signOrigin txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -313,6 +323,7 @@ export const sendToManyV2 = async (
  */
 export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {
   const submitData = transactionBuilder.transaction();
+  console.log(submitData);
 
   let result;
 

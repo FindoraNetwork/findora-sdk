@@ -135,10 +135,10 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                                 utxoNumbers = utxoNumbers + BigInt(amount.toString());
                                 ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : null;
                                 if (isTraceable) {
-                                    transferOp = transferOp.add_input_with_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), tracingPolicies, walletInfo.keypair, amount);
+                                    transferOp = transferOp.add_input_with_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), tracingPolicies, walletInfo.keypair, BigInt(amount.toString()));
                                 }
                                 else {
-                                    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair, amount);
+                                    transferOp = transferOp.add_input_no_tracing(txoRef, assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone(), walletInfo.keypair, BigInt(amount.toString()));
                                 }
                                 return [2 /*return*/];
                         }
@@ -152,10 +152,11 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                     if (isTraceable) {
-                        transferOp = transferOp.add_output_with_tracing(utxoNumbers, toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
+                        // @ts-ignore
+                        transferOp = transferOp.add_output_with_tracing(BigInt(utxoNumbers.toString()), toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                     else {
-                        transferOp = transferOp.add_output_no_tracing(utxoNumbers, toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
+                        transferOp = transferOp.add_output_no_tracing(BigInt(utxoNumbers.toString()), toPublickey, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                 });
                 if (!(inputAmount > utxoNumbers)) return [3 /*break*/, 10];
@@ -289,7 +290,7 @@ var getFeeInputs = function (walletInfo, excludeSids, isBarToAbar) { return __aw
                 feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;
-                    feeInputs = feeInputs.append2(amount, txoRef, assetRecord, ownerMemo, keypair);
+                    feeInputs = feeInputs.append2(BigInt(amount.toString()), txoRef, assetRecord, ownerMemo, keypair);
                 });
                 return [2 /*return*/, feeInputs];
         }

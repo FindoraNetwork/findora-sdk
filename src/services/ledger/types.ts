@@ -6,7 +6,6 @@ export {
   AssetTracerKeyPair,
   AXfrKeyPair,
   AXfrPubKey,
-  AXfrViewKey,
   ClientAssetRecord,
   FeeInputs,
   OwnerMemo,
