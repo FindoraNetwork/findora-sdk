@@ -75,9 +75,9 @@ var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var Builder = __importStar(require("../transaction/builder"));
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
+var Builder = __importStar(require("../transaction/builder"));
 /**
  * Returns the pre-defined FRA asset code
  *

@@ -1,8 +1,8 @@
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 import { Erc20 } from './types/Erc20';
-import { NFT1155 } from './types/NFT1155';
 import { NFT721 } from './types/NFT721';
+import { NFT1155 } from './types/NFT1155';
 import { PrismProxy } from './types/PrismProxy';
 import { PrismXXAsset } from './types/PrismXXAsset';
 import { SimBridge } from './types/SimBridge';

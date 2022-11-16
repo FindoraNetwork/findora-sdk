@@ -152,7 +152,6 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                     if (isTraceable) {
-                        // @ts-ignore
                         transferOp = transferOp.add_output_with_tracing(BigInt(utxoNumbers.toString()), toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                     else {

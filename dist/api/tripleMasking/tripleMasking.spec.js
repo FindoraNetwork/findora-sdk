@@ -208,9 +208,7 @@ describe('triple masking (unit test)', function () {
                         });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         return [4 /*yield*/, expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow("Could not fetch memo data for sid \"".concat(sid, "\", Error - Error: ").concat(ownerMemoDataResult.error.message))];
                     case 1:
                         _a.sent();
@@ -230,9 +228,7 @@ describe('triple masking (unit test)', function () {
                         });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () {
                             throw fromJsonError;
                         });
@@ -255,9 +251,7 @@ describe('triple masking (unit test)', function () {
                         });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () {
                             throw fromJsonError;
@@ -280,9 +274,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.reject(getAXfrPublicKeyByBase64Error); });
@@ -304,9 +296,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
@@ -331,9 +321,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
@@ -358,9 +346,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
@@ -384,9 +370,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });
@@ -412,9 +396,7 @@ describe('triple masking (unit test)', function () {
                             return Promise.resolve(transactionBuilder);
                         });
                         spyAddUtxo.mockImplementationOnce(function () { return Promise.resolve(myUtxo); });
-                        spyGetOwnerMemo.mockImplementationOnce(function () {
-                            return Promise.resolve(ownerMemoDataResult);
-                        });
+                        spyGetOwnerMemo.mockImplementationOnce(function () { return Promise.resolve(ownerMemoDataResult); });
                         spyLedgerOwnerMemoFromJson.mockImplementationOnce(function () { return ownerMemo; });
                         spyLedgerClientAssetRecordFromJson.mockImplementationOnce(function () { return clientAssetRecord; });
                         spyGetAXfrPublicKeyByBase64.mockImplementationOnce(function () { return Promise.resolve(returnAxfrPublicKey); });

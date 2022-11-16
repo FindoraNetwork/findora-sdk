@@ -76,12 +76,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDelegateInfo = exports.getValidatorList = exports.claim = exports.delegate = exports.unStake = void 0;
 var orderBy_1 = __importDefault(require("lodash/orderBy"));
 var Transaction = __importStar(require("../../api/transaction"));
-var Builder = __importStar(require("../transaction/builder"));
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var keypair_1 = require("../keypair");
 var Network = __importStar(require("../network"));
 var AssetApi = __importStar(require("../sdkAsset"));
+var Builder = __importStar(require("../transaction/builder"));
 /**
  * Unstake FRA tokens
  *
