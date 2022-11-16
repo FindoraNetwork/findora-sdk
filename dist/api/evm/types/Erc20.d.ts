@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export declare type ContractContext = Web3ContractContext<Erc20, Erc20MethodNames, Erc20EventsContext, Erc20Events>;
-export declare type Erc20Events = 'Approval' | 'Transfer';
+export type ContractContext = Web3ContractContext<Erc20, Erc20MethodNames, Erc20EventsContext, Erc20Events>;
+export type Erc20Events = 'Approval' | 'Transfer';
 export interface Erc20EventsContext {
     Approval(parameters: {
         filter?: {
@@ -54,7 +54,7 @@ export interface Erc20EventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export declare type Erc20MethodNames = 'new' | 'allowance' | 'approve' | 'balanceOf' | 'decimals' | 'decreaseAllowance' | 'increaseAllowance' | 'name' | 'symbol' | 'totalSupply' | 'transfer' | 'transferFrom';
+export type Erc20MethodNames = 'new' | 'allowance' | 'approve' | 'balanceOf' | 'decimals' | 'decreaseAllowance' | 'increaseAllowance' | 'name' | 'symbol' | 'totalSupply' | 'transfer' | 'transferFrom';
 export interface ApprovalEventEmittedResponse {
     owner: string;
     spender: string;

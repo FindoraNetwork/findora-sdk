@@ -91,7 +91,7 @@ export interface OwnedAbarItem {
     commitment: string;
     abarData: OwnedAbarData;
 }
-export declare type MTleafNode = {
+export type MTleafNode = {
     siblings1: string;
     siblings2: string;
     is_left_child: number;
@@ -127,7 +127,7 @@ export interface AbarMemoData {
     point: string;
     ctext: number[];
 }
-export declare type AbarMemoItem = [string, AbarMemoData];
+export type AbarMemoItem = [string, AbarMemoData];
 export interface DecryptedAbarMemoData {
     atxoSid: string;
     decryptedAbar: Uint8Array;
