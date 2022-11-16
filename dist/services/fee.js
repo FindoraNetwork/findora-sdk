@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -152,7 +152,6 @@ var getTransferOperation = function (walletInfo, utxoInputs, recieversInfo, asse
                     var blindIsAmount = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isAmountBlind;
                     var blindIsType = assetBlindRules === null || assetBlindRules === void 0 ? void 0 : assetBlindRules.isTypeBlind;
                     if (isTraceable) {
-                        // @ts-ignore
                         transferOp = transferOp.add_output_with_tracing(BigInt(utxoNumbers.toString()), toPublickey, tracingPolicies, assetCode, !!blindIsAmount, !!blindIsType);
                     }
                     else {
