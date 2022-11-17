@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export type ContractContext = Web3ContractContext<NFT1155, NFT1155MethodNames, NFT1155EventsContext, NFT1155Events>;
-export type NFT1155Events = 'ApprovalForAll' | 'RoleAdminChanged' | 'RoleGranted' | 'RoleRevoked' | 'TransferBatch' | 'TransferSingle' | 'URI';
+export declare type ContractContext = Web3ContractContext<NFT1155, NFT1155MethodNames, NFT1155EventsContext, NFT1155Events>;
+export declare type NFT1155Events = 'ApprovalForAll' | 'RoleAdminChanged' | 'RoleGranted' | 'RoleRevoked' | 'TransferBatch' | 'TransferSingle' | 'URI';
 export interface NFT1155EventsContext {
     ApprovalForAll(parameters: {
         filter?: {
@@ -103,7 +103,7 @@ export interface NFT1155EventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export type NFT1155MethodNames = 'new' | 'CREATOR_ROLE' | 'DEFAULT_ADMIN_ROLE' | 'MINTER_ROLE' | 'balanceOf' | 'balanceOfBatch' | 'creators' | 'customUri' | 'getRoleAdmin' | 'getRoleMember' | 'getRoleMemberCount' | 'grantRole' | 'hasRole' | 'isApprovedForAll' | 'name' | 'renounceRole' | 'revokeRole' | 'safeBatchTransferFrom' | 'safeTransferFrom' | 'setApprovalForAll' | 'symbol' | 'tokenSupply' | 'uri' | 'totalSupply' | 'setURI' | 'setCustomURI' | 'creatorOf' | 'create' | 'mint' | 'batchMint' | 'burn' | 'burnBatch' | 'setCreator' | 'supportsInterface' | 'exists';
+export declare type NFT1155MethodNames = 'new' | 'CREATOR_ROLE' | 'DEFAULT_ADMIN_ROLE' | 'MINTER_ROLE' | 'balanceOf' | 'balanceOfBatch' | 'creators' | 'customUri' | 'getRoleAdmin' | 'getRoleMember' | 'getRoleMemberCount' | 'grantRole' | 'hasRole' | 'isApprovedForAll' | 'name' | 'renounceRole' | 'revokeRole' | 'safeBatchTransferFrom' | 'safeTransferFrom' | 'setApprovalForAll' | 'symbol' | 'tokenSupply' | 'uri' | 'totalSupply' | 'setURI' | 'setCustomURI' | 'creatorOf' | 'create' | 'mint' | 'batchMint' | 'burn' | 'burnBatch' | 'setCreator' | 'supportsInterface' | 'exists';
 export interface ApprovalForAllEventEmittedResponse {
     account: string;
     operator: string;

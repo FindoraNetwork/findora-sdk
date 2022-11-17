@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export type ContractContext = Web3ContractContext<SimBridge, SimBridgeMethodNames, SimBridgeEventsContext, SimBridgeEvents>;
-export type SimBridgeEvents = 'DepositFRA' | 'DepositFRC1155' | 'DepositFRC20' | 'DepositFRC721' | 'OwnershipTransferred' | 'WithdrawFRA' | 'WithdrawFRC1155' | 'WithdrawFRC20' | 'WithdrawFRC721';
+export declare type ContractContext = Web3ContractContext<SimBridge, SimBridgeMethodNames, SimBridgeEventsContext, SimBridgeEvents>;
+export declare type SimBridgeEvents = 'DepositFRA' | 'DepositFRC1155' | 'DepositFRC20' | 'DepositFRC721' | 'OwnershipTransferred' | 'WithdrawFRA' | 'WithdrawFRC1155' | 'WithdrawFRC20' | 'WithdrawFRC721';
 export interface SimBridgeEventsContext {
     DepositFRA(parameters: {
         filter?: {};
@@ -93,7 +93,7 @@ export interface SimBridgeEventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export type SimBridgeMethodNames = 'new' | '_consumeMint' | '_withdrawAsset' | '_withdrawFRA' | 'adminSetAsset' | 'adminSetLedger' | 'asset_contract' | 'computeERC20AssetType' | 'computeNFTAssetType' | 'consumeMint' | 'depositFRA' | 'depositFRC1155' | 'depositFRC20' | 'depositFRC721' | 'ledger_contract' | 'ops' | 'owner' | 'proxy_contract' | 'renounceOwnership' | 'transferOwnership' | 'withdrawAsset' | 'withdrawFRA';
+export declare type SimBridgeMethodNames = 'new' | '_consumeMint' | '_withdrawAsset' | '_withdrawFRA' | 'adminSetAsset' | 'adminSetLedger' | 'asset_contract' | 'computeERC20AssetType' | 'computeNFTAssetType' | 'consumeMint' | 'depositFRA' | 'depositFRC1155' | 'depositFRC20' | 'depositFRC721' | 'ledger_contract' | 'ops' | 'owner' | 'proxy_contract' | 'renounceOwnership' | 'transferOwnership' | 'withdrawAsset' | 'withdrawFRA';
 export interface DepositFRAEventEmittedResponse {
     _from: string;
     _to: string | number[];

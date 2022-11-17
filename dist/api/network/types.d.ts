@@ -24,7 +24,7 @@ export interface NetworkAxiosConfig {
 export interface OwnedSidsDataResult extends NetworkAxiosDataResult {
     response?: number[];
 }
-export type OwnedMemoResponse = {
+export declare type OwnedMemoResponse = {
     blind_share: string;
     lock: {
         ciphertext: string;
@@ -34,13 +34,13 @@ export type OwnedMemoResponse = {
 export interface OwnerMemoDataResult extends NetworkAxiosDataResult {
     response?: OwnedMemoResponse;
 }
-export type MTleafNode = {
+export declare type MTleafNode = {
     siblings1: string;
     siblings2: string;
     is_left_child: number;
     is_right_child: number;
 };
-export type MTLeafInfoResponse = {
+export declare type MTLeafInfoResponse = {
     uid: string;
     root_version: string;
     root: string;
@@ -55,7 +55,7 @@ export interface LedgerUtxo {
     id?: number | null | undefined;
     record: any;
 }
-export type UtxoResponse = {
+export declare type UtxoResponse = {
     utxo: LedgerUtxo;
     authenticated_txn?: string;
     finalized_txn?: any;
@@ -66,21 +66,21 @@ export type UtxoResponse = {
 export interface UtxoDataResult extends NetworkAxiosDataResult {
     response?: UtxoResponse;
 }
-export type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
-export type OwnedAbarsResponse = OwnedResponseAbarItem;
+export declare type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
+export declare type OwnedAbarsResponse = OwnedResponseAbarItem;
 export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
     response?: OwnedAbarsResponse;
 }
 export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResult {
     response?: boolean;
 }
-export type AssetTokenResponse = {
+export declare type AssetTokenResponse = {
     properties: FindoraWallet.IPureAsset;
 };
 export interface AssetTokenDataResult extends NetworkAxiosDataResult {
     response?: AssetTokenResponse;
 }
-export type BlockDetailsResponse = {
+export declare type BlockDetailsResponse = {
     result: {
         block_id: {
             hash: string;
@@ -149,7 +149,7 @@ export interface TxListResponseResult {
     txs: null | TxInfo[];
     total_count: number;
 }
-export type TxListResponse = {
+export declare type TxListResponse = {
     result: TxListResponseResult;
 };
 export interface TxListDataResult extends NetworkAxiosDataResult {
@@ -161,7 +161,7 @@ export interface TxListQueryParams {
     per_page: number;
     order_by: string;
 }
-export type TxDetailsResponse = {
+export declare type TxDetailsResponse = {
     result: {
         tx: string;
     };
@@ -169,7 +169,7 @@ export type TxDetailsResponse = {
 export interface TxDetailsDataResult extends NetworkAxiosDataResult {
     response?: TxDetailsResponse;
 }
-export type HashSwapResponse = {
+export declare type HashSwapResponse = {
     result: TxListResponseResult;
 };
 export interface ValidatorItem {
@@ -191,7 +191,7 @@ export interface ValidatorListResponse {
     cur_height: number;
     validators: ValidatorItem[];
 }
-export type DelegationBondEntry = [string, string];
+export declare type DelegationBondEntry = [string, string];
 export interface DelegateInfoResponse {
     bond: string;
     bond_entries: DelegationBondEntry;
@@ -209,7 +209,7 @@ export interface DelegateInfoResponse {
 export interface HashSwapDataResult extends NetworkAxiosDataResult {
     response?: HashSwapResponse;
 }
-export type StateCommitmenResponse = [number[], number, string];
+export declare type StateCommitmenResponse = [number[], number, string];
 export interface StateCommitmentDataResult extends NetworkAxiosDataResult {
     response?: StateCommitmenResponse;
 }
@@ -219,21 +219,21 @@ export interface ValidatorListDataResult extends NetworkAxiosDataResult {
 export interface DelegateInfoDataResult extends NetworkAxiosDataResult {
     response?: DelegateInfoResponse;
 }
-export type TransactionData = string;
+export declare type TransactionData = string;
 export interface ParsedTransactionData {
 }
 export interface SubmitTransactionDataResult extends NetworkAxiosDataResult {
     response?: string;
 }
-export type TransactionStatusResponse = {
+export declare type TransactionStatusResponse = {
     Committed?: [number, number[]];
     Pending?: any;
 };
 export interface TransactionStatusDataResult extends NetworkAxiosDataResult {
     response?: TransactionStatusResponse;
 }
-export type IssuedRecord = [TxOutput, null | number];
-export type IssuedRecordResponse = IssuedRecord[];
+export declare type IssuedRecord = [TxOutput, null | number];
+export declare type IssuedRecordResponse = IssuedRecord[];
 export interface IssuedRecordDataResult extends NetworkAxiosDataResult {
     response?: IssuedRecordResponse;
 }
@@ -254,7 +254,7 @@ export interface TxOutput {
     id: number | null;
     record: TxRecord;
 }
-export type AbciNoceResponse = {
+export declare type AbciNoceResponse = {
     result: {
         response: AbciNoce;
     };
@@ -265,7 +265,7 @@ export interface AbciNoceResult extends NetworkAxiosDataResult {
 export interface AbciInfoResult extends NetworkAxiosDataResult {
     response?: AbciNoceResponse;
 }
-export type SubmitEvmTxResponse = {
+export declare type SubmitEvmTxResponse = {
     result: {
         code: number;
         data: string;
@@ -481,7 +481,7 @@ export interface BlockHeightResult extends NetworkAxiosDataResult {
 export interface BlockHeightParams {
     blockType?: string;
 }
-export type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
+export declare type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
 export interface AbarMemoDataResult extends NetworkAxiosDataResult {
     response?: AbarMemoResponse;
 }

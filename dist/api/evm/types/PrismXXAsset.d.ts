@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export type ContractContext = Web3ContractContext<PrismXXAsset, PrismXXAssetMethodNames, PrismXXAssetEventsContext, PrismXXAssetEvents>;
-export type PrismXXAssetEvents = 'OwnershipTransferred';
+export declare type ContractContext = Web3ContractContext<PrismXXAsset, PrismXXAssetMethodNames, PrismXXAssetEventsContext, PrismXXAssetEvents>;
+export declare type PrismXXAssetEvents = 'OwnershipTransferred';
 export interface PrismXXAssetEventsContext {
     OwnershipTransferred(parameters: {
         filter?: {
@@ -45,7 +45,7 @@ export interface PrismXXAssetEventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export type PrismXXAssetMethodNames = 'new' | 'assets' | 'bridge' | 'getERC1155Info' | 'getERC20Info' | 'getERC721Info' | 'getTokenType' | 'isBurn' | 'owner' | 'renounceOwnership' | 'setBurn' | 'setERC1155Info' | 'setERC20Info' | 'setERC721Info' | 'transferOwnership';
+export declare type PrismXXAssetMethodNames = 'new' | 'assets' | 'bridge' | 'getERC1155Info' | 'getERC20Info' | 'getERC721Info' | 'getTokenType' | 'isBurn' | 'owner' | 'renounceOwnership' | 'setBurn' | 'setERC1155Info' | 'setERC20Info' | 'setERC721Info' | 'transferOwnership';
 export interface OwnershipTransferredEventEmittedResponse {
     previousOwner: string;
     newOwner: string;

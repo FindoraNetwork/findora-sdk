@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export type ContractContext = Web3ContractContext<NFT721, NFT721MethodNames, NFT721EventsContext, NFT721Events>;
-export type NFT721Events = 'Approval' | 'ApprovalForAll' | 'ConsecutiveTransfer' | 'Transfer';
+export declare type ContractContext = Web3ContractContext<NFT721, NFT721MethodNames, NFT721EventsContext, NFT721Events>;
+export declare type NFT721Events = 'Approval' | 'ApprovalForAll' | 'ConsecutiveTransfer' | 'Transfer';
 export interface NFT721EventsContext {
     Approval(parameters: {
         filter?: {
@@ -75,7 +75,7 @@ export interface NFT721EventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export type NFT721MethodNames = 'approve' | 'balanceOf' | 'getApproved' | 'isApprovedForAll' | 'name' | 'ownerOf' | 'safeTransferFrom' | 'safeTransferFrom' | 'setApprovalForAll' | 'supportsInterface' | 'symbol' | 'tokenURI' | 'totalSupply' | 'transferFrom';
+export declare type NFT721MethodNames = 'approve' | 'balanceOf' | 'getApproved' | 'isApprovedForAll' | 'name' | 'ownerOf' | 'safeTransferFrom' | 'safeTransferFrom' | 'setApprovalForAll' | 'supportsInterface' | 'symbol' | 'tokenURI' | 'totalSupply' | 'transferFrom';
 export interface ApprovalEventEmittedResponse {
     owner: string;
     approved: string;
