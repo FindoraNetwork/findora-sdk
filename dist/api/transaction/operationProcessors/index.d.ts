@@ -10,8 +10,8 @@ import { ProcessedIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset } from './transferAsset';
 import { ProcessedUndelegation } from './undelegation';
 import { Unsupported } from './unsupported';
-export type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | ProcessedConvertAccount | ProcessedBarToAbar | ProcessedAbarToBar | ProcessedAbarToAbar | Unsupported;
-export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
+export declare type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | ProcessedConvertAccount | ProcessedBarToAbar | ProcessedAbarToBar | ProcessedAbarToAbar | Unsupported;
+export declare type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
 export interface TxOperationProcessors {
     [key: string]: ProcessorType;
 }

@@ -1,6 +1,6 @@
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import { CacheItem } from './services/cacheStore/types';
-type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
+declare type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
 export interface SdkEnvironmentConfig {
     hostUrl: string;
     configServerUrl?: string;
