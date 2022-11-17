@@ -1332,7 +1332,6 @@ export const abarToBarFraSendAmount = async () => {
   );
 
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
-
   console.log('abar to bar result handle!!', resultHandle);
 
   await waitForBlockChange(BLOCKS_TO_WAIT_AFTER_ABAR);

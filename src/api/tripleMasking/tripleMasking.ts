@@ -17,6 +17,8 @@ import * as Asset from '../sdkAsset';
 import * as Transaction from '../transaction';
 import * as Builder from '../transaction/builder';
 
+const DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
+
 interface BalanceInfo {
   assetType: string;
   amount: string;
@@ -922,7 +924,8 @@ export const abarToBarAmount = async (
   const amountToSendInWei = BigInt(toWei(amount, decimals).toString());
 
   const _resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
-  await waitForBlockChange();
+  await waitForBlockChange(DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR);
+  console.log('abar transaction handle', _resultHandle);
 
   const { commitmentsMap } = abarToAbarData;
 
