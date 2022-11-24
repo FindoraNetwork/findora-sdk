@@ -75,8 +75,11 @@ var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var web3_2 = require("./web3");
 var fraAddressToHashAddress = function (address) {
-    var result = bech32ToBuffer.decode(address).data;
-    return '0x' + Buffer.from(result).toString('hex');
+    var _a = bech32ToBuffer.decode(address), data = _a.data, prefix = _a.prefix;
+    if (prefix == 'eth') {
+        return '0x01' + Buffer.from(data).toString('hex');
+    }
+    return '0x' + Buffer.from(data).toString('hex');
 };
 exports.fraAddressToHashAddress = fraAddressToHashAddress;
 var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {

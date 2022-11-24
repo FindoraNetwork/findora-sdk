@@ -304,6 +304,7 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 return [4 /*yield*/, Fee.buildTransferOperationV2(walletInfo, recieversInfo)];
             case 5:
                 transferOperationBuilder = _a.sent();
+                receivedTransferOperation = '';
                 try {
                     receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
                 }
@@ -337,6 +338,15 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
                     throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                }
+                try {
+                    if ('sign_origin' in transactionBuilder) {
+                        transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                    }
+                }
+                catch (err) {
+                    console.log('sendToMany error in signOrigin ', err);
+                    throw new Error("could not signOrigin txn \"".concat(err.message, "\""));
                 }
                 return [2 /*return*/, transactionBuilder];
         }

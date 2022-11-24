@@ -17,8 +17,8 @@ import * as Transaction from '../transaction';
 import {
   calculationDecimalsAmount,
   getErc20Contract,
-  getNFT721Contract,
   getNFT1155Contract,
+  getNFT721Contract,
   getPrismProxyContract,
   getPrismXXAssetContract,
   getSimBridgeContract,
@@ -27,8 +27,11 @@ import {
 } from './web3';
 
 export const fraAddressToHashAddress = (address: string) => {
-  const result = bech32ToBuffer.decode(address).data;
-  return '0x' + Buffer.from(result).toString('hex');
+  const { data, prefix } = bech32ToBuffer.decode(address);
+  if (prefix == 'eth') {
+    return '0x01' + Buffer.from(data).toString('hex');
+  }
+  return '0x' + Buffer.from(data).toString('hex');
 };
 
 export const hashAddressTofraAddress = async (addresss: string) => {

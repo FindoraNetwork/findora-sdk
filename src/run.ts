@@ -1684,7 +1684,29 @@ async function prism() {
 
   // console.log('erc20 token name: ', name);
 
-  const result = await Evm.getPrismConfig();
+  // const result = await Evm.getPrismConfig();
+  // console.log(result);
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(
+  //   'AKPYFxSOX7dVTpM2IbxaYFE1laLJDNQhIodMyXJt_hAE',
+  //   password,
+  // );
+
+  // try {
+  //   Evm.sendAccountToEvm(
+  //     walletInfo,
+  //     '1',
+  //     '0x72488baa718f52b76118c79168e55c209056a2e6',
+  //     'eDv3Xau2tpTKZyBD8k_8jMf8QCwIUmhdbmK1FiyASfg=',
+  //     '',
+  //   );
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
+  const result = Evm.fraAddressToHashAddress(
+    'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
+  );
   console.log(result);
 }
 
