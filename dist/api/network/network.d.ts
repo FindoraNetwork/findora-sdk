@@ -1,4 +1,5 @@
 import * as Types from './types';
+export declare const getRpcRoute: () => string;
 export declare const apiPost: (url: string, data?: Types.ParsedTransactionData, config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
 export declare const apiGet: (url: string, config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
 export declare const getOwnedSids: (address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnedSidsDataResult>;
@@ -57,6 +58,6 @@ export declare const getLatestBlock: (extraParams?: Types.BlockHeightParams, con
 export declare const getOwnedAbars: (commitment: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnedAbarsDataResult>;
 export declare const getAbarMemos: (startSid: string, endSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbarMemoDataResult>;
 export declare const checkNullifierHashSpent: (hash: string, config?: Types.NetworkAxiosConfig) => Promise<Types.CheckNullifierHashSpentDataResult>;
-export declare const getConfig: (config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
+export declare const getConfig: (config?: Types.NetworkAxiosConfig) => Promise<Types.DisplayCheckpointDataResult>;
 export declare const getAbarCommitment: (atxoSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbarCommitmentDataResult>;
 export declare const getMaxAtxoSid: (config?: Types.NetworkAxiosConfig) => Promise<Types.MaxAtxoSidDataResult>;

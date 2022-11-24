@@ -1,5 +1,5 @@
 import * as Keypair from '../../keypair';
-import { UnDelegationOperation, TxOperation } from '../types';
+import { TxOperation, UnDelegationOperation } from '../types';
 
 export interface ProcessedUndelegation {
   unDelegation: UnDelegationOperation;

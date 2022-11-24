@@ -1,7 +1,9 @@
 import '@testing-library/jest-dom/extend-expect';
+
 import BigNumber from 'bignumber.js';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
+
 import Sdk from '../../Sdk';
 import { MemoryCacheProvider } from '../../services/cacheStore/providers';
 import * as network from './network';
@@ -921,7 +923,7 @@ describe('network (unit test)', () => {
       expect(result).toHaveProperty('total_count');
       expect(result).toHaveProperty('txs');
 
-      const { txs, total_count } = result!;
+      const { txs, total_count } = result;
 
       expect(txs?.length).toBe(1);
       expect(total_count).toBe(1);
@@ -997,7 +999,7 @@ describe('network (unit test)', () => {
       expect(result).toHaveProperty('total_count');
       expect(result).toHaveProperty('txs');
 
-      const { txs, total_count } = result!;
+      const { txs, total_count } = result;
 
       expect(txs?.length).toBe(1);
       expect(total_count).toBe(1);
@@ -1044,7 +1046,7 @@ describe('network (unit test)', () => {
       expect(result).toHaveProperty('total_count');
       expect(result).toHaveProperty('txs');
 
-      const { txs, total_count } = result!;
+      const { txs, total_count } = result;
 
       expect(txs?.length).toBe(1);
       expect(total_count).toBe(1);
@@ -1121,7 +1123,7 @@ describe('network (unit test)', () => {
 
       expect(result).toHaveProperty('tx');
 
-      const { tx } = result!;
+      const { tx } = result;
 
       expect(tx).toEqual('assd123abcdf');
 

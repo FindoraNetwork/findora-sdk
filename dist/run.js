@@ -97,7 +97,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'https://dev-qa04.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -1750,9 +1751,20 @@ function getMas() {
         });
     });
 }
+function prism() {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            result = api_1.Evm.fraAddressToHashAddress('eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y');
+            console.log(result);
+            return [2 /*return*/];
+        });
+    });
+}
+prism();
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();

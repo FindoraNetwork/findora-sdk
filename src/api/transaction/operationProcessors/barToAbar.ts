@@ -22,7 +22,7 @@ export const processBarToAbar = async (operationItem: TxOperation): Promise<Proc
   const transperentNote = operation?.note?.ArNote;
   const hiddenNote = operation?.note?.BarNote;
 
-  let myBody = transperentNote?.body || hiddenNote?.body;
+  const myBody = transperentNote?.body || hiddenNote?.body;
 
   const fromPublicKey = myBody?.input?.public_key;
   const from = await Keypair.getAddressByPublicKey(fromPublicKey);

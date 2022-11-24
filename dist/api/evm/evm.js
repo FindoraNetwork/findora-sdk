@@ -62,7 +62,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.approveNFT = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
@@ -75,8 +75,11 @@ var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var web3_2 = require("./web3");
 var fraAddressToHashAddress = function (address) {
-    var result = bech32ToBuffer.decode(address).data;
-    return '0x' + Buffer.from(result).toString('hex');
+    var _a = bech32ToBuffer.decode(address), data = _a.data, prefix = _a.prefix;
+    if (prefix == 'eth') {
+        return '0x01' + Buffer.from(data).toString('hex');
+    }
+    return '0x' + Buffer.from(data).toString('hex');
 };
 exports.fraAddressToHashAddress = fraAddressToHashAddress;
 var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {
@@ -244,6 +247,40 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
     });
 }); };
 exports.frc20ToBar = frc20ToBar;
+function getPrismConfig() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, displayCheckpointData, error, web3, prismProxyContract, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0: return [4 /*yield*/, api_1.Network.getConfig()];
+                case 1:
+                    _a = _c.sent(), displayCheckpointData = _a.response, error = _a.error;
+                    if (error)
+                        throw error;
+                    if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.prism_bridge_address))
+                        throw 'no prism_bridge_address';
+                    web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
+                    return [4 /*yield*/, (0, web3_2.getPrismProxyContract)(web3, displayCheckpointData.prism_bridge_address)];
+                case 2:
+                    prismProxyContract = _c.sent();
+                    return [4 /*yield*/, prismProxyContract.methods.prismBridgeAddress().call()];
+                case 3:
+                    bridgeAddress = _c.sent();
+                    return [4 /*yield*/, (0, web3_2.getSimBridgeContract)(web3, bridgeAddress)];
+                case 4:
+                    prismContract = _c.sent();
+                    return [4 /*yield*/, Promise.all([
+                            prismContract.methods.ledger_contract().call(),
+                            prismContract.methods.asset_contract().call(),
+                        ])];
+                case 5:
+                    _b = _c.sent(), ledgerAddress = _b[0], assetAddress = _b[1];
+                    return [2 /*return*/, { ledgerAddress: ledgerAddress, assetAddress: assetAddress, bridgeAddress: bridgeAddress }];
+            }
+        });
+    });
+}
+exports.getPrismConfig = getPrismConfig;
 var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contractData, nft721Contract, nft1155Contract, nonce, gasPrice, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {

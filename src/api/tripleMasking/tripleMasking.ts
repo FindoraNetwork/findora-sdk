@@ -1,4 +1,5 @@
 import { AXfrPubKey } from 'findora-wallet-wasm/web';
+
 import { CACHE_ENTRIES } from '../../config/cache';
 import { waitForBlockChange } from '../../evm/testHelpers';
 import Sdk from '../../Sdk';
@@ -352,7 +353,7 @@ export const getAbarToAbarAmountPayload = async (
   const commitmentsToSend: string[] = [];
   const commitmentsForFee: string[] = [];
 
-  for (let atxoItem of atxoListToSend) {
+  for (const atxoItem of atxoListToSend) {
     const givenCommitment = atxoItem.commitment;
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
@@ -519,7 +520,7 @@ export const abarToAbarAmount = async (
 
   const additionalOwnedAbarItems = [];
 
-  for (let givenCommitment of allCommitments) {
+  for (const givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
@@ -954,7 +955,7 @@ export const abarToBarAmount = async (
 
   const additionalOwnedAbarItems = [];
 
-  for (let givenCommitment of allCommitments) {
+  for (const givenCommitment of allCommitments) {
     const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
@@ -1439,8 +1440,8 @@ const mergeSortAtxoList = (arr: AtxoMapItem[]): AtxoMapItem[] => {
   if (arr.length < 2) return arr;
   const middleIdx = Math.floor(arr.length / 2);
 
-  let left = arr.splice(0, middleIdx);
-  let right = arr.splice(0);
+  const left = arr.splice(0, middleIdx);
+  const right = arr.splice(0);
 
   return mergeAtxoList(mergeSortAtxoList(left), mergeSortAtxoList(right));
 };
@@ -1468,7 +1469,7 @@ export const getSendAtxo = async (
 
   let sum = BigInt(0);
 
-  for (let assetItem of sortedUtxoList) {
+  for (const assetItem of sortedUtxoList) {
     const _amount = BigInt(assetItem.amount);
 
     sum = sum + _amount;
@@ -1508,7 +1509,7 @@ export const getAmountFromCommitments = async (
 
   let sum = BigInt(0);
 
-  for (let assetItem of sortedUtxoList) {
+  for (const assetItem of sortedUtxoList) {
     const _amount = BigInt(assetItem.amount);
 
     sum = sum + _amount;

@@ -26,7 +26,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -1654,9 +1655,66 @@ async function getMas() {
   const result = await Network.getAbarMemos('1', '20');
   console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
 }
+
+async function prism() {
+  // const { response: displayCheckpointData, error } = await Network.getConfig();
+
+  // if (error) throw error;
+
+  // if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+
+  // const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+
+  // const prismProxyContract = await Evm.getPrismProxyContract(
+  //   web3,
+  //   displayCheckpointData.prism_bridge_address,
+  // );
+  // const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+
+  // const prismContract = await Evm.getSimBridgeContract(web3, prismBridgeAddress);
+
+  // const [ledgerAddress, assetAddress] = await Promise.all([
+  //   prismContract.methods.ledger_contract().call(),
+  //   prismContract.methods.asset_contract().call(),
+  // ]);
+
+  // console.log(ledgerAddress, assetAddress, prismBridgeAddress);
+
+  // const name = await erc20Contract.methods.name().call();
+
+  // console.log('erc20 token name: ', name);
+
+  // const result = await Evm.getPrismConfig();
+  // console.log(result);
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(
+  //   'AKPYFxSOX7dVTpM2IbxaYFE1laLJDNQhIodMyXJt_hAE',
+  //   password,
+  // );
+
+  // try {
+  //   Evm.sendAccountToEvm(
+  //     walletInfo,
+  //     '1',
+  //     '0x72488baa718f52b76118c79168e55c209056a2e6',
+  //     'eDv3Xau2tpTKZyBD8k_8jMf8QCwIUmhdbmK1FiyASfg=',
+  //     '',
+  //   );
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
+  const result = Evm.fraAddressToHashAddress(
+    'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
+  );
+  console.log(result);
+}
+
+prism();
+
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();

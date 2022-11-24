@@ -1028,9 +1028,9 @@ describe('network (unit test)', function () {
         var hash = 'abc123';
         var url = "".concat(hostUrl, ":26657/tx_search");
         it('returns properly formatted data', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myResponse, spy, dataResult, response, result, _a, txs, total_count;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var myResponse, spy, dataResult, response, result, txs, total_count;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         myResponse = {
                             result: {
@@ -1044,7 +1044,7 @@ describe('network (unit test)', function () {
                         spy = jest.spyOn(network, 'apiGet');
                         return [4 /*yield*/, network.getHashSwap(hash, testConfig)];
                     case 1:
-                        dataResult = _b.sent();
+                        dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
                         expect(dataResult).not.toHaveProperty('error');
                         response = dataResult.response;
@@ -1052,7 +1052,7 @@ describe('network (unit test)', function () {
                         result = response.result;
                         expect(result).toHaveProperty('total_count');
                         expect(result).toHaveProperty('txs');
-                        _a = result, txs = _a.txs, total_count = _a.total_count;
+                        txs = result.txs, total_count = result.total_count;
                         expect(txs === null || txs === void 0 ? void 0 : txs.length).toBe(1);
                         expect(total_count).toBe(1);
                         expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { query: "\"tx.prehash='".concat(hash, "'\"") } }));
@@ -1102,9 +1102,9 @@ describe('network (unit test)', function () {
         var page = 1;
         var url = "".concat(hostUrl, ":26657/tx_search");
         it('returns properly formatted data with default page equals to 1 and check type = "to"', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myResponse, spy, dataResult, response, result, _a, txs, total_count;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var myResponse, spy, dataResult, response, result, txs, total_count;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         myResponse = {
                             result: {
@@ -1118,7 +1118,7 @@ describe('network (unit test)', function () {
                         spy = jest.spyOn(network, 'apiGet');
                         return [4 /*yield*/, network.getTxList(address, type)];
                     case 1:
-                        dataResult = _b.sent();
+                        dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
                         expect(dataResult).not.toHaveProperty('error');
                         response = dataResult.response;
@@ -1126,7 +1126,7 @@ describe('network (unit test)', function () {
                         result = response.result;
                         expect(result).toHaveProperty('total_count');
                         expect(result).toHaveProperty('txs');
-                        _a = result, txs = _a.txs, total_count = _a.total_count;
+                        txs = result.txs, total_count = result.total_count;
                         expect(txs === null || txs === void 0 ? void 0 : txs.length).toBe(1);
                         expect(total_count).toBe(1);
                         expect(spy).toHaveBeenCalledWith(url, {
@@ -1143,9 +1143,9 @@ describe('network (unit test)', function () {
             });
         }); });
         it('returns properly formatted data with given page and check type = "from"', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myResponse, spy, dataResult, response, result, _a, txs, total_count;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
+            var myResponse, spy, dataResult, response, result, txs, total_count;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
                     case 0:
                         myResponse = {
                             result: {
@@ -1159,7 +1159,7 @@ describe('network (unit test)', function () {
                         spy = jest.spyOn(network, 'apiGet');
                         return [4 /*yield*/, network.getTxList(address, 'from', 2, 'transparent', testConfig)];
                     case 1:
-                        dataResult = _b.sent();
+                        dataResult = _a.sent();
                         expect(dataResult).toHaveProperty('response');
                         expect(dataResult).not.toHaveProperty('error');
                         response = dataResult.response;
@@ -1167,7 +1167,7 @@ describe('network (unit test)', function () {
                         result = response.result;
                         expect(result).toHaveProperty('total_count');
                         expect(result).toHaveProperty('txs');
-                        _a = result, txs = _a.txs, total_count = _a.total_count;
+                        txs = result.txs, total_count = result.total_count;
                         expect(txs === null || txs === void 0 ? void 0 : txs.length).toBe(1);
                         expect(total_count).toBe(1);
                         expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: {

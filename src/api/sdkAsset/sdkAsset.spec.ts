@@ -563,7 +563,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
       const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
@@ -615,7 +615,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
       const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
@@ -649,7 +649,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
       const assetRules = { foo: 'bar' } as unknown as LedgerAssetRules;
       const assetMemo = 'memo';
@@ -713,7 +713,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
 
       const amountToIssue = '11';
@@ -773,7 +773,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
       const amountToIssue = '11';
       const assetBlindRules = { foo: 'barbar' };
@@ -814,7 +814,7 @@ describe('sdkAsset (unit test)', () => {
         address: 'myAddress',
       } as unknown as KeypairApi.WalletKeypar;
 
-      const walletKeypair = walletInfo.keypair as XfrKeyPair;
+      const walletKeypair = walletInfo.keypair;
       const assetName = 'abc';
       const amountToIssue = '11';
       const assetBlindRules = { foo: 'barbar' };

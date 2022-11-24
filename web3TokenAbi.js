@@ -15,3 +15,6 @@ exec(
 exec(
   `abi-types-generator './src/api/evm/abis/NFT1155.json' --output='./src/api/evm/types' --name=NFT1155 --provider=web3`,
 );
+exec(
+  `abi-types-generator './src/api/evm/abis/PrismProxy.json' --output='./src/api/evm/types' --name=PrismProxy --provider=web3`,
+);

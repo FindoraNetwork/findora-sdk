@@ -14,20 +14,24 @@ import { WalletKeypar } from '../keypair';
 import { SubmitEvmTxResult } from '../network/types';
 import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
-
 import {
   calculationDecimalsAmount,
   getErc20Contract,
   getNFT1155Contract,
   getNFT721Contract,
+  getPrismProxyContract,
+  getPrismXXAssetContract,
   getSimBridgeContract,
   getWeb3,
   IWebLinkedInfo,
 } from './web3';
 
 export const fraAddressToHashAddress = (address: string) => {
-  const result = bech32ToBuffer.decode(address).data;
-  return '0x' + Buffer.from(result).toString('hex');
+  const { data, prefix } = bech32ToBuffer.decode(address);
+  if (prefix == 'eth') {
+    return '0x01' + Buffer.from(data).toString('hex');
+  }
+  return '0x' + Buffer.from(data).toString('hex');
 };
 
 export const hashAddressTofraAddress = async (addresss: string) => {
@@ -197,6 +201,28 @@ export const frc20ToBar = async (
   }
 };
 
+export async function getPrismConfig() {
+  const { response: displayCheckpointData, error } = await Network.getConfig();
+
+  if (error) throw error;
+
+  if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+
+  const web3 = getWeb3(Network.getRpcRoute());
+
+  const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
+  const bridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+
+  const prismContract = await getSimBridgeContract(web3, bridgeAddress);
+
+  const [ledgerAddress, assetAddress] = await Promise.all([
+    prismContract.methods.ledger_contract().call(),
+    prismContract.methods.asset_contract().call(),
+  ]);
+
+  return { ledgerAddress, assetAddress, bridgeAddress };
+}
+
 export const approveNFT = async (
   tokenAddress: string,
   deckAddress: string,
@@ -302,15 +328,15 @@ export const tokenBalance = async (
 ): Promise<string> => {
   const web3 = getWeb3(web3WalletInfo.rpcUrl);
   const erc20Contract = getErc20Contract(web3, tokenAddress);
-  let contractData = erc20Contract.methods.balanceOf(account).encodeABI();
+  const contractData = erc20Contract.methods.balanceOf(account).encodeABI();
 
-  let txParams = {
+  const txParams = {
     from: web3WalletInfo.account,
     to: tokenAddress,
     data: contractData,
   };
 
-  let callResultHex = await web3.eth.call(txParams);
+  const callResultHex = await web3.eth.call(txParams);
   let balance = web3.utils.hexToNumberString(callResultHex);
 
   if (decimals) {

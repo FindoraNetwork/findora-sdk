@@ -39,15 +39,16 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getNFT1155Contract = exports.getNFT721Contract = exports.getErc20Contract = exports.getWeb3 = void 0;
+exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getNFT1155Contract = exports.getNFT721Contract = exports.getPrismProxyContract = exports.getErc20Contract = exports.getWeb3 = void 0;
+var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ethers_1 = require("ethers");
 var web3_1 = __importDefault(require("web3"));
 var Erc20_json_1 = __importDefault(require("./abis/Erc20.json"));
-var NFT1155_json_1 = __importDefault(require("./abis/NFT1155.json"));
 var NFT721_json_1 = __importDefault(require("./abis/NFT721.json"));
+var NFT1155_json_1 = __importDefault(require("./abis/NFT1155.json"));
+var PrismProxy_json_1 = __importDefault(require("./abis/PrismProxy.json"));
 var PrismXXAsset_json_1 = __importDefault(require("./abis/PrismXXAsset.json"));
 var SimBridge_json_1 = __importDefault(require("./abis/SimBridge.json"));
-var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var getWeb3 = function (rpcUrl) {
     var provider = new web3_1.default.providers.HttpProvider(rpcUrl);
     var web3 = new web3_1.default(provider);
@@ -58,6 +59,10 @@ var getErc20Contract = function (web3, address) {
     return new web3.eth.Contract(Erc20_json_1.default, address);
 };
 exports.getErc20Contract = getErc20Contract;
+var getPrismProxyContract = function (web3, address) {
+    return new web3.eth.Contract(PrismProxy_json_1.default, address);
+};
+exports.getPrismProxyContract = getPrismProxyContract;
 var getNFT721Contract = function (web3, address) {
     return new web3.eth.Contract(NFT721_json_1.default, address);
 };
@@ -100,7 +105,7 @@ var calculationDecimalsAmount = function (contract, web3, from, to, amount, type
                 if (type === 'toWei') {
                     return [2 /*return*/, new bignumber_js_1.default(amount).times(power).toString(10)];
                 }
-                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(Number(erc20Decimals))];
+                return [2 /*return*/, new bignumber_js_1.default(amount).div(power).toFormat(4)];
         }
     });
 }); };

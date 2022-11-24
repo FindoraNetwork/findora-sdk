@@ -1,4 +1,5 @@
 import { FeeInputs } from 'findora-wallet-wasm/nodejs';
+
 import Cache from '../../services/cacheStore/factory';
 import * as FeeService from '../../services/fee';
 import * as NodeLedger from '../../services/ledger/nodeLedger';
@@ -61,7 +62,7 @@ describe('triple masking (unit test)', () => {
     let nodeLedger: NodeLedger.LedgerForNode;
     let commitments: { commitments: string[] };
     let transactionBuilder: TransferOpBuilderLight;
-    let myUtxo: Partial<UtxoHelper.AddUtxoItem>[];
+    let myUtxo: Array<Partial<UtxoHelper.AddUtxoItem>>;
     let returnAxfrPublicKey: AXfrKeyPair;
     let returnEncKey: XPublicKey;
     let barToAbarData: any;
@@ -172,9 +173,7 @@ describe('triple masking (unit test)', () => {
       );
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       await expect(TripleMasking.barToAbar(walletInfo, [sid], anonKeys.axfrPublicKey)).rejects.toThrow(
         `Could not fetch memo data for sid "${sid}", Error - Error: ${ownerMemoDataResult.error.message}`,
       );
@@ -188,9 +187,7 @@ describe('triple masking (unit test)', () => {
       );
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => {
         throw fromJsonError;
       });
@@ -207,9 +204,7 @@ describe('triple masking (unit test)', () => {
       );
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => {
         throw fromJsonError;
@@ -226,9 +221,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.reject(getAXfrPublicKeyByBase64Error));
@@ -244,9 +237,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
@@ -266,9 +257,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
@@ -288,9 +277,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
@@ -308,9 +295,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));
@@ -330,9 +315,7 @@ describe('triple masking (unit test)', () => {
         Promise.resolve(transactionBuilder as unknown as TransactionBuilder),
       );
       spyAddUtxo.mockImplementationOnce(() => Promise.resolve(myUtxo as unknown as UtxoHelper.AddUtxoItem[]));
-      spyGetOwnerMemo.mockImplementationOnce(() =>
-        Promise.resolve(ownerMemoDataResult as OwnerMemoDataResult),
-      );
+      spyGetOwnerMemo.mockImplementationOnce(() => Promise.resolve(ownerMemoDataResult));
       spyLedgerOwnerMemoFromJson.mockImplementationOnce(() => ownerMemo);
       spyLedgerClientAssetRecordFromJson.mockImplementationOnce(() => clientAssetRecord);
       spyGetAXfrPublicKeyByBase64.mockImplementationOnce(() => Promise.resolve(returnAxfrPublicKey));

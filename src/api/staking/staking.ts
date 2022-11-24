@@ -1,13 +1,13 @@
 import orderBy from 'lodash/orderBy';
-import * as Transaction from '../../api/transaction';
-import * as Builder from '../transaction/builder';
 
+import * as Transaction from '../../api/transaction';
 import { create as createBigNumber, toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
 import { getAddressPublicAndKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
+import * as Builder from '../transaction/builder';
 
 /**
  * Unstake FRA tokens
