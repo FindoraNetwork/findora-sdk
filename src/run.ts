@@ -26,8 +26,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
-  hostUrl: 'https://dev-qa04.dev.findora.org',
+  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -1710,11 +1710,11 @@ async function prism() {
   console.log(result);
 }
 
-prism();
+// prism();
 
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
