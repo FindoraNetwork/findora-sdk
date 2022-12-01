@@ -88,38 +88,53 @@ var sdkEnv = {
 Sdk_1.default.init(sdkEnv);
 var mainFaucet = walletKeys.mainFaucet, receiverOne = walletKeys.receiverOne;
 var password = 'yourSecretPassword';
-var getTxSid = function (operationName, txHandle) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionStatus, sendResponse, Committed, txnSID;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txHandle"), txHandle);
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 1:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
-            case 2:
-                transactionStatus = _a.sent();
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 1 - ".concat(operationName, " ~ transactionStatus"), transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 2 - ".concat(operationName, " ~ sendResponse"), sendResponse);
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txnSID"), txnSID);
-                if (!txnSID) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/, true];
-        }
+var getTxSid = function (operationName, txHandle, retry) {
+    if (retry === void 0) { retry = true; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var transactionStatus, sendResponse, Committed, txnSID;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txHandle"), txHandle);
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
+                case 2:
+                    transactionStatus = _a.sent();
+                    sendResponse = transactionStatus.response;
+                    if (!sendResponse) {
+                        (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 1 - ".concat(operationName, " ~ transactionStatus"), transactionStatus);
+                        return [2 /*return*/, false];
+                    }
+                    Committed = sendResponse.Committed;
+                    if (!Array.isArray(Committed)) {
+                        if (retry) {
+                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 2 - ".concat(operationName, " ~ sendResponse ").concat(txHandle, ". Response was: "), sendResponse, "- Retrying...");
+                            return [2 /*return*/, getTxSid(operationName, txHandle, false)];
+                        }
+                        else {
+                            (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 2 - ".concat(operationName, " ~ sendResponse"), sendResponse);
+                            return [2 /*return*/, false];
+                        }
+                    }
+                    txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+                    (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txnSID"), txnSID);
+                    if (!txnSID) {
+                        if (retry) {
+                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus, "- Retrying...");
+                            return [2 /*return*/, getTxSid(operationName, txHandle, false)];
+                        }
+                        else {
+                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus);
+                            return [2 /*return*/, false];
+                        }
+                    }
+                    return [2 /*return*/, true];
+            }
+        });
     });
-}); };
+};
 var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
     return __generator(this, function (_a) {
