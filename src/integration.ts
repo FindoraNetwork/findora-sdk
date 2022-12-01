@@ -39,7 +39,7 @@ const { mainFaucet, receiverOne } = walletKeys;
 
 const password = 'yourSecretPassword';
 
-const getTxSid = async (operationName: string, txHandle: string) => {
+const getTxSid = async (operationName: string, txHandle: string, retry = true): Promise<boolean> => {
   log(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
 
   await waitForBlockChange();
@@ -56,8 +56,17 @@ const getTxSid = async (operationName: string, txHandle: string) => {
   const { Committed } = sendResponse;
 
   if (!Array.isArray(Committed)) {
-    log(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
-    return false;
+    if (retry) {
+      log(
+        `🚀  ~ ERROR 2 - ${operationName} ~ sendResponse ${txHandle}. Response was: `,
+        sendResponse,
+        `- Retrying...`,
+      );
+      return getTxSid(operationName, txHandle, false);
+    } else {
+      log(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
+      return false;
+    }
   }
 
   const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
@@ -65,11 +74,20 @@ const getTxSid = async (operationName: string, txHandle: string) => {
   log(`🚀 ~ ${operationName} ~ txnSID`, txnSID);
 
   if (!txnSID) {
-    log(
-      `🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `,
-      transactionStatus,
-    );
-    return false;
+    if (retry) {
+      log(
+        `🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `,
+        transactionStatus,
+        `- Retrying...`,
+      );
+      return getTxSid(operationName, txHandle, false);
+    } else {
+      log(
+        `🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `,
+        transactionStatus,
+      );
+      return false;
+    }
   }
   return true;
 };
