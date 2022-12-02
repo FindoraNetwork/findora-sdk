@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -97,8 +97,8 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    // hostUrl: 'http://127.0.0.1',
-    hostUrl: 'https://dev-qa04.dev.findora.org',
+    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'https://dev-qa04.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -1761,10 +1761,10 @@ function prism() {
         });
     });
 }
-prism();
+// prism();
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
