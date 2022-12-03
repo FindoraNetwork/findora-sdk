@@ -358,7 +358,7 @@ var createTestBars = function (givenSenderOne, amount, iterations) {
                 case 8:
                     resultHandle = _a.sent();
                     (0, utils_1.log)('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
-                    additional_block_waittime = (i + 1) % 3 === 0 ? 1 : 0;
+                    additional_block_waittime = (i + 1) % 2 === 0 ? 1 : 0;
                     return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(1 + additional_block_waittime)];
                 case 9:
                     _a.sent();
