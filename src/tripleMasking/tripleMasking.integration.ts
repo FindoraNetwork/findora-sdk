@@ -245,7 +245,7 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
     const resultHandle = await Transaction.submitTransaction(transactionBuilder);
     log('🚀 ~ createTestBars ~ send fra result handle!!', resultHandle);
 
-    const additional_block_waittime = (i + 1) % 3 === 0 ? 1 : 0;
+    const additional_block_waittime = (i + 1) % 2 === 0 ? 1 : 0;
     await waitForBlockChange(1 + additional_block_waittime);
   }
 
