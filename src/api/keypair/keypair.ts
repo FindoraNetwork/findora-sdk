@@ -280,7 +280,7 @@ export const restoreFromKeystore = async (keyStore: Uint8Array, password: string
       privateStr,
     };
   } catch (err) {
-    throw new Error(`could not restore keypair from the key string. Details: "${(err as Error).message}"`);
+    throw new Error(`could not restore keypair from the keystore. Details: "${err as Error}"`);
   }
 };
 
