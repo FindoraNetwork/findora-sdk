@@ -75,6 +75,18 @@ export const getPrivateKeyStr = async (keypair: XfrKeyPair): Promise<string> => 
   }
 };
 
+export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
+  const ledger = await getLedger();
+
+  try {
+    const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
+    const result = String(ledgerMnemonicString).split(' ');
+    return result;
+  } catch (err) {
+    throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
+  }
+};
+
 export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
 
@@ -235,16 +247,18 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
 export const restoreFromMnemonic = async (
   mnemonic: string[],
   password: string,
-  isFraAddress: boolean,
+  isFraAddress = true,
 ): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
   let keypair: XfrKeyPair;
+
   if (isFraAddress) {
     keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
   } else {
     keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
   }
+
   const keyPairStr = await getPrivateKeyStr(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
@@ -302,11 +316,20 @@ export const restoreFromKeystoreString = async (
   }
 };
 
-export const createKeypair = async (password: string): Promise<WalletKeypar> => {
+export const createKeypair = async (password: string, isFraAddress = true): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
+  const mnemonic = await getMnemonic(24);
+
+  let keypair: XfrKeyPair;
+
+  if (isFraAddress) {
+    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
+  } else {
+    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+  }
+
   try {
-    const keypair = ledger.new_keypair();
     const keyPairStr = ledger.keypair_to_str(keypair);
     const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
@@ -323,17 +346,5 @@ export const createKeypair = async (password: string): Promise<WalletKeypar> => 
     };
   } catch (err) {
     throw new Error(`could not create a WalletKeypar, "${err}" `);
-  }
-};
-
-export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
-  const ledger = await getLedger();
-
-  try {
-    const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
-    const result = String(ledgerMnemonicString).split(' ');
-    return result;
-  } catch (err) {
-    throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
   }
 };

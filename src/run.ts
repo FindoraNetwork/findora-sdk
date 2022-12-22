@@ -1656,6 +1656,49 @@ async function getMas() {
   console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
 }
 
+async function testFraEthWallets(): Promise<void> {
+  const isFra = true;
+
+  const faucetWalletInfoMF = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+    isFra,
+  );
+  const faucetWalletInfoME = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+    !isFra,
+  );
+
+  const oldFormatPkey = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+
+  const faucetWalletInfoNewKey = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const faucetWalletInfoOldKey = await Keypair.restoreFromPrivateKey(oldFormatPkey, password);
+
+  console.log('\n');
+  console.log('1. Wallets restored from mnemonic');
+  console.log('\n');
+  console.log(`Faucet Mnemonic "${PKEY_LOCAL_FAUCET_MNEMONIC_STRING}"`);
+  console.log('\n');
+  console.log('faucetWalletInfoMF.address (from mnemonic with fra prefix)', faucetWalletInfoMF.address);
+  console.log('faucetWalletInfoMF.privateStr (from mnemonic with fra prefix)', faucetWalletInfoMF.privateStr);
+  console.log('\n');
+  console.log('faucetWalletInfoME.address (from mnemonic with eth prefix)', faucetWalletInfoME.address);
+  console.log('faucetWalletInfoME.privateStr (from mnemonic with eth prefix)', faucetWalletInfoME.privateStr);
+  console.log(`\n`);
+  console.log('2. Wallets restored from the private key string');
+  console.log('\n');
+  console.log(`Old Pkey ${oldFormatPkey}`);
+  console.log(`New Pkey ${PKEY_LOCAL_FAUCET}`);
+  console.log('\n');
+  console.log('faucetWalletInfoNewKey.address (eth) ', faucetWalletInfoNewKey.address);
+  console.log('faucetWalletInfoNewKey.privateStr (eth)', faucetWalletInfoNewKey.privateStr);
+  console.log('\n');
+  console.log('faucetWalletInfoOldKey.address (fra) ', faucetWalletInfoOldKey.address);
+  console.log('faucetWalletInfoOldKey.privateStr (fra)', faucetWalletInfoOldKey.privateStr);
+  console.log('\n');
+}
+
 async function prism() {
   // const { response: displayCheckpointData, error } = await Network.getConfig();
 
@@ -1714,9 +1757,10 @@ async function prism() {
 
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
 // testFailure();
+testFraEthWallets();

@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -1751,6 +1751,56 @@ function getMas() {
         });
     });
 }
+function testFraEthWallets() {
+    return __awaiter(this, void 0, void 0, function () {
+        var isFra, oldFormatPkey, faucetWalletInfoMF, faucetWalletInfoME, faucetWalletInfoNewKey, faucetWalletInfoOldKey;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    isFra = true;
+                    oldFormatPkey = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password, isFra)];
+                case 1:
+                    faucetWalletInfoMF = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password, !isFra)];
+                case 2:
+                    faucetWalletInfoME = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
+                case 3:
+                    faucetWalletInfoNewKey = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(oldFormatPkey, password)];
+                case 4:
+                    faucetWalletInfoOldKey = _a.sent();
+                    // const balanceFaucetM = await Account.getBalance(faucetWalletInfoM);
+                    // const balanceFaucet = await Account.getBalance(faucetWalletInfo);
+                    // const balanceFaucetOldPkey = await Account.getBalance(faucetWalletInfoOldPkey);
+                    console.log('\n');
+                    console.log('1. Wallets restored from mnemonic');
+                    console.log('\n');
+                    console.log("Faucet Mnemonic \"".concat(PKEY_LOCAL_FAUCET_MNEMONIC_STRING, "\""));
+                    console.log('\n');
+                    console.log('faucetWalletInfoMF.address (from mnemonic with fra prefix)', faucetWalletInfoMF.address);
+                    console.log('faucetWalletInfoMF.privateStr (from mnemonic with fra prefix)', faucetWalletInfoMF.privateStr);
+                    console.log('\n');
+                    console.log('faucetWalletInfoME.address (from mnemonic with eth prefix)', faucetWalletInfoME.address);
+                    console.log('faucetWalletInfoME.privateStr (from mnemonic with eth prefix)', faucetWalletInfoME.privateStr);
+                    console.log("\n");
+                    console.log('2. Wallets restored from the private key string');
+                    console.log('\n');
+                    console.log("Old Pkey ".concat(oldFormatPkey));
+                    console.log("New Pkey ".concat(PKEY_LOCAL_FAUCET));
+                    console.log('\n');
+                    console.log('faucetWalletInfoNewKey.address (eth) ', faucetWalletInfoNewKey.address);
+                    console.log('faucetWalletInfoNewKey.privateStr (eth)', faucetWalletInfoNewKey.privateStr);
+                    console.log('\n');
+                    console.log('faucetWalletInfoOldKey.address (fra) ', faucetWalletInfoOldKey.address);
+                    console.log('faucetWalletInfoOldKey.privateStr (fra)', faucetWalletInfoOldKey.privateStr);
+                    console.log('\n');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function prism() {
     return __awaiter(this, void 0, void 0, function () {
         var result;
@@ -1764,10 +1814,11 @@ function prism() {
 // prism();
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
 // testFailure();
+testFraEthWallets();
 //# sourceMappingURL=run.js.map

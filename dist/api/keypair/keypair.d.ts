@@ -62,6 +62,7 @@ export interface WalletKeypar extends LightWalletKeypair {
  * @throws `An error returned by Ledger with a prefix added by SDK`
  */
 export declare const getPrivateKeyStr: (keypair: XfrKeyPair) => Promise<string>;
+export declare const getMnemonic: (desiredLength: number, mnemonicLang?: string) => Promise<string[]>;
 export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddress: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddressByPublicKey: (publicKey: string) => Promise<string>;
@@ -105,8 +106,7 @@ export declare const getAddressPublicAndKey: (address: string) => Promise<LightW
  *
  */
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
-export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress: boolean) => Promise<WalletKeypar>;
+export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
 export declare const restoreFromKeystore: (keyStore: Uint8Array, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromKeystoreString: (keyStoreString: string, password: string) => Promise<WalletKeypar>;
-export declare const createKeypair: (password: string) => Promise<WalletKeypar>;
-export declare const getMnemonic: (desiredLength: number, mnemonicLang?: string) => Promise<string[]>;
+export declare const createKeypair: (password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;

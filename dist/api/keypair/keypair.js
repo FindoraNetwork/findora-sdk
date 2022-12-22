@@ -14,7 +14,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMnemonic = exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPrivateKeyStr = void 0;
+exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getMnemonic = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -79,6 +79,29 @@ var getPrivateKeyStr = function (keypair) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getPrivateKeyStr = getPrivateKeyStr;
+var getMnemonic = function (desiredLength, mnemonicLang) {
+    if (mnemonicLang === void 0) { mnemonicLang = 'en'; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var ledger, ledgerMnemonicString, result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    try {
+                        ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
+                        result = String(ledgerMnemonicString).split(' ');
+                        return [2 /*return*/, result];
+                    }
+                    catch (err) {
+                        throw new Error("could not generate custom mnemonic. Details are: \"".concat(err, "\""));
+                    }
+                    return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getMnemonic = getMnemonic;
 var getPublicKeyStr = function (keypair) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, publickey;
     return __generator(this, function (_a) {
@@ -318,39 +341,42 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
     });
 }); };
 exports.restoreFromPrivateKey = restoreFromPrivateKey;
-var restoreFromMnemonic = function (mnemonic, password, isFraAddress) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, keypair, keyPairStr, encrypted, publickey, address;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                if (isFraAddress) {
-                    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
-                }
-                else {
-                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-                }
-                return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
-            case 2:
-                keyPairStr = _a.sent();
-                encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
-            case 3:
-                publickey = _a.sent();
-                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
-            case 4:
-                address = _a.sent();
-                return [2 /*return*/, {
-                        keyStore: encrypted,
-                        publickey: publickey,
-                        address: address,
-                        keypair: keypair,
-                        privateStr: keyPairStr,
-                    }];
-        }
+var restoreFromMnemonic = function (mnemonic, password, isFraAddress) {
+    if (isFraAddress === void 0) { isFraAddress = true; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var ledger, keypair, keyPairStr, encrypted, publickey, address;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    if (isFraAddress) {
+                        keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
+                    }
+                    else {
+                        keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+                    }
+                    return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
+                case 2:
+                    keyPairStr = _a.sent();
+                    encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                    return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
+                case 3:
+                    publickey = _a.sent();
+                    return [4 /*yield*/, (0, exports.getAddress)(keypair)];
+                case 4:
+                    address = _a.sent();
+                    return [2 /*return*/, {
+                            keyStore: encrypted,
+                            publickey: publickey,
+                            address: address,
+                            keypair: keypair,
+                            privateStr: keyPairStr,
+                        }];
+            }
+        });
     });
-}); };
+};
 exports.restoreFromMnemonic = restoreFromMnemonic;
 var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, keyPairStr, keypair, encrypted, publickey, address, privateStr, err_1;
@@ -409,64 +435,52 @@ var restoreFromKeystoreString = function (keyStoreString, password) { return __a
     });
 }); };
 exports.restoreFromKeystoreString = restoreFromKeystoreString;
-var createKeypair = function (password) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, keypair, keyPairStr, encrypted, privateStr, publickey, address, err_3;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                _a.label = 2;
-            case 2:
-                _a.trys.push([2, 6, , 7]);
-                keypair = ledger.new_keypair();
-                keyPairStr = ledger.keypair_to_str(keypair);
-                encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-                return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
-            case 3:
-                privateStr = _a.sent();
-                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
-            case 4:
-                publickey = _a.sent();
-                return [4 /*yield*/, (0, exports.getAddress)(keypair)];
-            case 5:
-                address = _a.sent();
-                return [2 /*return*/, {
-                        keyStore: encrypted,
-                        publickey: publickey,
-                        address: address,
-                        keypair: keypair,
-                        privateStr: privateStr,
-                    }];
-            case 6:
-                err_3 = _a.sent();
-                throw new Error("could not create a WalletKeypar, \"".concat(err_3, "\" "));
-            case 7: return [2 /*return*/];
-        }
-    });
-}); };
-exports.createKeypair = createKeypair;
-var getMnemonic = function (desiredLength, mnemonicLang) {
-    if (mnemonicLang === void 0) { mnemonicLang = 'en'; }
+var createKeypair = function (password, isFraAddress) {
+    if (isFraAddress === void 0) { isFraAddress = true; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, ledgerMnemonicString, result;
+        var ledger, mnemonic, keypair, keyPairStr, encrypted, privateStr, publickey, address, err_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
-                    try {
-                        ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
-                        result = String(ledgerMnemonicString).split(' ');
-                        return [2 /*return*/, result];
+                    return [4 /*yield*/, (0, exports.getMnemonic)(24)];
+                case 2:
+                    mnemonic = _a.sent();
+                    if (isFraAddress) {
+                        keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
                     }
-                    catch (err) {
-                        throw new Error("could not generate custom mnemonic. Details are: \"".concat(err, "\""));
+                    else {
+                        keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
                     }
-                    return [2 /*return*/];
+                    _a.label = 3;
+                case 3:
+                    _a.trys.push([3, 7, , 8]);
+                    keyPairStr = ledger.keypair_to_str(keypair);
+                    encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                    return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
+                case 4:
+                    privateStr = _a.sent();
+                    return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
+                case 5:
+                    publickey = _a.sent();
+                    return [4 /*yield*/, (0, exports.getAddress)(keypair)];
+                case 6:
+                    address = _a.sent();
+                    return [2 /*return*/, {
+                            keyStore: encrypted,
+                            publickey: publickey,
+                            address: address,
+                            keypair: keypair,
+                            privateStr: privateStr,
+                        }];
+                case 7:
+                    err_3 = _a.sent();
+                    throw new Error("could not create a WalletKeypar, \"".concat(err_3, "\" "));
+                case 8: return [2 /*return*/];
             }
         });
     });
 };
-exports.getMnemonic = getMnemonic;
+exports.createKeypair = createKeypair;
 //# sourceMappingURL=keypair.js.map
