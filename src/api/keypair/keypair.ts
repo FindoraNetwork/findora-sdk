@@ -264,6 +264,20 @@ export const restoreEvmPrivate = async (privateStr: string, password: string): P
   };
 };
 
+export const restoreEvmKeyStore = async (
+  keyStore: Uint8Array,
+  password: string,
+): Promise<EvmWalletKeypair> => {
+  const ledger = await getLedger();
+
+  const data = new Uint8Array(Object.values(keyStore));
+
+  const privateStr = ledger.decryption_pbkdf2_aes256gcm(data, password);
+  const address = ledger.recover_address_from_sk(privateStr);
+
+  return { privateKey: privateStr, address };
+};
+
 export const restoreFromMnemonic = async (
   mnemonic: string[],
   password: string,
