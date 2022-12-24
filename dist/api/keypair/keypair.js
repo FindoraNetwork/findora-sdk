@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getMnemonic = exports.getPrivateKeyStr = void 0;
+exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreEvmPrivate = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getMnemonic = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -341,6 +341,26 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
     });
 }); };
 exports.restoreFromPrivateKey = restoreFromPrivateKey;
+/*
+ * Recover ethereum address from ecdsa private key, eg. 0x73c71...*
+ */
+var restoreEvmPrivate = function (privateStr, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, encrypted, address;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                encrypted = ledger.encryption_pbkdf2_aes256gcm(privateStr, password);
+                address = ledger.recover_address_from_sk(privateStr);
+                return [2 /*return*/, {
+                        keyStore: encrypted,
+                        address: address,
+                    }];
+        }
+    });
+}); };
+exports.restoreEvmPrivate = restoreEvmPrivate;
 var restoreFromMnemonic = function (mnemonic, password, isFraAddress) {
     if (isFraAddress === void 0) { isFraAddress = true; }
     return __awaiter(void 0, void 0, void 0, function () {

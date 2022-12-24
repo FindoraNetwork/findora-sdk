@@ -1753,27 +1753,24 @@ function getMas() {
 }
 function testFraEthWallets() {
     return __awaiter(this, void 0, void 0, function () {
-        var isFra, oldFormatPkey, faucetWalletInfoMF, faucetWalletInfoME, faucetWalletInfoNewKey, faucetWalletInfoOldKey;
+        var isFra, faucetWalletInfoMF, faucetWalletInfoME, oldFormatPkey, faucetWalletInfoNewKey, faucetWalletInfoOldKey;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     isFra = true;
-                    oldFormatPkey = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
                     return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password, isFra)];
                 case 1:
                     faucetWalletInfoMF = _a.sent();
                     return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password, !isFra)];
                 case 2:
                     faucetWalletInfoME = _a.sent();
+                    oldFormatPkey = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
                 case 3:
                     faucetWalletInfoNewKey = _a.sent();
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(oldFormatPkey, password)];
                 case 4:
                     faucetWalletInfoOldKey = _a.sent();
-                    // const balanceFaucetM = await Account.getBalance(faucetWalletInfoM);
-                    // const balanceFaucet = await Account.getBalance(faucetWalletInfo);
-                    // const balanceFaucetOldPkey = await Account.getBalance(faucetWalletInfoOldPkey);
                     console.log('\n');
                     console.log('1. Wallets restored from mnemonic');
                     console.log('\n');

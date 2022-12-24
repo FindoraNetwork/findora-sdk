@@ -12,6 +12,12 @@ export interface LightWalletKeypair {
   publickey: string;
 }
 
+export interface EvmWalletKeypair {
+  keyStore?: Uint8Array | string;
+  address?: string;
+  privateKey?: string;
+}
+
 /**
  * A `full`, or **extended** version of the WalletKeypar, containing private key string as well
  *
@@ -241,6 +247,20 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
     address,
     keypair,
     privateStr,
+  };
+};
+
+/*
+ * Recover ethereum address from ecdsa private key, eg. 0x73c71...*
+ */
+export const restoreEvmPrivate = async (privateStr: string, password: string): Promise<EvmWalletKeypair> => {
+  const ledger = await getLedger();
+  const encrypted = ledger.encryption_pbkdf2_aes256gcm(privateStr, password);
+  const address = ledger.recover_address_from_sk(privateStr);
+
+  return {
+    keyStore: encrypted,
+    address,
   };
 };
 

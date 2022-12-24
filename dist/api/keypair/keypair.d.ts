@@ -9,6 +9,11 @@ export interface LightWalletKeypair {
     address: string;
     publickey: string;
 }
+export interface EvmWalletKeypair {
+    keyStore?: Uint8Array | string;
+    address?: string;
+    privateKey?: string;
+}
 /**
  * A `full`, or **extended** version of the WalletKeypar, containing private key string as well
  *
@@ -106,6 +111,7 @@ export declare const getAddressPublicAndKey: (address: string) => Promise<LightW
  *
  */
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
+export declare const restoreEvmPrivate: (privateStr: string, password: string) => Promise<EvmWalletKeypair>;
 export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
 export declare const restoreFromKeystore: (keyStore: Uint8Array, password: string) => Promise<WalletKeypar>;
 export declare const restoreFromKeystoreString: (keyStoreString: string, password: string) => Promise<WalletKeypar>;
