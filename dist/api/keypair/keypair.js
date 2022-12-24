@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createKeypair = exports.restoreFromKeystoreString = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreEvmKeyStore = exports.restoreEvmPrivate = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getMnemonic = exports.getPrivateKeyStr = void 0;
+exports.createKeypair = exports.restoreFromKeystoreString = exports.recoveryKeypairFromKeystore = exports.restoreFromKeystore = exports.restoreFromMnemonic = exports.restoreEvmKeyStore = exports.restoreEvmPrivate = exports.restoreFromPrivateKey = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getMnemonic = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -450,8 +450,39 @@ var restoreFromKeystore = function (keyStore, ksPassword, password) { return __a
     });
 }); };
 exports.restoreFromKeystore = restoreFromKeystore;
+var recoveryKeypairFromKeystore = function (keyStore, password) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, keyPairStr, keypair, publickey, address, err_2;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 5, , 6]);
+                keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
+                keypair = ledger.keypair_from_str(keyPairStr);
+                return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
+            case 3:
+                publickey = _a.sent();
+                return [4 /*yield*/, (0, exports.getAddressByPublicKey)(publickey)];
+            case 4:
+                address = _a.sent();
+                return [2 /*return*/, {
+                        publickey: publickey,
+                        address: address,
+                        keypair: keypair,
+                    }];
+            case 5:
+                err_2 = _a.sent();
+                throw new Error("could not recovery keypair from the key store. Details: \"".concat(err_2.message, "\""));
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.recoveryKeypairFromKeystore = recoveryKeypairFromKeystore;
 var restoreFromKeystoreString = function (keyStoreString, ksPassword, password) { return __awaiter(void 0, void 0, void 0, function () {
-    var keyStoreObject, keyStore, result, err_2;
+    var keyStoreObject, keyStore, result, err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -463,8 +494,8 @@ var restoreFromKeystoreString = function (keyStoreString, ksPassword, password) 
                 result = _a.sent();
                 return [2 /*return*/, result];
             case 2:
-                err_2 = _a.sent();
-                throw new Error("could not restore keypair from the key store string. Details: \"".concat(err_2.message, "\""));
+                err_3 = _a.sent();
+                throw new Error("could not restore keypair from the key store string. Details: \"".concat(err_3.message, "\""));
             case 3: return [2 /*return*/];
         }
     });
@@ -473,7 +504,7 @@ exports.restoreFromKeystoreString = restoreFromKeystoreString;
 var createKeypair = function (password, isFraAddress) {
     if (isFraAddress === void 0) { isFraAddress = true; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, mnemonic, keypair, keyPairStr, encrypted, privateStr, publickey, address, err_3;
+        var ledger, mnemonic, keypair, keyPairStr, encrypted, privateStr, publickey, address, err_4;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -510,8 +541,8 @@ var createKeypair = function (password, isFraAddress) {
                             privateStr: privateStr,
                         }];
                 case 7:
-                    err_3 = _a.sent();
-                    throw new Error("could not create a WalletKeypar, \"".concat(err_3, "\" "));
+                    err_4 = _a.sent();
+                    throw new Error("could not create a WalletKeypar, \"".concat(err_4, "\" "));
                 case 8: return [2 /*return*/];
             }
         });

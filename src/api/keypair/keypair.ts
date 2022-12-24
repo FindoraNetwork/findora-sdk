@@ -336,6 +336,29 @@ export const restoreFromKeystore = async (
   }
 };
 
+export const recoveryKeypairFromKeystore = async (
+  keyStore: Uint8Array,
+  password: string,
+): Promise<Partial<WalletKeypar>> => {
+  const ledger = await getLedger();
+
+  try {
+    const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
+    const keypair = ledger.keypair_from_str(keyPairStr);
+
+    const publickey = await getPublicKeyStr(keypair);
+    const address = await getAddressByPublicKey(publickey);
+
+    return {
+      publickey,
+      address,
+      keypair,
+    };
+  } catch (err) {
+    throw new Error(`could not recovery keypair from the key store. Details: "${(err as Error).message}"`);
+  }
+};
+
 export const restoreFromKeystoreString = async (
   keyStoreString: string,
   ksPassword: string,
