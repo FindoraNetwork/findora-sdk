@@ -114,6 +114,6 @@ export declare const restoreFromPrivateKey: (privateStr: string, password: strin
 export declare const restoreEvmPrivate: (privateStr: string, password: string) => Promise<EvmWalletKeypair>;
 export declare const restoreEvmKeyStore: (keyStore: Uint8Array, password: string) => Promise<EvmWalletKeypair>;
 export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
-export declare const restoreFromKeystore: (keyStore: Uint8Array, password: string) => Promise<WalletKeypar>;
-export declare const restoreFromKeystoreString: (keyStoreString: string, password: string) => Promise<WalletKeypar>;
+export declare const restoreFromKeystore: (keyStore: Uint8Array, ksPassword: string, password: string) => Promise<WalletKeypar>;
+export declare const restoreFromKeystoreString: (keyStoreString: string, ksPassword: string, password: string) => Promise<WalletKeypar>;
 export declare const createKeypair: (password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;

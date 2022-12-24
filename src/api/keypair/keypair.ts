@@ -308,11 +308,15 @@ export const restoreFromMnemonic = async (
   };
 };
 
-export const restoreFromKeystore = async (keyStore: Uint8Array, password: string): Promise<WalletKeypar> => {
+export const restoreFromKeystore = async (
+  keyStore: Uint8Array,
+  ksPassword: string,
+  password: string,
+): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
   try {
-    const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
+    const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
     const keypair = ledger.keypair_from_str(keyPairStr);
     const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
@@ -334,13 +338,14 @@ export const restoreFromKeystore = async (keyStore: Uint8Array, password: string
 
 export const restoreFromKeystoreString = async (
   keyStoreString: string,
+  ksPassword: string,
   password: string,
 ): Promise<WalletKeypar> => {
   try {
     const keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
     const keyStore: Uint8Array = new Uint8Array(Object.values(keyStoreObject));
 
-    const result = await restoreFromKeystore(keyStore, password);
+    const result = await restoreFromKeystore(keyStore, ksPassword, password);
 
     return result;
   } catch (err) {

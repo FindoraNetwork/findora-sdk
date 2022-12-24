@@ -413,7 +413,7 @@ var restoreFromMnemonic = function (mnemonic, password, isFraAddress) {
     });
 };
 exports.restoreFromMnemonic = restoreFromMnemonic;
-var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 0, void 0, void 0, function () {
+var restoreFromKeystore = function (keyStore, ksPassword, password) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, keyPairStr, keypair, encrypted, publickey, address, privateStr, err_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -423,7 +423,7 @@ var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 
                 _a.label = 2;
             case 2:
                 _a.trys.push([2, 6, , 7]);
-                keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
+                keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
                 keypair = ledger.keypair_from_str(keyPairStr);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
                 return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
@@ -450,7 +450,7 @@ var restoreFromKeystore = function (keyStore, password) { return __awaiter(void 
     });
 }); };
 exports.restoreFromKeystore = restoreFromKeystore;
-var restoreFromKeystoreString = function (keyStoreString, password) { return __awaiter(void 0, void 0, void 0, function () {
+var restoreFromKeystoreString = function (keyStoreString, ksPassword, password) { return __awaiter(void 0, void 0, void 0, function () {
     var keyStoreObject, keyStore, result, err_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -458,7 +458,7 @@ var restoreFromKeystoreString = function (keyStoreString, password) { return __a
                 _a.trys.push([0, 2, , 3]);
                 keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
                 keyStore = new Uint8Array(Object.values(keyStoreObject));
-                return [4 /*yield*/, (0, exports.restoreFromKeystore)(keyStore, password)];
+                return [4 /*yield*/, (0, exports.restoreFromKeystore)(keyStore, ksPassword, password)];
             case 1:
                 result = _a.sent();
                 return [2 /*return*/, result];
