@@ -32,8 +32,8 @@ export interface MethodConstantReturnContext<TCallReturn> {
 }
 export interface MethodReturnContext extends MethodPayableReturnContext {
 }
-export declare type ContractContext = Web3ContractContext<PrismProxy, PrismProxyMethodNames, PrismProxyEventsContext, PrismProxyEvents>;
-export declare type PrismProxyEvents = 'OwnershipTransferred';
+export type ContractContext = Web3ContractContext<PrismProxy, PrismProxyMethodNames, PrismProxyEventsContext, PrismProxyEvents>;
+export type PrismProxyEvents = 'OwnershipTransferred';
 export interface PrismProxyEventsContext {
     OwnershipTransferred(parameters: {
         filter?: {
@@ -45,7 +45,7 @@ export interface PrismProxyEventsContext {
         topics?: string[];
     }, callback?: (error: Error, event: EventData) => void): EventResponse;
 }
-export declare type PrismProxyMethodNames = 'new' | 'adminSetPrismBridgeAddress' | 'owner' | 'prismBridgeAddress' | 'renounceOwnership' | 'transferOwnership';
+export type PrismProxyMethodNames = 'new' | 'adminSetPrismBridgeAddress' | 'owner' | 'prismBridgeAddress' | 'renounceOwnership' | 'transferOwnership';
 export interface OwnershipTransferredEventEmittedResponse {
     previousOwner: string;
     newOwner: string;

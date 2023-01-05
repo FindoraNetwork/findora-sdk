@@ -48,7 +48,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -74,6 +74,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
+/* eslint-disable no-console */
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
@@ -1761,13 +1762,132 @@ function prism() {
         });
     });
 }
+function testWasmFunctions(walletInfo) {
+    return __awaiter(this, void 0, void 0, function () {
+        var ledger, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
+                    publickeyFormatFra = ledger.get_pub_key_str_old(walletInfo.keypair);
+                    publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
+                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(walletInfo.address);
+                    console.log('============');
+                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
+                    console.log('============');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getNewBalanace() {
+    return __awaiter(this, void 0, void 0, function () {
+        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_3, error_4, error_5;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    isFra = false;
+                    pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+                    pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+                    mnemonicLocalFaucet = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password)];
+                case 1:
+                    faucetWalletInfoPkeyFra = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password)];
+                case 2:
+                    faucetWalletInfoPkeyEth = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password, isFra)];
+                case 3:
+                    faucetWalletInfoMnemonic = _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyFra)];
+                case 4:
+                    balanceFaucetFra = _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyEth)];
+                case 5:
+                    balanceFaucetEth = _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoMnemonic)];
+                case 6:
+                    balanceFaucetMnemonic = _a.sent();
+                    console.log('============--------------=============================');
+                    console.log('\n');
+                    console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
+                    console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
+                    console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
+                    console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
+                    console.log('\n');
+                    _a.label = 7;
+                case 7:
+                    _a.trys.push([7, 9, , 10]);
+                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
+                case 8:
+                    _a.sent();
+                    return [3 /*break*/, 10];
+                case 9:
+                    error_3 = _a.sent();
+                    console.log('we have an error', error_3);
+                    return [3 /*break*/, 10];
+                case 10:
+                    console.log('\n');
+                    console.log('============--------------=============================');
+                    console.log('\n');
+                    console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
+                    console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
+                    console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
+                    console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
+                    console.log('\n');
+                    _a.label = 11;
+                case 11:
+                    _a.trys.push([11, 13, , 14]);
+                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
+                case 12:
+                    _a.sent();
+                    return [3 /*break*/, 14];
+                case 13:
+                    error_4 = _a.sent();
+                    console.log('we have an error', error_4);
+                    return [3 /*break*/, 14];
+                case 14:
+                    console.log('\n');
+                    console.log('============--------------=============================');
+                    console.log('\n');
+                    console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
+                    console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
+                    console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
+                    console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+                    console.log('\n');
+                    _a.label = 15;
+                case 15:
+                    _a.trys.push([15, 17, , 18]);
+                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoMnemonic)];
+                case 16:
+                    _a.sent();
+                    return [3 /*break*/, 18];
+                case 17:
+                    error_5 = _a.sent();
+                    console.log('we have an error', error_5);
+                    return [3 /*break*/, 18];
+                case 18:
+                    console.log('\n');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // prism();
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
+// testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
 // testFailure();
+getNewBalanace();
+// testWasmFunctions();
 //# sourceMappingURL=run.js.map
