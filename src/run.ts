@@ -1731,6 +1731,75 @@ async function testWasmFunctions(walletInfo: Keypair.WalletKeypar): Promise<void
   console.log('============');
 }
 
+async function testBrokenKeypairOne() {
+  const ledger = await getLedger();
+
+  console.log('============');
+
+  const mnemonic =
+    'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+
+  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+
+  const publickey = await Keypair.getPublicKeyStr(keypair);
+
+  console.log('publickey (from restored keypair)', publickey);
+  const address = await Keypair.getAddress(keypair);
+  console.log('address (from restored keypair)', address);
+
+  const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+  const publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
+
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+  console.log(
+    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
+    publickeyAddressFormatFra,
+  );
+  console.log('\n');
+
+  console.log('============');
+}
+
+async function testBrokenKeypairTwo() {
+  const ledger = await getLedger();
+
+  console.log('============');
+  const keypair = ledger.new_keypair();
+
+  const publickey = await Keypair.getPublicKeyStr(keypair);
+
+  console.log('publickey (from created keypair)', publickey);
+  const address = await Keypair.getAddress(keypair);
+  console.log('address (from created keypair)', address);
+
+  const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+  const publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
+
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+  console.log(
+    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
+    publickeyAddressFormatFra,
+  );
+  console.log('\n');
+
+  console.log('============');
+}
+
+async function testBrokenKeypairs() {
+  await testBrokenKeypairOne();
+  await testBrokenKeypairTwo();
+}
+
 async function getNewBalanace() {
   const isFra = false;
 
@@ -1813,5 +1882,5 @@ async function getNewBalanace() {
 // getAbarBalance();
 // testFailure();
 
-getNewBalanace();
-// testWasmFunctions();
+// getNewBalanace();
+testBrokenKeypairs();

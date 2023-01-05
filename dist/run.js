@@ -1785,6 +1785,88 @@ function testWasmFunctions(walletInfo) {
         });
     });
 }
+function testBrokenKeypairOne() {
+    return __awaiter(this, void 0, void 0, function () {
+        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    console.log('============');
+                    mnemonic = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+                    return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
+                case 2:
+                    publickey = _a.sent();
+                    console.log('publickey (from restored keypair)', publickey);
+                    return [4 /*yield*/, api_1.Keypair.getAddress(keypair)];
+                case 3:
+                    address = _a.sent();
+                    console.log('address (from restored keypair)', address);
+                    publickeyFormatEth = ledger.get_pub_key_str(keypair);
+                    publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
+                    publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
+                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
+                    console.log('\n');
+                    console.log('============');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function testBrokenKeypairTwo() {
+    return __awaiter(this, void 0, void 0, function () {
+        var ledger, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    console.log('============');
+                    keypair = ledger.new_keypair();
+                    return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
+                case 2:
+                    publickey = _a.sent();
+                    console.log('publickey (from created keypair)', publickey);
+                    return [4 /*yield*/, api_1.Keypair.getAddress(keypair)];
+                case 3:
+                    address = _a.sent();
+                    console.log('address (from created keypair)', address);
+                    publickeyFormatEth = ledger.get_pub_key_str(keypair);
+                    publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
+                    publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
+                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
+                    console.log('\n');
+                    console.log('============');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function testBrokenKeypairs() {
+    return __awaiter(this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, testBrokenKeypairOne()];
+                case 1:
+                    _a.sent();
+                    return [4 /*yield*/, testBrokenKeypairTwo()];
+                case 2:
+                    _a.sent();
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 function getNewBalanace() {
     return __awaiter(this, void 0, void 0, function () {
         var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_3, error_4, error_5;
@@ -1888,6 +1970,6 @@ function getNewBalanace() {
 // getMas();
 // getAbarBalance();
 // testFailure();
-getNewBalanace();
-// testWasmFunctions();
+// getNewBalanace();
+testBrokenKeypairs();
 //# sourceMappingURL=run.js.map
