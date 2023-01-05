@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
@@ -1710,13 +1711,107 @@ async function prism() {
   console.log(result);
 }
 
+async function testWasmFunctions(walletInfo: Keypair.WalletKeypar): Promise<void> {
+  const ledger = await getLedger();
+
+  const publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
+  const publickeyFormatFra = ledger.get_pub_key_str_old(walletInfo.keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
+  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(walletInfo.address);
+
+  console.log('============');
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+  console.log(
+    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
+    publickeyAddressFormatFra,
+  );
+  console.log('============');
+}
+
+async function getNewBalanace() {
+  const isFra = false;
+
+  const pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+
+  const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+
+  const mnemonicLocalFaucet =
+    'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+
+  const faucetWalletInfoPkeyFra = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password);
+  const faucetWalletInfoPkeyEth = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password);
+
+  const faucetWalletInfoMnemonic = await Keypair.restoreFromMnemonic(
+    mnemonicLocalFaucet.split(' '),
+    password,
+    isFra,
+  );
+
+  const balanceFaucetFra = await Account.getBalance(faucetWalletInfoPkeyFra);
+  const balanceFaucetEth = await Account.getBalance(faucetWalletInfoPkeyEth);
+  const balanceFaucetMnemonic = await Account.getBalance(faucetWalletInfoMnemonic);
+
+  console.log('============--------------=============================');
+  console.log('\n');
+
+  console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
+  console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
+  console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
+  console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoPkeyFra);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+
+  console.log('============--------------=============================');
+  console.log('\n');
+  console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
+  console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
+  console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
+  console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoPkeyFra);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+
+  console.log('============--------------=============================');
+  console.log('\n');
+  console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
+  console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
+  console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
+  console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoMnemonic);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+}
+
 // prism();
 
 // approveToken();
 // testItSync();
-getFraBalance();
+// getFraBalance();
+// testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
 // testFailure();
+
+getNewBalanace();
+// testWasmFunctions();
