@@ -1738,7 +1738,11 @@ async function testBrokenKeypairOne() {
   const mnemonic =
     'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
 
-  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+  // const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+  const privateStrHex = ledger.get_priv_key_hex_str_by_mnemonic(mnemonic, 24);
+  console.log('privateStrHex', privateStrHex);
+
+  const keypair = ledger.get_keypair_by_pri_key(privateStrHex);
 
   const publickey = await Keypair.getPublicKeyStr(keypair);
 
@@ -1768,7 +1772,7 @@ async function testBrokenKeypairTwo() {
   const ledger = await getLedger();
 
   console.log('============');
-  const keypair = ledger.new_keypair();
+  const keypair = ledger.new_keypair_old();
 
   const publickey = await Keypair.getPublicKeyStr(keypair);
 

@@ -510,15 +510,11 @@ var createKeypair = function (password, isFraAddress) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
+                    console.log("createKeypair - creating an fra keypair ? - ".concat(isFraAddress));
                     return [4 /*yield*/, (0, exports.getMnemonic)(24)];
                 case 2:
                     mnemonic = _a.sent();
-                    if (isFraAddress) {
-                        keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
-                    }
-                    else {
-                        keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-                    }
+                    keypair = ledger.new_keypair_old();
                     _a.label = 3;
                 case 3:
                     _a.trys.push([3, 7, , 8]);

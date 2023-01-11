@@ -91,6 +91,8 @@ export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): P
     throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);
   }
 };
+
+// @todo add suppor for both fra and eth addresses
 export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
 
@@ -105,6 +107,7 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
   }
 };
 
+// @todo add suppor for both fra and eth addresses
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
   try {
@@ -114,6 +117,7 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   }
 };
 
+// @todo add suppor for both fra and eth addresses
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
   try {
@@ -376,6 +380,44 @@ export const restoreFromKeystoreString = async (
 
 export const createKeypair = async (password: string, isFraAddress = true): Promise<WalletKeypar> => {
   const ledger = await getLedger();
+  console.log(`createKeypair - creating an fra keypair ? - ${isFraAddress}`);
+
+  let keypair: XfrKeyPair;
+
+  if (isFraAddress) {
+    keypair = ledger.new_keypair_old();
+  } else {
+    keypair = ledger.new_keypair();
+  }
+
+  try {
+    const keyPairStr = ledger.keypair_to_str(keypair);
+    const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+
+    const privateStr = await getPrivateKeyStr(keypair);
+    // @todo add suppor for both fra and eth addresses
+    const publickey = await getPublicKeyStr(keypair);
+    // @todo add suppor for both fra and eth addresses
+    const address = await getAddress(keypair);
+
+    return {
+      keyStore: encrypted,
+      publickey,
+      address,
+      keypair,
+      privateStr,
+    };
+  } catch (err) {
+    throw new Error(`could not create a WalletKeypar, "${err}" `);
+  }
+};
+
+export const createKeypairViaMnemonic = async (
+  password: string,
+  isFraAddress = true,
+): Promise<WalletKeypar> => {
+  const ledger = await getLedger();
+  console.log(`createKeypairViaMnemonic - creating an fra keypair ? - ${isFraAddress}`);
 
   const mnemonic = await getMnemonic(24);
 

@@ -1787,7 +1787,7 @@ function testWasmFunctions(walletInfo) {
 }
 function testBrokenKeypairOne() {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, mnemonic, privateStrHex, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -1795,7 +1795,9 @@ function testBrokenKeypairOne() {
                     ledger = _a.sent();
                     console.log('============');
                     mnemonic = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
-                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+                    privateStrHex = ledger.get_priv_key_hex_str_by_mnemonic(mnemonic, 24);
+                    console.log('privateStrHex', privateStrHex);
+                    keypair = ledger.get_keypair_by_pri_key(privateStrHex);
                     return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
                 case 2:
                     publickey = _a.sent();
@@ -1828,7 +1830,7 @@ function testBrokenKeypairTwo() {
                 case 1:
                     ledger = _a.sent();
                     console.log('============');
-                    keypair = ledger.new_keypair();
+                    keypair = ledger.new_keypair_old();
                     return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
                 case 2:
                     publickey = _a.sent();
