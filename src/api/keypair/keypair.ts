@@ -315,6 +315,7 @@ export const restoreFromKeystore = async (
 ): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
+  console.log('restoreFromKeystore is called');
   try {
     const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
     const keypair = ledger.keypair_from_str(keyPairStr);
@@ -368,6 +369,7 @@ export const restoreFromKeystoreString = async (
     const keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
     const keyStore: Uint8Array = new Uint8Array(Object.values(keyStoreObject));
 
+    console.log('restoreFromKeystoreString is called');
     const result = await restoreFromKeystore(keyStore, ksPassword, password);
 
     return result;
