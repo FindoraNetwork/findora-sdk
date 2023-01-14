@@ -444,8 +444,20 @@ const transferFraToMultipleRecepients = async () => {
 
   const password = '123';
 
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  const pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+  const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+
+  const mnemonicLocalFaucet =
+    'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+
+  const faucetWalletInfoPkeyFra = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password);
+  const faucetWalletInfoPkeyEth = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password);
+
+  const walletInfo = faucetWalletInfoPkeyEth;
+  const toWalletInfoMine2 = faucetWalletInfoPkeyFra;
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
   const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
 
   const fraCode = await Asset.getFraAssetCode();
@@ -1774,6 +1786,8 @@ async function testBrokenKeypairTwo() {
   console.log('============');
   const keypair = ledger.new_keypair_old();
 
+  const ksPassword = '123';
+
   const publickey = await Keypair.getPublicKeyStr(keypair);
 
   console.log('publickey (from created keypair)', publickey);
@@ -1795,6 +1809,11 @@ async function testBrokenKeypairTwo() {
   );
   console.log('\n');
 
+  const keyPairStr = ledger.keypair_to_str(keypair);
+  const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+  const keyStore = encrypted;
+  const restoredWallet = await Keypair.restoreFromKeystoreWrapper(keyStore, ksPassword, ksPassword);
+  console.log('restoredWallet', restoredWallet);
   console.log('============');
 }
 
@@ -1804,72 +1823,105 @@ async function testBrokenKeypairs() {
 }
 
 async function getNewBalanace() {
-  const isFra = false;
+  const isFra = true;
 
   const pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+  // const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
 
-  const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
-
+  const pkeyLocalFaucetEth = 'AccMZunwLBzQT0VEiDQGiQQ3yQcO5-F_yEwoQ2c_dX0R';
   const mnemonicLocalFaucet =
     'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
 
   const faucetWalletInfoPkeyFra = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password);
   const faucetWalletInfoPkeyEth = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password);
 
-  const faucetWalletInfoMnemonic = await Keypair.restoreFromMnemonic(
+  const faucetWalletInfoMnemonicFra = await Keypair.restoreFromMnemonic(
     mnemonicLocalFaucet.split(' '),
     password,
     isFra,
   );
 
-  const balanceFaucetFra = await Account.getBalance(faucetWalletInfoPkeyFra);
-  const balanceFaucetEth = await Account.getBalance(faucetWalletInfoPkeyEth);
-  const balanceFaucetMnemonic = await Account.getBalance(faucetWalletInfoMnemonic);
+  const faucetWalletInfoMnemonicEth = await Keypair.restoreFromMnemonic(
+    mnemonicLocalFaucet.split(' '),
+    password,
+    false,
+  );
+
+  let balanceFaucetFra = '';
+  let balanceFaucetEth = '';
+  let balanceFaucetMnemonicFra = '';
+  let balanceFaucetMnemonicEth = '';
+
+  balanceFaucetFra = await Account.getBalance(faucetWalletInfoPkeyFra);
+  balanceFaucetEth = await Account.getBalance(faucetWalletInfoPkeyEth);
+  balanceFaucetMnemonicFra = await Account.getBalance(faucetWalletInfoMnemonicFra);
+  balanceFaucetMnemonicEth = await Account.getBalance(faucetWalletInfoMnemonicEth);
 
   console.log('============--------------=============================');
   console.log('\n');
 
+  const faucetWalletInfoPkeyFraRestored = await Keypair.restoreFromKeystoreWrapper(
+    faucetWalletInfoPkeyFra.keyStore,
+    password,
+    password,
+    isFra,
+  );
+  console.log('faucetWalletInfoPkeyFraRestored', faucetWalletInfoPkeyFraRestored);
   console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
   console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
   console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
   console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
   console.log('\n');
-
-  try {
-    await testWasmFunctions(faucetWalletInfoPkeyFra);
-  } catch (error) {
-    console.log('we have an error', error);
-  }
+  console.log('balance for faucetWalletInfoPkeyFra', balanceFaucetFra);
   console.log('\n');
 
   console.log('============--------------=============================');
   console.log('\n');
+  const faucetWalletInfoPkeyEthRestored = await Keypair.restoreFromKeystoreWrapper(
+    faucetWalletInfoPkeyEth.keyStore,
+    password,
+    password,
+    false,
+  );
+  console.log('faucetWalletInfoPkeyEthRestored', faucetWalletInfoPkeyEthRestored);
   console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
   console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
   console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
   console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
   console.log('\n');
-
-  try {
-    await testWasmFunctions(faucetWalletInfoPkeyFra);
-  } catch (error) {
-    console.log('we have an error', error);
-  }
+  console.log('balance for faucetWalletInfoPkeyEth', balanceFaucetEth);
   console.log('\n');
 
   console.log('============--------------=============================');
   console.log('\n');
+  const faucetWalletInfoMnemonicFraRestored = await Keypair.restoreFromKeystoreFra(
+    faucetWalletInfoMnemonicFra.keyStore,
+    password,
+    password,
+  );
+  console.log('faucetWalletInfoMnemonicFraRestored', faucetWalletInfoMnemonicFraRestored);
   console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
-  console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
-  console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
-  console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+  console.log('faucetWalletInfoMnemonicFra.address ', faucetWalletInfoMnemonicFra.address);
+  console.log('faucetWalletInfoMnemonicFra.privateStr', faucetWalletInfoMnemonicFra.privateStr);
+  console.log('faucetWalletInfoMnemonicFra.publickey', faucetWalletInfoMnemonicFra.publickey);
+  console.log('\n');
+  console.log('balance for faucetWalletInfoMnemonic', balanceFaucetMnemonicFra);
   console.log('\n');
 
-  try {
-    await testWasmFunctions(faucetWalletInfoMnemonic);
-  } catch (error) {
-    console.log('we have an error', error);
-  }
+  console.log('============--------------=============================');
+  console.log('\n');
+  const faucetWalletInfoMnemonicEthRestored = await Keypair.restoreFromKeystoreEth(
+    faucetWalletInfoMnemonicEth.keyStore,
+    password,
+    password,
+  );
+  console.log('faucetWalletInfoMnemonicEthfaucetWalletInfoMnemonicEthRestored');
+  console.log('Faucet Mnemonic eth', mnemonicLocalFaucet, '\n');
+  console.log('faucetWalletInfoMnemonicEth.address ', faucetWalletInfoMnemonicEth.address);
+  console.log('faucetWalletInfoMnemonicEth.privateStr', faucetWalletInfoMnemonicEth.privateStr);
+  console.log('faucetWalletInfoMnemonicEth.publickey', faucetWalletInfoMnemonicEth.publickey);
+  console.log('\n');
+  console.log('balance for faucetWalletInfoMnemonicEth', balanceFaucetMnemonicEth);
   console.log('\n');
 }
 
@@ -1885,5 +1937,6 @@ async function getNewBalanace() {
 // getAbarBalance();
 // testFailure();
 
-// getNewBalanace();
-testBrokenKeypairs();
+// transferFraToMultipleRecepients();
+// testBrokenKeypairs();
+getNewBalanace();
