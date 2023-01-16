@@ -170,6 +170,22 @@ export const sendToMany = async (
 
       throw new Error(`Could not add transfer operation for fee, Error: "${e.message}"`);
     }
+
+    try {
+      transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    } catch (err) {
+      const e: Error = err as Error;
+
+      throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+    }
+
+    try {
+      transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    } catch (err) {
+      const e: Error = err as Error;
+
+      throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+    }
   }
 
   return transactionBuilder;
