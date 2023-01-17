@@ -220,6 +220,8 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = err;
                     throw new Error("Could not add transfer operation for fee, Error: \"".concat(e.message, "\""));
                 }
+                _a.label = 12;
+            case 12:
                 try {
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
                 }
@@ -234,8 +236,7 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = err;
                     throw new Error("Could not sign origin transfer operation, Error: \"".concat(e.message, "\""));
                 }
-                _a.label = 12;
-            case 12: return [2 /*return*/, transactionBuilder];
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };
