@@ -418,7 +418,7 @@ const transferFraToSingleRecepient = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '0.11',
+    '0.03',
     assetCode,
     assetBlindRules,
   );
