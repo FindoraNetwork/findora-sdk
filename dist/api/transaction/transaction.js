@@ -37,7 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
-        while (_) try {
+        while (g && (g = 0, op[0] && (_ = 0)), _) try {
             if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
             if (y = 0, t) op = [op[0] & 2, t.value];
             switch (op[0]) {
@@ -132,7 +132,7 @@ exports.getTransactionBuilder = getTransactionBuilder;
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e;
+    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -221,7 +221,22 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     throw new Error("Could not add transfer operation for fee, Error: \"".concat(e.message, "\""));
                 }
                 _a.label = 12;
-            case 12: return [2 /*return*/, transactionBuilder];
+            case 12:
+                try {
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not sign origin transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                return [2 /*return*/, transactionBuilder];
         }
     });
 }); };

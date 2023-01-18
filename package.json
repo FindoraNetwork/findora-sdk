@@ -1,6 +1,6 @@
 {
   "name": "@findora-network/findora-sdk.js",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "The JavaScript SDK for Findora Network",
   "license": "ISC",
   "author": "Findora Network",
@@ -51,11 +51,14 @@
     "prepublishOnly": "npm run build",
     "start:build": "tsc -w  ",
     "start:run": "nodemon dist/run.js --ignore cache/",
+    "start:once": "yarn cli:build; yarn start:run:once",
+    "start:run:once": "node dist/run.js ",
     "cli:build": "tsc",
     "cli:run": "nodemon dist/cli/cli.js --ignore cache/ \"$npm_config\"",
     "jest-coverage": "yarn run jest -- --coverage",
     "start": "concurrently npm:start:*",
-    "cli": "yarn cli:build && yarn cli:run \"$npm_config\""
+    "cli": "yarn cli:build && yarn cli:run \"$npm_config\"",
+    "update-wasm": "yarn upgrade findora-wallet-wasm"
   },
   "lint-staged": {
     "./src/**/*.ts": [
@@ -93,7 +96,7 @@
     "husky": "^4.3.6",
     "jest": "^26.6.3",
     "lint-staged": "^10.5.3",
-    "msw": "^0.28.1",
+    "msw": "^0.48.2",
     "nodemon": "^2.0.7",
     "path-browserify": "^1.0.1",
     "prettier": "^2.2.1",
@@ -120,7 +123,7 @@
     "bignumber.js": "^9.0.1",
     "dotenv": "^10.0.0",
     "env": "^0.0.2",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#v0.3.30-release",
+    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#v0.4.0",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",

@@ -7,8 +7,8 @@ import { ProcessedDelegation } from './delegation';
 import { ProcessedClaim } from './claim';
 import { ProcessedConvertAccount } from './converAccount';
 import { Unsupported } from './unsupported';
-export declare type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | ProcessedConvertAccount | Unsupported;
-export declare type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
+export type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | ProcessedConvertAccount | Unsupported;
+export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;
 export interface TxOperationProcessors {
     [key: string]: ProcessorType;
 }

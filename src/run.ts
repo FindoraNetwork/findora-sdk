@@ -74,9 +74,9 @@ const getFraBalance = async () => {
   const password = '1234';
 
   // const pkey = PKEY_LOCAL_FAUCET;
-  // const pkey = PKEY_MINE;
+  const pkey = PKEY_MINE;
   // const pkey = PKEY_MINE3;
-  const pkey = ENG_PKEY;
+  // const pkey = ENG_PKEY;
 
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
   // const mString = M_STRING;
@@ -402,8 +402,7 @@ const transferFraToSingleAddress = async () => {
  */
 const transferFraToSingleRecepient = async () => {
   const pkey = PKEY_LOCAL_FAUCET;
-
-  const toPkeyMine2 = PKEY_MINE2;
+  const toPkeyMine2 = PKEY_MINE;
 
   const password = '123';
 
@@ -419,7 +418,7 @@ const transferFraToSingleRecepient = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '2',
+    '0.03',
     assetCode,
     assetBlindRules,
   );
