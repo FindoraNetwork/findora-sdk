@@ -383,9 +383,15 @@ export const sendAccountToEvm = async (
   const decimals = asset.assetRules.decimals;
   const convertAmount = BigInt(toWei(amount, decimals).toString(10));
 
-  transactionBuilder = transactionBuilder
-    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData)
-    .sign(walletInfo.keypair);
+  transactionBuilder = transactionBuilder.add_operation_convert_account(
+    walletInfo.keypair,
+    ethAddress,
+    convertAmount,
+    mainAssetCode,
+    lowLevelData,
+  );
+  transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
 
   return transactionBuilder;
 };

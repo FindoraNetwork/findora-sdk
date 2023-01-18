@@ -161,6 +161,7 @@ var unStake = function (walletInfo, amount, validator, isFullUnstake) {
                     try {
                         transactionBuilder = transactionBuilder.build();
                         transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                        transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                     }
                     catch (err) {
                         console.log('sendToMany error in build and sign ', err);
@@ -231,6 +232,7 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 try {
                     transactionBuilder = transactionBuilder.build();
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
@@ -303,6 +305,7 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 try {
                     transactionBuilder = transactionBuilder.build();
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
