@@ -405,8 +405,7 @@ const testTransferToYourself = async () => {
  */
 const transferFraToSingleRecepient = async () => {
   const pkey = PKEY_LOCAL_FAUCET;
-
-  const toPkeyMine2 = PKEY_MINE2;
+  const toPkeyMine2 = PKEY_MINE;
 
   const password = '123';
 
@@ -424,7 +423,7 @@ const transferFraToSingleRecepient = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '2',
+    '0.03',
     assetCode,
     assetBlindRules,
   );

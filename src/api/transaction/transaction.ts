@@ -155,20 +155,19 @@ export const sendToMany = async (
   }
 
   try {
-    transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
   } catch (err) {
-    console.log('sendToMany error in build and sign ', err);
-    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
   try {
-    if ('sign_origin' in transactionBuilder) {
-      transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-    }
+    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
-    console.log('sendToMany error in signOrigin ', err);
-    throw new Error(`could not signOrigin txn "${(err as Error).message}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;
@@ -296,12 +295,19 @@ export const sendToManyV2 = async (
   }
 
   try {
-    if ('sign_origin' in transactionBuilder) {
-      transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-    }
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
   } catch (err) {
-    console.log('sendToMany error in signOrigin ', err);
-    throw new Error(`could not signOrigin txn "${(err as Error).message}"`);
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
   }
 
   return transactionBuilder;

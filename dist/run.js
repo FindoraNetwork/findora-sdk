@@ -501,7 +501,7 @@ var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0:
                 pkey = PKEY_LOCAL_FAUCET;
-                toPkeyMine2 = PKEY_MINE2;
+                toPkeyMine2 = PKEY_MINE;
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:
@@ -516,7 +516,7 @@ var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0
                 fraCode = _a.sent();
                 assetCode = fraCode;
                 assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '2', assetCode, assetBlindRules)];
+                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.03', assetCode, assetBlindRules)];
             case 4:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
