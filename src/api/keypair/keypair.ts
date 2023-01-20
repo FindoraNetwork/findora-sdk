@@ -102,7 +102,6 @@ export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): P
   }
 };
 
-// @todo add suppor for both fra and eth addresses
 export const getPublicKeyStrOld = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
 
@@ -110,7 +109,6 @@ export const getPublicKeyStrOld = async (keypair: XfrKeyPair): Promise<string> =
     // fra
     const publickey = ledger.get_pub_key_str_old(keypair).replace(/"/g, '');
 
-    console.log('sdk publickey to use 2', publickey);
     // other option is
     //  const publickey = ledger.public_key_to_base64(ledger.get_pk_from_keypair(keypair));
     //
@@ -127,14 +125,12 @@ export const getPublicKeyStr = async (keypair: XfrKeyPair): Promise<string> => {
     // eth
     const publickey = ledger.get_pub_key_str(keypair).replace(/"/g, '');
 
-    console.log('sdk publickey to use 3', publickey);
     return publickey;
   } catch (err) {
     throw new Error(`could not get pub key string, "${err}" `);
   }
 };
 
-// @todo add suppor for both fra and eth addresses
 export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   const ledger = await getLedger();
   try {
@@ -144,7 +140,6 @@ export const getAddress = async (keypair: XfrKeyPair): Promise<string> => {
   }
 };
 
-// @todo add suppor for both fra and eth addresses
 export const getAddressByPublicKey = async (publicKey: string): Promise<string> => {
   const ledger = await getLedger();
   try {
@@ -211,7 +206,6 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
   try {
     // eth
     const publickey = ledger.bech32_to_base64(address);
-    console.log('sdk publickey to use 1', publickey);
 
     return {
       address,
@@ -228,7 +222,6 @@ export const getAddressPublicAndKeyOld = async (address: string): Promise<LightW
   try {
     // fra
     const publickey = ledger.bech32_to_base64_old(address);
-    console.log('sdk publickey to use 4', publickey);
 
     return {
       address,
@@ -285,10 +278,9 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
 
   let publickey;
 
+  // old format privateStr is smth like "xxx="
+  // that is how we can differentiate which method to call later
   const isFraAddress = toSend.endsWith('="');
-
-  // console.log('sdk restoreFromPrivateKey - toSend', toSend);
-  // console.log('sdk restoreFromPrivateKey - isFraAddress', isFraAddress);
 
   const keypairStr = ledger.keypair_to_str(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);
@@ -309,52 +301,24 @@ export const restoreFromPrivateKey = async (privateStr: string, password: string
     privateStr,
   };
 
-  console.log('sdk restoreFromPrivateKey - walletInfo', walletInfo);
-
   return walletInfo;
 };
 
 export const createKeypair = async (password: string, isFraAddress = true): Promise<WalletKeypar> => {
   const ledger = await getLedger();
-  console.log(`createKeypair - creating an fra keypair ? isFraAddress - ${isFraAddress}`);
-
-  // let keypair: XfrKeyPair;
-  // let keyPairStr;
-  // let publickey;
 
   let privateStr;
 
   if (isFraAddress) {
     const keypair = ledger.new_keypair_old();
     privateStr = await getPrivateKeyStrOld(keypair);
-    // publickey = await getPublicKeyStrOld(keypair);
   } else {
     const keypair = ledger.new_keypair();
     privateStr = await getPrivateKeyStr(keypair);
-    // publickey = await getPublicKeyStr(keypair);
   }
 
   try {
-    // const keyPairStr = ledger.keypair_to_str(keypair);
-    console.log('sdk new keyPairStr from createKeypair', privateStr);
-    // const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-
-    // const privateStr = await getPrivateKeyStr(keypair);
-    // @todo add suppor for both fra and eth addresses
-    // const publickey = await getPublicKeyStr(keypair);
-    // @todo add suppor for both fra and eth addresses
-    // const address = await getAddress(keypair);
-
-    // const walletInfo = {
-    //   keyStore: encrypted,
-    //   publickey,
-    //   address,
-    //   keypair,
-    //   privateStr,
-    // };
-
     const walletInfo = await restoreFromPrivateKey(privateStr, password);
-    console.log('sdk wallet info - from createKeypair', walletInfo);
 
     return walletInfo;
   } catch (err) {
@@ -375,6 +339,9 @@ export const restoreEvmPrivate = async (privateStr: string, password: string): P
   };
 };
 
+/*
+ * Is used by the client to decode an encoded keystore
+ */
 export const restoreEvmKeyStore = async (
   keyStore: Uint8Array,
   password: string,
@@ -396,82 +363,21 @@ export const restoreFromMnemonic = async (
 ): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  // let keypair: XfrKeyPair;
   let privateStr;
-  // let publickey;
 
   if (isFraAddress) {
-    // keypair = keypairFra;
     const keypairFra = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
     privateStr = await getPrivateKeyStrOld(keypairFra);
-    // publickey = await getPublicKeyStrOld(keypair);
   } else {
-    // keypair = keypairEth;
     const keypairEth = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
     privateStr = await getPrivateKeyStr(keypairEth);
-    // publickey = await getPublicKeyStr(keypair);
   }
 
   const walletInfoFull = await restoreFromPrivateKey(privateStr, password);
-  // const encrypted = ledger.encryption_pbkdf2_aes256gcm(privateStr, password);
-  // const address = await getAddress(keypair);
-  //
-  // const walletInfo = {
-  //   keyStore: encrypted,
-  //   publickey,
-  //   address,
-  //   keypair,
-  //   privateStr,
-  // };
-  // console.log('sdk restoreFromMnemonic - walletInfo', walletInfo);
-  console.log('sdk restoreFromMnemonic - walletInfo', walletInfoFull);
 
   return walletInfoFull;
-  // return walletInfo;
 };
-// export const restoreFromKeystore = async (
-//   keyStore: Uint8Array,
-//   ksPassword: string,
-//   password: string,
-//   isFraAddress = true,
-// ): Promise<WalletKeypar> => {
-//   const ledger = await getLedger();
-//
-//   try {
-//     const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
-//     const keypair = ledger.keypair_from_str(keyPairStr);
-//
-//     const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-//     const address = await getAddress(keypair);
-//
-//     let privateStr;
-//
-//     let publickey;
-//
-//     if (isFraAddress) {
-//       publickey = await getPublicKeyStrOld(keypair);
-//       privateStr = await getPrivateKeyStrOld(keypair);
-//     } else {
-//       publickey = await getPublicKeyStr(keypair);
-//       privateStr = await getPrivateKeyStr(keypair);
-//     }
-//
-//     const walletInfo = {
-//       keyStore: encrypted,
-//       publickey,
-//       address,
-//       keypair,
-//       privateStr,
-//     };
-//
-//     return walletInfo;
-//   } catch (err) {
-//     throw new Error(`could not restore keypair from the key string. Details: "${(err as Error).message}"`);
-//   }
-// };
 
-// restores from a "full lenght" keyStore of 194 bytes
-// wallets are created from the pk or keystore. not from the mnemonics
 export const restoreFromKeystoreWrapper = async (
   keyStore: Uint8Array,
   ksPassword: string,
@@ -484,29 +390,15 @@ export const restoreFromKeystoreWrapper = async (
     const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
     const keypair = ledger.keypair_from_str(keyPairStr);
 
-    // const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-    // const address = await getAddress(keypair);
-
     let privateStr;
-    // let publickey;
 
     if (isFraAddress) {
-      // publickey = await getPublicKeyStrOld(keypair);
       privateStr = await getPrivateKeyStrOld(keypair);
     } else {
-      // publickey = await getPublicKeyStr(keypair);
       privateStr = await getPrivateKeyStr(keypair);
     }
 
     const walletInfo = await restoreFromPrivateKey(privateStr, password);
-    // const walletInfo = {
-    //   keyStore: encrypted,
-    //   publickey,
-    //   address,
-    //   keypair,
-    //   privateStr,
-    // };
-    console.log('sdk wallet info - from restoreFromKeystore', walletInfo);
 
     return walletInfo;
   } catch (err) {
@@ -522,7 +414,6 @@ export const restoreFromKeystoreEth = async (
   const ledger = await getLedger();
 
   try {
-    // since it is a "shorter" keyStore, with 104 bytes, then decryption_pbkdf2_aes256gcm will return a privateStr
     const privateStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, ksPassword);
 
     const isShortKeyStore = privateStr.length === 44;
@@ -538,7 +429,6 @@ export const restoreFromKeystoreEth = async (
     }
 
     const walletInfo = await restoreFromKeystoreWrapper(keyStoreToUse, ksPassword, password, false);
-    console.log('sdk wallet info - from restoreFromKeystore EE', walletInfo);
     return walletInfo;
   } catch (err) {
     throw new Error(`could not restore keypair from the key string. Details: "${(err as Error).message}"`);
@@ -570,8 +460,6 @@ export const restoreFromKeystoreFra = async (
 
     const walletInfo = await restoreFromKeystoreWrapper(keyStoreToUse, ksPassword, password, true);
 
-    console.log('sdk wallet info - from restoreFromKeystore FF', walletInfo);
-
     return walletInfo;
   } catch (err) {
     throw new Error(`could not restore keypair from the key string. Details: "${(err as Error).message}"`);
@@ -583,31 +471,7 @@ export const recoveryKeypairFromKeystore = async (
   password: string,
   isFraAddress = true,
 ): Promise<Partial<WalletKeypar>> => {
-  // const ledger = await getLedger();
-
-  console.log('14 keyStore', keyStore);
-
   try {
-    // const keyPairStr = ledger.decryption_pbkdf2_aes256gcm(keyStore, password);
-    //
-    // console.log('14 keyPairStr,', keyPairStr);
-    //
-    // const keypair = ledger.keypair_from_str(keyPairStr);
-    // const privateStr = await getPrivateKeyStr(keypair);
-    //
-    // const isFraAddress = privateStr.endsWith('=');
-    //
-    // let publickey;
-    //
-    // if (isFraAddress) {
-    //   publickey = await getPublicKeyStrOld(keypair);
-    // } else {
-    //   publickey = await getPublicKeyStr(keypair);
-    // }
-    // console.log('14 keyPairStr,', keyPairStr);
-
-    // const address = await getAddressByPublicKey(publickey);
-
     const { publickey, address, keypair } = await restoreFromKeystoreWrapper(
       keyStore,
       password,
@@ -620,8 +484,6 @@ export const recoveryKeypairFromKeystore = async (
       address,
       keypair,
     };
-
-    console.log('sdk wallet info - from recoveryKeypairFromKeystore', walletInfo);
 
     return walletInfo;
   } catch (err) {
@@ -639,10 +501,7 @@ export const restoreFromKeystoreString = async (
     const keyStoreObject = JSON.parse(keyStoreString).encryptedKey;
     const keyStore: Uint8Array = new Uint8Array(Object.values(keyStoreObject));
 
-    console.log('sdk restoreFromKeystoreString is called');
     const walletInfo = await restoreFromKeystoreWrapper(keyStore, ksPassword, password, isFraAddress);
-
-    console.log('sdk restoreFromKeystoreString - walletInfo', walletInfo);
 
     return walletInfo;
   } catch (err) {
@@ -656,41 +515,10 @@ export const createKeypairViaMnemonic = async (
   password: string,
   isFraAddress = true,
 ): Promise<WalletKeypar> => {
-  console.log(`createKeypairViaMnemonic - creating an fra keypair ? - ${isFraAddress}`);
-
-  // let keypair: XfrKeyPair;
-  // let keyPairStr;
-  //
-  // if (isFraAddress) {
-  //   keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
-  //   keyPairStr = await getPrivateKeyStrOld(keypair);
-  // } else {
-  //   keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-  //   keyPairStr = await getPrivateKeyStr(keypair);
-  // }
-  //
   try {
     const mnemonic = await getMnemonic(24);
 
     const walletInfo = await restoreFromMnemonic(mnemonic, password, isFraAddress);
-
-    //   // is it broken?
-    //   // const keyPairStr = ledger.keypair_to_str(keypair);
-    //   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
-    //
-    //   const privateStr = await getPrivateKeyStr(keypair);
-    //   const publickey = await getPublicKeyStr(keypair);
-    //   const address = await getAddress(keypair);
-    //
-    //   const walletInfo = {
-    //     keyStore: encrypted,
-    //     publickey,
-    //     address,
-    //     keypair,
-    //     privateStr,
-    //   };
-
-    console.log('sdk wallet info - from createKeypairViaMnemonic', walletInfo);
 
     return walletInfo;
   } catch (err) {
