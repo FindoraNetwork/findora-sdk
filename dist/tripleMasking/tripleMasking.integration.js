@@ -74,6 +74,7 @@ var envConfigFile = process.env.INTEGRATION_ENV_NAME
     : "../../.env_example";
 var envConfig = require("".concat(envConfigFile, ".json"));
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
+console.log('walletKeys for tm', walletKeys);
 var sdkEnv = {
     hostUrl: envHostUrl,
     cacheProvider: providers_1.MemoryCacheProvider,
@@ -135,7 +136,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 2:
                 walletInfo = _a.sent();
                 (0, utils_1.log)('new wallet info', walletInfo);

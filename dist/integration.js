@@ -75,6 +75,7 @@ var envConfigFile = process.env.INTEGRATION_ENV_NAME
     : "../.env_example";
 var envConfig = require("".concat(envConfigFile, ".json"));
 var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
+console.log('walletKeys', walletKeys);
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */

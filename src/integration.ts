@@ -19,6 +19,7 @@ const envConfigFile = process.env.INTEGRATION_ENV_NAME
 const envConfig = require(`${envConfigFile}.json`);
 
 const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
+console.log('walletKeys', walletKeys);
 
 /**
  * Prior to using SDK we have to initialize its environment configuration
