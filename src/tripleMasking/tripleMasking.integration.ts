@@ -8,6 +8,7 @@ import { addUtxo } from '../services/utxoHelper';
 import * as FindoraWallet from '../types/findoraWallet';
 
 import { create as createBigNumber } from '../services/bigNumber';
+import { WalletKeypar } from 'api/keypair';
 
 dotenv.config();
 
@@ -159,20 +160,14 @@ const barToAbarBalances = async (
   return true;
 };
 
-export const validateSpent = async (
-  AnonKeys: FindoraWallet.FormattedAnonKeys,
-  givenCommitments: string[],
-) => {
-  const anonKeys = { ...AnonKeys };
-  const axfrKeyPair = anonKeys.axfrSecretKey;
-
+export const validateSpent = async (AnonKeys: WalletKeypar, givenCommitments: string[]) => {
   for (const givenCommitment of givenCommitments) {
     const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
     const [ownedAbarItem] = ownedAbarsResponse;
     const { abarData } = ownedAbarItem;
     const { atxoSid, ownedAbar } = abarData;
 
-    const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrKeyPair);
+    const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, AnonKeys.keypair);
     const result = await TripleMasking.isNullifierHashSpent(hash);
 
     if (!result) {
