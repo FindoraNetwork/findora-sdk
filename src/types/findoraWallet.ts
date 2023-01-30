@@ -1,3 +1,5 @@
+import { WalletKeypar } from 'api/keypair';
+
 export interface IAssetRules {
   decimals: number;
   transferable: boolean;
@@ -55,18 +57,13 @@ export interface IWallet {
   privateKey?: string;
 }
 
-export interface FormattedAnonKeys {
-  axfrSecretKey: string;
-  axfrPublicKey: string;
-}
-
 export interface BarToAbarData {
-  receiverAxfrPublicKey: string;
+  receiverXfrPublicKeyAddress: string;
   commitments: string[];
 }
 
 export interface AbarToBarData {
-  anonKeysSender: FormattedAnonKeys;
+  anonKeysSender: WalletKeypar;
 }
 
 export interface ProcessedCommitmentsMap {
@@ -77,7 +74,7 @@ export interface ProcessedCommitmentsMap {
 }
 
 export interface AbarToAbarData {
-  anonKeysSender: FormattedAnonKeys;
+  anonKeysSender: WalletKeypar;
   anonPubKeyReceiver: string;
   commitmentsMap: ProcessedCommitmentsMap[];
 }
@@ -87,11 +84,6 @@ export interface BarToAbarResult<T> {
   barToAbarData: BarToAbarData;
   sids: number[];
   // sid: string;
-}
-
-export interface AnonKeysResponse<T> {
-  keysInstance: T;
-  formatted: FormattedAnonKeys;
 }
 
 export interface OwnedAbar {
@@ -153,7 +145,7 @@ export type AbarMemoItem = [string, AbarMemoData];
 export interface DecryptedAbarMemoData {
   atxoSid: string;
   decryptedAbar: Uint8Array;
-  owner: FormattedAnonKeys;
+  owner: WalletKeypar;
 }
 
 export interface AtxoCommitmentItem {

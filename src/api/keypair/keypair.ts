@@ -1,5 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -170,33 +170,6 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
     return ledger.public_key_to_base64(publicKey);
   } catch (err) {
     throw new Error(`could not get base64 public key by xfr, "${err}" `);
-  }
-};
-
-export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_pubkey_from_string(publicKey);
-  } catch (err) {
-    throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
-  }
-};
-
-export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_keypair_from_string(privateKey);
-  } catch (err) {
-    throw new Error(`could not get AXfrKeyPair from the string, "${err}" `);
-  }
-};
-
-export const getAxfrPubKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_pubkey_from_string(publicKey);
-  } catch (err) {
-    throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
   }
 };
 
