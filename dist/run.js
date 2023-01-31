@@ -531,7 +531,7 @@ var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0
  * Send fra to multiple recepients
  */
 var transferFraToMultipleRecepients = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfoMine2, toWalletInfoMine3, fraCode, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
+    var pkey, toPkeyMine2, toPkeyMine3, password, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, walletInfo, toWalletInfoMine2, toWalletInfoMine3, fraCode, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -539,12 +539,17 @@ var transferFraToMultipleRecepients = function () { return __awaiter(void 0, voi
                 toPkeyMine2 = PKEY_MINE2;
                 toPkeyMine3 = PKEY_MINE3;
                 password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
+                pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+                pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+                mnemonicLocalFaucet = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password)];
             case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password)];
+                faucetWalletInfoPkeyFra = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password)];
             case 2:
-                toWalletInfoMine2 = _a.sent();
+                faucetWalletInfoPkeyEth = _a.sent();
+                walletInfo = faucetWalletInfoPkeyEth;
+                toWalletInfoMine2 = faucetWalletInfoPkeyFra;
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password)];
             case 3:
                 toWalletInfoMine3 = _a.sent();
@@ -1787,7 +1792,7 @@ function testWasmFunctions(walletInfo) {
 }
 function testBrokenKeypairOne() {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, mnemonic, privateStrHex, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -1795,7 +1800,9 @@ function testBrokenKeypairOne() {
                     ledger = _a.sent();
                     console.log('============');
                     mnemonic = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
-                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+                    privateStrHex = ledger.get_priv_key_hex_str_by_mnemonic(mnemonic, 24);
+                    console.log('privateStrHex', privateStrHex);
+                    keypair = ledger.get_keypair_by_pri_key(privateStrHex);
                     return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
                 case 2:
                     publickey = _a.sent();
@@ -1821,14 +1828,15 @@ function testBrokenKeypairOne() {
 }
 function testBrokenKeypairTwo() {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, keypair, ksPassword, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra, keyPairStr, encrypted, keyStore, restoredWallet;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
                     console.log('============');
-                    keypair = ledger.new_keypair();
+                    keypair = ledger.new_keypair_old();
+                    ksPassword = '123';
                     return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
                 case 2:
                     publickey = _a.sent();
@@ -1846,6 +1854,13 @@ function testBrokenKeypairTwo() {
                     console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
                     console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
                     console.log('\n');
+                    keyPairStr = ledger.keypair_to_str(keypair);
+                    encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
+                    keyStore = encrypted;
+                    return [4 /*yield*/, api_1.Keypair.restoreFromKeystoreWrapper(keyStore, ksPassword, ksPassword)];
+                case 4:
+                    restoredWallet = _a.sent();
+                    console.log('restoredWallet', restoredWallet);
                     console.log('============');
                     return [2 /*return*/];
             }
@@ -1869,13 +1884,13 @@ function testBrokenKeypairs() {
 }
 function getNewBalanace() {
     return __awaiter(this, void 0, void 0, function () {
-        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_3, error_4, error_5;
+        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonicFra, faucetWalletInfoMnemonicEth, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonicFra, balanceFaucetMnemonicEth, faucetWalletInfoPkeyFraRestored, faucetWalletInfoPkeyEthRestored, faucetWalletInfoMnemonicFraRestored, faucetWalletInfoMnemonicEthRestored;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    isFra = false;
+                    isFra = true;
                     pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
-                    pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+                    pkeyLocalFaucetEth = 'AccMZunwLBzQT0VEiDQGiQQ3yQcO5-F_yEwoQ2c_dX0R';
                     mnemonicLocalFaucet = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password)];
                 case 1:
@@ -1885,75 +1900,77 @@ function getNewBalanace() {
                     faucetWalletInfoPkeyEth = _a.sent();
                     return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password, isFra)];
                 case 3:
-                    faucetWalletInfoMnemonic = _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyFra)];
+                    faucetWalletInfoMnemonicFra = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password, false)];
                 case 4:
+                    faucetWalletInfoMnemonicEth = _a.sent();
+                    balanceFaucetFra = '';
+                    balanceFaucetEth = '';
+                    balanceFaucetMnemonicFra = '';
+                    balanceFaucetMnemonicEth = '';
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyFra)];
+                case 5:
                     balanceFaucetFra = _a.sent();
                     return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyEth)];
-                case 5:
-                    balanceFaucetEth = _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoMnemonic)];
                 case 6:
-                    balanceFaucetMnemonic = _a.sent();
+                    balanceFaucetEth = _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoMnemonicFra)];
+                case 7:
+                    balanceFaucetMnemonicFra = _a.sent();
+                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoMnemonicEth)];
+                case 8:
+                    balanceFaucetMnemonicEth = _a.sent();
                     console.log('============--------------=============================');
                     console.log('\n');
+                    return [4 /*yield*/, api_1.Keypair.restoreFromKeystoreWrapper(faucetWalletInfoPkeyFra.keyStore, password, password, isFra)];
+                case 9:
+                    faucetWalletInfoPkeyFraRestored = _a.sent();
+                    console.log('faucetWalletInfoPkeyFraRestored', faucetWalletInfoPkeyFraRestored);
                     console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
                     console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
                     console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
                     console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
                     console.log('\n');
-                    _a.label = 7;
-                case 7:
-                    _a.trys.push([7, 9, , 10]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
-                case 8:
-                    _a.sent();
-                    return [3 /*break*/, 10];
-                case 9:
-                    error_3 = _a.sent();
-                    console.log('we have an error', error_3);
-                    return [3 /*break*/, 10];
-                case 10:
+                    console.log('balance for faucetWalletInfoPkeyFra', balanceFaucetFra);
                     console.log('\n');
                     console.log('============--------------=============================');
                     console.log('\n');
+                    return [4 /*yield*/, api_1.Keypair.restoreFromKeystoreWrapper(faucetWalletInfoPkeyEth.keyStore, password, password, false)];
+                case 10:
+                    faucetWalletInfoPkeyEthRestored = _a.sent();
+                    console.log('faucetWalletInfoPkeyEthRestored', faucetWalletInfoPkeyEthRestored);
                     console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
                     console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
                     console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
                     console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
                     console.log('\n');
-                    _a.label = 11;
-                case 11:
-                    _a.trys.push([11, 13, , 14]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
-                case 12:
-                    _a.sent();
-                    return [3 /*break*/, 14];
-                case 13:
-                    error_4 = _a.sent();
-                    console.log('we have an error', error_4);
-                    return [3 /*break*/, 14];
-                case 14:
+                    console.log('balance for faucetWalletInfoPkeyEth', balanceFaucetEth);
                     console.log('\n');
                     console.log('============--------------=============================');
                     console.log('\n');
+                    return [4 /*yield*/, api_1.Keypair.restoreFromKeystoreFra(faucetWalletInfoMnemonicFra.keyStore, password, password)];
+                case 11:
+                    faucetWalletInfoMnemonicFraRestored = _a.sent();
+                    console.log('faucetWalletInfoMnemonicFraRestored', faucetWalletInfoMnemonicFraRestored);
                     console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
-                    console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
-                    console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
-                    console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+                    console.log('faucetWalletInfoMnemonicFra.address ', faucetWalletInfoMnemonicFra.address);
+                    console.log('faucetWalletInfoMnemonicFra.privateStr', faucetWalletInfoMnemonicFra.privateStr);
+                    console.log('faucetWalletInfoMnemonicFra.publickey', faucetWalletInfoMnemonicFra.publickey);
                     console.log('\n');
-                    _a.label = 15;
-                case 15:
-                    _a.trys.push([15, 17, , 18]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoMnemonic)];
-                case 16:
-                    _a.sent();
-                    return [3 /*break*/, 18];
-                case 17:
-                    error_5 = _a.sent();
-                    console.log('we have an error', error_5);
-                    return [3 /*break*/, 18];
-                case 18:
+                    console.log('balance for faucetWalletInfoMnemonic', balanceFaucetMnemonicFra);
+                    console.log('\n');
+                    console.log('============--------------=============================');
+                    console.log('\n');
+                    return [4 /*yield*/, api_1.Keypair.restoreFromKeystoreEth(faucetWalletInfoMnemonicEth.keyStore, password, password)];
+                case 12:
+                    faucetWalletInfoMnemonicEthRestored = _a.sent();
+                    console.log('faucetWalletInfoMnemonicEthfaucetWalletInfoMnemonicEthRestored');
+                    console.log('Faucet Mnemonic eth', mnemonicLocalFaucet, '\n');
+                    console.log('faucetWalletInfoMnemonicEth.address ', faucetWalletInfoMnemonicEth.address);
+                    console.log('faucetWalletInfoMnemonicEth.privateStr', faucetWalletInfoMnemonicEth.privateStr);
+                    console.log('faucetWalletInfoMnemonicEth.publickey', faucetWalletInfoMnemonicEth.publickey);
+                    console.log('\n');
+                    console.log('balance for faucetWalletInfoMnemonicEth', balanceFaucetMnemonicEth);
                     console.log('\n');
                     return [2 /*return*/];
             }
@@ -1970,6 +1987,7 @@ function getNewBalanace() {
 // getMas();
 // getAbarBalance();
 // testFailure();
-// getNewBalanace();
-testBrokenKeypairs();
+// transferFraToMultipleRecepients();
+// testBrokenKeypairs();
+getNewBalanace();
 //# sourceMappingURL=run.js.map

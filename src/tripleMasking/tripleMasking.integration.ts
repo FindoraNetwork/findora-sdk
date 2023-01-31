@@ -19,6 +19,8 @@ const envConfig = require(`${envConfigFile}.json`);
 
 const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
 
+console.log('walletKeys for tm', walletKeys);
+
 const sdkEnv = {
   hostUrl: envHostUrl,
   cacheProvider: MemoryCacheProvider,
@@ -65,7 +67,7 @@ export const getAnonKeys = async () => {
 export const createNewKeypair = async () => {
   const mm = await Keypair.getMnemonic(24);
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
   log('new wallet info', walletInfo);
 
