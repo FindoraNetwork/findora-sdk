@@ -58,7 +58,7 @@ export interface IWallet {
 }
 
 export interface BarToAbarData {
-  receiverXfrPublicKeyAddress: string;
+  receiverXfrPublicKey: string;
   commitments: string[];
 }
 
@@ -68,7 +68,7 @@ export interface AbarToBarData {
 
 export interface ProcessedCommitmentsMap {
   commitmentKey: string;
-  commitmentAxfrPublicKey: string;
+  commitmentXfrPublicKey: string;
   commitmentAssetType: string;
   commitmentAmount: string;
 }

@@ -92,10 +92,14 @@ export const getPrivateKeyStrOld = async (keypair: XfrKeyPair): Promise<string> 
 
 export const getMnemonic = async (desiredLength: number, mnemonicLang = 'en'): Promise<string[]> => {
   const ledger = await getLedger();
-
+  console.log(ledger);
   try {
+    console.log(desiredLength);
+    console.log(mnemonicLang);
     const ledgerMnemonicString = ledger.generate_mnemonic_custom(desiredLength, mnemonicLang);
+    console.log(ledgerMnemonicString);
     const result = String(ledgerMnemonicString).split(' ');
+    console.log(result);
     return result;
   } catch (err) {
     throw new Error(`could not generate custom mnemonic. Details are: "${err}"`);

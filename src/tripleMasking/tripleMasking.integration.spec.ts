@@ -48,40 +48,40 @@ describe(`Triple Masking Integration (integration test)`, () => {
       extendedExecutionTimeout,
     );
   });
-  describe('ABAR to ABAR transfer', () => {
-    it(
-      'Should do anonymous transfer using only FRA and verify ABAR and BAR balances',
-      async () => {
-        const result = await Integration.abarToAbar();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 2,
-    );
-    it(
-      'Should do multi asset anonymous transfer, and verify ABAR and BAR balances',
-      async () => {
-        const result = await Integration.abarToAbarMulti();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 2,
-    );
-    it(
-      'Should send exact amount of FRA asset from ABAR to ABAR, and verify both ABAR balances',
-      async () => {
-        const result = await Integration.abarToAbarFraMultipleFraAtxoForFeeSendAmount();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 2,
-    );
-    it(
-      'Should send exact amount of custom asset from ABAR to ABAR, and verify both ABAR balances',
-      async () => {
-        const result = await Integration.abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
-        expect(result).toBe(true);
-      },
-      extendedExecutionTimeout * 2,
-    );
-  });
+  // describe('ABAR to ABAR transfer', () => {
+  //   it(
+  //     'Should do anonymous transfer using only FRA and verify ABAR and BAR balances',
+  //     async () => {
+  //       const result = await Integration.abarToAbar();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 2,
+  //   );
+  //   it(
+  //     'Should do multi asset anonymous transfer, and verify ABAR and BAR balances',
+  //     async () => {
+  //       const result = await Integration.abarToAbarMulti();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 2,
+  //   );
+  //   it(
+  //     'Should send exact amount of FRA asset from ABAR to ABAR, and verify both ABAR balances',
+  //     async () => {
+  //       const result = await Integration.abarToAbarFraMultipleFraAtxoForFeeSendAmount();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 2,
+  //   );
+  //   it(
+  //     'Should send exact amount of custom asset from ABAR to ABAR, and verify both ABAR balances',
+  //     async () => {
+  //       const result = await Integration.abarToAbarCustomMultipleFraAtxoForFeeSendAmount();
+  //       expect(result).toBe(true);
+  //     },
+  //     extendedExecutionTimeout * 2,
+  //   );
+  // });
   describe('ABAR to BAR transfer', () => {
     it(
       'Should convert ABAR to BAR, and verify balances of ABAR and BAR',

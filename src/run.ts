@@ -1405,11 +1405,7 @@ const getFee = async () => {
 
 const getAnonTxList = async () => {
   // anon wallet 1
-  const anonKeysSender = {
-    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    name: 'AnonWallet2',
-  };
+  const anonKeysSender = await createNewKeypair();
 
   const subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E'; // 9.98 spent - a1
 

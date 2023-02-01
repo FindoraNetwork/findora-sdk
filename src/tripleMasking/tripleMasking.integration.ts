@@ -1,13 +1,13 @@
+import { WalletKeypar } from 'api/keypair';
 import dotenv from 'dotenv';
+
 import { Account, Asset, Keypair, Network, Transaction, TripleMasking } from '../api';
 import { waitForBlockChange } from '../evm/testHelpers';
 import Sdk from '../Sdk';
+import { create as createBigNumber } from '../services/bigNumber';
 import { MemoryCacheProvider } from '../services/cacheStore/providers';
 import { log } from '../services/utils';
 import { addUtxo } from '../services/utxoHelper';
-import * as FindoraWallet from '../types/findoraWallet';
-
-import { create as createBigNumber } from '../services/bigNumber';
 
 dotenv.config();
 
@@ -55,15 +55,6 @@ export const getDerivedAssetCode = async (asset1Code: string) => {
   return derivedAsset1Code;
 };
 
-export const getAnonKeys = async () => {
-  log('//////////////// Generate Anon Keys //////////////// ');
-
-  const myAnonKeys = await TripleMasking.genAnonKeys();
-
-  log('🚀 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
-  return myAnonKeys;
-};
-
 export const createNewKeypair = async () => {
   const mm = await Keypair.getMnemonic(24);
 
@@ -106,13 +97,14 @@ export const issueCustomAsset = async (
 
 const barToAbarBalances = async (
   walletInfo: Keypair.WalletKeypar,
-  anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: WalletKeypar,
   givenCommitments: string[],
   balance: string,
   givenBalanceChange: string,
   assetCode: string,
   extraSpent?: string,
 ) => {
+  console.log(anonKeys);
   const fraAssetCode = await Asset.getFraAssetCode();
   const isFraCheck = fraAssetCode === assetCode;
 
@@ -149,7 +141,7 @@ const barToAbarBalances = async (
   const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitments);
   const anonBalUnspent = anonBalances.unSpentBalances.balances[0].amount;
   const anonBalanceValue = anonBalUnspent.replace(/,/g, '');
-  log('ABAR balance for anon public key ', anonKeys.axfrPublicKey, ' is ', anonBalanceValue, ` ${assetCode}`);
+  log('ABAR balance for anon public key ', anonKeys.publickey, ' is ', anonBalanceValue, ` ${assetCode}`);
 
   const realAnonBalanceValue = createBigNumber(anonBalanceValue);
   if (!realAnonBalanceValue.isEqualTo(expectedBalanceChange)) {
@@ -161,12 +153,9 @@ const barToAbarBalances = async (
   return true;
 };
 
-export const validateSpent = async (
-  AnonKeys: FindoraWallet.FormattedAnonKeys,
-  givenCommitments: string[],
-) => {
+export const validateSpent = async (AnonKeys: WalletKeypar, givenCommitments: string[]) => {
   const anonKeys = { ...AnonKeys };
-  const axfrKeyPair = anonKeys.axfrSecretKey;
+  const axfrKeyPair = anonKeys.keypair;
 
   for (const givenCommitment of givenCommitments) {
     const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
@@ -277,7 +266,7 @@ export const createTestBars = async (givenSenderOne?: string, amount = '210', it
 
 export const barToAbar = async (
   givenSenderOne?: string,
-  AnonKeys?: FindoraWallet.FormattedAnonKeys,
+  AnonKeys?: WalletKeypar,
   givenSids?: number[],
   givenBalanceChange?: string,
   givenAssetCode?: string,
@@ -285,7 +274,7 @@ export const barToAbar = async (
 ) => {
   log('////////////////  BAR To ABAR conversion //////////////// ');
 
-  const anonKeys = AnonKeys ? { ...AnonKeys } : { ...(await getAnonKeys()) };
+  const anonKeys = AnonKeys ? { ...AnonKeys } : { ...(await createNewKeypair()) };
 
   let senderOne = givenSenderOne;
 
@@ -350,7 +339,7 @@ export const barToAbar = async (
     transactionBuilder,
     barToAbarData,
     sids: usedSids,
-  } = await TripleMasking.barToAbar(walletInfo, sids, anonKeys.axfrPublicKey);
+  } = await TripleMasking.barToAbar(walletInfo, sids, anonKeys.publickey);
 
   log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   log('🚀 ~ usedSids', usedSids.join(','));
@@ -370,14 +359,14 @@ export const barToAbar = async (
   return givenCommitments;
 };
 
-export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
+export const abarToAbar = async (givenAnonKeysReceiver?: WalletKeypar) => {
   log('//////////////// Single Asset Anonymous Transfer (ABAR To ABAR) //////////////// ');
   const senderWalletInfo = await createNewKeypair();
   const senderOne = senderWalletInfo.privateStr!;
 
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
 
-  const generatedAnonKeysReceiver = await getAnonKeys();
+  const generatedAnonKeysReceiver = await createNewKeypair();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
     : { ...generatedAnonKeysReceiver };
@@ -401,7 +390,7 @@ export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.Formatted
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     '8',
     [ownedAbarToUseAsSource],
   );
@@ -423,13 +412,13 @@ export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.Formatted
   const retrievedCommitmentsListReceiver = [];
 
   for (const commitmentsMapEntry of commitmentsMap) {
-    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+    const { commitmentKey, commitmentXfrPublicKey } = commitmentsMapEntry;
 
-    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysSender.publickey) {
       givenCommitmentsListSender.push(commitmentKey);
     }
 
-    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysReceiver.publickey) {
       retrievedCommitmentsListReceiver.push(commitmentKey);
     }
   }
@@ -475,11 +464,11 @@ export const abarToAbar = async (givenAnonKeysReceiver?: FindoraWallet.Formatted
   return true;
 };
 
-export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys) => {
+export const abarToAbarMulti = async (givenAnonKeysReceiver?: WalletKeypar) => {
   log('////////////////  Multi Asset Anon Transfer (abarToAbar) //////////////// ');
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
 
-  const generatedAnonKeysReceiver = await getAnonKeys();
+  const generatedAnonKeysReceiver = await createNewKeypair();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
     : { ...generatedAnonKeysReceiver };
@@ -537,7 +526,7 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
 
   additionalOwnedAbarItems.push(ownedAbarToUseAsSource);
 
-  for (let givenCommitmentToPayFee of givenCommitmentsToPayFee) {
+  for (const givenCommitmentToPayFee of givenCommitmentsToPayFee) {
     const ownedAbarsResponseFee = await TripleMasking.getOwnedAbars(givenCommitmentToPayFee);
 
     const [additionalOwnedAbarItem] = ownedAbarsResponseFee;
@@ -547,7 +536,7 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     '2',
     additionalOwnedAbarItems,
   );
@@ -569,13 +558,13 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
   const retrievedCommitmentsListReceiver = [];
 
   for (const commitmentsMapEntry of commitmentsMap) {
-    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+    const { commitmentKey, commitmentXfrPublicKey } = commitmentsMapEntry;
 
-    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysSender.publickey) {
       givenCommitmentsListSender.push(commitmentKey);
     }
 
-    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysReceiver.publickey) {
       retrievedCommitmentsListReceiver.push(commitmentKey);
     }
   }
@@ -653,15 +642,13 @@ export const abarToAbarMulti = async (givenAnonKeysReceiver?: FindoraWallet.Form
   return true;
 };
 
-export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
-  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
-) => {
-  const generatedAnonKeysReceiver = await getAnonKeys();
+export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (givenAnonKeysReceiver?: WalletKeypar) => {
+  const generatedAnonKeysReceiver = await createNewKeypair();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
     : { ...generatedAnonKeysReceiver };
 
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -693,7 +680,7 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
 
   const payload = await TripleMasking.getAbarToAbarAmountPayload(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     amountToSend,
     assetCodeToUse,
     givenCommitmentsListSender,
@@ -705,7 +692,7 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     amountToSend,
     assetCodeToUse,
     givenCommitmentsListSender,
@@ -725,13 +712,13 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
   const retrivedCommitmentsListReceiver = [];
 
   for (const commitmentsMapEntry of commitmentsMap) {
-    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+    const { commitmentKey, commitmentXfrPublicKey } = commitmentsMapEntry;
 
-    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysSender.publickey) {
       givenCommitmentsListSender.push(commitmentKey);
     }
 
-    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysReceiver.publickey) {
       retrivedCommitmentsListReceiver.push(commitmentKey);
     }
   }
@@ -797,14 +784,14 @@ export const abarToAbarFraMultipleFraAtxoForFeeSendAmount = async (
 };
 
 export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
-  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
+  givenAnonKeysReceiver?: WalletKeypar,
 ) => {
-  const generatedAnonKeysReceiver = await getAnonKeys();
+  const generatedAnonKeysReceiver = await createNewKeypair();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
     : { ...generatedAnonKeysReceiver };
 
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -875,7 +862,7 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
 
   const payload = await TripleMasking.getAbarToAbarAmountPayload(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     amountToSend,
     assetCodeToUse,
     givenCommitmentsListSender,
@@ -887,7 +874,7 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
 
   const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
     anonKeysSender,
-    anonKeysReceiver.axfrPublicKey,
+    anonKeysReceiver.publickey,
     amountToSend,
     assetCodeToUse,
     givenCommitmentsListSender,
@@ -907,13 +894,13 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
   const retrivedCommitmentsListReceiver = [];
 
   for (const commitmentsMapEntry of commitmentsMap) {
-    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+    const { commitmentKey, commitmentXfrPublicKey } = commitmentsMapEntry;
 
-    if (commitmentAxfrPublicKey === anonKeysSender.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysSender.publickey) {
       givenCommitmentsListSender.push(commitmentKey);
     }
 
-    if (commitmentAxfrPublicKey === anonKeysReceiver.axfrPublicKey) {
+    if (commitmentXfrPublicKey === anonKeysReceiver.publickey) {
       retrivedCommitmentsListReceiver.push(commitmentKey);
     }
   }
@@ -1004,7 +991,7 @@ export const abarToAbarCustomMultipleFraAtxoForFeeSendAmount = async (
 
 export const abarToBar = async () => {
   log('//////////////// ABAR To BAR conversion //////////////// ');
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
 
@@ -1099,7 +1086,7 @@ export const abarToBar = async () => {
 };
 
 export const abarToBarCustomSendAmount = async () => {
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
 
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
@@ -1275,7 +1262,7 @@ export const abarToBarCustomSendAmount = async () => {
 };
 
 export const abarToBarFraSendAmount = async () => {
-  const anonKeysSender = await getAnonKeys();
+  const anonKeysSender = await createNewKeypair();
 
   const senderWalletInfo = await createNewKeypair();
   const pkey = senderWalletInfo.privateStr!;
@@ -1394,11 +1381,8 @@ export const abarToBarFraSendAmount = async () => {
   return true;
 };
 
-export const barToAbarAmount = async (
-  givenAnonKeysReceiver?: FindoraWallet.FormattedAnonKeys,
-  amountToSend = '35',
-) => {
-  const generatedAnonKeysReceiver = await getAnonKeys();
+export const barToAbarAmount = async (givenAnonKeysReceiver?: WalletKeypar, amountToSend = '35') => {
+  const generatedAnonKeysReceiver = await createNewKeypair();
   const anonKeysReceiver = givenAnonKeysReceiver
     ? { ...givenAnonKeysReceiver }
     : { ...generatedAnonKeysReceiver };
@@ -1425,12 +1409,7 @@ export const barToAbarAmount = async (
     transactionBuilder,
     barToAbarData,
     sids: usedSids,
-  } = await TripleMasking.barToAbarAmount(
-    senderWalletInfo,
-    amount,
-    fraAssetCode,
-    anonKeysReceiver.axfrPublicKey,
-  );
+  } = await TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey);
 
   log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
   log('🚀 ~ usedSids', usedSids.join(','));
