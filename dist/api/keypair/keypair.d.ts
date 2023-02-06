@@ -124,3 +124,4 @@ export declare const restoreFromKeystoreFra: (keyStore: Uint8Array, ksPassword: 
 export declare const recoveryKeypairFromKeystore: (keyStore: Uint8Array, password: string, isFraAddress?: boolean) => Promise<Partial<WalletKeypar>>;
 export declare const restoreFromKeystoreString: (keyStoreString: string, ksPassword: string, password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
 export declare const createKeypairViaMnemonic: (password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
+export declare const bech32ToBase64: (address: string) => Promise<string>;

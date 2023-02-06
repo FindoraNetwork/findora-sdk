@@ -525,3 +525,12 @@ export const createKeypairViaMnemonic = async (
     throw new Error(`could not create a WalletKeypar, "${err}" `);
   }
 };
+
+export const bech32ToBase64 = async (address: string) => {
+  const ledger = await getLedger();
+
+  if (address.startsWith('fra')) {
+    return ledger.bech32_to_base64_old(address);
+  }
+  return ledger.bech32_to_base64(address);
+};

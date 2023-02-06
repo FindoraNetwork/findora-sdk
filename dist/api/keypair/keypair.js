@@ -36,7 +36,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createKeypairViaMnemonic = exports.restoreFromKeystoreString = exports.recoveryKeypairFromKeystore = exports.restoreFromKeystoreFra = exports.restoreFromKeystoreEth = exports.restoreFromKeystoreWrapper = exports.restoreFromMnemonic = exports.restoreEvmKeyStore = exports.restoreEvmPrivate = exports.createKeypair = exports.restoreFromPrivateKey = exports.getAddressPublicAndKeyOld = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPublicKeyStrOld = exports.getMnemonic = exports.getPrivateKeyStrOld = exports.getPrivateKeyStr = void 0;
+exports.bech32ToBase64 = exports.createKeypairViaMnemonic = exports.restoreFromKeystoreString = exports.recoveryKeypairFromKeystore = exports.restoreFromKeystoreFra = exports.restoreFromKeystoreEth = exports.restoreFromKeystoreWrapper = exports.restoreFromMnemonic = exports.restoreEvmKeyStore = exports.restoreEvmPrivate = exports.createKeypair = exports.restoreFromPrivateKey = exports.getAddressPublicAndKeyOld = exports.getAddressPublicAndKey = exports.getAxfrPubKeyByBase64 = exports.getAXfrPrivateKeyByBase64 = exports.getAXfrPublicKeyByBase64 = exports.getPublicKeyByXfr = exports.getXfrPublicKeyByBase64 = exports.getAddressByPublicKey = exports.getAddress = exports.getPublicKeyStr = exports.getPublicKeyStrOld = exports.getMnemonic = exports.getPrivateKeyStrOld = exports.getPrivateKeyStr = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 /**
  * Returns a private key
@@ -691,4 +691,19 @@ var createKeypairViaMnemonic = function (password, isFraAddress) {
     });
 };
 exports.createKeypairViaMnemonic = createKeypairViaMnemonic;
+var bech32ToBase64 = function (address) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                if (address.startsWith('fra')) {
+                    return [2 /*return*/, ledger.bech32_to_base64_old(address)];
+                }
+                return [2 /*return*/, ledger.bech32_to_base64(address)];
+        }
+    });
+}); };
+exports.bech32ToBase64 = bech32ToBase64;
 //# sourceMappingURL=keypair.js.map
