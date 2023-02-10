@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -53,7 +42,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dotenv_1 = __importDefault(require("dotenv"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
-var bigNumber_1 = require("./services/bigNumber");
 var providers_1 = require("./services/cacheStore/providers");
 dotenv_1.default.config();
 var waitingTimeBeforeCheckTxStatus = 19000;
@@ -109,7 +97,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 pkey = PKEY_LOCAL_FAUCET;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
                 newWallet = _a.sent();
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
@@ -136,127 +124,6 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 console.log('balance from restored using mnemonic IS', balanceNew);
                 console.log('\n');
                 console.log('\n');
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, unspentAbars;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = myGivenCommitmentsList;
-                return [4 /*yield*/, api_1.TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList)];
-            case 1:
-                unspentAbars = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', JSON.stringify(unspentAbars, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
-var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, spentAbars, _i, givenCommitmentsList_1, givenCommitment, axfrSecretKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = myGivenCommitmentsList;
-                return [4 /*yield*/, api_1.TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList)];
-            case 1:
-                spentAbars = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars', JSON.stringify(spentAbars, null, 2));
-                _i = 0, givenCommitmentsList_1 = givenCommitmentsList;
-                _a.label = 2;
-            case 2:
-                if (!(_i < givenCommitmentsList_1.length)) return [3 /*break*/, 7];
-                givenCommitment = givenCommitmentsList_1[_i];
-                console.log("processing ".concat(givenCommitment));
-                axfrSecretKey = anonKeys.axfrSecretKey;
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
-            case 3:
-                ownedAbarsResponse = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
-                ownedAbarItem = ownedAbarsResponse[0];
-                abarData = ownedAbarItem.abarData;
-                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey)];
-            case 4:
-                hash = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
-                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
-            case 5:
-                isNullifierHashSpent = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
-                _a.label = 6;
-            case 6:
-                _i++;
-                return [3 /*break*/, 2];
-            case 7: return [2 /*return*/];
-        }
-    });
-}); };
-var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, balances;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = myGivenCommitmentsList;
-                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
-            case 1:
-                balances = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getAtxoSendList = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, assetCode, amount, asset, decimals, amountToSend, atxoSendList;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = myGivenCommitmentsList;
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 1:
-                assetCode = _a.sent();
-                amount = '26';
-                return [4 /*yield*/, api_1.Asset.getAssetDetails(assetCode)];
-            case 2:
-                asset = _a.sent();
-                decimals = asset.assetRules.decimals;
-                amountToSend = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                return [4 /*yield*/, api_1.TripleMasking.getSendAtxo(assetCode, amountToSend, givenCommitmentsList, anonKeys)];
-            case 3:
-                atxoSendList = _a.sent();
-                console.log('🚀 ~ file: run-balance.ts ~ line 119 ~ getAbarBalance ~ atxoSendList', atxoSendList);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var testIt = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var txHash, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                txHash = 'dac392d9cd93d85d768f6c6784862d747fdeffd0d52e1295bde2c3dc10242225';
-                return [4 /*yield*/, api_1.Network.getTransactionDetails(txHash)];
-            case 1:
-                result = _a.sent();
-                console.log('🚀 ~ file: run-balance.ts ~ line 183 ~ getAnonKeys ~ result', result);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var myAnonKeys;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
-            case 1:
-                myAnonKeys = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
                 return [2 /*return*/];
         }
     });

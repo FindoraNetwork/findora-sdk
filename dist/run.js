@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -154,13 +143,13 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 password = '12345';
                 isFra = false;
                 console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password, isFra)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password)];
             case 1:
                 faucetWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '), password, isFra)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '), password)];
             case 2:
                 newWalletMine1 = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password, isFra)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password)];
             case 3:
                 newWalletMine2 = _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfo)];
@@ -380,7 +369,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 1:
                 mm = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 2:
                 walletInfo = _a.sent();
                 console.log('new wallet info', walletInfo);
@@ -1372,18 +1361,6 @@ var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-var getAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var myAnonKeys;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.TripleMasking.genAnonKeys()];
-            case 1:
-                myAnonKeys = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
-                return [2 /*return*/];
-        }
-    });
-}); };
 var createTestBars = function (senderOne) {
     if (senderOne === void 0) { senderOne = PKEY_MINE; }
     return __awaiter(void 0, void 0, void 0, function () {
@@ -1431,74 +1408,6 @@ var createTestBars = function (senderOne) {
         });
     });
 };
-var validateUnspent = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitment, axfrSecretKey, ownedAbarsResponse, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isNullifierHashSpent;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
-                axfrSecretKey = anonKeys.axfrSecretKey;
-                return [4 /*yield*/, api_1.TripleMasking.getOwnedAbars(givenCommitment)];
-            case 1:
-                ownedAbarsResponse = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse', JSON.stringify(ownedAbarsResponse, null, 2));
-                ownedAbarItem = ownedAbarsResponse[0];
-                abarData = ownedAbarItem.abarData;
-                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
-                return [4 /*yield*/, api_1.TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey)];
-            case 2:
-                hash = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
-                return [4 /*yield*/, api_1.TripleMasking.isNullifierHashSpent(hash)];
-            case 3:
-                isNullifierHashSpent = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getUnspentAbars = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, unspentAbars;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = __assign({}, myAbarAnonKeys);
-                givenCommitmentsList = ['ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY='];
-                return [4 /*yield*/, api_1.TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList)];
-            case 1:
-                unspentAbars = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getAbarBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, givenCommitmentsList, balances;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = {
-                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    name: 'SyncAnonWallet1',
-                };
-                givenCommitmentsList = [
-                    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
-                    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
-                    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
-                    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
-                    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
-                    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
-                ];
-                return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList)];
-            case 1:
-                balances = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
 var getFee = function () { return __awaiter(void 0, void 0, void 0, function () {
     var password, pkey, walletInfo, feeInputsPayload;
     return __generator(this, function (_a) {
@@ -1515,87 +1424,6 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
                 feeInputsPayload = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
                 return [2 /*return*/];
-        }
-    });
-}); };
-var getAnonTxList = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeysSender, subject, hashes, txList;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeysSender = {
-                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    name: 'AnonWallet2',
-                };
-                subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E';
-                return [4 /*yield*/, api_1.TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject])];
-            case 1:
-                hashes = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.getAnonTxList(hashes, 'from')];
-            case 2:
-                txList = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
-                console.log('!anon txList!', JSON.stringify(txList, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
-var testItSync = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var anonKeys, anonKeys2, result, error, response, last, decrypted, ownedAbarAtxoSid, commitmentData, maxAtxoSidResult, masError, masResponse;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                anonKeys = {
-                    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-                    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-                    name: 'AnonWallet2',
-                };
-                anonKeys2 = {
-                    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
-                    axfrSpendKey: '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
-                    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
-                };
-                return [4 /*yield*/, api_1.Network.getAbarMemos('1', '10')];
-            case 1:
-                result = _a.sent();
-                console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
-                error = result.error, response = result.response;
-                if (error) {
-                    (0, utils_1.log)('error', error);
-                    throw new Error('could not get abar memos');
-                }
-                if (!response) {
-                    return [2 /*return*/, false];
-                }
-                last = response.pop();
-                if (!last) {
-                    return [2 /*return*/, false];
-                }
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
-                return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(last, anonKeys)];
-            case 2:
-                decrypted = _a.sent();
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
-                if (!decrypted) {
-                    throw new Error('can not proceed as the abar must be decrypted!');
-                }
-                ownedAbarAtxoSid = last[0];
-                return [4 /*yield*/, api_1.TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid)];
-            case 3:
-                commitmentData = _a.sent();
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
-                return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
-            case 4:
-                maxAtxoSidResult = _a.sent();
-                (0, utils_1.log)('max atxo sid result is ', maxAtxoSidResult);
-                masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
-                if (masError) {
-                    (0, utils_1.log)('error!', masError);
-                    throw new Error('could not get mas');
-                }
-                console.log("Current MAS = ".concat(masResponse));
-                return [2 /*return*/, true];
         }
     });
 }); };
@@ -1637,7 +1465,7 @@ function approveToken() {
 }
 function testCommitment() {
     return __awaiter(this, void 0, void 0, function () {
-        var data2, atxoSid, myMemoData, anonKeysReceiver, ledger, aXfrKeyPair, abarOwnerMemo2, decryptedAbar, commitmentInBase64, commitement58;
+        var data2, atxoSid, myMemoData, anonKeysReceiver, ledger, commitmentInBase64;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1663,20 +1491,7 @@ function testCommitment() {
                     return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.getAXfrPrivateKeyByBase64(anonKeysReceiver.axfrSpendKey)];
-                case 2:
-                    aXfrKeyPair = _a.sent();
-                    abarOwnerMemo2 = ledger.AxfrOwnerMemo.from_json(myMemoData);
-                    try {
-                        decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo2, aXfrKeyPair); // Axf
-                    }
-                    catch (error) {
-                        console.log('that is not owned by the given anonymous wallet');
-                    }
-                    console.log('🚀 ~ file: run.ts ~ line 2703 ~ testCommitment ~ decryptedAbar', decryptedAbar);
                     commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
-                    commitement58 = ledger.base64_to_base58(commitmentInBase64);
-                    console.log('🚀 ~ file: run.ts ~ line 2667 ~ testCommitment ~ commitement58', commitement58);
                     return [2 /*return*/];
             }
         });
@@ -1764,21 +1579,17 @@ function prism() {
 }
 function testWasmFunctions(walletInfo) {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, publickeyFormatEth, publickeyAddressFormatEth;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
                 case 1:
                     ledger = _a.sent();
                     publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
-                    publickeyFormatFra = ledger.get_pub_key_str_old(walletInfo.keypair);
                     publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
-                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(walletInfo.address);
                     console.log('============');
                     console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
                     console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
                     console.log('============');
                     return [2 /*return*/];
             }
@@ -1787,7 +1598,7 @@ function testWasmFunctions(walletInfo) {
 }
 function testBrokenKeypairOne() {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyAddressFormatEth;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -1805,13 +1616,9 @@ function testBrokenKeypairOne() {
                     address = _a.sent();
                     console.log('address (from restored keypair)', address);
                     publickeyFormatEth = ledger.get_pub_key_str(keypair);
-                    publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
                     publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
                     console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
                     console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
                     console.log('\n');
                     console.log('============');
                     return [2 /*return*/];
@@ -1821,7 +1628,7 @@ function testBrokenKeypairOne() {
 }
 function testBrokenKeypairTwo() {
     return __awaiter(this, void 0, void 0, function () {
-        var ledger, keypair, publickey, address, publickeyFormatEth, publickeyFormatFra, publickeyAddressFormatEth, publickeyAddressFormatFra;
+        var ledger, keypair, publickey, address, publickeyFormatEth, publickeyAddressFormatEth;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -1838,13 +1645,9 @@ function testBrokenKeypairTwo() {
                     address = _a.sent();
                     console.log('address (from created keypair)', address);
                     publickeyFormatEth = ledger.get_pub_key_str(keypair);
-                    publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
                     publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-                    publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
                     console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
                     console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('publickeyAddressFormatFra (from address , using bech32_to_base64_old)', publickeyAddressFormatFra);
                     console.log('\n');
                     console.log('============');
                     return [2 /*return*/];
@@ -1883,7 +1686,7 @@ function getNewBalanace() {
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password)];
                 case 2:
                     faucetWalletInfoPkeyEth = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password, isFra)];
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password)];
                 case 3:
                     faucetWalletInfoMnemonic = _a.sent();
                     return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyFra)];

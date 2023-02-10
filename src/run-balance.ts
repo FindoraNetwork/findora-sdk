@@ -1,7 +1,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
+import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
 import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
@@ -98,7 +98,7 @@ const getFraBalance = async () => {
 
   const mm = mString.split(' ');
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password, false);
+  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
 
   const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
@@ -124,110 +124,6 @@ const getFraBalance = async () => {
   console.log('balance from restored using mnemonic IS', balanceNew);
   console.log('\n');
   console.log('\n');
-};
-
-const getUnspentAbars = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  const givenCommitmentsList = myGivenCommitmentsList;
-
-  const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars',
-    JSON.stringify(unspentAbars, null, 2),
-  );
-};
-
-const validateUnspent = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  // const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
-
-  const givenCommitmentsList = myGivenCommitmentsList;
-
-  const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
-    JSON.stringify(spentAbars, null, 2),
-  );
-
-  for (const givenCommitment of givenCommitmentsList) {
-    console.log(`processing ${givenCommitment}`);
-
-    // const spentAbars = await TripleMasking.getSpentAbars(anonKeys, givenCommitmentsList);
-    // console.log(
-    //   '🚀 ~ file: run.ts ~ line 1319 ~ getAbarBalance ~ spentAbars',
-    //   JSON.stringify(spentAbars, null, 2),
-    // );
-
-    const axfrSecretKey = anonKeys.axfrSecretKey;
-    const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-
-    console.log(
-      '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
-      JSON.stringify(ownedAbarsResponse, null, 2),
-    );
-
-    const [ownedAbarItem] = ownedAbarsResponse;
-
-    const { abarData } = ownedAbarItem;
-
-    const { atxoSid, ownedAbar } = abarData;
-
-    const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
-
-    console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
-
-    const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
-
-    console.log(
-      '🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent',
-      isNullifierHashSpent,
-    );
-  }
-};
-
-const getAbarBalance = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  const givenCommitmentsList = myGivenCommitmentsList;
-
-  const balances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList);
-  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
-};
-
-const getAtxoSendList = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  const givenCommitmentsList = myGivenCommitmentsList;
-
-  const assetCode = await Asset.getFraAssetCode();
-
-  const amount = '26';
-  const asset = await Asset.getAssetDetails(assetCode);
-  const decimals = asset.assetRules.decimals;
-
-  const amountToSend = BigInt(toWei(amount, decimals).toString());
-  const atxoSendList = await TripleMasking.getSendAtxo(
-    assetCode,
-    amountToSend,
-    givenCommitmentsList,
-    anonKeys,
-  );
-  console.log('🚀 ~ file: run-balance.ts ~ line 119 ~ getAbarBalance ~ atxoSendList', atxoSendList);
-};
-
-const testIt = async () => {
-  const txHash = 'dac392d9cd93d85d768f6c6784862d747fdeffd0d52e1295bde2c3dc10242225';
-
-  const result = await Network.getTransactionDetails(txHash);
-  console.log('🚀 ~ file: run-balance.ts ~ line 183 ~ getAnonKeys ~ result', result);
-};
-
-const getAnonKeys = async () => {
-  const myAnonKeys = await TripleMasking.genAnonKeys();
-
-  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
 };
 
 getFraBalance();

@@ -246,46 +246,38 @@ var buildTransferOperationWithFee = function (walletInfo, assetBlindRules) { ret
 }); };
 exports.buildTransferOperationWithFee = buildTransferOperationWithFee;
 // used in triple masking
-var getFeeInputs = function (walletInfo, excludeSids, isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, sidsResult, sids, filteredSids, minimalFee, _a, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
+var getFeeInputs = function (walletInfo, excludeSids, _isBarToAbar) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, sidsResult, sids, filteredSids, minimalFee, fraAssetCode, utxoDataList, sendUtxoList, utxoInputsInfo, feeInputsPayload, feeInputs;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _b.sent();
+                ledger = _a.sent();
                 return [4 /*yield*/, Network.getOwnedSids(walletInfo.publickey)];
             case 2:
-                sidsResult = _b.sent();
+                sidsResult = _a.sent();
                 sids = sidsResult.response;
                 if (!sids) {
                     throw new Error('No sids were fetched');
                 }
                 filteredSids = sids.filter(function (sid) { return !excludeSids.includes(sid); });
-                if (!isBarToAbar) return [3 /*break*/, 4];
-                return [4 /*yield*/, AssetApi.getBarToAbarMinimalFee()];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 3:
-                _a = _b.sent();
-                return [3 /*break*/, 6];
-            case 4: return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 5:
-                _a = _b.sent();
-                _b.label = 6;
-            case 6:
-                minimalFee = _a;
+                minimalFee = _a.sent();
                 console.log('🚀 ~ file: fee.ts ~ line 263 ~ abar minimalFee', minimalFee);
                 return [4 /*yield*/, AssetApi.getFraAssetCode()];
-            case 7:
-                fraAssetCode = _b.sent();
+            case 4:
+                fraAssetCode = _a.sent();
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxo)(walletInfo, filteredSids)];
-            case 8:
-                utxoDataList = _b.sent();
+            case 5:
+                utxoDataList = _a.sent();
                 sendUtxoList = (0, utxoHelper_1.getSendUtxo)(fraAssetCode, minimalFee, utxoDataList);
                 return [4 /*yield*/, (0, utxoHelper_1.addUtxoInputs)(sendUtxoList)];
-            case 9:
-                utxoInputsInfo = _b.sent();
+            case 6:
+                utxoInputsInfo = _a.sent();
                 return [4 /*yield*/, (0, exports.getPayloadForFeeInputs)(walletInfo, utxoInputsInfo)];
-            case 10:
-                feeInputsPayload = _b.sent();
+            case 7:
+                feeInputsPayload = _a.sent();
                 feeInputs = ledger.FeeInputs.new();
                 feeInputsPayload.forEach(function (payloadItem) {
                     var amount = payloadItem.amount, txoRef = payloadItem.txoRef, assetRecord = payloadItem.assetRecord, ownerMemo = payloadItem.ownerMemo, keypair = payloadItem.keypair;

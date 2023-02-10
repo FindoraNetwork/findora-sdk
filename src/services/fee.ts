@@ -228,7 +228,7 @@ export const buildTransferOperationWithFee = async (
 export const getFeeInputs = async (
   walletInfo: WalletKeypar,
   excludeSids: number[],
-  isBarToAbar: boolean,
+  _isBarToAbar: boolean,
 ): Promise<FeeInputs> => {
   const ledger = await getLedger();
 
@@ -243,7 +243,7 @@ export const getFeeInputs = async (
   const filteredSids = sids.filter(sid => !excludeSids.includes(sid));
   //const filteredSids = sids.filter(sid => sid !== excludeSid);
 
-  const minimalFee = isBarToAbar ? await AssetApi.getBarToAbarMinimalFee() : await AssetApi.getMinimalFee();
+  const minimalFee = await AssetApi.getMinimalFee();
 
   console.log('🚀 ~ file: fee.ts ~ line 263 ~ abar minimalFee', minimalFee);
 

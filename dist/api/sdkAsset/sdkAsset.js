@@ -70,7 +70,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getAssetCodeToSend = exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getBarToAbarMinimalFee = exports.getMinimalFee = exports.getFraAssetCode = void 0;
+exports.getAssetDetails = exports.issueAsset = exports.defineAsset = exports.getIssueAssetTransactionBuilder = exports.getDefineAssetTransactionBuilder = exports.getAssetRules = exports.getDefaultAssetRules = exports.getAssetCodeToSend = exports.getDerivedAssetCode = exports.getRandomAssetCode = exports.getAssetCode = exports.getFraPublicKey = exports.getMinimalFee = exports.getFraAssetCode = void 0;
 var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -119,19 +119,6 @@ var getMinimalFee = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getMinimalFee = getMinimalFee;
-var getBarToAbarMinimalFee = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, fee;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                fee = ledger.fra_get_minimal_fee_for_bar_to_abar();
-                return [2 /*return*/, fee];
-        }
-    });
-}); };
-exports.getBarToAbarMinimalFee = getBarToAbarMinimalFee;
 var getFraPublicKey = function () { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, key;
     return __generator(this, function (_a) {

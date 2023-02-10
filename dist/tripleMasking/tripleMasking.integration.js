@@ -135,7 +135,7 @@ var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, fu
             case 0: return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password, false)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 2:
                 walletInfo = _a.sent();
                 (0, utils_1.log)('new wallet info', walletInfo);

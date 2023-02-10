@@ -1,7 +1,7 @@
 import { Keypair } from '../../api';
 import { log, writeFile } from '../../services/utils';
 
-export const runCreateAndSaveWallets = async (amount = 5, isFraAddress: boolean) => {
+export const runCreateAndSaveWallets = async (amount = 5) => {
   const sendersWallets = [];
 
   const password = '123';
@@ -9,7 +9,7 @@ export const runCreateAndSaveWallets = async (amount = 5, isFraAddress: boolean)
   for (let i = 0; i < amount; i += 1) {
     const mm = await Keypair.getMnemonic(24);
 
-    const newWalletInfo = await Keypair.restoreFromMnemonic(mm, password, isFraAddress);
+    const newWalletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
     log(`"${i}". Created sender wallet "${newWalletInfo.address}" ("${newWalletInfo.privateStr}")`);
 

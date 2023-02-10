@@ -53,12 +53,6 @@ export const getMinimalFee = async (): Promise<BigInt> => {
   return fee;
 };
 
-export const getBarToAbarMinimalFee = async (): Promise<BigInt> => {
-  const ledger = await getLedger();
-  const fee = ledger.fra_get_minimal_fee_for_bar_to_abar();
-  return fee;
-};
-
 export const getFraPublicKey = async (): Promise<XfrPublicKey> => {
   const ledger = await getLedger();
   const key = ledger.fra_get_dest_pubkey();

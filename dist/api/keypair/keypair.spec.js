@@ -273,26 +273,6 @@ describe('keypair (unit test)', function () {
             });
         }); });
     });
-    describe('getAXfrPublicKeyByBase64', function () {
-        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, expect((0, keypair_1.getAXfrPublicKeyByBase64)('aa')).rejects.toThrowError('could not get AXfrPubKey by base64 public key, ')];
-                    case 1:
-                        _a.sent();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        // Test is incorrect
-        // it('get AXfrPubKey by base64 public key', async () => {
-        //   const kp = await createKeypair('123');
-        //   // const result = await getAXfrPublicKeyByBase64('U4One4jJ9Lo0vyWG-0sZSRS2Pzuyt4hMLyrBjSb9yh0=');
-        //   const result = await getAXfrPublicKeyByBase64(kp.publickey);
-        //   expect(result).toHaveProperty('free');
-        //   expect(typeof result.free).toBe('function');
-        // });
-    });
     describe('getXfrPublicKeyByBase64', function () {
         it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
             return __generator(this, function (_a) {

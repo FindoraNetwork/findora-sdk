@@ -1,4 +1,4 @@
-import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
+import { TransactionBuilder } from '../../services/ledger/types';
 import { LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
 import { ProcessedTxListResponseResult } from './types';
@@ -111,7 +111,6 @@ export declare const sendToManyV2: (walletInfo: WalletKeypar, recieversList: Tra
  * @returns Transaction status handle
  */
 export declare const submitTransaction: (transactionBuilder: TransactionBuilder) => Promise<string>;
-export declare const submitAbarTransaction: (anonTransferOperationBuilder: AnonTransferOperationBuilder) => Promise<string>;
 /**
  * Send some asset to an address
  *

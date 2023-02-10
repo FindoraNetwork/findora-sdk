@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAnonTransferOperationBuilder = exports.getTransactionBuilder = exports.getBlockHeight = void 0;
+exports.getTransactionBuilder = exports.getBlockHeight = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var Network = __importStar(require("../network"));
 var getBlockHeight = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -98,20 +98,4 @@ var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 
     });
 }); };
 exports.getTransactionBuilder = getTransactionBuilder;
-var getAnonTransferOperationBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, blockCount, anonTransferOperationBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, (0, exports.getBlockHeight)()];
-            case 2:
-                blockCount = _a.sent();
-                anonTransferOperationBuilder = ledger.AnonTransferOperationBuilder.new(blockCount);
-                return [2 /*return*/, anonTransferOperationBuilder];
-        }
-    });
-}); };
-exports.getAnonTransferOperationBuilder = getAnonTransferOperationBuilder;
 //# sourceMappingURL=builder.js.map

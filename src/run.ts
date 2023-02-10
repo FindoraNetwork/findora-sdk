@@ -2,7 +2,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
 import Sdk from './Sdk';
@@ -105,21 +105,18 @@ const getFraBalance = async () => {
   const faucetWalletInfo = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
     password,
-    isFra,
   );
 
   // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   const newWalletMine1 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
     password,
-    isFra,
   );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   const newWalletMine2 = await Keypair.restoreFromMnemonic(
     PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
     password,
-    isFra,
   );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
@@ -292,7 +289,7 @@ const createNewKeypair = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password, false);
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
   console.log('new wallet info', walletInfo);
   return walletInfo;
@@ -1275,12 +1272,6 @@ const ethProtocol = async () => {
   console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-const getAnonKeys = async () => {
-  const myAnonKeys = await TripleMasking.genAnonKeys();
-
-  console.log('🚀 ~ file: run.ts ~ line 1149 ~ getAnonKeys ~ myAnonKeys', myAnonKeys);
-};
-
 const createTestBars = async (senderOne = PKEY_MINE) => {
   console.log('////////////////  Create Test Bars //////////////// ');
 
@@ -1318,67 +1309,6 @@ const createTestBars = async (senderOne = PKEY_MINE) => {
   return true;
 };
 
-const validateUnspent = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  const givenCommitment = 'ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY=';
-
-  const axfrSecretKey = anonKeys.axfrSecretKey;
-  const ownedAbarsResponse = await TripleMasking.getOwnedAbars(givenCommitment);
-
-  console.log(
-    '🚀 ~ file: run.ts ~ line 1233 ~ validateUnspent ~ ownedAbarsResponse',
-    JSON.stringify(ownedAbarsResponse, null, 2),
-  );
-
-  const [ownedAbarItem] = ownedAbarsResponse;
-
-  const { abarData } = ownedAbarItem;
-
-  const { atxoSid, ownedAbar } = abarData;
-
-  const hash = await TripleMasking.genNullifierHash(atxoSid, ownedAbar, axfrSecretKey);
-  console.log('🚀 ~ file: run.ts ~ line 1249 ~ validateUnspent ~ hash', hash);
-
-  const isNullifierHashSpent = await TripleMasking.isNullifierHashSpent(hash);
-
-  console.log('🚀 ~ file: run.ts ~ line 1279 ~ validateUnspent ~ isNullifierHashSpent', isNullifierHashSpent);
-};
-
-const getUnspentAbars = async () => {
-  const anonKeys = { ...myAbarAnonKeys };
-
-  // const givenCommitmentsList = myGivenCommitmentsList;
-  const givenCommitmentsList = ['ju2DbSDQWKown4so0h4Sijny_jxyHagKliC-zXIyeGY='];
-
-  const unspentAbars = await TripleMasking.getUnspentAbars(anonKeys, givenCommitmentsList);
-  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getUnspentAbars ~ unspentAbars', unspentAbars);
-};
-
-const getAbarBalance = async () => {
-  // const anonKeys = { ...myAbarAnonKeys };
-
-  const anonKeys = {
-    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    name: 'SyncAnonWallet1',
-  };
-
-  const givenCommitmentsList = [
-    'EaDb1FL5Kic2nSWsAeExiD3LP71WrUaRj8tDuVoYjKGK',
-    'SmpkzgKSFugLrFdqn9nedbJBSSvXz3pyAtanY7QSRMX',
-    'BfyVtXLxJNj31hRZYFh4VW3osUZPZuWTgHKDbGcdYcDP',
-    '3iM7xuVsveJ2bkd9DdQKMG2HwKS2RLZc6rucEaw4J8qR',
-    '43Ympn9DGX8u5qZFTwCgVT4p91KFfA2Bas6wrjDtdVHw',
-    '8QDmPztsZUpqeRWK7eQxLNXFCFUSwaSj1e9vKwaM99x2',
-  ];
-
-  // const balances = await TripleMasking.getBalance(anonKeys, givenCommitmentsList);
-  const balances = await TripleMasking.getAllAbarBalances(anonKeys, givenCommitmentsList);
-
-  console.log('🚀 ~ file: run.ts ~ line 1291 ~ getAbarBalance ~ balances', JSON.stringify(balances, null, 2));
-};
-
 const getFee = async () => {
   const password = '1234';
 
@@ -1389,92 +1319,6 @@ const getFee = async () => {
 
   const feeInputsPayload = await getFeeInputs(walletInfo, [11], true);
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
-};
-
-const getAnonTxList = async () => {
-  // anon wallet 1
-  const anonKeysSender = {
-    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    name: 'AnonWallet2',
-  };
-
-  const subject = '2faWWWW8QyXCnpvzX5tADsgSUiRZc55KCPd1ttPfrF7E'; // 9.98 spent - a1
-
-  const hashes = await TripleMasking.getNullifierHashesFromCommitments(anonKeysSender, [subject]);
-  const txList = await Transaction.getAnonTxList(hashes, 'from');
-
-  console.log('🚀 ~ file: run.ts ~ line 1516 ~ getAnonTxList ~ hashes', hashes);
-
-  console.log('!anon txList!', JSON.stringify(txList, null, 2));
-  // console.log('!anon txList', txList);
-};
-
-const testItSync = async () => {
-  // run it as INTEGRATION_ENV_NAME=local yarn start:once
-  const anonKeys = {
-    axfrPublicKey: 'UB5DrTlZr2O4dO5ipY28A8LXGe1f4Ek-02VoI_KcHfA=',
-    axfrSecretKey: '35lTZXcgMJdrsFeLkhfWQFM4mGTY2-K0scHcvxwEEQdQHkOtOVmvY7h07mKljbwDwtcZ7V_gST7TZWgj8pwd8A==',
-    name: 'AnonWallet2',
-  };
-
-  const anonKeys2 = {
-    axfrPublicKey: '_URfMdN1KCSR4TwlHMBAuK6oIgRIfxsyPn9uesh3AL0=',
-    axfrSpendKey:
-      '4EjFnSUMKtzqfP_vIYJZyUIcaeavDPE_ey6mksWtE1aZOa7tUWqlhvZRt6rgDm8fgfvhuTtKjzD5nC79dgKFAv1EXzHTdSgkkeE8JRzAQLiuqCIESH8bMj5_bnrIdwC9',
-    axfrViewKey: 'mTmu7VFqpYb2Ubeq4A5vH4H74bk7So8w-Zwu_XYChQI=',
-  };
-  // with this option it should thrown an error!
-  // const transferResult = await TMI.barToAbarAmount();
-
-  // with this option it should pass
-  // const transferResult = await TMI.barToAbarAmount(anonKeys);
-
-  const result = await Network.getAbarMemos('1', '10');
-  console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
-
-  const { error, response } = result;
-
-  if (error) {
-    log('error', error);
-    throw new Error('could not get abar memos');
-  }
-  if (!response) {
-    return false;
-  }
-  const last = response.pop();
-
-  if (!last) {
-    return false;
-  }
-  log('🚀 ~ file: run.ts ~ line 1457 ~ testIt ~ last', last);
-
-  const decrypted = await TripleMasking.decryptAbarMemo(last, anonKeys);
-  log('🚀 ~ file: run.ts ~ line 1466 ~ testIt ~ decrypted', decrypted);
-
-  if (!decrypted) {
-    throw new Error('can not proceed as the abar must be decrypted!');
-  }
-
-  // we proceed only if decrypted is true! if last item does not belong to the anonKeys then we should have an error
-  const [ownedAbarAtxoSid] = last;
-
-  const commitmentData = await TripleMasking.getCommitmentByAtxoSid(ownedAbarAtxoSid);
-  log('🚀 ~ file: run.ts ~ line 1476 ~ testIt ~ commitmentData', commitmentData);
-
-  const maxAtxoSidResult = await Network.getMaxAtxoSid();
-  log('max atxo sid result is ', maxAtxoSidResult);
-
-  const { error: masError, response: masResponse } = maxAtxoSidResult;
-
-  if (masError) {
-    log('error!', masError);
-    throw new Error('could not get mas');
-  }
-
-  console.log(`Current MAS = ${masResponse}`);
-
-  return true;
 };
 
 const txHashTest = async () => {
@@ -1562,27 +1406,12 @@ async function testCommitment() {
 
   const ledger = await getLedger();
 
-  const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeysReceiver.axfrSpendKey);
-
-  // const a = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair); // Axf
-  const abarOwnerMemo2 = ledger.AxfrOwnerMemo.from_json(myMemoData);
-
-  let decryptedAbar;
-
-  try {
-    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo2, aXfrKeyPair); // Axf
-  } catch (error) {
-    console.log('that is not owned by the given anonymous wallet');
-  }
-  console.log('🚀 ~ file: run.ts ~ line 2703 ~ testCommitment ~ decryptedAbar', decryptedAbar);
   // const [amount, assetType] = decryptedAbar;
 
   // http://127.0.0.1:8667/get_abar_commitment/0) <- atxoSid
 
   const commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
 
-  const commitement58 = ledger.base64_to_base58(commitmentInBase64);
-  console.log('🚀 ~ file: run.ts ~ line 2667 ~ testCommitment ~ commitement58', commitement58);
   //  curl http://127.0.0.1:8667/get_abar_commitment/0                                                                                                           [08:18:31pm]
   // "EYSkMoa1SFefat0xPtZsblG5GnMTcgm45eDBcfKw9Uo="⏎
 
@@ -1714,19 +1543,13 @@ async function testWasmFunctions(walletInfo: Keypair.WalletKeypar): Promise<void
   const ledger = await getLedger();
 
   const publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
-  const publickeyFormatFra = ledger.get_pub_key_str_old(walletInfo.keypair);
 
   const publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
-  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(walletInfo.address);
 
   console.log('============');
   console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
   console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-  console.log(
-    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
-    publickeyAddressFormatFra,
-  );
+
   console.log('============');
 }
 
@@ -1747,18 +1570,12 @@ async function testBrokenKeypairOne() {
   console.log('address (from restored keypair)', address);
 
   const publickeyFormatEth = ledger.get_pub_key_str(keypair);
-  const publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
 
   const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
 
   console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
   console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-  console.log(
-    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
-    publickeyAddressFormatFra,
-  );
+
   console.log('\n');
 
   console.log('============');
@@ -1777,18 +1594,12 @@ async function testBrokenKeypairTwo() {
   console.log('address (from created keypair)', address);
 
   const publickeyFormatEth = ledger.get_pub_key_str(keypair);
-  const publickeyFormatFra = ledger.get_pub_key_str_old(keypair);
 
   const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-  const publickeyAddressFormatFra = ledger.bech32_to_base64_old(address);
 
   console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-  console.log('publickeyFormatFra (from keypair , using get_pub_key_str_old)', publickeyFormatFra);
   console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-  console.log(
-    'publickeyAddressFormatFra (from address , using bech32_to_base64_old)',
-    publickeyAddressFormatFra,
-  );
+
   console.log('\n');
 
   console.log('============');
@@ -1815,7 +1626,6 @@ async function getNewBalanace() {
   const faucetWalletInfoMnemonic = await Keypair.restoreFromMnemonic(
     mnemonicLocalFaucet.split(' '),
     password,
-    isFra,
   );
 
   const balanceFaucetFra = await Account.getBalance(faucetWalletInfoPkeyFra);

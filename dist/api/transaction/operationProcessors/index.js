@@ -5,9 +5,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processorsMap = exports.getOperationProcessor = void 0;
 var get_1 = __importDefault(require("lodash/get"));
-var abarToAbar_1 = require("./abarToAbar");
-var abarToBar_1 = require("./abarToBar");
-var barToAbar_1 = require("./barToAbar");
 var claim_1 = require("./claim");
 var converAccount_1 = require("./converAccount");
 var defineAsset_1 = require("./defineAsset");
@@ -34,9 +31,6 @@ exports.processorsMap = {
     UnDelegation: undelegation_1.processUndelegation,
     Delegation: delegation_1.processDelegation,
     Claim: claim_1.processClaim,
-    BarToAbar: barToAbar_1.processBarToAbar,
-    AbarToBar: abarToBar_1.processAbarToBar,
-    TransferAnonAsset: abarToAbar_1.processAbarToAbar,
     ConvertAccount: converAccount_1.processConvertAccount,
 };
 //# sourceMappingURL=index.js.map

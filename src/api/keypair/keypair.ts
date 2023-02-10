@@ -1,5 +1,5 @@
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
@@ -147,33 +147,6 @@ export const getPublicKeyByXfr = async (publicKey: XfrPublicKey): Promise<string
   }
 };
 
-export const getAXfrPublicKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_pubkey_from_string(publicKey);
-  } catch (err) {
-    throw new Error(`could not get AXfrPubKey by base64 public key, "${err}" `);
-  }
-};
-
-export const getAXfrPrivateKeyByBase64 = async (privateKey: string): Promise<AXfrKeyPair> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_keypair_from_string(privateKey);
-  } catch (err) {
-    throw new Error(`could not get AXfrKeyPair from the string, "${err}" `);
-  }
-};
-
-export const getAxfrPubKeyByBase64 = async (publicKey: string): Promise<AXfrPubKey> => {
-  const ledger = await getLedger();
-  try {
-    return ledger.axfr_pubkey_from_string(publicKey);
-  } catch (err) {
-    throw new Error(`could not get XPublicKey by base64 public key, "${err}" `);
-  }
-};
-
 export const getAddressPublicAndKey = async (address: string): Promise<LightWalletKeypair> => {
   const ledger = await getLedger();
 
@@ -276,19 +249,10 @@ export const restoreEvmKeyStore = async (
   return { privateKey: privateStr, address };
 };
 
-export const restoreFromMnemonic = async (
-  mnemonic: string[],
-  password: string,
-  isFraAddress = true,
-): Promise<WalletKeypar> => {
+export const restoreFromMnemonic = async (mnemonic: string[], password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  let keypair: XfrKeyPair;
-  if (isFraAddress) {
-    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
-  } else {
-    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-  }
+  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
   const keyPairStr = await getPrivateKeyStr(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
@@ -374,18 +338,12 @@ export const restoreFromKeystoreString = async (
   }
 };
 
-export const createKeypair = async (password: string, isFraAddress = true): Promise<WalletKeypar> => {
+export const createKeypair = async (password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
   const mnemonic = await getMnemonic(24);
 
-  let keypair: XfrKeyPair;
-
-  if (isFraAddress) {
-    keypair = ledger.restore_keypair_from_mnemonic_ed25519(mnemonic.join(' '));
-  } else {
-    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-  }
+  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
 
   try {
     const keyPairStr = ledger.keypair_to_str(keypair);
