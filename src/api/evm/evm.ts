@@ -210,9 +210,10 @@ export async function getPrismConfig() {
 
   const web3 = getWeb3(Network.getRpcRoute());
 
-  const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
-  const bridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+  // const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
+  // const bridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
 
+  const bridgeAddress = displayCheckpointData.prism_bridge_address;
   const prismContract = await getSimBridgeContract(web3, bridgeAddress);
 
   const [ledgerAddress, assetAddress] = await Promise.all([

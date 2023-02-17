@@ -249,7 +249,7 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
 exports.frc20ToBar = frc20ToBar;
 function getPrismConfig() {
     return __awaiter(this, void 0, void 0, function () {
-        var _a, displayCheckpointData, error, web3, prismProxyContract, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
+        var _a, displayCheckpointData, error, web3, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
         return __generator(this, function (_c) {
             switch (_c.label) {
                 case 0: return [4 /*yield*/, api_1.Network.getConfig()];
@@ -260,20 +260,15 @@ function getPrismConfig() {
                     if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.prism_bridge_address))
                         throw 'no prism_bridge_address';
                     web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
-                    return [4 /*yield*/, (0, web3_2.getPrismProxyContract)(web3, displayCheckpointData.prism_bridge_address)];
-                case 2:
-                    prismProxyContract = _c.sent();
-                    return [4 /*yield*/, prismProxyContract.methods.prismBridgeAddress().call()];
-                case 3:
-                    bridgeAddress = _c.sent();
+                    bridgeAddress = displayCheckpointData.prism_bridge_address;
                     return [4 /*yield*/, (0, web3_2.getSimBridgeContract)(web3, bridgeAddress)];
-                case 4:
+                case 2:
                     prismContract = _c.sent();
                     return [4 /*yield*/, Promise.all([
                             prismContract.methods.ledger_contract().call(),
                             prismContract.methods.asset_contract().call(),
                         ])];
-                case 5:
+                case 3:
                     _b = _c.sent(), ledgerAddress = _b[0], assetAddress = _b[1];
                     return [2 /*return*/, { ledgerAddress: ledgerAddress, assetAddress: assetAddress, bridgeAddress: bridgeAddress }];
             }
