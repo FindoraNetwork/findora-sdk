@@ -1,4 +1,5 @@
 import * as FindoraWallet from '../../types/findoraWallet';
+import * as Types from '../transaction/types';
 export interface ResultError {
     message: string;
     code?: number;
@@ -136,24 +137,47 @@ export interface SubmitEvmTx {
     };
 }
 export interface TxInfo {
+    block_hash: string;
     code: number;
-    data: null | any[];
-    hash: string;
-    time: string | undefined;
+    evm_tx_hash: string;
     height: number;
-    index: number;
-    tx_result: TxResult;
-    tx: string;
+    log: string;
+    origin: string;
+    result: TxResult;
+    timestamp: number;
+    tx_hash: string;
+    ty: number;
+    value: Types.ParsedTx;
 }
 export interface TxListResponseResult {
     txs: null | TxInfo[];
-    total_count: number;
+    page: number;
+    page_size: number;
+    total: number;
 }
-export type TxListResponse = {
-    result: TxListResponseResult;
+export type TxListResponse<T> = {
+    code: number;
+    data: T;
+    message: string;
 };
 export interface TxListDataResult extends NetworkAxiosDataResult {
-    response?: TxListResponse;
+    response?: TxListResponse<TxListResponseResult>;
+}
+export interface TxListByClaimResponseResult {
+    items: {
+        amount: string;
+        node_address: string;
+        node_logo: string;
+        node_name: string;
+        timestamp: number;
+        tx_hash: string;
+    }[];
+    page: number;
+    page_size: number;
+    total: number;
+}
+export interface TxListByClaimDataResult extends NetworkAxiosDataResult {
+    response?: TxListResponse<TxListByClaimResponseResult>;
 }
 export interface TxListQueryParams {
     query: string;

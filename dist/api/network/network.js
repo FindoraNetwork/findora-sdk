@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
+exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -413,19 +413,37 @@ var getAnonymousTxList = function (subject, type, page) {
     return params;
 };
 exports.getAnonymousTxList = getAnonymousTxList;
-var getTxList = function (subject, type, page, privacy, config) {
+var getTxList = function (subject, type, page, per_page, config) {
     if (page === void 0) { page = 1; }
-    if (privacy === void 0) { privacy = 'transparent'; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var isTransparentTxListRequest, params, url, dataResult;
+        var blockScanerUrl, url, params, dataResult;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/txs");
+                    params = (_a = {}, _a[type] = subject, _a.page = page, _a.per_page = per_page, _a);
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _b.sent();
+                    console.log(dataResult);
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxList = getTxList;
+var getTxListByClaim = function (subject, page, per_page, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    isTransparentTxListRequest = privacy === 'transparent';
-                    params = isTransparentTxListRequest
-                        ? (0, exports.getParamsForTransparentTxList)(subject, type, page)
-                        : (0, exports.getAnonymousTxList)(subject, type, page);
-                    url = "".concat(getExplorerApiRoute(), "/tx_search");
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/staking/claim");
+                    params = { address: subject, page: page, per_page: per_page };
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
@@ -434,7 +452,7 @@ var getTxList = function (subject, type, page, privacy, config) {
         });
     });
 };
-exports.getTxList = getTxList;
+exports.getTxListByClaim = getTxListByClaim;
 var getTransactionDetails = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
     var params, url, dataResult;
     return __generator(this, function (_a) {

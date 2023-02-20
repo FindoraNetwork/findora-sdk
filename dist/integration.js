@@ -81,6 +81,7 @@ var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
 var sdkEnv = {
     hostUrl: envHostUrl,
     cacheProvider: providers_1.MemoryCacheProvider,
+    blockScanerUrl: '',
     cachePath: './cache',
 };
 (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);

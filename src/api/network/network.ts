@@ -352,18 +352,33 @@ export const getAnonymousTxList = (
 
 export const getTxList = async (
   subject: string,
-  type: 'to' | 'from',
+  type: 'from' | 'to',
   page = 1,
-  privacy: 'transparent' | 'anonymous' = 'transparent',
+  per_page: number,
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.TxListDataResult> => {
-  const isTransparentTxListRequest = privacy === 'transparent';
+  const { blockScanerUrl } = Sdk.environment;
 
-  const params = isTransparentTxListRequest
-    ? getParamsForTransparentTxList(subject, type, page)
-    : getAnonymousTxList(subject, type, page);
+  const url = `${blockScanerUrl}/api/txs`;
+  const params = { [type]: subject, page, per_page };
 
-  const url = `${getExplorerApiRoute()}/tx_search`;
+  const dataResult = await apiGet(url, { ...config, params });
+
+  console.log(dataResult);
+
+  return dataResult;
+};
+
+export const getTxListByClaim = async (
+  subject: string,
+  page = 1,
+  per_page: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByClaimDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+
+  const url = `${blockScanerUrl}/api/staking/claim`;
+  const params = { address: subject, page, per_page };
 
   const dataResult = await apiGet(url, { ...config, params });
 

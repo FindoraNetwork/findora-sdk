@@ -27,13 +27,14 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  hostUrl: 'https://dev-qa01.dev.findora.org',
+  blockScanerUrl: 'https://qa01.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -45,9 +46,9 @@ const sdkEnv = {
  */
 Sdk.init(sdkEnv);
 
-const password = '123';
-
 console.log(`Connecting to "${sdkEnv.hostUrl}"`);
+
+const password = '123';
 
 const {
   CUSTOM_ASSET_CODE = '',
@@ -581,35 +582,6 @@ const myFunc14 = async () => {
   const { response } = dataResult;
 
   console.log(response?.result.txs);
-};
-
-// get tx list hash details
-const myFunc15 = async () => {
-  const h = 'YOUR_TX_HASH';
-
-  const pkey = PKEY_MINE;
-
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  const dataResult = await Network.getTxList(walletInfo.address, 'from');
-
-  const { response } = dataResult;
-
-  console.log('response!!!', JSON.stringify(response, null, 2));
-};
-
-const myFunc16 = async () => {
-  const pkey = PKEY_MINE;
-
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  const txList = await Transaction.getTxList(walletInfo.address, 'from');
-
-  console.log('txList', txList);
 };
 
 const myFunc17 = async () => {
@@ -1321,25 +1293,6 @@ const getFee = async () => {
   console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
 };
 
-const txHashTest = async () => {
-  const tendermintHash = '44d8c650a8b962b40e3d3fd180872232b77e5e8be42614cf106fd1d2ed15f1c5';
-
-  log('🚀 ~ file: run.ts ~ line 2576 ~ txHashTest ~ tendermintHash', tendermintHash);
-
-  const hashSwapResult = await Network.getHashSwap(tendermintHash);
-
-  log('hashSwapResult', JSON.stringify(hashSwapResult));
-
-  const { response } = hashSwapResult;
-
-  if (!response) {
-    throw new Error('could not fetch hashswap, no response received');
-  }
-
-  const explorerHash = response?.result?.txs?.[0].hash;
-  log('🚀 ~ file: run.ts ~ line 2588 ~ txHashTest ~ explorerHash', explorerHash);
-};
-
 async function approveToken() {
   // const webLinkedInfo = {
   //   privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
@@ -1679,6 +1632,19 @@ async function getNewBalanace() {
   console.log('\n');
 }
 
+async function getTxnListTest() {
+  // const result = await Transaction.getTxnList(
+  //   'fra13dac6nn6yl2t6thfc0hxsjemgqp0ghzyqmjdf55xc9mtw5atz5jsx8lze3',
+  //   'from',
+  // );
+  // console.log(result.txs[0]);
+
+  const result = await Transaction.getTxnListByClaim(
+    'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+  );
+  console.log(result);
+}
+
 // prism();
 
 // approveToken();
@@ -1692,4 +1658,6 @@ async function getNewBalanace() {
 // testFailure();
 
 // getNewBalanace();
-testBrokenKeypairs();
+// testBrokenKeypairs();
+
+getTxnListTest();

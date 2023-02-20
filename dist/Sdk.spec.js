@@ -56,6 +56,7 @@ describe('SdkMain (unit test)', function () {
                     explorerApiPort: 'p26657',
                     cacheProvider: providers_1.FileCacheProvider,
                     cachePath: 'pCacheDir',
+                    blockScanerUrl: 'https://foo.bar',
                 };
                 Sdk_1.default.init(sdkEnv);
                 expect(Sdk_1.default.environment.hostUrl).toEqual('pHost');
@@ -94,6 +95,7 @@ describe('SdkMain (unit test)', function () {
                 sdkEnv = {
                     hostUrl: 'foo',
                     queryPort: 'bar',
+                    blockScanerUrl: 'https://foo.bar',
                 };
                 Sdk_1.default.init(sdkEnv);
                 expect(Sdk_1.default.environment.hostUrl).toEqual('foo');

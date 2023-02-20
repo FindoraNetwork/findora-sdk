@@ -66,7 +66,7 @@ exports.getBlockTime = exports.getTxOperationsList = exports.getTxListFromRespon
 var get_1 = __importDefault(require("lodash/get"));
 var Network = __importStar(require("../network"));
 var getTxListFromResponse = function (result) {
-    return (0, get_1.default)(result, 'response.result.txs', null);
+    return (0, get_1.default)(result, 'response.data.txs', null);
 };
 exports.getTxListFromResponse = getTxListFromResponse;
 var getTxOperationsList = function (parsedTx) {

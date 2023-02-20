@@ -8,7 +8,7 @@ import * as AssetApi from '../sdkAsset';
 import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
-import { ProcessedTxListResponseResult } from './types';
+import { ProcessedTxListByClaimResponseResult, ProcessedTxListResponseResult } from './types';
 
 export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
@@ -468,12 +468,13 @@ export const sendToPublicKey = async (
   return sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
 };
 
-export const getTxList = async (
+export const getTxnList = async (
   address: string,
-  type: 'to' | 'from',
+  type: 'from' | 'to',
   page = 1,
+  per_page = 10,
 ): Promise<ProcessedTxListResponseResult> => {
-  const dataResult = await Network.getTxList(address, type, page, 'transparent');
+  const dataResult = await Network.getTxList(address, type, page, per_page);
 
   if (!dataResult.response) {
     throw new Error('Could not fetch a list of transactions. No response from the server.');
@@ -488,50 +489,23 @@ export const getTxList = async (
   const processedTxList = await processeTxInfoList(txList);
 
   return {
-    total_count: dataResult.response.result.total_count,
+    page: dataResult.response.data.page,
+    total: dataResult.response.data.total,
+    page_size: dataResult.response.data.page_size,
     txs: processedTxList,
   };
 };
 
-export const getAnonTxList = async (
-  subjects: string[],
-  type: 'to' | 'from',
+export const getTxnListByClaim = async (
+  address: string,
   page = 1,
-): Promise<ProcessedTxListResponseResult> => {
-  const promises = subjects.map(async subject => {
-    const dataResult = await Network.getTxList(subject, type, page, 'anonymous');
+  per_page = 10,
+): Promise<ProcessedTxListByClaimResponseResult> => {
+  const dataResult = await Network.getTxListByClaim(address, page, per_page);
 
-    if (!dataResult.response) {
-      throw new Error('Could not fetch a list of anonymous transactions. No response from the server.');
-    }
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
 
-    const txList = helpers.getTxListFromResponse(dataResult);
-
-    if (!txList) {
-      throw new Error('Could not get a list of anonymous transactions from the server response.');
-    }
-
-    const processedTxList = await processeTxInfoList(txList);
-
-    return {
-      total_count: dataResult.response.result.total_count,
-      txs: processedTxList,
-    };
-  });
-
-  const results = await Promise.all(promises);
-
-  const result: { total_count: number; txs: any[] } = {
-    total_count: 0,
-    txs: [],
-  };
-
-  results.forEach(processed => {
-    const { total_count, txs } = processed;
-
-    result.total_count = result.total_count + parseFloat(`${total_count}`);
-    result.txs = result.txs.concat(txs);
-  });
-
-  return result;
+  return dataResult.response.data;
 };

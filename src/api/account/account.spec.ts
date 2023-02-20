@@ -44,6 +44,7 @@ describe('account (unit test)', () => {
   const sdkEnv = {
     hostUrl,
     cacheProvider: MemoryCacheProvider,
+    blockScanerUrl: 'https://foo.bar',
     cachePath: '.',
   };
 

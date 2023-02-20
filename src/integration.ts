@@ -26,6 +26,7 @@ const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
 const sdkEnv = {
   hostUrl: envHostUrl,
   cacheProvider: MemoryCacheProvider,
+  blockScanerUrl: '',
   cachePath: './cache',
 };
 

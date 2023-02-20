@@ -87,13 +87,14 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-    // hostUrl: 'https://dev-qa01.dev.findora.org',
+    hostUrl: 'https://dev-qa01.dev.findora.org',
+    blockScanerUrl: 'https://qa01.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -103,8 +104,8 @@ var sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk_1.default.init(sdkEnv);
-var password = '123';
 console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+var password = '123';
 var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = _d === void 0 ? '' : _d, _e = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE2, PKEY_MINE2 = _f === void 0 ? '' : _f, _g = _a.PKEY_MINE3, PKEY_MINE3 = _g === void 0 ? '' : _g, _h = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _h === void 0 ? '' : _h, _j = _a.ENG_PKEY, ENG_PKEY = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _k === void 0 ? '' : _k, _l = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _l === void 0 ? '' : _l, _m = _a.M_STRING, M_STRING = _m === void 0 ? '' : _m, _o = _a.FRA_ADDRESS, FRA_ADDRESS = _o === void 0 ? '' : _o, _p = _a.ETH_PRIVATE, ETH_PRIVATE = _p === void 0 ? '' : _p, _q = _a.ETH_ADDRESS, ETH_ADDRESS = _q === void 0 ? '' : _q;
 var mainFaucet = PKEY_LOCAL_FAUCET;
 var CustomAssetCode = CUSTOM_ASSET_CODE;
@@ -692,45 +693,6 @@ var myFunc14 = function () { return __awaiter(void 0, void 0, void 0, function (
                 dataResult = _a.sent();
                 response = dataResult.response;
                 console.log(response === null || response === void 0 ? void 0 : response.result.txs);
-                return [2 /*return*/];
-        }
-    });
-}); };
-// get tx list hash details
-var myFunc15 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var h, pkey, password, walletInfo, dataResult, response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                h = 'YOUR_TX_HASH';
-                pkey = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getTxList(walletInfo.address, 'from')];
-            case 2:
-                dataResult = _a.sent();
-                response = dataResult.response;
-                console.log('response!!!', JSON.stringify(response, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
-var myFunc16 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, txList;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.getTxList(walletInfo.address, 'from')];
-            case 2:
-                txList = _a.sent();
-                console.log('txList', txList);
                 return [2 /*return*/];
         }
     });
@@ -1427,28 +1389,6 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
         }
     });
 }); };
-var txHashTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var tendermintHash, hashSwapResult, response, explorerHash;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0:
-                tendermintHash = '44d8c650a8b962b40e3d3fd180872232b77e5e8be42614cf106fd1d2ed15f1c5';
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2576 ~ txHashTest ~ tendermintHash', tendermintHash);
-                return [4 /*yield*/, api_1.Network.getHashSwap(tendermintHash)];
-            case 1:
-                hashSwapResult = _c.sent();
-                (0, utils_1.log)('hashSwapResult', JSON.stringify(hashSwapResult));
-                response = hashSwapResult.response;
-                if (!response) {
-                    throw new Error('could not fetch hashswap, no response received');
-                }
-                explorerHash = (_b = (_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.txs) === null || _b === void 0 ? void 0 : _b[0].hash;
-                (0, utils_1.log)('🚀 ~ file: run.ts ~ line 2588 ~ txHashTest ~ explorerHash', explorerHash);
-                return [2 /*return*/];
-        }
-    });
-}); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
         var addr;
@@ -1763,6 +1703,20 @@ function getNewBalanace() {
         });
     });
 }
+function getTxnListTest() {
+    return __awaiter(this, void 0, void 0, function () {
+        var result;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, api_1.Transaction.getTxnListByClaim('fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e')];
+                case 1:
+                    result = _a.sent();
+                    console.log(result);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // prism();
 // approveToken();
 // testItSync();
@@ -1774,5 +1728,6 @@ function getNewBalanace() {
 // getAbarBalance();
 // testFailure();
 // getNewBalanace();
-testBrokenKeypairs();
+// testBrokenKeypairs();
+getTxnListTest();
 //# sourceMappingURL=run.js.map

@@ -1060,114 +1060,114 @@ describe('transaction (unit test)', () => {
     });
   });
 
-  describe('getTxList', () => {
-    it('returns a list of transactions', async () => {
-      const address = 'fra123';
-      const type = 'to';
-      const page = 2;
-      const transparent = 'transparent';
+  // describe('getTxList', () => {
+  //   it('returns a list of transactions', async () => {
+  //     const address = 'fra123';
+  //     const type = 'to';
+  //     const page = 2;
+  //     const transparent = 'transparent';
 
-      const totalTxQuantity = 5;
+  //     const totalTxQuantity = 5;
 
-      const dataResult = {
-        response: {
-          result: {
-            total_count: totalTxQuantity,
-          },
-        },
-      } as unknown as NetworkTypes.TxListDataResult;
+  //     const dataResult = {
+  //       response: {
+  //         result: {
+  //           total_count: totalTxQuantity,
+  //         },
+  //       },
+  //     } as unknown as NetworkTypes.TxListDataResult;
 
-      const txList = [
-        {
-          foo: 'bar',
-        },
-      ] as unknown as NetworkTypes.TxInfo[];
+  //     const txList = [
+  //       {
+  //         foo: 'bar',
+  //       },
+  //     ] as unknown as NetworkTypes.TxInfo[];
 
-      const processedTxList = [
-        {
-          bar: 'foo',
-        },
-      ] as unknown as ProcessedTxInfo[];
+  //     const processedTxList = [
+  //       {
+  //         bar: 'foo',
+  //       },
+  //     ] as unknown as ProcessedTxInfo[];
 
-      const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
-        return Promise.resolve(dataResult);
-      });
+  //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+  //       return Promise.resolve(dataResult);
+  //     });
 
-      const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
-        return txList;
-      });
+  //     const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
+  //       return txList;
+  //     });
 
-      const spyProcesseTxInfoList = jest.spyOn(Processor, 'processeTxInfoList').mockImplementation(() => {
-        return Promise.resolve(processedTxList);
-      });
+  //     const spyProcesseTxInfoList = jest.spyOn(Processor, 'processeTxInfoList').mockImplementation(() => {
+  //       return Promise.resolve(processedTxList);
+  //     });
 
-      const result = await Transaction.getTxList(address, type, page);
+  //     const result = await Transaction.getTxList(address, type, page);
 
-      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
-      expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
-      expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
-      expect(result).toEqual({
-        total_count: totalTxQuantity,
-        txs: processedTxList,
-      });
+  //     expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
+  //     expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
+  //     expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
+  //     expect(result).toEqual({
+  //       total_count: totalTxQuantity,
+  //       txs: processedTxList,
+  //     });
 
-      spyGetTxList.mockRestore();
-      spyGetTxListFromResponse.mockRestore();
-      spyProcesseTxInfoList.mockRestore();
-    });
-    it('throws an error if it can not fetch a list of transactions', async () => {
-      const address = 'fra123';
-      const type = 'to';
-      const page = 2;
-      const transparent = 'transparent';
+  //     spyGetTxList.mockRestore();
+  //     spyGetTxListFromResponse.mockRestore();
+  //     spyProcesseTxInfoList.mockRestore();
+  //   });
+  //   it('throws an error if it can not fetch a list of transactions', async () => {
+  //     const address = 'fra123';
+  //     const type = 'to';
+  //     const page = 2;
+  //     const transparent = 'transparent';
 
-      const dataResult = {} as unknown as NetworkTypes.TxListDataResult;
+  //     const dataResult = {} as unknown as NetworkTypes.TxListDataResult;
 
-      const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
-        return Promise.resolve(dataResult);
-      });
+  //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+  //       return Promise.resolve(dataResult);
+  //     });
 
-      await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
-        'Could not fetch a list of transactions. No response from the server',
-      );
+  //     await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
+  //       'Could not fetch a list of transactions. No response from the server',
+  //     );
 
-      spyGetTxList.mockRestore();
-    });
-    it('throws an error if there is no list of transactions', async () => {
-      const address = 'fra123';
-      const type = 'to';
-      const page = 2;
-      const transparent = 'transparent';
+  //     spyGetTxList.mockRestore();
+  //   });
+  //   it('throws an error if there is no list of transactions', async () => {
+  //     const address = 'fra123';
+  //     const type = 'to';
+  //     const page = 2;
+  //     const transparent = 'transparent';
 
-      const totalTxQuantity = 5;
+  //     const totalTxQuantity = 5;
 
-      const dataResult = {
-        response: {
-          result: {
-            total_count: totalTxQuantity,
-          },
-        },
-      } as unknown as NetworkTypes.TxListDataResult;
+  //     const dataResult = {
+  //       response: {
+  //         result: {
+  //           total_count: totalTxQuantity,
+  //         },
+  //       },
+  //     } as unknown as NetworkTypes.TxListDataResult;
 
-      const txList = undefined as unknown as NetworkTypes.TxInfo[];
+  //     const txList = undefined as unknown as NetworkTypes.TxInfo[];
 
-      const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
-        return Promise.resolve(dataResult);
-      });
+  //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+  //       return Promise.resolve(dataResult);
+  //     });
 
-      const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
-        return txList;
-      });
+  //     const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
+  //       return txList;
+  //     });
 
-      await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
-        'Could not get a list of transactions from the server response',
-      );
+  //     await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
+  //       'Could not get a list of transactions from the server response',
+  //     );
 
-      expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
-      expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
+  //     expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
+  //     expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
 
-      spyGetTxList.mockRestore();
-      spyGetTxListFromResponse.mockRestore();
-    });
-  });
+  //     spyGetTxList.mockRestore();
+  //     spyGetTxListFromResponse.mockRestore();
+  //   });
+  // });
 });

@@ -19,24 +19,12 @@ const processTxOperationList = async (operationsList: Types.TxOperation[]) => {
 };
 
 export const processTxInfoItem = async (txItem: TxInfo): Promise<Types.ProcessedTxInfo> => {
-  let parsedTx: Types.ParsedTx;
+  // const time = await helpers.getBlockTime(txItem.height);
+  const time = String(txItem.timestamp);
+  const hash = txItem.tx_hash;
+  const code = txItem.code;
 
-  try {
-    parsedTx = JSON.parse(Base64.decode(txItem.tx));
-  } catch (err) {
-    const e: Error = err as Error;
-    throw new Error(`Can not parse the tx info from the tx item. Details: "${e.message}"`);
-  }
-
-  if (!parsedTx) {
-    throw new Error('parsed tx is empty');
-  }
-
-  const time = await helpers.getBlockTime(txItem.height);
-  const hash = txItem.hash;
-  const code = txItem.tx_result.code;
-
-  const operationsList = helpers.getTxOperationsList(parsedTx); // has BarToAbar TransferAsset etc
+  const operationsList = helpers.getTxOperationsList(txItem.value); // has BarToAbar TransferAsset etc
 
   const processedOperationList = await processTxOperationList(operationsList);
 
@@ -47,6 +35,8 @@ export const processTxInfoItem = async (txItem: TxInfo): Promise<Types.Processed
     data: processedUpdatedTxList,
     hash,
     time,
+    block_hash: txItem.block_hash,
+    height: txItem.height,
   };
 };
 

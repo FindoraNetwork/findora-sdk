@@ -14,6 +14,7 @@ const sdkEnv = {
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
   cacheProvider: MemoryCacheProvider,
+  blockScanerUrl: 'https://foo.bar',
   cachePath: './cache',
 };
 

@@ -107,6 +107,7 @@ describe('account (unit test)', function () {
     var sdkEnv = {
         hostUrl: hostUrl,
         cacheProvider: providers_1.MemoryCacheProvider,
+        blockScanerUrl: 'https://foo.bar',
         cachePath: '.',
     };
     Sdk_1.default.init(sdkEnv);

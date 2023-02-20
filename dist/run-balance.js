@@ -60,6 +60,7 @@ var sdkEnv = {
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
     cacheProvider: providers_1.MemoryCacheProvider,
+    blockScanerUrl: '',
     cachePath: './cache',
 };
 /**

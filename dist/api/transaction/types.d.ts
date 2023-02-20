@@ -172,9 +172,27 @@ export interface ProcessedTxInfo {
     data: ProcessedTx[];
     hash: string;
     time: string | undefined;
+    block_hash: string;
+    height: number;
 }
 export interface ProcessedTxListResponseResult {
     txs: ProcessedTxInfo[];
-    total_count: number;
+    page: number;
+    total: number;
+    page_size: number;
+}
+export interface ProcessedTxInfoByClaim {
+    amount: string;
+    node_address: string;
+    node_logo: string;
+    node_name: string;
+    timestamp: number;
+    tx_hash: string;
+}
+export interface ProcessedTxListByClaimResponseResult {
+    items: ProcessedTxInfoByClaim[];
+    page: number;
+    total: number;
+    page_size: number;
 }
 export {};

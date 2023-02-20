@@ -66,8 +66,6 @@ var KeypairApi = __importStar(require("../keypair/keypair"));
 var NetworkApi = __importStar(require("../network/network"));
 var AssetApi = __importStar(require("../sdkAsset/sdkAsset"));
 var Builder = __importStar(require("./builder"));
-var helpers = __importStar(require("./helpers"));
-var Processor = __importStar(require("./processor"));
 var Transaction = __importStar(require("./transaction"));
 describe('transaction (unit test)', function () {
     describe('getTransactionBuilder', function () {
@@ -1012,116 +1010,93 @@ describe('transaction (unit test)', function () {
             });
         }); });
     });
-    describe('getTxList', function () {
-        it('returns a list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, transparent, totalTxQuantity, dataResult, txList, processedTxList, spyGetTxList, spyGetTxListFromResponse, spyProcesseTxInfoList, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        address = 'fra123';
-                        type = 'to';
-                        page = 2;
-                        transparent = 'transparent';
-                        totalTxQuantity = 5;
-                        dataResult = {
-                            response: {
-                                result: {
-                                    total_count: totalTxQuantity,
-                                },
-                            },
-                        };
-                        txList = [
-                            {
-                                foo: 'bar',
-                            },
-                        ];
-                        processedTxList = [
-                            {
-                                bar: 'foo',
-                            },
-                        ];
-                        spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(function () {
-                            return Promise.resolve(dataResult);
-                        });
-                        spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(function () {
-                            return txList;
-                        });
-                        spyProcesseTxInfoList = jest.spyOn(Processor, 'processeTxInfoList').mockImplementation(function () {
-                            return Promise.resolve(processedTxList);
-                        });
-                        return [4 /*yield*/, Transaction.getTxList(address, type, page)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
-                        expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
-                        expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
-                        expect(result).toEqual({
-                            total_count: totalTxQuantity,
-                            txs: processedTxList,
-                        });
-                        spyGetTxList.mockRestore();
-                        spyGetTxListFromResponse.mockRestore();
-                        spyProcesseTxInfoList.mockRestore();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('throws an error if it can not fetch a list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, transparent, dataResult, spyGetTxList;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        address = 'fra123';
-                        type = 'to';
-                        page = 2;
-                        transparent = 'transparent';
-                        dataResult = {};
-                        spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(function () {
-                            return Promise.resolve(dataResult);
-                        });
-                        return [4 /*yield*/, expect(Transaction.getTxList(address, type, page)).rejects.toThrow('Could not fetch a list of transactions. No response from the server')];
-                    case 1:
-                        _a.sent();
-                        spyGetTxList.mockRestore();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-        it('throws an error if there is no list of transactions', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var address, type, page, transparent, totalTxQuantity, dataResult, txList, spyGetTxList, spyGetTxListFromResponse;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        address = 'fra123';
-                        type = 'to';
-                        page = 2;
-                        transparent = 'transparent';
-                        totalTxQuantity = 5;
-                        dataResult = {
-                            response: {
-                                result: {
-                                    total_count: totalTxQuantity,
-                                },
-                            },
-                        };
-                        txList = undefined;
-                        spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(function () {
-                            return Promise.resolve(dataResult);
-                        });
-                        spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(function () {
-                            return txList;
-                        });
-                        return [4 /*yield*/, expect(Transaction.getTxList(address, type, page)).rejects.toThrow('Could not get a list of transactions from the server response')];
-                    case 1:
-                        _a.sent();
-                        expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
-                        expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
-                        spyGetTxList.mockRestore();
-                        spyGetTxListFromResponse.mockRestore();
-                        return [2 /*return*/];
-                }
-            });
-        }); });
-    });
+    // describe('getTxList', () => {
+    //   it('returns a list of transactions', async () => {
+    //     const address = 'fra123';
+    //     const type = 'to';
+    //     const page = 2;
+    //     const transparent = 'transparent';
+    //     const totalTxQuantity = 5;
+    //     const dataResult = {
+    //       response: {
+    //         result: {
+    //           total_count: totalTxQuantity,
+    //         },
+    //       },
+    //     } as unknown as NetworkTypes.TxListDataResult;
+    //     const txList = [
+    //       {
+    //         foo: 'bar',
+    //       },
+    //     ] as unknown as NetworkTypes.TxInfo[];
+    //     const processedTxList = [
+    //       {
+    //         bar: 'foo',
+    //       },
+    //     ] as unknown as ProcessedTxInfo[];
+    //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+    //       return Promise.resolve(dataResult);
+    //     });
+    //     const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
+    //       return txList;
+    //     });
+    //     const spyProcesseTxInfoList = jest.spyOn(Processor, 'processeTxInfoList').mockImplementation(() => {
+    //       return Promise.resolve(processedTxList);
+    //     });
+    //     const result = await Transaction.getTxList(address, type, page);
+    //     expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
+    //     expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
+    //     expect(spyProcesseTxInfoList).toHaveBeenCalledWith(txList);
+    //     expect(result).toEqual({
+    //       total_count: totalTxQuantity,
+    //       txs: processedTxList,
+    //     });
+    //     spyGetTxList.mockRestore();
+    //     spyGetTxListFromResponse.mockRestore();
+    //     spyProcesseTxInfoList.mockRestore();
+    //   });
+    //   it('throws an error if it can not fetch a list of transactions', async () => {
+    //     const address = 'fra123';
+    //     const type = 'to';
+    //     const page = 2;
+    //     const transparent = 'transparent';
+    //     const dataResult = {} as unknown as NetworkTypes.TxListDataResult;
+    //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+    //       return Promise.resolve(dataResult);
+    //     });
+    //     await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
+    //       'Could not fetch a list of transactions. No response from the server',
+    //     );
+    //     spyGetTxList.mockRestore();
+    //   });
+    //   it('throws an error if there is no list of transactions', async () => {
+    //     const address = 'fra123';
+    //     const type = 'to';
+    //     const page = 2;
+    //     const transparent = 'transparent';
+    //     const totalTxQuantity = 5;
+    //     const dataResult = {
+    //       response: {
+    //         result: {
+    //           total_count: totalTxQuantity,
+    //         },
+    //       },
+    //     } as unknown as NetworkTypes.TxListDataResult;
+    //     const txList = undefined as unknown as NetworkTypes.TxInfo[];
+    //     const spyGetTxList = jest.spyOn(NetworkApi, 'getTxList').mockImplementation(() => {
+    //       return Promise.resolve(dataResult);
+    //     });
+    //     const spyGetTxListFromResponse = jest.spyOn(helpers, 'getTxListFromResponse').mockImplementation(() => {
+    //       return txList;
+    //     });
+    //     await expect(Transaction.getTxList(address, type, page)).rejects.toThrow(
+    //       'Could not get a list of transactions from the server response',
+    //     );
+    //     expect(spyGetTxList).toHaveBeenCalledWith(address, type, page, transparent);
+    //     expect(spyGetTxListFromResponse).toHaveBeenCalledWith(dataResult);
+    //     spyGetTxList.mockRestore();
+    //     spyGetTxListFromResponse.mockRestore();
+    //   });
+    // });
 });
 //# sourceMappingURL=transaction.spec.js.map

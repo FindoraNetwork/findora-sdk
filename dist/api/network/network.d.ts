@@ -38,7 +38,8 @@ export declare const getBlock: (height: number, config?: Types.NetworkAxiosConfi
 export declare const getHashSwap: (hash: string, config?: Types.NetworkAxiosConfig) => Promise<Types.HashSwapDataResult>;
 export declare const getParamsForTransparentTxList: (address: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
 export declare const getAnonymousTxList: (subject: string, type: 'to' | 'from', page?: number) => Types.TxListQueryParams;
-export declare const getTxList: (subject: string, type: 'to' | 'from', page?: number, privacy?: 'transparent' | 'anonymous', config?: Types.NetworkAxiosConfig) => Promise<Types.TxListDataResult>;
+export declare const getTxList: (subject: string, type: 'from' | 'to', page: number | undefined, per_page: number, config?: Types.NetworkAxiosConfig) => Promise<Types.TxListDataResult>;
+export declare const getTxListByClaim: (subject: string, page: number | undefined, per_page: number, config?: Types.NetworkAxiosConfig) => Promise<Types.TxListByClaimDataResult>;
 export declare const getTransactionDetails: (hash: string, config?: Types.NetworkAxiosConfig) => Promise<Types.TxDetailsDataResult>;
 export declare const getAbciNoce: (data: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbciNoceResult>;
 export declare const getAbciInfo: (data: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbciInfoResult>;
