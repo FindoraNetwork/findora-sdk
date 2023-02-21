@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxnListByClaim = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
+exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -543,14 +543,43 @@ var getTxnList = function (address, type, page, per_page) {
     });
 };
 exports.getTxnList = getTxnList;
-var getTxnListByClaim = function (address, page, per_page) {
+var getTxnListByStaking = function (address, type, page, per_page) {
+    if (type === void 0) { type = 'claim'; }
+    if (page === void 0) { page = 1; }
+    if (per_page === void 0) { per_page = 10; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var dataResult_1, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(type == 'delegation')) return [3 /*break*/, 2];
+                    return [4 /*yield*/, Network.getTxListByStakingDelegation(address, page, per_page)];
+                case 1:
+                    dataResult_1 = _a.sent();
+                    if (!dataResult_1.response) {
+                        throw new Error('Could not fetch a list of transactions. No response from the server.');
+                    }
+                    return [2 /*return*/, dataResult_1.response.data];
+                case 2: return [4 /*yield*/, Network.getTxListByClaim(address, page, per_page)];
+                case 3:
+                    dataResult = _a.sent();
+                    if (!dataResult.response) {
+                        throw new Error('Could not fetch a list of transactions. No response from the server.');
+                    }
+                    return [2 /*return*/, dataResult.response.data];
+            }
+        });
+    });
+};
+exports.getTxnListByStaking = getTxnListByStaking;
+var getTxnListByStakingUnDelegation = function (address, page, per_page) {
     if (page === void 0) { page = 1; }
     if (per_page === void 0) { per_page = 10; }
     return __awaiter(void 0, void 0, void 0, function () {
         var dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, Network.getTxListByClaim(address, page, per_page)];
+                case 0: return [4 /*yield*/, Network.getTxListByStakingUnDelegation(address, page, per_page)];
                 case 1:
                     dataResult = _a.sent();
                     if (!dataResult.response) {
@@ -561,5 +590,34 @@ var getTxnListByClaim = function (address, page, per_page) {
         });
     });
 };
-exports.getTxnListByClaim = getTxnListByClaim;
+exports.getTxnListByStakingUnDelegation = getTxnListByStakingUnDelegation;
+var getTxnListByPrism = function (address, type, page, per_page) {
+    if (type === void 0) { type = 'send'; }
+    if (page === void 0) { page = 1; }
+    if (per_page === void 0) { per_page = 10; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var dataResult_2, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    if (!(type == 'receive')) return [3 /*break*/, 2];
+                    return [4 /*yield*/, Network.getTxListByPrismReceive(address, page, per_page)];
+                case 1:
+                    dataResult_2 = _a.sent();
+                    if (!dataResult_2.response) {
+                        throw new Error('Could not fetch a list of transactions. No response from the server.');
+                    }
+                    return [2 /*return*/, dataResult_2.response.data];
+                case 2: return [4 /*yield*/, Network.getTxListByPrismSend(address, page, per_page)];
+                case 3:
+                    dataResult = _a.sent();
+                    if (!dataResult.response) {
+                        throw new Error('Could not fetch a list of transactions. No response from the server.');
+                    }
+                    return [2 /*return*/, dataResult.response.data];
+            }
+        });
+    });
+};
+exports.getTxnListByPrism = getTxnListByPrism;
 //# sourceMappingURL=transaction.js.map

@@ -1,7 +1,7 @@
 import { TransactionBuilder } from '../../services/ledger/types';
 import { LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as AssetApi from '../sdkAsset';
-import { ProcessedTxListByClaimResponseResult, ProcessedTxListResponseResult } from './types';
+import { ProcessedTxListByPrismResponseResult, ProcessedTxListByStakingResponseResult, ProcessedTxListByStakingUnDelagtionResponseResult, ProcessedTxListResponseResult } from './types';
 export interface TransferReciever {
     reciverWalletInfo: WalletKeypar | LightWalletKeypair;
     amount: string;
@@ -179,4 +179,6 @@ export declare const sendToAddress: (walletInfo: WalletKeypar, address: string, 
 export declare const sendToAddressV2: (walletInfo: WalletKeypar, address: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 export declare const sendToPublicKey: (walletInfo: WalletKeypar, publicKey: string, amount: string, assetCode: string, assetBlindRules?: AssetApi.AssetBlindRules) => Promise<TransactionBuilder>;
 export declare const getTxnList: (address: string, type: 'from' | 'to', page?: number, per_page?: number) => Promise<ProcessedTxListResponseResult>;
-export declare const getTxnListByClaim: (address: string, page?: number, per_page?: number) => Promise<ProcessedTxListByClaimResponseResult>;
+export declare const getTxnListByStaking: (address: string, type?: 'claim' | 'delegation' | 'unDelegation', page?: number, per_page?: number) => Promise<ProcessedTxListByStakingResponseResult>;
+export declare const getTxnListByStakingUnDelegation: (address: string, page?: number, per_page?: number) => Promise<ProcessedTxListByStakingUnDelagtionResponseResult>;
+export declare const getTxnListByPrism: (address: string, type?: 'send' | 'receive', page?: number, per_page?: number) => Promise<ProcessedTxListByPrismResponseResult>;

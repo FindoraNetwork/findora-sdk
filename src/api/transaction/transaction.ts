@@ -8,7 +8,12 @@ import * as AssetApi from '../sdkAsset';
 import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
-import { ProcessedTxListByClaimResponseResult, ProcessedTxListResponseResult } from './types';
+import {
+  ProcessedTxListByPrismResponseResult,
+  ProcessedTxListByStakingResponseResult,
+  ProcessedTxListByStakingUnDelagtionResponseResult,
+  ProcessedTxListResponseResult,
+} from './types';
 
 export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
@@ -496,12 +501,61 @@ export const getTxnList = async (
   };
 };
 
-export const getTxnListByClaim = async (
+export const getTxnListByStaking = async (
+  address: string,
+  type: 'claim' | 'delegation' | 'unDelegation' = 'claim',
+  page = 1,
+  per_page = 10,
+): Promise<ProcessedTxListByStakingResponseResult> => {
+  if (type == 'delegation') {
+    const dataResult = await Network.getTxListByStakingDelegation(address, page, per_page);
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+
+    return dataResult.response.data;
+  }
+  const dataResult = await Network.getTxListByClaim(address, page, per_page);
+
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
+
+  return dataResult.response.data;
+};
+
+export const getTxnListByStakingUnDelegation = async (
   address: string,
   page = 1,
   per_page = 10,
-): Promise<ProcessedTxListByClaimResponseResult> => {
-  const dataResult = await Network.getTxListByClaim(address, page, per_page);
+): Promise<ProcessedTxListByStakingUnDelagtionResponseResult> => {
+  const dataResult = await Network.getTxListByStakingUnDelegation(address, page, per_page);
+
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
+
+  return dataResult.response.data;
+};
+
+export const getTxnListByPrism = async (
+  address: string,
+  type: 'send' | 'receive' = 'send',
+  page = 1,
+  per_page = 10,
+): Promise<ProcessedTxListByPrismResponseResult> => {
+  if (type == 'receive') {
+    const dataResult = await Network.getTxListByPrismReceive(address, page, per_page);
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+
+    return dataResult.response.data;
+  }
+
+  const dataResult = await Network.getTxListByPrismSend(address, page, per_page);
 
   if (!dataResult.response) {
     throw new Error('Could not fetch a list of transactions. No response from the server.');

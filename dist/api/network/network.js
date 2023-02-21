@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
+exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -434,7 +434,7 @@ var getTxList = function (subject, type, page, per_page, config) {
     });
 };
 exports.getTxList = getTxList;
-var getTxListByClaim = function (subject, page, per_page, config) {
+var getTxListByClaim = function (subject, page, page_size, config) {
     if (page === void 0) { page = 1; }
     return __awaiter(void 0, void 0, void 0, function () {
         var blockScanerUrl, url, params, dataResult;
@@ -443,7 +443,7 @@ var getTxListByClaim = function (subject, page, per_page, config) {
                 case 0:
                     blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
                     url = "".concat(blockScanerUrl, "/api/staking/claim");
-                    params = { address: subject, page: page, per_page: per_page };
+                    params = { address: subject, page: page, page_size: page_size };
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
@@ -453,6 +453,85 @@ var getTxListByClaim = function (subject, page, per_page, config) {
     });
 };
 exports.getTxListByClaim = getTxListByClaim;
+var getTxListByStakingDelegation = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/delegation");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByStakingDelegation = getTxListByStakingDelegation;
+var getTxListByStakingUnDelegation = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, ledger, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    url = "".concat(blockScanerUrl, "/api/staking/undelegation");
+                    params = { pubkey: ledger.bech32_to_base64(subject), page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 2:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByStakingUnDelegation = getTxListByStakingUnDelegation;
+var getTxListByPrismSend = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/prism/records/send");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByPrismSend = getTxListByPrismSend;
+var getTxListByPrismReceive = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/prism/records/receive");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByPrismReceive = getTxListByPrismReceive;
 var getTransactionDetails = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
     var params, url, dataResult;
     return __generator(this, function (_a) {

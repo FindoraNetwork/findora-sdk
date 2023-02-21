@@ -372,13 +372,74 @@ export const getTxList = async (
 export const getTxListByClaim = async (
   subject: string,
   page = 1,
-  per_page: number,
+  page_size: number,
   config?: Types.NetworkAxiosConfig,
-): Promise<Types.TxListByClaimDataResult> => {
+): Promise<Types.TxListByStakingDataResult> => {
   const { blockScanerUrl } = Sdk.environment;
 
   const url = `${blockScanerUrl}/api/staking/claim`;
-  const params = { address: subject, page, per_page };
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByStakingDelegation = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByStakingDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/delegation`;
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByStakingUnDelegation = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByStakingUnDelegationDataResponseResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const ledger = await getLedger();
+  const url = `${blockScanerUrl}/api/staking/undelegation`;
+  const params = { pubkey: ledger.bech32_to_base64(subject), page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByPrismSend = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByPrismDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/prism/records/send`;
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByPrismReceive = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByPrismDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/prism/records/receive`;
+  const params = { address: subject, page, page_size };
 
   const dataResult = await apiGet(url, { ...config, params });
 

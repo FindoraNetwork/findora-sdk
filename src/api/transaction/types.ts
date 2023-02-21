@@ -206,7 +206,7 @@ export interface ProcessedTxListResponseResult {
   page_size: number;
 }
 
-export interface ProcessedTxInfoByClaim {
+export interface ProcessedTxInfoByStaking {
   amount: string;
   node_address: string;
   node_logo: string;
@@ -215,8 +215,37 @@ export interface ProcessedTxInfoByClaim {
   tx_hash: string;
 }
 
-export interface ProcessedTxListByClaimResponseResult {
-  items: ProcessedTxInfoByClaim[];
+export interface ProcessedTxInfoByPrism {
+  amount: string;
+  address: string;
+  timestamp: number;
+  tx_hash: string;
+}
+
+export interface ProcessedTxListByStakingResponseResult {
+  items: ProcessedTxInfoByStaking[];
+  page: number;
+  total: number;
+  page_size: number;
+}
+
+export interface ProcessedTxInfoByStakingUnDelagtion {
+  amount: string;
+  pubkey: string;
+  timestamp: number;
+  tx_hash: string;
+  validator: string;
+}
+
+export interface ProcessedTxListByStakingUnDelagtionResponseResult {
+  undelegations: ProcessedTxInfoByStakingUnDelagtion[];
+  page: number;
+  total: number;
+  page_size: number;
+}
+
+export interface ProcessedTxListByPrismResponseResult {
+  items: ProcessedTxInfoByPrism[];
   page: number;
   total: number;
   page_size: number;

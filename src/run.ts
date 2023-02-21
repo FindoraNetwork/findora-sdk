@@ -1633,16 +1633,28 @@ async function getNewBalanace() {
 }
 
 async function getTxnListTest() {
+  // native txn list
   // const result = await Transaction.getTxnList(
   //   'fra13dac6nn6yl2t6thfc0hxsjemgqp0ghzyqmjdf55xc9mtw5atz5jsx8lze3',
   //   'from',
   // );
   // console.log(result.txs[0]);
-
-  const result = await Transaction.getTxnListByClaim(
-    'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
-  );
-  console.log(result);
+  // staking txn list
+  // const result = await Transaction.getTxnListByStaking(
+  //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+  //   'delegation',
+  // );
+  // console.log(result);
+  // const result = await Transaction.getTxnListByStakingUnDelegation(
+  //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+  // );
+  // console.log(result);
+  // prism txn list
+  // const result = await Transaction.getTxnListByPrism(
+  //   'fra1lelnp9fthp68xy0nqtlu7h2u6ms45rh4lqu466ns4jxqvdjja3qqz5ae6s',
+  //   'send',
+  // );
+  // console.log(result);
 }
 
 // prism();

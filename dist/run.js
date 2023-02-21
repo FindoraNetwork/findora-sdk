@@ -1705,15 +1705,8 @@ function getNewBalanace() {
 }
 function getTxnListTest() {
     return __awaiter(this, void 0, void 0, function () {
-        var result;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Transaction.getTxnListByClaim('fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e')];
-                case 1:
-                    result = _a.sent();
-                    console.log(result);
-                    return [2 /*return*/];
-            }
+            return [2 /*return*/];
         });
     });
 }

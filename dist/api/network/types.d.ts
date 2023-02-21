@@ -163,7 +163,7 @@ export type TxListResponse<T> = {
 export interface TxListDataResult extends NetworkAxiosDataResult {
     response?: TxListResponse<TxListResponseResult>;
 }
-export interface TxListByClaimResponseResult {
+export interface TxListByStakingResponseResult {
     items: {
         amount: string;
         node_address: string;
@@ -176,8 +176,37 @@ export interface TxListByClaimResponseResult {
     page_size: number;
     total: number;
 }
-export interface TxListByClaimDataResult extends NetworkAxiosDataResult {
-    response?: TxListResponse<TxListByClaimResponseResult>;
+export interface TxListByStakingDataResult extends NetworkAxiosDataResult {
+    response?: TxListResponse<TxListByStakingResponseResult>;
+}
+export interface TxListByStakingUnDelegationDataResult {
+    undelegations: {
+        amount: string;
+        pubkey: string;
+        timestamp: number;
+        tx_hash: string;
+        validator: string;
+    }[];
+    page: number;
+    page_size: number;
+    total: number;
+}
+export interface TxListByStakingUnDelegationDataResponseResult extends NetworkAxiosDataResult {
+    response?: TxListResponse<TxListByStakingUnDelegationDataResult>;
+}
+export interface TxListByPrismResponseResult {
+    items: {
+        amount: string;
+        address: string;
+        timestamp: number;
+        tx_hash: string;
+    }[];
+    page: number;
+    page_size: number;
+    total: number;
+}
+export interface TxListByPrismDataResult extends NetworkAxiosDataResult {
+    response?: TxListResponse<TxListByPrismResponseResult>;
 }
 export interface TxListQueryParams {
     query: string;
