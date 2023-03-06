@@ -1661,7 +1661,7 @@ async function getTxnListTest() {
 
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1672,4 +1672,4 @@ async function getTxnListTest() {
 // getNewBalanace();
 // testBrokenKeypairs();
 
-getTxnListTest();
+// getTxnListTest();

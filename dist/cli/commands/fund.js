@@ -51,6 +51,8 @@ var runFund = function (address, amountToFund) { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0:
                 pkey = PKEY_LOCAL_FAUCET;
+                // const pkey = ENG_PKEY;
+                console.log('runFund pkey', pkey);
                 password = '123';
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
             case 1:

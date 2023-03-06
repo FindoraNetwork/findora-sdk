@@ -139,6 +139,7 @@
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^5.6.9",
+    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#feat-triple-masking-demo",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
@@ -150,7 +151,6 @@
     "url-safe-base64": "^1.2.0",
     "util": "^0.12.4",
     "web3": "^1.7.4",
-    "web3-eth-contract": "^1.7.4",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#feat-prism"
+    "web3-eth-contract": "^1.7.4"
   }
 }

@@ -1,4 +1,4 @@
-import { XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import { AXfrKeyPair, AXfrPubKey, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
 /**
  * A `light` version of the WalletKeypar, containing only address and publickey
  *
@@ -67,7 +67,9 @@ export interface EvmWalletKeypair {
  * @throws `An error returned by Ledger with a prefix added by SDK`
  */
 export declare const getPrivateKeyStr: (keypair: XfrKeyPair) => Promise<string>;
+export declare const getPrivateKeyStrOld: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getMnemonic: (desiredLength: number, mnemonicLang?: string) => Promise<string[]>;
+export declare const getPublicKeyStrOld: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getPublicKeyStr: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddress: (keypair: XfrKeyPair) => Promise<string>;
 export declare const getAddressByPublicKey: (publicKey: string) => Promise<string>;
@@ -79,7 +81,11 @@ export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<Xfr
  * @todo Add unit test
  */
 export declare const getPublicKeyByXfr: (publicKey: XfrPublicKey) => Promise<string>;
+export declare const getAXfrPublicKeyByBase64: (publicKey: string) => Promise<AXfrPubKey>;
+export declare const getAXfrPrivateKeyByBase64: (privateKey: string) => Promise<AXfrKeyPair>;
+export declare const getAxfrPubKeyByBase64: (publicKey: string) => Promise<AXfrPubKey>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
+export declare const getAddressPublicAndKeyOld: (address: string) => Promise<LightWalletKeypair>;
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.
  *
@@ -108,10 +114,14 @@ export declare const getAddressPublicAndKey: (address: string) => Promise<LightW
  *
  */
 export declare const restoreFromPrivateKey: (privateStr: string, password: string) => Promise<WalletKeypar>;
+export declare const createKeypair: (password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
 export declare const restoreEvmPrivate: (privateStr: string, password: string) => Promise<EvmWalletKeypair>;
 export declare const restoreEvmKeyStore: (keyStore: Uint8Array, password: string) => Promise<EvmWalletKeypair>;
-export declare const restoreFromMnemonic: (mnemonic: string[], password: string) => Promise<WalletKeypar>;
-export declare const restoreFromKeystore: (keyStore: Uint8Array, ksPassword: string, password: string) => Promise<WalletKeypar>;
-export declare const recoveryKeypairFromKeystore: (keyStore: Uint8Array, password: string) => Promise<Partial<WalletKeypar>>;
-export declare const restoreFromKeystoreString: (keyStoreString: string, ksPassword: string, password: string) => Promise<WalletKeypar>;
-export declare const createKeypair: (password: string) => Promise<WalletKeypar>;
+export declare const restoreFromMnemonic: (mnemonic: string[], password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
+export declare const restoreFromKeystoreWrapper: (keyStore: Uint8Array, ksPassword: string, password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
+export declare const restoreFromKeystoreEth: (keyStore: Uint8Array, ksPassword: string, password: string) => Promise<WalletKeypar>;
+export declare const restoreFromKeystoreFra: (keyStore: Uint8Array, ksPassword: string, password: string) => Promise<WalletKeypar>;
+export declare const recoveryKeypairFromKeystore: (keyStore: Uint8Array, password: string, isFraAddress?: boolean) => Promise<Partial<WalletKeypar>>;
+export declare const restoreFromKeystoreString: (keyStoreString: string, ksPassword: string, password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
+export declare const createKeypairViaMnemonic: (password: string, isFraAddress?: boolean) => Promise<WalletKeypar>;
+export declare const bech32ToBase64: (address: string) => Promise<string>;

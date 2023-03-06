@@ -1713,7 +1713,7 @@ function getTxnListTest() {
 // prism();
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1722,5 +1722,5 @@ function getTxnListTest() {
 // testFailure();
 // getNewBalanace();
 // testBrokenKeypairs();
-getTxnListTest();
+// getTxnListTest();
 //# sourceMappingURL=run.js.map

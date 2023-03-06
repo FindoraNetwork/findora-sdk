@@ -76,8 +76,9 @@ var sdkEnv = {
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-qa02.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     cacheProvider: providers_1.MemoryCacheProvider,
+    hostUrl: 'https://dev-qa01.dev.findora.org',
     blockScanerUrl: 'https://foo.bar',
     cachePath: './cache',
 };

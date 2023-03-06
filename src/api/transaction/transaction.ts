@@ -1,7 +1,7 @@
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { TransactionBuilder } from '../../services/ledger/types';
+import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
@@ -369,6 +369,33 @@ export const submitTransaction = async (transactionBuilder: TransactionBuilder):
   return handle;
 };
 
+export const submitAbarTransaction = async (
+  anonTransferOperationBuilder: AnonTransferOperationBuilder,
+): Promise<string> => {
+  const submitData = anonTransferOperationBuilder.transaction();
+
+  let result;
+
+  try {
+    result = await Network.submitTransaction(submitData);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Error Could not submit abar transaction: "${e.message}"`);
+  }
+
+  const { response: handle, error: submitError } = result;
+
+  if (submitError) {
+    throw new Error(`Could not submit abar transaction: "${submitError.message}"`);
+  }
+
+  if (!handle) {
+    throw new Error(`Handle is missing. Could not submit abar transaction - submit handle is missing`);
+  }
+
+  return handle;
+};
 /**
  * Send some asset to an address
  *
