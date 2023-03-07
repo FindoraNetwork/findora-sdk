@@ -10,8 +10,8 @@ export const runFund = async (address: string, amountToFund: string) => {
   const pkey = PKEY_LOCAL_FAUCET;
   // const pkey = ENG_PKEY;
 
-  console.log('runFund pkey', pkey);
   const password = '123';
+  console.log('runFund pkey to use is ', pkey);
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 

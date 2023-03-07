@@ -29,11 +29,12 @@ const sdkEnv = {
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
-  // hostUrl: 'https://dev-qa02.dev.findora.org',
+  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  hostUrl: 'https://dev-qa01.dev.findora.org',
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
   blockScanerUrl: 'https://qa01.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
@@ -102,17 +103,17 @@ const getFraBalance = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
-  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
-    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
-    password,
-  );
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  // const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+  //   password,
+  // );
 
-  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
-  const newWalletMine1 = await Keypair.restoreFromMnemonic(
-    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
-    password,
-  );
+  const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  // const newWalletMine1 = await Keypair.restoreFromMnemonic(
+  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+  //   password,
+  // );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   const newWalletMine2 = await Keypair.restoreFromMnemonic(
