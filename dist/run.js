@@ -87,13 +87,14 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
+    // hostUrl: 'https://dev-qa01.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-    hostUrl: 'https://dev-qa01.dev.findora.org',
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
     blockScanerUrl: 'https://qa01.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
@@ -144,10 +145,10 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 password = '12345';
                 isFra = false;
                 console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
             case 1:
                 faucetWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '), password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
             case 2:
                 newWalletMine1 = _a.sent();
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password)];
