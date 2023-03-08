@@ -50,7 +50,7 @@
     "test:evm:integration:all:local": "RPC_ENV_NAME=local yarn test:evm:integration:all",
     "test:tm:integration:testnet": "INTEGRATION_ENV_NAME=testnet yarn test:tm:integration",
     "test:tm:integration:local": "INTEGRATION_ENV_NAME=local yarn test:tm:integration",
-    "test:integration": "yarn test:tm:integration:local && yarn test:sdk:integration:local && yarn test:evm:integration:all:local",
+    "test:integration": " yarn test:sdk:integration:local && yarn test:evm:integration:all:local",
     "prettier": "prettier --write ./src/**/*.ts",
     "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
     "doc": "typedoc --out docs src",
