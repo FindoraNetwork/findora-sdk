@@ -198,6 +198,7 @@ export interface TxListByPrismResponseResult {
     items: {
         amount: string;
         address: string;
+        data: string;
         timestamp: number;
         tx_hash: string;
     }[];

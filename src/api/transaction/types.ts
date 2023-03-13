@@ -218,6 +218,7 @@ export interface ProcessedTxInfoByStaking {
 export interface ProcessedTxInfoByPrism {
   amount: string;
   address: string;
+  data: string;
   timestamp: number;
   tx_hash: string;
 }
