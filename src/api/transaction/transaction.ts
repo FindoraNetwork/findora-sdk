@@ -9,6 +9,7 @@ import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
 import {
+  IPrismData,
   ProcessedTxListByPrismResponseResult,
   ProcessedTxListByStakingResponseResult,
   ProcessedTxListByStakingUnDelagtionResponseResult,
@@ -552,7 +553,11 @@ export const getTxnListByPrism = async (
       throw new Error('Could not fetch a list of transactions. No response from the server.');
     }
 
-    return dataResult.response.data;
+    const items = dataResult.response.data.items.map(item => {
+      return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
+    });
+
+    return { ...dataResult.response.data, items };
   }
 
   const dataResult = await Network.getTxListByPrismSend(address, page, per_page);
@@ -561,5 +566,9 @@ export const getTxnListByPrism = async (
     throw new Error('Could not fetch a list of transactions. No response from the server.');
   }
 
-  return dataResult.response.data;
+  const items = dataResult.response.data.items.map(item => {
+    return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
+  });
+
+  return { ...dataResult.response.data, items };
 };
