@@ -1656,7 +1656,7 @@ async function getTxnListTest() {
   //   'fra1lelnp9fthp68xy0nqtlu7h2u6ms45rh4lqu466ns4jxqvdjja3qqz5ae6s',
   //   'send',
   // );
-  // console.log(result);
+  // console.log(JSON.stringify(result, null, 2));
 }
 
 // prism();

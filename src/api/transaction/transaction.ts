@@ -9,6 +9,7 @@ import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
 import {
+  IPrismData,
   ProcessedTxListByPrismResponseResult,
   ProcessedTxListByStakingResponseResult,
   ProcessedTxListByStakingUnDelagtionResponseResult,
@@ -167,13 +168,13 @@ export const sendToMany = async (
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
-  try {
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-  } catch (err) {
-    const e: Error = err as Error;
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
 
-    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-  }
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
 
   return transactionBuilder;
 };
@@ -307,13 +308,13 @@ export const sendToManyV2 = async (
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
-  try {
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-  } catch (err) {
-    const e: Error = err as Error;
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
 
-    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-  }
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
 
   return transactionBuilder;
 };
@@ -552,7 +553,11 @@ export const getTxnListByPrism = async (
       throw new Error('Could not fetch a list of transactions. No response from the server.');
     }
 
-    return dataResult.response.data;
+    const items = dataResult.response.data.items.map(item => {
+      return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
+    });
+
+    return { ...dataResult.response.data, items };
   }
 
   const dataResult = await Network.getTxListByPrismSend(address, page, per_page);
@@ -561,5 +566,9 @@ export const getTxnListByPrism = async (
     throw new Error('Could not fetch a list of transactions. No response from the server.');
   }
 
-  return dataResult.response.data;
+  const items = dataResult.response.data.items.map(item => {
+    return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
+  });
+
+  return { ...dataResult.response.data, items };
 };

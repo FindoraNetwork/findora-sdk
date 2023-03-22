@@ -380,7 +380,7 @@ var defineAsset = function (walletInfo, assetName, assetMemo, newAssetRules) { r
                 try {
                     transactionBuilder = transactionBuilder.build();
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);
@@ -461,7 +461,7 @@ var issueAsset = function (walletInfo, assetName, amountToIssue, assetBlindRules
                 try {
                     transactionBuilder = transactionBuilder.build();
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 }
                 catch (err) {
                     console.log('sendToMany error in build and sign ', err);

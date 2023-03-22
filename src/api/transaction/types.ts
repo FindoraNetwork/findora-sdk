@@ -215,9 +215,21 @@ export interface ProcessedTxInfoByStaking {
   tx_hash: string;
 }
 
+export interface IPrismData {
+  asset_type: number[];
+  lowlevel_data: any[];
+  nonce: Array<number[] | number>;
+  receiver: {
+    Ethereum: string;
+  };
+  signer: string;
+  value: string;
+}
+
 export interface ProcessedTxInfoByPrism {
   amount: string;
   address: string;
+  data: IPrismData;
   timestamp: number;
   tx_hash: string;
 }

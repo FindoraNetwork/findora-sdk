@@ -92,7 +92,7 @@ export const unStake = async (
   try {
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
@@ -173,7 +173,7 @@ export const delegate = async (
   try {
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
@@ -241,7 +241,7 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
   try {
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);

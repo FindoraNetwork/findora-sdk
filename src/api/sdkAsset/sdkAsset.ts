@@ -293,7 +293,7 @@ export const defineAsset = async (
   try {
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
@@ -381,7 +381,7 @@ export const issueAsset = async (
   try {
     transactionBuilder = transactionBuilder.build();
     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
   } catch (err) {
     console.log('sendToMany error in build and sign ', err);
     throw new Error(`could not build and sign txn "${(err as Error).message}"`);
