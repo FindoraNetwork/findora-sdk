@@ -168,13 +168,13 @@ export const sendToMany = async (
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
-  try {
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-  } catch (err) {
-    const e: Error = err as Error;
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
 
-    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-  }
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
 
   return transactionBuilder;
 };
@@ -308,13 +308,13 @@ export const sendToManyV2 = async (
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
-  try {
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-  } catch (err) {
-    const e: Error = err as Error;
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
 
-    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-  }
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
 
   return transactionBuilder;
 };

@@ -392,7 +392,7 @@ export const sendAccountToEvm = async (
     lowLevelData,
   );
   transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-  transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
 
   return transactionBuilder;
 };

@@ -424,7 +424,7 @@ var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowL
                 convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 transactionBuilder = transactionBuilder.add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData);
                 transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 return [2 /*return*/, transactionBuilder];
         }
     });

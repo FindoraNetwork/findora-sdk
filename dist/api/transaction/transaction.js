@@ -120,7 +120,7 @@ var processor_1 = require("./processor");
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, e, e;
+    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -218,13 +218,12 @@ var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules
                     e = err;
                     throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
                 }
-                try {
-                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not sign origin transfer operation, Error: \"".concat(e.message, "\""));
-                }
+                // try {
+                //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+                // }
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -270,7 +269,7 @@ exports.sendToMany = sendToMany;
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, minimalFee, toPublickey, fraAssetCode, isFraTransfer, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e, e, e;
+    var ledger, asset, decimals, minimalFee, toPublickey, fraAssetCode, isFraTransfer, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -354,13 +353,12 @@ var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRul
                     e = err;
                     throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
                 }
-                try {
-                    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not sign origin transfer operation, Error: \"".concat(e.message, "\""));
-                }
+                // try {
+                //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+                // }
                 return [2 /*return*/, transactionBuilder];
         }
     });
