@@ -28,6 +28,7 @@ const sdkEnv = {
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa01.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
@@ -1662,7 +1663,7 @@ async function getTxnListTest() {
 
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1673,4 +1674,4 @@ async function getTxnListTest() {
 // getNewBalanace();
 // testBrokenKeypairs();
 
-getTxnListTest();
+// getTxnListTest();
