@@ -197,9 +197,13 @@ export interface TxListByStakingUnDelegationDataResponseResult extends NetworkAx
 export interface TxListByPrismResponseResult {
     items: {
         amount: string;
-        address: string;
+        asset: string;
+        block_hash: string;
         data: string;
+        from: string;
+        height: number;
         timestamp: number;
+        to: string;
         tx_hash: string;
     }[];
     page: number;

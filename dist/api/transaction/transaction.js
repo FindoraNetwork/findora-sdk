@@ -605,7 +605,7 @@ var getTxnListByPrism = function (address, type, page, per_page) {
     if (page === void 0) { page = 1; }
     if (per_page === void 0) { per_page = 10; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var dataResult_2, items_1, dataResult, items;
+        var dataResult_2, items, dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -616,20 +616,17 @@ var getTxnListByPrism = function (address, type, page, per_page) {
                     if (!dataResult_2.response) {
                         throw new Error('Could not fetch a list of transactions. No response from the server.');
                     }
-                    items_1 = dataResult_2.response.data.items.map(function (item) {
+                    items = dataResult_2.response.data.items.map(function (item) {
                         return __assign(__assign({}, item), { data: JSON.parse(atob(item.data)) });
                     });
-                    return [2 /*return*/, __assign(__assign({}, dataResult_2.response.data), { items: items_1 })];
+                    return [2 /*return*/, dataResult_2.response.data];
                 case 2: return [4 /*yield*/, Network.getTxListByPrismSend(address, page, per_page)];
                 case 3:
                     dataResult = _a.sent();
                     if (!dataResult.response) {
                         throw new Error('Could not fetch a list of transactions. No response from the server.');
                     }
-                    items = dataResult.response.data.items.map(function (item) {
-                        return __assign(__assign({}, item), { data: JSON.parse(atob(item.data)) });
-                    });
-                    return [2 /*return*/, __assign(__assign({}, dataResult.response.data), { items: items })];
+                    return [2 /*return*/, dataResult.response.data];
             }
         });
     });
