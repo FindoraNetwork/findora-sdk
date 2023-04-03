@@ -162,6 +162,26 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
   }
 };
 
+export const getXfrPrivateKeyByBase64 = async (privateStr: string): Promise<XfrKeyPair> => {
+  const ledger = await getLedger();
+
+  const toSend = `"${privateStr}"`;
+
+  let keypair;
+
+  try {
+    keypair = ledger.create_keypair_from_secret(toSend);
+  } catch (error) {
+    throw new Error(`could not restore keypair. details: "${error as Error}"`);
+  }
+
+  if (!keypair) {
+    throw new Error('could not restore keypair. Keypair is empty');
+  }
+
+  return keypair;
+};
+
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.
  *
@@ -192,19 +212,21 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
 export const restoreFromPrivateKey = async (privateStr: string, password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  const toSend = `"${privateStr}"`;
+  const keypair = await getXfrPrivateKeyByBase64(privateStr);
 
-  let keypair;
-
-  try {
-    keypair = ledger.create_keypair_from_secret(toSend);
-  } catch (error) {
-    throw new Error(`could not restore keypair. details: "${error as Error}"`);
-  }
-
-  if (!keypair) {
-    throw new Error('could not restore keypair. Keypair is empty');
-  }
+  // const toSend = `"${privateStr}"`;
+  //
+  // let keypair;
+  //
+  // try {
+  //   keypair = ledger.create_keypair_from_secret(toSend);
+  // } catch (error) {
+  //   throw new Error(`could not restore keypair. details: "${error as Error}"`);
+  // }
+  //
+  // if (!keypair) {
+  //   throw new Error('could not restore keypair. Keypair is empty');
+  // }
 
   const keypairStr = ledger.keypair_to_str(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);

@@ -4410,9 +4410,8 @@ find-versions@^4.0.0:
   dependencies:
     semver-regex "^3.1.2"
 
-"findora-wallet-wasm@https://github.com/FindoraNetwork/wasm-js-bindings.git#develop":
+findora-wallet-wasm@../findora-wallet-wasm/:
   version "0.0.0"
-  resolved "https://github.com/FindoraNetwork/wasm-js-bindings.git#c62e920dcc56b672e91cc5ac4237c4700da54d91"
 
 flat-cache@^3.0.4:
   version "3.0.4"

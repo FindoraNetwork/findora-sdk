@@ -2,7 +2,7 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
 import Sdk from './Sdk';
@@ -1382,16 +1382,20 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 
-async function runAbarCreating(iterations = 20) {
-  const anonKeys1 = {
-    axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
-    axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
-  };
+async function runAbarCreating(iterations = 10) {
+  // const anonKeys1 = {
+  //   axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+  //   axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
+  // };
+  //
+  // const anonKeys2 = {
+  //   axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+  //   axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
+  // };
 
-  const anonKeys2 = {
-    axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
-    axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
-  };
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const anonKeys1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const anonKeys2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
 
   const wallets = [anonKeys1, anonKeys2];
 
@@ -1661,9 +1665,92 @@ async function getTxnListTest() {
 
 // prism();
 
+export const getSidsForSingleAsset = async (senderOne: string, assetCode: string) => {
+  log(`//////////////// Get sids for asset ${assetCode} //////////////// `);
+  const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
+
+  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
+  if (!sids) {
+    console.log('ERROR no sids available');
+    return [];
+  }
+
+  const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
+
+  const customAssetSids = [];
+  for (const utxoItem of utxoDataList) {
+    const utxoAsset = utxoItem['body']['asset_type'];
+
+    if (utxoAsset === assetCode) {
+      customAssetSids.push(utxoItem['sid']);
+    }
+  }
+  return customAssetSids.sort((a, b) => a - b);
+};
+
+async function barToAbarAmount() {
+  const senderWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const anonKeysReceiver = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+
+  const amount = '12';
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sids: usedSids,
+  } = await TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey);
+
+  log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+  log('🚀 ~ usedSids', usedSids.join(','));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  log('send bar to abar result handle!!', resultHandle);
+  const givenCommitments = barToAbarData.commitments;
+  console.log('givenCommitments', givenCommitments);
+}
+
+async function getAbarBalance() {
+  // "2023-03-23, 10:55:49 p.m." - 🚀 ~ barToAbarData [
+  //   '{\n' +
+  //     '  "receiverXfrPublicKey": "NmpU7bLld5JNndmzHozTjpkMBQmA2SAJBlHPumAaNhQ=",\n' +
+  //     '  "commitments": [\n' +
+  //     '    "GF2kEN8y5n7Pa2tHPf5928afruchWbMCQsNHzuR7cdS5"\n' +
+  //     '  ]\n' +
+  //     '}'
+  // ]
+
+  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const anonKeys1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const anonKeys2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+  const fraAssetSids = await getSidsForSingleAsset(anonKeys1.privateStr!, fraAssetCode);
+  log('🚀 ~ all fraAssetSids', fraAssetSids);
+  console.log('anonKeys2', anonKeys2);
+  // console.log('anonKeys2', anonKeys2);
+
+  const givenCommitments = ['CKn8wGw8vUyrfxb8JcNxxHL5uZuxyfcRJTb8vAarFVaW'];
+  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys2, givenCommitments);
+  // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
+
+  console.log('anon balances');
+  // NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
+  console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
+}
+
 // approveToken();
 // testItSync();
-getFraBalance();
+
+// getFraBalance();
+// barToAbarAmount();
+getAbarBalance();
+
+// runAbarCreating();
+
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
