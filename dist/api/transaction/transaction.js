@@ -70,7 +70,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
+exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -405,10 +405,12 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
             case 3:
                 err_1 = _a.sent();
                 e = err_1;
+                console.log('network sumbit error', err_1);
                 throw new Error("Error Could not submit transaction: \"".concat(e.message, "\""));
             case 4:
                 handle = result.response, submitError = result.error;
                 if (submitError) {
+                    console.log('sumbit tx error', submitError);
                     throw new Error("Could not submit transaction: \"".concat(submitError.message, "\""));
                 }
                 if (!handle) {
@@ -419,6 +421,36 @@ var submitTransaction = function (transactionBuilder) { return __awaiter(void 0,
     });
 }); };
 exports.submitTransaction = submitTransaction;
+var submitAbarTransaction = function (anonTransferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var submitData, result, err_2, e, handle, submitError;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                submitData = anonTransferOperationBuilder.transaction();
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 3, , 4]);
+                return [4 /*yield*/, Network.submitTransaction(submitData)];
+            case 2:
+                result = _a.sent();
+                return [3 /*break*/, 4];
+            case 3:
+                err_2 = _a.sent();
+                e = err_2;
+                throw new Error("Error Could not submit abar transaction: \"".concat(e.message, "\""));
+            case 4:
+                handle = result.response, submitError = result.error;
+                if (submitError) {
+                    throw new Error("Could not submit abar transaction: \"".concat(submitError.message, "\""));
+                }
+                if (!handle) {
+                    throw new Error("Handle is missing. Could not submit abar transaction - submit handle is missing");
+                }
+                return [2 /*return*/, handle];
+        }
+    });
+}); };
+exports.submitAbarTransaction = submitAbarTransaction;
 /**
  * Send some asset to an address
  *

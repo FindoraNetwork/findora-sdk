@@ -80,6 +80,7 @@ export declare const getXfrPublicKeyByBase64: (publicKey: string) => Promise<Xfr
  */
 export declare const getPublicKeyByXfr: (publicKey: XfrPublicKey) => Promise<string>;
 export declare const getAddressPublicAndKey: (address: string) => Promise<LightWalletKeypair>;
+export declare const getXfrPrivateKeyByBase64: (privateStr: string) => Promise<XfrKeyPair>;
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.
  *
