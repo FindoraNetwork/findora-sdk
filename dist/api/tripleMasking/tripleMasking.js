@@ -79,7 +79,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.abarToAbarAmount = exports.abarToAbar = exports.getAbarToAbarAmountPayload = exports.getTotalAbarTransferFee = exports.getSendAtxo = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.barToAbar = exports.barToAbarAmount = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getUnspentAbars = exports.getAbarBalance = exports.getBalanceMaps = exports.getSpentAbars = exports.getOwnedAbars = exports.genNullifierHash = exports.isNullifierHashSpent = exports.openAbar = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = void 0;
+exports.abarToBar = exports.abarToAbarAmount = exports.abarToAbar = exports.getAbarToAbarAmountPayload = exports.getTotalAbarTransferFee = exports.getSendAtxo = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.barToAbar = exports.barToAbarAmount = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getUnspentAbars = exports.getAbarBalance = exports.getBalanceMaps = exports.getSpentAbars = exports.getOwnedAbars = exports.genNullifierHash = exports.isNullifierHashSpent = exports.openAbar = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var utils_1 = require("../../services/utils");
 var testHelpers_1 = require("../../evm/testHelpers");
@@ -1204,24 +1204,64 @@ anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(
     });
 }); };
 exports.abarToAbarAmount = abarToAbarAmount;
-// export const getAbarTransferFee = async (
-//   // anonKeysSender: FindoraWallet.FormattedAnonKeys,
-//   anonKeysSender: Keypair.WalletKeypar,
-//   anonPubKeyReceiver: string,
-//   abarAmountToTransfer: string,
-//   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
-// ) => {
-//   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
-//     anonKeysSender,
-//     anonPubKeyReceiver,
-//     abarAmountToTransfer,
-//     additionalOwnedAbarItems,
-//   );
-//
-//   const expectedFee = anonTransferOperationBuilder.get_expected_fee();
-//
-//   const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
-//
-//   return calculatedFee;
-// };
+var abarToBar = function (
+// anonKeysSender: FindoraWallet.FormattedAnonKeys,
+anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
+    var transactionBuilder, receiverXfrPublicKeyConverted, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Builder.getTransactionBuilder()];
+            case 1:
+                transactionBuilder = _a.sent();
+                return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey)];
+            case 2:
+                receiverXfrPublicKeyConverted = _a.sent();
+                return [4 /*yield*/, (0, exports.getAnonKeypairFromJson)(anonKeysSender)];
+            case 3:
+                aXfrSpendKeySender = (_a.sent()).aXfrSecretKeyConverted;
+                ownedAbarToUseAsSource = additionalOwnedAbarItems[0], additionalOwnedAbars = additionalOwnedAbarItems.slice(1);
+                return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
+            case 4:
+                abarPayloadSource = _a.sent();
+                try {
+                    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadSource.myOwnedAbar, abarPayloadSource.abarOwnerMemo, abarPayloadSource.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, false, false);
+                }
+                catch (error) {
+                    console.log('Error adding Abar to bar', error);
+                    throw new Error("Could not add abar to bar operation\", Error - ".concat(error));
+                }
+                _i = 0, additionalOwnedAbars_2 = additionalOwnedAbars;
+                _a.label = 5;
+            case 5:
+                if (!(_i < additionalOwnedAbars_2.length)) return [3 /*break*/, 8];
+                ownedAbarItemOne = additionalOwnedAbars_2[_i];
+                return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
+            case 6:
+                abarPayloadNext = _a.sent();
+                try {
+                    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, abarPayloadNext.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, false, false);
+                }
+                catch (error) {
+                    console.log('Error from the backend:', error);
+                    throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - ".concat(error.message));
+                }
+                _a.label = 7;
+            case 7:
+                _i++;
+                return [3 /*break*/, 5];
+            case 8:
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                }
+                catch (err) {
+                    throw new Error("could not build txn \"".concat(err, "\""));
+                }
+                abarToBarData = {
+                    anonKeysSender: anonKeysSender,
+                };
+                return [2 /*return*/, { transactionBuilder: transactionBuilder, abarToBarData: abarToBarData, receiverXfrPublicKey: receiverXfrPublicKey }];
+        }
+    });
+}); };
+exports.abarToBar = abarToBar;
 //# sourceMappingURL=tripleMasking.js.map

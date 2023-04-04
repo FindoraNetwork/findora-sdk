@@ -78,4 +78,9 @@ export declare const abarToAbarAmount: (anonKeysSender: Keypair.WalletKeypar, an
     anonTransferOperationBuilder: import("findora-wallet-wasm/web").AnonTransferOperationBuilder;
     abarToAbarData: FindoraWallet.AbarToAbarData;
 }>;
+export declare const abarToBar: (anonKeysSender: Keypair.WalletKeypar, receiverXfrPublicKey: string, additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[]) => Promise<{
+    transactionBuilder: TransactionBuilder;
+    abarToBarData: FindoraWallet.AbarToBarData;
+    receiverXfrPublicKey: string;
+}>;
 export {};

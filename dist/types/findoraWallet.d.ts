@@ -59,7 +59,7 @@ export interface BarToAbarData {
     commitments: string[];
 }
 export interface AbarToBarData {
-    anonKeysSender: FormattedAnonKeys;
+    anonKeysSender: WalletKeypar;
 }
 export interface ProcessedCommitmentsMap {
     commitmentKey: string;

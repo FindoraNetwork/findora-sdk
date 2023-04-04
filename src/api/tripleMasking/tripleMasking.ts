@@ -1198,23 +1198,164 @@ export const abarToAbarAmount = async (
   return abarToAbarResult;
 };
 
-// export const getAbarTransferFee = async (
-//   // anonKeysSender: FindoraWallet.FormattedAnonKeys,
-//   anonKeysSender: Keypair.WalletKeypar,
-//   anonPubKeyReceiver: string,
-//   abarAmountToTransfer: string,
-//   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [],
-// ) => {
-//   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
-//     anonKeysSender,
-//     anonPubKeyReceiver,
-//     abarAmountToTransfer,
-//     additionalOwnedAbarItems,
-//   );
-//
-//   const expectedFee = anonTransferOperationBuilder.get_expected_fee();
-//
-//   const calculatedFee = fromWei(createBigNumber(expectedFee.toString()), 6).toFormat(6);
-//
-//   return calculatedFee;
-// };
+export const abarToBar = async (
+  // anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: Keypair.WalletKeypar,
+  receiverXfrPublicKey: string,
+  additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
+) => {
+  let transactionBuilder = await Builder.getTransactionBuilder();
+
+  const receiverXfrPublicKeyConverted = await Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey);
+
+  const { aXfrSecretKeyConverted: aXfrSpendKeySender } = await getAnonKeypairFromJson(anonKeysSender);
+
+  const [ownedAbarToUseAsSource, ...additionalOwnedAbars] = additionalOwnedAbarItems;
+
+  const abarPayloadSource = await getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender);
+
+  try {
+    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(
+      abarPayloadSource.myOwnedAbar,
+      abarPayloadSource.abarOwnerMemo,
+      abarPayloadSource.myMTLeafInfo,
+      aXfrSpendKeySender,
+      receiverXfrPublicKeyConverted,
+      false,
+      false,
+    );
+  } catch (error) {
+    console.log('Error adding Abar to bar', error);
+    throw new Error(`Could not add abar to bar operation", Error - ${error as Error}`);
+  }
+
+  for (const ownedAbarItemOne of additionalOwnedAbars) {
+    const abarPayloadNext = await getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender);
+
+    try {
+      transactionBuilder = transactionBuilder.add_operation_abar_to_bar(
+        abarPayloadNext.myOwnedAbar,
+        abarPayloadNext.abarOwnerMemo,
+        abarPayloadNext.myMTLeafInfo,
+        aXfrSpendKeySender,
+        receiverXfrPublicKeyConverted,
+        false,
+        false,
+      );
+    } catch (error) {
+      console.log('Error from the backend:', error);
+      throw new Error(
+        `Could not add an additional input for abar to bar transfer operation", Error - ${
+          (error as Error).message
+        }`,
+      );
+    }
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+  } catch (err) {
+    throw new Error(`could not build txn "${err as Error}"`);
+  }
+
+  const abarToBarData: FindoraWallet.AbarToBarData = {
+    anonKeysSender,
+  };
+
+  return { transactionBuilder, abarToBarData, receiverXfrPublicKey };
+};
+
+export const getAbarToBarAmountPayload = async (
+  // anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: Keypair.WalletKeypar,
+  amount: string,
+  assetCode: string,
+  givenCommitmentsList: string[],
+) => {
+  const payload = await getAbarToAbarAmountPayload(
+    anonKeysSender,
+    anonKeysSender.publickey,
+    amount,
+    assetCode,
+    givenCommitmentsList,
+  );
+  console.log('🚀 ~ file: tripleMasking.ts ~ line 453 ~ payload', payload);
+
+  const { commitmentsToSend, commitmentsForFee, additionalAmountForFee } = payload;
+
+  return {
+    commitmentsToSend,
+    commitmentsForFee,
+    additionalAmountForFee,
+  };
+};
+
+export const abarToBarAmount = async (
+  // anonKeysSender: FindoraWallet.FormattedAnonKeys,
+  anonKeysSender: Keypair.WalletKeypar,
+  receiverXfrPublicKey: string,
+  amount: string,
+  assetCode: string,
+  givenCommitmentsList: string[],
+) => {
+  const payload = await getAbarToBarAmountPayload(anonKeysSender, amount, assetCode, givenCommitmentsList);
+
+  const { commitmentsToSend, commitmentsForFee } = payload;
+
+  const givenCommitmentsListSender = [...commitmentsToSend, ...commitmentsForFee];
+
+  const { anonTransferOperationBuilder, abarToAbarData } = await abarToAbarAmount(
+    anonKeysSender,
+    anonKeysSender.publickey,
+    amount,
+    assetCode,
+    givenCommitmentsListSender,
+  );
+
+  const asset = await Asset.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+  const amountToSendInWei = BigInt(toWei(amount, decimals).toString());
+
+  const _resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+  await waitForBlockChange(DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR);
+  console.log('abar transaction handle', _resultHandle);
+
+  const { commitmentsMap } = abarToAbarData;
+
+  const retrivedCommitmentsListReceiver = [];
+
+  const remainderCommitements = [];
+
+  for (const commitmentsMapEntry of commitmentsMap) {
+    const { commitmentKey, commitmentAmount, commitmentAssetType } = commitmentsMapEntry;
+    console.log('🚀 ~ file: tripleMasking.ts ~ line 863 ~ commitmentsMapEntry', commitmentsMapEntry);
+    const commitmentAmountInWei = BigInt(toWei(commitmentAmount, decimals).toString());
+    const isSameAssetType = commitmentAssetType === assetCode;
+    const isSameAmount = commitmentAmountInWei === amountToSendInWei;
+
+    if (isSameAssetType && isSameAmount) {
+      console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ commitmentAmountInWei', commitmentAmountInWei);
+      console.log('🚀 ~ file: tripleMasking.ts ~ line 906 ~ amountToSendInWei!!!', amountToSendInWei);
+
+      retrivedCommitmentsListReceiver.push(commitmentKey);
+      continue;
+    }
+    remainderCommitements.push(commitmentKey);
+  }
+
+  const allCommitments = [...retrivedCommitmentsListReceiver];
+
+  const additionalOwnedAbarItems = [];
+
+  for (const givenCommitment of allCommitments) {
+    const ownedAbarsResponseTwo = await getOwnedAbars(givenCommitment);
+
+    const [additionalOwnedAbarItem] = ownedAbarsResponseTwo;
+
+    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+  }
+
+  const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
+
+  return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
+};

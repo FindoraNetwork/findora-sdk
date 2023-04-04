@@ -68,7 +68,8 @@ export interface BarToAbarData {
 }
 
 export interface AbarToBarData {
-  anonKeysSender: FormattedAnonKeys;
+  // anonKeysSender: FormattedAnonKeys;
+  anonKeysSender: WalletKeypar;
 }
 
 export interface ProcessedCommitmentsMap {
