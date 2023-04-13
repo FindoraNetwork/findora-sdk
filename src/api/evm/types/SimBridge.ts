@@ -148,6 +148,7 @@ export interface SimBridgeEventsContext {
 }
 export type SimBridgeMethodNames =
   | 'new'
+  | '__self'
   | '_consumeMint'
   | '_withdrawAsset'
   | '_withdrawFRA'
@@ -246,6 +247,13 @@ export interface SimBridge {
   'new'(_proxy_contract: string): MethodReturnContext;
   /**
    * Payable: false
+   * Constant: true
+   * StateMutability: view
+   * Type: function
+   */
+  __self(): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
@@ -257,7 +265,7 @@ export interface SimBridge {
    * StateMutability: nonpayable
    * Type: function
    * @param _asset Type: bytes32, Indexed: false
-   * @param _from Type: bytes32, Indexed: false
+   * @param _from Type: bytes, Indexed: false
    * @param _to Type: address, Indexed: false
    * @param _value Type: uint256, Indexed: false
    * @param _data Type: bytes, Indexed: false
@@ -331,7 +339,7 @@ export interface SimBridge {
    * Constant: false
    * StateMutability: payable
    * Type: function
-   * @param _to Type: bytes32, Indexed: false
+   * @param _to Type: bytes, Indexed: false
    */
   depositFRA(_to: string | number[]): MethodPayableReturnContext;
   /**
@@ -340,7 +348,7 @@ export interface SimBridge {
    * StateMutability: nonpayable
    * Type: function
    * @param _addr Type: address, Indexed: false
-   * @param _to Type: bytes32, Indexed: false
+   * @param _to Type: bytes, Indexed: false
    * @param _id Type: uint256, Indexed: false
    * @param _amount Type: uint256, Indexed: false
    */
@@ -351,7 +359,7 @@ export interface SimBridge {
    * StateMutability: nonpayable
    * Type: function
    * @param _frc20 Type: address, Indexed: false
-   * @param _to Type: bytes32, Indexed: false
+   * @param _to Type: bytes, Indexed: false
    * @param _value Type: uint256, Indexed: false
    */
   depositFRC20(_frc20: string, _to: string | number[], _value: string): MethodReturnContext;
@@ -361,7 +369,7 @@ export interface SimBridge {
    * StateMutability: nonpayable
    * Type: function
    * @param _addr Type: address, Indexed: false
-   * @param _to Type: bytes32, Indexed: false
+   * @param _to Type: bytes, Indexed: false
    * @param _id Type: uint256, Indexed: false
    */
   depositFRC721(_addr: string, _to: string | number[], _id: string): MethodReturnContext;
@@ -415,7 +423,7 @@ export interface SimBridge {
    * StateMutability: nonpayable
    * Type: function
    * @param _asset Type: bytes32, Indexed: false
-   * @param _from Type: bytes32, Indexed: false
+   * @param _from Type: bytes, Indexed: false
    * @param _to Type: address, Indexed: false
    * @param _value Type: uint256, Indexed: false
    * @param _data Type: bytes, Indexed: false
@@ -432,7 +440,7 @@ export interface SimBridge {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param _from Type: bytes32, Indexed: false
+   * @param _from Type: bytes, Indexed: false
    * @param _to Type: address, Indexed: false
    * @param _value Type: uint256, Indexed: false
    * @param _data Type: bytes, Indexed: false

@@ -5,14 +5,18 @@ import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
 import Erc20Abi from './abis/Erc20.json';
-import NFT721Abi from './abis/NFT721.json';
+import FNSRegistryAbi from './abis/FNSRegistry.json';
 import NFT1155Abi from './abis/NFT1155.json';
+import NFT721Abi from './abis/NFT721.json';
+import NameResolverAbi from './abis/NameResolver.json';
 import PrismProxyAbi from './abis/PrismProxy.json';
 import PrismXXAssetAbi from './abis/PrismXXAsset.json';
 import SimBridgeAbi from './abis/SimBridge.json';
 import { Erc20 } from './types/Erc20';
-import { NFT721 } from './types/NFT721';
+import { FNSRegistry } from './types/FNSRegistry';
 import { NFT1155 } from './types/NFT1155';
+import { NFT721 } from './types/NFT721';
+import { NameResolver } from './types/NameResolver';
 import { PrismProxy } from './types/PrismProxy';
 import { PrismXXAsset } from './types/PrismXXAsset';
 import { SimBridge } from './types/SimBridge';
@@ -58,6 +62,14 @@ const getSimBridgeContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(SimBridgeAbi as AbiItem[], address) as unknown as MyContract<SimBridge>;
 };
 
+const getNameResolverContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(NameResolverAbi as AbiItem[], address) as unknown as MyContract<NameResolver>;
+};
+
+const getFNSRegistryContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(FNSRegistryAbi as AbiItem[], address) as unknown as MyContract<FNSRegistry>;
+};
+
 const toHex = (covertThis: string, padding: number) => {
   const temp1 = ethers.utils.hexZeroPad(ethers.utils.hexlify(new BigNumber(covertThis).toNumber()), padding);
   return temp1;
@@ -99,10 +111,12 @@ export {
   getWeb3,
   getErc20Contract,
   getPrismProxyContract,
+  getFNSRegistryContract,
   getNFT721Contract,
   getNFT1155Contract,
   getPrismXXAssetContract,
   getSimBridgeContract,
+  getNameResolverContract,
   calculationDecimalsAmount,
   toHex,
   getCurrentBalance,

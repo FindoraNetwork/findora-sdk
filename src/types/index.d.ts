@@ -6,3 +6,5 @@ declare module 'truffle-hdwallet-provider';
 // }
 
 declare module 'solc';
+
+declare module '@ensdomains/eth-ens-namehash';

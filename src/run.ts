@@ -2,10 +2,10 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
+import Sdk from './Sdk';
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
-import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
@@ -24,7 +24,7 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
@@ -33,8 +33,8 @@ const sdkEnv = {
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  hostUrl: 'https://dev-qa01.dev.findora.org',
-  blockScanerUrl: 'https://qa01.backend.findorascan.io',
+  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -1489,6 +1489,7 @@ async function prism() {
   const result = Evm.fraAddressToHashAddress(
     'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
   );
+
   console.log(result);
 }
 
@@ -1657,6 +1658,12 @@ async function getTxnListTest() {
   // console.log(JSON.stringify(result, null, 2));
 }
 
+async function fnsNameResolver() {
+  // const result = await Evm.resolveDomain('0xe77B7DDc441B5a695d2D16020bfd5c0b0cE3aC7C', 'eba.fra');
+  const result = await Evm.getDomainCurrentText('0xc864592b5148308D3A4429FE280263Ecc4c4E61f', 'eba.fra');
+  console.log(result?.eth);
+}
+
 // prism();
 
 // approveToken();
@@ -1672,4 +1679,6 @@ async function getTxnListTest() {
 // getNewBalanace();
 // testBrokenKeypairs();
 
-getTxnListTest();
+// getTxnListTest();
+
+fnsNameResolver();

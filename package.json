@@ -125,6 +125,7 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
+    "@ensdomains/eth-ens-namehash": "^2.0.15",
     "@types/btoa": "^1.2.3",
     "@types/web3-provider-engine": "^14.0.1",
     "aws-sdk": "^2.929.0",
@@ -138,7 +139,7 @@
     "ethereum-protocol": "^1.0.1",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
-    "ethers": "^5.6.9",
+    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#feat-prism",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
@@ -147,10 +148,8 @@
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "truffle-hdwallet-provider": "^1.0.17",
-    "url-safe-base64": "^1.2.0",
     "util": "^0.12.4",
     "web3": "^1.7.4",
-    "web3-eth-contract": "^1.7.4",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#feat-prism"
+    "web3-eth-contract": "^1.7.4"
   }
 }

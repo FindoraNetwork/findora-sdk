@@ -1,9 +1,10 @@
+import namehash from '@ensdomains/eth-ens-namehash';
 import * as bech32ToBuffer from 'bech32-buffer';
 import BigNumber from 'bignumber.js';
 import { TransactionReceipt } from 'ethereum-abi-types-generator';
 import ethereumjsAbi from 'ethereumjs-abi';
 import base64 from 'js-base64';
-import * as UrlSafeBase64 from 'url-safe-base64';
+import jsSha3 from 'js-sha3';
 import Web3 from 'web3';
 
 import { Network } from '../../api';
@@ -15,15 +16,15 @@ import { SubmitEvmTxResult } from '../network/types';
 import * as AssetApi from '../sdkAsset';
 import * as Transaction from '../transaction';
 import {
+  IWebLinkedInfo,
   calculationDecimalsAmount,
   getErc20Contract,
+  getFNSRegistryContract,
   getNFT1155Contract,
   getNFT721Contract,
-  getPrismProxyContract,
-  getPrismXXAssetContract,
+  getNameResolverContract,
   getSimBridgeContract,
   getWeb3,
-  IWebLinkedInfo,
 } from './web3';
 
 export const fraAddressToHashAddress = (address: string) => {
@@ -210,9 +211,6 @@ export async function getPrismConfig() {
 
   const web3 = getWeb3(Network.getRpcRoute());
 
-  // const prismProxyContract = await getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address);
-  // const bridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
-
   const bridgeAddress = displayCheckpointData.prism_bridge_address;
   const prismContract = await getSimBridgeContract(web3, bridgeAddress);
 
@@ -269,6 +267,25 @@ export const approveNFT = async (
   } else {
     throw Error('fail frc20ToBar');
   }
+};
+
+export const getDomainCurrentText = async (
+  nameResolverAddress: string,
+  name: string,
+): Promise<{
+  eth: string;
+  fra: string;
+} | null> => {
+  const web3 = getWeb3(Network.getRpcRoute());
+  const fnsRegistryContract = getFNSRegistryContract(web3, nameResolverAddress);
+
+  const result = await fnsRegistryContract.methods.currentText(namehash.hash(name)).call();
+
+  if (result.includes('eth') || result.includes('fra')) {
+    return JSON.parse(result);
+  }
+
+  return null;
 };
 
 export const frcNftToBar = async (
