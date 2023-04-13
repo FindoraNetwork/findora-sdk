@@ -188,22 +188,30 @@ describe("Triple Masking Integration (integration test)", function () {
                 }
             });
         }); }, extendedExecutionTimeout);
-        //   it(
-        //     'Should send exact amount of custom asset from ABAR to BAR, and verify ABAR and BAR balances',
-        //     async () => {
-        //       const result = await Integration.abarToBarCustomSendAmount();
-        //       expect(result).toBe(true);
-        //     },
-        //     extendedExecutionTimeout * 2,
-        //   );
-        //   it(
-        //     'Should send exact amount of FRA asset from ABAR to BAR, and verify ABAR and BAR balances',
-        //     async () => {
-        //       const result = await Integration.abarToBarFraSendAmount();
-        //       expect(result).toBe(true);
-        //     },
-        //     extendedExecutionTimeout * 2,
-        //   );
+        it('Should send exact amount of custom asset from ABAR to BAR, and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToBarCustomSendAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
+        it('Should send exact amount of FRA asset from ABAR to BAR, and verify ABAR and BAR balances', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToBarFraSendAmount()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout * 2);
     });
 });
 //# sourceMappingURL=tripleMasking.integration.spec.js.map

@@ -232,6 +232,8 @@ var getXfrPrivateKeyByBase64 = function (privateStr) { return __awaiter(void 0, 
             case 1:
                 ledger = _a.sent();
                 toSend = "\"".concat(privateStr, "\"");
+                console.log('from sdk getXfrPrivateKeyByBase64 - to send 2', toSend);
+                console.log('from sdk getXfrPrivateKeyByBase64 - privateStr 2 ', privateStr);
                 try {
                     keypair = ledger.create_keypair_from_secret(toSend);
                 }
@@ -280,6 +282,7 @@ var restoreFromPrivateKey = function (privateStr, password) { return __awaiter(v
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
+                console.log('from sdk restoreFromPrivateKey privateStr', privateStr);
                 return [4 /*yield*/, (0, exports.getXfrPrivateKeyByBase64)(privateStr)];
             case 2:
                 keypair = _a.sent();

@@ -79,7 +79,7 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
     return to.concat(ar || Array.prototype.slice.call(from));
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.abarToBar = exports.abarToAbarAmount = exports.abarToAbar = exports.getAbarToAbarAmountPayload = exports.getTotalAbarTransferFee = exports.getSendAtxo = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.barToAbar = exports.barToAbarAmount = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getUnspentAbars = exports.getAbarBalance = exports.getBalanceMaps = exports.getSpentAbars = exports.getOwnedAbars = exports.genNullifierHash = exports.isNullifierHashSpent = exports.openAbar = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = void 0;
+exports.getCommitmentByAtxoSid = exports.decryptAbarMemo = exports.getNullifierHashesFromCommitments = exports.abarToBarAmount = exports.getAbarToBarAmountPayload = exports.abarToBar = exports.abarToAbarAmount = exports.abarToAbar = exports.getAbarToAbarAmountPayload = exports.getTotalAbarTransferFee = exports.getSendAtxo = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.barToAbar = exports.barToAbarAmount = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getUnspentAbars = exports.getAbarBalance = exports.getBalanceMaps = exports.getSpentAbars = exports.getOwnedAbars = exports.genNullifierHash = exports.isNullifierHashSpent = exports.openAbar = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = exports.genAnonKeys = void 0;
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var utils_1 = require("../../services/utils");
 var testHelpers_1 = require("../../evm/testHelpers");
@@ -92,6 +92,21 @@ var Keypair = __importStar(require("../keypair"));
 var utxoHelper_1 = require("../../services/utxoHelper");
 var fee_1 = require("../../services/fee");
 var DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
+var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var mm, walletInfo;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Keypair.getMnemonic(24)];
+            case 1:
+                mm = _a.sent();
+                return [4 /*yield*/, Keypair.restoreFromMnemonic(mm, 'fii')];
+            case 2:
+                walletInfo = _a.sent();
+                return [2 /*return*/, walletInfo];
+        }
+    });
+}); };
+exports.genAnonKeys = genAnonKeys;
 var getAbarFromJson = function (ownedAbar) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, myOwnedAbar;
     return __generator(this, function (_a) {
@@ -264,7 +279,9 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                     console.log('error!', error);
                     throw new Error("Could not get decode abar memo data 1\", Error - ".concat(error.message));
                 }
+                console.log('axfrSpendKey', axfrSpendKey);
                 toSend = "\"".concat(axfrSpendKey, "\"");
+                console.log('to send', toSend);
                 try {
                     myXfrKeyPair = ledger.create_keypair_from_secret(toSend);
                 }
@@ -1264,4 +1281,202 @@ anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems) { return __await
     });
 }); };
 exports.abarToBar = abarToBar;
+var getAbarToBarAmountPayload = function (
+// anonKeysSender: FindoraWallet.FormattedAnonKeys,
+anonKeysSender, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, commitmentsToSend, commitmentsForFee, additionalAmountForFee;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, exports.getAbarToAbarAmountPayload)(anonKeysSender, anonKeysSender.publickey, amount, assetCode, givenCommitmentsList)];
+            case 1:
+                payload = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 453 ~ payload', payload);
+                commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee, additionalAmountForFee = payload.additionalAmountForFee;
+                return [2 /*return*/, {
+                        commitmentsToSend: commitmentsToSend,
+                        commitmentsForFee: commitmentsForFee,
+                        additionalAmountForFee: additionalAmountForFee,
+                    }];
+        }
+    });
+}); };
+exports.getAbarToBarAmountPayload = getAbarToBarAmountPayload;
+var abarToBarAmount = function (
+// anonKeysSender: FindoraWallet.FormattedAnonKeys,
+anonKeysSender, receiverXfrPublicKey, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var payload, commitmentsToSend, commitmentsForFee, givenCommitmentsListSender, _a, anonTransferOperationBuilder, abarToAbarData, asset, decimals, amountToSendInWei, _resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, remainderCommitements, _i, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAmount, commitmentAssetType, commitmentAmountInWei, isSameAssetType, isSameAmount, allCommitments, additionalOwnedAbarItems, _b, allCommitments_2, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, abarToBarResult;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0: return [4 /*yield*/, (0, exports.getAbarToBarAmountPayload)(anonKeysSender, amount, assetCode, givenCommitmentsList)];
+            case 1:
+                payload = _c.sent();
+                commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee;
+                givenCommitmentsListSender = __spreadArray(__spreadArray([], commitmentsToSend, true), commitmentsForFee, true);
+                return [4 /*yield*/, (0, exports.abarToAbarAmount)(anonKeysSender, anonKeysSender.publickey, amount, assetCode, givenCommitmentsListSender)];
+            case 2:
+                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
+            case 3:
+                asset = _c.sent();
+                decimals = asset.assetRules.decimals;
+                amountToSendInWei = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                return [4 /*yield*/, Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+            case 4:
+                _resultHandle = _c.sent();
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR)];
+            case 5:
+                _c.sent();
+                console.log('abar transaction handle', _resultHandle);
+                commitmentsMap = abarToAbarData.commitmentsMap;
+                retrivedCommitmentsListReceiver = [];
+                remainderCommitements = [];
+                for (_i = 0, commitmentsMap_1 = commitmentsMap; _i < commitmentsMap_1.length; _i++) {
+                    commitmentsMapEntry = commitmentsMap_1[_i];
+                    commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAmount = commitmentsMapEntry.commitmentAmount, commitmentAssetType = commitmentsMapEntry.commitmentAssetType;
+                    console.log('🚀 ~ file: tripleMasking.ts ~ line 863 ~ commitmentsMapEntry', commitmentsMapEntry);
+                    commitmentAmountInWei = BigInt((0, bigNumber_1.toWei)(commitmentAmount, decimals).toString());
+                    isSameAssetType = commitmentAssetType === assetCode;
+                    isSameAmount = commitmentAmountInWei === amountToSendInWei;
+                    if (isSameAssetType && isSameAmount) {
+                        console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ commitmentAmountInWei', commitmentAmountInWei);
+                        console.log('🚀 ~ file: tripleMasking.ts ~ line 906 ~ amountToSendInWei!!!', amountToSendInWei);
+                        retrivedCommitmentsListReceiver.push(commitmentKey);
+                        continue;
+                    }
+                    remainderCommitements.push(commitmentKey);
+                }
+                allCommitments = __spreadArray([], retrivedCommitmentsListReceiver, true);
+                additionalOwnedAbarItems = [];
+                _b = 0, allCommitments_2 = allCommitments;
+                _c.label = 6;
+            case 6:
+                if (!(_b < allCommitments_2.length)) return [3 /*break*/, 9];
+                givenCommitment = allCommitments_2[_b];
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 7:
+                ownedAbarsResponseTwo = _c.sent();
+                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                _c.label = 8;
+            case 8:
+                _b++;
+                return [3 /*break*/, 6];
+            case 9: return [4 /*yield*/, (0, exports.abarToBar)(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems)];
+            case 10:
+                abarToBarResult = _c.sent();
+                return [2 /*return*/, __assign(__assign({}, abarToBarResult), { remainderCommitements: remainderCommitements, spentCommitments: givenCommitmentsListSender })];
+        }
+    });
+}); };
+exports.abarToBarAmount = abarToBarAmount;
+var getNullifierHashesFromCommitments = function (
+// anonKeys: FindoraWallet.FormattedAnonKeys,
+anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+    var publickey, privateStr, nullifierHashes, _i, givenCommitmentsList_3, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                publickey = anonKeys.publickey, privateStr = anonKeys.privateStr;
+                nullifierHashes = [];
+                _i = 0, givenCommitmentsList_3 = givenCommitmentsList;
+                _a.label = 1;
+            case 1:
+                if (!(_i < givenCommitmentsList_3.length)) return [3 /*break*/, 8];
+                givenCommitment = givenCommitmentsList_3[_i];
+                ownedAbarsResponse = [];
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+            case 3:
+                ownedAbarsResponse = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_11 = _a.sent();
+                console.log("getOwnedAbars for '".concat(publickey, "'->'").concat(givenCommitment, "' returned an error. ").concat(error_11.message), console.log('Full Error', error_11));
+                return [3 /*break*/, 7];
+            case 5:
+                ownedAbarItem = ownedAbarsResponse[0];
+                if (!ownedAbarItem) {
+                    return [3 /*break*/, 7];
+                }
+                abarData = ownedAbarItem.abarData;
+                atxoSid = abarData.atxoSid, ownedAbar = abarData.ownedAbar;
+                return [4 /*yield*/, (0, exports.genNullifierHash)(atxoSid, ownedAbar, privateStr)];
+            case 6:
+                hash = _a.sent();
+                nullifierHashes.push(hash);
+                _a.label = 7;
+            case 7:
+                _i++;
+                return [3 /*break*/, 1];
+            case 8: 
+            // import KeyStore from '_utils/keystore';
+            // const b = await KeyStore.restoreWalletInfo(anonKeys.privateStr, 'foo');
+            return [2 /*return*/, nullifierHashes];
+        }
+    });
+}); };
+exports.getNullifierHashesFromCommitments = getNullifierHashesFromCommitments;
+var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, atxoSid, myMemoData, axfrSpendKey, abarOwnerMemo, decryptedAbar, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                atxoSid = abarMemoItem[0], myMemoData = abarMemoItem[1];
+                return [4 /*yield*/, (0, exports.getAnonKeypairFromJson)(anonKeys)];
+            case 2:
+                axfrSpendKey = (_a.sent()).aXfrSecretKeyConverted;
+                abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
+                try {
+                    // decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair);
+                    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, axfrSpendKey);
+                }
+                catch (error) {
+                    return [2 /*return*/, false];
+                }
+                result = {
+                    atxoSid: atxoSid,
+                    decryptedAbar: decryptedAbar,
+                    owner: anonKeys,
+                };
+                return [2 /*return*/, result];
+        }
+    });
+}); };
+exports.decryptAbarMemo = decryptAbarMemo;
+var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, commitementResult, error, response, commitmentInBase58;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Network.getAbarCommitment("".concat(atxoSid))];
+            case 2:
+                commitementResult = _a.sent();
+                console.log('🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult', commitementResult);
+                error = commitementResult.error, response = commitementResult.response;
+                if (error) {
+                    (0, utils_1.log)('error', error);
+                    throw new Error("could not get commitment by atxo sid. details: ".concat(error.message));
+                }
+                if (!response) {
+                    throw new Error("could not get commitment by atxo sid. no response retrieved");
+                }
+                commitmentInBase58 = ledger.base64_to_base58(response);
+                // console.log(
+                //   '🚀 ~ file: tripleMasking.ts ~ line 1531 ~ getCommitmentByAtxoSid ~ commitmentInBase58',
+                //   commitmentInBase58,
+                // );
+                return [2 /*return*/, {
+                        atxoSid: atxoSid,
+                        commitment: commitmentInBase58,
+                    }];
+        }
+    });
+}); };
+exports.getCommitmentByAtxoSid = getCommitmentByAtxoSid;
 //# sourceMappingURL=tripleMasking.js.map

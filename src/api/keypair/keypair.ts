@@ -166,6 +166,8 @@ export const getXfrPrivateKeyByBase64 = async (privateStr: string): Promise<XfrK
   const ledger = await getLedger();
 
   const toSend = `"${privateStr}"`;
+  console.log('from sdk getXfrPrivateKeyByBase64 - to send 2', toSend);
+  console.log('from sdk getXfrPrivateKeyByBase64 - privateStr 2 ', privateStr);
 
   let keypair;
 
@@ -212,6 +214,7 @@ export const getXfrPrivateKeyByBase64 = async (privateStr: string): Promise<XfrK
 export const restoreFromPrivateKey = async (privateStr: string, password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
+  console.log('from sdk restoreFromPrivateKey privateStr', privateStr);
   const keypair = await getXfrPrivateKeyByBase64(privateStr);
 
   // const toSend = `"${privateStr}"`;

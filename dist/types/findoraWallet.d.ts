@@ -51,8 +51,8 @@ export interface IWallet {
     privateKey?: string;
 }
 export interface FormattedAnonKeys {
-    axfrSecretKey: string;
-    axfrPublicKey: string;
+    publickey?: string;
+    privateStr?: string;
 }
 export interface BarToAbarData {
     receiverXfrPublicKey: string;

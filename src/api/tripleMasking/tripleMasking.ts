@@ -43,6 +43,36 @@ export interface ProcessedCommitmentsMap {
   commitmentAmount: string;
 }
 
+export const genAnonKeys = async (): Promise<Keypair.WalletKeypar> => {
+  const mm = await Keypair.getMnemonic(24);
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, 'fii');
+  return walletInfo;
+
+  // const ledger = await getLedger();
+
+  // try {
+  // const anonKeys = ledger.gen_anon_keys();
+
+  //   const axfrPublicKey = anonKeys.pub_key;
+  //   const axfrSecretKey = anonKeys.secret_key;
+  //
+  //   const formattedAnonKeys = {
+  //     axfrPublicKey,
+  //     axfrSecretKey,
+  //   };
+  //
+  //   try {
+  //     anonKeys.free();
+  //   } catch (error) {
+  //     throw new Error(`could not get release the anonymous keys instance  "${(error as Error).message}" `);
+  //   }
+  //
+  //   return formattedAnonKeys;
+  // } catch (err) {
+  //   throw new Error(`could not get anon keys, "${err}" `);
+  // }
+};
 const getAbarFromJson = async (ownedAbar: FindoraWallet.OwnedAbar) => {
   const ledger = await getLedger();
 
@@ -215,7 +245,10 @@ export const genNullifierHash = async (
     throw new Error(`Could not get decode abar memo data 1", Error - ${(error as Error).message}`);
   }
 
+  console.log('axfrSpendKey', axfrSpendKey);
+
   const toSend = `"${axfrSpendKey}"`;
+  console.log('to send', toSend);
 
   let myXfrKeyPair;
 
@@ -1358,4 +1391,118 @@ export const abarToBarAmount = async (
   const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
 
   return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
+};
+
+export const getNullifierHashesFromCommitments = async (
+  // anonKeys: FindoraWallet.FormattedAnonKeys,
+  anonKeys: Keypair.WalletKeypar,
+  givenCommitmentsList: string[],
+) => {
+  // const { axfrSecretKey, axfrPublicKey } = anonKeys;
+  const { publickey, privateStr } = anonKeys;
+
+  const nullifierHashes: string[] = [];
+
+  for (const givenCommitment of givenCommitmentsList) {
+    let ownedAbarsResponse: FindoraWallet.OwnedAbarItem[] = [];
+
+    try {
+      ownedAbarsResponse = await getOwnedAbars(givenCommitment);
+    } catch (error) {
+      console.log(
+        `getOwnedAbars for '${publickey}'->'${givenCommitment}' returned an error. ${
+          (error as Error).message
+        }`,
+        console.log('Full Error', error),
+      );
+      continue;
+    }
+
+    const [ownedAbarItem] = ownedAbarsResponse;
+
+    if (!ownedAbarItem) {
+      continue;
+    }
+
+    const { abarData } = ownedAbarItem;
+
+    const { atxoSid, ownedAbar } = abarData;
+
+    const hash = await genNullifierHash(atxoSid, ownedAbar, privateStr!);
+
+    nullifierHashes.push(hash);
+  }
+
+  // import KeyStore from '_utils/keystore';
+  // const b = await KeyStore.restoreWalletInfo(anonKeys.privateStr, 'foo');
+  return nullifierHashes;
+};
+
+export const decryptAbarMemo = async (
+  abarMemoItem: FindoraWallet.AbarMemoItem,
+  anonKeys: Keypair.WalletKeypar,
+  // anonKeys: FindoraWallet.FormattedAnonKeys,
+): Promise<FindoraWallet.DecryptedAbarMemoData | false> => {
+  // ): Promise<FindoraWallet.DecryptedAbarMemoData> => {
+  const ledger = await getLedger();
+
+  const [atxoSid, myMemoData] = abarMemoItem;
+
+  const { aXfrSecretKeyConverted: axfrSpendKey } = await getAnonKeypairFromJson(anonKeys);
+
+  // export function get_open_
+  // abar(abar: AnonAssetRecord,
+  // memo: AxfrOwnerMemo, keypair: XfrKeyPair, mt_leaf_info: MTLeafInfo): any;
+
+  // const aXfrKeyPair = await Keypair.getAXfrPrivateKeyByBase64(anonKeys.axfrSecretKey);
+
+  const abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
+
+  let decryptedAbar: Uint8Array;
+
+  try {
+    // decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair);
+    decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, axfrSpendKey);
+  } catch (error) {
+    return false;
+  }
+  const result = {
+    atxoSid,
+    decryptedAbar,
+    owner: anonKeys,
+  };
+
+  return result;
+};
+
+export const getCommitmentByAtxoSid = async (atxoSid: string): Promise<FindoraWallet.AtxoCommitmentItem> => {
+  const ledger = await getLedger();
+
+  const commitementResult = await Network.getAbarCommitment(`${atxoSid}`);
+  console.log(
+    '🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult',
+    commitementResult,
+  );
+
+  const { error, response } = commitementResult;
+
+  if (error) {
+    log('error', error);
+    throw new Error(`could not get commitment by atxo sid. details: ${(error as Error).message}`);
+  }
+  if (!response) {
+    throw new Error(`could not get commitment by atxo sid. no response retrieved`);
+  }
+
+  const commitmentInBase58 = ledger.base64_to_base58(response);
+
+  // console.log(
+  //   '🚀 ~ file: tripleMasking.ts ~ line 1531 ~ getCommitmentByAtxoSid ~ commitmentInBase58',
+  //   commitmentInBase58,
+  // );
+
+  return {
+    atxoSid,
+    commitment: commitmentInBase58,
+  };
 };

@@ -87,10 +87,10 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'http://54.213.254.47',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
-    // hostUrl: 'https://dev-qa01.dev.findora.org',
+    hostUrl: 'https://dev-qa01.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -1778,36 +1778,58 @@ function barToAbarAmount() {
 }
 function getAbarBalance() {
     return __awaiter(this, void 0, void 0, function () {
-        var anonKeys1, anonKeys2, fraAssetCode, fraAssetSids, givenCommitments, anonBalances;
+        var anon2m, anonKeysTest, anonKeys1, anonKeys2, fraAssetCode, fraAssetSids, givenCommitments, anonBalances;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    // "2023-03-23, 10:55:49 p.m." - 🚀 ~ barToAbarData [
-                    //   '{\n' +
-                    //     '  "receiverXfrPublicKey": "NmpU7bLld5JNndmzHozTjpkMBQmA2SAJBlHPumAaNhQ=",\n' +
-                    //     '  "commitments": [\n' +
-                    //     '    "GF2kEN8y5n7Pa2tHPf5928afruchWbMCQsNHzuR7cdS5"\n' +
-                    //     '  ]\n' +
-                    //     '}'
-                    // ]
+                    anon2m = [
+                        'security',
+                        'hood',
+                        'catch',
+                        'rail',
+                        'cabin',
+                        'season',
+                        'cool',
+                        'hint',
+                        'ranch',
+                        'fruit',
+                        'polar',
+                        'copper',
+                        'mass',
+                        'pen',
+                        'until',
+                        'carpet',
+                        'wolf',
+                        'screen',
+                        'reflect',
+                        'pulp',
+                        'wing',
+                        'blouse',
+                        'trigger',
+                        'hello',
+                    ];
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(anon2m, password)];
+                case 1:
+                    anonKeysTest = _a.sent();
+                    console.log('anonKeysTest', anonKeysTest);
                     (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-                case 1:
+                case 2:
                     anonKeys1 = _a.sent();
                     return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password)];
-                case 2:
+                case 3:
                     anonKeys2 = _a.sent();
                     return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-                case 3:
+                case 4:
                     fraAssetCode = _a.sent();
                     return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(anonKeys1.privateStr, fraAssetCode)];
-                case 4:
+                case 5:
                     fraAssetSids = _a.sent();
                     (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
                     console.log('anonKeys2', anonKeys2);
-                    givenCommitments = ['CKn8wGw8vUyrfxb8JcNxxHL5uZuxyfcRJTb8vAarFVaW'];
-                    return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeys2, givenCommitments)];
-                case 5:
+                    givenCommitments = ['2Vx4RJC2w38xeNXKEpuj4dxFTxeDqwaDSAWCkaqZLUop'];
+                    return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysTest, givenCommitments)];
+                case 6:
                     anonBalances = _a.sent();
                     // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
                     console.log('anon balances');

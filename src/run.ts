@@ -27,10 +27,10 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  hostUrl: 'https://dev-qa01.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -1722,6 +1722,36 @@ async function getAbarBalance() {
   //     '}'
   // ]
 
+  const anon2m = [
+    'security',
+    'hood',
+    'catch',
+    'rail',
+    'cabin',
+    'season',
+    'cool',
+    'hint',
+    'ranch',
+    'fruit',
+    'polar',
+    'copper',
+    'mass',
+    'pen',
+    'until',
+    'carpet',
+    'wolf',
+    'screen',
+    'reflect',
+    'pulp',
+    'wing',
+    'blouse',
+    'trigger',
+    'hello',
+  ];
+
+  const anonKeysTest = await Keypair.restoreFromMnemonic(anon2m, password);
+  console.log('anonKeysTest', anonKeysTest);
+
   log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
   const anonKeys1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
@@ -1733,8 +1763,8 @@ async function getAbarBalance() {
   console.log('anonKeys2', anonKeys2);
   // console.log('anonKeys2', anonKeys2);
 
-  const givenCommitments = ['CKn8wGw8vUyrfxb8JcNxxHL5uZuxyfcRJTb8vAarFVaW'];
-  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys2, givenCommitments);
+  const givenCommitments = ['92LivdKPkt7xz3JdwXc4Tqn6cKtswbXoWfgLKyvxEVGm'];
+  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysTest, givenCommitments);
   // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
 
   console.log('anon balances');

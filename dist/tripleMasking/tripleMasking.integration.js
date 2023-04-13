@@ -59,7 +59,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.abarToBar = exports.abarToAbarCustomMultipleFraAtxoForFeeSendAmount = exports.abarToAbarFraMultipleFraAtxoForFeeSendAmount = exports.abarToAbarMulti = exports.abarToAbar = exports.barToAbarAmount = exports.barToAbar = exports.createTestBars = exports.getSidsForSingleAsset = exports.validateSpent = exports.issueCustomAsset = exports.defineCustomAsset = exports.getAnonKeys = exports.createNewKeypair = exports.getDerivedAssetCode = exports.getRandomAssetCode = void 0;
+exports.abarToBarFraSendAmount = exports.abarToBarCustomSendAmount = exports.abarToBar = exports.abarToAbarCustomMultipleFraAtxoForFeeSendAmount = exports.abarToAbarFraMultipleFraAtxoForFeeSendAmount = exports.abarToAbarMulti = exports.abarToAbar = exports.barToAbarAmount = exports.barToAbar = exports.createTestBars = exports.getSidsForSingleAsset = exports.validateSpent = exports.issueCustomAsset = exports.defineCustomAsset = exports.getAnonKeys = exports.createNewKeypair = exports.getDerivedAssetCode = exports.getRandomAssetCode = void 0;
 var dotenv_1 = __importDefault(require("dotenv"));
 var api_1 = require("../api");
 var testHelpers_1 = require("../evm/testHelpers");
@@ -1201,4 +1201,230 @@ var abarToBar = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 exports.abarToBar = abarToBar;
+var abarToBarCustomSendAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, senderWalletInfo, pkey, toWalletInfo, assetCode, derivedAssetCode, senderOne, fraAssetCode, assetCodeToUse, expectedSenderBalance, assetBalance, realSenderBalance, isSenderFunded, errorMessage, customAssetSids, customAssetCommitmentsList, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fraAssetCommitmentsList, givenCommitmentsListSender, amountToSend, assetBalanceBeforeAbarToBar, receiverAssetBalanceBeforeTransfer, isReceiverHasEmptyAssetBalanceBeforeTransfer, _a, transactionBuilder, remainderCommitements, spentCommitments, resultHandle, balancesSenderAfter, expectedFraAbarMinimumAmountAfterTransfer, expectedCustomAbarAmountAfterTransfer, fraAbarAmountAfterTransfer, customAbarAmountAfterTransfer, senderAssetBalanceAfterTransfer, isSenderHasProperAssetBalanceAfterTransfer, senderFraBalanceAfterTransfer, isSenderHasProperFraBalanceAfterTransfer, assetBalanceAfterAbarToBar, receiverAssetBalanceAfterTransfer, isReceiverHasProperAssetBalanceBeforeTransfer;
+    var _b, _c;
+    return __generator(this, function (_d) {
+        switch (_d.label) {
+            case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
+            case 1:
+                anonKeysSender = _d.sent();
+                return [4 /*yield*/, (0, exports.createNewKeypair)()];
+            case 2:
+                senderWalletInfo = _d.sent();
+                pkey = senderWalletInfo.privateStr;
+                return [4 /*yield*/, (0, exports.createNewKeypair)()];
+            case 3:
+                toWalletInfo = _d.sent();
+                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
+            case 4:
+                assetCode = _d.sent();
+                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(assetCode)];
+            case 5:
+                derivedAssetCode = _d.sent();
+                senderOne = pkey;
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 6:
+                fraAssetCode = _d.sent();
+                assetCodeToUse = derivedAssetCode;
+                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                return [4 /*yield*/, (0, exports.createTestBars)(pkey, '10', 5)];
+            case 7:
+                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                _d.sent();
+                (0, utils_1.log)('//////////////// defining and issuing custom asset ////////////// ');
+                return [4 /*yield*/, (0, exports.defineCustomAsset)(senderOne, assetCode)];
+            case 8:
+                _d.sent();
+                return [4 /*yield*/, (0, exports.issueCustomAsset)(senderOne, assetCode, assetCodeToUse, '10')];
+            case 9:
+                _d.sent();
+                return [4 /*yield*/, (0, exports.issueCustomAsset)(senderOne, assetCode, assetCodeToUse, '5')];
+            case 10:
+                _d.sent();
+                return [4 /*yield*/, (0, exports.issueCustomAsset)(senderOne, assetCode, assetCodeToUse, '20')];
+            case 11:
+                _d.sent();
+                expectedSenderBalance = (0, bigNumber_1.create)('35');
+                return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo, assetCodeToUse)];
+            case 12:
+                assetBalance = _d.sent();
+                (0, utils_1.log)("sender bar \"".concat(assetCodeToUse, "\" assetBalance before transfer (after issuing the asset)"), assetBalance);
+                realSenderBalance = (0, bigNumber_1.create)(assetBalance);
+                isSenderFunded = expectedSenderBalance.isEqualTo(realSenderBalance);
+                if (!isSenderFunded) {
+                    errorMessage = "Expected bar ".concat(assetCodeToUse, " balance is ").concat(expectedSenderBalance.toString(), " but it has ").concat(realSenderBalance.toString());
+                    throw Error(errorMessage);
+                }
+                (0, utils_1.log)('//////////////// bar to abar custom asset transfer ///////////////// ');
+                return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, assetCodeToUse)];
+            case 13:
+                customAssetSids = _d.sent();
+                (0, utils_1.log)('🚀 ~ all customAssetSids', customAssetSids);
+                return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, customAssetSids, '35', derivedAssetCode)];
+            case 14:
+                customAssetCommitmentsList = _d.sent();
+                (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
+                return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
+            case 15:
+                fraAssetSids = _d.sent();
+                (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
+                fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2], fAssetSidFour = fraAssetSids[3];
+                return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour], '40', fraAssetCode)];
+            case 16:
+                fraAssetCommitmentsList = _d.sent();
+                givenCommitmentsListSender = __spreadArray(__spreadArray([], customAssetCommitmentsList, true), fraAssetCommitmentsList, true);
+                (0, utils_1.log)('////////////////////// bar to abar is done, sending abar to bar //////////////');
+                amountToSend = '12.15';
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
+            case 17:
+                assetBalanceBeforeAbarToBar = _d.sent();
+                receiverAssetBalanceBeforeTransfer = (0, bigNumber_1.create)(assetBalanceBeforeAbarToBar);
+                isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo((0, bigNumber_1.create)('0'));
+                if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
+                    throw new Error("Receiver must have 0 balance of the asset but it has ".concat(receiverAssetBalanceBeforeTransfer.toString()));
+                }
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, amountToSend, assetCodeToUse, givenCommitmentsListSender)];
+            case 18:
+                _a = _d.sent(), transactionBuilder = _a.transactionBuilder, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 19:
+                resultHandle = _d.sent();
+                (0, utils_1.log)('abar to bar result handle!!', resultHandle);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
+            case 20:
+                _d.sent();
+                (0, utils_1.log)('/////////////////// now checking balances //////////// \n\n\n ');
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
+            case 21:
+                balancesSenderAfter = _d.sent();
+                (0, utils_1.log)('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
+                expectedFraAbarMinimumAmountAfterTransfer = (0, bigNumber_1.create)('38');
+                expectedCustomAbarAmountAfterTransfer = (0, bigNumber_1.create)('22.85');
+                fraAbarAmountAfterTransfer = (_b = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === fraAssetCode; })) === null || _b === void 0 ? void 0 : _b.amount;
+                if (!fraAbarAmountAfterTransfer) {
+                    throw new Error("Sender is expected to have ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransfer, "'"));
+                }
+                customAbarAmountAfterTransfer = (_c = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === assetCodeToUse; })) === null || _c === void 0 ? void 0 : _c.amount;
+                if (!customAbarAmountAfterTransfer) {
+                    throw new Error("Sender is expected to have ".concat(expectedCustomAbarAmountAfterTransfer.toString(), " ABAR custom asset but it has '").concat(customAbarAmountAfterTransfer, "'"));
+                }
+                senderAssetBalanceAfterTransfer = (0, bigNumber_1.create)(customAbarAmountAfterTransfer);
+                isSenderHasProperAssetBalanceAfterTransfer = senderAssetBalanceAfterTransfer.isEqualTo(expectedCustomAbarAmountAfterTransfer);
+                if (!isSenderHasProperAssetBalanceAfterTransfer) {
+                    throw new Error("Sender must have 22.5 balance of the asset but it has ".concat(senderAssetBalanceAfterTransfer.toString()));
+                }
+                senderFraBalanceAfterTransfer = (0, bigNumber_1.create)(fraAbarAmountAfterTransfer);
+                isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(expectedFraAbarMinimumAmountAfterTransfer);
+                if (!isSenderHasProperFraBalanceAfterTransfer) {
+                    throw new Error("Sender must have at least ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " balance but it has ").concat(senderFraBalanceAfterTransfer.toString()));
+                }
+                (0, utils_1.log)('//////////// checking receiver bar balance //////////');
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
+            case 22:
+                assetBalanceAfterAbarToBar = _d.sent();
+                (0, utils_1.log)('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
+                receiverAssetBalanceAfterTransfer = (0, bigNumber_1.create)(assetBalanceAfterAbarToBar);
+                isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo((0, bigNumber_1.create)(amountToSend));
+                if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
+                    throw new Error("Receiver must have ".concat(amountToSend, " balance of the asset but it has ").concat(receiverAssetBalanceAfterTransfer.toString()));
+                }
+                (0, utils_1.log)('🚀 ~ spentCommitments', spentCommitments);
+                (0, utils_1.log)('🚀 ~ remainderCommitements', remainderCommitements);
+                return [2 /*return*/, true];
+        }
+    });
+}); };
+exports.abarToBarCustomSendAmount = abarToBarCustomSendAmount;
+var abarToBarFraSendAmount = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var anonKeysSender, senderWalletInfo, pkey, toWalletInfo, fraAssetCode, assetCodeToUse, assetBalance, fraAssetSids, fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour, fraAssetCommitmentsList, givenCommitmentsListSender, amountToSend, assetBalanceBeforeAbarToBar, receiverAssetBalanceBeforeTransfer, isReceiverHasEmptyAssetBalanceBeforeTransfer, _a, transactionBuilder, remainderCommitements, spentCommitments, resultHandle, balancesSenderAfter, expectedFraAbarMinimumAmountAfterTransfer, fraAbarAmountAfterTransfer, senderFraBalanceAfterTransfer, isSenderHasProperFraBalanceAfterTransfer, assetBalanceAfterAbarToBar, receiverAssetBalanceAfterTransfer, isReceiverHasProperAssetBalanceBeforeTransfer;
+    var _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0: return [4 /*yield*/, (0, exports.getAnonKeys)()];
+            case 1:
+                anonKeysSender = _c.sent();
+                return [4 /*yield*/, (0, exports.createNewKeypair)()];
+            case 2:
+                senderWalletInfo = _c.sent();
+                pkey = senderWalletInfo.privateStr;
+                return [4 /*yield*/, (0, exports.createNewKeypair)()];
+            case 3:
+                toWalletInfo = _c.sent();
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+            case 4:
+                fraAssetCode = _c.sent();
+                assetCodeToUse = fraAssetCode;
+                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                return [4 /*yield*/, (0, exports.createTestBars)(pkey, '10', 5)];
+            case 5:
+                // we create 5 FRA bars and we dont need to check the balance, as if it is not equal it would fail at createTestBars
+                _c.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(senderWalletInfo, fraAssetCode)];
+            case 6:
+                assetBalance = _c.sent();
+                (0, utils_1.log)("sender bar \"".concat(assetCodeToUse, "\" assetBalance before transfer"), assetBalance);
+                (0, utils_1.log)('//////////////// bar to abar fra asset transfer ///////////////// ');
+                return [4 /*yield*/, (0, exports.getSidsForSingleAsset)(pkey, fraAssetCode)];
+            case 7:
+                fraAssetSids = _c.sent();
+                (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
+                fAssetSidOne = fraAssetSids[0], fAssetSidTwo = fraAssetSids[1], fAssetSidThree = fraAssetSids[2], fAssetSidFour = fraAssetSids[3];
+                return [4 /*yield*/, (0, exports.barToAbar)(pkey, anonKeysSender, [fAssetSidOne, fAssetSidTwo, fAssetSidThree, fAssetSidFour], '40', // it is a total of 4 sids. needed to verify the balance change of anon wallet
+                    fraAssetCode)];
+            case 8:
+                fraAssetCommitmentsList = _c.sent();
+                givenCommitmentsListSender = __spreadArray([], fraAssetCommitmentsList, true);
+                (0, utils_1.log)('////////////////////// bar to abar is done, sending abar to bar //////////////');
+                amountToSend = '2.16';
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
+            case 9:
+                assetBalanceBeforeAbarToBar = _c.sent();
+                receiverAssetBalanceBeforeTransfer = (0, bigNumber_1.create)(assetBalanceBeforeAbarToBar);
+                isReceiverHasEmptyAssetBalanceBeforeTransfer = receiverAssetBalanceBeforeTransfer.isEqualTo((0, bigNumber_1.create)('0'));
+                if (!isReceiverHasEmptyAssetBalanceBeforeTransfer) {
+                    throw new Error("Receiver must have 0 balance of the asset but it has ".concat(receiverAssetBalanceBeforeTransfer.toString()));
+                }
+                return [4 /*yield*/, api_1.TripleMasking.abarToBarAmount(anonKeysSender, toWalletInfo.publickey, amountToSend, assetCodeToUse, givenCommitmentsListSender)];
+            case 10:
+                _a = _c.sent(), transactionBuilder = _a.transactionBuilder, remainderCommitements = _a.remainderCommitements, spentCommitments = _a.spentCommitments;
+                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+            case 11:
+                resultHandle = _c.sent();
+                console.log('abar to bar result handle!!', resultHandle);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(BLOCKS_TO_WAIT_AFTER_ABAR)];
+            case 12:
+                _c.sent();
+                console.log('/////////////////// now checking balances //////////// \n\n\n ');
+                return [4 /*yield*/, api_1.TripleMasking.getBalance(anonKeysSender, __spreadArray(__spreadArray([], givenCommitmentsListSender, true), remainderCommitements, true))];
+            case 13:
+                balancesSenderAfter = _c.sent();
+                (0, utils_1.log)('🚀 abar balancesSenderAfter', JSON.stringify(balancesSenderAfter, null, 2));
+                expectedFraAbarMinimumAmountAfterTransfer = (0, bigNumber_1.create)('36.69');
+                fraAbarAmountAfterTransfer = (_b = balancesSenderAfter === null || balancesSenderAfter === void 0 ? void 0 : balancesSenderAfter.balances.find(function (element) { return element.assetType === fraAssetCode; })) === null || _b === void 0 ? void 0 : _b.amount;
+                if (!fraAbarAmountAfterTransfer) {
+                    throw new Error("Sender is expected to have ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " ABAR FRA but it has '").concat(fraAbarAmountAfterTransfer, "'"));
+                }
+                senderFraBalanceAfterTransfer = (0, bigNumber_1.create)(fraAbarAmountAfterTransfer);
+                isSenderHasProperFraBalanceAfterTransfer = senderFraBalanceAfterTransfer.isGreaterThanOrEqualTo(expectedFraAbarMinimumAmountAfterTransfer);
+                if (!isSenderHasProperFraBalanceAfterTransfer) {
+                    throw new Error("Sender must have at least ".concat(expectedFraAbarMinimumAmountAfterTransfer.toString(), " balance but it has ").concat(senderFraBalanceAfterTransfer.toString()));
+                }
+                (0, utils_1.log)('//////////// checking receiver bar balance //////////');
+                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo, assetCodeToUse)];
+            case 14:
+                assetBalanceAfterAbarToBar = _c.sent();
+                (0, utils_1.log)('🚀 bar assetBalanceAfterAbarToBar', assetBalanceAfterAbarToBar);
+                receiverAssetBalanceAfterTransfer = (0, bigNumber_1.create)(assetBalanceAfterAbarToBar);
+                isReceiverHasProperAssetBalanceBeforeTransfer = receiverAssetBalanceAfterTransfer.isEqualTo((0, bigNumber_1.create)(amountToSend));
+                if (!isReceiverHasProperAssetBalanceBeforeTransfer) {
+                    throw new Error("Receiver must have ".concat(amountToSend, " balance of the asset but it has ").concat(receiverAssetBalanceAfterTransfer.toString()));
+                }
+                (0, utils_1.log)('🚀 ~ spentCommitments', spentCommitments);
+                (0, utils_1.log)('🚀 ~ remainderCommitements', remainderCommitements);
+                return [2 /*return*/, true];
+        }
+    });
+}); };
+exports.abarToBarFraSendAmount = abarToBarFraSendAmount;
 //# sourceMappingURL=tripleMasking.integration.js.map
