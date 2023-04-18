@@ -80,17 +80,17 @@ var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCommitmentByAtxoSid = exports.decryptAbarMemo = exports.getNullifierHashesFromCommitments = exports.abarToBarAmount = exports.getAbarToBarAmountPayload = exports.abarToBar = exports.abarToAbarAmount = exports.abarToAbar = exports.getAbarToAbarAmountPayload = exports.getTotalAbarTransferFee = exports.getSendAtxo = exports.getAbarTransferFee = exports.prepareAnonTransferOperationBuilder = exports.barToAbar = exports.barToAbarAmount = exports.getAllAbarBalances = exports.getSpentBalance = exports.getBalance = exports.getUnspentAbars = exports.getAbarBalance = exports.getBalanceMaps = exports.getSpentAbars = exports.getOwnedAbars = exports.genNullifierHash = exports.isNullifierHashSpent = exports.openAbar = exports.getAnonKeypairFromJson = exports.getAbarOwnerMemo = exports.genAnonKeys = void 0;
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var utils_1 = require("../../services/utils");
 var testHelpers_1 = require("../../evm/testHelpers");
 var bigNumber_1 = require("../../services/bigNumber");
+var fee_1 = require("../../services/fee");
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var utils_1 = require("../../services/utils");
+var utxoHelper_1 = require("../../services/utxoHelper");
+var Keypair = __importStar(require("../keypair"));
 var Network = __importStar(require("../network"));
 var Asset = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var Builder = __importStar(require("../transaction/builder"));
-var Keypair = __importStar(require("../keypair"));
-var utxoHelper_1 = require("../../services/utxoHelper");
-var fee_1 = require("../../services/fee");
 var DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var mm, walletInfo;
@@ -867,7 +867,7 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
 };
 exports.getAbarTransferFee = getAbarTransferFee;
 var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __awaiter(void 0, void 0, void 0, function () {
-    var commitmentKeys, responseMap, _i, commitmentKeys_1, commitmentKey, commitmentEntity, commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei, commitmentAssetType, commitmentAmount;
+    var commitmentKeys, responseMap, _i, commitmentKeys_1, commitmentKey, commitmentEntity, commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei, commitmentAssetType, asset, commitmentAmount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -879,25 +879,28 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
                 _i = 0, commitmentKeys_1 = commitmentKeys;
                 _a.label = 1;
             case 1:
-                if (!(_i < commitmentKeys_1.length)) return [3 /*break*/, 4];
+                if (!(_i < commitmentKeys_1.length)) return [3 /*break*/, 5];
                 commitmentKey = commitmentKeys_1[_i];
                 commitmentEntity = commitmentsMap[commitmentKey];
                 commitmentAxfrPublicKey = commitmentEntity[0], commitmentNumericAssetType = commitmentEntity[1], commitmentAmountInWei = commitmentEntity[2];
                 return [4 /*yield*/, Asset.getAssetCode(commitmentNumericAssetType)];
             case 2:
                 commitmentAssetType = _a.sent();
-                commitmentAmount = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(commitmentAmountInWei.toString()), 6).toFormat(6);
+                return [4 /*yield*/, Asset.getAssetDetails(commitmentAssetType)];
+            case 3:
+                asset = _a.sent();
+                commitmentAmount = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(commitmentAmountInWei.toString()), (asset === null || asset === void 0 ? void 0 : asset.assetRules.decimals) || 6).toFormat((asset === null || asset === void 0 ? void 0 : asset.assetRules.decimals) || 6);
                 responseMap.push({
                     commitmentKey: commitmentKey,
                     commitmentAxfrPublicKey: commitmentAxfrPublicKey,
                     commitmentAssetType: commitmentAssetType,
                     commitmentAmount: "".concat(commitmentAmount),
                 });
-                _a.label = 3;
-            case 3:
+                _a.label = 4;
+            case 4:
                 _i++;
                 return [3 /*break*/, 1];
-            case 4: return [2 /*return*/, responseMap];
+            case 5: return [2 /*return*/, responseMap];
         }
     });
 }); };

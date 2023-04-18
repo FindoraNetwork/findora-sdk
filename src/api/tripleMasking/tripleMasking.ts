@@ -1,17 +1,17 @@
-import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { generateSeedString, log } from '../../services/utils';
 import { waitForBlockChange } from '../../evm/testHelpers';
-import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
 import Sdk from '../../Sdk';
+import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
+import { getFeeInputs } from '../../services/fee';
+import { getLedger } from '../../services/ledger/ledgerWrapper';
+import { TransactionBuilder } from '../../services/ledger/types';
+import { generateSeedString, log } from '../../services/utils';
+import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
 import * as FindoraWallet from '../../types/findoraWallet';
+import * as Keypair from '../keypair';
 import * as Network from '../network';
 import * as Asset from '../sdkAsset';
 import * as Transaction from '../transaction';
 import * as Builder from '../transaction/builder';
-import * as Keypair from '../keypair';
-import { TransactionBuilder } from '../../services/ledger/types';
-import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
-import { getFeeInputs } from '../../services/fee';
 
 const DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
 
@@ -837,7 +837,11 @@ const processAbarToAbarCommitmentResponse = async (
 
     const commitmentAssetType = await Asset.getAssetCode(commitmentNumericAssetType);
 
-    const commitmentAmount = fromWei(createBigNumber(commitmentAmountInWei.toString()), 6).toFormat(6);
+    const asset = await Asset.getAssetDetails(commitmentAssetType);
+    const commitmentAmount = fromWei(
+      createBigNumber(commitmentAmountInWei.toString()),
+      asset?.assetRules.decimals || 6,
+    ).toFormat(asset?.assetRules.decimals || 6);
 
     responseMap.push({
       commitmentKey,

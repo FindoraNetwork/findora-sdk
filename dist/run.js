@@ -1827,7 +1827,7 @@ function getAbarBalance() {
                     fraAssetSids = _a.sent();
                     (0, utils_1.log)('🚀 ~ all fraAssetSids', fraAssetSids);
                     console.log('anonKeys2', anonKeys2);
-                    givenCommitments = ['2Vx4RJC2w38xeNXKEpuj4dxFTxeDqwaDSAWCkaqZLUop'];
+                    givenCommitments = ['92LivdKPkt7xz3JdwXc4Tqn6cKtswbXoWfgLKyvxEVGm'];
                     return [4 /*yield*/, api_1.TripleMasking.getAllAbarBalances(anonKeysTest, givenCommitments)];
                 case 6:
                     anonBalances = _a.sent();

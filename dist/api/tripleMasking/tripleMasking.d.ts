@@ -1,6 +1,6 @@
+import { TransactionBuilder } from '../../services/ledger/types';
 import * as FindoraWallet from '../../types/findoraWallet';
 import * as Keypair from '../keypair';
-import { TransactionBuilder } from '../../services/ledger/types';
 interface BalanceInfo {
     assetType: string;
     amount: string;
