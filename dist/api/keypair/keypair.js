@@ -341,7 +341,7 @@ var restoreEvmKeyStore = function (keyStore, password) { return __awaiter(void 0
 }); };
 exports.restoreEvmKeyStore = restoreEvmKeyStore;
 var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, keypair, keyPairStr, encrypted, publickey, address;
+    var ledger, keypair, privateStr, keyPairStr, encrypted, publickey, address;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -350,7 +350,8 @@ var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 
                 keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
                 return [4 /*yield*/, (0, exports.getPrivateKeyStr)(keypair)];
             case 2:
-                keyPairStr = _a.sent();
+                privateStr = _a.sent();
+                keyPairStr = ledger.keypair_to_str(keypair);
                 encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
                 return [4 /*yield*/, (0, exports.getPublicKeyStr)(keypair)];
             case 3:
@@ -363,7 +364,7 @@ var restoreFromMnemonic = function (mnemonic, password) { return __awaiter(void 
                         publickey: publickey,
                         address: address,
                         keypair: keypair,
-                        privateStr: keyPairStr,
+                        privateStr: privateStr,
                     }];
         }
     });

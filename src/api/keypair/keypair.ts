@@ -278,7 +278,8 @@ export const restoreFromMnemonic = async (mnemonic: string[], password: string):
   const ledger = await getLedger();
 
   const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-  const keyPairStr = await getPrivateKeyStr(keypair);
+  const privateStr = await getPrivateKeyStr(keypair);
+  const keyPairStr = ledger.keypair_to_str(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
   const publickey = await getPublicKeyStr(keypair);
@@ -289,7 +290,7 @@ export const restoreFromMnemonic = async (mnemonic: string[], password: string):
     publickey,
     address,
     keypair,
-    privateStr: keyPairStr,
+    privateStr,
   };
 };
 
