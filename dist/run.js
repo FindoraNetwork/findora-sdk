@@ -83,8 +83,8 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    hostUrl: 'https://prod-testnet.prod.findora.org',
+    hostUrl: 'https://prod-mainnet.prod.findora.org',
+    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
     // hostUrl: 'http://127.0.0.1',
@@ -94,7 +94,7 @@ var sdkEnv = {
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
+    blockScanerUrl: 'https://prod-mainnet.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -1715,7 +1715,7 @@ function fnsNameResolver() {
         var result;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Evm.getDomainCurrentText('0xc864592b5148308D3A4429FE280263Ecc4c4E61f', 'eba.fra')];
+                case 0: return [4 /*yield*/, api_1.Evm.getDomainCurrentText('eba.fra')];
                 case 1:
                     result = _a.sent();
                     console.log(result === null || result === void 0 ? void 0 : result.eth);

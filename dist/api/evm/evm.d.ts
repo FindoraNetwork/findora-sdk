@@ -15,7 +15,7 @@ export declare function getPrismConfig(): Promise<{
     bridgeAddress: string;
 }>;
 export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
-export declare const getDomainCurrentText: (nameResolverAddress: string, name: string) => Promise<{
+export declare const getDomainCurrentText: (name: string) => Promise<{
     eth: string;
     fra: string;
 } | null>;

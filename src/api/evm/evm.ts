@@ -270,14 +270,20 @@ export const approveNFT = async (
 };
 
 export const getDomainCurrentText = async (
-  nameResolverAddress: string,
   name: string,
 ): Promise<{
   eth: string;
   fra: string;
 } | null> => {
+  const { response: displayCheckpointData, error } = await Network.getConfig();
+
+  if (error) throw error;
+
+  if (!displayCheckpointData?.fns_registry) throw 'no fns_registry contract address';
+
   const web3 = getWeb3(Network.getRpcRoute());
-  const fnsRegistryContract = getFNSRegistryContract(web3, nameResolverAddress);
+
+  const fnsRegistryContract = getFNSRegistryContract(web3, displayCheckpointData.fns_registry);
 
   const result = await fnsRegistryContract.methods.currentText(namehash.hash(name)).call();
 

@@ -325,16 +325,22 @@ var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3Wall
     });
 }); };
 exports.approveNFT = approveNFT;
-var getDomainCurrentText = function (nameResolverAddress, name) { return __awaiter(void 0, void 0, void 0, function () {
-    var web3, fnsRegistryContract, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
-                fnsRegistryContract = (0, web3_2.getFNSRegistryContract)(web3, nameResolverAddress);
-                return [4 /*yield*/, fnsRegistryContract.methods.currentText(eth_ens_namehash_1.default.hash(name)).call()];
+var getDomainCurrentText = function (name) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, displayCheckpointData, error, web3, fnsRegistryContract, result;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, api_1.Network.getConfig()];
             case 1:
-                result = _a.sent();
+                _a = _b.sent(), displayCheckpointData = _a.response, error = _a.error;
+                if (error)
+                    throw error;
+                if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.fns_registry))
+                    throw 'no fns_registry contract address';
+                web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
+                fnsRegistryContract = (0, web3_2.getFNSRegistryContract)(web3, displayCheckpointData.fns_registry);
+                return [4 /*yield*/, fnsRegistryContract.methods.currentText(eth_ens_namehash_1.default.hash(name)).call()];
+            case 2:
+                result = _b.sent();
                 if (result.includes('eth') || result.includes('fra')) {
                     return [2 /*return*/, JSON.parse(result)];
                 }

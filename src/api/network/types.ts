@@ -718,5 +718,6 @@ export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
     proper_gas_set_height: number;
     fix_delegators_am_height: number;
     validators_limit_v2_height: number;
+    fns_registry: string;
   };
 }
