@@ -83,8 +83,8 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  * Prior to using SDK we have to initialize its environment configuration
  */
 var sdkEnv = {
-    hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    // hostUrl: 'https://prod-mainnet.prod.findora.org',
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
     // hostUrl: 'http://127.0.0.1',
@@ -94,7 +94,7 @@ var sdkEnv = {
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    blockScanerUrl: 'https://prod-mainnet.backend.findorascan.io',
+    blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
