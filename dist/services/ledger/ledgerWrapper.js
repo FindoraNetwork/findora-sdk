@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLedger = exports.getNodeLedger = exports.getWebLedger = exports.isItNodeEnv = void 0;
 var nodeLedger_1 = __importDefault(require("./nodeLedger"));
 var webLedger_1 = __importDefault(require("./webLedger"));
+var isInitNoah = false;
 var isItNodeEnv = function () { return typeof process !== 'undefined' && process.release.name === 'node'; };
 exports.isItNodeEnv = isItNodeEnv;
 var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -69,13 +70,22 @@ var getNodeLedger = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 exports.getNodeLedger = getNodeLedger;
 var getLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var isNodeEnv;
+    var isNodeEnv, myLedger;
     return __generator(this, function (_a) {
-        isNodeEnv = (0, exports.isItNodeEnv)();
-        if (isNodeEnv) {
-            return [2 /*return*/, (0, exports.getNodeLedger)()];
+        switch (_a.label) {
+            case 0:
+                isNodeEnv = (0, exports.isItNodeEnv)();
+                return [4 /*yield*/, (isNodeEnv ? (0, exports.getNodeLedger)() : (0, exports.getWebLedger)())];
+            case 1:
+                myLedger = _a.sent();
+                if (!!isInitNoah) return [3 /*break*/, 3];
+                return [4 /*yield*/, myLedger.init_noah()];
+            case 2:
+                _a.sent();
+                isInitNoah = true;
+                _a.label = 3;
+            case 3: return [2 /*return*/, myLedger];
         }
-        return [2 /*return*/, (0, exports.getWebLedger)()];
     });
 }); };
 exports.getLedger = getLedger;
