@@ -1,11 +1,11 @@
 import * as Types from '../types';
+import { ProcessedClaim } from './claim';
+import { ProcessedConvertAccount } from './converAccount';
 import { ProcessedDefineAsset } from './defineAsset';
+import { ProcessedDelegation } from './delegation';
 import { ProcessedIssueAsset } from './issueAsset';
 import { ProcessedTransferAsset } from './transferAsset';
 import { ProcessedUndelegation } from './undelegation';
-import { ProcessedDelegation } from './delegation';
-import { ProcessedClaim } from './claim';
-import { ProcessedConvertAccount } from './converAccount';
 import { Unsupported } from './unsupported';
 export type ProcessedTx = ProcessedDefineAsset | ProcessedTransferAsset | ProcessedIssueAsset | ProcessedUndelegation | ProcessedDelegation | ProcessedClaim | ProcessedConvertAccount | Unsupported;
 export type ProcessorType = (op: Types.TxOperation) => Promise<ProcessedTx>;

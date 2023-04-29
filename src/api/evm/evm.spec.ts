@@ -1,10 +1,12 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { TransactionBuilder } from '../../services/ledger/types';
+import BigNumber from 'bignumber.js';
+
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import * as Evm from './evm';
-import * as Transaction from '../transaction/transaction';
+import { TransactionBuilder } from '../../services/ledger/types';
 import * as KeypairApi from '../keypair/keypair';
+import * as Transaction from '../transaction/transaction';
+import * as Evm from './evm';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;
@@ -24,21 +26,21 @@ describe('evm (unit test)', () => {
     it('sendAccountToEvm funds', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_operation_convert_account: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         sign: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransferOpBuilderLight;
+          return fakeTransactionBuilder as unknown as TransferOpBuilderLight;
         }),
       };
 
       const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
-        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
       });
 
       const spyAddOperationConvertAccount = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_convert_account')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
       const ledger = await getLedger();
       const address = ledger.base64_to_bech32(ledger.get_coinbase_address());
@@ -46,10 +48,25 @@ describe('evm (unit test)', () => {
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
       const amount = '2';
-      const ethAddress = 'myValidaotrAddress';
+      const ethAddress = 'myValidaotrAddress'; // findoraNetwork.columbus.relayer;
       const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
 
-      const result = await Evm.sendAccountToEvm(walletInfo, amount, ethAddress);
+      const funcName = 'withdrawFRA';
+      const convertAmount = new BigNumber(amount).times(10 ** 18).toString();
+      // if (assetCode !== 'FRA') {
+      //   funcName = 'withdrawERC20';
+      //   convertAmount = await YsSdk.web3.calculationDecimalsAmount(
+      //     YsSdk.web3.getErc20Contract(tokenAddress),
+      //     tokenAmount,
+      //     'toWei',
+      //   );
+      // }
+
+      // ethAddress = findoraNetwork.columbus.relayer;
+
+      const lowLeveldata = '';
+
+      const result = await Evm.sendAccountToEvm(walletInfo, amount, ethAddress, assetCode, lowLeveldata);
 
       expect(spyTransactionSendToaddress).toHaveBeenCalledWith(
         walletInfo,

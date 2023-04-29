@@ -58,15 +58,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
+var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var Evm = __importStar(require("./evm"));
 var Transaction = __importStar(require("../transaction/transaction"));
+var Evm = __importStar(require("./evm"));
 describe('evm (unit test)', function () {
     describe('sendAccountToEvm', function () {
         it('sendAccountToEvm funds', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, spyTransactionSendToaddress, spyAddOperationConvertAccount, ledger, address, assetCode, walletInfo, amount, ethAddress, assetBlindRules, result;
+            var fakeTransactionBuilder, spyTransactionSendToaddress, spyAddOperationConvertAccount, ledger, address, assetCode, walletInfo, amount, ethAddress, assetBlindRules, funcName, convertAmount, lowLeveldata, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -95,7 +99,10 @@ describe('evm (unit test)', function () {
                         amount = '2';
                         ethAddress = 'myValidaotrAddress';
                         assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                        return [4 /*yield*/, Evm.sendAccountToEvm(walletInfo, amount, ethAddress)];
+                        funcName = 'withdrawFRA';
+                        convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString();
+                        lowLeveldata = '';
+                        return [4 /*yield*/, Evm.sendAccountToEvm(walletInfo, amount, ethAddress, assetCode, lowLeveldata)];
                     case 2:
                         result = _a.sent();
                         expect(spyTransactionSendToaddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);

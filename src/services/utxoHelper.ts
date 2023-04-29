@@ -20,7 +20,11 @@ export interface LedgerUtxoItem {
 
 export interface AddUtxoItem extends LedgerUtxoItem {
   address: string;
-  body: any;
+  // body: any;
+  body: {
+    amount: number; //?
+    asset_type: string; //?
+  };
   memoData: OwnedMemoResponse | undefined;
 }
 
@@ -44,6 +48,40 @@ export interface UtxoInputsInfo {
   inputAmount: BigInt;
 }
 
+const mergeUtxoList = (arr1: AddUtxoItem[], arr2: AddUtxoItem[]) => {
+  const res = [];
+
+  while (arr1.length && arr2.length) {
+    const assetItem1 = arr1[0];
+    const assetItem2 = arr2[0];
+    const amount1 = BigInt(assetItem1.body.amount);
+    const amount2 = BigInt(assetItem2.body.amount);
+
+    if (amount1 < amount2) {
+      res.push(arr1.splice(0, 1)[0]);
+      continue;
+    }
+    res.push(arr2.splice(0, 1)[0]);
+  }
+
+  return res.concat(arr1, arr2);
+};
+
+const mergeSortUtxoList = (arr: AddUtxoItem[]): AddUtxoItem[] => {
+  if (arr.length < 2) return arr;
+  const middleIdx = Math.floor(arr.length / 2);
+
+  let left = arr.splice(0, middleIdx);
+  let right = arr.splice(0);
+
+  return mergeUtxoList(mergeSortUtxoList(left), mergeSortUtxoList(right));
+};
+
+export const filterUtxoByCode = (code: string, utxoDataList: AddUtxoItem[]): AddUtxoItem[] => {
+  return utxoDataList.filter(assetItem => assetItem?.body?.asset_type === code);
+};
+
+// is called only from getUtxoItem
 export const decryptUtxoItem = async (
   sid: number,
   walletInfo: WalletKeypar,
@@ -61,18 +99,10 @@ export const decryptUtxoItem = async (
     throw new Error(`Can not get client asset record. Details: "${err.message}"`);
   }
 
-  const memoDataResult = await Network.getOwnerMemo(sid);
-
-  const { response: myMemoData, error: memoError } = memoDataResult;
-
-  if (memoError) {
-    throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
-  }
-
   let ownerMemo;
 
   try {
-    ownerMemo = myMemoData ? ledger.OwnerMemo.from_json(myMemoData) : undefined;
+    ownerMemo = memoData ? ledger.OwnerMemo.from_json(memoData) : undefined;
   } catch (error) {
     const err: Error = error as Error;
     throw new Error(`Can not decode owner memo. Details: "${err.message}"`);
@@ -116,6 +146,7 @@ export const decryptUtxoItem = async (
   return item;
 };
 
+// is called only by addUtxo
 export const getUtxoItem = async (
   sid: number,
   walletInfo: WalletKeypar,
@@ -125,7 +156,7 @@ export const getUtxoItem = async (
     return cachedItem;
   }
 
-  console.log(`Fetching sid "${sid}"`);
+  // console.log(`Fetching sid "${sid}"`);
 
   const utxoDataResult = await Network.getUtxo(sid);
 
@@ -137,13 +168,21 @@ export const getUtxoItem = async (
 
   const memoDataResult = await Network.getOwnerMemo(sid);
 
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 1 ~ sid processing 1', sid);
+
   const { response: memoData, error: memoError } = memoDataResult;
 
   if (memoError) {
     throw new Error(`Could not fetch memo data for sid "${sid}", Error - ${memoError.message}`);
   }
 
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 2 ~ sid processing 2', sid);
+
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 155 ~ sid processing', sid);
+
   const item = await decryptUtxoItem(sid, walletInfo, utxoData, memoData);
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 155 ~ sid processed', sid);
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 178 ~ item', item);
 
   return item;
 };
@@ -162,7 +201,9 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
     if (window && window?.document) {
       fullPathToCacheEntry = cacheEntryName;
     }
-  } catch (error) {}
+  } catch (_) {
+    // console.log('window instance is not found. running is sdk mode. skipping');
+  }
 
   try {
     utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
@@ -173,10 +214,14 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 
   for (let i = 0; i < addSids.length; i++) {
     const sid = addSids[i];
+    // console.log('🚀 ~ file: utxoHelper.ts ~ line 207 ~ addUtxo ~ sid', sid);
 
     try {
       const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
+      // console.log('🚀 ~ file: utxoHelper.ts ~ line 211 ~ addUtxo ~ item', item);
       utxoDataList.push(item);
+
+      // console.log('sid processed!!', sid);
       cacheDataToSave[`sid_${item.sid}`] = item;
     } catch (error) {
       const err: Error = error as Error;
@@ -185,6 +230,7 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
     }
   }
 
+  // console.log('🚀 ~ file: utxoHelper.ts ~ line 229 ~ addUtxo ~ utxoDataList', utxoDataList);
   try {
     await Cache.write(fullPathToCacheEntry, cacheDataToSave, Sdk.environment.cacheProvider);
   } catch (error) {
@@ -196,41 +242,112 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 };
 
 // creates a list of utxo like object, which are suitable for the required send operation
-export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
-  let balance = amount;
+// is only used in fee
+/**
+ * @depricated
+ */
+// export const getSendUtxoLegacy = (
+//   code: string,
+//   amount: BigInt,
+//   utxoDataList: AddUtxoItem[],
+// ): UtxoOutputItem[] => {
+//   let balance = amount;
 
+//   const result = [];
+
+//   for (let i = 0; i < utxoDataList.length; i++) {
+//     const assetItem = utxoDataList[i];
+
+//     if (assetItem.body.asset_type === code) {
+//       const _amount = BigInt(assetItem.body.amount);
+
+//       if (balance <= BigInt(0)) {
+//         break;
+//       } else if (BigInt(_amount) >= balance) {
+//         result.push({
+//           amount: balance,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//         break;
+//       } else {
+//         balance = BigInt(Number(balance) - Number(_amount));
+
+//         result.push({
+//           amount: _amount,
+//           originAmount: _amount,
+//           sid: assetItem.sid,
+//           utxo: { ...assetItem.utxo },
+//           ownerMemo: assetItem.ownerMemo,
+//           memoData: assetItem.memoData,
+//         });
+//       }
+//     }
+//   }
+
+//   return result;
+// };
+
+export const getSendUtxoForAmount = (
+  code: string,
+  amount: BigInt,
+  utxoDataList: AddUtxoItem[],
+): UtxoOutputItem[] => {
   const result = [];
 
-  for (let i = 0; i < utxoDataList.length; i++) {
-    const assetItem = utxoDataList[i];
+  const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
 
-    if (assetItem.body.asset_type === code) {
-      const _amount = BigInt(assetItem.body.amount);
+  console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ amount', amount);
+  for (const assetItem of filteredUtxoList) {
+    const _amount = BigInt(assetItem.body.amount);
+    console.log('🚀 ~ file: utxoHelper.ts ~ line 307 ~ _amount', _amount);
 
-      if (balance <= BigInt(0)) {
-        break;
-      } else if (BigInt(_amount) >= balance) {
-        result.push({
-          amount: balance,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-        break;
-      } else {
-        balance = BigInt(Number(balance) - Number(_amount));
+    if (_amount === amount) {
+      result.push({
+        amount: _amount,
+        originAmount: _amount,
+        sid: assetItem.sid,
+        utxo: { ...assetItem.utxo },
+        ownerMemo: assetItem.ownerMemo,
+        memoData: assetItem.memoData,
+      });
+      break;
+    }
+  }
 
-        result.push({
-          amount: _amount,
-          originAmount: _amount,
-          sid: assetItem.sid,
-          utxo: { ...assetItem.utxo },
-          ownerMemo: assetItem.ownerMemo,
-          memoData: assetItem.memoData,
-        });
-      }
+  return result;
+};
+
+export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoItem[]): UtxoOutputItem[] => {
+  const result = [];
+
+  const filteredUtxoList = filterUtxoByCode(code, utxoDataList);
+  const sortedUtxoList = mergeSortUtxoList(filteredUtxoList);
+
+  let sum = BigInt(0);
+
+  for (const assetItem of sortedUtxoList) {
+    const _amount = BigInt(assetItem.body.amount);
+
+    sum = sum + _amount;
+    const credit = BigInt(Number(sum) - Number(amount));
+    const remainedDebt = _amount - credit;
+    const amountToUse = credit > 0 ? remainedDebt : _amount;
+
+    result.push({
+      amount: amountToUse,
+      originAmount: _amount,
+      sid: assetItem.sid,
+      utxo: { ...assetItem.utxo },
+      ownerMemo: assetItem.ownerMemo,
+      memoData: assetItem.memoData,
+    });
+
+    if (credit >= 0) {
+      break;
     }
   }
 
@@ -238,6 +355,7 @@ export const getSendUtxo = (code: string, amount: BigInt, utxoDataList: AddUtxoI
 };
 
 // creates a list of inputs, which would be used by transaction builder in a fee service
+// used in fee.buildTransferOperation , fee.getFeeInputs
 export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInputsInfo> => {
   const ledger = await getLedger();
 
@@ -283,4 +401,29 @@ export const addUtxoInputs = async (utxoSids: UtxoOutputItem[]): Promise<UtxoInp
   const res = { inputParametersList, inputAmount };
 
   return res;
+};
+
+export const getUtxoWithAmount = async (
+  walletInfo: WalletKeypar,
+  utxoNumbers: BigInt,
+  assetCode: string,
+): Promise<UtxoOutputItem> => {
+  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
+  if (!sids) {
+    console.log('ERROR no sids available');
+    throw new Error(
+      `could not get an utxo with an amount of ${utxoNumbers} for asset code ${assetCode}. No sids available`,
+    );
+  }
+
+  const utxoDataList = await addUtxo(walletInfo, sids);
+
+  const sendUtxoList = getSendUtxoForAmount(assetCode, utxoNumbers, utxoDataList);
+  const [utxoInput] = sendUtxoList;
+
+  if (!utxoInput) {
+    throw new Error(`could not get an utxo with an amount of ${utxoNumbers} for asset code ${assetCode}`);
+  }
+
+  return utxoInput;
 };

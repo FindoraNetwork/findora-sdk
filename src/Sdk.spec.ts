@@ -15,6 +15,7 @@ describe('SdkMain (unit test)', () => {
         explorerApiPort: 'p26657',
         cacheProvider: FileCacheProvider,
         cachePath: 'pCacheDir',
+        blockScanerUrl: 'https://foo.bar',
       };
 
       Sdk.init(sdkEnv);
@@ -54,6 +55,7 @@ describe('SdkMain (unit test)', () => {
       const sdkEnv = {
         hostUrl: 'foo',
         queryPort: 'bar',
+        blockScanerUrl: 'https://foo.bar',
       };
 
       Sdk.init(sdkEnv);

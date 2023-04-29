@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import * as NetworkTypes from '../network/types';
 import * as NetworkApi from '../network/network';
-
+import * as NetworkTypes from '../network/types';
+import { TxListDataResult } from '../network/types';
 import * as helpers from './helpers';
 import { ParsedTx } from './types';
-import { TxListDataResult } from '../network/types';
 
 describe('helpers (unit test)', () => {
   describe('getTxListFromResponse', () => {

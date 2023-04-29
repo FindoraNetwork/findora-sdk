@@ -1,5 +1,6 @@
 import axios from 'axios';
 import JSONbig from 'json-bigint';
+
 import Sdk from '../../Sdk';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import * as Types from './types';
@@ -48,6 +49,14 @@ const getExplorerApiRoute = (): string => {
   return url;
 };
 
+export const getRpcRoute = (): string => {
+  const { hostUrl, rpcPort } = Sdk.environment;
+
+  const url = `${hostUrl}:${rpcPort}`;
+
+  return url;
+};
+
 export const apiPost = async (
   url: string,
   data?: Types.ParsedTransactionData,
@@ -91,7 +100,6 @@ export const apiGet = async (
     return { response: myResponse };
   } catch (err) {
     const e: Error = err as Error;
-
     return { error: { message: e.message } };
   }
 };
@@ -162,6 +170,28 @@ export const getOwnerMemo = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.OwnerMemoDataResult> => {
   const url = `${getQueryRoute()}/get_owner_memo/${utxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getAbarOwnerMemo = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnerMemoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_memo/${atxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getMTLeafInfo = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.MTLeafInfoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_proof/${atxoSid}`;
 
   const dataResult = await apiGet(url, config);
 
@@ -286,14 +316,11 @@ export const getHashSwap = async (
   return dataResult;
 };
 
-export const getTxList = async (
+export const getParamsForTransparentTxList = (
   address: string,
   type: 'to' | 'from',
   page = 1,
-  config?: Types.NetworkAxiosConfig,
-): Promise<Types.TxListDataResult> => {
-  const url = `${getExplorerApiRoute()}/tx_search`;
-
+): Types.TxListQueryParams => {
   const query = type === 'from' ? `"addr.from.${address}='y'"` : `"addr.to.${address}='y'"`;
 
   const params = {
@@ -302,6 +329,117 @@ export const getTxList = async (
     per_page: 10,
     order_by: '"desc"',
   };
+
+  return params;
+};
+
+export const getAnonymousTxList = (
+  subject: string,
+  type: 'to' | 'from',
+  page = 1,
+): Types.TxListQueryParams => {
+  const query = type === 'to' ? `"commitment.created.${subject}='y'"` : `"nullifier.used.${subject}='y'"`;
+
+  const params = {
+    query,
+    page,
+    per_page: 10,
+    order_by: '"desc"',
+  };
+
+  return params;
+};
+
+export const getTxList = async (
+  subject: string,
+  type: 'from' | 'to',
+  page = 1,
+  per_page: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+
+  const url = `${blockScanerUrl}/api/txs`;
+  const params = { [type]: subject, page, per_page };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  console.log(dataResult);
+
+  return dataResult;
+};
+
+export const getTxListByClaim = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByStakingDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+
+  const url = `${blockScanerUrl}/api/staking/claim`;
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByStakingDelegation = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByStakingDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/delegation`;
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByStakingUnDelegation = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByStakingUnDelegationDataResponseResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const ledger = await getLedger();
+  const url = `${blockScanerUrl}/api/staking/undelegation`;
+  const params = { pubkey: ledger.bech32_to_base64(subject), page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByPrismSend = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByPrismDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/prism/records/send`;
+  const params = { address: subject, page, page_size };
+
+  const dataResult = await apiGet(url, { ...config, params });
+
+  return dataResult;
+};
+
+export const getTxListByPrismReceive = async (
+  subject: string,
+  page = 1,
+  page_size: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.TxListByPrismDataResult> => {
+  const { blockScanerUrl } = Sdk.environment;
+  const url = `${blockScanerUrl}/api/tx/prism/records/receive`;
+  const params = { address: subject, page, page_size };
 
   const dataResult = await apiGet(url, { ...config, params });
 
@@ -316,6 +454,7 @@ export const getTransactionDetails = async (
     hash: `0x${hash}`,
   };
   const url = `${getExplorerApiRoute()}/tx`;
+  console.log('🚀 ~ file: network.ts ~ line 372 ~ url', url);
 
   const dataResult = await apiGet(url, { ...config, params });
 
@@ -409,5 +548,108 @@ export const sendRpcCall = async <T>(
 
   const dataResult = await apiPost(url, payload, { ...config });
 
-  return dataResult as T;
+  return dataResult as unknown as T;
+};
+
+export const sendRpcCallV2 = async <N>(
+  givenPayload: N,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.NetworkAxiosDataResult> => {
+  const defaultPayload = {
+    id: 1,
+    jsonrpc: '2.0',
+    method: 'eth_protocolVersion',
+    params: [],
+  };
+  const url = `${getRpcRoute()}`;
+
+  const payload = { ...defaultPayload, ...givenPayload };
+
+  const dataResult = await apiPost(url, payload, { ...config });
+
+  return dataResult;
+};
+
+export const getRpcPayload = <T>(msgId: number, method: string, extraParams?: T) => {
+  const payload = {
+    id: msgId,
+    method,
+    params: extraParams,
+  };
+
+  return payload;
+};
+
+export const getLatestBlock = async (
+  extraParams?: Types.BlockHeightParams,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.BlockHeightResult> => {
+  const msgId = 1;
+  const method = 'eth_blockNumber';
+
+  const payload = getRpcPayload<Types.BlockHeightParams>(msgId, method, extraParams);
+
+  const dataResult = await sendRpcCallV2<typeof payload>(payload, config);
+
+  return dataResult;
+};
+
+export const getOwnedAbars = async (
+  commitment: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.OwnedAbarsDataResult> => {
+  const url = `${getQueryRoute()}/owned_abars/${commitment}`;
+
+  const dataResult = await apiGet(url, config);
+  return dataResult;
+};
+
+export const getAbarMemos = async (
+  startSid: string,
+  endSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.AbarMemoDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_memos`;
+
+  const params = { start: startSid.trim(), end: endSid.trim() };
+  const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
+export const checkNullifierHashSpent = async (
+  hash: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.CheckNullifierHashSpentDataResult> => {
+  const url = `${getQueryRoute()}/check_nullifier_hash/${hash}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getConfig = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.DisplayCheckpointDataResult> => {
+  const url = `${getLedgerRoute()}/display_checkpoint`;
+  const dataResult = await apiGet(url, config);
+  return dataResult;
+};
+
+export const getAbarCommitment = async (
+  atxoSid: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.AbarCommitmentDataResult> => {
+  const url = `${getQueryRoute()}/get_abar_commitment/${atxoSid.trim()}`;
+
+  const dataResult = await apiGet(url, { ...config });
+  return dataResult;
+};
+
+export const getMaxAtxoSid = async (
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.MaxAtxoSidDataResult> => {
+  const url = `${getQueryRoute()}/get_max_atxo_sid`;
+
+  const dataResult = await apiGet(url, { ...config });
+  return dataResult;
 };

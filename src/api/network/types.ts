@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/naming-convention */
+import * as FindoraWallet from '../../types/findoraWallet';
+import * as Types from '../transaction/types';
 export interface ResultError {
   message: string;
   code?: number;
@@ -42,6 +44,26 @@ export interface OwnerMemoDataResult extends NetworkAxiosDataResult {
   response?: OwnedMemoResponse;
 }
 
+export type MTleafNode = {
+  siblings1: string;
+  siblings2: string;
+  is_left_child: number;
+  is_right_child: number;
+};
+
+export type MTLeafInfoResponse = {
+  uid: string;
+  root_version: string;
+  root: string;
+  path: {
+    nodes: MTleafNode[];
+  };
+};
+
+export interface MTLeafInfoDataResult extends NetworkAxiosDataResult {
+  response?: MTLeafInfoResponse;
+}
+
 export interface LedgerUtxo {
   id?: number | null | undefined;
   record: any;
@@ -58,6 +80,18 @@ export type UtxoResponse = {
 
 export interface UtxoDataResult extends NetworkAxiosDataResult {
   response?: UtxoResponse;
+}
+
+export type OwnedResponseAbarItem = [string, FindoraWallet.OwnedAbar];
+
+export type OwnedAbarsResponse = OwnedResponseAbarItem;
+
+export interface OwnedAbarsDataResult extends NetworkAxiosDataResult {
+  response?: OwnedAbarsResponse;
+}
+
+export interface CheckNullifierHashSpentDataResult extends NetworkAxiosDataResult {
+  response?: boolean;
 }
 
 export type AssetTokenResponse = {
@@ -125,26 +159,93 @@ export interface SubmitEvmTx {
 }
 
 export interface TxInfo {
+  block_hash: string;
   code: number;
-  data: null | any[];
-  hash: string;
-  time: string | undefined;
+  evm_tx_hash: string;
   height: number;
-  index: number;
-  tx_result: TxResult;
-  tx: string;
+  log: string;
+  origin: string;
+  result: TxResult;
+  timestamp: number;
+  tx_hash: string;
+  ty: number;
+  value: Types.ParsedTx;
 }
 export interface TxListResponseResult {
   txs: null | TxInfo[];
-  total_count: number;
+  page: number;
+  page_size: number;
+  total: number;
 }
 
-export type TxListResponse = {
-  result: TxListResponseResult;
+export type TxListResponse<T> = {
+  code: number;
+  data: T;
+  message: string;
 };
 
 export interface TxListDataResult extends NetworkAxiosDataResult {
-  response?: TxListResponse;
+  response?: TxListResponse<TxListResponseResult>;
+}
+
+export interface TxListByStakingResponseResult {
+  items: {
+    amount: string;
+    node_address: string;
+    node_logo: string;
+    node_name: string;
+    timestamp: number;
+    tx_hash: string;
+  }[];
+  page: number;
+  page_size: number;
+  total: number;
+}
+export interface TxListByStakingDataResult extends NetworkAxiosDataResult {
+  response?: TxListResponse<TxListByStakingResponseResult>;
+}
+
+export interface TxListByStakingUnDelegationDataResult {
+  undelegations: {
+    amount: string;
+    pubkey: string;
+    timestamp: number;
+    tx_hash: string;
+    validator: string;
+  }[];
+  page: number;
+  page_size: number;
+  total: number;
+}
+export interface TxListByStakingUnDelegationDataResponseResult extends NetworkAxiosDataResult {
+  response?: TxListResponse<TxListByStakingUnDelegationDataResult>;
+}
+
+export interface TxListByPrismResponseResult {
+  items: {
+    amount: string;
+    asset: string;
+    block_hash: string;
+    data: string;
+    from: string;
+    height: number;
+    timestamp: number;
+    to: string;
+    tx_hash: string;
+  }[];
+  page: number;
+  page_size: number;
+  total: number;
+}
+export interface TxListByPrismDataResult extends NetworkAxiosDataResult {
+  response?: TxListResponse<TxListByPrismResponseResult>;
+}
+
+export interface TxListQueryParams {
+  query: string;
+  page: number;
+  per_page: number;
+  order_by: string;
 }
 
 export type TxDetailsResponse = {
@@ -550,4 +651,73 @@ export interface EthGetLogsRpcResponse extends EthMainRpcResponse {
 
 export interface EthGetLogsRpcResult extends NetworkAxiosDataResult {
   response?: EthGetLogsRpcResponse;
+}
+
+// refactor other rpc calls to use this interface
+export interface MainRpcResponse {
+  id: string;
+  jsonrpc: string;
+  error?: {
+    code: number;
+    message: string;
+    data?: any;
+  };
+}
+
+export interface BlockHeightResponse extends MainRpcResponse {
+  result: string;
+}
+
+export interface BlockHeightResult extends NetworkAxiosDataResult {
+  response?: BlockHeightResponse;
+}
+
+export interface BlockHeightParams {
+  blockType?: string;
+}
+
+export type AbarMemoResponse = FindoraWallet.AbarMemoItem[];
+
+export interface AbarMemoDataResult extends NetworkAxiosDataResult {
+  response?: AbarMemoResponse;
+}
+
+export interface AbarCommitmentDataResult extends NetworkAxiosDataResult {
+  response?: string;
+}
+
+export interface MaxAtxoSidDataResult extends NetworkAxiosDataResult {
+  response?: string;
+}
+
+export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
+  response?: {
+    evm_substate_height: number;
+    disable_evm_block_height: number;
+    enable_frc20_height: number;
+    evm_first_block_height: number;
+    zero_amount_fix_height: number;
+    apy_fix_height: number;
+    overflow_fix_height: number;
+    second_fix_height: number;
+    apy_v7_upgrade_height: number;
+    ff_addr_extra_fix_height: number;
+    nonconfidential_balance_fix_height: number;
+    unbond_block_cnt: number;
+    prismxx_inital_height: number;
+    enable_triple_masking_height: number;
+    fix_prism_mint_pay: number;
+    fix_exec_code: number;
+    fix_unpaid_delegation_height: number;
+    fix_undelegation_missing_reward_height: number;
+    evm_checktx_nonce: number;
+    utxo_checktx_height: number;
+    utxo_asset_prefix_height: number;
+    prism_bridge_address: string;
+    nonce_bug_fix_height: number;
+    proper_gas_set_height: number;
+    fix_delegators_am_height: number;
+    validators_limit_v2_height: number;
+    fns_registry: string;
+  };
 }

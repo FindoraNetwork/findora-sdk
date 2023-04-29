@@ -1,3 +1,4 @@
+import * as FindoraWallet from '../../types/findoraWallet';
 import { ProcessedTx } from './operationProcessors/index';
 export interface TxInput {
     Absolute: number;
@@ -29,6 +30,71 @@ export interface TransferAssetOperation {
         };
         policies: number[];
         transfer_type: string;
+    };
+}
+export interface BarToAbarOperation {
+    note: {
+        ArNote: {
+            body: {
+                input: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+        BarNote: {
+            body: {
+                input: {
+                    amount: {
+                        Confidential: string[];
+                    };
+                    asset_type: {
+                        Confidential: string;
+                    };
+                    public_key: string;
+                };
+                output: {
+                    commitment: string;
+                };
+            };
+        };
+    };
+}
+export interface AbarToBarOperation {
+    note: {
+        AbarToAr: {
+            body: {
+                input: string;
+                output: {
+                    amount: {
+                        NonConfidential: string;
+                    };
+                    asset_type: {
+                        NonConfidential: number[];
+                    };
+                    public_key: string;
+                };
+            };
+        };
+    };
+}
+interface AbarToAbarNoteOutput {
+    commitment: string;
+}
+export interface AbarToAbarOperation {
+    note: {
+        body: {
+            inputs: string[];
+            outputs: AbarToAbarNoteOutput[];
+        };
     };
 }
 export interface IssueAssetOperation {
@@ -92,6 +158,9 @@ export interface TxOperation {
     UnDelegation?: UnDelegationOperation;
     Delegation?: DelegationOperation;
     ConvertAccount?: ConvertAccountOperation;
+    BarToAbar?: BarToAbarOperation;
+    AbarToBar?: AbarToBarOperation;
+    TransferAnonAsset?: AbarToAbarOperation;
 }
 export interface ParsedTx {
     body: {
@@ -103,8 +172,67 @@ export interface ProcessedTxInfo {
     data: ProcessedTx[];
     hash: string;
     time: string | undefined;
+    block_hash: string;
+    height: number;
 }
 export interface ProcessedTxListResponseResult {
     txs: ProcessedTxInfo[];
-    total_count: number;
+    page: number;
+    total: number;
+    page_size: number;
 }
+export interface ProcessedTxInfoByStaking {
+    amount: string;
+    node_address: string;
+    node_logo: string;
+    node_name: string;
+    timestamp: number;
+    tx_hash: string;
+}
+export interface IPrismData {
+    asset_type: number[];
+    lowlevel_data: any[];
+    nonce: Array<number[] | number>;
+    receiver: {
+        Ethereum: string;
+    };
+    signer: string;
+    value: string;
+}
+export interface ProcessedTxInfoByPrism {
+    amount: string;
+    asset: string;
+    block_hash: string;
+    data: string;
+    from: string;
+    height: number;
+    timestamp: number;
+    to: string;
+    tx_hash: string;
+}
+export interface ProcessedTxListByStakingResponseResult {
+    items: ProcessedTxInfoByStaking[];
+    page: number;
+    total: number;
+    page_size: number;
+}
+export interface ProcessedTxInfoByStakingUnDelagtion {
+    amount: string;
+    pubkey: string;
+    timestamp: number;
+    tx_hash: string;
+    validator: string;
+}
+export interface ProcessedTxListByStakingUnDelagtionResponseResult {
+    undelegations: ProcessedTxInfoByStakingUnDelagtion[];
+    page: number;
+    total: number;
+    page_size: number;
+}
+export interface ProcessedTxListByPrismResponseResult {
+    items: ProcessedTxInfoByPrism[];
+    page: number;
+    total: number;
+    page_size: number;
+}
+export {};

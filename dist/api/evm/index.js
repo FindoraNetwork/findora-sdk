@@ -15,4 +15,5 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./evm"), exports);
+__exportStar(require("./web3"), exports);
 //# sourceMappingURL=index.js.map

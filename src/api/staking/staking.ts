@@ -1,12 +1,13 @@
-import * as Transaction from '../../api/transaction';
 import orderBy from 'lodash/orderBy';
 
+import * as Transaction from '../../api/transaction';
+import { create as createBigNumber, toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { TransactionBuilder } from '../../services/ledger/types';
-import { WalletKeypar, getAddressPublicAndKey } from '../keypair';
-import * as AssetApi from '../sdkAsset';
+import { getAddressPublicAndKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
-import { create as createBigNumber, toWei } from '../../services/bigNumber';
+import * as AssetApi from '../sdkAsset';
+import * as Builder from '../transaction/builder';
 
 /**
  * Unstake FRA tokens
@@ -58,7 +59,7 @@ export const unStake = async (
   let transactionBuilder;
 
   try {
-    transactionBuilder = await Transaction.getTransactionBuilder();
+    transactionBuilder = await Builder.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
     throw new Error(`Could not get "stakingTransactionBuilder", Error: "${e.message}"`);
@@ -86,6 +87,15 @@ export const unStake = async (
     const e: Error = error as Error;
 
     throw new Error(`Could not add transfer to unStake operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;
@@ -160,6 +170,15 @@ export const delegate = async (
     validator,
   );
 
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
   return transactionBuilder;
 };
 
@@ -203,7 +222,7 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
   let transactionBuilder;
 
   try {
-    transactionBuilder = await Transaction.getTransactionBuilder();
+    transactionBuilder = await Builder.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
     throw new Error(`Could not get "stakingTransactionBuilder", Error: "${e.message}"`);
@@ -217,6 +236,15 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
     const e: Error = error as Error;
 
     throw new Error(`Could not add staking claim operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;

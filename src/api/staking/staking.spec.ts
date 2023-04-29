@@ -1,11 +1,13 @@
 import '@testing-library/jest-dom/extend-expect';
 
-import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
-import * as Staking from './staking';
-import * as Transaction from '../transaction/transaction';
 import * as Fee from '../../services/fee';
+import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import * as KeypairApi from '../keypair/keypair';
 import * as SdkAsset from '../sdkAsset/sdkAsset';
+import * as Builder from '../transaction/builder';
+import * as Transaction from '../transaction/transaction';
+import * as Staking from './staking';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;
@@ -31,13 +33,13 @@ describe('staking (unit test)', () => {
           return fakeTransactionBuilder;
         }),
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate_partially: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -58,31 +60,31 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationUndelegate = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_undelegate')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddOperationUndelegatePartially = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_undelegate_partially')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -112,13 +114,13 @@ describe('staking (unit test)', () => {
           return fakeTransactionBuilder;
         }),
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate_partially: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -139,31 +141,31 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationUndelegate = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_undelegate')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddOperationUndelegatePartially = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_undelegate_partially')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -204,7 +206,7 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -236,11 +238,11 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
           throw new Error('boom');
         });
@@ -263,13 +265,13 @@ describe('staking (unit test)', () => {
           return fakeTransactionBuilder;
         }),
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate_partially: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -290,13 +292,13 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationUndelegatePartially = jest
@@ -324,13 +326,13 @@ describe('staking (unit test)', () => {
           return fakeTransactionBuilder;
         }),
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_undelegate_partially: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -351,19 +353,19 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationUndelegatePartially = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_undelegate_partially')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddTransferOperation = jest
@@ -391,27 +393,27 @@ describe('staking (unit test)', () => {
     it('delegates funds', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_operation_delegate: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
       const spyTransactionSendToaddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
-        return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+        return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
       });
 
       const spyAddOperationDelegate = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_delegate')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const decimals = 6;
 
-      const fakeLedgerAssetDetails = ({
+      const fakeLedgerAssetDetails = {
         assetRules: {
           decimals,
         },
-      } as unknown) as FindoraWallet.IAsset;
+      } as unknown as FindoraWallet.IAsset;
 
       const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
         return Promise.resolve(fakeLedgerAssetDetails);
@@ -461,10 +463,10 @@ describe('staking (unit test)', () => {
     it('claims the rewards from the validator', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_claim_custom: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -485,25 +487,25 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationClaimCustom = jest
         .spyOn(fakeTransactionBuilder, 'add_operation_claim_custom')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const spyAddTransferOperation = jest
         .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
         .mockImplementation(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         });
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -541,7 +543,7 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const walletInfo = { publickey: 'senderPub' } as KeypairApi.WalletKeypar;
@@ -554,10 +556,10 @@ describe('staking (unit test)', () => {
     it('throws an error if it can not get a transaction operation builder', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_claim_custom: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -578,11 +580,11 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
           throw new Error('boom');
         });
@@ -600,10 +602,10 @@ describe('staking (unit test)', () => {
     it('throws an error if it can not add staking claim operation', async () => {
       const fakeTransactionBuilder: TransferOpBuilderLight = {
         add_transfer_operation: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
         add_operation_claim_custom: jest.fn(() => {
-          return (fakeTransactionBuilder as unknown) as TransactionBuilder;
+          return fakeTransactionBuilder as unknown as TransactionBuilder;
         }),
       };
 
@@ -624,13 +626,13 @@ describe('staking (unit test)', () => {
       const spyBuildTransferOperationWithFee = jest
         .spyOn(Fee, 'buildTransferOperationWithFee')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransferOperationBuilderFee as unknown) as TransferOperationBuilder);
+          return Promise.resolve(fakeTransferOperationBuilderFee as unknown as TransferOperationBuilder);
         });
 
       const spyTransactionGetTransactionBuilder = jest
-        .spyOn(Transaction, 'getTransactionBuilder')
+        .spyOn(Builder, 'getTransactionBuilder')
         .mockImplementation(() => {
-          return Promise.resolve((fakeTransactionBuilder as unknown) as TransactionBuilder);
+          return Promise.resolve(fakeTransactionBuilder as unknown as TransactionBuilder);
         });
 
       const spyAddOperationClaimCustom = jest

@@ -5,13 +5,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processorsMap = exports.getOperationProcessor = void 0;
 var get_1 = __importDefault(require("lodash/get"));
+var claim_1 = require("./claim");
+var converAccount_1 = require("./converAccount");
 var defineAsset_1 = require("./defineAsset");
+var delegation_1 = require("./delegation");
 var issueAsset_1 = require("./issueAsset");
 var transferAsset_1 = require("./transferAsset");
 var undelegation_1 = require("./undelegation");
-var delegation_1 = require("./delegation");
-var claim_1 = require("./claim");
-var converAccount_1 = require("./converAccount");
 var unsupported_1 = require("./unsupported");
 var getOperationProcessor = function (operationItem, processors) {
     for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {

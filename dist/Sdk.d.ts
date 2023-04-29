@@ -3,6 +3,8 @@ import { CacheItem } from './services/cacheStore/types';
 type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
 export interface SdkEnvironmentConfig {
     hostUrl: string;
+    blockScanerUrl: string;
+    configServerUrl?: string;
     queryPort?: string;
     ledgerPort?: string;
     submissionPort?: string;
@@ -12,10 +14,13 @@ export interface SdkEnvironmentConfig {
 export default class Sdk {
     static environment: {
         hostUrl: string;
+        blockScanerUrl: string;
+        configServerUrl: string;
         queryPort: string;
         ledgerPort: string;
         submissionPort: string;
         explorerApiPort: string;
+        rpcPort: string;
         cacheProvider: import("./services/cacheStore/types").CacheProvider;
         cachePath: string;
     };

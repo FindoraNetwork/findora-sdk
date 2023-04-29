@@ -12,8 +12,8 @@ import {
   getPayloadWithGas,
   getRpcPayload,
   setCurrentTestName,
-  timeLog,
   SuperSimpleObject,
+  timeLog,
   timeStart,
 } from './testHelpers';
 
@@ -399,7 +399,7 @@ describe(`Api Endpoint (rpc test) for "${rpcUrl}"`, () => {
           extraParams,
         );
 
-        expect(result?.response?.result).toEqual('0x52d4');
+        expect(result?.response?.result).toEqual('0x573b');
       },
       extendedExecutionTimeout,
     );

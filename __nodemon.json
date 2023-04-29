@@ -1,0 +1,9 @@
+{
+  "verbose": true,
+  "ignore": ["dist/", "fixtures/", "cache/", ".git", "node_modules/**/node_modules"],
+  "execMap": {
+    "rb": "ruby",
+    "pde": "processing --sketch={{pwd}} --run"
+  },
+  "delay": 5000
+}

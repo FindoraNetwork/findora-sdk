@@ -69,12 +69,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processeTxInfoList = exports.processTxInfoItem = void 0;
-var js_base64_1 = __importDefault(require("js-base64"));
 var helpers = __importStar(require("./helpers"));
 var operationProcessors_1 = require("./operationProcessors");
 var processTxOperationItem = function (operationItem) { return __awaiter(void 0, void 0, void 0, function () {
@@ -96,28 +92,16 @@ var processTxOperationList = function (operationsList) { return __awaiter(void 0
     });
 }); };
 var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, void 0, function () {
-    var parsedTx, e, time, hash, code, operationsList, processedOperationList, processedUpdatedTxList;
+    var time, hash, code, operationsList, processedOperationList, processedUpdatedTxList;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                try {
-                    parsedTx = JSON.parse(js_base64_1.default.decode(txItem.tx));
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Can not parse the tx info from the tx item. Details: \"".concat(e.message, "\""));
-                }
-                if (!parsedTx) {
-                    throw new Error('parsed tx is empty');
-                }
-                return [4 /*yield*/, helpers.getBlockTime(txItem.height)];
-            case 1:
-                time = _a.sent();
-                hash = txItem.hash;
-                code = txItem.tx_result.code;
-                operationsList = helpers.getTxOperationsList(parsedTx);
+                time = String(txItem.timestamp);
+                hash = txItem.tx_hash;
+                code = txItem.code;
+                operationsList = helpers.getTxOperationsList(txItem.value);
                 return [4 /*yield*/, processTxOperationList(operationsList)];
-            case 2:
+            case 1:
                 processedOperationList = _a.sent();
                 processedUpdatedTxList = processedOperationList.map(function (txOperation) { return (__assign(__assign({}, txItem), txOperation)); });
                 return [2 /*return*/, {
@@ -125,6 +109,8 @@ var processTxInfoItem = function (txItem) { return __awaiter(void 0, void 0, voi
                         data: processedUpdatedTxList,
                         hash: hash,
                         time: time,
+                        block_hash: txItem.block_hash,
+                        height: txItem.height,
                     }];
         }
     });

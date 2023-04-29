@@ -1,4 +1,5 @@
 import { AssetRules as LedgerAssetRules, TransactionBuilder, XfrKeyPair, XfrPublicKey } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import { WalletKeypar } from '../keypair';
 export interface AssetRules {
     transferable: boolean;
@@ -44,6 +45,8 @@ export declare const getAssetCode: (val: number[]) => Promise<string>;
  * @returns - Asset code
  */
 export declare const getRandomAssetCode: () => Promise<string>;
+export declare const getDerivedAssetCode: (assetCode: string) => Promise<string>;
+export declare const getAssetCodeToSend: (assetCode: string) => Promise<string>;
 export declare const getDefaultAssetRules: () => Promise<LedgerAssetRules>;
 export declare const getAssetRules: (newAssetRules?: AssetRules) => Promise<LedgerAssetRules>;
 export declare const getDefineAssetTransactionBuilder: (walletKeypair: XfrKeyPair, assetName: string, assetRules: LedgerAssetRules, assetMemo?: string) => Promise<TransactionBuilder>;

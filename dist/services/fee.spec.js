@@ -64,8 +64,8 @@ var KeypairApi = __importStar(require("../api/keypair"));
 var NetworkApi = __importStar(require("../api/network/network"));
 var Asset = __importStar(require("../api/sdkAsset/sdkAsset"));
 var Fee = __importStar(require("./fee"));
-var UtxoHelper = __importStar(require("./utxoHelper"));
 var Ledger = __importStar(require("./ledger/ledgerWrapper"));
+var UtxoHelper = __importStar(require("./utxoHelper"));
 describe('fee (unit test)', function () {
     var pkey = 'h9rkZIY4ytl1MbMkEMMlUtDc2gD4KrP59bIbEvcbHFA=';
     var password = '123';
@@ -134,7 +134,7 @@ describe('fee (unit test)', function () {
     });
     describe('getTransferOperation', function () {
         it('verifies that for no-traceble assets only non tracing methods are called', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var mockedAssetNonTracing, fakeOpBuilder, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo;
+            var mockedAssetNonTracing, fakeOpBuilder, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo, transferOperationBuilder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -205,8 +205,11 @@ describe('fee (unit test)', function () {
                                 assetBlindRules: assetBlindRules,
                             },
                         ];
-                        return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
+                        return [4 /*yield*/, Fee.getEmptyTransferBuilder()];
                     case 3:
+                        transferOperationBuilder = _a.sent();
+                        return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode, transferOperationBuilder)];
+                    case 4:
                         _a.sent();
                         expect(spyInputNoTracing).toHaveBeenCalledTimes(1);
                         expect(spyInputWithTracing).not.toBeCalled();
@@ -225,7 +228,7 @@ describe('fee (unit test)', function () {
             });
         }); });
         it('verifies that for traceble assets only tracing methods are called', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var mockedAssetTracing, fakeOpBuilderTwo, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo;
+            var mockedAssetTracing, fakeOpBuilderTwo, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo, transferOperationBuilder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -296,8 +299,11 @@ describe('fee (unit test)', function () {
                                 assetBlindRules: assetBlindRules,
                             },
                         ];
-                        return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)];
+                        return [4 /*yield*/, Fee.getEmptyTransferBuilder()];
                     case 3:
+                        transferOperationBuilder = _a.sent();
+                        return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode, transferOperationBuilder)];
+                    case 4:
                         _a.sent();
                         expect(spyInputNoTracing).not.toBeCalled();
                         expect(spyInputWithTracing).toHaveBeenCalledTimes(1);
@@ -316,7 +322,7 @@ describe('fee (unit test)', function () {
             });
         }); });
         it('throws an error if there was an error while fetching owner memo data', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var mockedAssetTracing, fakeOpBuilderTwo, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo;
+            var mockedAssetTracing, fakeOpBuilderTwo, mockGetAssetDetails, spyGetEmptyTransferBuilder, spyGetOwnerMemo, spyInputNoTracing, spyInputWithTracing, spyOutputNoTracing, spyOutputWithTracing, spyGetAssetTracingPolicies, walletInfo, toPublickey, utxoInputsInfo, assetBlindRules, recieversInfo, transferOperationBuilder;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -389,8 +395,11 @@ describe('fee (unit test)', function () {
                                 assetBlindRules: assetBlindRules,
                             },
                         ];
-                        return [4 /*yield*/, expect(Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode)).rejects.toThrowError('Could not fetch memo data for sid ')];
+                        return [4 /*yield*/, Fee.getEmptyTransferBuilder()];
                     case 3:
+                        transferOperationBuilder = _a.sent();
+                        return [4 /*yield*/, expect(Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode, transferOperationBuilder)).rejects.toThrowError('Could not fetch memo data for sid ')];
+                    case 4:
                         _a.sent();
                         expect(spyInputNoTracing).not.toBeCalled();
                         expect(spyInputWithTracing).not.toBeCalled();

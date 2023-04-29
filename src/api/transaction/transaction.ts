@@ -5,35 +5,21 @@ import { TransactionBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
+import * as Builder from './builder';
 import * as helpers from './helpers';
 import { processeTxInfoList } from './processor';
-import { ProcessedTxListResponseResult } from './types';
+import {
+  IPrismData,
+  ProcessedTxListByPrismResponseResult,
+  ProcessedTxListByStakingResponseResult,
+  ProcessedTxListByStakingUnDelagtionResponseResult,
+  ProcessedTxListResponseResult,
+} from './types';
 
 export interface TransferReciever {
   reciverWalletInfo: WalletKeypar | LightWalletKeypair;
   amount: string;
 }
-
-export const getTransactionBuilder = async (): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const transactionBuilder = ledger.TransactionBuilder.new(BigInt(blockCount));
-
-  return transactionBuilder;
-};
 
 /**
  * Send some asset to multiple receivers
@@ -126,13 +112,15 @@ export const sendToMany = async (
   } catch (error) {
     const e: Error = error as Error;
 
-    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+    console.log('Full error (main)', error);
+
+    throw new Error(`Could not create transfer operation (main), Error: "${e}"`);
   }
 
   let transactionBuilder;
 
   try {
-    transactionBuilder = await getTransactionBuilder();
+    transactionBuilder = await Builder.getTransactionBuilder();
   } catch (error) {
     const e: Error = error as Error;
 
@@ -180,13 +168,153 @@ export const sendToMany = async (
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
 
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
+
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
+
+  return transactionBuilder;
+};
+
+/**
+ * Send some asset to multiple receivers
+ *
+ * @remarks
+ * Using this function, user can transfer perform multiple transfers of the same asset to multiple receivers using different amounts
+ *
+ * @example
+ *
+ * ```ts
+ * const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ * const toWalletInfoMine2 = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ * const toWalletInfoMine3 = await Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+ *
+ * const assetCode = await Asset.getFraAssetCode();
+ *
+ * const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+ *
+ * const recieversInfo = [
+ *  { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+ *  { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+ * ];
+ *
+ * const transactionBuilder = await Transaction.sendToMany(
+ *  walletInfo,
+ *  recieversInfo,
+ *  assetCode,
+ *  assetBlindRules,
+ * );
+ *
+ * const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @throws `Could not create transfer operation (main)`
+ * @throws `Could not get transactionBuilder from "getTransactionBuilder"`
+ * @throws `Could not add transfer operation`
+ * @throws `Could not create transfer operation for fee`
+ * @throws `Could not add transfer operation for fee`
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export const sendToManyV2 = async (
+  walletInfo: WalletKeypar,
+  recieversList: TransferReciever[],
+  assetCode: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  const ledger = await getLedger();
+
+  const asset = await AssetApi.getAssetDetails(assetCode);
+  const decimals = asset.assetRules.decimals;
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  const recieversInfo: Fee.ReciverInfoV2 = {};
+
+  recieversInfo[fraAssetCode] = [
+    {
+      utxoNumbers: minimalFee,
+      toPublickey,
+    },
+  ];
+
+  if (!isFraTransfer) {
+    recieversInfo[assetCode] = [];
+  }
+
+  recieversList.forEach(reciver => {
+    const { reciverWalletInfo: toWalletInfo, amount } = reciver;
+    const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+    const utxoNumbers = BigInt(toWei(amount, decimals).toString());
+
+    const recieverInfoItem = {
+      toPublickey,
+      utxoNumbers,
+      assetBlindRules,
+    };
+
+    recieversInfo[assetCode].push(recieverInfoItem);
+  });
+
+  const transferOperationBuilder = await Fee.buildTransferOperationV2(walletInfo, recieversInfo);
+
+  let receivedTransferOperation = '';
+
   try {
-    transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+  }
+
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
   }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+  }
+
+  // try {
+  //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  // } catch (err) {
+  //   const e: Error = err as Error;
+
+  //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+  // }
 
   return transactionBuilder;
 };
@@ -217,6 +345,7 @@ export const sendToMany = async (
  */
 export const submitTransaction = async (transactionBuilder: TransactionBuilder): Promise<string> => {
   const submitData = transactionBuilder.transaction();
+  console.log(submitData);
 
   let result;
 
@@ -287,6 +416,52 @@ export const sendToAddress = async (
   return sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
 };
 
+/**
+ * Send some asset to an address
+ *
+ * @remarks
+ * Using this function, user can transfer some amount of given asset to another address
+ *
+ * @example
+ *
+ * ```ts
+ *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+ *  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+ *
+ *  const assetCode = await Asset.getFraAssetCode();
+ *
+ *  const assetBlindRules: Asset.AssetBlindRules = {
+ *    isTypeBlind: false,
+ *    isAmountBlind: false
+ *  };
+ *
+ *  const transactionBuilder = await Transaction.sendToAddress(
+ *    walletInfo,
+ *    toWalletInfo.address,
+ *    '2',
+ *    assetCode,
+ *    assetBlindRules,
+ *  );
+ *
+ *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
+export const sendToAddressV2 = async (
+  walletInfo: WalletKeypar,
+  address: string,
+  amount: string,
+  assetCode: string,
+  assetBlindRules?: AssetApi.AssetBlindRules,
+): Promise<TransactionBuilder> => {
+  const toWalletInfoLight = await getAddressPublicAndKey(address);
+
+  const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+
+  return sendToManyV2(walletInfo, recieversInfo, assetCode, assetBlindRules);
+};
+
 export const sendToPublicKey = async (
   walletInfo: WalletKeypar,
   publicKey: string,
@@ -299,12 +474,13 @@ export const sendToPublicKey = async (
   return sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
 };
 
-export const getTxList = async (
+export const getTxnList = async (
   address: string,
-  type: 'to' | 'from',
+  type: 'from' | 'to',
   page = 1,
+  per_page = 10,
 ): Promise<ProcessedTxListResponseResult> => {
-  const dataResult = await Network.getTxList(address, type, page);
+  const dataResult = await Network.getTxList(address, type, page, per_page);
 
   if (!dataResult.response) {
     throw new Error('Could not fetch a list of transactions. No response from the server.');
@@ -319,7 +495,76 @@ export const getTxList = async (
   const processedTxList = await processeTxInfoList(txList);
 
   return {
-    total_count: dataResult.response.result.total_count,
+    page: dataResult.response.data.page,
+    total: dataResult.response.data.total,
+    page_size: dataResult.response.data.page_size,
     txs: processedTxList,
   };
+};
+
+export const getTxnListByStaking = async (
+  address: string,
+  type: 'claim' | 'delegation' | 'unDelegation' = 'claim',
+  page = 1,
+  per_page = 10,
+): Promise<ProcessedTxListByStakingResponseResult> => {
+  if (type == 'delegation') {
+    const dataResult = await Network.getTxListByStakingDelegation(address, page, per_page);
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+
+    return dataResult.response.data;
+  }
+  const dataResult = await Network.getTxListByClaim(address, page, per_page);
+
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
+
+  return dataResult.response.data;
+};
+
+export const getTxnListByStakingUnDelegation = async (
+  address: string,
+  page = 1,
+  per_page = 10,
+): Promise<ProcessedTxListByStakingUnDelagtionResponseResult> => {
+  const dataResult = await Network.getTxListByStakingUnDelegation(address, page, per_page);
+
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
+
+  return dataResult.response.data;
+};
+
+export const getTxnListByPrism = async (
+  address: string,
+  type: 'send' | 'receive' = 'send',
+  page = 1,
+  per_page = 10,
+): Promise<ProcessedTxListByPrismResponseResult> => {
+  if (type == 'receive') {
+    const dataResult = await Network.getTxListByPrismReceive(address, page, per_page);
+
+    if (!dataResult.response) {
+      throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+
+    const items = dataResult.response.data.items.map(item => {
+      return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
+    });
+
+    return dataResult.response.data;
+  }
+
+  const dataResult = await Network.getTxListByPrismSend(address, page, per_page);
+
+  if (!dataResult.response) {
+    throw new Error('Could not fetch a list of transactions. No response from the server.');
+  }
+
+  return dataResult.response.data;
 };

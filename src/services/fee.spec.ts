@@ -1,13 +1,14 @@
 import '@testing-library/jest-dom/extend-expect';
 import * as KeypairApi from '../api/keypair';
 import * as NetworkApi from '../api/network/network';
-import * as Asset from '../api/sdkAsset/sdkAsset';
 import * as NetworkTypes from '../api/network/types';
+import * as Asset from '../api/sdkAsset/sdkAsset';
+import * as FindoraWallet from '../types/findoraWallet';
 import * as Fee from './fee';
-import * as UtxoHelper from './utxoHelper';
-import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
 import * as Ledger from './ledger/ledgerWrapper';
 import { LedgerForNode } from './ledger/nodeLedger';
+import { TracingPolicies, TransferOperationBuilder, XfrPublicKey } from './ledger/types';
+import * as UtxoHelper from './utxoHelper';
 
 interface TransferOpBuilderLight {
   add_input_with_tracing?: () => TransferOpBuilderLight;
@@ -157,7 +158,15 @@ describe('fee (unit test)', () => {
         },
       ];
 
-      await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode);
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
+      await Fee.getTransferOperation(
+        walletInfo,
+        utxoInputsInfo,
+        recieversInfo,
+        assetCode,
+        transferOperationBuilder,
+      );
 
       expect(spyInputNoTracing).toHaveBeenCalledTimes(1);
       expect(spyInputWithTracing).not.toBeCalled();
@@ -253,7 +262,15 @@ describe('fee (unit test)', () => {
         },
       ];
 
-      await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode);
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
+      await Fee.getTransferOperation(
+        walletInfo,
+        utxoInputsInfo,
+        recieversInfo,
+        assetCode,
+        transferOperationBuilder,
+      );
 
       expect(spyInputNoTracing).not.toBeCalled();
       expect(spyInputWithTracing).toHaveBeenCalledTimes(1);
@@ -350,9 +367,16 @@ describe('fee (unit test)', () => {
           assetBlindRules,
         },
       ];
+      let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
 
       await expect(
-        Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, assetCode),
+        Fee.getTransferOperation(
+          walletInfo,
+          utxoInputsInfo,
+          recieversInfo,
+          assetCode,
+          transferOperationBuilder,
+        ),
       ).rejects.toThrowError('Could not fetch memo data for sid ');
 
       expect(spyInputNoTracing).not.toBeCalled();

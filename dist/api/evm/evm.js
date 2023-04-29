@@ -62,37 +62,394 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+var eth_ens_namehash_1 = __importDefault(require("@ensdomains/eth-ens-namehash"));
+var bech32ToBuffer = __importStar(require("bech32-buffer"));
+var bignumber_js_1 = __importDefault(require("bignumber.js"));
+var ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
 var js_base64_1 = __importDefault(require("js-base64"));
-var Transaction = __importStar(require("../transaction"));
-var AssetApi = __importStar(require("../sdkAsset"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var web3_1 = __importDefault(require("web3"));
 var api_1 = require("../../api");
 var bigNumber_1 = require("../../services/bigNumber");
-var sendAccountToEvm = function (walletInfo, amount, ethAddress) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, address, assetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
+var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+var AssetApi = __importStar(require("../sdkAsset"));
+var Transaction = __importStar(require("../transaction"));
+var web3_2 = require("./web3");
+var fraAddressToHashAddress = function (address) {
+    var _a = bech32ToBuffer.decode(address), data = _a.data, prefix = _a.prefix;
+    if (prefix == 'eth') {
+        return '0x01' + Buffer.from(data).toString('hex');
+    }
+    return '0x' + Buffer.from(data).toString('hex');
+};
+exports.fraAddressToHashAddress = fraAddressToHashAddress;
+var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tokenAddress, tokenAddressHex;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
+                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
+                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+        }
+    });
+}); };
+exports.hashAddressTofraAddress = hashAddressTofraAddress;
+var hashAddressTofraAddressByNFT = function (addresss, tokenId) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tokenAddress, tokenAddressHex;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address', 'uint256'], ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId]);
+                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
+                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+        }
+    });
+}); };
+exports.hashAddressTofraAddressByNFT = hashAddressTofraAddressByNFT;
+var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                convertAmount = new bignumber_js_1.default(amount).times(Math.pow(10, 18)).toString(10);
+                findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 1:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 2:
+                gasPrice = _a.sent();
+                contractData = contract.methods.depositFRA(findoraTo).encodeABI();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 3:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: bridgeAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
+                    value: convertAmount,
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                console.log(txParams);
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 4:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 6];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 5: return [2 /*return*/, _a.sent()];
+            case 6: throw Error('fail frc20ToBar');
+        }
+    });
+}); };
+exports.fraToBar = fraToBar;
+var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, erc20Contract, amount, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                console.table([tokenAddress, deckAddress, price]);
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, price, 'toWei')];
+            case 1:
+                amount = _a.sent();
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 2:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 3:
+                gasPrice = _a.sent();
+                contractData = erc20Contract.methods.approve(deckAddress, amount).encodeABI();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 4:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: tokenAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 5:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 7];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)];
+            case 6: return [2 /*return*/, _a.sent()];
+            case 7: throw Error('fail frc20ToBar');
+        }
+    });
+}); };
+exports.approveToken = approveToken;
+var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, tokenAmount, 'toWei')];
+            case 1:
+                bridgeAmount = _a.sent();
+                findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 2:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 3:
+                gasPrice = _a.sent();
+                contractData = contract.methods.depositFRC20(tokenAddress, findoraTo, bridgeAmount).encodeABI();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 4:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: bridgeAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
+                    nonce: nonce,
+                    // value: web3.utils.toHex(convertAmount),
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 5:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 7];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 6: return [2 /*return*/, _a.sent()];
+            case 7: throw Error('fail frc20ToBar');
+        }
+    });
+}); };
+exports.frc20ToBar = frc20ToBar;
+function getPrismConfig() {
+    return __awaiter(this, void 0, void 0, function () {
+        var _a, displayCheckpointData, error, web3, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0: return [4 /*yield*/, api_1.Network.getConfig()];
+                case 1:
+                    _a = _c.sent(), displayCheckpointData = _a.response, error = _a.error;
+                    if (error)
+                        throw error;
+                    if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.prism_bridge_address))
+                        throw 'no prism_bridge_address';
+                    web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
+                    bridgeAddress = displayCheckpointData.prism_bridge_address;
+                    return [4 /*yield*/, (0, web3_2.getSimBridgeContract)(web3, bridgeAddress)];
+                case 2:
+                    prismContract = _c.sent();
+                    return [4 /*yield*/, Promise.all([
+                            prismContract.methods.ledger_contract().call(),
+                            prismContract.methods.asset_contract().call(),
+                        ])];
+                case 3:
+                    _b = _c.sent(), ledgerAddress = _b[0], assetAddress = _b[1];
+                    return [2 /*return*/, { ledgerAddress: ledgerAddress, assetAddress: assetAddress, bridgeAddress: bridgeAddress }];
+            }
+        });
+    });
+}
+exports.getPrismConfig = getPrismConfig;
+var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contractData, nft721Contract, nft1155Contract, nonce, gasPrice, estimategas, txParams, signed_txn;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contractData = '';
+                if (nftType == '721') {
+                    nft721Contract = (0, web3_2.getNFT721Contract)(web3, tokenAddress);
+                    contractData = nft721Contract.methods.approve(deckAddress, tokenId).encodeABI();
+                }
+                if (nftType == '1155') {
+                    nft1155Contract = (0, web3_2.getNFT1155Contract)(web3, tokenAddress);
+                    contractData = nft1155Contract.methods.setApprovalForAll(deckAddress, true).encodeABI();
+                }
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 1:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 2:
+                gasPrice = _a.sent();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 3:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: tokenAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
+                    nonce: nonce,
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 4:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 6];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)];
+            case 5: return [2 /*return*/, _a.sent()];
+            case 6: throw Error('fail frc20ToBar');
+        }
+    });
+}); };
+exports.approveNFT = approveNFT;
+var getDomainCurrentText = function (name) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, displayCheckpointData, error, web3, fnsRegistryContract, result;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, api_1.Network.getConfig()];
+            case 1:
+                _a = _b.sent(), displayCheckpointData = _a.response, error = _a.error;
+                if (error)
+                    throw error;
+                if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.fns_registry))
+                    throw 'no fns_registry contract address';
+                web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
+                fnsRegistryContract = (0, web3_2.getFNSRegistryContract)(web3, displayCheckpointData.fns_registry);
+                return [4 /*yield*/, fnsRegistryContract.methods.currentText(eth_ens_namehash_1.default.hash(name)).call()];
+            case 2:
+                result = _b.sent();
+                if (result.includes('eth') || result.includes('fra')) {
+                    return [2 /*return*/, JSON.parse(result)];
+                }
+                return [2 /*return*/, null];
+        }
+    });
+}); };
+exports.getDomainCurrentText = getDomainCurrentText;
+var frcNftToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, contract, findoraTo, contractData, nonce, gasPrice, estimategas, txParams, signed_txn;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                findoraTo = (0, exports.fraAddressToHashAddress)(recipientAddress);
+                contractData = '';
+                if (nftType == '721') {
+                    contractData = contract.methods.depositFRC721(tokenAddress, findoraTo, tokenId).encodeABI();
+                }
+                if (nftType == '1155') {
+                    contractData = contract.methods.depositFRC1155(tokenAddress, findoraTo, tokenId, tokenAmount).encodeABI();
+                }
+                return [4 /*yield*/, web3.eth.getTransactionCount(web3WalletInfo.account)];
+            case 1:
+                nonce = _a.sent();
+                return [4 /*yield*/, web3.eth.getGasPrice()];
+            case 2:
+                gasPrice = _a.sent();
+                return [4 /*yield*/, web3.eth.estimateGas({
+                        to: web3WalletInfo.account,
+                        data: contractData,
+                    })];
+            case 3:
+                estimategas = _a.sent();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: bridgeAddress,
+                    gasPrice: web3.utils.toHex(gasPrice),
+                    gasLimit: web3.utils.toHex(3000000),
+                    gas: web3.utils.toHex(estimategas),
+                    nonce: nonce,
+                    // value: web3.utils.toHex(convertAmount),
+                    data: contractData,
+                    chainId: web3WalletInfo.chainId,
+                };
+                return [4 /*yield*/, web3.eth.accounts.signTransaction(txParams, web3WalletInfo.privateStr)];
+            case 4:
+                signed_txn = _a.sent();
+                if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 6];
+                return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn.rawTransaction)];
+            case 5: return [2 /*return*/, _a.sent()];
+            case 6: throw Error('fail frc20ToBar');
+        }
+    });
+}); };
+exports.frcNftToBar = frcNftToBar;
+var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { return __awaiter(void 0, void 0, void 0, function () {
+    var web3, erc20Contract, contractData, txParams, callResultHex, balance;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                erc20Contract = (0, web3_2.getErc20Contract)(web3, tokenAddress);
+                contractData = erc20Contract.methods.balanceOf(account).encodeABI();
+                txParams = {
+                    from: web3WalletInfo.account,
+                    to: tokenAddress,
+                    data: contractData,
+                };
+                return [4 /*yield*/, web3.eth.call(txParams)];
+            case 1:
+                callResultHex = _a.sent();
+                balance = web3.utils.hexToNumberString(callResultHex);
+                if (!decimals) return [3 /*break*/, 3];
+                return [4 /*yield*/, (0, web3_2.calculationDecimalsAmount)(erc20Contract, web3, web3WalletInfo.account, tokenAddress, balance, 'formWei')];
+            case 2:
+                balance = _a.sent();
+                _a.label = 3;
+            case 3: return [2 /*return*/, balance];
+        }
+    });
+}); };
+exports.tokenBalance = tokenBalance;
+var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowLevelData) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, address, fraAssetCode, mainAssetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 address = ledger.base64_to_bech32(ledger.get_coinbase_address());
-                assetCode = ledger.fra_get_asset_code();
+                fraAssetCode = ledger.fra_get_asset_code();
+                mainAssetCode = assetCode || fraAssetCode;
                 assetBlindRules = {
                     isAmountBlind: false,
                     isTypeBlind: false,
                 };
-                return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
+                return [4 /*yield*/, Transaction.sendToAddressV2(walletInfo, address, amount, mainAssetCode, assetBlindRules)];
             case 2:
                 transactionBuilder = _a.sent();
                 return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
             case 3:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                transactionBuilder = transactionBuilder
-                    .add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount)
-                    .sign(walletInfo.keypair);
+                convertAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
+                transactionBuilder = transactionBuilder.add_operation_convert_account(walletInfo.keypair, ethAddress, convertAmount, mainAssetCode, lowLevelData);
+                transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
                 return [2 /*return*/, transactionBuilder];
         }
     });
@@ -133,7 +490,7 @@ var sendEvmToAccount = function (fraAddress, amount, ethPrivate, ethAddress) { r
             case 2:
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
-                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString(10));
                 nonce = '';
                 _a.label = 3;
             case 3:

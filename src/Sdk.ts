@@ -7,6 +7,8 @@ type SdkCacheProvider = typeof FileCacheProvider | typeof MemoryCacheProvider;
 
 export interface SdkEnvironmentConfig {
   hostUrl: string;
+  blockScanerUrl: string;
+  configServerUrl?: string;
   queryPort?: string;
   ledgerPort?: string;
   submissionPort?: string;
@@ -16,10 +18,13 @@ export interface SdkEnvironmentConfig {
 
 const SdkDefaultEnvironment = {
   hostUrl: 'https://dev-evm.dev.findora.org',
+  blockScanerUrl: '',
+  configServerUrl: 'http://columbus-config-qa02.s3-website-us-west-1.amazonaws.com/',
   queryPort: '8667',
   ledgerPort: '8668',
   submissionPort: '8669',
   explorerApiPort: '26657',
+  rpcPort: '8545',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };

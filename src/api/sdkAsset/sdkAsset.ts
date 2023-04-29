@@ -8,8 +8,10 @@ import {
   XfrKeyPair,
   XfrPublicKey,
 } from '../../services/ledger/types';
+import * as FindoraWallet from '../../types/findoraWallet';
 import { getAddressByPublicKey, WalletKeypar } from '../keypair';
 import * as Network from '../network';
+import * as Builder from '../transaction/builder';
 
 export interface AssetRules {
   transferable: boolean;
@@ -83,6 +85,27 @@ export const getRandomAssetCode = async (): Promise<string> => {
   return assetCode;
 };
 
+export const getDerivedAssetCode = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
+  const derivedAssetCode = ledger.hash_asset_code(assetCode);
+  return derivedAssetCode;
+};
+
+export const getAssetCodeToSend = async (assetCode: string): Promise<string> => {
+  const ledger = await getLedger();
+
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  const isFraTransfer = assetCode === fraAssetCode;
+
+  if (isFraTransfer) {
+    return assetCode;
+  }
+
+  const derivedAssetCode = await getDerivedAssetCode(assetCode);
+  return derivedAssetCode;
+};
+
 export const getDefaultAssetRules = async (): Promise<LedgerAssetRules> => {
   const ledger = await getLedger();
 
@@ -134,27 +157,30 @@ export const getDefineAssetTransactionBuilder = async (
   assetRules: LedgerAssetRules,
   assetMemo = 'memo',
 ): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
+  let transactionBuilder;
 
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
 
-  if (error) {
-    throw new Error(error.message);
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
   }
 
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
-
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_operation_create_asset(
+  let definitionTransaction = transactionBuilder.add_operation_create_asset(
     walletKeypair,
     assetMemo,
     assetName,
     assetRules,
   );
+
+  try {
+    definitionTransaction = definitionTransaction.build();
+    definitionTransaction = definitionTransaction.sign(walletKeypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
+  }
 
   return definitionTransaction;
 };
@@ -166,34 +192,28 @@ export const getIssueAssetTransactionBuilder = async (
   assetBlindRules: AssetBlindRules,
   assetDecimals: number,
 ): Promise<TransactionBuilder> => {
-  const ledger = await getLedger();
-
-  const { response: stateCommitment, error } = await Network.getStateCommitment();
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  if (!stateCommitment) {
-    throw new Error('Could not receive response from state commitement call');
-  }
-
-  const [_, height] = stateCommitment;
-  const blockCount = BigInt(height);
+  const blockCount = await Builder.getBlockHeight();
 
   const utxoNumbers = BigInt(toWei(amountToIssue, assetDecimals).toString());
 
   const blindIsAmount = assetBlindRules?.isAmountBlind;
 
-  const zeiParams = ledger.PublicParams.new();
+  let transactionBuilder;
 
-  const definitionTransaction = ledger.TransactionBuilder.new(BigInt(blockCount)).add_basic_issue_asset(
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  const definitionTransaction = transactionBuilder.add_basic_issue_asset(
     walletKeypair,
     assetName,
-    BigInt(blockCount),
+    blockCount,
     utxoNumbers,
     !!blindIsAmount,
-    zeiParams,
   );
 
   return definitionTransaction;
@@ -244,7 +264,7 @@ export const defineAsset = async (
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation!, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -268,6 +288,15 @@ export const defineAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;
@@ -322,7 +351,7 @@ export const issueAsset = async (
   } catch (err) {
     const e: Error = err as Error;
 
-    throw new Error(`Could not create transfer operation, Error: "${e.message}"`);
+    throw new Error(`Could not create transfer operation!!, Error: "${e.message}"`);
   }
 
   let transactionBuilder;
@@ -347,6 +376,15 @@ export const issueAsset = async (
     const e: Error = err as Error;
 
     throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.build();
+    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+  } catch (err) {
+    console.log('sendToMany error in build and sign ', err);
+    throw new Error(`could not build and sign txn "${(err as Error).message}"`);
   }
 
   return transactionBuilder;

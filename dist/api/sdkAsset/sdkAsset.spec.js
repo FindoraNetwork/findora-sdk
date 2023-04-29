@@ -71,13 +71,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
+var asset_1 = require("../../config/asset");
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
-var KeypairApi = __importStar(require("../keypair/keypair"));
-var SdkAsset = __importStar(require("./sdkAsset"));
 var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
-var asset_1 = require("../../config/asset");
+var KeypairApi = __importStar(require("../keypair/keypair"));
 var NetworkApi = __importStar(require("../network/network"));
+var SdkAsset = __importStar(require("./sdkAsset"));
 describe('sdkAsset (unit test)', function () {
     describe('getFraAssetCode', function () {
         it('returns an fra asset code', function () { return __awaiter(void 0, void 0, void 0, function () {

@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = void 0;
+exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -86,6 +86,12 @@ var getExplorerApiRoute = function () {
     var url = "".concat(hostUrl, ":").concat(explorerApiPort);
     return url;
 };
+var getRpcRoute = function () {
+    var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, rpcPort = _a.rpcPort;
+    var url = "".concat(hostUrl, ":").concat(rpcPort);
+    return url;
+};
+exports.getRpcRoute = getRpcRoute;
 var apiPost = function (url, data, config) { return __awaiter(void 0, void 0, void 0, function () {
     var axiosResponse, err_1, e, myResponse, e;
     return __generator(this, function (_a) {
@@ -218,6 +224,34 @@ var getOwnerMemo = function (utxoSid, config) { return __awaiter(void 0, void 0,
     });
 }); };
 exports.getOwnerMemo = getOwnerMemo;
+var getAbarOwnerMemo = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/get_abar_memo/").concat(atxoSid);
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getAbarOwnerMemo = getAbarOwnerMemo;
+var getMTLeafInfo = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/get_abar_proof/").concat(atxoSid);
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getMTLeafInfo = getMTLeafInfo;
 /**
  * Returns state commitment
  *
@@ -355,21 +389,61 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getHashSwap = getHashSwap;
-var getTxList = function (address, type, page, config) {
+var getParamsForTransparentTxList = function (address, type, page) {
+    if (page === void 0) { page = 1; }
+    var query = type === 'from' ? "\"addr.from.".concat(address, "='y'\"") : "\"addr.to.".concat(address, "='y'\"");
+    var params = {
+        query: query,
+        page: page,
+        per_page: 10,
+        order_by: '"desc"',
+    };
+    return params;
+};
+exports.getParamsForTransparentTxList = getParamsForTransparentTxList;
+var getAnonymousTxList = function (subject, type, page) {
+    if (page === void 0) { page = 1; }
+    var query = type === 'to' ? "\"commitment.created.".concat(subject, "='y'\"") : "\"nullifier.used.".concat(subject, "='y'\"");
+    var params = {
+        query: query,
+        page: page,
+        per_page: 10,
+        order_by: '"desc"',
+    };
+    return params;
+};
+exports.getAnonymousTxList = getAnonymousTxList;
+var getTxList = function (subject, type, page, per_page, config) {
     if (page === void 0) { page = 1; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var url, query, params, dataResult;
+        var blockScanerUrl, url, params, dataResult;
+        var _a;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/txs");
+                    params = (_a = {}, _a[type] = subject, _a.page = page, _a.per_page = per_page, _a);
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _b.sent();
+                    console.log(dataResult);
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxList = getTxList;
+var getTxListByClaim = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    url = "".concat(getExplorerApiRoute(), "/tx_search");
-                    query = type === 'from' ? "\"addr.from.".concat(address, "='y'\"") : "\"addr.to.".concat(address, "='y'\"");
-                    params = {
-                        query: query,
-                        page: page,
-                        per_page: 10,
-                        order_by: '"desc"',
-                    };
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/staking/claim");
+                    params = { address: subject, page: page, page_size: page_size };
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
                 case 1:
                     dataResult = _a.sent();
@@ -378,7 +452,86 @@ var getTxList = function (address, type, page, config) {
         });
     });
 };
-exports.getTxList = getTxList;
+exports.getTxListByClaim = getTxListByClaim;
+var getTxListByStakingDelegation = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/delegation");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByStakingDelegation = getTxListByStakingDelegation;
+var getTxListByStakingUnDelegation = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, ledger, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    url = "".concat(blockScanerUrl, "/api/staking/undelegation");
+                    params = { pubkey: ledger.bech32_to_base64(subject), page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 2:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByStakingUnDelegation = getTxListByStakingUnDelegation;
+var getTxListByPrismSend = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/prism/records/send");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByPrismSend = getTxListByPrismSend;
+var getTxListByPrismReceive = function (subject, page, page_size, config) {
+    if (page === void 0) { page = 1; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var blockScanerUrl, url, params, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    blockScanerUrl = Sdk_1.default.environment.blockScanerUrl;
+                    url = "".concat(blockScanerUrl, "/api/tx/prism/records/receive");
+                    params = { address: subject, page: page, page_size: page_size };
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getTxListByPrismReceive = getTxListByPrismReceive;
 var getTransactionDetails = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
     var params, url, dataResult;
     return __generator(this, function (_a) {
@@ -388,6 +541,7 @@ var getTransactionDetails = function (hash, config) { return __awaiter(void 0, v
                     hash: "0x".concat(hash),
                 };
                 url = "".concat(getExplorerApiRoute(), "/tx");
+                console.log('🚀 ~ file: network.ts ~ line 372 ~ url', url);
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
             case 1:
                 dataResult = _a.sent();
@@ -510,4 +664,135 @@ var sendRpcCall = function (url, givenPayload, config) { return __awaiter(void 0
     });
 }); };
 exports.sendRpcCall = sendRpcCall;
+var sendRpcCallV2 = function (givenPayload, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var defaultPayload, url, payload, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                defaultPayload = {
+                    id: 1,
+                    jsonrpc: '2.0',
+                    method: 'eth_protocolVersion',
+                    params: [],
+                };
+                url = "".concat((0, exports.getRpcRoute)());
+                payload = __assign(__assign({}, defaultPayload), givenPayload);
+                return [4 /*yield*/, (0, exports.apiPost)(url, payload, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.sendRpcCallV2 = sendRpcCallV2;
+var getRpcPayload = function (msgId, method, extraParams) {
+    var payload = {
+        id: msgId,
+        method: method,
+        params: extraParams,
+    };
+    return payload;
+};
+exports.getRpcPayload = getRpcPayload;
+var getLatestBlock = function (extraParams, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var msgId, method, payload, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                msgId = 1;
+                method = 'eth_blockNumber';
+                payload = (0, exports.getRpcPayload)(msgId, method, extraParams);
+                return [4 /*yield*/, (0, exports.sendRpcCallV2)(payload, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getLatestBlock = getLatestBlock;
+var getOwnedAbars = function (commitment, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/owned_abars/").concat(commitment);
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getOwnedAbars = getOwnedAbars;
+var getAbarMemos = function (startSid, endSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, params, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/get_abar_memos");
+                params = { start: startSid.trim(), end: endSid.trim() };
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getAbarMemos = getAbarMemos;
+var checkNullifierHashSpent = function (hash, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/check_nullifier_hash/").concat(hash);
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.checkNullifierHashSpent = checkNullifierHashSpent;
+var getConfig = function (config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getLedgerRoute(), "/display_checkpoint");
+                return [4 /*yield*/, (0, exports.apiGet)(url, config)];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getConfig = getConfig;
+var getAbarCommitment = function (atxoSid, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/get_abar_commitment/").concat(atxoSid.trim());
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getAbarCommitment = getAbarCommitment;
+var getMaxAtxoSid = function (config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getQueryRoute(), "/get_max_atxo_sid");
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getMaxAtxoSid = getMaxAtxoSid;
 //# sourceMappingURL=network.js.map

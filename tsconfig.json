@@ -17,6 +17,7 @@
     "noImplicitThis": true,
     "noUnusedLocals": false,
     "noUnusedParameters": true,
+    "resolveJsonModule": true,
     "outDir": "dist",
     "rootDir": "src",
     "sourceMap": true,

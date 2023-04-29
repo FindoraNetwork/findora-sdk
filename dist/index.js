@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Sdk = exports.Api = exports.UtilsService = exports.UtxoHelperService = exports.UtxoHelper = exports.CacheProviders = exports.getNodeLedger = exports.getWebLedger = void 0;
+exports.RangeHelper = exports.Sdk = exports.Api = exports.UtilsService = exports.UtxoHelperService = exports.UtxoHelper = exports.CacheProviders = exports.getNodeLedger = exports.getWebLedger = void 0;
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
 Object.defineProperty(exports, "getWebLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getWebLedger; } });
 Object.defineProperty(exports, "getNodeLedger", { enumerable: true, get: function () { return ledgerWrapper_1.getNodeLedger; } });
@@ -33,4 +33,5 @@ exports.UtxoHelperService = __importStar(require("./services/utxoHelper"));
 exports.UtilsService = __importStar(require("./services/utils"));
 exports.Api = __importStar(require("./api"));
 exports.Sdk = __importStar(require("./Sdk"));
+exports.RangeHelper = __importStar(require("./services/rangeHelper"));
 //# sourceMappingURL=index.js.map

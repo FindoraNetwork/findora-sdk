@@ -1,32 +1,40 @@
+/* eslint-disable no-console */
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
-import * as NetworkTypes from './api/network/types';
 import Sdk from './Sdk';
-import { MemoryCacheProvider } from './services/cacheStore/providers';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
+import * as NetworkTypes from './api/network/types';
+import { waitForBlockChange } from './evm/testHelpers';
+import { toWei } from './services/bigNumber';
+import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
+import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
+import { getRandomNumber, log } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
+// import * as TMI from './tripleMasking/tripleMasking.integration';
 
 dotenv.config();
 
-const waitingTimeBeforeCheckTxStatus = 18000;
+const waitingTimeBeforeCheckTxStatus = 19000;
 
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
 const sdkEnv = {
-  hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'https://prod-mainnet.prod.findora.org',
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   // hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
+  blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -40,13 +48,18 @@ Sdk.init(sdkEnv);
 
 console.log(`Connecting to "${sdkEnv.hostUrl}"`);
 
+const password = '123';
+
 const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
   ENG_PKEY = '',
+  PKEY_LOCAL_TRIPLE_MASKING = '',
   PKEY_LOCAL_FAUCET_MNEMONIC_STRING = '',
   M_STRING = '',
   FRA_ADDRESS = '',
@@ -57,6 +70,18 @@ const {
 const mainFaucet = PKEY_LOCAL_FAUCET;
 
 const CustomAssetCode = CUSTOM_ASSET_CODE;
+
+const myAbarAnonKeys = {
+  axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
+  axfrSecretKey:
+    'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
+};
+
+const myGivenCommitmentsList = [
+  'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
+  'DtJx2dVmXXiDaQS7G6xpNeUhEwH7EsuimLUf1Tqd78LH',
+  '9kpQwq1UqqonX73HgreJcvXEj9SxN5mh55AhBdsSXnhZ',
+];
 
 /**
  * A simple example - how to use SDK to get FRA assset code
@@ -71,160 +96,58 @@ const getFraAssetCode = async () => {
  * Get FRA balance
  */
 const getFraBalance = async () => {
-  const password = '1234';
+  const password = '12345';
 
-  // const pkey = PKEY_LOCAL_FAUCET;
-  const pkey = PKEY_MINE;
-  // const pkey = PKEY_MINE3;
-  // const pkey = ENG_PKEY;
+  const isFra = false;
 
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  // const mString = M_STRING;
-  // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
+  console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  const mm = mString.split(' ');
+  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+  );
 
-  const newWallet = await Keypair.restoreFromMnemonic(mm, password);
+  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const newWalletMine1 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+    password,
+  );
 
-  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+  const newWalletMine2 = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
+    password,
+  );
 
-  const balance = await Account.getBalance(faucetWalletInfo);
-  const balanceNew = await Account.getBalance(newWallet);
-
-  const fraCode = await Asset.getFraAssetCode();
-  console.log('🚀 ~ file: run.ts ~ line 95 ~ getFraBalance ~ fraCode', fraCode);
+  const balanceFaucet = await Account.getBalance(faucetWalletInfo);
+  const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+  const balanceNewMine2 = await Account.getBalance(newWalletMine2);
 
   console.log('\n');
 
-  console.log('faucetWalletInfo.address (from pKey)', faucetWalletInfo.address);
+  console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
+  console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
   console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   console.log('\n');
+  console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+  console.log('newWalletMine1.address ', newWalletMine1.address);
+  console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
 
-  console.log('newWallet.address (from mnenmonic)', newWallet.address);
-  console.log('newWallet.privateStr', newWallet.privateStr);
+  console.log('\n');
+  console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+  console.log('newWalletMine2.address', newWalletMine2.address);
+  console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
 
   console.log('\n');
 
-  console.log('balance from restored from pkey IS', balance);
-  console.log('balance from restored using mnemonic IS', balanceNew);
+  console.log('balance from restored faucet IS', balanceFaucet);
+  console.log('balance from restored MINE1 IS', balanceNewMine1);
+  console.log('balance from restored MINE2 IS', balanceNewMine2);
+
   console.log('\n');
   console.log('\n');
-
-  // const walletsToCheck = [
-  //   {
-  //     index: 0,
-  //     privateKey: 'KI4eZLjLe13Vn4JOuoOv3SYS1VL62H-gIt7j4Sco2tI=',
-  //     address: 'fra1vh9ngxdkky29wdp87rarvdkse3lu8yufrf6yz6lchssxrd0ncwuqpj0j4h',
-  //   },
-  //   {
-  //     index: 1,
-  //     privateKey: 'lgtvtkzHF-9yk29qIgp8XJp4Tubw1oztJBE1_1vLKxo=',
-  //     address: 'fra1h9vaypfsrs6jjepxrpr6y0t74clvdndkrelewmywe5dnad54xnqqurt3r3',
-  //   },
-  //   {
-  //     index: 2,
-  //     privateKey: 'xyyu-fzho1WrfuTZsskT3tTR5a-B5ZaxCsbNE0xIhzM=',
-  //     address: 'fra1rm48mv8nnjnz560u592wkaf94hdd9mxr6vz5hwn7wpna3daqsusqga2wsz',
-  //   },
-  //   {
-  //     index: 3,
-  //     privateKey: 'JGtz0xczlxHbwUsLZzuTUHvPhswl9RnJkZdi3TGt0-k=',
-  //     address: 'fra1njx7a9qhcd5xuphxdrxwxufx9565kr4n523m7cxyanfq5xf4hxrss9pna6',
-  //   },
-  //   {
-  //     index: 4,
-  //     privateKey: 'kdzqk0LPPs-mlNY41gOcXJ_ZXpqa_5WM5PNwOGrFTQY=',
-  //     address: 'fra17p3lpqgkg6gz0mgpd7zvpkka2pxzvzfp9pte8uzvwnmfprvtdhhsf5je45',
-  //   },
-  //   {
-  //     index: 5,
-  //     privateKey: 'zriAFyo3qCft0i0tU6zPPIIn7F055SkaxCxOyZheeZE=',
-  //     address: 'fra15y5gc2w5vs2rjxc2gu6lts8gye6y2g4gyyfd2zuk6x7yhu2kajws2j0yu9',
-  //   },
-  //   {
-  //     index: 6,
-  //     privateKey: 'yD9z1rj6isM12eqU4QMkeO7ldAmidHB-y6rdHvHnnBo=',
-  //     address: 'fra1f7nfhw2uqq6ksrh3qfal9mfxsh0qmaevmqhhgcayafl2tyudnnsqd6e3rm',
-  //   },
-  //   {
-  //     index: 7,
-  //     privateKey: 'WsbjPKME5sK1dq3DBjs9qVlyf89nK8Ks8buE7fLWhjw=',
-  //     address: 'fra1gv30rxxxaurfl6zza04mwh5m870yfv95l6uufecphu9prd3mhp2sfvhf85',
-  //   },
-  //   {
-  //     index: 8,
-  //     privateKey: 'DRa0tuxuO7gao2wXD3dX7U99YjZO4lewTMP7CoknpN0=',
-  //     address: 'fra14hfpc3g9d28npwjqmchmeya74yamfem35c58ctu7rr04cs75z0nstpqwx6',
-  //   },
-  //   {
-  //     index: 9,
-  //     privateKey: 'G1Mrl0BY7GmlxQmuc6o-BBANvzJPM0rcfpJBRJqRyBE=',
-  //     address: 'fra130m3uqwtegnnrwfd0fr69jhsj2y4adgyqgq9wn4qjgjjwjksjunq92tvlp',
-  //   },
-  //   {
-  //     index: 10,
-  //     privateKey: 'BiLmDSnlHF0HWseEIdPyHzQ14QdHDkTpsL_8_CU07kE=',
-  //     address: 'fra1symt3n88ddnxw0chsqckxwhynldkkft40yrsplzg8xqv6ryhmrsskpwvrf',
-  //   },
-  //   {
-  //     index: 11,
-  //     privateKey: 'pqzR6buGwnaOxbUBNp1nmnK6HulSnlkP80kEBzt6XDY=',
-  //     address: 'fra1uhdewn0h7wxk473mc9jcqr6tm7h2r6ns4cn0s0g8gpsujyvpxhqslmqcq5',
-  //   },
-  //   {
-  //     index: 12,
-  //     privateKey: 'L_jcArSue933v6cUCCtkC_plWHIkk2RuFWr_Txf6VIw=',
-  //     address: 'fra1t2fju9ja3j8vahhglfnpcczapahs85jtmcf5d34xxwrvux6yyk5sj4ye3v',
-  //   },
-  //   {
-  //     index: 13,
-  //     privateKey: 'xS_7tr-lF6UjvePa0sikOAZwXjQYeWdejE2kfPpAl_8=',
-  //     address: 'fra1yq0e8tk34579nggek09j8tasjclnl5q4qpy7td8tegqlfusxgjzqsj8rcq',
-  //   },
-  //   {
-  //     index: 14,
-  //     privateKey: 'BLZ1zP--arQ3ASIdXrKBd-IyiIWi1sa5fXW_dgf_J34=',
-  //     address: 'fra132p90p0wjlxxvesqdyxlt0a947u0y9lztj394qpk9kz8g7qf3v7sdhuzrt',
-  //   },
-  //   {
-  //     index: 15,
-  //     privateKey: '2f9u311DTE7aFkNsCWvlvKkYedFhE8jiobEZyBBO4vQ=',
-  //     address: 'fra1kvdjeezgccslumaf22vqrqwjnuqxlv7whx683unxxr2xect6d4jshq82hu',
-  //   },
-  //   {
-  //     index: 16,
-  //     privateKey: 'UBHiIe2T2NCg1s1POrdl_vdL4gIJhWHy88hX6_NId8w=',
-  //     address: 'fra1jfcg0altp2kghvlturuwyhapt420xeey3khd7kjqujltw56pdtqq5dpeu5',
-  //   },
-  //   {
-  //     index: 17,
-  //     privateKey: 'ZBOjsZv1jT5PrCEY7riQG6Pq12TvLQ9WFH47bubQxlA=',
-  //     address: 'fra1mvhf6zh0vp24rar66f6qqcd2pwze53c48wsen5alm52pn049fr6sgncnvj',
-  //   },
-  //   {
-  //     index: 18,
-  //     privateKey: 'gBSmBxZ-OaA3LoOAQ_N-i8vq2bIxq6u26O_zPRUNcwk=',
-  //     address: 'fra1vfejdytqzuz5jlk7hp3cu08y6rktczdtz7zzdjd02xw8w2yk8s9shgdeyq',
-  //   },
-  //   {
-  //     index: 19,
-  //     privateKey: 'LR-IFDmgT-uhher0dkDCYXSdT9fcb3tDqO_0y6wERpw=',
-  //     address: 'fra1pq2cgtplxeu94eekt49xvkmn7qcjkcfgehpxwzlxrspl7l2un05qg32uls',
-  //   },
-  // ];
-
-  // for (let walletInfo of walletsToCheck) {
-  //   const restoredWalletInfo = await Keypair.restoreFromPrivateKey(walletInfo.privateKey, password);
-
-  //   const balance = await Account.getBalance(restoredWalletInfo);
-
-  //   console.log('\n');
-
-  //   console.log('restoredWalletInfo.address (from pKey)', restoredWalletInfo.address);
-  //   console.log('restoredWalletInfo.privateStr', restoredWalletInfo.privateStr);
-  //   console.log('restoredWalletInfo balance ', balance);
-  // }
 };
 
 /**
@@ -245,7 +168,7 @@ const getCustomAssetBalance = async () => {
 /**
  * Define a custom asset
  */
-const defineCustomAsset = async () => {
+const defineCustomAssetRandom = async () => {
   const pkey = PKEY_LOCAL_FAUCET;
 
   const password = '123';
@@ -266,7 +189,7 @@ const defineCustomAsset = async () => {
 /**
  * Issue custom asset
  */
-const issueCustomAsset = async () => {
+const issueCustomAssetGiven = async () => {
   const pkey = PKEY_LOCAL_FAUCET;
   const customAssetCode = CustomAssetCode;
 
@@ -338,13 +261,21 @@ const getTransferBuilderOperation = async () => {
 
   const toPublickey = ledger.fra_get_dest_pubkey();
 
+  let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+
   const recieversInfo = [
     {
       utxoNumbers: minimalFee,
       toPublickey,
     },
   ];
-  const trasferOperation = await Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode);
+  const trasferOperation = await Fee.getTransferOperation(
+    walletInfo,
+    utxoInputsInfo,
+    recieversInfo,
+    fraCode,
+    transferOperationBuilder,
+  );
 
   console.log('trasferOperation!', trasferOperation);
 };
@@ -362,21 +293,39 @@ const createNewKeypair = async () => {
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
 
   console.log('new wallet info', walletInfo);
+  return walletInfo;
 };
 
 /**
  * Send fra to a single address
  */
-const transferFraToSingleAddress = async () => {
+const transferFraToSingleAddress = async (amount: string) => {
   const pkey = PKEY_MINE;
 
   // const toPkeyMine2 = PKEY_MINE2;
-  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
+  //  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   // const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  const destAddress = walletInfo.address;
+
   const toWalletInfo = await Keypair.getAddressPublicAndKey(destAddress);
+
+  const balanceOld = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 287 ~ transferFraToSingleAddress ~ balanceOld', balanceOld);
+
+  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sids } = sidsResult;
+
+  if (!sids) {
+    throw new Error('no sids!');
+  }
+
+  // const sortedSids = sids.sort((a, b) => b - a);
+
+  // console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -387,7 +336,7 @@ const transferFraToSingleAddress = async () => {
   const transactionBuilder = await Transaction.sendToAddress(
     walletInfo,
     toWalletInfo.address,
-    '0.01',
+    amount,
     assetCode,
     assetBlindRules,
   );
@@ -395,6 +344,58 @@ const transferFraToSingleAddress = async () => {
   const resultHandle = await Transaction.submitTransaction(transactionBuilder);
 
   console.log('send fra result handle!!', resultHandle);
+
+  await waitForBlockChange();
+  await waitForBlockChange();
+
+  const height = 45;
+  const blockDetailsResult = await Network.getBlock(height);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult',
+    JSON.stringify(blockDetailsResult, null, 2),
+  );
+
+  const h = resultHandle;
+
+  const txStatus = await Network.getTransactionStatus(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus',
+    JSON.stringify(txStatus, null, 2),
+  );
+  // await sleep(waitingTimeBeforeCheckTxStatus);
+
+  const dataResult = await Network.getHashSwap(h);
+  console.log(
+    '🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult',
+    JSON.stringify(dataResult, null, 2),
+  );
+
+  const submitResult = await Network.getTransactionStatus(resultHandle);
+  console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
+
+  const sidsResultNew = await Network.getOwnedSids(walletInfo.publickey);
+
+  const { response: sidsNew } = sidsResultNew;
+
+  if (!sidsNew) {
+    throw new Error('no sids!');
+  }
+
+  const sortedSidsNew = sids.sort((a, b) => b - a);
+  console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
+
+  const balanceNew = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
+};
+
+const testTransferToYourself = async () => {
+  // const amounts = ['1', '0.5', '0.4', '0.9'];
+  const amounts = ['0.3'];
+
+  for (const amount of amounts) {
+    console.log(`Sending amount of ${amount} FRA`);
+    await transferFraToSingleAddress(amount);
+  }
 };
 
 /**
@@ -407,7 +408,9 @@ const transferFraToSingleRecepient = async () => {
   const password = '123';
 
   const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
   const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+  console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
 
   const fraCode = await Asset.getFraAssetCode();
 
@@ -579,35 +582,6 @@ const myFunc14 = async () => {
   const { response } = dataResult;
 
   console.log(response?.result.txs);
-};
-
-// get tx list hash details
-const myFunc15 = async () => {
-  const h = 'YOUR_TX_HASH';
-
-  const pkey = PKEY_MINE;
-
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  const dataResult = await Network.getTxList(walletInfo.address, 'to');
-
-  const { response } = dataResult;
-
-  console.log('response!!!', response);
-};
-
-const myFunc16 = async () => {
-  const pkey = PKEY_MINE;
-
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-
-  const txList = await Transaction.getTxList(walletInfo.address, 'from');
-
-  console.log('txList', txList);
 };
 
 const myFunc17 = async () => {
@@ -1270,24 +1244,441 @@ const ethProtocol = async () => {
   console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
 };
 
-getFraBalance();
-// getCustomAssetBalance();
-// defineCustomAsset();
-// issueCustomAsset();
-// getStateCommitment();
-// getValidatorList();
-// getDelegateInfo();
-// getTransferBuilderOperation();
-// createNewKeypair();
-// transferFraToSingleRecepient();
-// transferFraToMultipleRecepients();
-// transferCustomAssetToSingleRecepient();
-// transferCustomAssetToMultipleRecepients();
-// getCustomAssetDetails();
-// getTransactionStatus();
-// getBlockDetails();
-// delegateFraTransactionSubmit();
-// delegateFraTransactionAndClaimRewards();
-// unstakeFraTransactionSubmit();
-// sendEvmToAccount();
-// ethProtocol();
+const createTestBars = async (senderOne = PKEY_MINE) => {
+  console.log('////////////////  Create Test Bars //////////////// ');
+
+  const password = '1234';
+
+  const pkey = mainFaucet;
+  const toPkeyMine = senderOne;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine, password);
+
+  const fraCode = await Asset.getFraAssetCode();
+  const assetCode = fraCode;
+  const assetBlindRules: Asset.AssetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+
+  for (let i = 0; i < 5; i++) {
+    // const amount = getRandomNumber(10, 20);
+    const amount = getRandomNumber(1, 9);
+    console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
+
+    const transactionBuilder = await Transaction.sendToAddress(
+      walletInfo,
+      toWalletInfo.address,
+      `1.2${amount}`,
+      assetCode,
+      assetBlindRules,
+    );
+
+    const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+    console.log('send fra result handle!!', resultHandle);
+
+    await waitForBlockChange();
+  }
+
+  return true;
+};
+
+const getFee = async () => {
+  const password = '1234';
+
+  const pkey = PKEY_MINE;
+
+  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+  console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
+
+  const feeInputsPayload = await getFeeInputs(walletInfo, [11], true);
+  console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
+};
+
+async function approveToken() {
+  // const webLinkedInfo = {
+  //   privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
+  //   rpcUrl: 'https://dev-qa02.dev.findora.org:8545', //'https://prod-forge.prod.findora.org:8545',
+  //   chainId: 1111, // 2154,
+  //   account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
+  // };
+
+  // const result = await Evm.approveToken(
+  //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+  //   '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
+  //   '100',
+  //   webLinkedInfo,
+  // );
+  // console.log(result.transactionHash);
+
+  // const result1 = await Evm.frc20ToBar(
+  //   '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
+  //   'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
+  //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+  //   '100',
+  //   webLinkedInfo,
+  // );
+  // console.log(result1.transactionHash);
+  // const result1 = await Evm.tokenBalance(
+  //   webLinkedInfo,
+  //   '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',
+  //   true,
+  //   webLinkedInfo.account,
+  // );
+
+  // console.log(result1);
+
+  const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+  console.log(addr);
+}
+
+async function testCommitment() {
+  const data2 = [
+    33,
+    {
+      point: 'd4koAbY2p-9fu5KOSkcmlRtefgqmwrIlm--3gx0KLjU=',
+      ctext: [
+        153, 62, 220, 132, 222, 139, 46, 13, 77, 111, 92, 117, 139, 60, 245, 53, 247, 132, 69, 227, 69, 186,
+        173, 123, 147, 193, 177, 244, 148, 26, 186, 90, 19, 157, 1, 113, 170, 113, 165, 15, 76, 15, 83, 82,
+        138, 161, 98, 95, 34, 54, 118, 251, 30, 232, 104, 241, 101, 249, 228, 103, 153, 149, 249, 145, 174,
+        179, 176, 156, 255, 163, 40, 26, 105, 206, 199, 37, 102, 217, 160, 234, 79, 197, 103, 171, 213, 122,
+        14, 204,
+      ],
+    },
+  ];
+
+  const [atxoSid, myMemoData] = data2;
+
+  const anonKeysReceiver = {
+    axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+    axfrSpendKey:
+      'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+    axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+  };
+
+  // const atxoSidM = '33';
+  // const abarOwnerMemo = await TripleMasking.getAbarOwnerMemo(atxoSidM);
+
+  const ledger = await getLedger();
+
+  // const [amount, assetType] = decryptedAbar;
+
+  // http://127.0.0.1:8667/get_abar_commitment/0) <- atxoSid
+
+  const commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
+
+  //  curl http://127.0.0.1:8667/get_abar_commitment/0                                                                                                           [08:18:31pm]
+  // "EYSkMoa1SFefat0xPtZsblG5GnMTcgm45eDBcfKw9Uo="⏎
+
+  // HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs
+
+  // {
+  //   "commitmentKey": "HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs",
+  //   "commitmentAxfrPublicKey": "-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=",
+  //   "commitmentAssetType": "j7srJTB5XrQBaRNpdE5SFWcQFUmRipmWUV4X4qkL-jc=",
+  //   "commitmentAmount": "23.140000"
+  // },
+
+  // to store or continue parse_axfr_memo/decrypt_axfr_memo
+}
+
+async function runAbarCreating(iterations = 20) {
+  const anonKeys1 = {
+    axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+    axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
+  };
+
+  const anonKeys2 = {
+    axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+    axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
+  };
+
+  const wallets = [anonKeys1, anonKeys2];
+
+  for (let i = 0; i < iterations; i = i + 1) {
+    console.log(`-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ${i}`);
+    const maxAtxoSidResult = await Network.getMaxAtxoSid();
+
+    const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+    if (masError) {
+      log('error!', masError);
+      throw new Error('could not get mas');
+    }
+
+    console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
+
+    const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
+    const amountToSend = walletIndex ? '10' : '10';
+
+    // console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+    const currentWallet = wallets[walletIndex];
+    console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
+
+    // const _transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+  }
+}
+
+// async function testFailure() {
+//   const result = await TMI.abarToBarCustomSendAmount();
+//   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
+// }
+
+async function getMas() {
+  const maxAtxoSidResult = await Network.getMaxAtxoSid();
+
+  const { error: masError, response: masResponse } = maxAtxoSidResult;
+
+  if (masError) {
+    log('error!', masError);
+    throw new Error('could not get mas');
+  }
+
+  console.log(`Current MAS = ${masResponse}`);
+
+  const result = await Network.getAbarMemos('1', '20');
+  console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
+}
+
+async function prism() {
+  // const { response: displayCheckpointData, error } = await Network.getConfig();
+
+  // if (error) throw error;
+
+  // if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+
+  // const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+
+  // const prismProxyContract = await Evm.getPrismProxyContract(
+  //   web3,
+  //   displayCheckpointData.prism_bridge_address,
+  // );
+  // const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+
+  // const prismContract = await Evm.getSimBridgeContract(web3, prismBridgeAddress);
+
+  // const [ledgerAddress, assetAddress] = await Promise.all([
+  //   prismContract.methods.ledger_contract().call(),
+  //   prismContract.methods.asset_contract().call(),
+  // ]);
+
+  // console.log(ledgerAddress, assetAddress, prismBridgeAddress);
+
+  // const name = await erc20Contract.methods.name().call();
+
+  // console.log('erc20 token name: ', name);
+
+  // const result = await Evm.getPrismConfig();
+  // console.log(result);
+
+  // const walletInfo = await Keypair.restoreFromPrivateKey(
+  //   'AKPYFxSOX7dVTpM2IbxaYFE1laLJDNQhIodMyXJt_hAE',
+  //   password,
+  // );
+
+  // try {
+  //   Evm.sendAccountToEvm(
+  //     walletInfo,
+  //     '1',
+  //     '0x72488baa718f52b76118c79168e55c209056a2e6',
+  //     'eDv3Xau2tpTKZyBD8k_8jMf8QCwIUmhdbmK1FiyASfg=',
+  //     '',
+  //   );
+  // } catch (error) {
+  //   console.log(error);
+  // }
+
+  const result = Evm.fraAddressToHashAddress(
+    'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
+  );
+
+  console.log(result);
+}
+
+async function testWasmFunctions(walletInfo: Keypair.WalletKeypar): Promise<void> {
+  const ledger = await getLedger();
+
+  const publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
+
+  console.log('============');
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+
+  console.log('============');
+}
+
+async function testBrokenKeypairOne() {
+  const ledger = await getLedger();
+
+  console.log('============');
+
+  const mnemonic =
+    'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+
+  const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+
+  const publickey = await Keypair.getPublicKeyStr(keypair);
+
+  console.log('publickey (from restored keypair)', publickey);
+  const address = await Keypair.getAddress(keypair);
+  console.log('address (from restored keypair)', address);
+
+  const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+
+  console.log('\n');
+
+  console.log('============');
+}
+
+async function testBrokenKeypairTwo() {
+  const ledger = await getLedger();
+
+  console.log('============');
+  const keypair = ledger.new_keypair();
+
+  const publickey = await Keypair.getPublicKeyStr(keypair);
+
+  console.log('publickey (from created keypair)', publickey);
+  const address = await Keypair.getAddress(keypair);
+  console.log('address (from created keypair)', address);
+
+  const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+
+  const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+
+  console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+  console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+
+  console.log('\n');
+
+  console.log('============');
+}
+
+async function testBrokenKeypairs() {
+  await testBrokenKeypairOne();
+  await testBrokenKeypairTwo();
+}
+
+async function getNewBalanace() {
+  const isFra = false;
+
+  const pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+
+  const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+
+  const mnemonicLocalFaucet =
+    'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+
+  const faucetWalletInfoPkeyFra = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password);
+  const faucetWalletInfoPkeyEth = await Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password);
+
+  const faucetWalletInfoMnemonic = await Keypair.restoreFromMnemonic(
+    mnemonicLocalFaucet.split(' '),
+    password,
+  );
+
+  const balanceFaucetFra = await Account.getBalance(faucetWalletInfoPkeyFra);
+  const balanceFaucetEth = await Account.getBalance(faucetWalletInfoPkeyEth);
+  const balanceFaucetMnemonic = await Account.getBalance(faucetWalletInfoMnemonic);
+
+  console.log('============--------------=============================');
+  console.log('\n');
+
+  console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
+  console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
+  console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
+  console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoPkeyFra);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+
+  console.log('============--------------=============================');
+  console.log('\n');
+  console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
+  console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
+  console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
+  console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoPkeyFra);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+
+  console.log('============--------------=============================');
+  console.log('\n');
+  console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
+  console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
+  console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
+  console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+  console.log('\n');
+
+  try {
+    await testWasmFunctions(faucetWalletInfoMnemonic);
+  } catch (error) {
+    console.log('we have an error', error);
+  }
+  console.log('\n');
+}
+
+async function getTxnListTest() {
+  // native txn list
+  // const result = await Transaction.getTxnList(
+  //   'fra13dac6nn6yl2t6thfc0hxsjemgqp0ghzyqmjdf55xc9mtw5atz5jsx8lze3',
+  //   'from',
+  // );
+  // console.log(result.txs[0]);
+  // staking txn list
+  // const result = await Transaction.getTxnListByStaking(
+  //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+  //   'delegation',
+  // );
+  // console.log(result);
+  // const result = await Transaction.getTxnListByStakingUnDelegation(
+  //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+  // );
+  // console.log(result);
+  // prism txn list
+  // const result = await Transaction.getTxnListByPrism(
+  //   'fra1lelnp9fthp68xy0nqtlu7h2u6ms45rh4lqu466ns4jxqvdjja3qqz5ae6s',
+  //   'send',
+  // );
+  // console.log(JSON.stringify(result, null, 2));
+}
+
+async function fnsNameResolver() {
+  // const result = await Evm.resolveDomain('0xe77B7DDc441B5a695d2D16020bfd5c0b0cE3aC7C', 'eba.fra');
+  const result = await Evm.getDomainCurrentText('eba.fra');
+  console.log(result?.eth);
+}
+
+// prism();
+
+// approveToken();
+// testItSync();
+// getFraBalance();
+// testWasmFunctions();
+// getAnonKeys();
+// runAbarCreating(2);
+// getMas();
+// getAbarBalance();
+// testFailure();
+
+// getNewBalanace();
+// testBrokenKeypairs();
+
+// getTxnListTest();
+
+fnsNameResolver();

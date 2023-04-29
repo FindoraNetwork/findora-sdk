@@ -40,7 +40,7 @@ require("@testing-library/jest-dom/extend-expect");
 var keypair_1 = require("./keypair");
 describe('keypair (unit test)', function () {
     describe('restoreFromPrivateKey', function () {
-        var publickey = '1mtO4j3bvRiKlXotdD1q0DQYoxutSgee-f1LQtlq45g=';
+        var publickey = 'ANZrTuI9270YipV6LXQ9atA0GKMbrUoHnvn9S0LZauOYAA==';
         var address = 'fra16e45ac3amw733z540gkhg0t26q6p3gcm449q08hel4959kt2uwvq9svvqh';
         var pkey = 'Y6umoUmBJRPYJU5n_Y9bHuhoHm6aDMsxDI9FLJzOEXc=';
         var password = '345';
@@ -59,7 +59,7 @@ describe('keypair (unit test)', function () {
                         expect(walletInfo.publickey).toEqual(publickey);
                         expect(walletInfo.address).toEqual(address);
                         expect(walletInfo.keypair).toHaveProperty('ptr');
-                        expect(walletInfo.keyStore).toHaveLength(188);
+                        expect(walletInfo.keyStore).toHaveLength(194);
                         return [2 /*return*/];
                 }
             });
@@ -111,7 +111,6 @@ describe('keypair (unit test)', function () {
                     case 2:
                         result = _a.sent();
                         expect(result.length).toEqual(44);
-                        expect(result.split('').pop()).toEqual('=');
                         return [2 /*return*/];
                 }
             });
@@ -138,7 +137,7 @@ describe('keypair (unit test)', function () {
                         return [4 /*yield*/, (0, keypair_1.getPublicKeyStr)(kp.keypair)];
                     case 2:
                         result = _a.sent();
-                        expect(result.length).toEqual(44);
+                        expect(result.length).toEqual(48);
                         expect(result.split('').pop()).toEqual('=');
                         return [2 /*return*/];
                 }
@@ -166,8 +165,8 @@ describe('keypair (unit test)', function () {
                         return [4 /*yield*/, (0, keypair_1.getAddress)(kp.keypair)];
                     case 2:
                         result = _a.sent();
-                        expect(result.length).toEqual(62);
-                        expect(result.split('').slice(0, 3).join('')).toEqual('fra');
+                        expect(result.length).toEqual(63);
+                        expect(result.split('').slice(0, 3).join('')).toEqual('eth');
                         return [2 /*return*/];
                 }
             });
@@ -195,8 +194,8 @@ describe('keypair (unit test)', function () {
                     case 2:
                         result = _a.sent();
                         expect(result).toEqual(kp.address);
-                        expect(result.length).toEqual(62);
-                        expect(result.split('').slice(0, 3).join('')).toEqual('fra');
+                        expect(result.length).toEqual(63);
+                        expect(result.split('').slice(0, 3).join('')).toEqual('eth');
                         return [2 /*return*/];
                 }
             });
@@ -255,10 +254,10 @@ describe('keypair (unit test)', function () {
                         expect(result).toHaveProperty('address');
                         expect(result).toHaveProperty('keypair');
                         expect(result).toHaveProperty('privateStr');
-                        expect(result.publickey.length).toEqual(44);
-                        expect(result.address.length).toEqual(62);
+                        expect(result.publickey.length).toEqual(48);
+                        expect(result.address.length).toEqual(63);
                         expect(result.privateStr.length).toEqual(44);
-                        expect(result.keyStore.length).toEqual(188);
+                        expect(result.keyStore.length).toEqual(194);
                         return [2 /*return*/];
                 }
             });
@@ -269,6 +268,67 @@ describe('keypair (unit test)', function () {
                     case 0: return [4 /*yield*/, expect((0, keypair_1.createKeypair)([123])).rejects.toThrowError('could not create a WalletKeypar')];
                     case 1:
                         _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getXfrPublicKeyByBase64', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, expect((0, keypair_1.getXfrPublicKeyByBase64)('aa')).rejects.toThrowError("could not get xfr public key by base64, \"")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get XfrPublicKey by base64', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getXfrPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('free');
+                        expect(typeof result.free).toBe('function');
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+    });
+    describe('getPublicKeyByXfr', function () {
+        it('throws an error if not a valid public key is given', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var toPublickey;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        toPublickey = 'mockedToPublickey';
+                        return [4 /*yield*/, expect((0, keypair_1.getPublicKeyByXfr)(toPublickey)).rejects.toThrowError("could not get base64 public key by xfr, \"")];
+                    case 1:
+                        _a.sent();
+                        return [2 /*return*/];
+                }
+            });
+        }); });
+        it('get publicKey by xfr', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var kp, toPublickey, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, (0, keypair_1.createKeypair)('123')];
+                    case 1:
+                        kp = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getXfrPublicKeyByBase64)(kp.publickey)];
+                    case 2:
+                        toPublickey = _a.sent();
+                        return [4 /*yield*/, (0, keypair_1.getPublicKeyByXfr)(toPublickey)];
+                    case 3:
+                        result = _a.sent();
+                        expect(typeof result).toBe('string');
                         return [2 /*return*/];
                 }
             });

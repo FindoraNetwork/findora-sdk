@@ -8,8 +8,8 @@ import {
   assertResultResponse,
   getRpcPayload,
   setCurrentTestName,
-  timeLog,
   SuperSimpleObject,
+  timeLog,
   timeStart,
 } from './testHelpers';
 
