@@ -4021,6 +4021,7 @@ ethers@^4.0.47:
     xmlhttprequest "1.8.0"
 
 ethers@^5.6.9, "ethersv5@npm:ethers@^5.0.32":
+  name ethersv5
   version "5.7.2"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-5.7.2.tgz#3a7deeabbb8c030d4126b24f84e525466145872e"
   integrity sha512-wswUsmWo1aOK8rR7DIKiWSw9DbLWe6x98Jrn8wcTflTVvaXhAMaB5zGAXy0GYQEQp9iO1iSHWVyARQm11zUtyg==
@@ -4432,7 +4433,7 @@ find-versions@^4.0.0:
 
 "findora-wallet-wasm@https://github.com/FindoraNetwork/wasm-js-bindings.git#develop":
   version "0.0.0"
-  resolved "https://github.com/FindoraNetwork/wasm-js-bindings.git#d834842fb4a5de432d243433f4724d75ecbae3fc"
+  resolved "https://github.com/FindoraNetwork/wasm-js-bindings.git#cf116c8330f487a5840d55209998ab83dff80d8e"
 
 flat-cache@^3.0.4:
   version "3.0.4"

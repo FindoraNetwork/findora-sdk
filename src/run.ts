@@ -27,10 +27,10 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'http://127.0.0.1',
   // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
-  hostUrl: 'https://dev-qa01.dev.findora.org',
+  // hostUrl: 'https://dev-qa01.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -1713,15 +1713,6 @@ async function barToAbarAmount() {
 }
 
 async function getAbarBalance() {
-  // "2023-03-23, 10:55:49 p.m." - 🚀 ~ barToAbarData [
-  //   '{\n' +
-  //     '  "receiverXfrPublicKey": "NmpU7bLld5JNndmzHozTjpkMBQmA2SAJBlHPumAaNhQ=",\n' +
-  //     '  "commitments": [\n' +
-  //     '    "GF2kEN8y5n7Pa2tHPf5928afruchWbMCQsNHzuR7cdS5"\n' +
-  //     '  ]\n' +
-  //     '}'
-  // ]
-
   const anon2m = [
     'security',
     'hood',
@@ -1748,36 +1739,85 @@ async function getAbarBalance() {
     'trigger',
     'hello',
   ];
-
-  const anonKeysTest = await Keypair.restoreFromMnemonic(anon2m, password);
+  // const anonKeysTest = await Keypair.restoreFromMnemonic(anon2m, password);
+  const anonKeysTest = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   console.log('anonKeysTest', anonKeysTest);
 
-  log('//////////////// bar to abar fra asset transfer ///////////////// ');
+  // log('//////////////// bar to abar fra asset transfer ///////////////// ');
 
-  const anonKeys1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
-  const anonKeys2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+  const pkeyAW = '_tIxxQdQKGkFtu8LSW9J8HFMR7P3zgtB8QgWm_mT8GQ=';
 
-  const fraAssetCode = await Asset.getFraAssetCode();
-  const fraAssetSids = await getSidsForSingleAsset(anonKeys1.privateStr!, fraAssetCode);
-  log('🚀 ~ all fraAssetSids', fraAssetSids);
-  console.log('anonKeys2', anonKeys2);
+  const anonKeys1 = await Keypair.restoreFromPrivateKey(pkeyAW, password);
+
+  // const fraAssetCode = await Asset.getFraAssetCode();
+  console.log('anonKeys1', anonKeys1);
   // console.log('anonKeys2', anonKeys2);
 
-  const givenCommitments = ['92LivdKPkt7xz3JdwXc4Tqn6cKtswbXoWfgLKyvxEVGm'];
-  const anonBalances = await TripleMasking.getAllAbarBalances(anonKeysTest, givenCommitments);
+  const givenCommitments = [
+    // '7wcqJjwMay3pzx53fCuegBUQh5SfpdSwNapfkndiSPaK',
+    // '7gGyjupnuuSaMtjS7jknh7GqUMhXYR5AvQe2VJEsYhLg', // 1.2
+    '3oMJAASbZisccxv4GTbd39zGYG5dE8NAJ9V2zavSRHun', // 1.1
+  ];
+
+  const { error, response: unprocessed } = await Network.getAbarMemos(`111`, `113`);
+  console.log('unprocessed');
+
+  console.dir(unprocessed, { depth: null, colors: true, maxArrayLength: null });
+  if (!unprocessed) {
+    console.log('boommmm');
+    return;
+  }
+
+  for (const abarMemoItem of unprocessed) {
+    console.log('inside for - syncCommitments ');
+    // const decrypted = await TripleMasking.decryptAbarMemo(abarMemoItem, anonKeys1);
+    const decrypted = await TripleMasking.decryptAbarMemo(abarMemoItem, anonKeysTest);
+    console.log('decrypted~~!!');
+    console.dir(decrypted, { depth: null, colors: true, maxArrayLength: null });
+  }
+  // const decrypted = await Api.TripleMasking.decryptAbarMemo(abarMemoItem, b);
+  // const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys1, givenCommitments);
   // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
 
   console.log('anon balances');
   // NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
-  console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
+  // console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
 }
 
+async function keystoreTest() {
+  const ledger = await getLedger();
+  // creates a XfrKeyPair
+  const keypairFromNewKeypair = ledger.new_keypair();
+  log('1 Keypair from new_keypair', keypairFromNewKeypair);
+
+  const keyPairStrFromNewKeypair = ledger.keypair_to_str(keypairFromNewKeypair);
+  log('1 keyPairStrFromNewKeypair', keyPairStrFromNewKeypair);
+  const keystoreFromNewKeypair = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromNewKeypair, password);
+  log('1 keystoreFromNewKeypair', keystoreFromNewKeypair);
+
+  const mnemonic = await Keypair.getMnemonic(24);
+
+  const keypairFromMnemonic = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+  log('2 Keypair from restore_keypair_from_mnemonic_default', keypairFromMnemonic);
+
+  const keyPairStrFromMnemonic = ledger.keypair_to_str(keypairFromMnemonic);
+  log('2 keyPairStrFromMnemonic', keyPairStrFromMnemonic);
+  const keystoreFromMnemonic = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromMnemonic, password);
+  log('2 keystoreFromMnemonic', keystoreFromMnemonic);
+
+  const wInfoFromMnemonic = await Keypair.restoreFromMnemonic(mnemonic, password);
+  log('wInfoFromMnemonic', wInfoFromMnemonic);
+
+  const wInfoFromPrivateKey = await Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr!, password);
+  log('wInfoFromPrivateKey', wInfoFromPrivateKey);
+}
 // approveToken();
 // testItSync();
 
-// getFraBalance();
+getFraBalance();
 // barToAbarAmount();
-getAbarBalance();
+// getAbarBalance();
+// keystoreTest();
 
 // runAbarCreating();
 
