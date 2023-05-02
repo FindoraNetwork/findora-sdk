@@ -587,7 +587,7 @@ export const getTxnListByPrism = async (
       return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
     });
 
-    return { ...dataResult.response.data, items };
+    return dataResult.response.data;
   }
 
   const dataResult = await Network.getTxListByPrismSend(address, page, per_page);
@@ -596,9 +596,5 @@ export const getTxnListByPrism = async (
     throw new Error('Could not fetch a list of transactions. No response from the server.');
   }
 
-  const items = dataResult.response.data.items.map(item => {
-    return { ...item, data: JSON.parse(atob(item.data)) as IPrismData };
-  });
-
-  return { ...dataResult.response.data, items };
+  return dataResult.response.data;
 };

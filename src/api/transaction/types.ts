@@ -228,9 +228,13 @@ export interface IPrismData {
 
 export interface ProcessedTxInfoByPrism {
   amount: string;
-  address: string;
-  data: IPrismData;
+  asset: string;
+  block_hash: string;
+  data: string;
+  from: string;
+  height: number;
   timestamp: number;
+  to: string;
   tx_hash: string;
 }
 

@@ -62,7 +62,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+var eth_ens_namehash_1 = __importDefault(require("@ensdomains/eth-ens-namehash"));
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ethereumjs_abi_1 = __importDefault(require("ethereumjs-abi"));
@@ -324,6 +325,30 @@ var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3Wall
     });
 }); };
 exports.approveNFT = approveNFT;
+var getDomainCurrentText = function (name) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, displayCheckpointData, error, web3, fnsRegistryContract, result;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
+            case 0: return [4 /*yield*/, api_1.Network.getConfig()];
+            case 1:
+                _a = _b.sent(), displayCheckpointData = _a.response, error = _a.error;
+                if (error)
+                    throw error;
+                if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.fns_registry))
+                    throw 'no fns_registry contract address';
+                web3 = (0, web3_2.getWeb3)(api_1.Network.getRpcRoute());
+                fnsRegistryContract = (0, web3_2.getFNSRegistryContract)(web3, displayCheckpointData.fns_registry);
+                return [4 /*yield*/, fnsRegistryContract.methods.currentText(eth_ens_namehash_1.default.hash(name)).call()];
+            case 2:
+                result = _b.sent();
+                if (result.includes('eth') || result.includes('fra')) {
+                    return [2 /*return*/, JSON.parse(result)];
+                }
+                return [2 /*return*/, null];
+        }
+    });
+}); };
+exports.getDomainCurrentText = getDomainCurrentText;
 var frcNftToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, findoraTo, contractData, nonce, gasPrice, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {

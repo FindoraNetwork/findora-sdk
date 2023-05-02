@@ -1,6 +1,6 @@
 {
   "name": "@findora-network/findora-sdk.js",
-  "version": "1.2.0",
+  "version": "1.2.4",
   "description": "The JavaScript SDK for Findora Network",
   "license": "ISC",
   "author": "Findora Network",
@@ -125,6 +125,7 @@
     "webpack-cli": "^4.3.0"
   },
   "dependencies": {
+    "@ensdomains/eth-ens-namehash": "^2.0.15",
     "@types/btoa": "^1.2.3",
     "@types/web3-provider-engine": "^14.0.1",
     "aws-sdk": "^2.929.0",
@@ -148,7 +149,6 @@
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
     "truffle-hdwallet-provider": "^1.0.17",
-    "url-safe-base64": "^1.2.0",
     "util": "^0.12.4",
     "web3": "^1.7.4",
     "web3-eth-contract": "^1.7.4"

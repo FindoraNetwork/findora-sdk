@@ -5,7 +5,6 @@ import sleep from 'sleep-promise';
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
-import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
@@ -24,7 +23,7 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
@@ -1495,6 +1494,7 @@ async function prism() {
   const result = Evm.fraAddressToHashAddress(
     'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
   );
+
   console.log(result);
 }
 
@@ -1661,6 +1661,12 @@ async function getTxnListTest() {
   //   'send',
   // );
   // console.log(JSON.stringify(result, null, 2));
+}
+
+async function fnsNameResolver() {
+  // const result = await Evm.resolveDomain('0xe77B7DDc441B5a695d2D16020bfd5c0b0cE3aC7C', 'eba.fra');
+  const result = await Evm.getDomainCurrentText('eba.fra');
+  console.log(result?.eth);
 }
 
 // prism();
@@ -1832,3 +1838,5 @@ getFraBalance();
 // testBrokenKeypairs();
 
 // getTxnListTest();
+
+fnsNameResolver();

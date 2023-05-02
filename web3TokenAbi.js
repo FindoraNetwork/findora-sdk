@@ -18,3 +18,9 @@ exec(
 exec(
   `abi-types-generator './src/api/evm/abis/PrismProxy.json' --output='./src/api/evm/types' --name=PrismProxy --provider=web3`,
 );
+exec(
+  `abi-types-generator './src/api/evm/abis/NameResolver.json' --output='./src/api/evm/types' --name=NameResolver --provider=web3`,
+);
+exec(
+  `abi-types-generator './src/api/evm/abis/FNSRegistry.json' --output='./src/api/evm/types' --name=FNSRegistry --provider=web3`,
+);

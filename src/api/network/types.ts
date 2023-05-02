@@ -224,9 +224,13 @@ export interface TxListByStakingUnDelegationDataResponseResult extends NetworkAx
 export interface TxListByPrismResponseResult {
   items: {
     amount: string;
-    address: string;
+    asset: string;
+    block_hash: string;
     data: string;
+    from: string;
+    height: number;
     timestamp: number;
+    to: string;
     tx_hash: string;
   }[];
   page: number;
@@ -714,5 +718,6 @@ export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
     proper_gas_set_height: number;
     fix_delegators_am_height: number;
     validators_limit_v2_height: number;
+    fns_registry: string;
   };
 }

@@ -15,6 +15,10 @@ export declare function getPrismConfig(): Promise<{
     bridgeAddress: string;
 }>;
 export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
+export declare const getDomainCurrentText: (name: string) => Promise<{
+    eth: string;
+    fra: string;
+} | null>;
 export declare const frcNftToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare const tokenBalance: (web3WalletInfo: IWebLinkedInfo, tokenAddress: string, decimals: boolean, account: string) => Promise<string>;
 export declare const sendAccountToEvm: (walletInfo: WalletKeypar, amount: string, ethAddress: string, assetCode: string, lowLevelData: string) => Promise<TransactionBuilder>;
