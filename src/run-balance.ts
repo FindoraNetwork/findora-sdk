@@ -1,4 +1,3 @@
-import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';

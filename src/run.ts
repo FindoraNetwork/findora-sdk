@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
-import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
+import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
@@ -23,7 +23,7 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
   hostUrl: 'http://127.0.0.1',
@@ -609,58 +609,58 @@ const myFunc18 = async () => {
 };
 
 // s3 cache
-const myFuncS3 = async () => {
-  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
-    process.env;
-  const accessKeyId = AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
-  const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
-  const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
-
-  const s3Params = {
-    accessKeyId,
-    secretAccessKey,
-  };
-
-  const s3 = new S3(s3Params);
-
-  let readRes;
-
-  try {
-    readRes = await s3
-      .getObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-
-  console.log('readRes :)', readRes?.Body?.toString());
-
-  const existingContent = readRes?.Body?.toString('utf8');
-
-  let res;
-
-  const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
-
-  try {
-    res = await s3
-      .putObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-        Body: myBody,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-};
+// const myFuncS3 = async () => {
+//   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+//     process.env;
+//   const accessKeyId = AWS_ACCESS_KEY_ID || '';
+//   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+//   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+//   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+//
+//   const s3Params = {
+//     accessKeyId,
+//     secretAccessKey,
+//   };
+//
+//   const s3 = new S3(s3Params);
+//
+//   let readRes;
+//
+//   try {
+//     readRes = await s3
+//       .getObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+//
+//   console.log('readRes :)', readRes?.Body?.toString());
+//
+//   const existingContent = readRes?.Body?.toString('utf8');
+//
+//   let res;
+//
+//   const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+//
+//   try {
+//     res = await s3
+//       .putObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//         Body: myBody,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+// };
 
 export const delegateFraTransactionSubmit = async () => {
   console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
@@ -1839,4 +1839,4 @@ getFraBalance();
 
 // getTxnListTest();
 
-fnsNameResolver();
+// fnsNameResolver();
