@@ -2,6 +2,7 @@ export {
   AssetRules,
   AssetTracerKeyPair,
   ClientAssetRecord,
+  AnonTransferOperationBuilder,
   FeeInputs,
   OwnerMemo,
   TracingPolicies,

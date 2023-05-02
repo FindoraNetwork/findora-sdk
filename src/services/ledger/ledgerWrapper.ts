@@ -1,6 +1,8 @@
 import nodeLedger, { LedgerForNode } from './nodeLedger';
 import webLedger, { LedgerForWeb } from './webLedger';
 
+let isInitNoah = false;
+
 export type Ledger = LedgerForNode | LedgerForWeb;
 
 export const isItNodeEnv = () => typeof process !== 'undefined' && process.release.name === 'node';
@@ -19,10 +21,11 @@ export const getNodeLedger = async (): Promise<Ledger> => {
 
 export const getLedger = async (): Promise<Ledger> => {
   const isNodeEnv = isItNodeEnv();
+  const myLedger = await (isNodeEnv ? getNodeLedger() : getWebLedger());
 
-  if (isNodeEnv) {
-    return getNodeLedger();
+  if (!isInitNoah) {
+    await myLedger.init_noah();
+    isInitNoah = true;
   }
-
-  return getWebLedger();
+  return myLedger;
 };

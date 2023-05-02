@@ -1,3 +1,4 @@
+import { WalletKeypar } from '../api/keypair/keypair';
 export interface IAssetRules {
     decimals: number;
     transferable: boolean;
@@ -50,15 +51,15 @@ export interface IWallet {
     privateKey?: string;
 }
 export interface FormattedAnonKeys {
-    axfrSecretKey: string;
-    axfrPublicKey: string;
+    publickey?: string;
+    privateStr?: string;
 }
 export interface BarToAbarData {
-    receiverAxfrPublicKey: string;
+    receiverXfrPublicKey: string;
     commitments: string[];
 }
 export interface AbarToBarData {
-    anonKeysSender: FormattedAnonKeys;
+    anonKeysSender: WalletKeypar;
 }
 export interface ProcessedCommitmentsMap {
     commitmentKey: string;
@@ -67,7 +68,7 @@ export interface ProcessedCommitmentsMap {
     commitmentAmount: string;
 }
 export interface AbarToAbarData {
-    anonKeysSender: FormattedAnonKeys;
+    anonKeysSender: WalletKeypar;
     anonPubKeyReceiver: string;
     commitmentsMap: ProcessedCommitmentsMap[];
 }

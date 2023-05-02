@@ -62,14 +62,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
+exports.getSidsForSingleAsset = exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
 /* eslint-disable no-console */
-var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
-var Sdk_1 = __importDefault(require("./Sdk"));
 var api_1 = require("./api");
 var testHelpers_1 = require("./evm/testHelpers");
+var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var fee_1 = require("./services/fee");
@@ -84,17 +83,19 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    hostUrl: 'https://prod-testnet.prod.findora.org',
+    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    // hostUrl: 'http://127.0.0.1',
+    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://54.213.254.47',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
+    // hostUrl: 'https://dev-qa01.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-    // hostUrl: 'https://dev-qa01.dev.findora.org',
-    blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
+    // hostUrl: 'https://dev-qa02.dev.findora.org',
+    blockScanerUrl: 'https://qa01.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
 };
@@ -144,10 +145,10 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 password = '12345';
                 isFra = false;
                 console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
             case 1:
                 faucetWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '), password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
             case 2:
                 newWalletMine1 = _a.sent();
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password)];
@@ -734,65 +735,58 @@ var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function (
     });
 }); };
 // s3 cache
-var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME, accessKeyId, secretAccessKey, cacheBucketName, cacheItemKey, s3Params, s3, readRes, error_1, e, existingContent, res, myBody, error_2, e;
-    var _b, _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
-            case 0:
-                _a = process.env, AWS_ACCESS_KEY_ID = _a.AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = _a.AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
-                accessKeyId = AWS_ACCESS_KEY_ID || '';
-                secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
-                cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
-                cacheItemKey = UTXO_CACHE_KEY_NAME || '';
-                s3Params = {
-                    accessKeyId: accessKeyId,
-                    secretAccessKey: secretAccessKey,
-                };
-                s3 = new s3_1.default(s3Params);
-                _d.label = 1;
-            case 1:
-                _d.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, s3
-                        .getObject({
-                        Bucket: cacheBucketName,
-                        Key: cacheItemKey,
-                    })
-                        .promise()];
-            case 2:
-                readRes = _d.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _d.sent();
-                e = error_1;
-                console.log('Error!', e.message);
-                return [3 /*break*/, 4];
-            case 4:
-                console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
-                existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
-                _d.label = 5;
-            case 5:
-                _d.trys.push([5, 7, , 8]);
-                return [4 /*yield*/, s3
-                        .putObject({
-                        Bucket: cacheBucketName,
-                        Key: cacheItemKey,
-                        Body: myBody,
-                    })
-                        .promise()];
-            case 6:
-                res = _d.sent();
-                return [3 /*break*/, 8];
-            case 7:
-                error_2 = _d.sent();
-                e = error_2;
-                console.log('Error!', e.message);
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
-        }
-    });
-}); };
+// const myFuncS3 = async () => {
+//   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+//     process.env;
+//   const accessKeyId = AWS_ACCESS_KEY_ID || '';
+//   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+//   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+//   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+//
+//   const s3Params = {
+//     accessKeyId,
+//     secretAccessKey,
+//   };
+//
+//   const s3 = new S3(s3Params);
+//
+//   let readRes;
+//
+//   try {
+//     readRes = await s3
+//       .getObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+//
+//   console.log('readRes :)', readRes?.Body?.toString());
+//
+//   const existingContent = readRes?.Body?.toString('utf8');
+//
+//   let res;
+//
+//   const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+//
+//   try {
+//     res = await s3
+//       .putObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//         Body: myBody,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+// };
 var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
     var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, balanceAfterUnstake, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, delegateInfo, isRewardsAdded;
     return __generator(this, function (_a) {
@@ -1438,28 +1432,28 @@ function testCommitment() {
     });
 }
 function runAbarCreating(iterations) {
-    if (iterations === void 0) { iterations = 20; }
+    if (iterations === void 0) { iterations = 10; }
     return __awaiter(this, void 0, void 0, function () {
-        var anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
+        var faucetWalletInfo, anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
         return __generator(this, function (_a) {
             switch (_a.label) {
-                case 0:
-                    anonKeys1 = {
-                        axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
-                        axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
-                    };
-                    anonKeys2 = {
-                        axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
-                        axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
-                    };
+                case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
+                case 1:
+                    faucetWalletInfo = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
+                case 2:
+                    anonKeys1 = _a.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password)];
+                case 3:
+                    anonKeys2 = _a.sent();
                     wallets = [anonKeys1, anonKeys2];
                     i = 0;
-                    _a.label = 1;
-                case 1:
-                    if (!(i < iterations)) return [3 /*break*/, 4];
+                    _a.label = 4;
+                case 4:
+                    if (!(i < iterations)) return [3 /*break*/, 7];
                     console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ".concat(i));
                     return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
-                case 2:
+                case 5:
                     maxAtxoSidResult = _a.sent();
                     masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
                     if (masError) {
@@ -1471,11 +1465,11 @@ function runAbarCreating(iterations) {
                     amountToSend = walletIndex ? '10' : '10';
                     currentWallet = wallets[walletIndex];
                     console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
-                    _a.label = 3;
-                case 3:
+                    _a.label = 6;
+                case 6:
                     i = i + 1;
-                    return [3 /*break*/, 1];
-                case 4: return [2 /*return*/];
+                    return [3 /*break*/, 4];
+                case 7: return [2 /*return*/];
             }
         });
     });
@@ -1612,7 +1606,7 @@ function testBrokenKeypairs() {
 }
 function getNewBalanace() {
     return __awaiter(this, void 0, void 0, function () {
-        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_3, error_4, error_5;
+        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_1, error_2, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1653,8 +1647,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 10];
                 case 9:
-                    error_3 = _a.sent();
-                    console.log('we have an error', error_3);
+                    error_1 = _a.sent();
+                    console.log('we have an error', error_1);
                     return [3 /*break*/, 10];
                 case 10:
                     console.log('\n');
@@ -1673,8 +1667,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 14];
                 case 13:
-                    error_4 = _a.sent();
-                    console.log('we have an error', error_4);
+                    error_2 = _a.sent();
+                    console.log('we have an error', error_2);
                     return [3 /*break*/, 14];
                 case 14:
                     console.log('\n');
@@ -1693,8 +1687,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 18];
                 case 17:
-                    error_5 = _a.sent();
-                    console.log('we have an error', error_5);
+                    error_3 = _a.sent();
+                    console.log('we have an error', error_3);
                     return [3 /*break*/, 18];
                 case 18:
                     console.log('\n');
@@ -1725,9 +1719,193 @@ function fnsNameResolver() {
     });
 }
 // prism();
+var getSidsForSingleAsset = function (senderOne, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
+    var walletInfo, sids, utxoDataList, customAssetSids, _i, utxoDataList_1, utxoItem, utxoAsset;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                (0, utils_1.log)("//////////////// Get sids for asset ".concat(assetCode, " //////////////// "));
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(senderOne, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
+            case 2:
+                sids = (_a.sent()).response;
+                if (!sids) {
+                    console.log('ERROR no sids available');
+                    return [2 /*return*/, []];
+                }
+                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
+            case 3:
+                utxoDataList = _a.sent();
+                customAssetSids = [];
+                for (_i = 0, utxoDataList_1 = utxoDataList; _i < utxoDataList_1.length; _i++) {
+                    utxoItem = utxoDataList_1[_i];
+                    utxoAsset = utxoItem['body']['asset_type'];
+                    if (utxoAsset === assetCode) {
+                        customAssetSids.push(utxoItem['sid']);
+                    }
+                }
+                return [2 /*return*/, customAssetSids.sort(function (a, b) { return a - b; })];
+        }
+    });
+}); };
+exports.getSidsForSingleAsset = getSidsForSingleAsset;
+function barToAbarAmount() {
+    return __awaiter(this, void 0, void 0, function () {
+        var senderWalletInfo, anonKeysReceiver, amount, fraAssetCode, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
+                case 1:
+                    senderWalletInfo = _b.sent();
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password)];
+                case 2:
+                    anonKeysReceiver = _b.sent();
+                    amount = '12';
+                    return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                case 3:
+                    fraAssetCode = _b.sent();
+                    return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey)];
+                case 4:
+                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
+                    (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+                    (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
+                    return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
+                case 5:
+                    resultHandle = _b.sent();
+                    (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
+                    givenCommitments = barToAbarData.commitments;
+                    console.log('givenCommitments', givenCommitments);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function getAbarBalance() {
+    return __awaiter(this, void 0, void 0, function () {
+        var anon2m, anonKeysTest, pkeyAW, anonKeys1, givenCommitments, _a, error, unprocessed, _i, unprocessed_1, abarMemoItem, decrypted;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    anon2m = [
+                        'security',
+                        'hood',
+                        'catch',
+                        'rail',
+                        'cabin',
+                        'season',
+                        'cool',
+                        'hint',
+                        'ranch',
+                        'fruit',
+                        'polar',
+                        'copper',
+                        'mass',
+                        'pen',
+                        'until',
+                        'carpet',
+                        'wolf',
+                        'screen',
+                        'reflect',
+                        'pulp',
+                        'wing',
+                        'blouse',
+                        'trigger',
+                        'hello',
+                    ];
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
+                case 1:
+                    anonKeysTest = _b.sent();
+                    console.log('anonKeysTest', anonKeysTest);
+                    pkeyAW = '_tIxxQdQKGkFtu8LSW9J8HFMR7P3zgtB8QgWm_mT8GQ=';
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyAW, password)];
+                case 2:
+                    anonKeys1 = _b.sent();
+                    // const fraAssetCode = await Asset.getFraAssetCode();
+                    console.log('anonKeys1', anonKeys1);
+                    givenCommitments = [
+                        // '7wcqJjwMay3pzx53fCuegBUQh5SfpdSwNapfkndiSPaK',
+                        // '7gGyjupnuuSaMtjS7jknh7GqUMhXYR5AvQe2VJEsYhLg', // 1.2
+                        '3oMJAASbZisccxv4GTbd39zGYG5dE8NAJ9V2zavSRHun', // 1.1
+                    ];
+                    return [4 /*yield*/, api_1.Network.getAbarMemos("111", "113")];
+                case 3:
+                    _a = _b.sent(), error = _a.error, unprocessed = _a.response;
+                    console.log('unprocessed');
+                    console.dir(unprocessed, { depth: null, colors: true, maxArrayLength: null });
+                    if (!unprocessed) {
+                        console.log('boommmm');
+                        return [2 /*return*/];
+                    }
+                    _i = 0, unprocessed_1 = unprocessed;
+                    _b.label = 4;
+                case 4:
+                    if (!(_i < unprocessed_1.length)) return [3 /*break*/, 7];
+                    abarMemoItem = unprocessed_1[_i];
+                    console.log('inside for - syncCommitments ');
+                    return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(abarMemoItem, anonKeysTest)];
+                case 5:
+                    decrypted = _b.sent();
+                    console.log('decrypted~~!!');
+                    console.dir(decrypted, { depth: null, colors: true, maxArrayLength: null });
+                    _b.label = 6;
+                case 6:
+                    _i++;
+                    return [3 /*break*/, 4];
+                case 7:
+                    // const decrypted = await Api.TripleMasking.decryptAbarMemo(abarMemoItem, b);
+                    // const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys1, givenCommitments);
+                    // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
+                    console.log('anon balances');
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+function keystoreTest() {
+    return __awaiter(this, void 0, void 0, function () {
+        var ledger, keypairFromNewKeypair, keyPairStrFromNewKeypair, keystoreFromNewKeypair, mnemonic, keypairFromMnemonic, keyPairStrFromMnemonic, keystoreFromMnemonic, wInfoFromMnemonic, wInfoFromPrivateKey;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+                case 1:
+                    ledger = _a.sent();
+                    keypairFromNewKeypair = ledger.new_keypair();
+                    (0, utils_1.log)('1 Keypair from new_keypair', keypairFromNewKeypair);
+                    keyPairStrFromNewKeypair = ledger.keypair_to_str(keypairFromNewKeypair);
+                    (0, utils_1.log)('1 keyPairStrFromNewKeypair', keyPairStrFromNewKeypair);
+                    keystoreFromNewKeypair = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromNewKeypair, password);
+                    (0, utils_1.log)('1 keystoreFromNewKeypair', keystoreFromNewKeypair);
+                    return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
+                case 2:
+                    mnemonic = _a.sent();
+                    keypairFromMnemonic = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+                    (0, utils_1.log)('2 Keypair from restore_keypair_from_mnemonic_default', keypairFromMnemonic);
+                    keyPairStrFromMnemonic = ledger.keypair_to_str(keypairFromMnemonic);
+                    (0, utils_1.log)('2 keyPairStrFromMnemonic', keyPairStrFromMnemonic);
+                    keystoreFromMnemonic = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromMnemonic, password);
+                    (0, utils_1.log)('2 keystoreFromMnemonic', keystoreFromMnemonic);
+                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonic, password)];
+                case 3:
+                    wInfoFromMnemonic = _a.sent();
+                    (0, utils_1.log)('wInfoFromMnemonic', wInfoFromMnemonic);
+                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr, password)];
+                case 4:
+                    wInfoFromPrivateKey = _a.sent();
+                    (0, utils_1.log)('wInfoFromPrivateKey', wInfoFromPrivateKey);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
+// barToAbarAmount();
+// getAbarBalance();
+// keystoreTest();
+// runAbarCreating();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1737,5 +1915,5 @@ function fnsNameResolver() {
 // getNewBalanace();
 // testBrokenKeypairs();
 // getTxnListTest();
-fnsNameResolver();
+// fnsNameResolver();
 //# sourceMappingURL=run.js.map
