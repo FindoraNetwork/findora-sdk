@@ -1,6 +1,7 @@
 import fs from 'fs';
 const crypto = require('crypto');
 
+// NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
 export const uint8arrayToHexStr = (input: Uint8Array): string => Buffer.from(input).toString('hex');
 
 export const writeFile = async (filePath: string, cacheData: string): Promise<true> => {

@@ -1,8 +1,7 @@
 /* eslint-disable no-console */
-import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
+import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
 import Sdk from './Sdk';
@@ -24,17 +23,19 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  // hostUrl: 'http://127.0.0.1',
+  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
+  // hostUrl: 'https://dev-qa01.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
-  blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
+  // hostUrl: 'https://dev-qa02.dev.findora.org',
+  blockScanerUrl: 'https://qa01.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
 };
@@ -102,17 +103,17 @@ const getFraBalance = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
-  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
-    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
-    password,
-  );
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  // const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+  //   password,
+  // );
 
-  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
-  const newWalletMine1 = await Keypair.restoreFromMnemonic(
-    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
-    password,
-  );
+  const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  // const newWalletMine1 = await Keypair.restoreFromMnemonic(
+  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+  //   password,
+  // );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   const newWalletMine2 = await Keypair.restoreFromMnemonic(
@@ -608,58 +609,58 @@ const myFunc18 = async () => {
 };
 
 // s3 cache
-const myFuncS3 = async () => {
-  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
-    process.env;
-  const accessKeyId = AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
-  const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
-  const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
-
-  const s3Params = {
-    accessKeyId,
-    secretAccessKey,
-  };
-
-  const s3 = new S3(s3Params);
-
-  let readRes;
-
-  try {
-    readRes = await s3
-      .getObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-
-  console.log('readRes :)', readRes?.Body?.toString());
-
-  const existingContent = readRes?.Body?.toString('utf8');
-
-  let res;
-
-  const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
-
-  try {
-    res = await s3
-      .putObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-        Body: myBody,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-};
+// const myFuncS3 = async () => {
+//   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+//     process.env;
+//   const accessKeyId = AWS_ACCESS_KEY_ID || '';
+//   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+//   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+//   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+//
+//   const s3Params = {
+//     accessKeyId,
+//     secretAccessKey,
+//   };
+//
+//   const s3 = new S3(s3Params);
+//
+//   let readRes;
+//
+//   try {
+//     readRes = await s3
+//       .getObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+//
+//   console.log('readRes :)', readRes?.Body?.toString());
+//
+//   const existingContent = readRes?.Body?.toString('utf8');
+//
+//   let res;
+//
+//   const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+//
+//   try {
+//     res = await s3
+//       .putObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//         Body: myBody,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+// };
 
 export const delegateFraTransactionSubmit = async () => {
   console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
@@ -1376,16 +1377,20 @@ async function testCommitment() {
   // to store or continue parse_axfr_memo/decrypt_axfr_memo
 }
 
-async function runAbarCreating(iterations = 20) {
-  const anonKeys1 = {
-    axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
-    axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
-  };
+async function runAbarCreating(iterations = 10) {
+  // const anonKeys1 = {
+  //   axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+  //   axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
+  // };
+  //
+  // const anonKeys2 = {
+  //   axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+  //   axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
+  // };
 
-  const anonKeys2 = {
-    axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
-    axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
-  };
+  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const anonKeys1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const anonKeys2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
 
   const wallets = [anonKeys1, anonKeys2];
 
@@ -1662,9 +1667,162 @@ async function fnsNameResolver() {
 
 // prism();
 
+export const getSidsForSingleAsset = async (senderOne: string, assetCode: string) => {
+  log(`//////////////// Get sids for asset ${assetCode} //////////////// `);
+  const walletInfo = await Keypair.restoreFromPrivateKey(senderOne, password);
+
+  const { response: sids } = await Network.getOwnedSids(walletInfo.publickey);
+  if (!sids) {
+    console.log('ERROR no sids available');
+    return [];
+  }
+
+  const utxoDataList = await UtxoHelper.addUtxo(walletInfo, sids);
+
+  const customAssetSids = [];
+  for (const utxoItem of utxoDataList) {
+    const utxoAsset = utxoItem['body']['asset_type'];
+
+    if (utxoAsset === assetCode) {
+      customAssetSids.push(utxoItem['sid']);
+    }
+  }
+  return customAssetSids.sort((a, b) => a - b);
+};
+
+async function barToAbarAmount() {
+  const senderWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const anonKeysReceiver = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+
+  const amount = '12';
+
+  const fraAssetCode = await Asset.getFraAssetCode();
+
+  const {
+    transactionBuilder,
+    barToAbarData,
+    sids: usedSids,
+  } = await TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey);
+
+  log('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+  log('🚀 ~ usedSids', usedSids.join(','));
+
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+
+  log('send bar to abar result handle!!', resultHandle);
+  const givenCommitments = barToAbarData.commitments;
+  console.log('givenCommitments', givenCommitments);
+}
+
+async function getAbarBalance() {
+  const anon2m = [
+    'security',
+    'hood',
+    'catch',
+    'rail',
+    'cabin',
+    'season',
+    'cool',
+    'hint',
+    'ranch',
+    'fruit',
+    'polar',
+    'copper',
+    'mass',
+    'pen',
+    'until',
+    'carpet',
+    'wolf',
+    'screen',
+    'reflect',
+    'pulp',
+    'wing',
+    'blouse',
+    'trigger',
+    'hello',
+  ];
+  // const anonKeysTest = await Keypair.restoreFromMnemonic(anon2m, password);
+  const anonKeysTest = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  console.log('anonKeysTest', anonKeysTest);
+
+  // log('//////////////// bar to abar fra asset transfer ///////////////// ');
+
+  const pkeyAW = '_tIxxQdQKGkFtu8LSW9J8HFMR7P3zgtB8QgWm_mT8GQ=';
+
+  const anonKeys1 = await Keypair.restoreFromPrivateKey(pkeyAW, password);
+
+  // const fraAssetCode = await Asset.getFraAssetCode();
+  console.log('anonKeys1', anonKeys1);
+  // console.log('anonKeys2', anonKeys2);
+
+  const givenCommitments = [
+    // '7wcqJjwMay3pzx53fCuegBUQh5SfpdSwNapfkndiSPaK',
+    // '7gGyjupnuuSaMtjS7jknh7GqUMhXYR5AvQe2VJEsYhLg', // 1.2
+    '3oMJAASbZisccxv4GTbd39zGYG5dE8NAJ9V2zavSRHun', // 1.1
+  ];
+
+  const { error, response: unprocessed } = await Network.getAbarMemos(`111`, `113`);
+  console.log('unprocessed');
+
+  console.dir(unprocessed, { depth: null, colors: true, maxArrayLength: null });
+  if (!unprocessed) {
+    console.log('boommmm');
+    return;
+  }
+
+  for (const abarMemoItem of unprocessed) {
+    console.log('inside for - syncCommitments ');
+    // const decrypted = await TripleMasking.decryptAbarMemo(abarMemoItem, anonKeys1);
+    const decrypted = await TripleMasking.decryptAbarMemo(abarMemoItem, anonKeysTest);
+    console.log('decrypted~~!!');
+    console.dir(decrypted, { depth: null, colors: true, maxArrayLength: null });
+  }
+  // const decrypted = await Api.TripleMasking.decryptAbarMemo(abarMemoItem, b);
+  // const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys1, givenCommitments);
+  // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
+
+  console.log('anon balances');
+  // NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
+  // console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
+}
+
+async function keystoreTest() {
+  const ledger = await getLedger();
+  // creates a XfrKeyPair
+  const keypairFromNewKeypair = ledger.new_keypair();
+  log('1 Keypair from new_keypair', keypairFromNewKeypair);
+
+  const keyPairStrFromNewKeypair = ledger.keypair_to_str(keypairFromNewKeypair);
+  log('1 keyPairStrFromNewKeypair', keyPairStrFromNewKeypair);
+  const keystoreFromNewKeypair = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromNewKeypair, password);
+  log('1 keystoreFromNewKeypair', keystoreFromNewKeypair);
+
+  const mnemonic = await Keypair.getMnemonic(24);
+
+  const keypairFromMnemonic = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+  log('2 Keypair from restore_keypair_from_mnemonic_default', keypairFromMnemonic);
+
+  const keyPairStrFromMnemonic = ledger.keypair_to_str(keypairFromMnemonic);
+  log('2 keyPairStrFromMnemonic', keyPairStrFromMnemonic);
+  const keystoreFromMnemonic = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromMnemonic, password);
+  log('2 keystoreFromMnemonic', keystoreFromMnemonic);
+
+  const wInfoFromMnemonic = await Keypair.restoreFromMnemonic(mnemonic, password);
+  log('wInfoFromMnemonic', wInfoFromMnemonic);
+
+  const wInfoFromPrivateKey = await Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr!, password);
+  log('wInfoFromPrivateKey', wInfoFromPrivateKey);
+}
 // approveToken();
 // testItSync();
-// getFraBalance();
+
+getFraBalance();
+// barToAbarAmount();
+// getAbarBalance();
+// keystoreTest();
+
+// runAbarCreating();
+
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1677,4 +1835,4 @@ async function fnsNameResolver() {
 
 // getTxnListTest();
 
-fnsNameResolver();
+// fnsNameResolver();

@@ -42,6 +42,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.delay = exports.wait = exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var crypto = require('crypto');
+// NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
 exports.uint8arrayToHexStr = uint8arrayToHexStr;
 var writeFile = function (filePath, cacheData) { return __awaiter(void 0, void 0, void 0, function () {
