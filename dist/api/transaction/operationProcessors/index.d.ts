@@ -1,6 +1,6 @@
 import * as Types from '../types';
 import { ProcessedClaim } from './claim';
-import { ProcessedConvertAccount } from './converAccount';
+import { ProcessedConvertAccount } from './convertAccount';
 import { ProcessedDefineAsset } from './defineAsset';
 import { ProcessedDelegation } from './delegation';
 import { ProcessedIssueAsset } from './issueAsset';

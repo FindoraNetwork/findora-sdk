@@ -2,7 +2,16 @@
   "entryPoints": ["./src"],
   "out": "docs",
   "excludeExternals": true,
-  "exclude": "**/*+(index|.spec|.e2e).ts",
+  "exclude": [
+    "**/*+(index|.spec|.e2e).ts",
+    "**/*.test.ts*",
+    "**/*.test.tsx*",
+    "./src/cli//*",
+    "./src/evm/*",
+    "./src/run*.ts",
+    "./src/integration.ts",
+    "./src/services/cacheStore/*"
+  ],
   "theme": "default",
   "name": "Findora Sdk",
   "excludePrivate": true,
