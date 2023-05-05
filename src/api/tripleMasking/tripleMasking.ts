@@ -588,7 +588,7 @@ export const barToAbarAmount = async (
  *
  * @remarks
  * Using a given array of utxo sids, this function fetches the associated utxo objects and confidentially transfers those 
- * utxos (bars) to a given receiverPublicKey. After the transaction is submitted, the reciver will recive a list of one (or multiple)
+ * utxos (bars) to a given receiverPublicKey. After the transaction is submitted, the receiver will receive a list of one (or multiple)
  * atxos (aka abars).
  * Please note, this function is only meant to transfer the particularly provided utxos, and it is not used for transferring a custom 
  * amount. To transfer the custom amount, please use `barToAbarAmount`
@@ -1214,8 +1214,8 @@ export const getAbarToAbarAmountPayload = async (
 *  }
 * ```
 *
-* @throws 'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount'
-* @throws 'Could not process abar transfer. More fee are needed. Required amount at least "${calculatedFee} FRA"'
+* @throws 'The amount you are trying to send might be too big to be sent at once. Please try sending a smaller amount'
+* @throws 'Could not process abar transfer. More fees are needed. Required amount at least "${calculatedFee} FRA"'
 * @throws 'Could not build and sign abar transfer operation'
 * @throws 'Could not get a list of commitments strings '
 *
@@ -1238,7 +1238,7 @@ export const abarToAbar = async (
     );
   } catch (error) {
     throw new Error(
-      'The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount',
+      'The amount you are trying to send might be too big to be sent at once. Please try sending a smaller amount',
     );
   }
   console.log(`🚀 ~ file: tripleMasking.ts ~ line 308 ~ we need ${calculatedFee} more FRA to pay fee`);
@@ -1248,7 +1248,7 @@ export const abarToAbar = async (
   const isMoreFeeNeeded = balanceAfterSendToBN.gt(createBigNumber(0));
 
   if (isMoreFeeNeeded) {
-    const msg = `Could not process abar transfer. More fee are needed. Required amount at least "${calculatedFee} FRA"`;
+    const msg = `Could not process abar transfer. More fees are needed. Required amount at least "${calculatedFee} FRA"`;
     throw new Error(msg);
   }
 
@@ -1295,8 +1295,8 @@ export const abarToAbar = async (
  * transfer fee. 
  * Using a given array of provided abars, (which are owned by the sender and are non-spent), sender can transfer the 
  * exact amount of the asset associated with the provided abars, to the receiver publickey. 
- * Please note, that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
- * and remained abars could be either FRA asset, or other custom assets. 
+ * Please note that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets. 
  *
  * @example
  *
@@ -1315,7 +1315,7 @@ export const abarToAbar = async (
  *
  * @remarks
 
- Please also keep in mind, that this function returns an object `abarToBarData` which contains information about the new commitments,
+ Please also keep in mind that this function returns an object `abarToBarData` which contains information about the new commitments,
  both for the sender (i.e. with the remainders from the transfer) and for the receiver (with a destination abar commitment value).
 
  Those commitments could be retrieved in this way. 
@@ -1388,8 +1388,8 @@ export const abarToAbarAmount = async (
  * @remarks
  * Using a given array of provided abars, (which are owned by the sender and are non-spent), sender can transfer 
  * those abars to the receiverPublickey. 
- * Please note, that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
- * and remained abars could be either FRA asset, or other custom assets. 
+ * Please note that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets. 
  *
  * @example
  *
@@ -1503,8 +1503,8 @@ export const getAbarToBarAmountPayload = async (
  * @remarks
  * Using a given array of provided commitments, (and associated abars that are owned by the sender and are non-spent), sender can transfer the 
  * exact amount of the asset associated with the provided abars, to the receiver publickey. 
- * Please note, that the provided commitments must contain at least one abar with FRA asset, as that would be used to pay the fee,
- * and remained abars could be either FRA asset, or other custom assets. 
+ * Please note that the provided commitments must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets. 
  * Its return value also contains a list of commitments spent during this operation, and a list of commitments with the transfer remainders (if any)
  *
  * @example
