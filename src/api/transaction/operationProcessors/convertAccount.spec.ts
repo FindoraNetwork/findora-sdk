@@ -2,9 +2,9 @@ import '@testing-library/jest-dom/extend-expect';
 
 import * as KeypairApi from '../../keypair/keypair';
 import { TxOperation } from '../types';
-import { processConvertAccount } from './converAccount';
+import { processConvertAccount } from './convertAccount';
 
-describe('converAccount (processor) (unit test)', () => {
+describe('convertAccount (processor) (unit test)', () => {
   describe('processConvertAccount', () => {
     it('returns properly processed data', async () => {
       const address = 'barfoo';
