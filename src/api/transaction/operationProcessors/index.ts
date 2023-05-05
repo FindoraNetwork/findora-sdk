@@ -2,7 +2,7 @@ import _get from 'lodash/get';
 
 import * as Types from '../types';
 import { processClaim, ProcessedClaim } from './claim';
-import { processConvertAccount, ProcessedConvertAccount } from './converAccount';
+import { processConvertAccount, ProcessedConvertAccount } from './convertAccount';
 import { processDefineAsset, ProcessedDefineAsset } from './defineAsset';
 import { processDelegation, ProcessedDelegation } from './delegation';
 import { ProcessedIssueAsset, processIssueAsset } from './issueAsset';
