@@ -1,6 +1,5 @@
-import * as Integration from './tripleMasking.integration';
-
 import { waitForBlockChange } from '../evm/testHelpers';
+import * as Integration from './tripleMasking.integration';
 
 const extendedExecutionTimeout = 540000;
 
@@ -87,6 +86,14 @@ describe(`Triple Masking Integration (integration test)`, () => {
       'Should convert ABAR to BAR, and verify balances of ABAR and BAR',
       async () => {
         const result = await Integration.abarToBar();
+        expect(result).toBe(true);
+      },
+      extendedExecutionTimeout,
+    );
+    it(
+      'Should convert ABAR to BAR having amount and asset types hidden, and verify balances of ABAR and BAR',
+      async () => {
+        const result = await Integration.abarToBarWithHiddenAmountAndType();
         expect(result).toBe(true);
       },
       extendedExecutionTimeout,

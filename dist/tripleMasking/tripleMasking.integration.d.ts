@@ -15,5 +15,6 @@ export declare const abarToAbarMulti: (givenAnonKeysReceiver?: Keypair.WalletKey
 export declare const abarToAbarFraMultipleFraAtxoForFeeSendAmount: (givenAnonKeysReceiver?: Keypair.WalletKeypar) => Promise<boolean>;
 export declare const abarToAbarCustomMultipleFraAtxoForFeeSendAmount: (givenAnonKeysReceiver?: Keypair.WalletKeypar) => Promise<boolean>;
 export declare const abarToBar: () => Promise<boolean>;
+export declare const abarToBarWithHiddenAmountAndType: () => Promise<boolean>;
 export declare const abarToBarCustomSendAmount: () => Promise<boolean>;
 export declare const abarToBarFraSendAmount: () => Promise<boolean>;

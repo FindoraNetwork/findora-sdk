@@ -59,8 +59,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Integration = __importStar(require("./tripleMasking.integration"));
 var testHelpers_1 = require("../evm/testHelpers");
+var Integration = __importStar(require("./tripleMasking.integration"));
 var extendedExecutionTimeout = 540000;
 afterAll(function (done) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
@@ -181,6 +181,18 @@ describe("Triple Masking Integration (integration test)", function () {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0: return [4 /*yield*/, Integration.abarToBar()];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toBe(true);
+                        return [2 /*return*/];
+                }
+            });
+        }); }, extendedExecutionTimeout);
+        it('Should convert ABAR to BAR having amount and asset types hidden, and verify balances of ABAR and BAR', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0: return [4 /*yield*/, Integration.abarToBarWithHiddenAmountAndType()];
                     case 1:
                         result = _a.sent();
                         expect(result).toBe(true);
