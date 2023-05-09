@@ -77,6 +77,17 @@ export interface BarToAbarResult<T> {
     barToAbarData: BarToAbarData;
     sids: number[];
 }
+export interface AbarToAbarResult<T> {
+    anonTransferOperationBuilder: T;
+    abarToAbarData: AbarToAbarData;
+}
+export interface AbarToBarResult<T> {
+    transactionBuilder: T;
+    abarToBarData: AbarToBarData;
+    receiverXfrPublicKey: string;
+    spentCommitments?: string[];
+    remainderCommitements?: string[];
+}
 export interface AnonKeysResponse<T> {
     keysInstance: T;
     formatted: FormattedAnonKeys;
