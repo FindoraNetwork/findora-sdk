@@ -3,7 +3,7 @@ import Sdk from '../../Sdk';
 import { create as createBigNumber, fromWei, plus, toWei } from '../../services/bigNumber';
 import { getFeeInputs } from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { TransactionBuilder, AnonTransferOperationBuilder } from '../../services/ledger/types';
+import { AnonTransferOperationBuilder, TransactionBuilder } from '../../services/ledger/types';
 import { generateSeedString, log } from '../../services/utils';
 import { addUtxo, AddUtxoItem, getUtxoWithAmount } from '../../services/utxoHelper';
 import * as FindoraWallet from '../../types/findoraWallet';
@@ -1390,6 +1390,7 @@ export const abarToAbarAmount = async (
  * those abars to the receiverPublickey. 
  * Please note that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
  * and remaining abars could be either FRA asset, or other custom assets. 
+ * Also, by specifying `hideAmount` and `hideAssetType` parameters, user can have either (or both) of them hidden.
  *
  * @example
  *
@@ -1410,6 +1411,8 @@ export const abarToBar = async (
   anonKeysSender: Keypair.WalletKeypar,
   receiverXfrPublicKey: string,
   additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[],
+  hideAmount = false,
+  hideAssetType = false,
 ): Promise<FindoraWallet.AbarToBarResult<TransactionBuilder>> => {
   let transactionBuilder = await Builder.getTransactionBuilder();
 
@@ -1428,8 +1431,8 @@ export const abarToBar = async (
       abarPayloadSource.myMTLeafInfo,
       aXfrSpendKeySender,
       receiverXfrPublicKeyConverted,
-      false,
-      false,
+      hideAmount,
+      hideAssetType,
     );
   } catch (error) {
     console.log('Error adding Abar to bar', error);
@@ -1446,8 +1449,8 @@ export const abarToBar = async (
         abarPayloadNext.myMTLeafInfo,
         aXfrSpendKeySender,
         receiverXfrPublicKeyConverted,
-        false,
-        false,
+        hideAmount,
+        hideAssetType,
       );
     } catch (error) {
       console.log('Error from the backend:', error);
@@ -1505,7 +1508,8 @@ export const getAbarToBarAmountPayload = async (
  * exact amount of the asset associated with the provided abars, to the receiver publickey. 
  * Please note that the provided commitments must contain at least one abar with FRA asset, as that would be used to pay the fee,
  * and remaining abars could be either FRA asset, or other custom assets. 
- * Its return value also contains a list of commitments spent during this operation, and a list of commitments with the transfer remainders (if any)
+ * Its return value also contains a list of commitments spent during this operation, and a list of commitments with the transfer remainders (if any).
+ * Also, by specifying `hideAmount` and `hideAssetType` parameters, user can have either (or both) of them hidden.
  *
  * @example
  * ```ts
@@ -1529,6 +1533,8 @@ export const abarToBarAmount = async (
   amount: string,
   assetCode: string,
   givenCommitmentsList: string[],
+  hideAmount = false,
+  hideAssetType = false,
 ): Promise<Required<FindoraWallet.AbarToBarResult<TransactionBuilder>>> => {
   const payload = await getAbarToBarAmountPayload(anonKeysSender, amount, assetCode, givenCommitmentsList);
 
@@ -1586,7 +1592,13 @@ export const abarToBarAmount = async (
     additionalOwnedAbarItems.push(additionalOwnedAbarItem);
   }
 
-  const abarToBarResult = await abarToBar(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems);
+  const abarToBarResult = await abarToBar(
+    anonKeysSender,
+    receiverXfrPublicKey,
+    additionalOwnedAbarItems,
+    hideAmount,
+    hideAssetType,
+  );
 
   return { ...abarToBarResult, remainderCommitements, spentCommitments: givenCommitmentsListSender };
 };

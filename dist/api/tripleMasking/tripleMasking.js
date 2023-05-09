@@ -589,6 +589,25 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getAllAbarBalances = getAllAbarBalances;
+/**
+ * Transfer the exact amount of funds from a 'transparent' to 'anonymous' wallet
+ *
+ * @remarks
+ * This function is used to transfer the exact amount of provided asset code from the sender to the receiver.
+ * It is calling `sendToAddress` function to obtain an utxo with the exact amount, and then it is calling `barToAbar`
+ * with a fetched utxo sid number
+  *
+ * @example
+ *
+ * ```ts
+  // returns a tx builder to be submitted to the nextwork
+  const { transactionBuilder } = await barToAbarAmount(senderWalletInfo, amount, fraAssetCode, receiverPublickey);
+
+  // tx hash
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+ * @returns a promise with an object that contains the TransactionBuilder, which should be used in `Transaction.submitTransaction`
+ */
 var barToAbarAmount = function (walletInfo, amount, assetCode, receiverAxfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var assetBlindRules, transactionBuilder, sendResultHandle, asset, decimals, utxoNumbers, utxoToUse, barToAbarResult;
     return __generator(this, function (_a) {
@@ -623,9 +642,39 @@ var barToAbarAmount = function (walletInfo, amount, assetCode, receiverAxfrPubli
     });
 }); };
 exports.barToAbarAmount = barToAbarAmount;
-var barToAbar = function (walletInfo, sids, 
-// receiverAxfrPublicKey: string,
-receiverXfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Transfer funds from a 'transparent' to 'anonymous' wallet
+ *
+ * @remarks
+ * Using a given array of utxo sids, this function fetches the associated utxo objects and confidentially transfers those
+ * utxos (bars) to a given receiverPublicKey. After the transaction is submitted, the receiver will receive a list of one (or multiple)
+ * atxos (aka abars).
+ * Please note, this function is only meant to transfer the particularly provided utxos, and it is not used for transferring a custom
+ * amount. To transfer the custom amount, please use `barToAbarAmount`
+  *
+ * @example
+ *
+ * ```ts
+  // returns a tx builder to be submitted to the nextwork
+  const { transactionBuilder } = await TripleMasking.barToAbar(senderWalletInfo, arrayOfUtxoSids, receiverPublickey);
+
+  // tx hash
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+ * ```
+
+    @throws `Could not fetch utxo for sids `
+    @throws `Could not fetch memo data for sid `
+    @throws `Could not get decode memo data or get assetRecord`
+    @throws `Could not add bar to abar operation`
+    @throws `Could not get fee inputs for bar to abar operation`
+    @throws `Could not add fee for bar to abar operation`
+    @throws `could not get a list of commitments strings `
+    @throws `list of commitments strings is empty`
+    @throws `could not build and sign txn`
+
+ * @returns a promise with an object that contains the TransactionBuilder, which should be used in `Transaction.submitTransaction`
+ */
+var barToAbar = function (walletInfo, sids, receiverPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, transactionBuilder, utxoDataList, error_4, _i, utxoDataList_1, utxoItem, sid, memoDataResult, myMemoData, memoError, ownerMemo, assetRecord, seed, receiverXfrPublicKeyConverted, feeInputs, error_5, commitments, barToAbarData;
     var _a;
     return __generator(this, function (_b) {
@@ -646,7 +695,7 @@ receiverXfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
                 return [3 /*break*/, 6];
             case 5:
                 error_4 = _b.sent();
-                throw new Error("could not fetch utxo for sids ".concat(sids.join(',')));
+                throw new Error("Could not fetch utxo for sids ".concat(sids.join(',')));
             case 6:
                 _i = 0, utxoDataList_1 = utxoDataList;
                 _b.label = 7;
@@ -671,13 +720,11 @@ receiverXfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
                     throw new Error("Could not get decode memo data or get assetRecord\", Error - ".concat(error));
                 }
                 seed = (0, utils_1.generateSeedString)();
-                return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey)];
+                return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverPublicKey)];
             case 9:
                 receiverXfrPublicKeyConverted = _b.sent();
                 try {
-                    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(seed, walletInfo.keypair, 
-                    // receiverXfrPublicKey,
-                    receiverXfrPublicKeyConverted, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone());
+                    transactionBuilder = transactionBuilder.add_operation_bar_to_abar(seed, walletInfo.keypair, receiverXfrPublicKeyConverted, BigInt(sid), assetRecord, ownerMemo === null || ownerMemo === void 0 ? void 0 : ownerMemo.clone());
                 }
                 catch (error) {
                     throw new Error("Could not add bar to abar operation\", Error - ".concat(error));
@@ -696,17 +743,15 @@ receiverXfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
                 error_5 = _b.sent();
                 throw new Error("Could not get fee inputs for bar to abar operation\", Error - ".concat(error_5));
             case 14:
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 555 ~ feeInputs', feeInputs);
                 try {
                     transactionBuilder = transactionBuilder.add_fee_bar_to_abar(feeInputs);
                 }
                 catch (error) {
-                    console.log('Full error', error);
-                    throw new Error("Could not add fee for bar to abar operation\", Error - ".concat(error));
+                    console.log('Full error while trying to execute add_fee_bar_to_abar', error);
+                    throw new Error("Could not add fee for bar to abar operation, Error - ".concat(error));
                 }
                 try {
                     commitments = transactionBuilder === null || transactionBuilder === void 0 ? void 0 : transactionBuilder.get_commitments();
-                    // console.log('🚀 ~ file: tripleMasking.ts ~ line 575 ~ commitments', commitments);
                 }
                 catch (err) {
                     throw new Error("could not get a list of commitments strings \"".concat(err, "\" "));
@@ -715,8 +760,7 @@ receiverXfrPublicKey) { return __awaiter(void 0, void 0, void 0, function () {
                     throw new Error("list of commitments strings is empty ");
                 }
                 barToAbarData = {
-                    // receiverAxfrPublicKey,
-                    receiverXfrPublicKey: receiverXfrPublicKey,
+                    receiverXfrPublicKey: receiverPublicKey,
                     commitments: commitments.commitments,
                 };
                 try {
@@ -1132,9 +1176,63 @@ anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { r
     });
 }); };
 exports.getAbarToAbarAmountPayload = getAbarToAbarAmountPayload;
-var abarToAbar = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
+/**
+ * Transfer funds from an 'anonymous' to another 'anonymous' wallet
+ *
+ * @remarks
+ * Using a given array of provided abars, (which are owned by the sender and are non-spent), sender can transfer the
+ * exact amount of the asset associated with the provided abars, to the receiver publickey.
+ * Please note, that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remained abars could be either FRA asset, or other custom assets.
+ *
+ * @example
+ *
+ * ```ts
+ * const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbar(
+ *    anonKeysSender,
+ *    anonKeysReceiver.publickey,
+ *    '2',
+ *    additionalOwnedAbarItems,
+ *  );
+
+  // tx hash
+ *  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+ * ```
+ *
+ * @remarks
+
+ Please also keep in mind, that this function returns an object `abarToBarData` which contains information about the new commitments,
+ both for the sender (i.e. with the remainders from the transfer) and for the receiver (with a destination abar commitment value).
+
+ Those commitments could be retrieved in this way.
+
+* ```ts
+*  const { commitmentsMap } = abarToAbarData;
+*
+*  const retrievedCommitmentsListReceiver = [];
+*  const retrievedCommitmentsListSender= [];
+*
+*  for (const commitmentsMapEntry of commitmentsMap) {
+*    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+*
+*    if (commitmentAxfrPublicKey === anonKeysSender.publickey) {
+*      givenCommitmentsListSender.push(commitmentKey);
+*    }
+*
+*    if (commitmentAxfrPublicKey === anonKeysReceiver.publickey) {
+*      retrievedCommitmentsListReceiver.push(commitmentKey);
+*    }
+*  }
+* ```
+*
+* @throws 'The amount you are trying to send might be too big to be sent at once. Please try sending a smaller amount'
+* @throws 'Could not process abar transfer. More fees are needed. Required amount at least "${calculatedFee} FRA"'
+* @throws 'Could not build and sign abar transfer operation'
+* @throws 'Could not get a list of commitments strings '
+*
+* @returns a promise with an object, containing the AnonTransferOperationBuilder, which should be used in `Transaction.submitAbarTransaction`
+*/
+var abarToAbar = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var calculatedFee, error_10, balanceAfterSendToBN, isMoreFeeNeeded, msg, anonTransferOperationBuilder, commitmentsMap, processedCommitmentsMap, abarToAbarData;
@@ -1148,13 +1246,13 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
                     return [3 /*break*/, 3];
                 case 2:
                     error_10 = _a.sent();
-                    throw new Error('4 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
+                    throw new Error('The amount you are trying to send might be too big to be sent at once. Please try sending a smaller amount');
                 case 3:
                     console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
                     balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                     isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                     if (isMoreFeeNeeded) {
-                        msg = "Could not process abar transfer. More fee are needed. Required amount at least \"".concat(calculatedFee, " FRA\"");
+                        msg = "Could not process abar transfer. More fees are needed. Required amount at least \"".concat(calculatedFee, " FRA\"");
                         throw new Error(msg);
                     }
                     return [4 /*yield*/, (0, exports.prepareAnonTransferOperationBuilder)(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems)];
@@ -1166,7 +1264,7 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
                     catch (error) {
                         console.log('🚀 ~ file: tripleMasking.ts ~ line 320 ~ error', error);
                         console.log('Full Error: ', error);
-                        throw new Error("Could not build and sign abar transfer operation\", Error - ".concat(error));
+                        throw new Error("Could not build and sign abar transfer operation, Error - ".concat(error));
                     }
                     try {
                         commitmentsMap = anonTransferOperationBuilder === null || anonTransferOperationBuilder === void 0 ? void 0 : anonTransferOperationBuilder.get_commitment_map();
@@ -1188,9 +1286,62 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
     });
 };
 exports.abarToAbar = abarToAbar;
-var abarToAbarAmount = function (anonKeysSender, 
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Transfer funds of the specific asset from an 'anonymous' to another 'anonymous' wallet
+ *
+ * @remarks
+ * Using a given asset code and the amount, this function executes a confidential transfer. Abars for the transfer are
+ * being retrieved using provided commitments array. The retrieved abars array must have enough FRA abars to cover the
+ * transfer fee.
+ * Using a given array of provided abars, (which are owned by the sender and are non-spent), sender can transfer the
+ * exact amount of the asset associated with the provided abars, to the receiver publickey.
+ * Please note that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets.
+ *
+ * @example
+ *
+ * ```ts
+ * const { anonTransferOperationBuilder, abarToAbarData } = await TripleMasking.abarToAbarAmount(
+ *   anonKeysSender,
+ *   anonKeysReceiver.publickey,
+ *   amountToSend,
+ *   assetCodeToUse,
+ *   givenCommitmentsListSender,
+ * );
+
+ * // tx hash
+ *  const resultHandle = await Transaction.submitAbarTransaction(anonTransferOperationBuilder);
+ * ```
+ *
+ * @remarks
+
+ Please also keep in mind that this function returns an object `abarToBarData` which contains information about the new commitments,
+ both for the sender (i.e. with the remainders from the transfer) and for the receiver (with a destination abar commitment value).
+
+ Those commitments could be retrieved in this way.
+
+* ```ts
+*  const { commitmentsMap } = abarToAbarData;
+*
+*  const retrievedCommitmentsListReceiver = [];
+*  const retrievedCommitmentsListSender= [];
+*
+*  for (const commitmentsMapEntry of commitmentsMap) {
+*    const { commitmentKey, commitmentAxfrPublicKey } = commitmentsMapEntry;
+*
+*    if (commitmentAxfrPublicKey === anonKeysSender.publickey) {
+*      givenCommitmentsListSender.push(commitmentKey);
+*    }
+*
+*    if (commitmentAxfrPublicKey === anonKeysReceiver.publickey) {
+*      retrievedCommitmentsListReceiver.push(commitmentKey);
+*    }
+*  }
+* ```
+*
+* @returns a promise with an object, containing the AnonTransferOperationBuilder, which should be used in `Transaction.submitAbarTransaction`
+*/
+var abarToAbarAmount = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, commitmentsToSend, commitmentsForFee, allCommitments, additionalOwnedAbarItems, _i, allCommitments_1, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, abarToAbarResult;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -1224,65 +1375,92 @@ anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(
     });
 }); };
 exports.abarToAbarAmount = abarToAbarAmount;
-var abarToBar = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, receiverXfrPublicKeyConverted, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, Builder.getTransactionBuilder()];
-            case 1:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey)];
-            case 2:
-                receiverXfrPublicKeyConverted = _a.sent();
-                return [4 /*yield*/, (0, exports.getAnonKeypairFromJson)(anonKeysSender)];
-            case 3:
-                aXfrSpendKeySender = (_a.sent()).aXfrSecretKeyConverted;
-                ownedAbarToUseAsSource = additionalOwnedAbarItems[0], additionalOwnedAbars = additionalOwnedAbarItems.slice(1);
-                return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
-            case 4:
-                abarPayloadSource = _a.sent();
-                try {
-                    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadSource.myOwnedAbar, abarPayloadSource.abarOwnerMemo, abarPayloadSource.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, false, false);
-                }
-                catch (error) {
-                    console.log('Error adding Abar to bar', error);
-                    throw new Error("Could not add abar to bar operation\", Error - ".concat(error));
-                }
-                _i = 0, additionalOwnedAbars_2 = additionalOwnedAbars;
-                _a.label = 5;
-            case 5:
-                if (!(_i < additionalOwnedAbars_2.length)) return [3 /*break*/, 8];
-                ownedAbarItemOne = additionalOwnedAbars_2[_i];
-                return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
-            case 6:
-                abarPayloadNext = _a.sent();
-                try {
-                    transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, abarPayloadNext.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, false, false);
-                }
-                catch (error) {
-                    console.log('Error from the backend:', error);
-                    throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - ".concat(error.message));
-                }
-                _a.label = 7;
-            case 7:
-                _i++;
-                return [3 /*break*/, 5];
-            case 8:
-                try {
-                    transactionBuilder = transactionBuilder.build();
-                }
-                catch (err) {
-                    throw new Error("could not build txn \"".concat(err, "\""));
-                }
-                abarToBarData = {
-                    anonKeysSender: anonKeysSender,
-                };
-                return [2 /*return*/, { transactionBuilder: transactionBuilder, abarToBarData: abarToBarData, receiverXfrPublicKey: receiverXfrPublicKey }];
-        }
+/**
+ * Transfer funds from an 'anonymous' to a 'transparent' wallet
+ *
+ * @remarks
+ * Using a given array of provided abars, (which are owned by the sender and are non-spent), sender can transfer
+ * those abars to the receiverPublickey.
+ * Please note that the provided abars must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets.
+ * Also, by specifying `hideAmount` and `hideAssetType` parameters, user can have either (or both) of them hidden.
+ *
+ * @example
+ *
+ * ```ts
+  const { transactionBuilder } = await TripleMasking.abarToBar(anonKeysSender, receiverPublickey, abarsList);
+
+  // tx hash
+  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+  
+ * ```
+* @throws `Could not add abar to bar operation", Error - ${error as Error}`
+* @throws `Could not add an additional input for abar to bar transfer operation`
+* @throws `Could not build txn`
+*
+* @returns a promise with an object, containing the TransactionBuilder, which should be used in `Transaction.submitTransaction`
+*/
+var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems, hideAmount, hideAssetType) {
+    if (hideAmount === void 0) { hideAmount = false; }
+    if (hideAssetType === void 0) { hideAssetType = false; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var transactionBuilder, receiverXfrPublicKeyConverted, aXfrSpendKeySender, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadSource, _i, additionalOwnedAbars_2, ownedAbarItemOne, abarPayloadNext, abarToBarData;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, Builder.getTransactionBuilder()];
+                case 1:
+                    transactionBuilder = _a.sent();
+                    return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(receiverXfrPublicKey)];
+                case 2:
+                    receiverXfrPublicKeyConverted = _a.sent();
+                    return [4 /*yield*/, (0, exports.getAnonKeypairFromJson)(anonKeysSender)];
+                case 3:
+                    aXfrSpendKeySender = (_a.sent()).aXfrSecretKeyConverted;
+                    ownedAbarToUseAsSource = additionalOwnedAbarItems[0], additionalOwnedAbars = additionalOwnedAbarItems.slice(1);
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarToUseAsSource, anonKeysSender)];
+                case 4:
+                    abarPayloadSource = _a.sent();
+                    try {
+                        transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadSource.myOwnedAbar, abarPayloadSource.abarOwnerMemo, abarPayloadSource.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, hideAmount, hideAssetType);
+                    }
+                    catch (error) {
+                        console.log('Error adding Abar to bar', error);
+                        throw new Error("Could not add abar to bar operation\", Error - ".concat(error));
+                    }
+                    _i = 0, additionalOwnedAbars_2 = additionalOwnedAbars;
+                    _a.label = 5;
+                case 5:
+                    if (!(_i < additionalOwnedAbars_2.length)) return [3 /*break*/, 8];
+                    ownedAbarItemOne = additionalOwnedAbars_2[_i];
+                    return [4 /*yield*/, getAbarTransferInputPayload(ownedAbarItemOne, anonKeysSender)];
+                case 6:
+                    abarPayloadNext = _a.sent();
+                    try {
+                        transactionBuilder = transactionBuilder.add_operation_abar_to_bar(abarPayloadNext.myOwnedAbar, abarPayloadNext.abarOwnerMemo, abarPayloadNext.myMTLeafInfo, aXfrSpendKeySender, receiverXfrPublicKeyConverted, hideAmount, hideAssetType);
+                    }
+                    catch (error) {
+                        console.log('Error from the backend:', error);
+                        throw new Error("Could not add an additional input for abar to bar transfer operation\", Error - ".concat(error.message));
+                    }
+                    _a.label = 7;
+                case 7:
+                    _i++;
+                    return [3 /*break*/, 5];
+                case 8:
+                    try {
+                        transactionBuilder = transactionBuilder.build();
+                    }
+                    catch (err) {
+                        throw new Error("could not build txn \"".concat(err, "\""));
+                    }
+                    abarToBarData = {
+                        anonKeysSender: anonKeysSender,
+                    };
+                    return [2 /*return*/, { transactionBuilder: transactionBuilder, abarToBarData: abarToBarData, receiverXfrPublicKey: receiverXfrPublicKey }];
+            }
+        });
     });
-}); };
+};
 exports.abarToBar = abarToBar;
 var getAbarToBarAmountPayload = function (
 // anonKeysSender: FindoraWallet.FormattedAnonKeys,
@@ -1304,73 +1482,101 @@ anonKeysSender, amount, assetCode, givenCommitmentsList) { return __awaiter(void
     });
 }); };
 exports.getAbarToBarAmountPayload = getAbarToBarAmountPayload;
-var abarToBarAmount = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, receiverXfrPublicKey, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
-    var payload, commitmentsToSend, commitmentsForFee, givenCommitmentsListSender, _a, anonTransferOperationBuilder, abarToAbarData, asset, decimals, amountToSendInWei, _resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, remainderCommitements, _i, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAmount, commitmentAssetType, commitmentAmountInWei, isSameAssetType, isSameAmount, allCommitments, additionalOwnedAbarItems, _b, allCommitments_2, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, abarToBarResult;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
-            case 0: return [4 /*yield*/, (0, exports.getAbarToBarAmountPayload)(anonKeysSender, amount, assetCode, givenCommitmentsList)];
-            case 1:
-                payload = _c.sent();
-                commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee;
-                givenCommitmentsListSender = __spreadArray(__spreadArray([], commitmentsToSend, true), commitmentsForFee, true);
-                return [4 /*yield*/, (0, exports.abarToAbarAmount)(anonKeysSender, anonKeysSender.publickey, amount, assetCode, givenCommitmentsListSender)];
-            case 2:
-                _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
-                return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
-            case 3:
-                asset = _c.sent();
-                decimals = asset.assetRules.decimals;
-                amountToSendInWei = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                return [4 /*yield*/, Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
-            case 4:
-                _resultHandle = _c.sent();
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR)];
-            case 5:
-                _c.sent();
-                console.log('abar transaction handle', _resultHandle);
-                commitmentsMap = abarToAbarData.commitmentsMap;
-                retrivedCommitmentsListReceiver = [];
-                remainderCommitements = [];
-                for (_i = 0, commitmentsMap_1 = commitmentsMap; _i < commitmentsMap_1.length; _i++) {
-                    commitmentsMapEntry = commitmentsMap_1[_i];
-                    commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAmount = commitmentsMapEntry.commitmentAmount, commitmentAssetType = commitmentsMapEntry.commitmentAssetType;
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 863 ~ commitmentsMapEntry', commitmentsMapEntry);
-                    commitmentAmountInWei = BigInt((0, bigNumber_1.toWei)(commitmentAmount, decimals).toString());
-                    isSameAssetType = commitmentAssetType === assetCode;
-                    isSameAmount = commitmentAmountInWei === amountToSendInWei;
-                    if (isSameAssetType && isSameAmount) {
-                        console.log('🚀 ~ file: tripleMasking.ts ~ line 904 ~ commitmentAmountInWei', commitmentAmountInWei);
-                        console.log('🚀 ~ file: tripleMasking.ts ~ line 906 ~ amountToSendInWei!!!', amountToSendInWei);
-                        retrivedCommitmentsListReceiver.push(commitmentKey);
-                        continue;
+/**
+ * Transfer the exact amount of the provided asset from an 'anonymous' to a 'transparent' wallet
+ *
+ * @remarks
+ * Using a given array of provided commitments, (and associated abars that are owned by the sender and are non-spent), sender can transfer the
+ * exact amount of the asset associated with the provided abars, to the receiver publickey.
+ * Please note that the provided commitments must contain at least one abar with FRA asset, as that would be used to pay the fee,
+ * and remaining abars could be either FRA asset, or other custom assets.
+ * Its return value also contains a list of commitments spent during this operation, and a list of commitments with the transfer remainders (if any).
+ * Also, by specifying `hideAmount` and `hideAssetType` parameters, user can have either (or both) of them hidden.
+ *
+ * @example
+ * ```ts
+ * const { transactionBuilder, remainderCommitements, spentCommitments } = await TripleMasking.abarToBarAmount(
+ *   anonKeysSender,
+ *   toWalletInfo.publickey,
+ *   amountToSend,
+ *   assetCodeToUse,
+ *   givenCommitmentsListSender,
+ * );
+ *
+ * // tx hash
+ * const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+  
+ * ```
+* @returns a promise with an object, containing the TransactionBuilder, which should be used in `Transaction.submitTransaction`
+*/
+var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, assetCode, givenCommitmentsList, hideAmount, hideAssetType) {
+    if (hideAmount === void 0) { hideAmount = false; }
+    if (hideAssetType === void 0) { hideAssetType = false; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var payload, commitmentsToSend, commitmentsForFee, givenCommitmentsListSender, _a, anonTransferOperationBuilder, abarToAbarData, asset, decimals, amountToSendInWei, _resultHandle, commitmentsMap, retrivedCommitmentsListReceiver, remainderCommitements, _i, commitmentsMap_1, commitmentsMapEntry, commitmentKey, commitmentAmount, commitmentAssetType, commitmentAmountInWei, isSameAssetType, isSameAmount, allCommitments, additionalOwnedAbarItems, _b, allCommitments_2, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, abarToBarResult;
+        return __generator(this, function (_c) {
+            switch (_c.label) {
+                case 0: return [4 /*yield*/, (0, exports.getAbarToBarAmountPayload)(anonKeysSender, amount, assetCode, givenCommitmentsList)];
+                case 1:
+                    payload = _c.sent();
+                    commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee;
+                    givenCommitmentsListSender = __spreadArray(__spreadArray([], commitmentsToSend, true), commitmentsForFee, true);
+                    return [4 /*yield*/, (0, exports.abarToAbarAmount)(anonKeysSender, anonKeysSender.publickey, amount, assetCode, givenCommitmentsListSender)];
+                case 2:
+                    _a = _c.sent(), anonTransferOperationBuilder = _a.anonTransferOperationBuilder, abarToAbarData = _a.abarToAbarData;
+                    return [4 /*yield*/, Asset.getAssetDetails(assetCode)];
+                case 3:
+                    asset = _c.sent();
+                    decimals = asset.assetRules.decimals;
+                    amountToSendInWei = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+                    return [4 /*yield*/, Transaction.submitAbarTransaction(anonTransferOperationBuilder)];
+                case 4:
+                    _resultHandle = _c.sent();
+                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR)];
+                case 5:
+                    _c.sent();
+                    console.log('abar transaction handle', _resultHandle);
+                    commitmentsMap = abarToAbarData.commitmentsMap;
+                    retrivedCommitmentsListReceiver = [];
+                    remainderCommitements = [];
+                    for (_i = 0, commitmentsMap_1 = commitmentsMap; _i < commitmentsMap_1.length; _i++) {
+                        commitmentsMapEntry = commitmentsMap_1[_i];
+                        commitmentKey = commitmentsMapEntry.commitmentKey, commitmentAmount = commitmentsMapEntry.commitmentAmount, commitmentAssetType = commitmentsMapEntry.commitmentAssetType;
+                        console.log('🚀 ~ file: tripleMasking.ts ~ line 863 ~ commitmentsMapEntry', commitmentsMapEntry);
+                        commitmentAmountInWei = BigInt((0, bigNumber_1.toWei)(commitmentAmount, decimals).toString());
+                        isSameAssetType = commitmentAssetType === assetCode;
+                        isSameAmount = commitmentAmountInWei === amountToSendInWei;
+                        if (isSameAssetType && isSameAmount) {
+                            console.log('🚀 ~ file: tripleMasking.ts ~ line 906 ~ amountToSendInWei!!!', amountToSendInWei);
+                            retrivedCommitmentsListReceiver.push(commitmentKey);
+                            continue;
+                        }
+                        remainderCommitements.push(commitmentKey);
                     }
-                    remainderCommitements.push(commitmentKey);
-                }
-                allCommitments = __spreadArray([], retrivedCommitmentsListReceiver, true);
-                additionalOwnedAbarItems = [];
-                _b = 0, allCommitments_2 = allCommitments;
-                _c.label = 6;
-            case 6:
-                if (!(_b < allCommitments_2.length)) return [3 /*break*/, 9];
-                givenCommitment = allCommitments_2[_b];
-                return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
-            case 7:
-                ownedAbarsResponseTwo = _c.sent();
-                additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
-                additionalOwnedAbarItems.push(additionalOwnedAbarItem);
-                _c.label = 8;
-            case 8:
-                _b++;
-                return [3 /*break*/, 6];
-            case 9: return [4 /*yield*/, (0, exports.abarToBar)(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems)];
-            case 10:
-                abarToBarResult = _c.sent();
-                return [2 /*return*/, __assign(__assign({}, abarToBarResult), { remainderCommitements: remainderCommitements, spentCommitments: givenCommitmentsListSender })];
-        }
+                    allCommitments = __spreadArray([], retrivedCommitmentsListReceiver, true);
+                    additionalOwnedAbarItems = [];
+                    _b = 0, allCommitments_2 = allCommitments;
+                    _c.label = 6;
+                case 6:
+                    if (!(_b < allCommitments_2.length)) return [3 /*break*/, 9];
+                    givenCommitment = allCommitments_2[_b];
+                    return [4 /*yield*/, (0, exports.getOwnedAbars)(givenCommitment)];
+                case 7:
+                    ownedAbarsResponseTwo = _c.sent();
+                    additionalOwnedAbarItem = ownedAbarsResponseTwo[0];
+                    additionalOwnedAbarItems.push(additionalOwnedAbarItem);
+                    _c.label = 8;
+                case 8:
+                    _b++;
+                    return [3 /*break*/, 6];
+                case 9: return [4 /*yield*/, (0, exports.abarToBar)(anonKeysSender, receiverXfrPublicKey, additionalOwnedAbarItems, hideAmount, hideAssetType)];
+                case 10:
+                    abarToBarResult = _c.sent();
+                    return [2 /*return*/, __assign(__assign({}, abarToBarResult), { remainderCommitements: remainderCommitements, spentCommitments: givenCommitmentsListSender })];
+            }
+        });
     });
-}); };
+};
 exports.abarToBarAmount = abarToBarAmount;
 var getNullifierHashesFromCommitments = function (
 // anonKeys: FindoraWallet.FormattedAnonKeys,
