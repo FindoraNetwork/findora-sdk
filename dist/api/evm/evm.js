@@ -75,6 +75,19 @@ var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
 var AssetApi = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var web3_2 = require("./web3");
+/**
+ * Convert the address starting with fra into a hex address
+ *
+ * @example
+ * ```ts
+ * const contract = fraAddressToHashAddress('fraxxxxx....');
+ * ```
+ *
+ * @param address - fra wallet address
+ *
+ * @returns Hex address
+ *
+ */
 var fraAddressToHashAddress = function (address) {
     var _a = bech32ToBuffer.decode(address), data = _a.data, prefix = _a.prefix;
     if (prefix == 'eth') {
@@ -117,6 +130,24 @@ var hashAddressTofraAddress = function (addresss, bridgeAddress, web3WalletInfo)
     });
 }); };
 exports.hashAddressTofraAddress = hashAddressTofraAddress;
+/**
+ * NFT asset address conversion
+ *
+ * @remarks
+ * Convert the NFT asset address in evm to an asset address that can be recognized by native
+ *
+ * @example
+ * ```ts
+ * const contract = hashAddressTofraAddressByNFT('0x00000....', '1');
+ * ```
+ *
+ * @param address - evm nft contract address
+ * @param tokenId - evm nft tokenId
+ *
+ *
+ * @returns fra asset address
+ *
+ */
 var hashAddressTofraAddressByNFT = function (addresss, tokenId) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, tokenAddress, tokenAddressHex;
     return __generator(this, function (_a) {
@@ -131,6 +162,29 @@ var hashAddressTofraAddressByNFT = function (addresss, tokenId) { return __await
     });
 }); };
 exports.hashAddressTofraAddressByNFT = hashAddressTofraAddressByNFT;
+/**
+ * Transfer fra asset to native chain
+ *
+ * @remarks
+ * Used to transfer fra tokens from the evm chain to the native chain
+ *
+ * @example
+ * ```ts
+ * const web3WalletInfo = {};
+ * const bridgeAddress = '0x000...';
+ * const recipientAddress = 'fra wallet address';
+ * const amount = '10';
+ *
+ * const contract = fraToBar(bridgeAddress, recipientAddress, amount, web3WalletInfo);
+ * ```
+ *
+ * @param bridgeAddress - evm-bridge contract address, used to bridge evm to assets on the original chain
+ * @param recipientAddress - On the native chain, fra wallet address
+ * @param amount - the amount of transferred fra assets
+ * @param web3WalletInfo - wallet An instance of {@link IWebLinkedInfo}
+ *
+ * @returns TransactionReceipt
+ */
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -176,6 +230,24 @@ var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo
     });
 }); };
 exports.fraToBar = fraToBar;
+/**
+ * approve token transfer permission
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ * const contract = await approveToken('0x00000....','0x00000....', '1' , walletInfo);
+ * ```
+ *
+ * @param tokenAddress - payment token contract address
+ * @param deckAddress - contract address for operating token transfer
+ * @param price - approve amount
+ * @param web3WalletInfo - wallet struct data {@link IWebLinkedInfo}
+ *
+ * @throws `fail approveToken`
+ *
+ * @returns PromiEvent<TransactionReceipt>
+ */
 var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, erc20Contract, amount, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -216,11 +288,39 @@ var approveToken = function (tokenAddress, deckAddress, price, web3WalletInfo) {
                 if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 7];
                 return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)];
             case 6: return [2 /*return*/, _a.sent()];
-            case 7: throw Error('fail frc20ToBar');
+            case 7: throw Error('fail approveToken');
         }
     });
 }); };
 exports.approveToken = approveToken;
+/**
+ * Transfer frc20 token to native chain
+ *
+ * @remarks
+ * Transfer frc20 assets from evm chain to native chain
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ * const bridgeAddress = '0x000...',
+ * const recipientAddress = 'fra wallet address',
+ *
+ * const tokenInfo = {
+ *    address: '0x000...',
+ *    amount: '10',
+ * }
+ *
+ * const contract = frc20ToBar(bridgeAddress, recipientAddress, tokenInfo.address, tokenInfo.amount, walletInfo);
+ * ```
+ *
+ * @param bridgeAddress - evm-bridge contract address, used to bridge evm to assets on the original chain
+ * @param recipientAddress - On the native chain, fra wallet address
+ * @param tokenAddress - evm chain, nft contract address
+ * @param tokenAmount - The amount of transferred frc20 assets
+ * @param web3WalletInfo - wallet An instance of {@link IWebLinkedInfo}
+ *
+ * @returns TransactionReceipt
+ */
 var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, erc20Contract, bridgeAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -268,6 +368,19 @@ var frc20ToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenA
     });
 }); };
 exports.frc20ToBar = frc20ToBar;
+/**
+ * Return prism config
+ *
+ * @remarks
+ * Return the ledgerAddress, assetAddress, bridgeAddress contract addresses configured on the chain
+ *
+ * @example
+ * ```ts
+ * const result = await getPrismConfig();
+ * ```
+ *
+ * @returns `{ ledgerAddress: '', assetAddress: '', bridgeAddress: '' }`
+ */
 function getPrismConfig() {
     return __awaiter(this, void 0, void 0, function () {
         var _a, displayCheckpointData, error, web3, bridgeAddress, prismContract, _b, ledgerAddress, assetAddress;
@@ -297,6 +410,27 @@ function getPrismConfig() {
     });
 }
 exports.getPrismConfig = getPrismConfig;
+/**
+ * approve token transfer permission
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ * const contract = await approveNFT('0x00000....','0x00000....', '1', '721' , walletInfo);
+ * const contract = await approveNFT('0x00000....','0x00000....', '1', '1155' , walletInfo);
+ *
+ * ```
+ *
+ * @param tokenAddress - payment token contract address
+ * @param deckAddress - contract address for operating token transfer
+ * @param tokenId - approve tokenId
+ * @param nftType - nft type value , 721 | 1155
+ * @param web3WalletInfo - wallet struct data {@link IWebLinkedInfo}
+ *
+ * @throws `fail approveNFT`
+ *
+ * @returns PromiEvent<TransactionReceipt>
+ */
 var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contractData, nft721Contract, nft1155Contract, nonce, gasPrice, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -340,11 +474,28 @@ var approveNFT = function (tokenAddress, deckAddress, tokenId, nftType, web3Wall
                 if (!(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)) return [3 /*break*/, 6];
                 return [4 /*yield*/, web3.eth.sendSignedTransaction(signed_txn === null || signed_txn === void 0 ? void 0 : signed_txn.rawTransaction)];
             case 5: return [2 /*return*/, _a.sent()];
-            case 6: throw Error('fail frc20ToBar');
+            case 6: throw Error('fail approveNFT');
         }
     });
 }); };
 exports.approveNFT = approveNFT;
+/**
+ * Obtain domain name resolution records
+ *
+ * @remarks
+ * Get the eth\fra wallet address in the domain registration record
+ *
+ * @example
+ * ```ts
+ * const result = getDomainCurrentText('xxx.fra');
+ * ```
+ *
+ * @param name - fra domain
+ *
+ * @throws `fail approveNFT`
+ *
+ * @returns `Returns {eth:'', fra:''} if parsing is successful, otherwise null`
+ */
 var getDomainCurrentText = function (name) { return __awaiter(void 0, void 0, void 0, function () {
     var _a, displayCheckpointData, error, web3, fnsRegistryContract, result;
     return __generator(this, function (_b) {
@@ -369,6 +520,47 @@ var getDomainCurrentText = function (name) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.getDomainCurrentText = getDomainCurrentText;
+/**
+ * Transfer NFT to native chain
+ *
+ * @remarks
+ * Transfer nft721 and nft1155 assets from evm chain to native chain
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ * const bridgeAddress = '0x000...',
+ * const recipientAddress = 'fra wallet address',
+ *
+ * const nftInfo = {
+ *    address: '0x000...',
+ *    tokenId: '0',
+ *    amount: '1',
+ *    type: '721', // When nft-type is equal to 721, amount can only fill in 1
+ * }
+ *
+ * const nftInfo = {
+ *    address: '0x000...',
+ *    tokenId: '0',
+ *    amount: '3',
+ *    type: '1155', // When nft-type is equal to 1155, the amount can be filled in with the owned amount
+ * }
+ *
+ * const contract = frcNftToBar(bridgeAddress, recipientAddress, nftInfo.address, nftInfo.amount, nftInfo.tokenId,  nftInfo.type, walletInfo);
+ * ```
+ *
+
+ *
+ * @param bridgeAddress -  evm-bridge contract address, used to bridge evm to assets on the original chain
+ * @param recipientAddress - On the native chain, fra wallet address
+ * @param tokenAddress - evm chain, nft contract address
+ * @param tokenAmount - transfer nft amount，nft721:1, nft1155: custom amount
+ * @param tokenId - transfer nft tokenId
+ * @param nftType - nft type, value: 721 | 1155
+ * @param web3WalletInfo - wallet An instance of {@link IWebLinkedInfo}
+ *
+ * @returns TransactionReceipt
+ */
 var frcNftToBar = function (bridgeAddress, recipientAddress, tokenAddress, tokenAmount, tokenId, nftType, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, findoraTo, contractData, nonce, gasPrice, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
@@ -418,6 +610,31 @@ var frcNftToBar = function (bridgeAddress, recipientAddress, tokenAddress, token
     });
 }); };
 exports.frcNftToBar = frcNftToBar;
+/**
+ * Return the number of tokens
+ *
+ * @remarks
+ * Get the number of tokens owned by a wallet
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ *
+ * let decimals = true; // decimals true, returns the number of ether units
+ * const contract = tokenBalance(walletInfo,'0x00000....', decimals, 'wallet address');
+ *
+ * let decimals = false; // decimals true, returns the number of wei units
+ * const contract = tokenBalance(walletInfo,'0x00000....', decimals, 'wallet address');
+ *
+ * ```
+ *
+ * @param web3WalletInfo - wallet struct data {@link IWebLinkedInfo}
+ * @param tokenAddress - token contract address
+ * @param decimals - boolean
+ * @param account - wallet address
+ *
+ * @returns return string balance
+ */
 var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, erc20Contract, contractData, txParams, callResultHex, balance;
     return __generator(this, function (_a) {
@@ -445,6 +662,27 @@ var tokenBalance = function (web3WalletInfo, tokenAddress, decimals, account) { 
     });
 }); };
 exports.tokenBalance = tokenBalance;
+/**
+ * Return the number of tokens
+ *
+ * @remarks
+ * Get the number of tokens owned by a wallet
+ *
+ * @example
+ * ```ts
+ * const walletInfo = {};
+ *
+ * const contract = sendAccountToEvm(walletInfo,'10', '0x00000....', 'fra native asset type', '');
+ * ```
+ *
+ * @param walletInfo - wallet An instance of {@link WalletKeypar}
+ * @param amount - transfer amount
+ * @param ethAddress - The wallet address of the evm test chain to receive the transfer
+ * @param assetCode - transfer asset type
+ * @param lowLevelData - When the fra chain is converted from native to evm, fill in "" here, and when transferring to a non-fra-evm chain, you need to pass the calculation result
+ *
+ * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+ */
 var sendAccountToEvm = function (walletInfo, amount, ethAddress, assetCode, lowLevelData) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, address, fraAssetCode, mainAssetCode, assetBlindRules, transactionBuilder, asset, decimals, convertAmount;
     return __generator(this, function (_a) {
