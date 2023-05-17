@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
+
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction, TripleMasking } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
@@ -262,7 +263,7 @@ const getTransferBuilderOperation = async () => {
 
   const toPublickey = ledger.fra_get_dest_pubkey();
 
-  let transferOperationBuilder = await Fee.getEmptyTransferBuilder();
+  const transferOperationBuilder = await Fee.getEmptyTransferBuilder();
 
   const recieversInfo = [
     {
@@ -351,6 +352,7 @@ const transferFraToSingleAddress = async (amount: string) => {
 
   const height = 45;
   const blockDetailsResult = await Network.getBlock(height);
+
   console.log(
     '🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult',
     JSON.stringify(blockDetailsResult, null, 2),
@@ -1788,6 +1790,9 @@ async function getAbarBalance() {
   console.log('anon balances');
   // NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
   // console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
+  //
+  //
+  //
 }
 
 async function keystoreTest() {
