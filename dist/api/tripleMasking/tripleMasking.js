@@ -92,6 +92,55 @@ var Asset = __importStar(require("../sdkAsset"));
 var Transaction = __importStar(require("../transaction"));
 var Builder = __importStar(require("../transaction/builder"));
 var DEFAULT_BLOCKS_TO_WAIT_AFTER_ABAR = 3;
+/**
+ * The `genAnonKeys` function is an asynchronous function that generates anonymous wallet key pairs.
+ * It uses the `Keypair` module to generate a mnemonic phrase and restore a wallet key pair
+ * from the generated mnemonic.
+ *
+ * @remarks
+ * The `WalletKeypair` interface represents a pair of keys for a wallet and has the following structure:
+ *
+ * @remarks
+ * The function internally uses the `Keypair` module, which should be imported and available in the module where this function is used.
+ *
+ * @remarks
+ * The `Keypair.getMnemonic` and `Keypair.restoreFromMnemonic` functions are assumed to be defined within the `Keypair` module. These functions are used to generate a mnemonic and restore a wallet key pair from the mnemonic, respectively.
+ *
+ * @remarks
+ * The `Keypair.getMnemonic` function creates a new mnemonic phrase with a given length (in this example, it is 24).
+ *
+ * @remarks
+ * The `Keypair.restoreFromMnemonic` function is used to restore a wallet key pair from the generated mnemonic.
+ *
+ * @remarks
+ * The string `'passwordfoo'` passed as the second argument to `Keypair.restoreFromMnemonic` is a placeholder and should be replaced with the actual password or passphrase for restoring the wallet key pair.
+ *
+ * @example
+ * ```typescript
+ * interface WalletKeypair {
+ *   publicKey: string;
+ *   privateKey: string;
+ * }
+ * ```
+ *
+ * ```typescript
+ * import { genAnonKeys } from './your-module';
+ *
+ * async function generateAnonymousKeys() {
+ *   try {
+ *     const walletKeys = await genAnonKeys();
+ *     console.log('Public Key:', walletKeys.publickey);
+ *     console.log('Private Key:', walletKeys.privateStr);
+ *   } catch (error) {
+ *     console.error('Error generating anonymous keys:', error);
+ *   }
+ * }
+ *
+ * generateAnonymousKeys();
+ * ```
+ *
+ * @returns The function returns a promise that resolves to a `WalletKeypair` object.
+ */
 var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, function () {
     var mm, walletInfo;
     return __generator(this, function (_a) {
@@ -99,7 +148,7 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
             case 0: return [4 /*yield*/, Keypair.getMnemonic(24)];
             case 1:
                 mm = _a.sent();
-                return [4 /*yield*/, Keypair.restoreFromMnemonic(mm, 'fii')];
+                return [4 /*yield*/, Keypair.restoreFromMnemonic(mm, 'passwordfoo')];
             case 2:
                 walletInfo = _a.sent();
                 return [2 /*return*/, walletInfo];
@@ -107,6 +156,30 @@ var genAnonKeys = function () { return __awaiter(void 0, void 0, void 0, functio
     });
 }); };
 exports.genAnonKeys = genAnonKeys;
+/**
+ * Retrieves the ABAR object from its JSON representation.
+ * The function decodes the JSON data using the ledger imported from the WebAssembly module.
+ *
+ * @param {FindoraWallet.OwnedAbar} ownedAbar - The JSON representation of the owned ABAR.
+ * @returns {Promise<any>} - The ABAR object.
+ * @throws {Error} - If an error occurs while decoding the ABAR data.
+ *
+ * @example
+ * import { FindoraWallet } from 'your-library';
+ *
+ * const ownedAbar: FindoraWallet.OwnedAbar = {
+ *   // JSON representation of the owned ABAR
+ * };
+ *
+ * try {
+ *   const myOwnedAbar = await getAbarFromJson(ownedAbar);
+ *
+ *   // Use the myOwnedAbar object in further operations
+ *
+ * } catch (error) {
+ *   console.error('An error occurred while retrieving the ABAR from JSON:', error);
+ * }
+ */
 var getAbarFromJson = function (ownedAbar) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, myOwnedAbar;
     return __generator(this, function (_a) {
@@ -124,6 +197,39 @@ var getAbarFromJson = function (ownedAbar) { return __awaiter(void 0, void 0, vo
         }
     });
 }); };
+/**
+ * The `getAbarOwnerMemo` function is an asynchronous function that retrieves the abar owner memo data for a given atxoSid.
+ *
+ * @param atxoSid - The atxoSid for which to fetch the abar owner memo data.
+ *
+ * @remarks
+ * This function depends on the external `ledger` module, which should be imported from the wasm module and available in the module where this function is used.
+ * It also relies on the `Network` module, which should be imported separately and accessible in the module.
+ *
+ * @remarks
+ * The `abarOwnerMemo` is returned as an instance of `AxfrOwnerMemo`.
+ *
+ * @remarks
+ * Ensure that the `ledger` module is imported from the wasm module and the `Network` module is imported separately. Replace `"atxoSid123456"` in the example with the actual atxoSid for which you want to fetch the abar owner memo data.
+ *
+ * @example
+ * ```typescript
+ * const atxoSid = "atxoSid123456";
+ *
+ * try {
+ *   const abarOwnerMemo = await getAbarOwnerMemo(atxoSid);
+ *
+ *   console.log("Abar Owner Memo:");
+ *   console.log(abarOwnerMemo);
+ * } catch (error) {
+ *   console.error("Error fetching abar owner memo data:", error);
+ * }
+ * ```
+ *
+ * @returns A promise that resolves to an instance of `AxfrOwnerMemo` representing the abar owner memo data.
+ *
+ * @throws Throws an error if there is a failure in fetching or decoding the abar memo data.
+ */
 var getAbarOwnerMemo = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo;
     return __generator(this, function (_a) {
@@ -149,6 +255,36 @@ var getAbarOwnerMemo = function (atxoSid) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.getAbarOwnerMemo = getAbarOwnerMemo;
+/**
+ * Retrieves the MTLeafInfo object associated with the given ATXO SID.
+ * The function fetches the MTLeafInfo data from the network and decodes it using the ledger imported from the WebAssembly module.
+ * Note: This function is not exported and is intended for internal use within the module.
+ *
+ * @param {string} atxoSid - The ATXO SID for which to retrieve the MTLeafInfo.
+ * @returns {Promise<MTLeafInfo>} - The MTLeafInfo object.
+ * @throws {Error} - If an error occurs while fetching or decoding the MTLeafInfo data.
+ *
+ * @remarks
+ * - This function internally fetches the MTLeafInfo data from the network using the `Network.getMTLeafInfo` function.
+ * - It requires the imported ledger from the WebAssembly module to decode the MTLeafInfo data.
+ * - The function throws an error if the fetched data is empty or if there is an error during decoding.
+ * - Use this function when you need to retrieve the MTLeafInfo object for a specific ATXO SID within the module.
+ *
+ * @example
+ * ```typescript
+ * // Internal use within the module
+ * const atxoSid = 'abcde12345';
+ *
+ * try {
+ *   const myMTLeafInfo = await getMyMTLeafInfo(atxoSid);
+ *
+ *   // Use the myMTLeafInfo object for further operations within the module
+ *
+ * } catch (error) {
+ *   console.error('An error occurred while retrieving the MTLeafInfo:', error);
+ * }
+ * ```
+ */
 var getMyMTLeafInfo = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo;
     return __generator(this, function (_a) {
@@ -176,9 +312,35 @@ var getMyMTLeafInfo = function (atxoSid) { return __awaiter(void 0, void 0, void
         }
     });
 }); };
-var getAnonKeypairFromJson = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys
-anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getAnonKeypairFromJson` function is an asynchronous function that converts a WalletKeypar object from JSON format to AnonKeyPair format.
+ *
+ * @param anonKeys - An object of type `WalletKeypar` containing the wallet's public key and private key in JSON format.
+ *
+ * @remarks
+ * This function depends on the external `Keypair` module, which should be imported and available in the module where this function is used.
+ *
+ * @example
+ * ```typescript
+ * const anonKeys = {
+ *   publickey: "base64publickey",
+ *   privateStr: "base64privatekey",
+ * };
+ *
+ * try {
+ *   const anonKeyPair = await getAnonKeypairFromJson(anonKeys);
+ *
+ *   console.log("Converted AnonKeyPair:");
+ *   console.log("Axfr Secret Key:", anonKeyPair.aXfrSecretKeyConverted);
+ *   console.log("Axfr Public Key:", anonKeyPair.axfrPublicKeyConverted);
+ * } catch (error) {
+ *   console.error("Error converting AnonKeyPair from JSON:", error);
+ * }
+ * ```
+ *
+ * @returns A promise that resolves to an object containing the converted Axfr Secret Key and Axfr Public Key.
+ */
+var getAnonKeypairFromJson = function (anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var aXfrSecretKeyConverted, axfrPublicKeyConverted, publickey, privateStr, error_1;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -189,7 +351,7 @@ anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
                 _a.trys.push([1, 4, , 5]);
                 return [4 /*yield*/, Keypair.getXfrPrivateKeyByBase64(privateStr)];
             case 2:
-                aXfrSecretKeyConverted = _a.sent(); // XfrKeyPair
+                aXfrSecretKeyConverted = _a.sent();
                 return [4 /*yield*/, Keypair.getXfrPublicKeyByBase64(publickey)];
             case 3:
                 axfrPublicKeyConverted = _a.sent();
@@ -205,6 +367,48 @@ anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); };
 exports.getAnonKeypairFromJson = getAnonKeypairFromJson;
+/**
+ * The `openAbar` function opens (decrypts) an owned Abar item.
+ *
+ * @param abar - The owned Abar item to open.
+ * @param anonKeys - The wallet keypair used for decryption.
+ *
+ * @returns A promise that resolves to an object containing the opened Abar information.
+ *
+ * @throws An error if there was an issue opening the Abar or retrieving the required information.
+ *
+ * @remarks
+ * The `openAbar` function takes an owned Abar item and a wallet keypair as input.
+ * It decrypts the owned Abar item using the provided keypair and retrieves additional information required for the decryption process.
+ * The function returns an object containing the opened Abar information, including the decrypted amount, asset type, and the opened Abar itself.
+ *
+ * Example usage:
+ * ```typescript
+ * const abar = {
+ *   abarData: {
+ *     atxoSid: '0xabcdef1234567890',
+ *     ownedAbar: 'encrypted-abar-data',
+ *   },
+ * };
+ *
+ * const anonKeys = {
+ *   publickey: 'anon-public-key',
+ *   privateStr: 'anon-private-key',
+ * };
+ *
+ * try {
+ *   const openedAbar = await openAbar(abar, anonKeys);
+ *   console.log(openedAbar);
+ *   // {
+ *   //   amount: '100',
+ *   //   assetType: 'ABC',
+ *   //   abar: // opened Abar object
+ *   // }
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
 var openAbar = function (abar, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, axfrSpendKey, openedAbar, amount, asset_type, assetCode, item;
     return __generator(this, function (_a) {
@@ -239,6 +443,31 @@ var openAbar = function (abar, anonKeys) { return __awaiter(void 0, void 0, void
     });
 }); };
 exports.openAbar = openAbar;
+/**
+ * The `isNullifierHashSpent` function checks if a given nullifier hash is spent.
+ *
+ * @param hash - The nullifier hash to check.
+ *
+ * @returns A promise that resolves to a boolean indicating if the nullifier hash is spent (`true`) or not spent (`false`).
+ *
+ * @throws An error if there was an issue checking the nullifier hash spent status.
+ *
+ * @remarks
+ * The `isNullifierHashSpent` function uses the given nullifier hash to check if it is spent. It calls the network's `checkNullifierHashSpent` function and retrieves the response indicating if the hash is spent or not.
+ * The function handles error scenarios and returns a boolean value indicating the spent status of the nullifier hash.
+ *
+ * Example usage:
+ * ```typescript
+ * const hash = '0xabcdef1234567890';
+ *
+ * try {
+ *   const isSpent = await isNullifierHashSpent(hash);
+ *   console.log(isSpent); // true or false
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
 var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, void 0, function () {
     var checkSpentResult, checkSpentResponse, checkSpentError;
     return __generator(this, function (_a) {
@@ -258,6 +487,50 @@ var isNullifierHashSpent = function (hash) { return __awaiter(void 0, void 0, vo
     });
 }); };
 exports.isNullifierHashSpent = isNullifierHashSpent;
+/**
+ * The `genNullifierHash` function is an asynchronous function that generates a nullifier hash for a given set of parameters using zero-knowledge proof functionality.
+ *
+ * @param atxoSid - The identifier for the atxo (Anonymous Transferable eXtended Output) for which the nullifier hash is generated. It is a positive number in string format.
+ * @param ownedAbar - An object representing an OwnedAbar with zero-knowledge proof functionality. It is fetched using a given string called `commitmentHash`.
+ * @param axfrSpendKey - The spend key used to create the AxfrOwnerMemo for the `abarOwnerMemo`.
+ *
+ * @remarks
+ * The `ledger` object is imported from the WebAssembly (wasm) module and provides various methods for cryptographic operations.
+ *
+ * @remarks
+ * The function makes use of the zero-knowledge proof functionality to generate the nullifier hash. It performs the following steps:
+ * 1. Retrieves the ledger instance using the `getLedger` function.
+ * 2. Fetches the abar owner memo data for the given `atxoSid` using the `Network.getAbarOwnerMemo` function.
+ * 3. Decodes the abar owner memo data into an `AxfrOwnerMemo` object using the `AxfrOwnerMemo.from_json` method of the `ledger`.
+ * 4. Creates a key pair from the `axfrSpendKey` using the `ledger.create_keypair_from_secret` method.
+ * 5. Fetches the mTLeafInfo data for the given `atxoSid` using the `Network.getMTLeafInfo` function.
+ * 6. Decodes the mTLeafInfo data into an `MTLeafInfo` object using the `MTLeafInfo.from_json` method of the `ledger`.
+ * 7. Decodes the `ownedAbar` object into an `Abar` object using the `ledger.abar_from_json` method.
+ * 8. Generates the nullifier hash using the `ledger.gen_nullifier_hash` method with the provided parameters.
+ * 9. Returns the generated nullifier hash.
+ *
+ * @remarks
+ * This function is used in several scenarios, including but not limited to:
+ * - Validating whether a commitment (and its related abar) is spent or not spent.
+ *
+ * @example
+ * ```typescript
+ * const atxoSid = "1234";
+ * const ownedAbar = // OwnedAbar object
+ * const axfrSpendKey = // Spend key
+ *
+ * try {
+ *   const nullifierHash = await genNullifierHash(atxoSid, ownedAbar, axfrSpendKey);
+ *   console.log("Nullifier Hash:", nullifierHash);
+ * } catch (error) {
+ *   console.error("Error generating nullifier hash:", error);
+ * }
+ * ```
+ *
+ * @throws Throws an error if any step in the nullifier hash generation process fails.
+ *
+ * @returns The function returns a promise that resolves to the generated nullifier hash.
+ */
 var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, abarOwnerMemoResult, myMemoData, memoError, abarOwnerMemo, toSend, myXfrKeyPair, mTLeafInfoResult, mTLeafInfo, mTLeafInfoError, myMTLeafInfo, myOwnedAbar, hash;
     return __generator(this, function (_a) {
@@ -281,7 +554,6 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                 }
                 console.log('axfrSpendKey', axfrSpendKey);
                 toSend = "\"".concat(axfrSpendKey, "\"");
-                console.log('to send', toSend);
                 try {
                     myXfrKeyPair = ledger.create_keypair_from_secret(toSend);
                 }
@@ -310,7 +582,6 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
                 catch (error) {
                     throw new Error("Could not decode myOwnedAbar data\", Error - ".concat(error));
                 }
-                // export function gen_nullifier_hash(abar: AnonAssetRecord, memo: AxfrOwnerMemo, keypair: XfrKeyPair, mt_leaf_info: MTLeafInfo): string;
                 try {
                     hash = ledger.gen_nullifier_hash(myOwnedAbar, abarOwnerMemo, myXfrKeyPair, myMTLeafInfo);
                     return [2 /*return*/, hash];
@@ -323,6 +594,39 @@ var genNullifierHash = function (atxoSid, ownedAbar, axfrSpendKey) { return __aw
     });
 }); };
 exports.genNullifierHash = genNullifierHash;
+/**
+ * The `getOwnedAbars` function retrieves the owned abars associated with a given commitment.
+ *
+ * @param givenCommitment - The commitment for which to retrieve the owned abars.
+ *
+ * @returns A promise that resolves to an array of owned abar items.
+ *
+ * @throws An error if there was an issue retrieving the owned abars or if the response is missing or invalid.
+ *
+ * @remarks
+ * The `getOwnedAbars` function uses the `Network.getOwnedAbars` function to fetch the owned abars associated with the provided commitment. It handles error scenarios by throwing informative error messages.
+ *
+ * Example usage:
+ * ```typescript
+ * const commitment = 'exampleCommitment'; // Commitment value
+ *
+ * try {
+ *   const ownedAbars = await getOwnedAbars(commitment);
+ *   console.log(ownedAbars);
+ *   // [
+ *   //   {
+ *   //     commitment: 'exampleCommitment',
+ *   //     abarData: {
+ *   //       atxoSid: 'atxoSidValue',
+ *   //       ownedAbar: // ownedAbar object
+ *   //     },
+ *   //   },
+ *   // ]
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
 var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0, void 0, function () {
     var getOwnedAbarsResponse, ownedAbarsResponse, error, atxoSid, ownedAbar, abar;
     return __generator(this, function (_a) {
@@ -354,9 +658,41 @@ var getOwnedAbars = function (givenCommitment) { return __awaiter(void 0, void 0
     });
 }); };
 exports.getOwnedAbars = getOwnedAbars;
-var getSpentAbars = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getSpentAbars` function retrieves a list of spent abars (Anonymous Banknote Asset Records) associated with the given commitments and anonymous keys.
+ *
+ * @param anonKeys - The sender's anonymous keys.
+ * @param givenCommitmentsList - The list of commitments associated with the sender's owned abars.
+ *
+ * @returns A promise that resolves to an array of spent abars.
+ *
+ * @throws An error if there was an issue retrieving the owned abars or checking the nullifier hash spent status, or if the response is missing or invalid.
+ *
+ * @remarks
+ * The `getSpentAbars` function retrieves the owned abars for each given commitment using the `getOwnedAbars` function. It then checks the nullifier hash spent status for each abar by generating the nullifier hash and using the `isNullifierHashSpent` function. The function handles error scenarios and returns an array of spent abars.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys =  // anonymous keys object - Sender's anonymous keys
+ * const commitments = ['commitment1', 'commitment2']; // List of commitments
+ *
+ * try {
+ *   const spentAbars = await getSpentAbars(anonKeys, commitments);
+ *   console.log(spentAbars);
+ *   // [
+ *   //   {
+ *   //     // spent abar item
+ *   //   },
+ *   //   {
+ *   //     // spent abar item
+ *   //   },
+ *   // ]
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
+var getSpentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var publickey, privateStr, spentAbars, _i, givenCommitmentsList_1, givenCommitment, ownedAbarsResponse, error_2, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -405,9 +741,31 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getSpentAbars = getSpentAbars;
-var getBalanceMaps = function (unspentAbars, 
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getBalanceMaps` function retrieves the balance maps for the provided unspent abars using the given anonymous keys.
+ *
+ * @param unspentAbars - The array of unspent abars to retrieve the balance maps for.
+ * @param anonKeys - The anonymous keys associated with the wallet.
+ *
+ * @returns An object containing the asset details map, balances map, used assets, and ATXO map.
+ *
+ * @remarks
+ * The `getBalanceMaps` function iterates over each unspent abar in the provided array, opens (decrypts) the abar using the `openAbar` function, and constructs the balance maps. It also retrieves the asset details using the `Asset.getAssetDetails` function and stores them in the asset details map. The `plus` function is used to perform arithmetic operations on the balance amounts, provided by the big number helper.
+ *
+ * Example usage:
+ * ```typescript
+ * const unspentAbars: FindoraWallet.OwnedAbarItem[] = [...]; // Array of unspent abars
+ * const anonKeys: Keypair.WalletKeypar = ...; // Anonymous keys associated with the wallet
+ *
+ * const balanceMaps = await getBalanceMaps(unspentAbars, anonKeys);
+ *
+ * console.log(balanceMaps.assetDetailsMap); // Asset details map containing asset types as keys and asset details as values
+ * console.log(balanceMaps.balancesMap); // Balances map containing asset types as keys and balance amounts as values
+ * console.log(balanceMaps.usedAssets); // Array of used asset types
+ * console.log(balanceMaps.atxoMap); // ATXO map containing asset types as keys and an array of ATXO items as values
+ * ```
+ */
+var getBalanceMaps = function (unspentAbars, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var assetDetailsMap, balancesMap, atxoMap, usedAssets, _i, unspentAbars_1, abar, _a, atxoSid, commitment, openedAbarItem, amount, assetType, asset;
     return __generator(this, function (_b) {
         switch (_b.label) {
@@ -456,9 +814,44 @@ anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); };
 exports.getBalanceMaps = getBalanceMaps;
-var getAbarBalance = function (unspentAbars, 
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getAbarBalance` function is an asynchronous function that retrieves the balance information for a wallet's owned abars.
+ *
+ * @param unspentAbars - An array of `OwnedAbarItem` objects representing the unspent abars for the wallet.
+ * @param anonKeys - An object of type `WalletKeypar` containing the wallet's public key and private key.
+ *
+ * @remarks
+ * The function internally uses the `getBalanceMaps` helper function to create an object with a list of details related to the balance information.
+ * It also utilizes the `fromWei` helper function to convert the balance from a big integer to a human-readable format.
+ *
+ * @remarks
+ * The unspent abars are created using zero-proof functionality and are fetched by providing the commitment hash.
+ *
+ * @example
+ * ```typescript
+ * const unspentAbars = [...]; // Array of OwnedAbarItem objects
+ * const anonKeys = {
+ *   publickey: "...",
+ *   privateStr: "...",
+ * };
+ *
+ * try {
+ *   const balanceInfo = await getAbarBalance(unspentAbars, anonKeys);
+ *
+ *   console.log("Public Key:", balanceInfo.publickey);
+ *   console.log("Balances:");
+ *   for (const balance of balanceInfo.balances) {
+ *     console.log("Asset Type:", balance.assetType);
+ *     console.log("Amount:", balance.amount);
+ *   }
+ * } catch (error) {
+ *   console.error("Error retrieving abar balance:", error);
+ * }
+ * ```
+ *
+ * @returns A promise that resolves to an object of type `AnonWalletBalanceInfo` containing the wallet's public key and an array of `BalanceInfo` objects representing the balances for each asset type.
+ */
+var getAbarBalance = function (unspentAbars, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var maps, publickey, assetDetailsMap, balancesMap, usedAssets, balances, _i, usedAssets_1, assetType, decimals, amount, balanceInfo;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -483,9 +876,28 @@ anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     });
 }); };
 exports.getAbarBalance = getAbarBalance;
-var getUnspentAbars = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getUnspentAbars` function retrieves the unspent abars for a given list of commitments using the provided anonymous keys.
+ *
+ * @param anonKeys - The anonymous keys associated with the wallet.
+ * @param givenCommitmentsList - The list of commitments to retrieve unspent abars for.
+ *
+ * @returns An array of unspent abars.
+ *
+ * @remarks
+ * The `getUnspentAbars` function uses the `getOwnedAbars` function to retrieve the owned abars for each given commitment. It then checks the spending status of each abar and adds the unspent abars to the result array.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys: Keypair.WalletKeypar = ...; // Anonymous keys associated with the wallet
+ * const givenCommitmentsList: string[] = [...]; // List of commitments
+ *
+ * const unspentAbars = await getUnspentAbars(anonKeys, givenCommitmentsList);
+ *
+ * console.log(unspentAbars); // Array of unspent abars
+ * ```
+ */
+var getUnspentAbars = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var publickey, privateStr, unspentAbars, _i, givenCommitmentsList_2, givenCommitment, ownedAbarsResponse, error_3, ownedAbarItem, abarData, atxoSid, ownedAbar, hash, isAbarSpent;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -534,9 +946,28 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getUnspentAbars = getUnspentAbars;
-var getBalance = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getBalance` function retrieves the balances of abars for the given commitments using the provided anonymous keys.
+ *
+ * @param anonKeys - The anonymous keys associated with the wallet.
+ * @param givenCommitmentsList - The list of commitments to retrieve the balances for.
+ *
+ * @returns The balances of abars for the given commitments.
+ *
+ * @remarks
+ * The `getBalance` function calls the `getUnspentAbars` function to retrieve the unspent abars and then calculates the balances using the `getAbarBalance` function.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys: Keypair.WalletKeypar = ...; // Anonymous keys associated with the wallet
+ * const givenCommitmentsList: string[] = [...]; // List of commitments
+ *
+ * const balances = await getBalance(anonKeys, givenCommitmentsList);
+ *
+ * console.log(balances); // Balances of abars for the given commitments
+ * ```
+ */
+var getBalance = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var unspentAbars, balances;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -551,9 +982,28 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getBalance = getBalance;
-var getSpentBalance = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getSpentBalance` function retrieves the balances of spent abars for the given commitments using the provided anonymous keys.
+ *
+ * @param anonKeys - The anonymous keys associated with the wallet.
+ * @param givenCommitmentsList - The list of commitments to retrieve the balances for.
+ *
+ * @returns The balances of spent abars for the given commitments.
+ *
+ * @remarks
+ * The `getSpentBalance` function calls the `getSpentAbars` function to retrieve the spent abars and then calculates the balances using the `getAbarBalance` function.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys: Keypair.WalletKeypar = ...; // Anonymous keys associated with the wallet
+ * const givenCommitmentsList: string[] = [...]; // List of commitments
+ *
+ * const balances = await getSpentBalance(anonKeys, givenCommitmentsList);
+ *
+ * console.log(balances); // Balances of spent abars for the given commitments
+ * ```
+ */
+var getSpentBalance = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var unspentAbars, balances;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -568,9 +1018,30 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 exports.getSpentBalance = getSpentBalance;
-var getAllAbarBalances = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getAllAbarBalances` function retrieves both spent and unspent balances of abars for the given commitments using the provided anonymous keys.
+ *
+ * @param anonKeys - The anonymous keys associated with the wallet.
+ * @param givenCommitmentsList - The list of commitments to retrieve the balances for.
+ *
+ * @returns An object containing the spent balances, unspent balances, and the given commitments list.
+ *
+ * @remarks
+ * The `getAllAbarBalances` function calls the `getSpentBalance` and `getBalance` functions to retrieve the spent and unspent balances respectively.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys: Keypair.WalletKeypar = ...; // Anonymous keys associated with the wallet
+ * const givenCommitmentsList: string[] = [...]; // List of commitments
+ *
+ * const allBalances = await getAllAbarBalances(anonKeys, givenCommitmentsList);
+ *
+ * console.log(allBalances.spentBalances); // Balances of spent abars for the given commitments
+ * console.log(allBalances.unSpentBalances); // Balances of unspent abars for the given commitments
+ * console.log(allBalances.givenCommitmentsList); // The given commitments list
+ * ```
+ */
+var getAllAbarBalances = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var spentBalances, unSpentBalances;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -651,7 +1122,7 @@ exports.barToAbarAmount = barToAbarAmount;
  * atxos (aka abars).
  * Please note, this function is only meant to transfer the particularly provided utxos, and it is not used for transferring a custom
  * amount. To transfer the custom amount, please use `barToAbarAmount`
-  *
+ *
  * @example
  *
  * ```ts
@@ -775,9 +1246,47 @@ var barToAbar = function (walletInfo, sids, receiverPublicKey) { return __awaite
     });
 }); };
 exports.barToAbar = barToAbar;
-var getAbarTransferInputPayload = function (ownedAbarItem, 
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * Retrieves the necessary payload data for an Abar transfer input.
+ * The function fetches various data related to the owned Abar item and the associated ATXO SID.
+ *
+ * @param {FindoraWallet.OwnedAbarItem} ownedAbarItem - The owned Abar item for which to retrieve the payload data.
+ * @param {Keypair.WalletKeypar} anonKeysSender - The anonymous keys of the sender.
+ * @returns {Promise<AbarTransferInputPayload>} - The payload data for the Abar transfer input.
+ *
+ * @remarks:
+ * - This function retrieves the necessary data for an Abar transfer input, including the owned Abar, Abar owner memo, MTLeafInfo, asset code, and decimals.
+ * - It internally makes use of other functions such as `getAbarFromJson`, `getAbarOwnerMemo`, `getMyMTLeafInfo`, `getBalanceMaps`, and `Asset.getAssetDetails` to fetch the required data.
+ * - The payload data is returned as an object containing the following properties:
+ *   - `myOwnedAbar`: The owned Abar item.
+ *   - `abarOwnerMemo`: The Abar owner memo.
+ *   - `myMTLeafInfo`: The MTLeafInfo object associated with the ATXO SID.
+ *   - `assetCode`: The asset code of the Abar.
+ *   - `decimals`: The number of decimal places for the asset.
+ *
+ * @example
+ * ```typescript
+ * // Retrieve the payload data for an Abar transfer input
+ * const ownedAbarItem = {
+ *   // Owned Abar item details
+ * };
+ *
+ * const anonKeysSender = {
+ *   aXfrSecretKeyConverted: 'abcdefg1234567890',
+ *   // other anonymous key details
+ * };
+ *
+ * try {
+ *   const payload = await getAbarTransferInputPayload(ownedAbarItem, anonKeysSender);
+ *
+ *   // Use the payload data for further Abar transfer operations
+ *
+ * } catch (error) {
+ *   console.error('An error occurred while retrieving the Abar transfer input payload:', error);
+ * }
+ * ```
+ */
+var getAbarTransferInputPayload = function (ownedAbarItem, anonKeysSender) { return __awaiter(void 0, void 0, void 0, function () {
     var abarData, atxoSid, ownedAbar, myOwnedAbar, abarOwnerMemo, myMTLeafInfo, maps, usedAssets, assetCode, asset, decimals, result;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -813,13 +1322,78 @@ anonKeysSender) { return __awaiter(void 0, void 0, void 0, function () {
         }
     });
 }); };
-var prepareAnonTransferOperationBuilder = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-walletInfo, 
-// axfrPublicKeyReceiverString: string,
-receiverXfrPublicKey, abarAmountToTransfer, 
-// ownedAbarToUseAsSource: FindoraWallet.OwnedAbarItem,
-additionalOwnedAbarItems) {
+/**
+ * The `prepareAnonTransferOperationBuilder` function prepares an anonymous transfer operation builder.
+ * The transfer operation can be used to build an anonymous transfer operation for transferring assets from one wallet to another.
+ *
+ * @param walletInfo - The wallet keypair of the sender.
+ * @param receiverXfrPublicKey - The anonymous public key of the receiver.
+ * @param abarAmountToTransfer - The amount of the asset being transferred.
+ * @param additionalOwnedAbarItems - (Optional) Additional owned Abar items to include in the transfer.
+ * @throws {Error} If an error occurs during the preparation of the transfer operation builder.
+ * @returns {Promise<FindoraWallet.AnonTransferOperationBuilder>} The prepared anonymous transfer operation builder.
+ *
+ * @remarks
+ * The `prepareAnonTransferOperationBuilder` function prepares an anonymous transfer operation builder by following these steps:
+ * 1. Retrieve the anonymous transfer operation builder using the `getAnonTransferOperationBuilder` method.
+ * 2. Convert the sender's aXfrSecretKey to the appropriate format using the `getAnonKeypairFromJson` method.
+ * 3. Convert the receiver's Xfr public key from base64 to the appropriate format using the `getXfrPublicKeyByBase64` method.
+ * 4. Extract the ownedAbarToUseAsSource and additionalOwnedAbars from the `additionalOwnedAbarItems` array.
+ * 5. Retrieve the abarPayloadOne by calling the `getAbarTransferInputPayload` method with the ownedAbarToUseAsSource and walletInfo.
+ * 6. Add the first input to the anonymous transfer operation builder using the `add_input` method, passing the necessary parameters from abarPayloadOne.
+ * 7. Convert the abarAmountToTransfer to the appropriate format using the `toWei` method and assign it to the toAmount variable.
+ * 8. Initialize an empty array named addedInputs.
+ * 9. Iterate over the additionalOwnedAbars array and add inputs to the anonymous transfer operation builder for each ownedAbarItemOne.
+ *    - If the length of addedInputs becomes equal to or exceeds 4, throw an error indicating that the amount being sent is too large to send at once.
+ *    - Retrieve the abarPayloadNext by calling the `getAbarTransferInputPayload` method with ownedAbarItemOne and walletInfo.
+ *    - Add the additional input to the anonymous transfer operation builder using the `add_input` method, passing the necessary parameters from abarPayloadNext.
+ *    - Push ownedAbarItemOne to the addedInputs array.
+ * 10. Retrieve the ledger using the `getLedger` method.
+ * 11. Retrieve the amountAssetType by calling the `open_abar` method on the ledger instance, passing the necessary parameters from abarPayloadOne.
+ * 12. Add the output to the anonymous transfer operation builder using the `add_output` method, passing the toAmount, amountAssetType.asset_type, and receiverXfrPublicKeyConverted.
+ * 13. Add the sender's aXfrSpendKeySender to the anonymous transfer operation builder using the `add_keypair` method.
+ * 14. Return the prepared anonymous transfer operation builder.
+ *
+ * @example
+ *
+ * ```ts
+ * import { Keypair, FindoraWallet } from 'your-library';
+ *
+ * const walletInfo: Keypair.WalletKeypar = {
+ *   aXfrSecretKeyConverted: 'abcdefg1234567890',
+ *   // other wallet info
+ * };
+ *
+ * const receiverXfrPublicKey = 'hijklmn0987654321';
+ * const abarAmountToTransfer = '10';
+ *
+ * // Additional owned Abar items
+ * const additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [
+ *   {
+ *     // additional owned Abar item details
+ *   },
+ *   {
+ *     // additional owned Abar item details
+ *   },
+ * ];
+ *
+ * try {
+ *   const anonTransferOperationBuilder = await prepareAnonTransferOperationBuilder(
+ *     walletInfo,
+ *     receiverXfrPublicKey,
+ *     abarAmountToTransfer,
+ *     additionalOwnedAbarItems,
+ *   );
+ *
+ *   // Continue building the anonymous transfer operation using the anonTransferOperationBuilder
+ *
+ * } catch (error) {
+ *   console.error('An error occurred while preparing the anonymous transfer operation builder:', error);
+ * }
+ *
+ * ```
+ */
+var prepareAnonTransferOperationBuilder = function (walletInfo, receiverXfrPublicKey, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var anonTransferOperationBuilder, aXfrSpendKeySender, receiverXfrPublicKeyConverted, ownedAbarToUseAsSource, additionalOwnedAbars, abarPayloadOne, toAmount, addedInputs, _i, additionalOwnedAbars_1, ownedAbarItemOne, abarPayloadNext, ledger, amountAssetType, error_6;
@@ -839,7 +1413,6 @@ additionalOwnedAbarItems) {
                 case 4:
                     abarPayloadOne = _a.sent();
                     try {
-                        // console.log('prepare anon transfer - adding input ', abarPayloadOne);
                         anonTransferOperationBuilder = anonTransferOperationBuilder.add_input(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender, abarPayloadOne.myMTLeafInfo);
                     }
                     catch (error) {
@@ -876,9 +1449,7 @@ additionalOwnedAbarItems) {
                 case 9:
                     ledger = _a.sent();
                     amountAssetType = ledger.open_abar(abarPayloadOne.myOwnedAbar, abarPayloadOne.abarOwnerMemo, aXfrSpendKeySender);
-                    anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, amountAssetType.asset_type, 
-                    // axfrPublicKeyReceiver,
-                    receiverXfrPublicKeyConverted);
+                    anonTransferOperationBuilder = anonTransferOperationBuilder.add_output(toAmount, amountAssetType.asset_type, receiverXfrPublicKeyConverted);
                     return [3 /*break*/, 11];
                 case 10:
                     error_6 = _a.sent();
@@ -891,9 +1462,34 @@ additionalOwnedAbarItems) {
     });
 };
 exports.prepareAnonTransferOperationBuilder = prepareAnonTransferOperationBuilder;
-var getAbarTransferFee = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
+/**
+ * The `getAbarTransferFee` function calculates the transfer fee for an abar transfer operation from one account to another.
+ *
+ * @param anonKeysSender - The anonymous keys of the sender account.
+ * @param anonPubKeyReceiver - The anonymous public key of the receiver account.
+ * @param abarAmountToTransfer - The amount to be transferred.
+ * @param additionalOwnedAbarItems - Owned abar items to consider for the fee calculation.
+ *
+ * @returns The calculated transfer fee for the abar transfer operation.
+ *
+ * @remarks
+ * The `getAbarTransferFee` function uses the `prepareAnonTransferOperationBuilder` helper function to prepare an anonymous transfer operation builder, which allows the calculation of the expected fee.
+ *
+ * The `fromWei` helper function is used to convert the calculated fee from a big integer format to a human-readable format with 6 decimal places.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeysSender: Keypair.WalletKeypar = ...; // Sender's anonymous keys
+ * const anonPubKeyReceiver: string = ...; // Receiver's anonymous public key
+ * const abarAmountToTransfer: string = "10"; // Amount of abars to transfer
+ * const additionalOwnedAbarItems: FindoraWallet.OwnedAbarItem[] = [...]; // Additional owned abar items
+ *
+ * const calculatedFee = await getAbarTransferFee(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems);
+ *
+ * console.log(calculatedFee); // Calculated transfer fee
+ * ```
+ */
+var getAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
@@ -910,6 +1506,43 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
     });
 };
 exports.getAbarTransferFee = getAbarTransferFee;
+/**
+ * Processes the Abar to Abar commitment response data and transforms it into a processed commitments map.
+ * The function performs necessary operations on the commitments data, such as converting amounts to human-readable format.
+ *
+ * @param {CommitmentsResponseMap} commitmentsMap - The Abar to Abar commitment response map to process.
+ * @returns {Promise<ProcessedCommitmentsMap[]>} - The processed commitments map containing the transformed commitment data.
+ *
+ * Remarks:
+ * - This function takes the Abar to Abar commitment response data and performs necessary operations to transform it into a processed commitments map.
+ * - The commitments map is an object containing commitment keys as keys and commitment entity arrays as values.
+ * - Each commitment entity array contains the following elements in order: commitmentAxfrPublicKey, commitmentNumericAssetType, and commitmentAmountInWei.
+ * - The function follows these steps to process the commitments:
+ *   1. Retrieves the commitment asset type using the commitmentNumericAssetType value.
+ *   2. Retrieves the asset details for the commitment asset type.
+ *   3. Converts the commitment amount from Wei to a human-readable format using the asset's decimal places.
+ *   4. Constructs a processed commitment object with the commitment key, Axfr public key, asset type, and formatted commitment amount.
+ *   5. Appends the processed commitment object to the response map.
+ * - The response map is an array of processed commitment objects.
+ *
+ * @example
+ * ```typescript
+ * // Process the Abar to Abar commitment response
+ * const commitmentsMap = {
+ *   commitmentKey1: ['commitmentAxfrPublicKey1', 123, '1000000000000000000'],
+ *   commitmentKey2: ['commitmentAxfrPublicKey2', 456, '2000000000000000000'],
+ * };
+ *
+ * try {
+ *   const processedCommitments = await processAbarToAbarCommitmentResponse(commitmentsMap);
+ *
+ *   // Use the processed commitments data as needed
+ *
+ * } catch (error) {
+ *   console.error('An error occurred while processing the Abar to Abar commitment response:', error);
+ * }
+ * ```
+ */
 var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __awaiter(void 0, void 0, void 0, function () {
     var commitmentKeys, responseMap, _i, commitmentKeys_1, commitmentKey, commitmentEntity, commitmentAxfrPublicKey, commitmentNumericAssetType, commitmentAmountInWei, commitmentAssetType, asset, commitmentAmount;
     return __generator(this, function (_a) {
@@ -948,6 +1581,47 @@ var processAbarToAbarCommitmentResponse = function (commitmentsMap) { return __a
         }
     });
 }); };
+/**
+ * Merges two arrays of AtxoMapItem objects into a single sorted array based on the amount value.
+ * The function calls another function, mergeSortAtxoList, recursively to perform the merge sort algorithm.
+ *
+ * @param {AtxoMapItem[]} arr1 - The first array of AtxoMapItem objects to merge.
+ * @param {AtxoMapItem[]} arr2 - The second array of AtxoMapItem objects to merge.
+ * @returns {AtxoMapItem[]} - The merged and sorted array of AtxoMapItem objects.
+ *
+ * Remarks:
+ * - This function merges two arrays of AtxoMapItem objects into a single sorted array based on the amount value.
+ * - It uses the merge sort algorithm to perform the merging and sorting operation.
+ * - The merge sort algorithm is implemented in the mergeSortAtxoList function, which is called recursively.
+ * - The mergeAtxoList function compares the amount values of the AtxoMapItem objects in arr1 and arr2.
+ * - It adds the AtxoMapItem object with the smaller amount value to the result array and continues until one of the input arrays is empty.
+ * - The remaining items in the non-empty array are then appended to the result array.
+ * - The function returns the merged and sorted array of AtxoMapItem objects.
+ *
+ * @example
+ * const arr1: AtxoMapItem[] = [
+ *   { amount: '100' },
+ *   { amount: '300' },
+ *   { amount: '500' },
+ * ];
+ *
+ * const arr2: AtxoMapItem[] = [
+ *   { amount: '200' },
+ *   { amount: '400' },
+ *   { amount: '600' },
+ * ];
+ *
+ * const mergedArray = mergeAtxoList(arr1, arr2);
+ * console.log(mergedArray);
+ * // Output: [
+ * //   { amount: '100' },
+ * //   { amount: '200' },
+ * //   { amount: '300' },
+ * //   { amount: '400' },
+ * //   { amount: '500' },
+ * //   { amount: '600' },
+ * // ]
+ */
 var mergeAtxoList = function (arr1, arr2) {
     var res = [];
     while (arr1.length && arr2.length) {
@@ -963,6 +1637,40 @@ var mergeAtxoList = function (arr1, arr2) {
     }
     return res.concat(arr1, arr2);
 };
+/**
+ * Sorts an array of AtxoMapItem objects using the merge sort algorithm.
+ * The function recursively divides the array into smaller subarrays, sorts them, and then merges them back together.
+ *
+ * @param {AtxoMapItem[]} arr - The array of AtxoMapItem objects to sort.
+ * @returns {AtxoMapItem[]} - The sorted array of AtxoMapItem objects.
+ *
+ * Remarks:
+ * - This function sorts an array of AtxoMapItem objects using the merge sort algorithm.
+ * - It divides the input array into smaller subarrays until each subarray contains a single element.
+ * - It then merges the subarrays back together, comparing the amount values of the AtxoMapItem objects to determine the order.
+ * - The merge operation is performed by the mergeAtxoList function.
+ * - The function continues the recursive process until the entire array is sorted.
+ * - The sorted array of AtxoMapItem objects is returned as the result.
+ *
+ * @example
+ * const arr: AtxoMapItem[] = [
+ *   { amount: '500' },
+ *   { amount: '200' },
+ *   { amount: '300' },
+ *   { amount: '100' },
+ *   { amount: '400' },
+ * ];
+ *
+ * const sortedArray = mergeSortAtxoList(arr);
+ * console.log(sortedArray);
+ * // Output: [
+ * //   { amount: '100' },
+ * //   { amount: '200' },
+ * //   { amount: '300' },
+ * //   { amount: '400' },
+ * //   { amount: '500' },
+ * // ]
+ */
 var mergeSortAtxoList = function (arr) {
     if (arr.length < 2)
         return arr;
@@ -971,6 +1679,50 @@ var mergeSortAtxoList = function (arr) {
     var right = arr.splice(0);
     return mergeAtxoList(mergeSortAtxoList(left), mergeSortAtxoList(right));
 };
+/**
+ * The `getSendAtxo` function retrieves a list of send ATXOs (Anonymous Transaction Outputs) for a given asset and amount.
+ *
+ * @param code - The asset code for the ATXOs.
+ * @param amount - The amount to transfer.
+ * @param commitments - The list of commitments associated with the sender's owned abars.
+ * @param anonKeys - The sender's anonymous keys.
+ *
+ * @returns A promise that resolves to an array of send ATXOs.
+ *
+ * @throws An error if there was an issue retrieving the unspent abars or balance maps, or if the response is missing or invalid.
+ *
+ * @remarks
+ * The `getSendAtxo` function uses the `getUnspentAbars` and `getBalanceMaps` functions to fetch the unspent abars and balance maps associated with the provided commitments and anonymous keys.
+ * It then filters the balance maps for the specified asset code and calculates the required send ATXOs to transfer the specified amount.
+ * The function handles error scenarios and returns an empty array if the sum of the selected ATXOs is less than the specified amount.
+ *
+ * Example usage:
+ * ```typescript
+ * const assetCode = 'ABC'; // Asset code
+ * const amount = BigInt(100); // Amount to transfer
+ * const commitments = ['commitment1', 'commitment2']; // List of commitments
+ * const anonKeys = // anonymous keys object -  Sender's anonymous keys
+ *
+ * try {
+ *   const sendAtxos = await getSendAtxo(assetCode, amount, commitments, anonKeys);
+ *   console.log(sendAtxos);
+ *   // [
+ *   //   {
+ *   //     amount: BigInt(50),
+ *   //     sid: 'atxoSid1',
+ *   //     commitment: 'commitment1',
+ *   //   },
+ *   //   {
+ *   //     amount: BigInt(60),
+ *   //     sid: 'atxoSid2',
+ *   //     commitment: 'commitment2',
+ *   //   },
+ *   // ]
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
 var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var result, unspentAbars, balancesMaps, atxoMap, filteredUtxoList, sortedUtxoList, sum, _i, sortedUtxoList_1, assetItem, _amount, credit;
     return __generator(this, function (_a) {
@@ -985,7 +1737,6 @@ var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awai
                 balancesMaps = _a.sent();
                 atxoMap = balancesMaps.atxoMap;
                 filteredUtxoList = atxoMap[code];
-                // console.log('🚀 ~ file: tripleMasking.ts ~ line 1059 ~ amount', amount);
                 if (!filteredUtxoList) {
                     return [2 /*return*/, []];
                 }
@@ -1010,9 +1761,47 @@ var getSendAtxo = function (code, amount, commitments, anonKeys) { return __awai
     });
 }); };
 exports.getSendAtxo = getSendAtxo;
-var getTotalAbarTransferFee = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
+/**
+ * The `getTotalAbarTransferFee` function calculates the total fee for transferring abars from the sender to the receiver.
+ *
+ * @param anonKeysSender - The sender's anonymous keys.
+ * @param anonPubKeyReceiver - The receiver's anonymous public key.
+ * @param abarAmountToTransfer - The amount to transfer.
+ * @param additionalOwnedAbarItems - Owned abar items to include in the transfer operation.
+ *
+ * @returns A promise that resolves to the calculated fee for the abar transfer operation.
+ *
+ * @throws An error if there was an issue preparing the anonymous transfer operation builder or calculating the fee.
+ *
+ * @remarks
+ * The `getTotalAbarTransferFee` function prepares an anonymous transfer operation builder using the sender's anonymous keys,
+ * receiver's anonymous public key, abar amount to transfer, and additional owned abar items.
+ * It then retrieves the expected fee estimate from the transfer operation builder and converts it to a human-readable format.
+ * The function handles error scenarios and returns the calculated fee for the abar transfer operation.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeysSender =  // sender's anonymous keys object
+ * const anonPubKeyReceiver = 'receiverPublicKey';
+ * const abarAmountToTransfer = '100';
+ * const additionalOwnedAbarItems = [
+ *   {
+ *     // additional owned abar item
+ *   },
+ *   {
+ *     // additional owned abar item
+ *   },
+ * ];
+ *
+ * try {
+ *   const fee = await getTotalAbarTransferFee(anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems);
+ *   console.log(fee); // '0.012345'
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
+var getTotalAbarTransferFee = function (anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarItems) {
     if (additionalOwnedAbarItems === void 0) { additionalOwnedAbarItems = []; }
     return __awaiter(void 0, void 0, void 0, function () {
         var anonTransferOperationBuilder, expectedFee, calculatedFee;
@@ -1022,7 +1811,6 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
                 case 1:
                     anonTransferOperationBuilder = _a.sent();
                     expectedFee = anonTransferOperationBuilder.get_total_fee_estimate();
-                    console.log('🚀 ~ file: tripleMasking.ts ~ line 719 ~ total expectedFee', expectedFee);
                     calculatedFee = (0, bigNumber_1.fromWei)((0, bigNumber_1.create)(expectedFee.toString()), 6).toFormat(6);
                     return [2 /*return*/, calculatedFee];
             }
@@ -1030,9 +1818,72 @@ anonKeysSender, anonPubKeyReceiver, abarAmountToTransfer, additionalOwnedAbarIte
     });
 };
 exports.getTotalAbarTransferFee = getTotalAbarTransferFee;
-var getAbarToAbarAmountPayload = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getAbarToAbarAmountPayload` function is an asynchronous function that calculates the payload required for a transfer of abars from one account to another.
+ *
+ * @param anonKeysSender - The anonymous keys of the sender account.
+ * @param anonPubKeyReceiver - The anonymous public key of the receiver account.
+ * @param amount - The amount of the asset to be transferred.
+ * @param assetCode - The code of the asset for the abars being transferred.
+ * @param givenCommitmentsList - The list of given commitments to consider for the transfer.
+ *
+ * @remarks
+ * The `getAbarToAbarAmountPayload` function calculates the payload required for transferring abars from one account to another.
+ *
+ * This function relies on various helper functions and modules, such as `Asset`, `getUnspentAbars`, `getBalanceMaps`, `getSendAtxo`, `getAbarTransferFee`,
+ * `getTotalAbarTransferFee`, `getOwnedAbars`, and `createBigNumber`, to retrieve asset details, unspent abars, balance maps,
+ * calculate transfer fees, and perform other necessary operations.
+ *
+ * The function attempts to determine whether the given list of abars is enough to cover the transfer fee. If additional fee is required,
+ * it recursively checks if more fee is needed until the required amount is met or an error occurs. The conditions for triggering an error include exceeding the allowed inputs and outputs limit, calculating the missing amount of the fee, or determining that the input payload contains enough abars to cover the fee.
+ *
+ * Note that the required dependencies, such as `Asset`, `getUnspentAbars`, `getBalanceMaps`, `getSendAtxo`, `getAbarTransferFee`, `getTotalAbarTransferFee`,
+ * `getOwnedAbars`, and `createBigNumber`, should be imported and accessible within the module where this function is used.
+ *
+ * The returned value is an object with the following properties:
+ * - `commitmentsToSend`: An array of commitments that will be used to perform the transfer.
+ * - `commitmentsForFee`: An array of commitments to be used to pay the transfer fee.
+ * - `additionalAmountForFee`: The total estimated fee amount.
+ *
+ * @example
+ * ```typescript
+ * const anonKeysSender = {
+ *   publickey: "senderPublicKey",
+ *   privateStr: "senderPrivateKey",
+ * };
+ * const anonPubKeyReceiver = "receiverPublicKey";
+ * const amount = "100";
+ * const assetCode = "ABC";
+ * const givenCommitmentsList = ["commitment1", "commitment2", "commitment3"];
+ *
+ * try {
+ *   const payload = await getAbarToAbarAmountPayload(
+ *     anonKeysSender,
+ *     anonPubKeyReceiver,
+ *     amount,
+ *     assetCode,
+ *     givenCommitmentsList
+ *   );
+ *
+ *   console.log("Abar Transfer Payload:");
+ *   console.log(payload);
+ * } catch (error) {
+ *   console.error("Error calculating abar transfer payload:", error);
+ * }
+ * ```
+ *
+ * @returns A promise that resolves to an object containing the payload details for the abar transfer, including the commitments to send, commitments for fee, and additional amount for fee.
+ *
+ * @throws Throws an error under the following conditions:
+ * - If there are no abars available for the specified asset and sender account.
+ * - If there are no FRA abars available to cover the transfer fee for the sender account.
+ * - If the sender account does not have enough abars to perform the requested transfer.
+ * - If there is a failure in calculating the transfer fee, such as an invalid amount or other errors.
+ * - If the amount being sent is too large to be sent at once.
+ * - If there is an error in decoding the abar memo data.
+ * - If there is an error in converting the given AnonKeyPair from JSON.
+ */
+var getAbarToAbarAmountPayload = function (anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var asset, decimals, utxoNumbers, unspentAbars, balancesMaps, atxoMap, filteredFraAtxoList, filteredAssetAtxoList, fraAssetCode, isFraTransfer, assetCommitments, fraCommitments, atxoListToSend, additionalOwnedAbarItems, commitmentsToSend, commitmentsForFee, _i, atxoListToSend_1, atxoItem, givenCommitment, ownedAbarsResponseTwo, additionalOwnedAbarItem, calculatedFee, error_7, totalFeeEstimate, error_8, balanceAfterSendToBN, isMoreFeeNeeded, allCommitmentsForFee, idx, feeUtxoNumbers, feeAtxoListToSend, allCommitmentsForFeeSorted, calculatedFeeA, givenCommitment, myCalculatedFee, error_9, ownedAbarsResponseFee, additionalOwnedAbarItemFee;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -1051,9 +1902,7 @@ anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { r
                 filteredFraAtxoList = [];
                 filteredAssetAtxoList = atxoMap[assetCode] || [];
                 if (!filteredAssetAtxoList.length) {
-                    throw new Error(
-                    // `There is no any abar for asset ${assetCode} available for ${anonKeysSender.axfrPublicKey}`,
-                    "There is no any abar for asset ".concat(assetCode, " available for ").concat(anonKeysSender.publickey));
+                    throw new Error("There is no any abar for asset ".concat(assetCode, " available for ").concat(anonKeysSender.publickey));
                 }
                 return [4 /*yield*/, Asset.getFraAssetCode()];
             case 4:
@@ -1070,7 +1919,6 @@ anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { r
                 return [4 /*yield*/, (0, exports.getSendAtxo)(assetCode, utxoNumbers, assetCommitments, anonKeysSender)];
             case 5:
                 atxoListToSend = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 338 ~ atxoListToSend', atxoListToSend);
                 if (!atxoListToSend.length) {
                     throw new Error("Sender ".concat(anonKeysSender.publickey, " does not have enough abars to send ").concat(amount, " of ").concat(assetCode));
                 }
@@ -1112,7 +1960,6 @@ anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { r
                 error_8 = _a.sent();
                 throw new Error('2 The amount you are trying to send might be to big to be sent at once. Please try sending smaller amount');
             case 15:
-                console.log("\uD83D\uDE80 ~ file: tripleMasking.ts ~ line 308 ~ we need ".concat(calculatedFee, " more FRA to pay fee"));
                 balanceAfterSendToBN = (0, bigNumber_1.create)(calculatedFee);
                 isMoreFeeNeeded = balanceAfterSendToBN.gt((0, bigNumber_1.create)(0));
                 if (!isMoreFeeNeeded) {
@@ -1163,15 +2010,12 @@ anonKeysSender, anonPubKeyReceiver, amount, assetCode, givenCommitmentsList) { r
                 _a.label = 23;
             case 23:
                 idx += 1;
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 397 ~ calculatedFee', calculatedFeeA);
                 return [3 /*break*/, 17];
-            case 24:
-                console.log('returning calculatedFeeA', calculatedFeeA);
-                return [2 /*return*/, {
-                        commitmentsToSend: commitmentsToSend,
-                        commitmentsForFee: commitmentsForFee,
-                        additionalAmountForFee: totalFeeEstimate,
-                    }];
+            case 24: return [2 /*return*/, {
+                    commitmentsToSend: commitmentsToSend,
+                    commitmentsForFee: commitmentsForFee,
+                    additionalAmountForFee: totalFeeEstimate,
+                }];
         }
     });
 }); };
@@ -1462,16 +2306,48 @@ var abarToBar = function (anonKeysSender, receiverXfrPublicKey, additionalOwnedA
     });
 };
 exports.abarToBar = abarToBar;
-var getAbarToBarAmountPayload = function (
-// anonKeysSender: FindoraWallet.FormattedAnonKeys,
-anonKeysSender, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getAbarToBarAmountPayload` function retrieves the payload required for transferring abars to bars from one account to another. It simplifies the process by using the `getAbarToAbarAmountPayload` function internally.
+ *
+ * @param anonKeysSender - The anonymous keys of the sender account.
+ * @param amount - The amount of the asset to be transferred.
+ * @param assetCode - The code of the asset for the abars being transferred.
+ * @param givenCommitmentsList - The list of given commitments to consider for the transfer.
+ *
+ * @returns An object containing the payload for the abar transfer, including the commitments to send the abars, the commitments to cover the transfer fee, and the additional amount required for the fee.
+ *
+ * @remarks
+ * The `getAbarToBarAmountPayload` function internally uses the `getAbarToAbarAmountPayload` function to calculate the payload required for transferring abars.
+ * It simplifies the process by providing a more streamlined interface and returning a subset of the payload.
+ *
+ * The `commitmentsToSend` field in the return value is an array of commitments that will be used to perform the abar transfer.
+ *
+ * The `commitmentsForFee` field in the return value is an array of commitments that will be used to pay the transfer fee.
+ *
+ * The `additionalAmountForFee` field in the return value is the additional amount required for the transfer fee, if applicable.
+ * If this field is present and greater than zero, it indicates that additional abars need to be included to cover the fee.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeysSender: Keypair.WalletKeypar = ...; // Sender's anonymous keys
+ * const amount: string = "10"; // Amount of abars to transfer
+ * const assetCode: string = "FOO"; // Asset code for the abars
+ * const givenCommitmentsList: string[] = [...]; // List of given commitments
+ *
+ * const payload = await getAbarToBarAmountPayload(anonKeysSender, amount, assetCode, givenCommitmentsList);
+ *
+ * console.log(payload.commitmentsToSend); // Array of commitments for abar transfer
+ * console.log(payload.commitmentsForFee); // Array of commitments for transfer fee
+ * console.log(payload.additionalAmountForFee); // Additional amount required for the fee
+ * ```
+ */
+var getAbarToBarAmountPayload = function (anonKeysSender, amount, assetCode, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var payload, commitmentsToSend, commitmentsForFee, additionalAmountForFee;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, exports.getAbarToAbarAmountPayload)(anonKeysSender, anonKeysSender.publickey, amount, assetCode, givenCommitmentsList)];
             case 1:
                 payload = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 453 ~ payload', payload);
                 commitmentsToSend = payload.commitmentsToSend, commitmentsForFee = payload.commitmentsForFee, additionalAmountForFee = payload.additionalAmountForFee;
                 return [2 /*return*/, {
                         commitmentsToSend: commitmentsToSend,
@@ -1578,9 +2454,36 @@ var abarToBarAmount = function (anonKeysSender, receiverXfrPublicKey, amount, as
     });
 };
 exports.abarToBarAmount = abarToBarAmount;
-var getNullifierHashesFromCommitments = function (
-// anonKeys: FindoraWallet.FormattedAnonKeys,
-anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
+/**
+ * The `getNullifierHashesFromCommitments` function retrieves the nullifier hashes corresponding to the provided commitments.
+ *
+ * @param anonKeys - The anonymous keys associated with the commitments.
+ * @param givenCommitmentsList - The list of commitments for which to retrieve the nullifier hashes.
+ *
+ * @returns A promise that resolves to an array of nullifier hashes.
+ *
+ * @throws An error if there was an issue retrieving the owned abars or generating the nullifier hash.
+ *
+ * @remarks
+ * The `getNullifierHashesFromCommitments` function iterates over the given commitments and retrieves the owned abars associated with each commitment using the `getOwnedAbars` function. It then generates the nullifier hash for each owned abar using the `genNullifierHash` function. The function handles error scenarios by throwing informative error messages.
+ *
+ * Example usage:
+ * ```typescript
+ * const anonKeys = {
+ *   publickey: 'ABC123', // Public key
+ *   privateStr: 'xyzABC...', // Private key string
+ * };
+ * const commitments = ['commitment1', 'commitment2', 'commitment3']; // List of commitments
+ *
+ * try {
+ *   const nullifierHashes = await getNullifierHashesFromCommitments(anonKeys, commitments);
+ *   console.log(nullifierHashes); // ['hash1', 'hash2', 'hash3']
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
+var getNullifierHashesFromCommitments = function (anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, function () {
     var publickey, privateStr, nullifierHashes, _i, givenCommitmentsList_3, givenCommitment, ownedAbarsResponse, error_11, ownedAbarItem, abarData, atxoSid, ownedAbar, hash;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -1619,14 +2522,53 @@ anonKeys, givenCommitmentsList) { return __awaiter(void 0, void 0, void 0, funct
             case 7:
                 _i++;
                 return [3 /*break*/, 1];
-            case 8: 
-            // import KeyStore from '_utils/keystore';
-            // const b = await KeyStore.restoreWalletInfo(anonKeys.privateStr, 'foo');
-            return [2 /*return*/, nullifierHashes];
+            case 8: return [2 /*return*/, nullifierHashes];
         }
     });
 }); };
 exports.getNullifierHashesFromCommitments = getNullifierHashesFromCommitments;
+/**
+ * The `decryptAbarMemo` function is an asynchronous function that decrypts an abar memo item using the provided AnonKeyPair.
+ *
+ * @param abarMemoItem - An array containing the atxoSid and the abar memo data to be decrypted.
+ * @param anonKeys - An object of type `WalletKeypar` containing the AnonKeyPair used for decryption.
+ *
+ * @remarks
+ * This function internally uses the `getAnonKeypairFromJson` function to convert the AnonKeyPair from JSON format to the required format for decryption.
+ * It also depends on the external `ledger` module, which should be imported from the wasm module and available in the module where this function is used.
+ *
+ * @remarks
+ * In order to access the details of the decrypted abar item (e.g., amount, currency), the abar memo item needs to be decrypted.
+ *
+ * @example
+ * ```typescript
+ * const abarMemoItem = [
+ *   "atxoSid123456",
+ *   encryptedAbarMemoData // actual encrypted abar memo data in JSON format.
+ * ];
+ * const anonKeys = {
+ *   publickey: "base64publickey",
+ *   privateStr: "base64privatekey",
+ * };
+ *
+ * try {
+ *   const decryptedAbarData = await decryptAbarMemo(abarMemoItem, anonKeys);
+ *
+ *   if (decryptedAbarData) {
+ *     console.log("Decrypted Abar Data:");
+ *     console.log("atxoSid:", decryptedAbarData.atxoSid);
+ *     console.log("Decrypted Abar:", decryptedAbarData.decryptedAbar);
+ *     console.log("Owner:", decryptedAbarData.owner);
+ *   } else {
+ *     console.log("Failed to decrypt Abar Memo.");
+ *   }
+ * } catch (error) {
+ *   console.error("Error decrypting Abar Memo:", error);
+ * }
+ * ```
+ *
+ * @returns A promise that resolves to an object of type `DecryptedAbarMemoData` containing the decrypted abar memo data, or `false` if decryption fails.
+ */
 var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, atxoSid, myMemoData, axfrSpendKey, abarOwnerMemo, decryptedAbar, result;
     return __generator(this, function (_a) {
@@ -1640,7 +2582,6 @@ var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 
                 axfrSpendKey = (_a.sent()).aXfrSecretKeyConverted;
                 abarOwnerMemo = ledger.AxfrOwnerMemo.from_json(myMemoData);
                 try {
-                    // decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, aXfrKeyPair);
                     decryptedAbar = ledger.try_decrypt_axfr_memo(abarOwnerMemo, axfrSpendKey);
                 }
                 catch (error) {
@@ -1656,6 +2597,31 @@ var decryptAbarMemo = function (abarMemoItem, anonKeys) { return __awaiter(void 
     });
 }); };
 exports.decryptAbarMemo = decryptAbarMemo;
+/**
+ * The `getCommitmentByAtxoSid` function retrieves the commitment corresponding to the provided ATXO SID.
+ *
+ * @param atxoSid - The ATXO SID for which to retrieve the commitment.
+ *
+ * @returns A promise that resolves to an object containing the ATXO SID and the corresponding commitment.
+ *
+ * @throws An error if there was an issue retrieving the commitment or if no response was received.
+ *
+ * @remarks
+ * The `getCommitmentByAtxoSid` function interacts with the network to fetch the commitment associated with the provided ATXO SID.
+ * It utilizes the `getLedger` function to access the ledger and the `Network.getAbarCommitment` function to retrieve the commitment. The function handles error scenarios by throwing informative error messages.
+ *
+ * Example usage:
+ * ```typescript
+ * const atxoSid = 'ABC123'; // ATXO SID
+ *
+ * try {
+ *   const commitment = await getCommitmentByAtxoSid(atxoSid);
+ *   console.log(commitment); // { atxoSid: 'ABC123', commitment: 'xyzABC...' }
+ * } catch (error) {
+ *   console.error(error.message);
+ * }
+ * ```
+ */
 var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, commitementResult, error, response, commitmentInBase58;
     return __generator(this, function (_a) {
@@ -1666,7 +2632,6 @@ var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 
                 return [4 /*yield*/, Network.getAbarCommitment("".concat(atxoSid))];
             case 2:
                 commitementResult = _a.sent();
-                console.log('🚀 ~ file: tripleMasking.ts ~ line 1519 ~ getCommitmentByAtxoSid ~ commitementResult', commitementResult);
                 error = commitementResult.error, response = commitementResult.response;
                 if (error) {
                     (0, utils_1.log)('error', error);
@@ -1676,10 +2641,6 @@ var getCommitmentByAtxoSid = function (atxoSid) { return __awaiter(void 0, void 
                     throw new Error("could not get commitment by atxo sid. no response retrieved");
                 }
                 commitmentInBase58 = ledger.base64_to_base58(response);
-                // console.log(
-                //   '🚀 ~ file: tripleMasking.ts ~ line 1531 ~ getCommitmentByAtxoSid ~ commitmentInBase58',
-                //   commitmentInBase58,
-                // );
                 return [2 /*return*/, {
                         atxoSid: atxoSid,
                         commitment: commitmentInBase58,
