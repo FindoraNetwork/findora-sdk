@@ -12,4 +12,7 @@ export {
   TxoRef,
   XfrKeyPair,
   XfrPublicKey,
+  AxfrOwnerMemo,
+  AnonAssetRecord,
+  MTLeafInfo,
 } from 'findora-wallet-wasm/web/wasm';
