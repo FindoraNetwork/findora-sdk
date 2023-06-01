@@ -62,7 +62,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.hashAddressTofraAddressOld = exports.fraAddressToHashAddress = void 0;
 var eth_ens_namehash_1 = __importDefault(require("@ensdomains/eth-ens-namehash"));
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
@@ -112,8 +112,8 @@ exports.fraAddressToHashAddress = fraAddressToHashAddress;
  * @returns fra asset address
  *
  */
-var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, tokenAddress, tokenAddressHex;
+var hashAddressTofraAddressOld = function (addresss) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, tokenAddress, tokenAddressHex, assetType;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -121,7 +121,28 @@ var hashAddressTofraAddress = function (addresss) { return __awaiter(void 0, voi
                 ledger = _a.sent();
                 tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address'], ['0x0000000000000000000000000000000000000000000000000000000000000077', addresss]);
                 tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
-                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+                assetType = ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex));
+                return [2 /*return*/, assetType];
+        }
+    });
+}); };
+exports.hashAddressTofraAddressOld = hashAddressTofraAddressOld;
+// uses contract to compute the proper asset type for the token
+var hashAddressTofraAddress = function (addresss, bridgeAddress, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, web3, contract, tokenAddressHexA, tokenAddressHex, assetType;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                return [4 /*yield*/, contract.methods.computeERC20AssetType(addresss).call()];
+            case 2:
+                tokenAddressHexA = _a.sent();
+                tokenAddressHex = web3_1.default.utils.keccak256(tokenAddressHexA);
+                assetType = ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHexA));
+                return [2 /*return*/, assetType];
         }
     });
 }); };

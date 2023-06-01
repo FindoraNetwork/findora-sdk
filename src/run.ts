@@ -24,10 +24,10 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
   // hostUrl: 'https://dev-qa01.dev.findora.org',
@@ -1303,7 +1303,6 @@ async function approveToken() {
   //   chainId: 1111, // 2154,
   //   account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
   // };
-
   // const result = await Evm.approveToken(
   //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
   //   '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
@@ -1311,7 +1310,6 @@ async function approveToken() {
   //   webLinkedInfo,
   // );
   // console.log(result.transactionHash);
-
   // const result1 = await Evm.frc20ToBar(
   //   '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
   //   'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
@@ -1326,11 +1324,9 @@ async function approveToken() {
   //   true,
   //   webLinkedInfo.account,
   // );
-
   // console.log(result1);
-
-  const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
-  console.log(addr);
+  // const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+  // console.log(addr);
 }
 
 async function testCommitment() {
@@ -1447,40 +1443,32 @@ async function getMas() {
 
 async function prism() {
   // const { response: displayCheckpointData, error } = await Network.getConfig();
-
   // if (error) throw error;
-
   // if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
-
   // const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
-
+  // const web3 = Evm.getWeb3(`${sdkEnv.hostUrl}:8545`);
+  // console.log('web3', web3);
   // const prismProxyContract = await Evm.getPrismProxyContract(
   //   web3,
   //   displayCheckpointData.prism_bridge_address,
   // );
   // const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
-
+  //
+  // console.log('prismBridgeAddress', prismBridgeAddress);
   // const prismContract = await Evm.getSimBridgeContract(web3, prismBridgeAddress);
-
   // const [ledgerAddress, assetAddress] = await Promise.all([
   //   prismContract.methods.ledger_contract().call(),
   //   prismContract.methods.asset_contract().call(),
   // ]);
-
   // console.log(ledgerAddress, assetAddress, prismBridgeAddress);
-
   // const name = await erc20Contract.methods.name().call();
-
   // console.log('erc20 token name: ', name);
-
   // const result = await Evm.getPrismConfig();
   // console.log(result);
-
   // const walletInfo = await Keypair.restoreFromPrivateKey(
   //   'AKPYFxSOX7dVTpM2IbxaYFE1laLJDNQhIodMyXJt_hAE',
   //   password,
   // );
-
   // try {
   //   Evm.sendAccountToEvm(
   //     walletInfo,
@@ -1492,12 +1480,10 @@ async function prism() {
   // } catch (error) {
   //   console.log(error);
   // }
-
-  const result = Evm.fraAddressToHashAddress(
-    'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
-  );
-
-  console.log(result);
+  // const result = Evm.fraAddressToHashAddress(
+  //   'eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y',
+  // );
+  // console.log(result);
 }
 
 async function testWasmFunctions(walletInfo: Keypair.WalletKeypar): Promise<void> {
@@ -1822,10 +1808,24 @@ async function keystoreTest() {
   const wInfoFromPrivateKey = await Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr!, password);
   log('wInfoFromPrivateKey', wInfoFromPrivateKey);
 }
-// approveToken();
-// testItSync();
 
-getFraBalance();
+async function testNow() {
+  const webLinkedInfo = {
+    account: '0x74888750081f4e5efdf14501a522499624deeefb',
+    chainId: 2153,
+    privateStr: 'aa779ce000e550551a3fa7c01af9dbf19a4b8373db4232d96209adee8bef6af5',
+    rpcUrl: 'https://prod-testnet.prod.findora.org:8545',
+  };
+  const bridgeAddress = '0x8f12Dd0B82A4F77Cc069A7295502B075FBBC13A2';
+  // const code = '0xcF83E10a18b1286D6C6CBfB1640D58202F1F048F';
+  const faucetCode = '0x0066ddae5a510bc751947057d2155783c9dde1a6';
+  const t2 = await Evm.hashAddressTofraAddress(faucetCode, bridgeAddress, webLinkedInfo);
+  console.log('t2', t2);
+}
+
+testNow();
+// prism();
+// getFraBalance();
 // barToAbarAmount();
 // getAbarBalance();
 // keystoreTest();

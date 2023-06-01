@@ -33,7 +33,8 @@ export declare const fraAddressToHashAddress: (address: string) => string;
  * @returns fra asset address
  *
  */
-export declare const hashAddressTofraAddress: (addresss: string) => Promise<string>;
+export declare const hashAddressTofraAddressOld: (addresss: string) => Promise<string>;
+export declare const hashAddressTofraAddress: (addresss: string, bridgeAddress: string, web3WalletInfo: IWebLinkedInfo) => Promise<string>;
 /**
  * NFT asset address conversion
  *
