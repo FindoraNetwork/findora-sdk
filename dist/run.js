@@ -83,10 +83,10 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'http://54.213.254.47',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
     // hostUrl: 'https://dev-qa01.dev.findora.org',
@@ -1385,15 +1385,8 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
-        var addr;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5')];
-                case 1:
-                    addr = _a.sent();
-                    console.log(addr);
-                    return [2 /*return*/];
-            }
+            return [2 /*return*/];
         });
     });
 }
@@ -1503,11 +1496,26 @@ function getMas() {
 }
 function prism() {
     return __awaiter(this, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            result = api_1.Evm.fraAddressToHashAddress('eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y');
-            console.log(result);
-            return [2 /*return*/];
+        var _a, displayCheckpointData, error, web3, prismProxyContract, prismBridgeAddress;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0: return [4 /*yield*/, api_1.Network.getConfig()];
+                case 1:
+                    _a = _b.sent(), displayCheckpointData = _a.response, error = _a.error;
+                    if (error)
+                        throw error;
+                    if (!(displayCheckpointData === null || displayCheckpointData === void 0 ? void 0 : displayCheckpointData.prism_bridge_address))
+                        throw 'no prism_bridge_address';
+                    web3 = api_1.Evm.getWeb3("".concat(sdkEnv.hostUrl, ":8545"));
+                    return [4 /*yield*/, api_1.Evm.getPrismProxyContract(web3, displayCheckpointData.prism_bridge_address)];
+                case 2:
+                    prismProxyContract = _b.sent();
+                    return [4 /*yield*/, prismProxyContract.methods.prismBridgeAddress().call()];
+                case 3:
+                    prismBridgeAddress = _b.sent();
+                    console.log('prismBridgeAddress', prismBridgeAddress);
+                    return [2 /*return*/];
+            }
         });
     });
 }
@@ -1899,9 +1907,32 @@ function keystoreTest() {
         });
     });
 }
-// approveToken();
-// testItSync();
-getFraBalance();
+function testNow() {
+    return __awaiter(this, void 0, void 0, function () {
+        var webLinkedInfo, bridgeAddress, faucetCode, t2;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    webLinkedInfo = {
+                        account: '0x74888750081f4e5efdf14501a522499624deeefb',
+                        chainId: 2153,
+                        privateStr: 'aa779ce000e550551a3fa7c01af9dbf19a4b8373db4232d96209adee8bef6af5',
+                        rpcUrl: 'https://prod-testnet.prod.findora.org:8545',
+                    };
+                    bridgeAddress = '0x8f12Dd0B82A4F77Cc069A7295502B075FBBC13A2';
+                    faucetCode = '0x0066ddae5a510bc751947057d2155783c9dde1a6';
+                    return [4 /*yield*/, api_1.Evm.hashAddressTofraAddress(faucetCode, bridgeAddress, webLinkedInfo)];
+                case 1:
+                    t2 = _a.sent();
+                    console.log('t2', t2);
+                    return [2 /*return*/];
+            }
+        });
+    });
+}
+testNow();
+// prism();
+// getFraBalance();
 // barToAbarAmount();
 // getAbarBalance();
 // keystoreTest();
