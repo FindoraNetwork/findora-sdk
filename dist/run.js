@@ -67,9 +67,9 @@ exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewa
 var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
-var Sdk_1 = __importDefault(require("./Sdk"));
 var api_1 = require("./api");
 var testHelpers_1 = require("./evm/testHelpers");
+var Sdk_1 = __importDefault(require("./Sdk"));
 var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var fee_1 = require("./services/fee");
@@ -1391,15 +1391,8 @@ var getFee = function () { return __awaiter(void 0, void 0, void 0, function () 
 }); };
 function approveToken() {
     return __awaiter(this, void 0, void 0, function () {
-        var addr;
         return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5')];
-                case 1:
-                    addr = _a.sent();
-                    console.log(addr);
-                    return [2 /*return*/];
-            }
+            return [2 /*return*/];
         });
     });
 }

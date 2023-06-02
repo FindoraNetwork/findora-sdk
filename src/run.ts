@@ -2,10 +2,10 @@
 import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
-import Sdk from './Sdk';
 import { Account, Asset, Evm, Keypair, Network, Staking, Transaction } from './api';
 import * as NetworkTypes from './api/network/types';
 import { waitForBlockChange } from './evm/testHelpers';
+import Sdk from './Sdk';
 import { toWei } from './services/bigNumber';
 import { FileCacheProvider, MemoryCacheProvider } from './services/cacheStore/providers';
 import * as Fee from './services/fee';
@@ -1300,7 +1300,6 @@ async function approveToken() {
   //   chainId: 1111, // 2154,
   //   account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
   // };
-
   // const result = await Evm.approveToken(
   //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
   //   '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
@@ -1308,7 +1307,6 @@ async function approveToken() {
   //   webLinkedInfo,
   // );
   // console.log(result.transactionHash);
-
   // const result1 = await Evm.frc20ToBar(
   //   '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
   //   'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
@@ -1323,11 +1321,9 @@ async function approveToken() {
   //   true,
   //   webLinkedInfo.account,
   // );
-
   // console.log(result1);
-
-  const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
-  console.log(addr);
+  // const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+  // console.log(addr);
 }
 
 async function testCommitment() {
