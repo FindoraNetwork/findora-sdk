@@ -19,6 +19,24 @@ import { IWebLinkedInfo } from './web3';
 export declare const fraAddressToHashAddress: (address: string) => string;
 export declare const hashAddressTofraAddressOld: (addresss: string) => Promise<string>;
 export declare const hashAddressTofraAddress: (addresss: string, bridgeAddress: string, web3WalletInfo: IWebLinkedInfo) => Promise<string>;
+/**
+ * NFT asset address conversion
+ *
+ * @remarks
+ * Convert the NFT asset address in evm to an asset address that can be recognized by native
+ *
+ * @example
+ * ```ts
+ * const contract = hashAddressTofraAddressByNFT('0x00000....', '1');
+ * ```
+ *
+ * @param address - evm nft contract address
+ * @param tokenId - evm nft tokenId
+ *
+ *
+ * @returns fra asset address
+ *
+ */
 export declare const hashAddressTofraAddressByNFT: (addresss: string, tokenId: string) => Promise<string>;
 /**
  * Transfer fra asset to native chain
