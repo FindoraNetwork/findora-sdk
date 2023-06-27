@@ -8485,10 +8485,10 @@ snapdragon@^0.8.1:
     source-map-resolve "^0.5.0"
     use "^3.1.0"
 
-solc@0.4.17:
-  version "0.4.17"
-  resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.17.tgz#75f93da6bc190becb89f6663076ab943ff95cd2f"
-  integrity sha512-39Tmo2r+qclwW7ooLXMLzMSxmoGtHy3/p2sDKdA9NM/+MRtzLm/AFKj4BY2Cocg3gwkfJzKTEx6X0wiI4fIZ/A==
+solc@0.4.26:
+  version "0.4.26"
+  resolved "https://registry.yarnpkg.com/solc/-/solc-0.4.26.tgz#5390a62a99f40806b86258c737c1cf653cc35cb5"
+  integrity sha512-o+c6FpkiHd+HPjmjEVpQgH7fqZ14tJpXhho+/bQXlXbliLIS/xjXb42Vxh+qQY1WCSTMQ0+a5vR9vi0MfhU6mA==
   dependencies:
     fs-extra "^0.30.0"
     memorystream "^0.3.1"
