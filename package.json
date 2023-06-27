@@ -147,7 +147,7 @@
     "neat-csv": "^6.0.1",
     "os-browserify": "^0.3.0",
     "sleep-promise": "^9.1.0",
-    "truffle-hdwallet-provider": "^1.0.17",
+    "@truffle/hdwallet-provider": "^2.0.0",
     "url-safe-base64": "^1.2.0",
     "util": "^0.12.4",
     "web3": "^1.7.4",

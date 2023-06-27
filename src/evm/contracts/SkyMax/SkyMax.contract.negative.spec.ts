@@ -1,5 +1,5 @@
 import assert from 'assert';
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
 import {
   afterAllLog,

@@ -24,82 +24,82 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var MyBigNumber = __importStar(require("./bigNumber"));
-describe('bigNumber (unit test)', function () {
-    var num = 1;
-    var bigNum = MyBigNumber.create(num);
-    describe('toWei', function () {
-        it('returns formatted value in wei', function () {
-            var result = MyBigNumber.toWei(bigNum, 4);
+const MyBigNumber = __importStar(require("./bigNumber"));
+describe('bigNumber (unit test)', () => {
+    const num = 1;
+    const bigNum = MyBigNumber.create(num);
+    describe('toWei', () => {
+        it('returns formatted value in wei', () => {
+            const result = MyBigNumber.toWei(bigNum, 4);
             expect(result.toString()).toStrictEqual('10000');
         });
-        it('returns formatted value in wei using default precission', function () {
-            var result = MyBigNumber.toWei(bigNum);
+        it('returns formatted value in wei using default precission', () => {
+            const result = MyBigNumber.toWei(bigNum);
             expect(result.toString()).toStrictEqual('1000000');
         });
     });
-    describe('fromWei', function () {
-        it('returns formatted value in wei', function () {
-            var result = MyBigNumber.fromWei(bigNum, 4);
+    describe('fromWei', () => {
+        it('returns formatted value in wei', () => {
+            const result = MyBigNumber.fromWei(bigNum, 4);
             expect(result.toString()).toStrictEqual('0.0001');
         });
-        it('returns formatted value in wei using default precission', function () {
-            var result = MyBigNumber.fromWei(bigNum);
+        it('returns formatted value in wei using default precission', () => {
+            const result = MyBigNumber.fromWei(bigNum);
             expect(result.toString()).toStrictEqual('0.000001');
         });
     });
-    describe('calDecimalPrecision', function () {
-        it('properly calculates the number using given precision for a floating number', function () {
-            var num = '1.23456789';
-            var bigNum = MyBigNumber.create(num);
-            var result = MyBigNumber.calDecimalPrecision(bigNum, 3);
+    describe('calDecimalPrecision', () => {
+        it('properly calculates the number using given precision for a floating number', () => {
+            const num = '1.23456789';
+            const bigNum = MyBigNumber.create(num);
+            const result = MyBigNumber.calDecimalPrecision(bigNum, 3);
             expect(result.toString()).toStrictEqual('0.00123456789');
         });
-        it('properly calculates the number using given precision for an integer number', function () {
-            var num = '123456789';
-            var bigNum = MyBigNumber.create(num);
-            var result = MyBigNumber.calDecimalPrecision(bigNum, 5);
+        it('properly calculates the number using given precision for an integer number', () => {
+            const num = '123456789';
+            const bigNum = MyBigNumber.create(num);
+            const result = MyBigNumber.calDecimalPrecision(bigNum, 5);
             expect(result.toString()).toStrictEqual('1,234.56789');
         });
     });
-    describe('totalSum', function () {
-        it('returns a summ of two big numbers', function () {
-            var numOne = '1.13';
-            var numTwo = '4.56';
-            var bigNumOne = MyBigNumber.create(numOne);
-            var bigNumTwo = MyBigNumber.create(numTwo);
-            var result = MyBigNumber.totalSum([bigNumOne, bigNumTwo]);
+    describe('totalSum', () => {
+        it('returns a summ of two big numbers', () => {
+            const numOne = '1.13';
+            const numTwo = '4.56';
+            const bigNumOne = MyBigNumber.create(numOne);
+            const bigNumTwo = MyBigNumber.create(numTwo);
+            const result = MyBigNumber.totalSum([bigNumOne, bigNumTwo]);
             expect(result.toString()).toStrictEqual('5.69');
         });
-        it('returns zero if array of big numbers is empty', function () {
-            var result = MyBigNumber.totalSum([]);
+        it('returns zero if array of big numbers is empty', () => {
+            const result = MyBigNumber.totalSum([]);
             expect(result.toString()).toStrictEqual('0');
         });
-        it('returns proper summ even if receives an array of numbers and not big numbers', function () {
-            var numOne = '1.16';
-            var numTwo = '4.61';
-            var result = MyBigNumber.totalSum([numOne, numTwo]);
+        it('returns proper summ even if receives an array of numbers and not big numbers', () => {
+            const numOne = '1.16';
+            const numTwo = '4.61';
+            const result = MyBigNumber.totalSum([numOne, numTwo]);
             expect(result.toString()).toStrictEqual('5.77');
         });
-        it('returns NaN if receives an array of incorrect numbers', function () {
-            var numOne = 'foo';
-            var numTwo = 'bar';
-            var numThree = 'null';
-            var result = MyBigNumber.totalSum([numOne, numTwo, numThree]);
+        it('returns NaN if receives an array of incorrect numbers', () => {
+            const numOne = 'foo';
+            const numTwo = 'bar';
+            const numThree = 'null';
+            const result = MyBigNumber.totalSum([numOne, numTwo, numThree]);
             expect(result.toString()).toStrictEqual('NaN');
         });
     });
-    describe('plus', function () {
-        it('adds given value to the given big number', function () {
-            var numOne = '1.16';
-            var numTwo = '4.61';
-            var result = MyBigNumber.plus(numOne, numTwo);
+    describe('plus', () => {
+        it('adds given value to the given big number', () => {
+            const numOne = '1.16';
+            const numTwo = '4.61';
+            const result = MyBigNumber.plus(numOne, numTwo);
             expect(result.toString()).toStrictEqual('5.77');
         });
-        it('returns NaN if one of the arguments is not a number', function () {
-            var numOne = '1.16';
-            var numTwo = 'foo';
-            var result = MyBigNumber.plus(numOne, numTwo);
+        it('returns NaN if one of the arguments is not a number', () => {
+            const numOne = '1.16';
+            const numTwo = 'foo';
+            const result = MyBigNumber.plus(numOne, numTwo);
             expect(result.toString()).toStrictEqual('NaN');
         });
     });

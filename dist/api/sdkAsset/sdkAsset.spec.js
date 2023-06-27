@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -42,1450 +31,1162 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var asset_1 = require("../../config/asset");
-var bigNumber_1 = require("../../services/bigNumber");
-var Fee = __importStar(require("../../services/fee"));
-var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
-var KeypairApi = __importStar(require("../keypair/keypair"));
-var NetworkApi = __importStar(require("../network/network"));
-var SdkAsset = __importStar(require("./sdkAsset"));
-describe('sdkAsset (unit test)', function () {
-    describe('getFraAssetCode', function () {
-        it('returns an fra asset code', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fraAssetCode, myLedger, spyGetLedger, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fraAssetCode = 'AA';
-                        myLedger = {
-                            foo: 'node',
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        return [4 /*yield*/, SdkAsset.getFraAssetCode()];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetLedger).toHaveBeenCalled();
-                        expect(result).toBe(fraAssetCode);
-                        spyGetLedger.mockRestore();
-                        return [2 /*return*/];
-                }
+const asset_1 = require("../../config/asset");
+const bigNumber_1 = require("../../services/bigNumber");
+const Fee = __importStar(require("../../services/fee"));
+const NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
+const KeypairApi = __importStar(require("../keypair/keypair"));
+const NetworkApi = __importStar(require("../network/network"));
+const SdkAsset = __importStar(require("./sdkAsset"));
+describe('sdkAsset (unit test)', () => {
+    describe('getFraAssetCode', () => {
+        it('returns an fra asset code', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fraAssetCode = 'AA';
+            const myLedger = {
+                foo: 'node',
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const result = yield SdkAsset.getFraAssetCode();
+            expect(spyGetLedger).toHaveBeenCalled();
+            expect(result).toBe(fraAssetCode);
+            spyGetLedger.mockRestore();
+        }));
     });
-    describe('getMinimalFee', function () {
-        it('returns an fra minimal fee', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fraMinimalFee, myLedger, spyGetLedger, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fraMinimalFee = BigInt(2);
-                        myLedger = {
-                            foo: 'node',
-                            fra_get_minimal_fee: jest.fn(function () {
-                                return fraMinimalFee;
-                            }),
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        return [4 /*yield*/, SdkAsset.getMinimalFee()];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetLedger).toHaveBeenCalled();
-                        expect(result).toBe(fraMinimalFee);
-                        spyGetLedger.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getMinimalFee', () => {
+        it('returns an fra minimal fee', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fraMinimalFee = BigInt(2);
+            const myLedger = {
+                foo: 'node',
+                fra_get_minimal_fee: jest.fn(() => {
+                    return fraMinimalFee;
+                }),
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const result = yield SdkAsset.getMinimalFee();
+            expect(spyGetLedger).toHaveBeenCalled();
+            expect(result).toBe(fraMinimalFee);
+            spyGetLedger.mockRestore();
+        }));
     });
-    describe('getFraPublicKey', function () {
-        it('returns an fra public key', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fraPublicKey, myLedger, spyGetLedger, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fraPublicKey = 'myPub';
-                        myLedger = {
-                            foo: 'node',
-                            fra_get_dest_pubkey: jest.fn(function () {
-                                return fraPublicKey;
-                            }),
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        return [4 /*yield*/, SdkAsset.getFraPublicKey()];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetLedger).toHaveBeenCalled();
-                        expect(result).toBe(fraPublicKey);
-                        spyGetLedger.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getFraPublicKey', () => {
+        it('returns an fra public key', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fraPublicKey = 'myPub';
+            const myLedger = {
+                foo: 'node',
+                fra_get_dest_pubkey: jest.fn(() => {
+                    return fraPublicKey;
+                }),
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const result = yield SdkAsset.getFraPublicKey();
+            expect(spyGetLedger).toHaveBeenCalled();
+            expect(result).toBe(fraPublicKey);
+            spyGetLedger.mockRestore();
+        }));
     });
-    describe('getAssetCode', function () {
-        it('returns a required asset code', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var decryptedAsetType, val, myLedger, spyGetLedger, spyLedgerAssetTypeFromJsvalue, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        decryptedAsetType = 'myPub';
-                        val = [1, 2];
-                        myLedger = {
-                            foo: 'node',
-                            asset_type_from_jsvalue: jest.fn(function () {
-                                return decryptedAsetType;
-                            }),
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
-                        return [4 /*yield*/, SdkAsset.getAssetCode(val)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetLedger).toHaveBeenCalledWith();
-                        expect(spyLedgerAssetTypeFromJsvalue).toHaveBeenCalledWith(val);
-                        expect(result).toBe(decryptedAsetType);
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetTypeFromJsvalue.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getAssetCode', () => {
+        it('returns a required asset code', () => __awaiter(void 0, void 0, void 0, function* () {
+            const decryptedAsetType = 'myPub';
+            const val = [1, 2];
+            const myLedger = {
+                foo: 'node',
+                asset_type_from_jsvalue: jest.fn(() => {
+                    return decryptedAsetType;
+                }),
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const spyLedgerAssetTypeFromJsvalue = jest.spyOn(myLedger, 'asset_type_from_jsvalue');
+            const result = yield SdkAsset.getAssetCode(val);
+            expect(spyGetLedger).toHaveBeenCalledWith();
+            expect(spyLedgerAssetTypeFromJsvalue).toHaveBeenCalledWith(val);
+            expect(result).toBe(decryptedAsetType);
+            spyGetLedger.mockRestore();
+            spyLedgerAssetTypeFromJsvalue.mockRestore();
+        }));
     });
-    describe('getDefaultAssetRules', function () {
-        it('returns default asset rules', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var defaultTransferable, defaultUpdatable, defaultDecimals, fakeLedgerAssetRules, myLedger, spyGetLedger, spyLedgerAssetRulesNew, spyLedgerAssetRulesSetTransferable, spyLedgerAssetRulesSetUpdatable, spyLedgerAssetRulesSetDecimals, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        defaultTransferable = asset_1.DEFAULT_ASSET_RULES.transferable;
-                        defaultUpdatable = asset_1.DEFAULT_ASSET_RULES.updatable;
-                        defaultDecimals = asset_1.DEFAULT_ASSET_RULES.decimals;
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            AssetRules: fakeLedgerAssetRules,
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetRulesNew = jest.spyOn(fakeLedgerAssetRules, 'new');
-                        spyLedgerAssetRulesSetTransferable = jest.spyOn(fakeLedgerAssetRules, 'set_transferable');
-                        spyLedgerAssetRulesSetUpdatable = jest.spyOn(fakeLedgerAssetRules, 'set_updatable');
-                        spyLedgerAssetRulesSetDecimals = jest.spyOn(fakeLedgerAssetRules, 'set_decimals');
-                        return [4 /*yield*/, SdkAsset.getDefaultAssetRules()];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetLedger).toHaveBeenCalled();
-                        expect(spyLedgerAssetRulesNew).toHaveBeenCalled();
-                        expect(spyLedgerAssetRulesSetTransferable).toHaveBeenCalledWith(defaultTransferable);
-                        expect(spyLedgerAssetRulesSetUpdatable).toHaveBeenCalledWith(defaultUpdatable);
-                        expect(spyLedgerAssetRulesSetDecimals).toHaveBeenCalledWith(defaultDecimals);
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetRulesNew.mockRestore();
-                        spyLedgerAssetRulesSetTransferable.mockRestore();
-                        spyLedgerAssetRulesSetUpdatable.mockRestore();
-                        spyLedgerAssetRulesSetDecimals.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getDefaultAssetRules', () => {
+        it('returns default asset rules', () => __awaiter(void 0, void 0, void 0, function* () {
+            const defaultTransferable = asset_1.DEFAULT_ASSET_RULES.transferable;
+            const defaultUpdatable = asset_1.DEFAULT_ASSET_RULES.updatable;
+            const defaultDecimals = asset_1.DEFAULT_ASSET_RULES.decimals;
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                AssetRules: fakeLedgerAssetRules,
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const spyLedgerAssetRulesNew = jest.spyOn(fakeLedgerAssetRules, 'new');
+            const spyLedgerAssetRulesSetTransferable = jest.spyOn(fakeLedgerAssetRules, 'set_transferable');
+            const spyLedgerAssetRulesSetUpdatable = jest.spyOn(fakeLedgerAssetRules, 'set_updatable');
+            const spyLedgerAssetRulesSetDecimals = jest.spyOn(fakeLedgerAssetRules, 'set_decimals');
+            const result = yield SdkAsset.getDefaultAssetRules();
+            expect(spyGetLedger).toHaveBeenCalled();
+            expect(spyLedgerAssetRulesNew).toHaveBeenCalled();
+            expect(spyLedgerAssetRulesSetTransferable).toHaveBeenCalledWith(defaultTransferable);
+            expect(spyLedgerAssetRulesSetUpdatable).toHaveBeenCalledWith(defaultUpdatable);
+            expect(spyLedgerAssetRulesSetDecimals).toHaveBeenCalledWith(defaultDecimals);
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetLedger.mockRestore();
+            spyLedgerAssetRulesNew.mockRestore();
+            spyLedgerAssetRulesSetTransferable.mockRestore();
+            spyLedgerAssetRulesSetUpdatable.mockRestore();
+            spyLedgerAssetRulesSetDecimals.mockRestore();
+        }));
     });
-    describe('getAssetRules', function () {
-        it('returns default asset rules if no new asset rules are given', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeLedgerAssetRules, spyGetDefaultAssetRules, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        return [4 /*yield*/, SdkAsset.getAssetRules()];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetDefaultAssetRules.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getAssetRules', () => {
+        it('returns default asset rules if no new asset rules are given', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
             });
-        }); });
-        it('returns asset rules with max units set', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeLedgerAssetRules, fakeLedgerAssetTracerKeyPair, fakeLedgerTracingPolicy, myLedger, maxNumbers, newAssetRules, spyGetDefaultAssetRules, spyGetLedger, spyLedgerAssetRulesSetMaxUnits, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_max_units: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            add_tracing_policy: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        fakeLedgerAssetTracerKeyPair = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetTracerKeyPair;
-                            }),
-                        };
-                        fakeLedgerTracingPolicy = {
-                            new_with_tracing: jest.fn(function () {
-                                return fakeLedgerTracingPolicy;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            AssetRules: fakeLedgerAssetRules,
-                            AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
-                            TracingPolicy: fakeLedgerTracingPolicy,
-                        };
-                        maxNumbers = '10000000';
-                        newAssetRules = {
-                            transferable: true,
-                            updatable: false,
-                            decimals: 6,
-                            traceable: true,
-                            maxNumbers: maxNumbers,
-                        };
-                        spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
-                        return [4 /*yield*/, SdkAsset.getAssetRules(newAssetRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyLedgerAssetRulesSetMaxUnits).toHaveBeenCalledWith(BigInt(maxNumbers));
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetDefaultAssetRules.mockRestore();
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetRulesSetMaxUnits.mockRestore();
-                        return [2 /*return*/];
-                }
+            const result = yield SdkAsset.getAssetRules();
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetDefaultAssetRules.mockRestore();
+        }));
+        it('returns asset rules with max units set', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_max_units: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                add_tracing_policy: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const fakeLedgerAssetTracerKeyPair = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetTracerKeyPair;
+                }),
+            };
+            const fakeLedgerTracingPolicy = {
+                new_with_tracing: jest.fn(() => {
+                    return fakeLedgerTracingPolicy;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                AssetRules: fakeLedgerAssetRules,
+                AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+                TracingPolicy: fakeLedgerTracingPolicy,
+            };
+            const maxNumbers = '10000000';
+            const newAssetRules = {
+                transferable: true,
+                updatable: false,
+                decimals: 6,
+                traceable: true,
+                maxNumbers,
+            };
+            const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
             });
-        }); });
-        it('returns asset rules without max units set and setter is not called', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeLedgerAssetRules, fakeLedgerAssetTracerKeyPair, fakeLedgerTracingPolicy, myLedger, newAssetRules, spyGetDefaultAssetRules, spyGetLedger, spyLedgerAssetRulesSetMaxUnits, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_max_units: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            add_tracing_policy: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        fakeLedgerAssetTracerKeyPair = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetTracerKeyPair;
-                            }),
-                        };
-                        fakeLedgerTracingPolicy = {
-                            new_with_tracing: jest.fn(function () {
-                                return fakeLedgerTracingPolicy;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            AssetRules: fakeLedgerAssetRules,
-                            AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
-                            TracingPolicy: fakeLedgerTracingPolicy,
-                        };
-                        newAssetRules = {
-                            transferable: true,
-                            updatable: false,
-                            decimals: 6,
-                            traceable: true,
-                        };
-                        spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
-                        return [4 /*yield*/, SdkAsset.getAssetRules(newAssetRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyLedgerAssetRulesSetMaxUnits).not.toHaveBeenCalled();
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetDefaultAssetRules.mockRestore();
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetRulesSetMaxUnits.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
-        it('returns asset rules with tracing policy', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeLedgerAssetRules, trackingKey, fakeLedgerAssetTracerKeyPair, tracingPolicy, fakeLedgerTracingPolicy, myLedger, newAssetRules, spyGetDefaultAssetRules, spyGetLedger, spyLedgerAssetTracerKeyPairNew, spyLedgerTracingPolicyNewWithTracing, spyLedgerAssetRulesAddTracingPolicy, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_max_units: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            add_tracing_policy: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        trackingKey = 'myTrackingKey';
-                        fakeLedgerAssetTracerKeyPair = {
-                            new: jest.fn(function () {
-                                return trackingKey;
-                            }),
-                        };
-                        tracingPolicy = 'myTracingPolicy';
-                        fakeLedgerTracingPolicy = {
-                            new_with_tracing: jest.fn(function () {
-                                return tracingPolicy;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            AssetRules: fakeLedgerAssetRules,
-                            AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
-                            TracingPolicy: fakeLedgerTracingPolicy,
-                        };
-                        newAssetRules = {
-                            transferable: true,
-                            updatable: false,
-                            decimals: 6,
-                            traceable: true,
-                        };
-                        spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
-                        spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
-                        spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
-                        return [4 /*yield*/, SdkAsset.getAssetRules(newAssetRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyLedgerAssetTracerKeyPairNew).toHaveBeenCalled();
-                        expect(spyLedgerTracingPolicyNewWithTracing).toHaveBeenCalledWith(trackingKey);
-                        expect(spyLedgerAssetRulesAddTracingPolicy).toHaveBeenCalledWith(tracingPolicy);
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetDefaultAssetRules.mockRestore();
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetTracerKeyPairNew.mockRestore();
-                        spyLedgerTracingPolicyNewWithTracing.mockRestore();
-                        spyLedgerAssetRulesAddTracingPolicy.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
+            const result = yield SdkAsset.getAssetRules(newAssetRules);
+            expect(spyLedgerAssetRulesSetMaxUnits).toHaveBeenCalledWith(BigInt(maxNumbers));
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetDefaultAssetRules.mockRestore();
+            spyGetLedger.mockRestore();
+            spyLedgerAssetRulesSetMaxUnits.mockRestore();
+        }));
+        it('returns asset rules without max units set and setter is not called', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_max_units: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                add_tracing_policy: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const fakeLedgerAssetTracerKeyPair = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetTracerKeyPair;
+                }),
+            };
+            const fakeLedgerTracingPolicy = {
+                new_with_tracing: jest.fn(() => {
+                    return fakeLedgerTracingPolicy;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                AssetRules: fakeLedgerAssetRules,
+                AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+                TracingPolicy: fakeLedgerTracingPolicy,
+            };
+            const newAssetRules = {
+                transferable: true,
+                updatable: false,
+                decimals: 6,
+                traceable: true,
+            };
+            const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
             });
-        }); });
-        it('returns asset rules without tracing policy and tracing method was not called', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeLedgerAssetRules, trackingKey, fakeLedgerAssetTracerKeyPair, tracingPolicy, fakeLedgerTracingPolicy, myLedger, newAssetRules, spyGetDefaultAssetRules, spyGetLedger, spyLedgerAssetTracerKeyPairNew, spyLedgerTracingPolicyNewWithTracing, spyLedgerAssetRulesAddTracingPolicy, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_transferable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_updatable: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_decimals: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            set_max_units: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                            add_tracing_policy: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        trackingKey = 'myTrackingKey';
-                        fakeLedgerAssetTracerKeyPair = {
-                            new: jest.fn(function () {
-                                return trackingKey;
-                            }),
-                        };
-                        tracingPolicy = 'myTracingPolicy';
-                        fakeLedgerTracingPolicy = {
-                            new_with_tracing: jest.fn(function () {
-                                return tracingPolicy;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            AssetRules: fakeLedgerAssetRules,
-                            AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
-                            TracingPolicy: fakeLedgerTracingPolicy,
-                        };
-                        newAssetRules = {
-                            transferable: true,
-                            updatable: false,
-                            decimals: 6,
-                            traceable: false,
-                        };
-                        spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
-                        spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
-                        spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
-                        return [4 /*yield*/, SdkAsset.getAssetRules(newAssetRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyLedgerAssetTracerKeyPairNew).not.toHaveBeenCalled();
-                        expect(spyLedgerTracingPolicyNewWithTracing).not.toHaveBeenCalledWith();
-                        expect(spyLedgerAssetRulesAddTracingPolicy).not.toHaveBeenCalledWith();
-                        expect(result).toBe(fakeLedgerAssetRules);
-                        spyGetDefaultAssetRules.mockRestore();
-                        spyGetLedger.mockRestore();
-                        spyLedgerAssetTracerKeyPairNew.mockRestore();
-                        spyLedgerTracingPolicyNewWithTracing.mockRestore();
-                        spyLedgerAssetRulesAddTracingPolicy.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const spyLedgerAssetRulesSetMaxUnits = jest.spyOn(fakeLedgerAssetRules, 'set_max_units');
+            const result = yield SdkAsset.getAssetRules(newAssetRules);
+            expect(spyLedgerAssetRulesSetMaxUnits).not.toHaveBeenCalled();
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetDefaultAssetRules.mockRestore();
+            spyGetLedger.mockRestore();
+            spyLedgerAssetRulesSetMaxUnits.mockRestore();
+        }));
+        it('returns asset rules with tracing policy', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_max_units: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                add_tracing_policy: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const trackingKey = 'myTrackingKey';
+            const fakeLedgerAssetTracerKeyPair = {
+                new: jest.fn(() => {
+                    return trackingKey;
+                }),
+            };
+            const tracingPolicy = 'myTracingPolicy';
+            const fakeLedgerTracingPolicy = {
+                new_with_tracing: jest.fn(() => {
+                    return tracingPolicy;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                AssetRules: fakeLedgerAssetRules,
+                AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+                TracingPolicy: fakeLedgerTracingPolicy,
+            };
+            const newAssetRules = {
+                transferable: true,
+                updatable: false,
+                decimals: 6,
+                traceable: true,
+            };
+            const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
+            });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
+            const spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
+            const spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
+            const result = yield SdkAsset.getAssetRules(newAssetRules);
+            expect(spyLedgerAssetTracerKeyPairNew).toHaveBeenCalled();
+            expect(spyLedgerTracingPolicyNewWithTracing).toHaveBeenCalledWith(trackingKey);
+            expect(spyLedgerAssetRulesAddTracingPolicy).toHaveBeenCalledWith(tracingPolicy);
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetDefaultAssetRules.mockRestore();
+            spyGetLedger.mockRestore();
+            spyLedgerAssetTracerKeyPairNew.mockRestore();
+            spyLedgerTracingPolicyNewWithTracing.mockRestore();
+            spyLedgerAssetRulesAddTracingPolicy.mockRestore();
+        }));
+        it('returns asset rules without tracing policy and tracing method was not called', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_transferable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_updatable: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_decimals: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                set_max_units: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+                add_tracing_policy: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const trackingKey = 'myTrackingKey';
+            const fakeLedgerAssetTracerKeyPair = {
+                new: jest.fn(() => {
+                    return trackingKey;
+                }),
+            };
+            const tracingPolicy = 'myTracingPolicy';
+            const fakeLedgerTracingPolicy = {
+                new_with_tracing: jest.fn(() => {
+                    return tracingPolicy;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                AssetRules: fakeLedgerAssetRules,
+                AssetTracerKeyPair: fakeLedgerAssetTracerKeyPair,
+                TracingPolicy: fakeLedgerTracingPolicy,
+            };
+            const newAssetRules = {
+                transferable: true,
+                updatable: false,
+                decimals: 6,
+                traceable: false,
+            };
+            const spyGetDefaultAssetRules = jest.spyOn(SdkAsset, 'getDefaultAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
+            });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyLedgerAssetTracerKeyPairNew = jest.spyOn(fakeLedgerAssetTracerKeyPair, 'new');
+            const spyLedgerTracingPolicyNewWithTracing = jest.spyOn(fakeLedgerTracingPolicy, 'new_with_tracing');
+            const spyLedgerAssetRulesAddTracingPolicy = jest.spyOn(fakeLedgerAssetRules, 'add_tracing_policy');
+            const result = yield SdkAsset.getAssetRules(newAssetRules);
+            expect(spyLedgerAssetTracerKeyPairNew).not.toHaveBeenCalled();
+            expect(spyLedgerTracingPolicyNewWithTracing).not.toHaveBeenCalledWith();
+            expect(spyLedgerAssetRulesAddTracingPolicy).not.toHaveBeenCalledWith();
+            expect(result).toBe(fakeLedgerAssetRules);
+            spyGetDefaultAssetRules.mockRestore();
+            spyGetLedger.mockRestore();
+            spyLedgerAssetTracerKeyPairNew.mockRestore();
+            spyLedgerTracingPolicyNewWithTracing.mockRestore();
+            spyLedgerAssetRulesAddTracingPolicy.mockRestore();
+        }));
     });
-    describe('getDefineAssetTransactionBuilder', function () {
-        it('returns transaction builder instance', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeOpBuilder, myLedger, height, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, spyNew, spyAddOperationCreateAsset, walletInfo, walletKeypair, assetName, assetRules, assetMemo, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeOpBuilder = {
-                            new: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                            add_operation_create_asset: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeOpBuilder,
-                        };
-                        height = 15;
-                        myStateCommitementResult = {
-                            response: ['foo', height],
-                        };
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyNew = jest.spyOn(fakeOpBuilder, 'new');
-                        spyAddOperationCreateAsset = jest.spyOn(fakeOpBuilder, 'add_operation_create_asset');
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        assetRules = { foo: 'bar' };
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(fakeOpBuilder);
-                        expect(spyGetLedger).toBeCalled();
-                        expect(spyNew).toHaveBeenCalledWith(BigInt(height));
-                        expect(spyAddOperationCreateAsset).toHaveBeenCalledWith(walletKeypair, assetMemo, assetName, assetRules);
-                        spyGetLedger.mockRestore();
-                        spyNew.mockReset();
-                        spyAddOperationCreateAsset.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+    describe('getDefineAssetTransactionBuilder', () => {
+        it('returns transaction builder instance', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeOpBuilder = {
+                new: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+                add_operation_create_asset: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeOpBuilder,
+            };
+            const height = 15;
+            const myStateCommitementResult = {
+                response: ['foo', height],
+            };
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
-        it('throws an error if state commitment result contains an error', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, walletInfo, walletKeypair, assetName, assetRules, assetMemo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {
-                            error: new Error('myStateCommitementResult error'),
-                        };
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        assetRules = { foo: 'bar' };
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, expect(SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo)).rejects.toThrowError('myStateCommitementResult error')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
-        it('throws an error if state commitment result does not contain a response', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, walletInfo, walletKeypair, assetName, assetRules, assetMemo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {};
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        assetRules = { foo: 'bar' };
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, expect(SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo)).rejects.toThrowError('Could not receive response from state commitement call')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyNew = jest.spyOn(fakeOpBuilder, 'new');
+            const spyAddOperationCreateAsset = jest.spyOn(fakeOpBuilder, 'add_operation_create_asset');
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const assetRules = { foo: 'bar' };
+            const assetMemo = 'memo';
+            const result = yield SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo);
+            expect(result).toBe(fakeOpBuilder);
+            expect(spyGetLedger).toBeCalled();
+            expect(spyNew).toHaveBeenCalledWith(BigInt(height));
+            expect(spyAddOperationCreateAsset).toHaveBeenCalledWith(walletKeypair, assetMemo, assetName, assetRules);
+            spyGetLedger.mockRestore();
+            spyNew.mockReset();
+            spyAddOperationCreateAsset.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
+        it('throws an error if state commitment result contains an error', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {
+                error: new Error('myStateCommitementResult error'),
+            };
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const assetRules = { foo: 'bar' };
+            const assetMemo = 'memo';
+            yield expect(SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo)).rejects.toThrowError('myStateCommitementResult error');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
+        it('throws an error if state commitment result does not contain a response', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {};
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
+            });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const assetRules = { foo: 'bar' };
+            const assetMemo = 'memo';
+            yield expect(SdkAsset.getDefineAssetTransactionBuilder(walletKeypair, assetName, assetRules, assetMemo)).rejects.toThrowError('Could not receive response from state commitement call');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
     });
-    describe('getIssueAssetTransactionBuilder', function () {
-        it('returns transaction builder instance', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeOpBuilder, fakePubParams, myLedger, height, myStateCommitementResult, blockCount, spyGetStateCommitment, spyGetLedger, spyNew, spyAddBasicIssueAsset, walletInfo, walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals, result, utxoNumbers;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeOpBuilder = {
-                            new: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                            add_operation_create_asset: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                            add_basic_issue_asset: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                        };
-                        fakePubParams = {
-                            new: jest.fn(function () {
-                                return 'myParams';
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeOpBuilder,
-                            PublicParams: fakePubParams,
-                        };
-                        height = 15;
-                        myStateCommitementResult = {
-                            response: ['foo', height],
-                        };
-                        blockCount = BigInt(height);
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyNew = jest.spyOn(fakeOpBuilder, 'new');
-                        spyAddBasicIssueAsset = jest.spyOn(fakeOpBuilder, 'add_basic_issue_asset');
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        amountToIssue = '11';
-                        assetBlindRules = { foo: 'barbar' };
-                        assetDecimals = 6;
-                        return [4 /*yield*/, SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(fakeOpBuilder);
-                        expect(spyGetLedger).toBeCalled();
-                        expect(spyNew).toHaveBeenCalledWith(BigInt(height));
-                        utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
-                        expect(spyAddBasicIssueAsset).toHaveBeenCalledWith(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, false, 'myParams');
-                        spyGetStateCommitment.mockReset();
-                        spyGetLedger.mockRestore();
-                        spyNew.mockReset();
-                        spyAddBasicIssueAsset.mockReset();
-                        return [2 /*return*/];
-                }
+    describe('getIssueAssetTransactionBuilder', () => {
+        it('returns transaction builder instance', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeOpBuilder = {
+                new: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+                add_operation_create_asset: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+                add_basic_issue_asset: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+            };
+            const fakePubParams = {
+                new: jest.fn(() => {
+                    return 'myParams';
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeOpBuilder,
+                PublicParams: fakePubParams,
+            };
+            const height = 15;
+            const myStateCommitementResult = {
+                response: ['foo', height],
+            };
+            const blockCount = BigInt(height);
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
-        it('throws an error if state commitment result contains an error', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, walletInfo, walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {
-                            error: new Error('myStateCommitementResult error'),
-                        };
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        amountToIssue = '11';
-                        assetBlindRules = { foo: 'barbar' };
-                        assetDecimals = 6;
-                        return [4 /*yield*/, expect(SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals)).rejects.toThrowError('myStateCommitementResult error')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
-        it('throws an error if state commitment result does not contain a response', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, walletInfo, walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {};
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        walletKeypair = walletInfo.keypair;
-                        assetName = 'abc';
-                        amountToIssue = '11';
-                        assetBlindRules = { foo: 'barbar' };
-                        assetDecimals = 6;
-                        return [4 /*yield*/, expect(SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals)).rejects.toThrowError('Could not receive response from state commitement call')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyNew = jest.spyOn(fakeOpBuilder, 'new');
+            const spyAddBasicIssueAsset = jest.spyOn(fakeOpBuilder, 'add_basic_issue_asset');
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const amountToIssue = '11';
+            const assetBlindRules = { foo: 'barbar' };
+            const assetDecimals = 6;
+            const result = yield SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals);
+            expect(result).toBe(fakeOpBuilder);
+            expect(spyGetLedger).toBeCalled();
+            expect(spyNew).toHaveBeenCalledWith(BigInt(height));
+            const utxoNumbers = BigInt((0, bigNumber_1.toWei)(amountToIssue, assetDecimals).toString());
+            expect(spyAddBasicIssueAsset).toHaveBeenCalledWith(walletKeypair, assetName, BigInt(blockCount), utxoNumbers, false, 'myParams');
+            spyGetStateCommitment.mockReset();
+            spyGetLedger.mockRestore();
+            spyNew.mockReset();
+            spyAddBasicIssueAsset.mockReset();
+        }));
+        it('throws an error if state commitment result contains an error', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {
+                error: new Error('myStateCommitementResult error'),
+            };
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const amountToIssue = '11';
+            const assetBlindRules = { foo: 'barbar' };
+            const assetDecimals = 6;
+            yield expect(SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals)).rejects.toThrowError('myStateCommitementResult error');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
+        it('throws an error if state commitment result does not contain a response', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {};
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
+            });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const walletKeypair = walletInfo.keypair;
+            const assetName = 'abc';
+            const amountToIssue = '11';
+            const assetBlindRules = { foo: 'barbar' };
+            const assetDecimals = 6;
+            yield expect(SdkAsset.getIssueAssetTransactionBuilder(walletKeypair, assetName, amountToIssue, assetBlindRules, assetDecimals)).rejects.toThrowError('Could not receive response from state commitement call');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
     });
-    describe('defineAsset', function () {
-        it('defines an asset', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, fakeLedgerAssetRules, fakeTransactionBuilder, spyGetAssetRules, spyBuildTransferOperationWithFee, spyGetDefineAssetTransactionBuilder, spyAddTransferOperation, walletInfo, assetName, assetMemo, newAssetRules, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        fakeTransactionBuilder = {
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetDefineAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest
-                            .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
-                            .mockImplementation(function () {
-                            return fakeTransactionBuilder;
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        assetMemo = 'memo';
-                        newAssetRules = {
-                            transferable: true,
-                            updatable: false,
-                            decimals: 6,
-                            traceable: true,
-                        };
-                        return [4 /*yield*/, SdkAsset.defineAsset(walletInfo, assetName, assetMemo, newAssetRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetAssetRules).toHaveBeenCalledWith(newAssetRules);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        expect(spyGetDefineAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, fakeLedgerAssetRules, assetMemo);
-                        expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spyGetAssetRules.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetDefineAssetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('defineAsset', () => {
+        it('defines an asset', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const fakeTransactionBuilder = {
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
             });
-        }); });
-        it('throws an error when could not create a transfer operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransferOperationBuilderFee, fakeLedgerAssetRules, spyGetAssetRules, spyBuildTransferOperationWithFee, walletInfo, assetName, assetMemo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                throw new Error('boom');
-                            }),
-                        };
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not create transfer operation')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetRules.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
             });
-        }); });
-        it('throws an error when could not create a transaction builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, fakeLedgerAssetRules, spyGetAssetRules, spyBuildTransferOperationWithFee, spyGetDefineAssetTransactionBuilder, walletInfo, assetName, assetMemo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetDefineAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            throw new Error('boom');
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not get "defineTransactionBuilder')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetRules.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetDefineAssetTransactionBuilder.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetDefineAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
             });
-        }); });
-        it('throws an error when could not add a transfer operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, fakeLedgerAssetRules, fakeTransactionBuilder, spyGetAssetRules, spyBuildTransferOperationWithFee, spyGetDefineAssetTransactionBuilder, spyAddTransferOperation, walletInfo, assetName, assetMemo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeLedgerAssetRules = {
-                            new: jest.fn(function () {
-                                return fakeLedgerAssetRules;
-                            }),
-                        };
-                        fakeTransactionBuilder = {
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetRules);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetDefineAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest
-                            .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
-                            .mockImplementation(function () {
-                            throw new Error('boom');
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        assetMemo = 'memo';
-                        return [4 /*yield*/, expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not add transfer operation')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetRules.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetDefineAssetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyAddTransferOperation = jest
+                .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+                .mockImplementation(() => {
+                return fakeTransactionBuilder;
             });
-        }); });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const assetMemo = 'memo';
+            const newAssetRules = {
+                transferable: true,
+                updatable: false,
+                decimals: 6,
+                traceable: true,
+            };
+            const result = yield SdkAsset.defineAsset(walletInfo, assetName, assetMemo, newAssetRules);
+            expect(spyGetAssetRules).toHaveBeenCalledWith(newAssetRules);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            expect(spyGetDefineAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, fakeLedgerAssetRules, assetMemo);
+            expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+            expect(result).toBe(fakeTransactionBuilder);
+            spyGetAssetRules.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetDefineAssetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('throws an error when could not create a transfer operation', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    throw new Error('boom');
+                }),
+            };
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const assetMemo = 'memo';
+            yield expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not create transfer operation');
+            spyGetAssetRules.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+        }));
+        it('throws an error when could not create a transaction builder', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetDefineAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+                .mockImplementation(() => {
+                throw new Error('boom');
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const assetMemo = 'memo';
+            yield expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not get "defineTransactionBuilder');
+            spyGetAssetRules.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetDefineAssetTransactionBuilder.mockRestore();
+        }));
+        it('throws an error when could not add a transfer operation', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeLedgerAssetRules = {
+                new: jest.fn(() => {
+                    return fakeLedgerAssetRules;
+                }),
+            };
+            const fakeTransactionBuilder = {
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const spyGetAssetRules = jest.spyOn(SdkAsset, 'getAssetRules').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetRules);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetDefineAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getDefineAssetTransactionBuilder')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest
+                .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+                .mockImplementation(() => {
+                throw new Error('boom');
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const assetMemo = 'memo';
+            yield expect(SdkAsset.defineAsset(walletInfo, assetName, assetMemo)).rejects.toThrow('Could not add transfer operation');
+            spyGetAssetRules.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetDefineAssetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
     });
-    describe('issueAsset', function () {
-        it('issues an asset with default decimal, coming from asset details', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, decimals, fakeLedgerAssetDetails, fakeTransactionBuilder, spyGetAssetDetails, spyBuildTransferOperationWithFee, spyGetIssueAssetTransactionBuilder, spyAddTransferOperation, walletInfo, assetName, amountToIssue, assetBlindRules, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        decimals = 6;
-                        fakeLedgerAssetDetails = {
-                            assetRules: {
-                                decimals: decimals,
-                            },
-                        };
-                        fakeTransactionBuilder = {
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetDetails);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetIssueAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest
-                            .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
-                            .mockImplementation(function () {
-                            return fakeTransactionBuilder;
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        amountToIssue = '123';
-                        assetBlindRules = {
-                            isAmountBlind: false,
-                            isTypeBlind: false,
-                        };
-                        return [4 /*yield*/, SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, decimals)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals);
-                        expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spyGetAssetDetails.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetIssueAssetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('issueAsset', () => {
+        it('issues an asset with default decimal, coming from asset details', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const decimals = 6;
+            const fakeLedgerAssetDetails = {
+                assetRules: {
+                    decimals,
+                },
+            };
+            const fakeTransactionBuilder = {
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetDetails);
             });
-        }); });
-        it('issues an asset with a given decimal', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, decimals, fakeLedgerAssetDetails, fakeTransactionBuilder, spyGetAssetDetails, spyBuildTransferOperationWithFee, spyGetIssueAssetTransactionBuilder, spyAddTransferOperation, walletInfo, assetName, amountToIssue, assetBlindRules, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        decimals = 6;
-                        fakeLedgerAssetDetails = {
-                            assetRules: {
-                                decimals: decimals,
-                            },
-                        };
-                        fakeTransactionBuilder = {
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetDetails);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetIssueAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest
-                            .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
-                            .mockImplementation(function () {
-                            return fakeTransactionBuilder;
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        amountToIssue = '123';
-                        assetBlindRules = {
-                            isAmountBlind: false,
-                            isTypeBlind: false,
-                        };
-                        return [4 /*yield*/, SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, 7);
-                        expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spyGetAssetDetails.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetIssueAssetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
             });
-        }); });
-        it('throws an error when could not create a transfer operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransferOperationBuilderFee, decimals, fakeLedgerAssetDetails, spyGetAssetDetails, spyBuildTransferOperationWithFee, walletInfo, assetName, amountToIssue, assetBlindRules;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                throw new Error('boom');
-                            }),
-                        };
-                        decimals = 6;
-                        fakeLedgerAssetDetails = {
-                            assetRules: {
-                                decimals: decimals,
-                            },
-                        };
-                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetDetails);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        amountToIssue = '123';
-                        assetBlindRules = {
-                            isAmountBlind: false,
-                            isTypeBlind: false,
-                        };
-                        return [4 /*yield*/, expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not create transfer operation')];
-                    case 1:
-                        _a.sent();
-                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        spyGetAssetDetails.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetIssueAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
             });
-        }); });
-        it('throws an error when could not create a transaction builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, decimals, fakeLedgerAssetDetails, spyGetAssetDetails, spyBuildTransferOperationWithFee, spyGetIssueAssetTransactionBuilder, walletInfo, assetName, amountToIssue, assetBlindRules;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        decimals = 6;
-                        fakeLedgerAssetDetails = {
-                            assetRules: {
-                                decimals: decimals,
-                            },
-                        };
-                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetDetails);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetIssueAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            throw new Error('bdnd');
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        amountToIssue = '123';
-                        assetBlindRules = {
-                            isAmountBlind: false,
-                            isTypeBlind: false,
-                        };
-                        return [4 /*yield*/, expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not get "issueAssetTransactionBuilder"')];
-                    case 1:
-                        _a.sent();
-                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        spyGetAssetDetails.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetIssueAssetTransactionBuilder.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyAddTransferOperation = jest
+                .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+                .mockImplementation(() => {
+                return fakeTransactionBuilder;
             });
-        }); });
-        it('throws an error when could not create a transaction builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, decimals, fakeLedgerAssetDetails, fakeTransactionBuilder, spyGetAssetDetails, spyBuildTransferOperationWithFee, spyGetIssueAssetTransactionBuilder, spyAddTransferOperation, walletInfo, assetName, amountToIssue, assetBlindRules;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        decimals = 6;
-                        fakeLedgerAssetDetails = {
-                            assetRules: {
-                                decimals: decimals,
-                            },
-                        };
-                        fakeTransactionBuilder = {
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(fakeLedgerAssetDetails);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetIssueAssetTransactionBuilder = jest
-                            .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest
-                            .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
-                            .mockImplementation(function () {
-                            throw new Error('bad');
-                        });
-                        walletInfo = {
-                            publickey: 'senderPub',
-                            keypair: 'senderKeypair',
-                            address: 'myAddress',
-                        };
-                        assetName = 'acb';
-                        amountToIssue = '123';
-                        assetBlindRules = {
-                            isAmountBlind: false,
-                            isTypeBlind: false,
-                        };
-                        return [4 /*yield*/, expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not add transfer operation')];
-                    case 1:
-                        _a.sent();
-                        expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        spyGetAssetDetails.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetIssueAssetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const amountToIssue = '123';
+            const assetBlindRules = {
+                isAmountBlind: false,
+                isTypeBlind: false,
+            };
+            const result = yield SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, decimals);
+            expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, decimals);
+            expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+            expect(result).toBe(fakeTransactionBuilder);
+            spyGetAssetDetails.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetIssueAssetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('issues an asset with a given decimal', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const decimals = 6;
+            const fakeLedgerAssetDetails = {
+                assetRules: {
+                    decimals,
+                },
+            };
+            const fakeTransactionBuilder = {
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetDetails);
             });
-        }); });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetIssueAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest
+                .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+                .mockImplementation(() => {
+                return fakeTransactionBuilder;
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const amountToIssue = '123';
+            const assetBlindRules = {
+                isAmountBlind: false,
+                isTypeBlind: false,
+            };
+            const result = yield SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7);
+            expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            expect(spyGetIssueAssetTransactionBuilder).toHaveBeenCalledWith(walletInfo.keypair, assetName, amountToIssue, assetBlindRules, 7);
+            expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+            expect(result).toBe(fakeTransactionBuilder);
+            spyGetAssetDetails.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetIssueAssetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('throws an error when could not create a transfer operation', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    throw new Error('boom');
+                }),
+            };
+            const decimals = 6;
+            const fakeLedgerAssetDetails = {
+                assetRules: {
+                    decimals,
+                },
+            };
+            const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetDetails);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const amountToIssue = '123';
+            const assetBlindRules = {
+                isAmountBlind: false,
+                isTypeBlind: false,
+            };
+            yield expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not create transfer operation');
+            expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            spyGetAssetDetails.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+        }));
+        it('throws an error when could not create a transaction builder', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const decimals = 6;
+            const fakeLedgerAssetDetails = {
+                assetRules: {
+                    decimals,
+                },
+            };
+            const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetDetails);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetIssueAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+                .mockImplementation(() => {
+                throw new Error('bdnd');
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const amountToIssue = '123';
+            const assetBlindRules = {
+                isAmountBlind: false,
+                isTypeBlind: false,
+            };
+            yield expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not get "issueAssetTransactionBuilder"');
+            expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            spyGetAssetDetails.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetIssueAssetTransactionBuilder.mockRestore();
+        }));
+        it('throws an error when could not create a transaction builder', () => __awaiter(void 0, void 0, void 0, function* () {
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const decimals = 6;
+            const fakeLedgerAssetDetails = {
+                assetRules: {
+                    decimals,
+                },
+            };
+            const fakeTransactionBuilder = {
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const spyGetAssetDetails = jest.spyOn(SdkAsset, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(fakeLedgerAssetDetails);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetIssueAssetTransactionBuilder = jest
+                .spyOn(SdkAsset, 'getIssueAssetTransactionBuilder')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest
+                .spyOn(fakeTransactionBuilder, 'add_transfer_operation')
+                .mockImplementation(() => {
+                throw new Error('bad');
+            });
+            const walletInfo = {
+                publickey: 'senderPub',
+                keypair: 'senderKeypair',
+                address: 'myAddress',
+            };
+            const assetName = 'acb';
+            const amountToIssue = '123';
+            const assetBlindRules = {
+                isAmountBlind: false,
+                isTypeBlind: false,
+            };
+            yield expect(SdkAsset.issueAsset(walletInfo, assetName, amountToIssue, assetBlindRules, 7)).rejects.toThrow('Could not add transfer operation');
+            expect(spyGetAssetDetails).toHaveBeenCalledWith(assetName);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            spyGetAssetDetails.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetIssueAssetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
     });
-    describe('getAssetDetails', function () {
-        it('returns asset details', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var assetCode, issuerKey, issuerAddress, assetMemo, assetRules, assetResult, getAssetTokenResult, spyGetAssetToken, spGetAddressByPublicKey, result, expectedResult;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        assetCode = 'abc';
-                        issuerKey = 'myIssuerKey';
-                        issuerAddress = 'myIssuerAddress';
-                        assetMemo = 'myMemo';
-                        assetRules = {
-                            transferable: false,
-                            updatable: false,
-                        };
-                        assetResult = {
-                            properties: {
-                                issuer: {
-                                    key: issuerKey,
-                                },
-                                memo: assetMemo,
-                                asset_rules: assetRules,
-                            },
-                        };
-                        getAssetTokenResult = {
-                            response: assetResult,
-                        };
-                        spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(function () {
-                            return Promise.resolve(getAssetTokenResult);
-                        });
-                        spGetAddressByPublicKey = jest
-                            .spyOn(KeypairApi, 'getAddressByPublicKey')
-                            .mockImplementation(function () {
-                            return Promise.resolve(issuerAddress);
-                        });
-                        return [4 /*yield*/, SdkAsset.getAssetDetails(assetCode)];
-                    case 1:
-                        result = _a.sent();
-                        expectedResult = {
-                            code: assetCode,
-                            issuer: issuerKey,
-                            address: issuerAddress,
-                            memo: assetMemo,
-                            assetRules: __assign(__assign({}, asset_1.DEFAULT_ASSET_RULES), assetRules),
-                            numbers: BigInt(0),
-                            name: '',
-                        };
-                        expect(result).toStrictEqual(expectedResult);
-                        spyGetAssetToken.mockRestore();
-                        spGetAddressByPublicKey.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getAssetDetails', () => {
+        it('returns asset details', () => __awaiter(void 0, void 0, void 0, function* () {
+            const assetCode = 'abc';
+            const issuerKey = 'myIssuerKey';
+            const issuerAddress = 'myIssuerAddress';
+            const assetMemo = 'myMemo';
+            const assetRules = {
+                transferable: false,
+                updatable: false,
+            };
+            const assetResult = {
+                properties: {
+                    issuer: {
+                        key: issuerKey,
+                    },
+                    memo: assetMemo,
+                    asset_rules: assetRules,
+                },
+            };
+            const getAssetTokenResult = {
+                response: assetResult,
+            };
+            const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+                return Promise.resolve(getAssetTokenResult);
             });
-        }); });
-        it('throws an error if could not get asset token', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var assetCode, spyGetAssetToken;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        assetCode = 'abc';
-                        spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(function () {
-                            throw new Error('bcd');
-                        });
-                        return [4 /*yield*/, expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset token')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetToken.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spGetAddressByPublicKey = jest
+                .spyOn(KeypairApi, 'getAddressByPublicKey')
+                .mockImplementation(() => {
+                return Promise.resolve(issuerAddress);
             });
-        }); });
-        it('throws an error if could not get asset details - there is an error in the result', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var assetCode, getAssetTokenResult, spyGetAssetToken;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        assetCode = 'abc';
-                        getAssetTokenResult = {
-                            error: new Error('dodo'),
-                        };
-                        spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(function () {
-                            return Promise.resolve(getAssetTokenResult);
-                        });
-                        return [4 /*yield*/, expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset details')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetToken.mockRestore();
-                        return [2 /*return*/];
-                }
+            const result = yield SdkAsset.getAssetDetails(assetCode);
+            const expectedResult = {
+                code: assetCode,
+                issuer: issuerKey,
+                address: issuerAddress,
+                memo: assetMemo,
+                assetRules: Object.assign(Object.assign({}, asset_1.DEFAULT_ASSET_RULES), assetRules),
+                numbers: BigInt(0),
+                name: '',
+            };
+            expect(result).toStrictEqual(expectedResult);
+            spyGetAssetToken.mockRestore();
+            spGetAddressByPublicKey.mockRestore();
+        }));
+        it('throws an error if could not get asset token', () => __awaiter(void 0, void 0, void 0, function* () {
+            const assetCode = 'abc';
+            const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+                throw new Error('bcd');
             });
-        }); });
-        it('throws an error if could not get asset details - there is no response in the result', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var assetCode, getAssetTokenResult, spyGetAssetToken;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        assetCode = 'abc';
-                        getAssetTokenResult = {};
-                        spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(function () {
-                            return Promise.resolve(getAssetTokenResult);
-                        });
-                        return [4 /*yield*/, expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset details - asset result is missing')];
-                    case 1:
-                        _a.sent();
-                        spyGetAssetToken.mockRestore();
-                        return [2 /*return*/];
-                }
+            yield expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset token');
+            spyGetAssetToken.mockRestore();
+        }));
+        it('throws an error if could not get asset details - there is an error in the result', () => __awaiter(void 0, void 0, void 0, function* () {
+            const assetCode = 'abc';
+            const getAssetTokenResult = {
+                error: new Error('dodo'),
+            };
+            const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+                return Promise.resolve(getAssetTokenResult);
             });
-        }); });
+            yield expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset details');
+            spyGetAssetToken.mockRestore();
+        }));
+        it('throws an error if could not get asset details - there is no response in the result', () => __awaiter(void 0, void 0, void 0, function* () {
+            const assetCode = 'abc';
+            const getAssetTokenResult = {};
+            const spyGetAssetToken = jest.spyOn(NetworkApi, 'getAssetToken').mockImplementation(() => {
+                return Promise.resolve(getAssetTokenResult);
+            });
+            yield expect(SdkAsset.getAssetDetails(assetCode)).rejects.toThrow('Could not get asset details - asset result is missing');
+            spyGetAssetToken.mockRestore();
+        }));
     });
 });
 //# sourceMappingURL=sdkAsset.spec.js.map

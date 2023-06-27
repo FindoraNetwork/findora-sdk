@@ -1,6 +1,6 @@
 import assert from 'assert';
 import sleep from 'sleep-promise';
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
 import {
   afterAllLog,

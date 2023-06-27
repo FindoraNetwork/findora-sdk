@@ -31,984 +31,813 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var Fee = __importStar(require("../../services/fee"));
-var NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
-var KeypairApi = __importStar(require("../keypair/keypair"));
-var NetworkApi = __importStar(require("../network/network"));
-var AssetApi = __importStar(require("../sdkAsset/sdkAsset"));
-var Builder = __importStar(require("./builder"));
-var Transaction = __importStar(require("./transaction"));
-describe('transaction (unit test)', function () {
-    describe('getTransactionBuilder', function () {
-        it('returns transaction builder instance', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeOpBuilder, myLedger, height, myStateCommitementResult, spyGetStateCommitment, spyGetLedger, spyNew, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeOpBuilder = {
-                            new: jest.fn(function () {
-                                return fakeOpBuilder;
-                            }),
-                        };
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeOpBuilder,
-                        };
-                        height = 15;
-                        myStateCommitementResult = {
-                            response: ['foo', height],
-                        };
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyNew = jest.spyOn(fakeOpBuilder, 'new');
-                        return [4 /*yield*/, Builder.getTransactionBuilder()];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toBe(fakeOpBuilder);
-                        expect(spyGetLedger).toBeCalled();
-                        expect(spyNew).toBeCalled();
-                        expect(spyNew).toHaveBeenCalledWith(BigInt(height));
-                        spyGetLedger.mockRestore();
-                        spyNew.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+const Fee = __importStar(require("../../services/fee"));
+const NodeLedger = __importStar(require("../../services/ledger/nodeLedger"));
+const KeypairApi = __importStar(require("../keypair/keypair"));
+const NetworkApi = __importStar(require("../network/network"));
+const AssetApi = __importStar(require("../sdkAsset/sdkAsset"));
+const Builder = __importStar(require("./builder"));
+const Transaction = __importStar(require("./transaction"));
+describe('transaction (unit test)', () => {
+    describe('getTransactionBuilder', () => {
+        it('returns transaction builder instance', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeOpBuilder = {
+                new: jest.fn(() => {
+                    return fakeOpBuilder;
+                }),
+            };
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeOpBuilder,
+            };
+            const height = 15;
+            const myStateCommitementResult = {
+                response: ['foo', height],
+            };
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
-        it('throws an error if state commitment result contains an error', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {
-                            error: new Error('foo bar'),
-                        };
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        return [4 /*yield*/, expect(Builder.getTransactionBuilder()).rejects.toThrowError('foo bar')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
-        it('throws an error if state commitment result does not contain a response', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myLedger, myStateCommitementResult, spyGetStateCommitment, spyGetLedger;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myLedger = {
-                            foo: 'node',
-                        };
-                        myStateCommitementResult = {};
-                        spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(function () {
-                            return Promise.resolve(myStateCommitementResult);
-                        });
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        return [4 /*yield*/, expect(Builder.getTransactionBuilder()).rejects.toThrowError('Could not receive response from state commitement call')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockReset();
-                        spyGetStateCommitment.mockReset();
-                        return [2 /*return*/];
-                }
+            const spyNew = jest.spyOn(fakeOpBuilder, 'new');
+            const result = yield Builder.getTransactionBuilder();
+            expect(result).toBe(fakeOpBuilder);
+            expect(spyGetLedger).toBeCalled();
+            expect(spyNew).toBeCalled();
+            expect(spyNew).toHaveBeenCalledWith(BigInt(height));
+            spyGetLedger.mockRestore();
+            spyNew.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
+        it('throws an error if state commitment result contains an error', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {
+                error: new Error('foo bar'),
+            };
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
             });
-        }); });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            yield expect(Builder.getTransactionBuilder()).rejects.toThrowError('foo bar');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
+        it('throws an error if state commitment result does not contain a response', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myLedger = {
+                foo: 'node',
+            };
+            const myStateCommitementResult = {};
+            const spyGetStateCommitment = jest.spyOn(NetworkApi, 'getStateCommitment').mockImplementation(() => {
+                return Promise.resolve(myStateCommitementResult);
+            });
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            yield expect(Builder.getTransactionBuilder()).rejects.toThrowError('Could not receive response from state commitement call');
+            spyGetLedger.mockReset();
+            spyGetStateCommitment.mockReset();
+        }));
     });
-    describe('sendToMany', function () {
-        it('sends fra to recievers', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilder, fraAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyGetTransactionBuilder, spyAddTransferOperation, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
-                        return [4 /*yield*/, Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetMinimalFee).toHaveBeenCalled();
-                        expect(spyGetFraPublicKey).toHaveBeenCalled();
-                        expect(spyBuildTransferOperation).toHaveBeenCalledWith(walletInfo, [
-                            {
-                                assetBlindRules: undefined,
-                                toPublickey: receiverPubKey,
-                                utxoNumbers: BigInt(300000),
-                            },
-                            {
-                                utxoNumbers: minimalFee,
-                                toPublickey: toPublickey,
-                            },
-                        ], fraAssetCode);
-                        expect(spyGetTransactionBuilder).toHaveBeenCalled();
-                        expect(spyAddTransferOperation).toHaveBeenLastCalledWith(receivedTransferOperation);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('sendToMany', () => {
+        it('sends fra to recievers', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
-        it('throws an error if can not create or sign transaction', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilder, fraAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                throw Error('can not sign');
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not create transfer operation')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
             });
-        }); });
-        it('throws an error if can not get transactionBuilder from getTransactionBuilder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilder, fraAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyGetTransactionBuilder;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            throw new Error('foo');
-                        });
-                        return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not get transactionBuilder from "getTransactionBuilder"')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
             });
-        }); });
-        it('throws an error if it can not add a transfer operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilder, fraAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyGetTransactionBuilder, spyAddTransferOperation;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                throw new Error('boom');
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
-                        return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not add transfer operation')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
             });
-        }); });
-        it('sends custom asset to recievers', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, receivedTransferOperationFee, fakeTransferOperationBuilder, fakeTransferOperationBuilderFee, fraAssetCode, customAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyBuildTransferOperationWithFee, spyGetTransactionBuilder, spyAddTransferOperation, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        receivedTransferOperationFee = 'txHashFee';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperationFee;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        customAssetCode = 'BB';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
-                        return [4 /*yield*/, Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetMinimalFee).not.toHaveBeenCalled();
-                        expect(spyGetFraPublicKey).not.toHaveBeenCalled();
-                        expect(spyBuildTransferOperation).toHaveBeenCalledWith(walletInfo, [
-                            {
-                                assetBlindRules: undefined,
-                                toPublickey: receiverPubKey,
-                                utxoNumbers: BigInt(300000),
-                            },
-                        ], customAssetCode);
-                        expect(spyGetTransactionBuilder).toHaveBeenCalled();
-                        expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
-                        expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
-                        expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperationFee);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
             });
-        }); });
-        it('throws an error if can not create or sign transaction to add fee', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, receivedTransferOperationFee, fakeTransferOperationBuilder, fakeTransferOperationBuilderFee, fraAssetCode, customAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyBuildTransferOperationWithFee, spyGetTransactionBuilder, spyAddTransferOperation;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        receivedTransferOperationFee = 'txHashFee';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                throw new Error('foofoo');
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperationFee;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        customAssetCode = 'BB';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
-                        return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode)).rejects.toThrow('Could not create transfer operation for fee')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
             });
-        }); });
-        it('throws an error if it can not add a transfer operation for fee', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, receivedTransferOperationFee, fakeTransferOperationBuilder, fakeTransferOperationBuilderFee, fraAssetCode, customAssetCode, receiverPubKey, minimalFee, toPublickey, walletInfo, toWalletInfo, recieversInfo, myLedger, assetDetails, spyGetLedger, spyGetAssetDetails, spyGetMinimalFee, spyGetFraPublicKey, spyBuildTransferOperation, spyBuildTransferOperationWithFee, spyGetTransactionBuilder, spyAddTransferOperation;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        receivedTransferOperation = 'txHash';
-                        receivedTransferOperationFee = 'txHashFee';
-                        fakeTransferOperationBuilder = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilder;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperation;
-                            }),
-                        };
-                        fakeTransferOperationBuilderFee = {
-                            create: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
-                            transaction: jest.fn(function () {
-                                return receivedTransferOperationFee;
-                            }),
-                        };
-                        fraAssetCode = 'AA';
-                        customAssetCode = 'BB';
-                        receiverPubKey = 'toPubKey';
-                        minimalFee = BigInt(2);
-                        toPublickey = 'mockedToPublickey';
-                        walletInfo = { publickey: 'senderPub' };
-                        toWalletInfo = { publickey: receiverPubKey };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
-                        myLedger = {
-                            foo: 'node',
-                            TransactionBuilder: fakeTransactionBuilder,
-                            TransferOperationBuilder: fakeTransferOperationBuilder,
-                            fra_get_asset_code: jest.fn(function () {
-                                return fraAssetCode;
-                            }),
-                            public_key_from_base64: jest.fn(function () {
-                                return receiverPubKey;
-                            }),
-                        };
-                        assetDetails = {
-                            assetRules: {
-                                decimals: 5,
-                            },
-                        };
-                        spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(function () {
-                            return Promise.resolve(myLedger);
-                        });
-                        spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(function () {
-                            return Promise.resolve(assetDetails);
-                        });
-                        spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(function () {
-                            return Promise.resolve(minimalFee);
-                        });
-                        spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(function () {
-                            return Promise.resolve(toPublickey);
-                        });
-                        spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilder);
-                        });
-                        spyBuildTransferOperationWithFee = jest
-                            .spyOn(Fee, 'buildTransferOperationWithFee')
-                            .mockImplementation(function () {
-                            return Promise.resolve(fakeTransferOperationBuilderFee);
-                        });
-                        spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
-                        spyAddTransferOperation
-                            .mockImplementationOnce(function () {
-                            return fakeTransactionBuilder;
-                        })
-                            .mockImplementationOnce(function () {
-                            throw Error('barfoo');
-                        });
-                        return [4 /*yield*/, expect(Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode)).rejects.toThrow('Could not add transfer operation for fee')];
-                    case 1:
-                        _a.sent();
-                        spyGetLedger.mockRestore();
-                        spyGetAssetDetails.mockRestore();
-                        spyGetMinimalFee.mockRestore();
-                        spyGetFraPublicKey.mockRestore();
-                        spyBuildTransferOperation.mockRestore();
-                        spyBuildTransferOperationWithFee.mockRestore();
-                        spyGetTransactionBuilder.mockRestore();
-                        spyAddTransferOperation.mockRestore();
-                        return [2 /*return*/];
-                }
+            const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
+            const result = yield Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode);
+            expect(spyGetMinimalFee).toHaveBeenCalled();
+            expect(spyGetFraPublicKey).toHaveBeenCalled();
+            expect(spyBuildTransferOperation).toHaveBeenCalledWith(walletInfo, [
+                {
+                    assetBlindRules: undefined,
+                    toPublickey: receiverPubKey,
+                    utxoNumbers: BigInt(300000),
+                },
+                {
+                    utxoNumbers: minimalFee,
+                    toPublickey,
+                },
+            ], fraAssetCode);
+            expect(spyGetTransactionBuilder).toHaveBeenCalled();
+            expect(spyAddTransferOperation).toHaveBeenLastCalledWith(receivedTransferOperation);
+            expect(result).toBe(fakeTransactionBuilder);
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('throws an error if can not create or sign transaction', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    throw Error('can not sign');
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
             });
-        }); });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            yield expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not create transfer operation');
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+        }));
+        it('throws an error if can not get transactionBuilder from getTransactionBuilder', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                throw new Error('foo');
+            });
+            yield expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not get transactionBuilder from "getTransactionBuilder"');
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+        }));
+        it('throws an error if it can not add a transfer operation', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    throw new Error('boom');
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
+            yield expect(Transaction.sendToMany(walletInfo, recieversInfo, fraAssetCode)).rejects.toThrow('Could not add transfer operation');
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('sends custom asset to recievers', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const receivedTransferOperationFee = 'txHashFee';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperationFee;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const customAssetCode = 'BB';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
+            const result = yield Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode);
+            expect(spyGetMinimalFee).not.toHaveBeenCalled();
+            expect(spyGetFraPublicKey).not.toHaveBeenCalled();
+            expect(spyBuildTransferOperation).toHaveBeenCalledWith(walletInfo, [
+                {
+                    assetBlindRules: undefined,
+                    toPublickey: receiverPubKey,
+                    utxoNumbers: BigInt(300000),
+                },
+            ], customAssetCode);
+            expect(spyGetTransactionBuilder).toHaveBeenCalled();
+            expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
+            expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
+            expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperationFee);
+            expect(result).toBe(fakeTransactionBuilder);
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('throws an error if can not create or sign transaction to add fee', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const receivedTransferOperationFee = 'txHashFee';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    throw new Error('foofoo');
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperationFee;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const customAssetCode = 'BB';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
+            yield expect(Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode)).rejects.toThrow('Could not create transfer operation for fee');
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
+        it('throws an error if it can not add a transfer operation for fee', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const receivedTransferOperation = 'txHash';
+            const receivedTransferOperationFee = 'txHashFee';
+            const fakeTransferOperationBuilder = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilder;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperation;
+                }),
+            };
+            const fakeTransferOperationBuilderFee = {
+                create: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                sign: jest.fn(() => {
+                    return fakeTransferOperationBuilderFee;
+                }),
+                transaction: jest.fn(() => {
+                    return receivedTransferOperationFee;
+                }),
+            };
+            const fraAssetCode = 'AA';
+            const customAssetCode = 'BB';
+            const receiverPubKey = 'toPubKey';
+            const minimalFee = BigInt(2);
+            const toPublickey = 'mockedToPublickey';
+            const walletInfo = { publickey: 'senderPub' };
+            const toWalletInfo = { publickey: receiverPubKey };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: '3' }];
+            const myLedger = {
+                foo: 'node',
+                TransactionBuilder: fakeTransactionBuilder,
+                TransferOperationBuilder: fakeTransferOperationBuilder,
+                fra_get_asset_code: jest.fn(() => {
+                    return fraAssetCode;
+                }),
+                public_key_from_base64: jest.fn(() => {
+                    return receiverPubKey;
+                }),
+            };
+            const assetDetails = {
+                assetRules: {
+                    decimals: 5,
+                },
+            };
+            const spyGetLedger = jest.spyOn(NodeLedger, 'default').mockImplementation(() => {
+                return Promise.resolve(myLedger);
+            });
+            const spyGetAssetDetails = jest.spyOn(AssetApi, 'getAssetDetails').mockImplementation(() => {
+                return Promise.resolve(assetDetails);
+            });
+            const spyGetMinimalFee = jest.spyOn(AssetApi, 'getMinimalFee').mockImplementation(() => {
+                return Promise.resolve(minimalFee);
+            });
+            const spyGetFraPublicKey = jest.spyOn(AssetApi, 'getFraPublicKey').mockImplementation(() => {
+                return Promise.resolve(toPublickey);
+            });
+            const spyBuildTransferOperation = jest.spyOn(Fee, 'buildTransferOperation').mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilder);
+            });
+            const spyBuildTransferOperationWithFee = jest
+                .spyOn(Fee, 'buildTransferOperationWithFee')
+                .mockImplementation(() => {
+                return Promise.resolve(fakeTransferOperationBuilderFee);
+            });
+            const spyGetTransactionBuilder = jest.spyOn(Builder, 'getTransactionBuilder').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const spyAddTransferOperation = jest.spyOn(fakeTransactionBuilder, 'add_transfer_operation');
+            spyAddTransferOperation
+                .mockImplementationOnce(() => {
+                return fakeTransactionBuilder;
+            })
+                .mockImplementationOnce(() => {
+                throw Error('barfoo');
+            });
+            yield expect(Transaction.sendToMany(walletInfo, recieversInfo, customAssetCode)).rejects.toThrow('Could not add transfer operation for fee');
+            spyGetLedger.mockRestore();
+            spyGetAssetDetails.mockRestore();
+            spyGetMinimalFee.mockRestore();
+            spyGetFraPublicKey.mockRestore();
+            spyBuildTransferOperation.mockRestore();
+            spyBuildTransferOperationWithFee.mockRestore();
+            spyGetTransactionBuilder.mockRestore();
+            spyAddTransferOperation.mockRestore();
+        }));
     });
-    describe('submitTransaction', function () {
-        it('submits a transaction and returns a handle', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var myHandle, submitData, fakeTransactionBuilder, submitResult, spySubmitTransaction, handle;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        myHandle = 'myHandleFromSubmit';
-                        submitData = {
-                            foo: 'bar',
-                        };
-                        fakeTransactionBuilder = {
-                            transaction: jest.fn(function () {
-                                return submitData;
-                            }),
-                        };
-                        submitResult = {
-                            response: myHandle,
-                        };
-                        spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(function () {
-                            return Promise.resolve(submitResult);
-                        });
-                        return [4 /*yield*/, Transaction.submitTransaction(fakeTransactionBuilder)];
-                    case 1:
-                        handle = _a.sent();
-                        expect(spySubmitTransaction).toHaveBeenCalledWith(submitData);
-                        expect(handle).toBe(myHandle);
-                        spySubmitTransaction.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('submitTransaction', () => {
+        it('submits a transaction and returns a handle', () => __awaiter(void 0, void 0, void 0, function* () {
+            const myHandle = 'myHandleFromSubmit';
+            const submitData = {
+                foo: 'bar',
+            };
+            const fakeTransactionBuilder = {
+                transaction: jest.fn(() => {
+                    return submitData;
+                }),
+            };
+            const submitResult = {
+                response: myHandle,
+            };
+            const spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(() => {
+                return Promise.resolve(submitResult);
             });
-        }); });
-        it('throws an error if network call to submit data has failed', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var submitData, fakeTransactionBuilder, spySubmitTransaction;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        submitData = {
-                            foo: 'bar',
-                        };
-                        fakeTransactionBuilder = {
-                            transaction: jest.fn(function () {
-                                return submitData;
-                            }),
-                        };
-                        spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(function () {
-                            throw new Error('foo');
-                        });
-                        return [4 /*yield*/, expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Error Could not submit transaction')];
-                    case 1:
-                        _a.sent();
-                        spySubmitTransaction.mockRestore();
-                        return [2 /*return*/];
-                }
+            const handle = yield Transaction.submitTransaction(fakeTransactionBuilder);
+            expect(spySubmitTransaction).toHaveBeenCalledWith(submitData);
+            expect(handle).toBe(myHandle);
+            spySubmitTransaction.mockRestore();
+        }));
+        it('throws an error if network call to submit data has failed', () => __awaiter(void 0, void 0, void 0, function* () {
+            const submitData = {
+                foo: 'bar',
+            };
+            const fakeTransactionBuilder = {
+                transaction: jest.fn(() => {
+                    return submitData;
+                }),
+            };
+            const spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(() => {
+                throw new Error('foo');
             });
-        }); });
-        it('throws an error if network call to submit data has return an error', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var submitData, fakeTransactionBuilder, submitResult, spySubmitTransaction;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        submitData = {
-                            foo: 'bar',
-                        };
-                        fakeTransactionBuilder = {
-                            transaction: jest.fn(function () {
-                                return submitData;
-                            }),
-                        };
-                        submitResult = {
-                            error: new Error('barfoo'),
-                        };
-                        spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(function () {
-                            return Promise.resolve(submitResult);
-                        });
-                        return [4 /*yield*/, expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Could not submit transaction')];
-                    case 1:
-                        _a.sent();
-                        spySubmitTransaction.mockRestore();
-                        return [2 /*return*/];
-                }
+            yield expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Error Could not submit transaction');
+            spySubmitTransaction.mockRestore();
+        }));
+        it('throws an error if network call to submit data has return an error', () => __awaiter(void 0, void 0, void 0, function* () {
+            const submitData = {
+                foo: 'bar',
+            };
+            const fakeTransactionBuilder = {
+                transaction: jest.fn(() => {
+                    return submitData;
+                }),
+            };
+            const submitResult = {
+                error: new Error('barfoo'),
+            };
+            const spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(() => {
+                return Promise.resolve(submitResult);
             });
-        }); });
-        it('throws an error if network call to submit data has an empty handle as a response', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var submitData, fakeTransactionBuilder, submitResult, spySubmitTransaction;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        submitData = {
-                            foo: 'bar',
-                        };
-                        fakeTransactionBuilder = {
-                            transaction: jest.fn(function () {
-                                return submitData;
-                            }),
-                        };
-                        submitResult = {
-                            response: undefined,
-                        };
-                        spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(function () {
-                            return Promise.resolve(submitResult);
-                        });
-                        return [4 /*yield*/, expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Handle is missing. Could not submit transaction')];
-                    case 1:
-                        _a.sent();
-                        spySubmitTransaction.mockRestore();
-                        return [2 /*return*/];
-                }
+            yield expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Could not submit transaction');
+            spySubmitTransaction.mockRestore();
+        }));
+        it('throws an error if network call to submit data has an empty handle as a response', () => __awaiter(void 0, void 0, void 0, function* () {
+            const submitData = {
+                foo: 'bar',
+            };
+            const fakeTransactionBuilder = {
+                transaction: jest.fn(() => {
+                    return submitData;
+                }),
+            };
+            const submitResult = {
+                response: undefined,
+            };
+            const spySubmitTransaction = jest.spyOn(NetworkApi, 'submitTransaction').mockImplementation(() => {
+                return Promise.resolve(submitResult);
             });
-        }); });
+            yield expect(Transaction.submitTransaction(fakeTransactionBuilder)).rejects.toThrow('Handle is missing. Could not submit transaction');
+            spySubmitTransaction.mockRestore();
+        }));
     });
-    describe('sendToPublicKey', function () {
-        it('send a transaction to an address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, walletInfo, publicKey, address, amount, assetCode, assetBlindRules, spyGetAddressByPublicKey, spySendToAddress, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        walletInfo = { publickey: 'senderPub' };
-                        publicKey = 'pub123';
-                        address = 'fra123';
-                        amount = '0.5';
-                        assetCode = 'CCC';
-                        assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                        spyGetAddressByPublicKey = jest
-                            .spyOn(KeypairApi, 'getAddressByPublicKey')
-                            .mockImplementation(function () {
-                            return Promise.resolve(address);
-                        });
-                        spySendToAddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        return [4 /*yield*/, Transaction.sendToPublicKey(walletInfo, publicKey, amount, assetCode, assetBlindRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetAddressByPublicKey).toHaveBeenCalledWith(publicKey);
-                        expect(spySendToAddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spySendToAddress.mockRestore();
-                        spyGetAddressByPublicKey.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('sendToPublicKey', () => {
+        it('send a transaction to an address', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const walletInfo = { publickey: 'senderPub' };
+            const publicKey = 'pub123';
+            const address = 'fra123';
+            const amount = '0.5';
+            const assetCode = 'CCC';
+            const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+            const spyGetAddressByPublicKey = jest
+                .spyOn(KeypairApi, 'getAddressByPublicKey')
+                .mockImplementation(() => {
+                return Promise.resolve(address);
             });
-        }); });
+            const spySendToAddress = jest.spyOn(Transaction, 'sendToAddress').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const result = yield Transaction.sendToPublicKey(walletInfo, publicKey, amount, assetCode, assetBlindRules);
+            expect(spyGetAddressByPublicKey).toHaveBeenCalledWith(publicKey);
+            expect(spySendToAddress).toHaveBeenCalledWith(walletInfo, address, amount, assetCode, assetBlindRules);
+            expect(result).toBe(fakeTransactionBuilder);
+            spySendToAddress.mockRestore();
+            spyGetAddressByPublicKey.mockRestore();
+        }));
     });
-    describe('sendToAddress', function () {
-        it('send a transaction to an address', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, walletInfo, address, amount, assetCode, assetBlindRules, toWalletInfoLight, recieversInfo, spyGetAddressPublicAndKey, spySendToMany, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        fakeTransactionBuilder = {
-                            new: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                            add_transfer_operation: jest.fn(function () {
-                                return fakeTransactionBuilder;
-                            }),
-                        };
-                        walletInfo = { publickey: 'senderPub' };
-                        address = 'fra123';
-                        amount = '0.5';
-                        assetCode = 'CCC';
-                        assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                        toWalletInfoLight = {
-                            address: 'fra123',
-                            publickey: 'pub456',
-                        };
-                        recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
-                        spyGetAddressPublicAndKey = jest
-                            .spyOn(KeypairApi, 'getAddressPublicAndKey')
-                            .mockImplementation(function () {
-                            return Promise.resolve(toWalletInfoLight);
-                        });
-                        spySendToMany = jest.spyOn(Transaction, 'sendToMany').mockImplementation(function () {
-                            return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
-                    case 1:
-                        result = _a.sent();
-                        expect(spyGetAddressPublicAndKey).toHaveBeenCalledWith(address);
-                        expect(spySendToMany).toHaveBeenCalledWith(walletInfo, recieversInfo, assetCode, assetBlindRules);
-                        expect(result).toBe(fakeTransactionBuilder);
-                        spySendToMany.mockRestore();
-                        spyGetAddressPublicAndKey.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('sendToAddress', () => {
+        it('send a transaction to an address', () => __awaiter(void 0, void 0, void 0, function* () {
+            const fakeTransactionBuilder = {
+                new: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+                add_transfer_operation: jest.fn(() => {
+                    return fakeTransactionBuilder;
+                }),
+            };
+            const walletInfo = { publickey: 'senderPub' };
+            const address = 'fra123';
+            const amount = '0.5';
+            const assetCode = 'CCC';
+            const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+            const toWalletInfoLight = {
+                address: 'fra123',
+                publickey: 'pub456',
+            };
+            const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+            const spyGetAddressPublicAndKey = jest
+                .spyOn(KeypairApi, 'getAddressPublicAndKey')
+                .mockImplementation(() => {
+                return Promise.resolve(toWalletInfoLight);
             });
-        }); });
+            const spySendToMany = jest.spyOn(Transaction, 'sendToMany').mockImplementation(() => {
+                return Promise.resolve(fakeTransactionBuilder);
+            });
+            const result = yield Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules);
+            expect(spyGetAddressPublicAndKey).toHaveBeenCalledWith(address);
+            expect(spySendToMany).toHaveBeenCalledWith(walletInfo, recieversInfo, assetCode, assetBlindRules);
+            expect(result).toBe(fakeTransactionBuilder);
+            spySendToMany.mockRestore();
+            spyGetAddressPublicAndKey.mockRestore();
+        }));
     });
     // describe('getTxList', () => {
     //   it('returns a list of transactions', async () => {
