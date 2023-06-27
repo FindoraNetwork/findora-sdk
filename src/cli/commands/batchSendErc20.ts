@@ -1,5 +1,5 @@
 import neatCsv from 'neat-csv';
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
 import { getPayloadWithGas, timeLog } from '../../evm/testHelpers';
 import { log, now, readFile, writeFile } from '../../services/utils';

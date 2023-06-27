@@ -4,18 +4,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.processorsMap = exports.getOperationProcessor = void 0;
-var get_1 = __importDefault(require("lodash/get"));
-var claim_1 = require("./claim");
-var convertAccount_1 = require("./convertAccount");
-var defineAsset_1 = require("./defineAsset");
-var delegation_1 = require("./delegation");
-var issueAsset_1 = require("./issueAsset");
-var transferAsset_1 = require("./transferAsset");
-var undelegation_1 = require("./undelegation");
-var unsupported_1 = require("./unsupported");
-var getOperationProcessor = function (operationItem, processors) {
-    for (var _i = 0, _a = Object.keys(processors); _i < _a.length; _i++) {
-        var el = _a[_i];
+const get_1 = __importDefault(require("lodash/get"));
+const claim_1 = require("./claim");
+const convertAccount_1 = require("./convertAccount");
+const defineAsset_1 = require("./defineAsset");
+const delegation_1 = require("./delegation");
+const issueAsset_1 = require("./issueAsset");
+const transferAsset_1 = require("./transferAsset");
+const undelegation_1 = require("./undelegation");
+const unsupported_1 = require("./unsupported");
+const getOperationProcessor = (operationItem, processors) => {
+    for (const el of Object.keys(processors)) {
         if (el in operationItem) {
             return (0, get_1.default)(processors, el, processors.Unsupported);
         }

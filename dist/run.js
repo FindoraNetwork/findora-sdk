@@ -31,57 +31,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSidsForSingleAsset = exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
 /* eslint-disable no-console */
-var dotenv_1 = __importDefault(require("dotenv"));
-var sleep_promise_1 = __importDefault(require("sleep-promise"));
-var api_1 = require("./api");
-var testHelpers_1 = require("./evm/testHelpers");
-var Sdk_1 = __importDefault(require("./Sdk"));
-var providers_1 = require("./services/cacheStore/providers");
-var Fee = __importStar(require("./services/fee"));
-var fee_1 = require("./services/fee");
-var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
-var utils_1 = require("./services/utils");
-var UtxoHelper = __importStar(require("./services/utxoHelper"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const sleep_promise_1 = __importDefault(require("sleep-promise"));
+const api_1 = require("./api");
+const testHelpers_1 = require("./evm/testHelpers");
+const Sdk_1 = __importDefault(require("./Sdk"));
+const providers_1 = require("./services/cacheStore/providers");
+const Fee = __importStar(require("./services/fee"));
+const fee_1 = require("./services/fee");
+const ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
+const utils_1 = require("./services/utils");
+const UtxoHelper = __importStar(require("./services/utxoHelper"));
 // import * as TMI from './tripleMasking/tripleMasking.integration';
 dotenv_1.default.config();
-var waitingTimeBeforeCheckTxStatus = 19000;
+const waitingTimeBeforeCheckTxStatus = 19000;
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
-var sdkEnv = {
+const sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
@@ -105,16 +78,16 @@ var sdkEnv = {
  * Examples here might not always be working, again - that is just a sandbox for convenience.
  */
 Sdk_1.default.init(sdkEnv);
-console.log("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
-var password = '123';
-var _a = process.env, _b = _a.CUSTOM_ASSET_CODE, CUSTOM_ASSET_CODE = _b === void 0 ? '' : _b, _c = _a.PKEY_MINE, PKEY_MINE = _c === void 0 ? '' : _c, _d = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = _d === void 0 ? '' : _d, _e = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = _e === void 0 ? '' : _e, _f = _a.PKEY_MINE2, PKEY_MINE2 = _f === void 0 ? '' : _f, _g = _a.PKEY_MINE3, PKEY_MINE3 = _g === void 0 ? '' : _g, _h = _a.PKEY_LOCAL_FAUCET, PKEY_LOCAL_FAUCET = _h === void 0 ? '' : _h, _j = _a.ENG_PKEY, ENG_PKEY = _j === void 0 ? '' : _j, _k = _a.PKEY_LOCAL_TRIPLE_MASKING, PKEY_LOCAL_TRIPLE_MASKING = _k === void 0 ? '' : _k, _l = _a.PKEY_LOCAL_FAUCET_MNEMONIC_STRING, PKEY_LOCAL_FAUCET_MNEMONIC_STRING = _l === void 0 ? '' : _l, _m = _a.M_STRING, M_STRING = _m === void 0 ? '' : _m, _o = _a.FRA_ADDRESS, FRA_ADDRESS = _o === void 0 ? '' : _o, _p = _a.ETH_PRIVATE, ETH_PRIVATE = _p === void 0 ? '' : _p, _q = _a.ETH_ADDRESS, ETH_ADDRESS = _q === void 0 ? '' : _q;
-var mainFaucet = PKEY_LOCAL_FAUCET;
-var CustomAssetCode = CUSTOM_ASSET_CODE;
-var myAbarAnonKeys = {
+console.log(`Connecting to "${sdkEnv.hostUrl}"`);
+const password = '123';
+const { CUSTOM_ASSET_CODE = '', PKEY_MINE = '', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = '', PKEY_MINE2 = '', PKEY_MINE3 = '', PKEY_LOCAL_FAUCET = '', ENG_PKEY = '', PKEY_LOCAL_TRIPLE_MASKING = '', PKEY_LOCAL_FAUCET_MNEMONIC_STRING = '', M_STRING = '', FRA_ADDRESS = '', ETH_PRIVATE = '', ETH_ADDRESS = '', } = process.env;
+const mainFaucet = PKEY_LOCAL_FAUCET;
+const CustomAssetCode = CUSTOM_ASSET_CODE;
+const myAbarAnonKeys = {
     axfrPublicKey: 'RFuVMPlD0pVcBlRIDKCwp5WNliqjGF4RG_r-SCzajOw=',
     axfrSecretKey: 'lgwn_gnSNPEiOmL1Tlb_nSzNcPkZa4yUqiIsR4B_skb4jYJBFjaRQwUlTi22XO3cOyxSbiv7k4l68kj2jzOVCURblTD5Q9KVXAZUSAygsKeVjZYqoxheERv6_kgs2ozs',
 };
-var myGivenCommitmentsList = [
+const myGivenCommitmentsList = [
     'CLHHKFVEejbeT4ZyoyabuPeg6ktkZfxoK4VaZ4ewE7T9',
     'DtJx2dVmXXiDaQS7G6xpNeUhEwH7EsuimLUf1Tqd78LH',
     '9kpQwq1UqqonX73HgreJcvXEj9SxN5mh55AhBdsSXnhZ',
@@ -122,618 +95,330 @@ var myGivenCommitmentsList = [
 /**
  * A simple example - how to use SDK to get FRA assset code
  */
-var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var assetCode;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 1:
-                assetCode = _a.sent();
-                console.log('FRA assetCode IS', assetCode);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getFraAssetCode = () => __awaiter(void 0, void 0, void 0, function* () {
+    const assetCode = yield api_1.Asset.getFraAssetCode();
+    console.log('FRA assetCode IS', assetCode);
+});
 /**
  * Get FRA balance
  */
-var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, isFra, faucetWalletInfo, newWalletMine1, newWalletMine2, balanceFaucet, balanceNewMine1, balanceNewMine2;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '12345';
-                isFra = false;
-                console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
-            case 1:
-                faucetWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-            case 2:
-                newWalletMine1 = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password)];
-            case 3:
-                newWalletMine2 = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfo)];
-            case 4:
-                balanceFaucet = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(newWalletMine1)];
-            case 5:
-                balanceNewMine1 = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(newWalletMine2)];
-            case 6:
-                balanceNewMine2 = _a.sent();
-                console.log('\n');
-                console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
-                console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
-                console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
-                console.log('\n');
-                console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
-                console.log('newWalletMine1.address ', newWalletMine1.address);
-                console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
-                console.log('\n');
-                console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
-                console.log('newWalletMine2.address', newWalletMine2.address);
-                console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
-                console.log('\n');
-                console.log('balance from restored faucet IS', balanceFaucet);
-                console.log('balance from restored MINE1 IS', balanceNewMine1);
-                console.log('balance from restored MINE2 IS', balanceNewMine2);
-                console.log('\n');
-                console.log('\n');
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getFraBalance = () => __awaiter(void 0, void 0, void 0, function* () {
+    const password = '12345';
+    const isFra = false;
+    console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
+    const faucetWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+    // const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+    //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    //   password,
+    // );
+    const newWalletMine1 = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+    // const newWalletMine1 = await Keypair.restoreFromMnemonic(
+    //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
+    //   password,
+    // );
+    // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+    const newWalletMine2 = yield api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password);
+    const balanceFaucet = yield api_1.Account.getBalance(faucetWalletInfo);
+    const balanceNewMine1 = yield api_1.Account.getBalance(newWalletMine1);
+    const balanceNewMine2 = yield api_1.Account.getBalance(newWalletMine2);
+    console.log('\n');
+    console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
+    console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
+    console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
+    console.log('\n');
+    console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+    console.log('newWalletMine1.address ', newWalletMine1.address);
+    console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
+    console.log('\n');
+    console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+    console.log('newWalletMine2.address', newWalletMine2.address);
+    console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
+    console.log('\n');
+    console.log('balance from restored faucet IS', balanceFaucet);
+    console.log('balance from restored MINE1 IS', balanceNewMine1);
+    console.log('balance from restored MINE2 IS', balanceNewMine2);
+    console.log('\n');
+    console.log('\n');
+});
 /**
  * Get custom asset balance
  */
-var getCustomAssetBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, customAssetCode, walletInfo, balance;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '123';
-                pkey = PKEY_MINE;
-                customAssetCode = CustomAssetCode;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo, customAssetCode)];
-            case 2:
-                balance = _a.sent();
-                console.log('balance IS', balance);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getCustomAssetBalance = () => __awaiter(void 0, void 0, void 0, function* () {
+    const password = '123';
+    const pkey = PKEY_MINE;
+    const customAssetCode = CustomAssetCode;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const balance = yield api_1.Account.getBalance(walletInfo, customAssetCode);
+    console.log('balance IS', balance);
+});
 /**
  * Define a custom asset
  */
-var defineCustomAssetRandom = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, assetCode, walletInfo, assetBuilder, handle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_LOCAL_FAUCET;
-                password = '123';
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 1:
-                assetCode = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 110 ~ defineCustomAsset ~ assetCode', assetCode);
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, assetCode)];
-            case 3:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 4:
-                handle = _a.sent();
-                console.log('our new asset created, handle - ! ! ', handle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const defineCustomAssetRandom = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_LOCAL_FAUCET;
+    const password = '123';
+    const assetCode = yield api_1.Asset.getRandomAssetCode();
+    console.log('🚀 ~ file: run.ts ~ line 110 ~ defineCustomAsset ~ assetCode', assetCode);
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, assetCode);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    console.log('our new asset created, handle - ! ! ', handle);
+});
 /**
  * Issue custom asset
  */
-var issueCustomAssetGiven = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, customAssetCode, password, walletInfo, assetBlindRules, assetBuilder, handle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_LOCAL_FAUCET;
-                customAssetCode = CustomAssetCode;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, customAssetCode, '5', assetBlindRules)];
-            case 2:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 3:
-                handle = _a.sent();
-                console.log('our issued tx handle IS', handle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const issueCustomAssetGiven = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_LOCAL_FAUCET;
+    const customAssetCode = CustomAssetCode;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const assetBlindRules = { isAmountBlind: false };
+    const assetBuilder = yield api_1.Asset.issueAsset(walletInfo, customAssetCode, '5', assetBlindRules);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    console.log('our issued tx handle IS', handle);
+});
 /**
  * Get state commitment object (for example if we need to get current block height)
  */
-var getStateCommitment = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var stateCommitment;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Network.getStateCommitment()];
-            case 1:
-                stateCommitment = _a.sent();
-                console.log('stateCommitment', stateCommitment);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getValidatorList = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var formattedVlidators;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 1:
-                formattedVlidators = _a.sent();
-                console.log('formattedVlidators', formattedVlidators);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var getDelegateInfo = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, delegateInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_LOCAL_FAUCET;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(walletInfo.address)];
-            case 2:
-                delegateInfo = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 192 ~ getDelegateInfo ~ delegateInfo', delegateInfo);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getStateCommitment = () => __awaiter(void 0, void 0, void 0, function* () {
+    const stateCommitment = yield api_1.Network.getStateCommitment();
+    console.log('stateCommitment', stateCommitment);
+});
+const getValidatorList = () => __awaiter(void 0, void 0, void 0, function* () {
+    const formattedVlidators = yield api_1.Staking.getValidatorList();
+    console.log('formattedVlidators', formattedVlidators);
+});
+const getDelegateInfo = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_LOCAL_FAUCET;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const delegateInfo = yield api_1.Staking.getDelegateInfo(walletInfo.address);
+    console.log('🚀 ~ file: run.ts ~ line 192 ~ getDelegateInfo ~ delegateInfo', delegateInfo);
+});
 /**
  * Get transfer operation builder (before sending a tx)
  */
-var getTransferBuilderOperation = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, password, pkey, walletInfo, sidsResult, sids, utxoDataList, fraCode, amount, sendUtxoList, utxoInputsInfo, minimalFee, toPublickey, transferOperationBuilder, recieversInfo, trasferOperation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                password = '123';
-                pkey = PKEY_MINE;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 3:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    return [2 /*return*/];
-                }
-                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
-            case 4:
-                utxoDataList = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 5:
-                fraCode = _a.sent();
-                amount = BigInt(3);
-                sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
-                return [4 /*yield*/, UtxoHelper.addUtxoInputs(sendUtxoList)];
-            case 6:
-                utxoInputsInfo = _a.sent();
-                minimalFee = ledger.fra_get_minimal_fee();
-                toPublickey = ledger.fra_get_dest_pubkey();
-                return [4 /*yield*/, Fee.getEmptyTransferBuilder()];
-            case 7:
-                transferOperationBuilder = _a.sent();
-                recieversInfo = [
-                    {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                    },
-                ];
-                return [4 /*yield*/, Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode, transferOperationBuilder)];
-            case 8:
-                trasferOperation = _a.sent();
-                console.log('trasferOperation!', trasferOperation);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getTransferBuilderOperation = () => __awaiter(void 0, void 0, void 0, function* () {
+    const ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const password = '123';
+    const pkey = PKEY_MINE;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const sidsResult = yield api_1.Network.getOwnedSids(walletInfo.publickey);
+    const { response: sids } = sidsResult;
+    if (!sids) {
+        return;
+    }
+    const utxoDataList = yield UtxoHelper.addUtxo(walletInfo, sids);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const amount = BigInt(3);
+    const sendUtxoList = UtxoHelper.getSendUtxo(fraCode, amount, utxoDataList);
+    const utxoInputsInfo = yield UtxoHelper.addUtxoInputs(sendUtxoList);
+    const minimalFee = ledger.fra_get_minimal_fee();
+    const toPublickey = ledger.fra_get_dest_pubkey();
+    const transferOperationBuilder = yield Fee.getEmptyTransferBuilder();
+    const recieversInfo = [
+        {
+            utxoNumbers: minimalFee,
+            toPublickey,
+        },
+    ];
+    const trasferOperation = yield Fee.getTransferOperation(walletInfo, utxoInputsInfo, recieversInfo, fraCode, transferOperationBuilder);
+    console.log('trasferOperation!', trasferOperation);
+});
 /**
  * Create a wallet info object (a keypair)
  */
-var createNewKeypair = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, mm, walletInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
-            case 1:
-                mm = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
-            case 2:
-                walletInfo = _a.sent();
-                console.log('new wallet info', walletInfo);
-                return [2 /*return*/, walletInfo];
-        }
-    });
-}); };
+const createNewKeypair = () => __awaiter(void 0, void 0, void 0, function* () {
+    const password = '123';
+    const mm = yield api_1.Keypair.getMnemonic(24);
+    console.log('🚀 ~ file: run.ts ~ line 232 ~ createNewKeypair ~ new mnemonic', mm.join(' '));
+    const walletInfo = yield api_1.Keypair.restoreFromMnemonic(mm, password);
+    console.log('new wallet info', walletInfo);
+    return walletInfo;
+});
 /**
  * Send fra to a single address
  */
-var transferFraToSingleAddress = function (amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, destAddress, toWalletInfo, balanceOld, sidsResult, sids, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle, height, blockDetailsResult, h, txStatus, dataResult, submitResult, sidsResultNew, sidsNew, sortedSidsNew, balanceNew;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                destAddress = walletInfo.address;
-                return [4 /*yield*/, api_1.Keypair.getAddressPublicAndKey(destAddress)];
-            case 2:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 3:
-                balanceOld = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 287 ~ transferFraToSingleAddress ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 4:
-                sidsResult = _a.sent();
-                sids = sidsResult.response;
-                if (!sids) {
-                    throw new Error('no sids!');
-                }
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 5:
-                fraCode = _a.sent();
-                assetCode = fraCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, amount, assetCode, assetBlindRules)];
-            case 6:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 7:
-                resultHandle = _a.sent();
-                console.log('send fra result handle!!', resultHandle);
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 9:
-                _a.sent();
-                height = 45;
-                return [4 /*yield*/, api_1.Network.getBlock(height)];
-            case 10:
-                blockDetailsResult = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult', JSON.stringify(blockDetailsResult, null, 2));
-                h = resultHandle;
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
-            case 11:
-                txStatus = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus', JSON.stringify(txStatus, null, 2));
-                return [4 /*yield*/, api_1.Network.getHashSwap(h)];
-            case 12:
-                dataResult = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult', JSON.stringify(dataResult, null, 2));
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
-            case 13:
-                submitResult = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 14:
-                sidsResultNew = _a.sent();
-                sidsNew = sidsResultNew.response;
-                if (!sidsNew) {
-                    throw new Error('no sids!');
-                }
-                sortedSidsNew = sids.sort(function (a, b) { return b - a; });
-                console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 15:
-                balanceNew = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var testTransferToYourself = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var amounts, _i, amounts_1, amount;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                amounts = ['0.3'];
-                _i = 0, amounts_1 = amounts;
-                _a.label = 1;
-            case 1:
-                if (!(_i < amounts_1.length)) return [3 /*break*/, 4];
-                amount = amounts_1[_i];
-                console.log("Sending amount of ".concat(amount, " FRA"));
-                return [4 /*yield*/, transferFraToSingleAddress(amount)];
-            case 2:
-                _a.sent();
-                _a.label = 3;
-            case 3:
-                _i++;
-                return [3 /*break*/, 1];
-            case 4: return [2 /*return*/];
-        }
-    });
-}); };
+const transferFraToSingleAddress = (amount) => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    // const toPkeyMine2 = PKEY_MINE2;
+    //  const destAddress = 'fra1a3xvplthykqercmpec7d27kl0lj55pax5ua77fztwx9kq58a3hxsxu378y';
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    // const toWalletInfo = await Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+    const destAddress = walletInfo.address;
+    const toWalletInfo = yield api_1.Keypair.getAddressPublicAndKey(destAddress);
+    const balanceOld = yield api_1.Account.getBalance(walletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 287 ~ transferFraToSingleAddress ~ balanceOld', balanceOld);
+    const sidsResult = yield api_1.Network.getOwnedSids(walletInfo.publickey);
+    const { response: sids } = sidsResult;
+    if (!sids) {
+        throw new Error('no sids!');
+    }
+    // const sortedSids = sids.sort((a, b) => b - a);
+    // console.log('🚀 ~ file: run.ts ~ line 1208 ~ barToAbar ~ sortedSids', sortedSids);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetCode = fraCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, amount, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('send fra result handle!!', resultHandle);
+    yield (0, testHelpers_1.waitForBlockChange)();
+    yield (0, testHelpers_1.waitForBlockChange)();
+    const height = 45;
+    const blockDetailsResult = yield api_1.Network.getBlock(height);
+    console.log('🚀 ~ file: run.ts ~ line 337 ~ transferFraToSingleAddress ~ blockDetailsResult', JSON.stringify(blockDetailsResult, null, 2));
+    const h = resultHandle;
+    const txStatus = yield api_1.Network.getTransactionStatus(h);
+    console.log('🚀 ~ file: run.ts ~ line 341 ~ transferFraToSingleAddress ~ txStatus', JSON.stringify(txStatus, null, 2));
+    // await sleep(waitingTimeBeforeCheckTxStatus);
+    const dataResult = yield api_1.Network.getHashSwap(h);
+    console.log('🚀 ~ file: run.ts ~ line 345 ~ transferFraToSingleAddress ~ dataResult', JSON.stringify(dataResult, null, 2));
+    const submitResult = yield api_1.Network.getTransactionStatus(resultHandle);
+    console.log('🚀 ~ file: run.ts ~ line 1265 ~ barToAbar ~ submitResult after waiting', submitResult);
+    const sidsResultNew = yield api_1.Network.getOwnedSids(walletInfo.publickey);
+    const { response: sidsNew } = sidsResultNew;
+    if (!sidsNew) {
+        throw new Error('no sids!');
+    }
+    const sortedSidsNew = sids.sort((a, b) => b - a);
+    console.log('🚀 ~ file: run.ts ~ line 335 ~ transferFraToSingleAddress ~ sortedSidsNew', sortedSidsNew);
+    const balanceNew = yield api_1.Account.getBalance(walletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 307 ~ transferFraToSingleAddress ~ balanceNew', balanceNew);
+});
+const testTransferToYourself = () => __awaiter(void 0, void 0, void 0, function* () {
+    // const amounts = ['1', '0.5', '0.4', '0.9'];
+    const amounts = ['0.3'];
+    for (const amount of amounts) {
+        console.log(`Sending amount of ${amount} FRA`);
+        yield transferFraToSingleAddress(amount);
+    }
+});
 /**
  * Send fra to a single recepient
  */
-var transferFraToSingleRecepient = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine2, password, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, transactionBuilder, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_LOCAL_FAUCET;
-                toPkeyMine2 = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 3:
-                fraCode = _a.sent();
-                assetCode = fraCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.03', assetCode, assetBlindRules)];
-            case 4:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 5:
-                resultHandle = _a.sent();
-                console.log('send fra result handle!!', resultHandle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const transferFraToSingleRecepient = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_LOCAL_FAUCET;
+    const toPkeyMine2 = PKEY_MINE;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    console.log('🚀 ~ file: run.ts ~ line 396 ~ transferFraToSingleRecepient ~ walletInfo', walletInfo);
+    const toWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+    console.log('🚀 ~ file: run.ts ~ line 397 ~ transferFraToSingleRecepient ~ toWalletInfo', toWalletInfo);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetCode = fraCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.03', assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('send fra result handle!!', resultHandle);
+});
 /**
  * Send fra to multiple recepients
  */
-var transferFraToMultipleRecepients = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfoMine2, toWalletInfoMine3, fraCode, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                toPkeyMine2 = PKEY_MINE2;
-                toPkeyMine3 = PKEY_MINE3;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password)];
-            case 2:
-                toWalletInfoMine2 = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password)];
-            case 3:
-                toWalletInfoMine3 = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetCode = fraCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                recieversInfo = [
-                    { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
-                    { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
-                ];
-                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-            case 5:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 6:
-                resultHandle = _a.sent();
-                console.log('send to multiple receipient result handle!', resultHandle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const transferFraToMultipleRecepients = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    const toPkeyMine2 = PKEY_MINE2;
+    const toPkeyMine3 = PKEY_MINE3;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfoMine2 = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+    const toWalletInfoMine3 = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetCode = fraCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const recieversInfo = [
+        { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+        { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+    ];
+    const transactionBuilder = yield api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('send to multiple receipient result handle!', resultHandle);
+});
 /**
  * Send custom asset to a single recepient
  */
-var transferCustomAssetToSingleRecepient = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkey, customAssetCode, password, walletInfo, toWalletInfo, assetCode, assetBlindRules, transactionBuilder, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                toPkey = PKEY_MINE2;
-                customAssetCode = CustomAssetCode;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                assetCode = customAssetCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.1', assetCode, assetBlindRules)];
-            case 3:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 4:
-                resultHandle = _a.sent();
-                console.log('send custom result handle', resultHandle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const transferCustomAssetToSingleRecepient = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    const toPkey = PKEY_MINE2;
+    const customAssetCode = CustomAssetCode;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(toPkey, password);
+    const assetCode = customAssetCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, '0.1', assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('send custom result handle', resultHandle);
+});
 /**
  * Send custom asset to multiple recepients
  */
-var transferCustomAssetToMultipleRecepients = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkeyMine2, toPkeyMine3, password, walletInfo, toWalletInfoMine2, toWalletInfoMine3, assetCode, assetBlindRules, recieversInfo, transactionBuilder, resultHandle;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                toPkeyMine2 = PKEY_MINE2;
-                toPkeyMine3 = PKEY_MINE3;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password)];
-            case 2:
-                toWalletInfoMine2 = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password)];
-            case 3:
-                toWalletInfoMine3 = _a.sent();
-                assetCode = CustomAssetCode;
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                recieversInfo = [
-                    { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
-                    { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
-                ];
-                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-            case 4:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 5:
-                resultHandle = _a.sent();
-                console.log('send custom result handle!', resultHandle);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const transferCustomAssetToMultipleRecepients = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    const toPkeyMine2 = PKEY_MINE2;
+    const toPkeyMine3 = PKEY_MINE3;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfoMine2 = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine2, password);
+    const toWalletInfoMine3 = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine3, password);
+    const assetCode = CustomAssetCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const recieversInfo = [
+        { reciverWalletInfo: toWalletInfoMine2, amount: '2' },
+        { reciverWalletInfo: toWalletInfoMine3, amount: '3' },
+    ];
+    const transactionBuilder = yield api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('send custom result handle!', resultHandle);
+});
 /**
  * Get custom asset details
  */
-var getCustomAssetDetails = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var customAssetCode, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                customAssetCode = CustomAssetCode;
-                return [4 /*yield*/, api_1.Asset.getAssetDetails(customAssetCode)];
-            case 1:
-                result = _a.sent();
-                console.log('get custom asset details !', result);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getCustomAssetDetails = () => __awaiter(void 0, void 0, void 0, function* () {
+    const customAssetCode = CustomAssetCode;
+    const result = yield api_1.Asset.getAssetDetails(customAssetCode);
+    console.log('get custom asset details !', result);
+});
 /**
  * Get transaction status
  */
-var getTransactionStatus = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var h, txStatus;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                h = 'YOUR_TX_HASH';
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
-            case 1:
-                txStatus = _a.sent();
-                console.log('transaction status', JSON.stringify(txStatus, null, 2));
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getTransactionStatus = () => __awaiter(void 0, void 0, void 0, function* () {
+    const h = 'YOUR_TX_HASH';
+    const txStatus = yield api_1.Network.getTransactionStatus(h);
+    console.log('transaction status', JSON.stringify(txStatus, null, 2));
+});
 /**
  * get block details
  */
-var getBlockDetails = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var height, blockDetailsResult, response, block;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                height = 45;
-                return [4 /*yield*/, api_1.Network.getBlock(height)];
-            case 1:
-                blockDetailsResult = _a.sent();
-                console.log('blockDetails!', JSON.stringify(blockDetailsResult, null, 2));
-                response = blockDetailsResult.response;
-                block = response === null || response === void 0 ? void 0 : response.result;
-                console.log('block', block === null || block === void 0 ? void 0 : block.block.header.height);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const getBlockDetails = () => __awaiter(void 0, void 0, void 0, function* () {
+    const height = 45;
+    const blockDetailsResult = yield api_1.Network.getBlock(height);
+    console.log('blockDetails!', JSON.stringify(blockDetailsResult, null, 2));
+    const { response } = blockDetailsResult;
+    const block = response === null || response === void 0 ? void 0 : response.result;
+    console.log('block', block === null || block === void 0 ? void 0 : block.block.header.height);
+});
 // get tx hash details
-var myFunc14 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var h, dataResult, response;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                h = 'YOUR_TX_HASH';
-                return [4 /*yield*/, api_1.Network.getHashSwap(h)];
-            case 1:
-                dataResult = _a.sent();
-                response = dataResult.response;
-                console.log(response === null || response === void 0 ? void 0 : response.result.txs);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var myFunc17 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, assets;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getCreatedAssets(walletInfo.address)];
-            case 2:
-                assets = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 453 ~ myFunc17 ~ assets', assets);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, sids;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = PKEY_MINE;
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getRelatedSids(walletInfo.publickey)];
-            case 2:
-                sids = _a.sent();
-                console.log('sids!!', sids);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const myFunc14 = () => __awaiter(void 0, void 0, void 0, function* () {
+    const h = 'YOUR_TX_HASH';
+    const dataResult = yield api_1.Network.getHashSwap(h);
+    const { response } = dataResult;
+    console.log(response === null || response === void 0 ? void 0 : response.result.txs);
+});
+const myFunc17 = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const assets = yield api_1.Account.getCreatedAssets(walletInfo.address);
+    console.log('🚀 ~ file: run.ts ~ line 453 ~ myFunc17 ~ assets', assets);
+});
+const myFunc18 = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = PKEY_MINE;
+    const password = '123';
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const sids = yield api_1.Account.getRelatedSids(walletInfo.publickey);
+    console.log('sids!!', sids);
+});
 // s3 cache
 // const myFuncS3 = async () => {
 //   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
@@ -787,684 +472,436 @@ var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function (
 //     console.log('Error!', e.message);
 //   }
 // };
-var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, balanceAfterUnstake, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, delegateInfo, isRewardsAdded;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
-                password = '123';
-                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbersToSend = '1000010';
-                numbersToDelegate = '1000000';
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 5:
-                transactionBuilderSend = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 6:
-                resultHandleSend = _a.sent();
-                console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 7:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 10:
-                balanceAfterUnstake = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 605 ~ delegateFraTransactionSubmit ~ balanceAfterUnstake', balanceAfterUnstake);
-                delegationTargetPublicKey = Ledger.get_delegation_target_address();
-                return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 11:
-                delegationTargetAddress = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 12:
-                formattedVlidators = _a.sent();
-                validatorAddress = formattedVlidators.validators[0].addr;
-                return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 13:
-                transactionBuilder = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 600 ~ delegateFraTransactionSubmit ~ transactionBuilder', transactionBuilder);
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 14:
-                resultHandle = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
-                console.log('🚀 ~ file: integration.ts ~ line 601 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 15:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 16:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
-            case 17:
-                transactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 19:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 20:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 21:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 22:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 23:
-                _a.sent();
-                console.log('checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 24:
-                delegateInfo = _a.sent();
-                isRewardsAdded = Number(delegateInfo.rewards) > 0;
-                if (!isRewardsAdded) {
-                    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
-                    return [2 /*return*/, false];
-                }
-                console.log('accumulated rewards ', delegateInfo.rewards);
-                return [2 /*return*/, true];
-        }
-    });
-}); };
+const delegateFraTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
+    const password = '123';
+    const Ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const numbersToSend = '1000010';
+    const numbersToDelegate = '1000000';
+    const transactionBuilderSend = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules);
+    const resultHandleSend = yield api_1.Transaction.submitTransaction(transactionBuilderSend);
+    console.log('send fra result handle!!', resultHandleSend);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const balanceAfterUnstake = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 605 ~ delegateFraTransactionSubmit ~ balanceAfterUnstake', balanceAfterUnstake);
+    // delegate
+    const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+    const delegationTargetAddress = yield api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey);
+    const formattedVlidators = yield api_1.Staking.getValidatorList();
+    const validatorAddress = formattedVlidators.validators[0].addr;
+    const transactionBuilder = yield api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules);
+    console.log('🚀 ~ file: run.ts ~ line 600 ~ delegateFraTransactionSubmit ~ transactionBuilder', transactionBuilder);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
+    console.log('🚀 ~ file: integration.ts ~ line 601 ~ delegateFraTransactionSubmit ~ resultHandle', resultHandle);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const transactionStatus = yield api_1.Network.getTransactionStatus(resultHandle);
+    console.log('Retrieved transaction status response:', transactionStatus);
+    const { response: sendResponse } = transactionStatus;
+    if (!sendResponse) {
+        return false;
+    }
+    const { Committed } = sendResponse;
+    if (!Array.isArray(Committed)) {
+        return false;
+    }
+    const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+    console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionSubmit ~ txnSID', txnSID);
+    if (!txnSID) {
+        console.log(`🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `, transactionStatus);
+        return false;
+    }
+    console.log('waiting for 5 blocks before checking rewards');
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    console.log('checking rewards now');
+    const delegateInfo = yield api_1.Staking.getDelegateInfo(toWalletInfo.address);
+    const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+    if (!isRewardsAdded) {
+        console.log('There is no rewards yet! , delegateInfo', delegateInfo);
+        return false;
+    }
+    console.log('accumulated rewards ', delegateInfo.rewards);
+    return true;
+});
 exports.delegateFraTransactionSubmit = delegateFraTransactionSubmit;
-var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, balanceBeforeSend, transactionBuilderSend, resultHandleSend, balanceAfterSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, balanceAfterDelegate, delegateInfo, isRewardsAdded, balanceBefore, amountToClaim, transactionBuilderClaim, resultHandleClaim, transactionStatusClaim, claimResponse, ClaimCommited, txnSIDClaim, balanceAfter, isClaimSuccessfull;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
-                password = '123';
-                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbersToSend = '1000010';
-                numbersToDelegate = '1000000';
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 5:
-                balanceBeforeSend = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend', balanceBeforeSend);
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 6:
-                transactionBuilderSend = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 7:
-                resultHandleSend = _a.sent();
-                console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 10:
-                balanceAfterSend = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend', balanceAfterSend);
-                delegationTargetPublicKey = Ledger.get_delegation_target_address();
-                return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 11:
-                delegationTargetAddress = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 12:
-                formattedVlidators = _a.sent();
-                validatorAddress = formattedVlidators.validators[0].addr;
-                return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 13:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 14:
-                resultHandle = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 15:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 16:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 17:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 18:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandle)];
-            case 19:
-                transactionStatus = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatus);
-                sendResponse = transactionStatus.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatus);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 20:
-                balanceAfterDelegate = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate', balanceAfterDelegate);
-                console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 21:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 22:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 23:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 24:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 25:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 26:
-                _a.sent();
-                console.log('checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 27:
-                delegateInfo = _a.sent();
-                isRewardsAdded = Number(delegateInfo.rewards) > 0;
-                if (!isRewardsAdded) {
-                    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
-                    return [2 /*return*/, false];
-                }
-                console.log('accumulated rewards ', delegateInfo.rewards);
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 28:
-                balanceBefore = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
-                amountToClaim = delegateInfo.rewards;
-                return [4 /*yield*/, api_1.Staking.claim(toWalletInfo, amountToClaim)];
-            case 29:
-                transactionBuilderClaim = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderClaim)];
-            case 30:
-                resultHandleClaim = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim', resultHandle);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 31:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 32:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 33:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 34:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 35:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 36:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleClaim)];
-            case 37:
-                transactionStatusClaim = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatusClaim);
-                claimResponse = transactionStatusClaim.response;
-                if (!claimResponse) {
-                    return [2 /*return*/, false];
-                }
-                ClaimCommited = claimResponse.Committed;
-                if (!Array.isArray(ClaimCommited)) {
-                    return [2 /*return*/, false];
-                }
-                txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
-                if (!txnSIDClaim) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ".concat(resultHandle, ". Response was: "), transactionStatusClaim);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 38:
-                balanceAfter = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 845 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
-                isClaimSuccessfull = Number(balanceAfter) > Number(balanceBefore);
-                console.log('🚀 ~ file: run.ts ~ line 877 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
-                return [2 /*return*/, isClaimSuccessfull];
-        }
-    });
-}); };
+const delegateFraTransactionAndClaimRewards = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('////////////////  delegateFraTransactionAndClaimRewards //////////////// ');
+    const password = '123';
+    const Ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const numbersToSend = '1000010';
+    const numbersToDelegate = '1000000';
+    const balanceBeforeSend = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeSend', balanceBeforeSend);
+    const transactionBuilderSend = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules);
+    const resultHandleSend = yield api_1.Transaction.submitTransaction(transactionBuilderSend);
+    console.log('send fra result handle!!', resultHandleSend);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const balanceAfterSend = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend', balanceAfterSend);
+    // delegate
+    const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+    const delegationTargetAddress = yield api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey);
+    const formattedVlidators = yield api_1.Staking.getValidatorList();
+    const validatorAddress = formattedVlidators.validators[0].addr;
+    const transactionBuilder = yield api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ delegateResultHandle', resultHandle);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const transactionStatus = yield api_1.Network.getTransactionStatus(resultHandle);
+    console.log('Retrieved transaction status response:', transactionStatus);
+    const { response: sendResponse } = transactionStatus;
+    if (!sendResponse) {
+        return false;
+    }
+    const { Committed } = sendResponse;
+    if (!Array.isArray(Committed)) {
+        return false;
+    }
+    const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+    console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSID', txnSID);
+    if (!txnSID) {
+        console.log(`🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `, transactionStatus);
+        return false;
+    }
+    const balanceAfterDelegate = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterDelegate', balanceAfterDelegate);
+    console.log('waiting for 5 blocks before checking rewards');
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    console.log('checking rewards now');
+    const delegateInfo = yield api_1.Staking.getDelegateInfo(toWalletInfo.address);
+    const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+    if (!isRewardsAdded) {
+        console.log('There is no rewards yet! , delegateInfo', delegateInfo);
+        return false;
+    }
+    console.log('accumulated rewards ', delegateInfo.rewards);
+    // claim
+    const balanceBefore = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
+    const amountToClaim = delegateInfo.rewards;
+    const transactionBuilderClaim = yield api_1.Staking.claim(toWalletInfo, amountToClaim);
+    const resultHandleClaim = yield api_1.Transaction.submitTransaction(transactionBuilderClaim);
+    console.log('🚀 ~ file: run.ts ~ line 599 ~ delegateFraTransactionAndClaimRewards ~ resultHandleClaim', resultHandle);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const transactionStatusClaim = yield api_1.Network.getTransactionStatus(resultHandleClaim);
+    console.log('Retrieved transaction status response:', transactionStatusClaim);
+    const { response: claimResponse } = transactionStatusClaim;
+    if (!claimResponse) {
+        return false;
+    }
+    const { Committed: ClaimCommited } = claimResponse;
+    if (!Array.isArray(ClaimCommited)) {
+        return false;
+    }
+    const txnSIDClaim = ClaimCommited && Array.isArray(ClaimCommited) ? ClaimCommited[0] : null;
+    console.log('🚀 ~ file: run.ts ~ line 472 ~ delegateFraTransactionAndClaimRewards ~ txnSIDClaim', txnSIDClaim);
+    if (!txnSIDClaim) {
+        console.log(`🚀 ~ file: integration.ts ~ line 477 ~ delegateFraTransactionAndClaimRewards ~ Could not retrieve the transaction with a handle ${resultHandle}. Response was: `, transactionStatusClaim);
+        return false;
+    }
+    const balanceAfter = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 845 ~ delegateFraTransactionAndClaimRewards ~ balanceAfter', balanceAfter);
+    const isClaimSuccessfull = Number(balanceAfter) > Number(balanceBefore);
+    console.log('🚀 ~ file: run.ts ~ line 877 ~ delegateFraTransactionAndClaimRewards ~ isClaimSuccessfull', isClaimSuccessfull);
+    return isClaimSuccessfull;
+});
 exports.delegateFraTransactionAndClaimRewards = delegateFraTransactionAndClaimRewards;
-var unstakeFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, transactionStatusSend, sendResponse, Committed, txnSID, balanceAfterSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilderDelegate, resultHandleDelegate, transactionStatusDelegate, delegateResponse, CommittedDelegate, txnSIDDelegate, delegateInfo, isRewardsAdded, balanceBeforeUnstake, transactionBuilderUnstake, resultHandleUnstake, balanceAfterUnstake, isUnstakeSuccessfull;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                console.log('////////////////  unstakeFraTransactionSubmit //////////////// ');
-                password = '123';
-                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                fraCode = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbersToSend = '1000010';
-                numbersToDelegate = '1000000';
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules)];
-            case 5:
-                transactionBuilderSend = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderSend)];
-            case 6:
-                resultHandleSend = _a.sent();
-                console.log('send fra result handle!!', resultHandleSend);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 7:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 8:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 9:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 10:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 11:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 12:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleSend)];
-            case 13:
-                transactionStatusSend = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatusSend);
-                sendResponse = transactionStatusSend.response;
-                if (!sendResponse) {
-                    return [2 /*return*/, false];
-                }
-                Committed = sendResponse.Committed;
-                if (!Array.isArray(Committed)) {
-                    return [2 /*return*/, false];
-                }
-                txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
-                if (!txnSID) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleSend, ". Response was: "), transactionStatusSend);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 14:
-                balanceAfterSend = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend', balanceAfterSend);
-                delegationTargetPublicKey = Ledger.get_delegation_target_address();
-                return [4 /*yield*/, api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey)];
-            case 15:
-                delegationTargetAddress = _a.sent();
-                return [4 /*yield*/, api_1.Staking.getValidatorList()];
-            case 16:
-                formattedVlidators = _a.sent();
-                validatorAddress = formattedVlidators.validators[0].addr;
-                return [4 /*yield*/, api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules)];
-            case 17:
-                transactionBuilderDelegate = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 600 ~ unstakeFraTransactionSubmit ~ transactionBuilderDelegate', transactionBuilderDelegate);
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderDelegate)];
-            case 18:
-                resultHandleDelegate = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
-                console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 19:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 20:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 21:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 22:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 23:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 24:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(resultHandleDelegate)];
-            case 25:
-                transactionStatusDelegate = _a.sent();
-                console.log('Retrieved transaction status response:', transactionStatusDelegate);
-                delegateResponse = transactionStatusDelegate.response;
-                if (!delegateResponse) {
-                    return [2 /*return*/, false];
-                }
-                CommittedDelegate = delegateResponse.Committed;
-                if (!Array.isArray(CommittedDelegate)) {
-                    return [2 /*return*/, false];
-                }
-                txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
-                console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
-                if (!txnSIDDelegate) {
-                    console.log("\uD83D\uDE80 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ".concat(resultHandleDelegate, ". Response was: "), transactionStatusDelegate);
-                    return [2 /*return*/, false];
-                }
-                console.log('waiting for 5 blocks before checking rewards');
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 26:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 27:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 28:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 29:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 30:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 31:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 32:
-                _a.sent();
-                console.log('checking rewards now');
-                return [4 /*yield*/, api_1.Staking.getDelegateInfo(toWalletInfo.address)];
-            case 33:
-                delegateInfo = _a.sent();
-                isRewardsAdded = Number(delegateInfo.rewards) > 0;
-                if (!isRewardsAdded) {
-                    console.log('There is no rewards yet! , delegateInfo', delegateInfo);
-                    return [2 /*return*/, false];
-                }
-                console.log('accumulated rewards ', delegateInfo.rewards);
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 34:
-                balanceBeforeUnstake = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ unstakeFraTransactionSubmit ~ balanceBeforeUnstake', balanceBeforeUnstake);
-                return [4 /*yield*/, api_1.Staking.unStake(toWalletInfo, numbersToDelegate, validatorAddress)];
-            case 35:
-                transactionBuilderUnstake = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 600 ~ unstakeFraTransactionSubmit ~ transactionBuilderUnstake', transactionBuilderUnstake);
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderUnstake)];
-            case 36:
-                resultHandleUnstake = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandle', resultHandleUnstake);
-                console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleUnstake', resultHandleUnstake);
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 37:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 38:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 39:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 40:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 41:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 42:
-                _a.sent();
-                return [4 /*yield*/, (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus)];
-            case 43:
-                _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(toWalletInfo)];
-            case 44:
-                balanceAfterUnstake = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 706 ~ unstakeFraTransactionSubmit ~ balanceAfterUnstake', balanceAfterUnstake);
-                isUnstakeSuccessfull = Number(balanceAfterUnstake) > Number(balanceBeforeUnstake);
-                console.log('🚀 ~ file: run.ts ~ line 877 ~ unstakeFraTransactionSubmit ~ isUnstakeSuccessfull', isUnstakeSuccessfull);
-                return [2 /*return*/, isUnstakeSuccessfull];
-        }
-    });
-}); };
+const unstakeFraTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('////////////////  unstakeFraTransactionSubmit //////////////// ');
+    const password = '123';
+    const Ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const numbersToSend = '1000010';
+    const numbersToDelegate = '1000000';
+    const transactionBuilderSend = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbersToSend, fraCode, assetBlindRules);
+    const resultHandleSend = yield api_1.Transaction.submitTransaction(transactionBuilderSend);
+    console.log('send fra result handle!!', resultHandleSend);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const transactionStatusSend = yield api_1.Network.getTransactionStatus(resultHandleSend);
+    console.log('Retrieved transaction status response:', transactionStatusSend);
+    const { response: sendResponse } = transactionStatusSend;
+    if (!sendResponse) {
+        return false;
+    }
+    const { Committed } = sendResponse;
+    if (!Array.isArray(Committed)) {
+        return false;
+    }
+    const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+    console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSID', txnSID);
+    if (!txnSID) {
+        console.log(`🚀 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandleSend}. Response was: `, transactionStatusSend);
+        return false;
+    }
+    const balanceAfterSend = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ delegateFraTransactionAndClaimRewards ~ balanceAfterSend', balanceAfterSend);
+    // delegate
+    const delegationTargetPublicKey = Ledger.get_delegation_target_address();
+    const delegationTargetAddress = yield api_1.Keypair.getAddressByPublicKey(delegationTargetPublicKey);
+    const formattedVlidators = yield api_1.Staking.getValidatorList();
+    const validatorAddress = formattedVlidators.validators[0].addr;
+    const transactionBuilderDelegate = yield api_1.Staking.delegate(toWalletInfo, delegationTargetAddress, numbersToDelegate, fraCode, validatorAddress, assetBlindRules);
+    console.log('🚀 ~ file: run.ts ~ line 600 ~ unstakeFraTransactionSubmit ~ transactionBuilderDelegate', transactionBuilderDelegate);
+    const resultHandleDelegate = yield api_1.Transaction.submitTransaction(transactionBuilderDelegate);
+    console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
+    console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleDelegate', resultHandleDelegate);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const transactionStatusDelegate = yield api_1.Network.getTransactionStatus(resultHandleDelegate);
+    console.log('Retrieved transaction status response:', transactionStatusDelegate);
+    const { response: delegateResponse } = transactionStatusDelegate;
+    if (!delegateResponse) {
+        return false;
+    }
+    const { Committed: CommittedDelegate } = delegateResponse;
+    if (!Array.isArray(CommittedDelegate)) {
+        return false;
+    }
+    const txnSIDDelegate = CommittedDelegate && Array.isArray(CommittedDelegate) ? CommittedDelegate[0] : null;
+    console.log('🚀 ~ file: run.ts ~ line 472 ~ unstakeFraTransactionSubmit ~ txnSIDDelegate', txnSIDDelegate);
+    if (!txnSIDDelegate) {
+        console.log(`🚀 ~ file: integration.ts ~ line 477 ~ unstakeFraTransactionSubmit ~ Could not retrieve the transaction with a handle ${resultHandleDelegate}. Response was: `, transactionStatusDelegate);
+        return false;
+    }
+    console.log('waiting for 5 blocks before checking rewards');
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    console.log('checking rewards now');
+    const delegateInfo = yield api_1.Staking.getDelegateInfo(toWalletInfo.address);
+    const isRewardsAdded = Number(delegateInfo.rewards) > 0;
+    if (!isRewardsAdded) {
+        console.log('There is no rewards yet! , delegateInfo', delegateInfo);
+        return false;
+    }
+    console.log('accumulated rewards ', delegateInfo.rewards);
+    // unstake
+    const balanceBeforeUnstake = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ unstakeFraTransactionSubmit ~ balanceBeforeUnstake', balanceBeforeUnstake);
+    const transactionBuilderUnstake = yield api_1.Staking.unStake(toWalletInfo, numbersToDelegate, validatorAddress);
+    console.log('🚀 ~ file: run.ts ~ line 600 ~ unstakeFraTransactionSubmit ~ transactionBuilderUnstake', transactionBuilderUnstake);
+    const resultHandleUnstake = yield api_1.Transaction.submitTransaction(transactionBuilderUnstake);
+    console.log('🚀 ~ file: run.ts ~ line 599 ~ unstakeFraTransactionSubmit ~ resultHandle', resultHandleUnstake);
+    console.log('🚀 ~ file: integration.ts ~ line 601 ~ unstakeFraTransactionSubmit ~ resultHandleUnstake', resultHandleUnstake);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    yield (0, sleep_promise_1.default)(waitingTimeBeforeCheckTxStatus);
+    const balanceAfterUnstake = yield api_1.Account.getBalance(toWalletInfo);
+    console.log('🚀 ~ file: run.ts ~ line 706 ~ unstakeFraTransactionSubmit ~ balanceAfterUnstake', balanceAfterUnstake);
+    const isUnstakeSuccessfull = Number(balanceAfterUnstake) > Number(balanceBeforeUnstake);
+    console.log('🚀 ~ file: run.ts ~ line 877 ~ unstakeFraTransactionSubmit ~ isUnstakeSuccessfull', isUnstakeSuccessfull);
+    return isUnstakeSuccessfull;
+});
 exports.unstakeFraTransactionSubmit = unstakeFraTransactionSubmit;
-var sendEvmToAccount = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var fraAddress, amount, ethPrivate, ethAddress;
-    return __generator(this, function (_a) {
-        fraAddress = FRA_ADDRESS;
-        amount = '1';
-        ethPrivate = ETH_PRIVATE;
-        ethAddress = ETH_ADDRESS;
-        return [2 /*return*/];
-    });
-}); };
-var ethProtocol = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var url, methodName, existingBlockHashToCheck, extraParams, payload, result;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                url = 'http://127.0.0.1:8545';
-                methodName = 'eth_getBlockByHash';
-                existingBlockHashToCheck = '0x1af723767d06ef414e7aa6d7df2745cec9e47c315ed754a68d0a2d5cc2468077';
-                extraParams = [existingBlockHashToCheck, true];
-                payload = {
-                    method: methodName,
-                    params: extraParams,
-                };
-                return [4 /*yield*/, api_1.Network.sendRpcCall(url, payload)];
-            case 1:
-                result = _a.sent();
-                console.log("\uD83D\uDE80 ~ file: run.ts ~ line 1154 ~ ".concat(methodName, " ~ result"), result);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var createTestBars = function (senderOne) {
-    if (senderOne === void 0) { senderOne = PKEY_MINE; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var password, pkey, toPkeyMine, walletInfo, toWalletInfo, fraCode, assetCode, assetBlindRules, i, amount, transactionBuilder, resultHandle;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    console.log('////////////////  Create Test Bars //////////////// ');
-                    password = '1234';
-                    pkey = mainFaucet;
-                    toPkeyMine = senderOne;
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-                case 1:
-                    walletInfo = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkeyMine, password)];
-                case 2:
-                    toWalletInfo = _a.sent();
-                    return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-                case 3:
-                    fraCode = _a.sent();
-                    assetCode = fraCode;
-                    assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                    i = 0;
-                    _a.label = 4;
-                case 4:
-                    if (!(i < 5)) return [3 /*break*/, 9];
-                    amount = (0, utils_1.getRandomNumber)(1, 9);
-                    console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
-                    return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "1.2".concat(amount), assetCode, assetBlindRules)];
-                case 5:
-                    transactionBuilder = _a.sent();
-                    return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-                case 6:
-                    resultHandle = _a.sent();
-                    console.log('send fra result handle!!', resultHandle);
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-                case 7:
-                    _a.sent();
-                    _a.label = 8;
-                case 8:
-                    i++;
-                    return [3 /*break*/, 4];
-                case 9: return [2 /*return*/, true];
-            }
-        });
-    });
-};
-var getFee = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, pkey, walletInfo, feeInputsPayload;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                password = '1234';
-                pkey = PKEY_MINE;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
-                return [4 /*yield*/, (0, fee_1.getFeeInputs)(walletInfo, [11], true)];
-            case 2:
-                feeInputsPayload = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
-                return [2 /*return*/];
-        }
-    });
-}); };
+const sendEvmToAccount = () => __awaiter(void 0, void 0, void 0, function* () {
+    const fraAddress = FRA_ADDRESS;
+    const amount = '1';
+    const ethPrivate = ETH_PRIVATE;
+    const ethAddress = ETH_ADDRESS;
+    // await Evm.sendEvmToAccount(fraAddress, amount, ethPrivate, ethAddress);
+});
+const ethProtocol = () => __awaiter(void 0, void 0, void 0, function* () {
+    const url = 'http://127.0.0.1:8545';
+    // const url = 'https://dev-evm.dev.findora.org:8545';
+    const methodName = 'eth_getBlockByHash';
+    const existingBlockHashToCheck = '0x1af723767d06ef414e7aa6d7df2745cec9e47c315ed754a68d0a2d5cc2468077';
+    const extraParams = [existingBlockHashToCheck, true];
+    // const methodName = 'eth_getTransactionByHash';
+    // const existingTxHashToCheck = '0xe8cc1b8752779446010a8ab8f8a1dad77db4451f1ebd5e08e1a00f911c8db90e';
+    // const extraParams = [existingTxHashToCheck];
+    const payload = {
+        method: methodName,
+        params: extraParams,
+    };
+    const result = yield api_1.Network.sendRpcCall(url, payload);
+    console.log(`🚀 ~ file: run.ts ~ line 1154 ~ ${methodName} ~ result`, result);
+});
+const createTestBars = (senderOne = PKEY_MINE) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log('////////////////  Create Test Bars //////////////// ');
+    const password = '1234';
+    const pkey = mainFaucet;
+    const toPkeyMine = senderOne;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(toPkeyMine, password);
+    const fraCode = yield api_1.Asset.getFraAssetCode();
+    const assetCode = fraCode;
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    for (let i = 0; i < 5; i++) {
+        // const amount = getRandomNumber(10, 20);
+        const amount = (0, utils_1.getRandomNumber)(1, 9);
+        console.log('🚀 ~ !! file: run.ts ~ line 1199 ~ createTestBars ~ amount', amount);
+        const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, `1.2${amount}`, assetCode, assetBlindRules);
+        const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+        console.log('send fra result handle!!', resultHandle);
+        yield (0, testHelpers_1.waitForBlockChange)();
+    }
+    return true;
+});
+const getFee = () => __awaiter(void 0, void 0, void 0, function* () {
+    const password = '1234';
+    const pkey = PKEY_MINE;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    console.log('🚀 ~ file: run.ts ~ line 1299 ~ getFee ~ walletInfo', walletInfo);
+    const feeInputsPayload = yield (0, fee_1.getFeeInputs)(walletInfo, [11], true);
+    console.log('🚀 ~ file: run.ts ~ line 1301 ~ getFee ~ feeInputsPayload', feeInputsPayload);
+});
 function approveToken() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/];
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        // const webLinkedInfo = {
+        //   privateStr: '4d05b965f821ea900ddd995dfa1b6caa834eaaa1ebe100a9760baf9331aae567',
+        //   rpcUrl: 'https://dev-qa02.dev.findora.org:8545', //'https://prod-forge.prod.findora.org:8545',
+        //   chainId: 1111, // 2154,
+        //   account: '0x72488bAa718F52B76118C79168E55c209056A2E6',
+        // };
+        // const result = await Evm.approveToken(
+        //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+        //   '0xaBA48f89BDa0C2C57c0E68056E445D1984EA8664', // 授权 prism->ledger
+        //   '100',
+        //   webLinkedInfo,
+        // );
+        // console.log(result.transactionHash);
+        // const result1 = await Evm.frc20ToBar(
+        //   '0x7Ed73c1D16590Bc2810F2C510Cd0923e34E3F592', // bridge
+        //   'fra1nqkz745gc6rcv2htrvv4yyey2482kw4awrjzsnw4nrkp99lxw64qjsrd6v',
+        //   '0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5', // token
+        //   '100',
+        //   webLinkedInfo,
+        // );
+        // console.log(result1.transactionHash);
+        // const result1 = await Evm.tokenBalance(
+        //   webLinkedInfo,
+        //   '0x85f7BEDcaEe6e2ad58E1bD195C5643F3A6A54125',
+        //   true,
+        //   webLinkedInfo.account,
+        // );
+        // console.log(result1);
+        // const addr = await Evm.hashAddressTofraAddress('0xfd66Bd7839Ed3AeC90f5F54ab2E11E7bF2FF4be5');
+        // console.log(addr);
     });
 }
 function testCommitment() {
-    return __awaiter(this, void 0, void 0, function () {
-        var data2, atxoSid, myMemoData, anonKeysReceiver, ledger, commitmentInBase64;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    data2 = [
-                        33,
-                        {
-                            point: 'd4koAbY2p-9fu5KOSkcmlRtefgqmwrIlm--3gx0KLjU=',
-                            ctext: [
-                                153, 62, 220, 132, 222, 139, 46, 13, 77, 111, 92, 117, 139, 60, 245, 53, 247, 132, 69, 227, 69, 186,
-                                173, 123, 147, 193, 177, 244, 148, 26, 186, 90, 19, 157, 1, 113, 170, 113, 165, 15, 76, 15, 83, 82,
-                                138, 161, 98, 95, 34, 54, 118, 251, 30, 232, 104, 241, 101, 249, 228, 103, 153, 149, 249, 145, 174,
-                                179, 176, 156, 255, 163, 40, 26, 105, 206, 199, 37, 102, 217, 160, 234, 79, 197, 103, 171, 213, 122,
-                                14, 204,
-                            ],
-                        },
-                    ];
-                    atxoSid = data2[0], myMemoData = data2[1];
-                    anonKeysReceiver = {
-                        axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
-                        axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
-                        axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
-                    };
-                    return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 1:
-                    ledger = _a.sent();
-                    commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const data2 = [
+            33,
+            {
+                point: 'd4koAbY2p-9fu5KOSkcmlRtefgqmwrIlm--3gx0KLjU=',
+                ctext: [
+                    153, 62, 220, 132, 222, 139, 46, 13, 77, 111, 92, 117, 139, 60, 245, 53, 247, 132, 69, 227, 69, 186,
+                    173, 123, 147, 193, 177, 244, 148, 26, 186, 90, 19, 157, 1, 113, 170, 113, 165, 15, 76, 15, 83, 82,
+                    138, 161, 98, 95, 34, 54, 118, 251, 30, 232, 104, 241, 101, 249, 228, 103, 153, 149, 249, 145, 174,
+                    179, 176, 156, 255, 163, 40, 26, 105, 206, 199, 37, 102, 217, 160, 234, 79, 197, 103, 171, 213, 122,
+                    14, 204,
+                ],
+            },
+        ];
+        const [atxoSid, myMemoData] = data2;
+        const anonKeysReceiver = {
+            axfrPublicKey: '-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=',
+            axfrSpendKey: 'uM-PgcQxe2Vx1_NpSEnRe1VAJmDEUIgdFUqkaN7n70KfrzM0HF4CpGqBu49EGcVLjt9mib_UGh8EgGlp6DZ2BvqWA9xrshGREBblYJXD7OEE0ammhBnSuI4H7sZjZwWe',
+            axfrViewKey: 'n68zNBxeAqRqgbuPRBnFS47fZom_1BofBIBpaeg2dgY=',
+        };
+        // const atxoSidM = '33';
+        // const abarOwnerMemo = await TripleMasking.getAbarOwnerMemo(atxoSidM);
+        const ledger = yield (0, ledgerWrapper_1.getLedger)();
+        // const [amount, assetType] = decryptedAbar;
+        // http://127.0.0.1:8667/get_abar_commitment/0) <- atxoSid
+        const commitmentInBase64 = '-NVMwSq6OciQPxpm1mNAond3c8Euxse4Rt9tTyPk0jo=';
+        //  curl http://127.0.0.1:8667/get_abar_commitment/0                                                                                                           [08:18:31pm]
+        // "EYSkMoa1SFefat0xPtZsblG5GnMTcgm45eDBcfKw9Uo="⏎
+        // HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs
+        // {
+        //   "commitmentKey": "HkLkeNetndmwAhPQxBgXV5sQYmLvaC4hpnPaCNTHNBVs",
+        //   "commitmentAxfrPublicKey": "-pYD3GuyEZEQFuVglcPs4QTRqaaEGdK4jgfuxmNnBZ4=",
+        //   "commitmentAssetType": "j7srJTB5XrQBaRNpdE5SFWcQFUmRipmWUV4X4qkL-jc=",
+        //   "commitmentAmount": "23.140000"
+        // },
+        // to store or continue parse_axfr_memo/decrypt_axfr_memo
     });
 }
-function runAbarCreating(iterations) {
-    if (iterations === void 0) { iterations = 10; }
-    return __awaiter(this, void 0, void 0, function () {
-        var faucetWalletInfo, anonKeys1, anonKeys2, wallets, i, maxAtxoSidResult, masError, masResponse, walletIndex, amountToSend, currentWallet;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
-                case 1:
-                    faucetWalletInfo = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-                case 2:
-                    anonKeys1 = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password)];
-                case 3:
-                    anonKeys2 = _a.sent();
-                    wallets = [anonKeys1, anonKeys2];
-                    i = 0;
-                    _a.label = 4;
-                case 4:
-                    if (!(i < iterations)) return [3 /*break*/, 7];
-                    console.log("-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ".concat(i));
-                    return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
-                case 5:
-                    maxAtxoSidResult = _a.sent();
-                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
-                    if (masError) {
-                        (0, utils_1.log)('error!', masError);
-                        throw new Error('could not get mas');
-                    }
-                    console.log("=======   ========= ======= Current MAS = ".concat(masResponse));
-                    walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
-                    amountToSend = walletIndex ? '10' : '10';
-                    currentWallet = wallets[walletIndex];
-                    console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
-                    _a.label = 6;
-                case 6:
-                    i = i + 1;
-                    return [3 /*break*/, 4];
-                case 7: return [2 /*return*/];
+function runAbarCreating(iterations = 10) {
+    return __awaiter(this, void 0, void 0, function* () {
+        // const anonKeys1 = {
+        //   axfrPublicKey: 'vZ91wm2xNKuQDmziOYQruRRg6Pj36k8V6YH2NbyjSnAA',
+        //   axfrSecretKey: 'Ip-rnJqV3kBFhuQATH1mqtXIYUCvoxkbUjYk4bFDc-y9n3XCbbE0q5AObOI5hCu5FGDo-PfqTxXpgfY1vKNKcAA=',
+        // };
+        //
+        // const anonKeys2 = {
+        //   axfrPublicKey: '-4HK7kShP7wxSeUUb0z3I_goisFx3xywXte1iPSFfauA',
+        //   axfrSecretKey: '01xTmsZbLjkQhJjrQuqnK0bgd0glIJXSTit1WvSLq3T7gcruRKE_vDFJ5RRvTPcj-CiKwXHfHLBe17WI9IV9q4A=',
+        // };
+        const faucetWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+        const anonKeys1 = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+        const anonKeys2 = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+        const wallets = [anonKeys1, anonKeys2];
+        for (let i = 0; i < iterations; i = i + 1) {
+            console.log(`-=-=-=-=-=-=-   =-=-=-==-==- ==-==-   ITERARION ${i}`);
+            const maxAtxoSidResult = yield api_1.Network.getMaxAtxoSid();
+            const { error: masError, response: masResponse } = maxAtxoSidResult;
+            if (masError) {
+                (0, utils_1.log)('error!', masError);
+                throw new Error('could not get mas');
             }
-        });
+            console.log(`=======   ========= ======= Current MAS = ${masResponse}`);
+            const walletIndex = (i + 1) % 2 === 0 ? 1 : 0;
+            const amountToSend = walletIndex ? '10' : '10';
+            // console.log('🚀 ~ file: run.ts ~ line 1656 ~ runAbarCreating ~ walletIndex', walletIndex);
+            const currentWallet = wallets[walletIndex];
+            console.log('🚀 ~ file: run.ts ~ line 1655 ~ runAbarCreating ~ currentWallet', currentWallet);
+            // const _transferResult = await TMI.barToAbarAmount(currentWallet, amountToSend);
+        }
     });
 }
 // async function testFailure() {
@@ -1472,424 +909,322 @@ function runAbarCreating(iterations) {
 //   console.log('🚀 ~ file: run.ts ~ line 1647 ~ testFailure ~ result', result);
 // }
 function getMas() {
-    return __awaiter(this, void 0, void 0, function () {
-        var maxAtxoSidResult, masError, masResponse, result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Network.getMaxAtxoSid()];
-                case 1:
-                    maxAtxoSidResult = _a.sent();
-                    masError = maxAtxoSidResult.error, masResponse = maxAtxoSidResult.response;
-                    if (masError) {
-                        (0, utils_1.log)('error!', masError);
-                        throw new Error('could not get mas');
-                    }
-                    console.log("Current MAS = ".concat(masResponse));
-                    return [4 /*yield*/, api_1.Network.getAbarMemos('1', '20')];
-                case 2:
-                    result = _a.sent();
-                    console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const maxAtxoSidResult = yield api_1.Network.getMaxAtxoSid();
+        const { error: masError, response: masResponse } = maxAtxoSidResult;
+        if (masError) {
+            (0, utils_1.log)('error!', masError);
+            throw new Error('could not get mas');
+        }
+        console.log(`Current MAS = ${masResponse}`);
+        const result = yield api_1.Network.getAbarMemos('1', '20');
+        console.log('🚀 /////////////// . ~ file: run.ts ~ line 1450 ~ testIt ~ result', result);
     });
 }
 function prism() {
-    return __awaiter(this, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            result = api_1.Evm.fraAddressToHashAddress('eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y');
-            console.log(result);
-            return [2 /*return*/];
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        // const { response: displayCheckpointData, error } = await Network.getConfig();
+        // if (error) throw error;
+        // if (!displayCheckpointData?.prism_bridge_address) throw 'no prism_bridge_address';
+        // const web3 = Evm.getWeb3('https://dev-qa04.dev.findora.org:8545');
+        // const prismProxyContract = await Evm.getPrismProxyContract(
+        //   web3,
+        //   displayCheckpointData.prism_bridge_address,
+        // );
+        // const prismBridgeAddress = await prismProxyContract.methods.prismBridgeAddress().call();
+        // const prismContract = await Evm.getSimBridgeContract(web3, prismBridgeAddress);
+        // const [ledgerAddress, assetAddress] = await Promise.all([
+        //   prismContract.methods.ledger_contract().call(),
+        //   prismContract.methods.asset_contract().call(),
+        // ]);
+        // console.log(ledgerAddress, assetAddress, prismBridgeAddress);
+        // const name = await erc20Contract.methods.name().call();
+        // console.log('erc20 token name: ', name);
+        // const result = await Evm.getPrismConfig();
+        // console.log(result);
+        // const walletInfo = await Keypair.restoreFromPrivateKey(
+        //   'AKPYFxSOX7dVTpM2IbxaYFE1laLJDNQhIodMyXJt_hAE',
+        //   password,
+        // );
+        // try {
+        //   Evm.sendAccountToEvm(
+        //     walletInfo,
+        //     '1',
+        //     '0x72488baa718f52b76118c79168e55c209056a2e6',
+        //     'eDv3Xau2tpTKZyBD8k_8jMf8QCwIUmhdbmK1FiyASfg=',
+        //     '',
+        //   );
+        // } catch (error) {
+        //   console.log(error);
+        // }
+        const result = api_1.Evm.fraAddressToHashAddress('eth1qg9szy8wxgxgn7swrwj7va4whuur65z7xvj3vddh4wkd2nd7u8mpsu8882y');
+        console.log(result);
     });
 }
 function testWasmFunctions(walletInfo) {
-    return __awaiter(this, void 0, void 0, function () {
-        var ledger, publickeyFormatEth, publickeyAddressFormatEth;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 1:
-                    ledger = _a.sent();
-                    publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
-                    publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
-                    console.log('============');
-                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('============');
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const ledger = yield (0, ledgerWrapper_1.getLedger)();
+        const publickeyFormatEth = ledger.get_pub_key_str(walletInfo.keypair);
+        const publickeyAddressFormatEth = ledger.bech32_to_base64(walletInfo.address);
+        console.log('============');
+        console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+        console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+        console.log('============');
     });
 }
 function testBrokenKeypairOne() {
-    return __awaiter(this, void 0, void 0, function () {
-        var ledger, mnemonic, keypair, publickey, address, publickeyFormatEth, publickeyAddressFormatEth;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 1:
-                    ledger = _a.sent();
-                    console.log('============');
-                    mnemonic = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
-                    keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
-                    return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
-                case 2:
-                    publickey = _a.sent();
-                    console.log('publickey (from restored keypair)', publickey);
-                    return [4 /*yield*/, api_1.Keypair.getAddress(keypair)];
-                case 3:
-                    address = _a.sent();
-                    console.log('address (from restored keypair)', address);
-                    publickeyFormatEth = ledger.get_pub_key_str(keypair);
-                    publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('\n');
-                    console.log('============');
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const ledger = yield (0, ledgerWrapper_1.getLedger)();
+        console.log('============');
+        const mnemonic = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+        const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic);
+        const publickey = yield api_1.Keypair.getPublicKeyStr(keypair);
+        console.log('publickey (from restored keypair)', publickey);
+        const address = yield api_1.Keypair.getAddress(keypair);
+        console.log('address (from restored keypair)', address);
+        const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+        const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+        console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+        console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+        console.log('\n');
+        console.log('============');
     });
 }
 function testBrokenKeypairTwo() {
-    return __awaiter(this, void 0, void 0, function () {
-        var ledger, keypair, publickey, address, publickeyFormatEth, publickeyAddressFormatEth;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 1:
-                    ledger = _a.sent();
-                    console.log('============');
-                    keypair = ledger.new_keypair();
-                    return [4 /*yield*/, api_1.Keypair.getPublicKeyStr(keypair)];
-                case 2:
-                    publickey = _a.sent();
-                    console.log('publickey (from created keypair)', publickey);
-                    return [4 /*yield*/, api_1.Keypair.getAddress(keypair)];
-                case 3:
-                    address = _a.sent();
-                    console.log('address (from created keypair)', address);
-                    publickeyFormatEth = ledger.get_pub_key_str(keypair);
-                    publickeyAddressFormatEth = ledger.bech32_to_base64(address);
-                    console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
-                    console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
-                    console.log('\n');
-                    console.log('============');
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const ledger = yield (0, ledgerWrapper_1.getLedger)();
+        console.log('============');
+        const keypair = ledger.new_keypair();
+        const publickey = yield api_1.Keypair.getPublicKeyStr(keypair);
+        console.log('publickey (from created keypair)', publickey);
+        const address = yield api_1.Keypair.getAddress(keypair);
+        console.log('address (from created keypair)', address);
+        const publickeyFormatEth = ledger.get_pub_key_str(keypair);
+        const publickeyAddressFormatEth = ledger.bech32_to_base64(address);
+        console.log('publickeyFormatEth (from keypair , using get_pub_key_str)', publickeyFormatEth);
+        console.log('publickeyAddressFormatEth (from address , using bech32_to_base64)', publickeyAddressFormatEth);
+        console.log('\n');
+        console.log('============');
     });
 }
 function testBrokenKeypairs() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, testBrokenKeypairOne()];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, testBrokenKeypairTwo()];
-                case 2:
-                    _a.sent();
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        yield testBrokenKeypairOne();
+        yield testBrokenKeypairTwo();
     });
 }
 function getNewBalanace() {
-    return __awaiter(this, void 0, void 0, function () {
-        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_1, error_2, error_3;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    isFra = false;
-                    pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
-                    pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
-                    mnemonicLocalFaucet = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password)];
-                case 1:
-                    faucetWalletInfoPkeyFra = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password)];
-                case 2:
-                    faucetWalletInfoPkeyEth = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password)];
-                case 3:
-                    faucetWalletInfoMnemonic = _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyFra)];
-                case 4:
-                    balanceFaucetFra = _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoPkeyEth)];
-                case 5:
-                    balanceFaucetEth = _a.sent();
-                    return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfoMnemonic)];
-                case 6:
-                    balanceFaucetMnemonic = _a.sent();
-                    console.log('============--------------=============================');
-                    console.log('\n');
-                    console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
-                    console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
-                    console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
-                    console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
-                    console.log('\n');
-                    _a.label = 7;
-                case 7:
-                    _a.trys.push([7, 9, , 10]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
-                case 8:
-                    _a.sent();
-                    return [3 /*break*/, 10];
-                case 9:
-                    error_1 = _a.sent();
-                    console.log('we have an error', error_1);
-                    return [3 /*break*/, 10];
-                case 10:
-                    console.log('\n');
-                    console.log('============--------------=============================');
-                    console.log('\n');
-                    console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
-                    console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
-                    console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
-                    console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
-                    console.log('\n');
-                    _a.label = 11;
-                case 11:
-                    _a.trys.push([11, 13, , 14]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoPkeyFra)];
-                case 12:
-                    _a.sent();
-                    return [3 /*break*/, 14];
-                case 13:
-                    error_2 = _a.sent();
-                    console.log('we have an error', error_2);
-                    return [3 /*break*/, 14];
-                case 14:
-                    console.log('\n');
-                    console.log('============--------------=============================');
-                    console.log('\n');
-                    console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
-                    console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
-                    console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
-                    console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
-                    console.log('\n');
-                    _a.label = 15;
-                case 15:
-                    _a.trys.push([15, 17, , 18]);
-                    return [4 /*yield*/, testWasmFunctions(faucetWalletInfoMnemonic)];
-                case 16:
-                    _a.sent();
-                    return [3 /*break*/, 18];
-                case 17:
-                    error_3 = _a.sent();
-                    console.log('we have an error', error_3);
-                    return [3 /*break*/, 18];
-                case 18:
-                    console.log('\n');
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const isFra = false;
+        const pkeyLocalFaucetFra = 'o9gXFI5ft1VOkzYhvFpgUTWVoskM1CEih0zJcm3-EAQ=';
+        const pkeyLocalFaucetEth = 'AW1bcpuGIThE5wnspklloHG6s5qGOKbC6Msca0OTpb41';
+        const mnemonicLocalFaucet = 'zoo nerve assault talk depend approve mercy surge bicycle ridge dismiss satoshi boring opera next fat cinnamon valley office actor above spray alcohol giant';
+        const faucetWalletInfoPkeyFra = yield api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetFra, password);
+        const faucetWalletInfoPkeyEth = yield api_1.Keypair.restoreFromPrivateKey(pkeyLocalFaucetEth, password);
+        const faucetWalletInfoMnemonic = yield api_1.Keypair.restoreFromMnemonic(mnemonicLocalFaucet.split(' '), password);
+        const balanceFaucetFra = yield api_1.Account.getBalance(faucetWalletInfoPkeyFra);
+        const balanceFaucetEth = yield api_1.Account.getBalance(faucetWalletInfoPkeyEth);
+        const balanceFaucetMnemonic = yield api_1.Account.getBalance(faucetWalletInfoMnemonic);
+        console.log('============--------------=============================');
+        console.log('\n');
+        console.log('Faucet pkey fra', pkeyLocalFaucetFra, '\n');
+        console.log('faucetWalletInfoPkeyFra.address ', faucetWalletInfoPkeyFra.address);
+        console.log('faucetWalletInfoPkeyFra.privateStr', faucetWalletInfoPkeyFra.privateStr);
+        console.log('faucetWalletInfoPkeyFra.publickey', faucetWalletInfoPkeyFra.publickey);
+        console.log('\n');
+        try {
+            yield testWasmFunctions(faucetWalletInfoPkeyFra);
+        }
+        catch (error) {
+            console.log('we have an error', error);
+        }
+        console.log('\n');
+        console.log('============--------------=============================');
+        console.log('\n');
+        console.log('Faucet pkey eth', pkeyLocalFaucetEth, '\n');
+        console.log('faucetWalletInfoPkeyEth.address ', faucetWalletInfoPkeyEth.address);
+        console.log('faucetWalletInfoPkeyEth.privateStr', faucetWalletInfoPkeyEth.privateStr);
+        console.log('faucetWalletInfoPkeyEth.publickey', faucetWalletInfoPkeyEth.publickey);
+        console.log('\n');
+        try {
+            yield testWasmFunctions(faucetWalletInfoPkeyFra);
+        }
+        catch (error) {
+            console.log('we have an error', error);
+        }
+        console.log('\n');
+        console.log('============--------------=============================');
+        console.log('\n');
+        console.log('Faucet Mnemonic', mnemonicLocalFaucet, '\n');
+        console.log('faucetWalletInfoMnemonic.address ', faucetWalletInfoMnemonic.address);
+        console.log('faucetWalletInfoMnemonic.privateStr', faucetWalletInfoMnemonic.privateStr);
+        console.log('faucetWalletInfoMnemonic.publickey', faucetWalletInfoMnemonic.publickey);
+        console.log('\n');
+        try {
+            yield testWasmFunctions(faucetWalletInfoMnemonic);
+        }
+        catch (error) {
+            console.log('we have an error', error);
+        }
+        console.log('\n');
     });
 }
 function getTxnListTest() {
-    return __awaiter(this, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            return [2 /*return*/];
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        // native txn list
+        // const result = await Transaction.getTxnList(
+        //   'fra13dac6nn6yl2t6thfc0hxsjemgqp0ghzyqmjdf55xc9mtw5atz5jsx8lze3',
+        //   'from',
+        // );
+        // console.log(result.txs[0]);
+        // staking txn list
+        // const result = await Transaction.getTxnListByStaking(
+        //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+        //   'delegation',
+        // );
+        // console.log(result);
+        // const result = await Transaction.getTxnListByStakingUnDelegation(
+        //   'fra1u0n385m74jz80sasqju7c7t73c8h0wwgenw6hk092w828rcdz6ks54cw4e',
+        // );
+        // console.log(result);
+        // prism txn list
+        // const result = await Transaction.getTxnListByPrism(
+        //   'fra1lelnp9fthp68xy0nqtlu7h2u6ms45rh4lqu466ns4jxqvdjja3qqz5ae6s',
+        //   'send',
+        // );
+        // console.log(JSON.stringify(result, null, 2));
     });
 }
 function fnsNameResolver() {
-    return __awaiter(this, void 0, void 0, function () {
-        var result;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, api_1.Evm.getDomainCurrentText('eba.fra')];
-                case 1:
-                    result = _a.sent();
-                    console.log(result === null || result === void 0 ? void 0 : result.eth);
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        // const result = await Evm.resolveDomain('0xe77B7DDc441B5a695d2D16020bfd5c0b0cE3aC7C', 'eba.fra');
+        const result = yield api_1.Evm.getDomainCurrentText('eba.fra');
+        console.log(result === null || result === void 0 ? void 0 : result.eth);
     });
 }
 // prism();
-var getSidsForSingleAsset = function (senderOne, assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var walletInfo, sids, utxoDataList, customAssetSids, _i, utxoDataList_1, utxoItem, utxoAsset;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)("//////////////// Get sids for asset ".concat(assetCode, " //////////////// "));
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(senderOne, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 2:
-                sids = (_a.sent()).response;
-                if (!sids) {
-                    console.log('ERROR no sids available');
-                    return [2 /*return*/, []];
-                }
-                return [4 /*yield*/, UtxoHelper.addUtxo(walletInfo, sids)];
-            case 3:
-                utxoDataList = _a.sent();
-                customAssetSids = [];
-                for (_i = 0, utxoDataList_1 = utxoDataList; _i < utxoDataList_1.length; _i++) {
-                    utxoItem = utxoDataList_1[_i];
-                    utxoAsset = utxoItem['body']['asset_type'];
-                    if (utxoAsset === assetCode) {
-                        customAssetSids.push(utxoItem['sid']);
-                    }
-                }
-                return [2 /*return*/, customAssetSids.sort(function (a, b) { return a - b; })];
+const getSidsForSingleAsset = (senderOne, assetCode) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)(`//////////////// Get sids for asset ${assetCode} //////////////// `);
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(senderOne, password);
+    const { response: sids } = yield api_1.Network.getOwnedSids(walletInfo.publickey);
+    if (!sids) {
+        console.log('ERROR no sids available');
+        return [];
+    }
+    const utxoDataList = yield UtxoHelper.addUtxo(walletInfo, sids);
+    const customAssetSids = [];
+    for (const utxoItem of utxoDataList) {
+        const utxoAsset = utxoItem['body']['asset_type'];
+        if (utxoAsset === assetCode) {
+            customAssetSids.push(utxoItem['sid']);
         }
-    });
-}); };
+    }
+    return customAssetSids.sort((a, b) => a - b);
+});
 exports.getSidsForSingleAsset = getSidsForSingleAsset;
 function barToAbarAmount() {
-    return __awaiter(this, void 0, void 0, function () {
-        var senderWalletInfo, anonKeysReceiver, amount, fraAssetCode, _a, transactionBuilder, barToAbarData, usedSids, resultHandle, givenCommitments;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0: return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-                case 1:
-                    senderWalletInfo = _b.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password)];
-                case 2:
-                    anonKeysReceiver = _b.sent();
-                    amount = '12';
-                    return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-                case 3:
-                    fraAssetCode = _b.sent();
-                    return [4 /*yield*/, api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey)];
-                case 4:
-                    _a = _b.sent(), transactionBuilder = _a.transactionBuilder, barToAbarData = _a.barToAbarData, usedSids = _a.sids;
-                    (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
-                    (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
-                    return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-                case 5:
-                    resultHandle = _b.sent();
-                    (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
-                    givenCommitments = barToAbarData.commitments;
-                    console.log('givenCommitments', givenCommitments);
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const senderWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+        const anonKeysReceiver = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+        const amount = '12';
+        const fraAssetCode = yield api_1.Asset.getFraAssetCode();
+        const { transactionBuilder, barToAbarData, sids: usedSids, } = yield api_1.TripleMasking.barToAbarAmount(senderWalletInfo, amount, fraAssetCode, anonKeysReceiver.publickey);
+        (0, utils_1.log)('🚀 ~ barToAbarData', JSON.stringify(barToAbarData, null, 2));
+        (0, utils_1.log)('🚀 ~ usedSids', usedSids.join(','));
+        const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+        (0, utils_1.log)('send bar to abar result handle!!', resultHandle);
+        const givenCommitments = barToAbarData.commitments;
+        console.log('givenCommitments', givenCommitments);
     });
 }
 function getAbarBalance() {
-    return __awaiter(this, void 0, void 0, function () {
-        var anon2m, anonKeysTest, pkeyAW, anonKeys1, givenCommitments, _a, error, unprocessed, _i, unprocessed_1, abarMemoItem, decrypted;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    anon2m = [
-                        'security',
-                        'hood',
-                        'catch',
-                        'rail',
-                        'cabin',
-                        'season',
-                        'cool',
-                        'hint',
-                        'ranch',
-                        'fruit',
-                        'polar',
-                        'copper',
-                        'mass',
-                        'pen',
-                        'until',
-                        'carpet',
-                        'wolf',
-                        'screen',
-                        'reflect',
-                        'pulp',
-                        'wing',
-                        'blouse',
-                        'trigger',
-                        'hello',
-                    ];
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-                case 1:
-                    anonKeysTest = _b.sent();
-                    console.log('anonKeysTest', anonKeysTest);
-                    pkeyAW = '_tIxxQdQKGkFtu8LSW9J8HFMR7P3zgtB8QgWm_mT8GQ=';
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkeyAW, password)];
-                case 2:
-                    anonKeys1 = _b.sent();
-                    // const fraAssetCode = await Asset.getFraAssetCode();
-                    console.log('anonKeys1', anonKeys1);
-                    givenCommitments = [
-                        // '7wcqJjwMay3pzx53fCuegBUQh5SfpdSwNapfkndiSPaK',
-                        // '7gGyjupnuuSaMtjS7jknh7GqUMhXYR5AvQe2VJEsYhLg', // 1.2
-                        '3oMJAASbZisccxv4GTbd39zGYG5dE8NAJ9V2zavSRHun', // 1.1
-                    ];
-                    return [4 /*yield*/, api_1.Network.getAbarMemos("111", "113")];
-                case 3:
-                    _a = _b.sent(), error = _a.error, unprocessed = _a.response;
-                    console.log('unprocessed');
-                    console.dir(unprocessed, { depth: null, colors: true, maxArrayLength: null });
-                    if (!unprocessed) {
-                        console.log('boommmm');
-                        return [2 /*return*/];
-                    }
-                    _i = 0, unprocessed_1 = unprocessed;
-                    _b.label = 4;
-                case 4:
-                    if (!(_i < unprocessed_1.length)) return [3 /*break*/, 7];
-                    abarMemoItem = unprocessed_1[_i];
-                    console.log('inside for - syncCommitments ');
-                    return [4 /*yield*/, api_1.TripleMasking.decryptAbarMemo(abarMemoItem, anonKeysTest)];
-                case 5:
-                    decrypted = _b.sent();
-                    console.log('decrypted~~!!');
-                    console.dir(decrypted, { depth: null, colors: true, maxArrayLength: null });
-                    _b.label = 6;
-                case 6:
-                    _i++;
-                    return [3 /*break*/, 4];
-                case 7:
-                    // const decrypted = await Api.TripleMasking.decryptAbarMemo(abarMemoItem, b);
-                    // const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys1, givenCommitments);
-                    // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
-                    console.log('anon balances');
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const anon2m = [
+            'security',
+            'hood',
+            'catch',
+            'rail',
+            'cabin',
+            'season',
+            'cool',
+            'hint',
+            'ranch',
+            'fruit',
+            'polar',
+            'copper',
+            'mass',
+            'pen',
+            'until',
+            'carpet',
+            'wolf',
+            'screen',
+            'reflect',
+            'pulp',
+            'wing',
+            'blouse',
+            'trigger',
+            'hello',
+        ];
+        // const anonKeysTest = await Keypair.restoreFromMnemonic(anon2m, password);
+        const anonKeysTest = yield api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+        console.log('anonKeysTest', anonKeysTest);
+        // log('//////////////// bar to abar fra asset transfer ///////////////// ');
+        const pkeyAW = '_tIxxQdQKGkFtu8LSW9J8HFMR7P3zgtB8QgWm_mT8GQ=';
+        const anonKeys1 = yield api_1.Keypair.restoreFromPrivateKey(pkeyAW, password);
+        // const fraAssetCode = await Asset.getFraAssetCode();
+        console.log('anonKeys1', anonKeys1);
+        // console.log('anonKeys2', anonKeys2);
+        const givenCommitments = [
+            // '7wcqJjwMay3pzx53fCuegBUQh5SfpdSwNapfkndiSPaK',
+            // '7gGyjupnuuSaMtjS7jknh7GqUMhXYR5AvQe2VJEsYhLg', // 1.2
+            '3oMJAASbZisccxv4GTbd39zGYG5dE8NAJ9V2zavSRHun', // 1.1
+        ];
+        const { error, response: unprocessed } = yield api_1.Network.getAbarMemos(`111`, `113`);
+        console.log('unprocessed');
+        console.dir(unprocessed, { depth: null, colors: true, maxArrayLength: null });
+        if (!unprocessed) {
+            console.log('boommmm');
+            return;
+        }
+        for (const abarMemoItem of unprocessed) {
+            console.log('inside for - syncCommitments ');
+            // const decrypted = await TripleMasking.decryptAbarMemo(abarMemoItem, anonKeys1);
+            const decrypted = yield api_1.TripleMasking.decryptAbarMemo(abarMemoItem, anonKeysTest);
+            console.log('decrypted~~!!');
+            console.dir(decrypted, { depth: null, colors: true, maxArrayLength: null });
+        }
+        // const decrypted = await Api.TripleMasking.decryptAbarMemo(abarMemoItem, b);
+        // const anonBalances = await TripleMasking.getAllAbarBalances(anonKeys1, givenCommitments);
+        // console.log('anonBalances', anonBalances, [{ depth: null, colors: true, maxArrayLength: null }]);
+        console.log('anon balances');
+        // NOTE - did log for console output - use -> console.dir(result, { depth: null, colors: true, maxArrayLength: null });
+        // console.dir(anonBalances, { depth: null, colors: true, maxArrayLength: null });
+        //
+        //
+        //
     });
 }
 function keystoreTest() {
-    return __awaiter(this, void 0, void 0, function () {
-        var ledger, keypairFromNewKeypair, keyPairStrFromNewKeypair, keystoreFromNewKeypair, mnemonic, keypairFromMnemonic, keyPairStrFromMnemonic, keystoreFromMnemonic, wInfoFromMnemonic, wInfoFromPrivateKey;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-                case 1:
-                    ledger = _a.sent();
-                    keypairFromNewKeypair = ledger.new_keypair();
-                    (0, utils_1.log)('1 Keypair from new_keypair', keypairFromNewKeypair);
-                    keyPairStrFromNewKeypair = ledger.keypair_to_str(keypairFromNewKeypair);
-                    (0, utils_1.log)('1 keyPairStrFromNewKeypair', keyPairStrFromNewKeypair);
-                    keystoreFromNewKeypair = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromNewKeypair, password);
-                    (0, utils_1.log)('1 keystoreFromNewKeypair', keystoreFromNewKeypair);
-                    return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
-                case 2:
-                    mnemonic = _a.sent();
-                    keypairFromMnemonic = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-                    (0, utils_1.log)('2 Keypair from restore_keypair_from_mnemonic_default', keypairFromMnemonic);
-                    keyPairStrFromMnemonic = ledger.keypair_to_str(keypairFromMnemonic);
-                    (0, utils_1.log)('2 keyPairStrFromMnemonic', keyPairStrFromMnemonic);
-                    keystoreFromMnemonic = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromMnemonic, password);
-                    (0, utils_1.log)('2 keystoreFromMnemonic', keystoreFromMnemonic);
-                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mnemonic, password)];
-                case 3:
-                    wInfoFromMnemonic = _a.sent();
-                    (0, utils_1.log)('wInfoFromMnemonic', wInfoFromMnemonic);
-                    return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr, password)];
-                case 4:
-                    wInfoFromPrivateKey = _a.sent();
-                    (0, utils_1.log)('wInfoFromPrivateKey', wInfoFromPrivateKey);
-                    return [2 /*return*/];
-            }
-        });
+    return __awaiter(this, void 0, void 0, function* () {
+        const ledger = yield (0, ledgerWrapper_1.getLedger)();
+        // creates a XfrKeyPair
+        const keypairFromNewKeypair = ledger.new_keypair();
+        (0, utils_1.log)('1 Keypair from new_keypair', keypairFromNewKeypair);
+        const keyPairStrFromNewKeypair = ledger.keypair_to_str(keypairFromNewKeypair);
+        (0, utils_1.log)('1 keyPairStrFromNewKeypair', keyPairStrFromNewKeypair);
+        const keystoreFromNewKeypair = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromNewKeypair, password);
+        (0, utils_1.log)('1 keystoreFromNewKeypair', keystoreFromNewKeypair);
+        const mnemonic = yield api_1.Keypair.getMnemonic(24);
+        const keypairFromMnemonic = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
+        (0, utils_1.log)('2 Keypair from restore_keypair_from_mnemonic_default', keypairFromMnemonic);
+        const keyPairStrFromMnemonic = ledger.keypair_to_str(keypairFromMnemonic);
+        (0, utils_1.log)('2 keyPairStrFromMnemonic', keyPairStrFromMnemonic);
+        const keystoreFromMnemonic = ledger.encryption_pbkdf2_aes256gcm(keyPairStrFromMnemonic, password);
+        (0, utils_1.log)('2 keystoreFromMnemonic', keystoreFromMnemonic);
+        const wInfoFromMnemonic = yield api_1.Keypair.restoreFromMnemonic(mnemonic, password);
+        (0, utils_1.log)('wInfoFromMnemonic', wInfoFromMnemonic);
+        const wInfoFromPrivateKey = yield api_1.Keypair.restoreFromPrivateKey(wInfoFromMnemonic.privateStr, password);
+        (0, utils_1.log)('wInfoFromPrivateKey', wInfoFromPrivateKey);
     });
 }
 // approveToken();

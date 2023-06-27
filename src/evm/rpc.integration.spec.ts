@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom/extend-expect';
-import HDWalletProvider from 'truffle-hdwallet-provider';
+import HDWalletProvider from '@truffle/hdwallet-provider';
 import Web3 from 'web3';
 import * as Network from '../api/network/network';
 import * as NetworkTypes from '../api/network/types';

@@ -1,15 +1,4 @@
 "use strict";
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     var desc = Object.getOwnPropertyDescriptor(m, k);
@@ -42,44 +31,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitAbarTransaction = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
-var bigNumber_1 = require("../../services/bigNumber");
-var Fee = __importStar(require("../../services/fee"));
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var keypair_1 = require("../keypair");
-var Network = __importStar(require("../network"));
-var AssetApi = __importStar(require("../sdkAsset"));
-var Builder = __importStar(require("./builder"));
-var helpers = __importStar(require("./helpers"));
-var processor_1 = require("./processor");
+const bigNumber_1 = require("../../services/bigNumber");
+const Fee = __importStar(require("../../services/fee"));
+const ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
+const keypair_1 = require("../keypair");
+const Network = __importStar(require("../network"));
+const AssetApi = __importStar(require("../sdkAsset"));
+const Builder = __importStar(require("./builder"));
+const helpers = __importStar(require("./helpers"));
+const processor_1 = require("./processor");
 /**
  * Send some asset to multiple receivers
  *
@@ -119,115 +81,94 @@ var processor_1 = require("./processor");
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var sendToMany = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, recieversInfo, fraAssetCode, isFraTransfer, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_1, e, e, transferOperationBuilderFee, receivedTransferOperationFee, e, e, e;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
-            case 2:
-                asset = _a.sent();
-                decimals = asset.assetRules.decimals;
-                recieversInfo = [];
-                recieversList.forEach(function (reciver) {
-                    var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
-                    var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    var utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                    var recieverInfoItem = {
-                        toPublickey: toPublickey,
-                        utxoNumbers: utxoNumbers,
-                        assetBlindRules: assetBlindRules,
-                    };
-                    recieversInfo.push(recieverInfoItem);
-                });
-                fraAssetCode = ledger.fra_get_asset_code();
-                isFraTransfer = assetCode === fraAssetCode;
-                if (!isFraTransfer) return [3 /*break*/, 5];
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 3:
-                minimalFee = _a.sent();
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 4:
-                toPublickey = _a.sent();
-                feeRecieverInfoItem = {
-                    utxoNumbers: minimalFee,
-                    toPublickey: toPublickey,
-                };
-                recieversInfo.push(feeRecieverInfoItem);
-                _a.label = 5;
-            case 5: return [4 /*yield*/, Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode)];
-            case 6:
-                transferOperationBuilder = _a.sent();
-                try {
-                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-                }
-                catch (error) {
-                    e = error;
-                    console.log('Full error (main)', error);
-                    throw new Error("Could not create transfer operation (main), Error: \"".concat(e, "\""));
-                }
-                _a.label = 7;
-            case 7:
-                _a.trys.push([7, 9, , 10]);
-                return [4 /*yield*/, Builder.getTransactionBuilder()];
-            case 8:
-                transactionBuilder = _a.sent();
-                return [3 /*break*/, 10];
-            case 9:
-                error_1 = _a.sent();
-                e = error_1;
-                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
-            case 10:
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
-                }
-                if (!!isFraTransfer) return [3 /*break*/, 12];
-                return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
-            case 11:
-                transferOperationBuilderFee = _a.sent();
-                receivedTransferOperationFee = void 0;
-                try {
-                    receivedTransferOperationFee = transferOperationBuilderFee
-                        .create()
-                        .sign(walletInfo.keypair)
-                        .transaction();
-                }
-                catch (error) {
-                    e = error;
-                    throw new Error("Could not create transfer operation for fee, Error: \"".concat(e.message, "\""));
-                }
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add transfer operation for fee, Error: \"".concat(e.message, "\""));
-                }
-                _a.label = 12;
-            case 12:
-                try {
-                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
-                }
-                // try {
-                //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-                // }
-                return [2 /*return*/, transactionBuilder];
-        }
+const sendToMany = (walletInfo, recieversList, assetCode, assetBlindRules) => __awaiter(void 0, void 0, void 0, function* () {
+    const ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const asset = yield AssetApi.getAssetDetails(assetCode);
+    const decimals = asset.assetRules.decimals;
+    const recieversInfo = [];
+    recieversList.forEach(reciver => {
+        const { reciverWalletInfo: toWalletInfo, amount } = reciver;
+        const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+        const utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+        const recieverInfoItem = {
+            toPublickey,
+            utxoNumbers,
+            assetBlindRules,
+        };
+        recieversInfo.push(recieverInfoItem);
     });
-}); };
+    const fraAssetCode = ledger.fra_get_asset_code();
+    const isFraTransfer = assetCode === fraAssetCode;
+    if (isFraTransfer) {
+        const minimalFee = yield AssetApi.getMinimalFee();
+        const toPublickey = yield AssetApi.getFraPublicKey();
+        const feeRecieverInfoItem = {
+            utxoNumbers: minimalFee,
+            toPublickey,
+        };
+        recieversInfo.push(feeRecieverInfoItem);
+    }
+    const transferOperationBuilder = yield Fee.buildTransferOperation(walletInfo, recieversInfo, assetCode);
+    let receivedTransferOperation;
+    try {
+        receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+    }
+    catch (error) {
+        const e = error;
+        console.log('Full error (main)', error);
+        throw new Error(`Could not create transfer operation (main), Error: "${e}"`);
+    }
+    let transactionBuilder;
+    try {
+        transactionBuilder = yield Builder.getTransactionBuilder();
+    }
+    catch (error) {
+        const e = error;
+        throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+    }
+    try {
+        transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+    }
+    catch (err) {
+        const e = err;
+        throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+    }
+    if (!isFraTransfer) {
+        const transferOperationBuilderFee = yield Fee.buildTransferOperationWithFee(walletInfo);
+        let receivedTransferOperationFee;
+        try {
+            receivedTransferOperationFee = transferOperationBuilderFee
+                .create()
+                .sign(walletInfo.keypair)
+                .transaction();
+        }
+        catch (error) {
+            const e = error;
+            throw new Error(`Could not create transfer operation for fee, Error: "${e.message}"`);
+        }
+        try {
+            transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperationFee);
+        }
+        catch (err) {
+            const e = err;
+            throw new Error(`Could not add transfer operation for fee, Error: "${e.message}"`);
+        }
+    }
+    try {
+        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    }
+    catch (err) {
+        const e = err;
+        throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+    }
+    // try {
+    //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // } catch (err) {
+    //   const e: Error = err as Error;
+    //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+    // }
+    return transactionBuilder;
+});
 exports.sendToMany = sendToMany;
 /**
  * Send some asset to multiple receivers
@@ -268,101 +209,82 @@ exports.sendToMany = sendToMany;
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var sendToManyV2 = function (walletInfo, recieversList, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, asset, decimals, minimalFee, toPublickey, fraAssetCode, isFraTransfer, recieversInfo, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_2, e, e, e;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, AssetApi.getAssetDetails(assetCode)];
-            case 2:
-                asset = _a.sent();
-                decimals = asset.assetRules.decimals;
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 3:
-                minimalFee = _a.sent();
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 4:
-                toPublickey = _a.sent();
-                fraAssetCode = ledger.fra_get_asset_code();
-                isFraTransfer = assetCode === fraAssetCode;
-                recieversInfo = {};
-                recieversInfo[fraAssetCode] = [
-                    {
-                        utxoNumbers: minimalFee,
-                        toPublickey: toPublickey,
-                    },
-                ];
-                if (!isFraTransfer) {
-                    recieversInfo[assetCode] = [];
-                }
-                recieversList.forEach(function (reciver) {
-                    var toWalletInfo = reciver.reciverWalletInfo, amount = reciver.amount;
-                    var toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
-                    var utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                    var recieverInfoItem = {
-                        toPublickey: toPublickey,
-                        utxoNumbers: utxoNumbers,
-                        assetBlindRules: assetBlindRules,
-                    };
-                    recieversInfo[assetCode].push(recieverInfoItem);
-                });
-                return [4 /*yield*/, Fee.buildTransferOperationV2(walletInfo, recieversInfo)];
-            case 5:
-                transferOperationBuilder = _a.sent();
-                receivedTransferOperation = '';
-                try {
-                    receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
-                }
-                catch (error) {
-                    e = error;
-                    throw new Error("Could not create transfer operation (main), Error: \"".concat(e.message, "\""));
-                }
-                _a.label = 6;
-            case 6:
-                _a.trys.push([6, 8, , 9]);
-                return [4 /*yield*/, Builder.getTransactionBuilder()];
-            case 7:
-                transactionBuilder = _a.sent();
-                return [3 /*break*/, 9];
-            case 8:
-                error_2 = _a.sent();
-                e = error_2;
-                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
-            case 9:
-                try {
-                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
-                }
-                try {
-                    transactionBuilder = transactionBuilder.build();
-                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                }
-                catch (err) {
-                    console.log('sendToMany error in build and sign ', err);
-                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
-                }
-                try {
-                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                }
-                catch (err) {
-                    e = err;
-                    throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
-                }
-                // try {
-                //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
-                // }
-                return [2 /*return*/, transactionBuilder];
-        }
+const sendToManyV2 = (walletInfo, recieversList, assetCode, assetBlindRules) => __awaiter(void 0, void 0, void 0, function* () {
+    const ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const asset = yield AssetApi.getAssetDetails(assetCode);
+    const decimals = asset.assetRules.decimals;
+    const minimalFee = yield AssetApi.getMinimalFee();
+    const toPublickey = yield AssetApi.getFraPublicKey();
+    const fraAssetCode = ledger.fra_get_asset_code();
+    const isFraTransfer = assetCode === fraAssetCode;
+    const recieversInfo = {};
+    recieversInfo[fraAssetCode] = [
+        {
+            utxoNumbers: minimalFee,
+            toPublickey,
+        },
+    ];
+    if (!isFraTransfer) {
+        recieversInfo[assetCode] = [];
+    }
+    recieversList.forEach(reciver => {
+        const { reciverWalletInfo: toWalletInfo, amount } = reciver;
+        const toPublickey = ledger.public_key_from_base64(toWalletInfo.publickey);
+        const utxoNumbers = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
+        const recieverInfoItem = {
+            toPublickey,
+            utxoNumbers,
+            assetBlindRules,
+        };
+        recieversInfo[assetCode].push(recieverInfoItem);
     });
-}); };
+    const transferOperationBuilder = yield Fee.buildTransferOperationV2(walletInfo, recieversInfo);
+    let receivedTransferOperation = '';
+    try {
+        receivedTransferOperation = transferOperationBuilder.create().sign(walletInfo.keypair).transaction();
+    }
+    catch (error) {
+        const e = error;
+        throw new Error(`Could not create transfer operation (main), Error: "${e.message}"`);
+    }
+    let transactionBuilder;
+    try {
+        transactionBuilder = yield Builder.getTransactionBuilder();
+    }
+    catch (error) {
+        const e = error;
+        throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+    }
+    try {
+        transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+    }
+    catch (err) {
+        const e = err;
+        throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+    }
+    try {
+        transactionBuilder = transactionBuilder.build();
+        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    }
+    catch (err) {
+        console.log('sendToMany error in build and sign ', err);
+        throw new Error(`could not build and sign txn "${err.message}"`);
+    }
+    try {
+        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+    }
+    catch (err) {
+        const e = err;
+        throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+    }
+    // try {
+    //   transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+    // } catch (err) {
+    //   const e: Error = err as Error;
+    //   throw new Error(`Could not sign origin transfer operation, Error: "${e.message}"`);
+    // }
+    return transactionBuilder;
+});
 exports.sendToManyV2 = sendToManyV2;
 /**
  * Submits a transaction
@@ -388,68 +310,48 @@ exports.sendToManyV2 = sendToManyV2;
  *
  * @returns Transaction status handle
  */
-var submitTransaction = function (transactionBuilder) { return __awaiter(void 0, void 0, void 0, function () {
-    var submitData, result, err_1, e, handle, submitError;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                submitData = transactionBuilder.transaction();
-                console.log(submitData);
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 2:
-                result = _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                err_1 = _a.sent();
-                e = err_1;
-                console.log('network sumbit error', err_1);
-                throw new Error("Error Could not submit transaction: \"".concat(e.message, "\""));
-            case 4:
-                handle = result.response, submitError = result.error;
-                if (submitError) {
-                    console.log('sumbit tx error', submitError);
-                    throw new Error("Could not submit transaction: \"".concat(submitError.message, "\""));
-                }
-                if (!handle) {
-                    throw new Error("Handle is missing. Could not submit transaction - submit handle is missing");
-                }
-                return [2 /*return*/, handle];
-        }
-    });
-}); };
+const submitTransaction = (transactionBuilder) => __awaiter(void 0, void 0, void 0, function* () {
+    const submitData = transactionBuilder.transaction();
+    console.log(submitData);
+    let result;
+    try {
+        result = yield Network.submitTransaction(submitData);
+    }
+    catch (err) {
+        const e = err;
+        console.log('network sumbit error', err);
+        throw new Error(`Error Could not submit transaction: "${e.message}"`);
+    }
+    const { response: handle, error: submitError } = result;
+    if (submitError) {
+        console.log('sumbit tx error', submitError);
+        throw new Error(`Could not submit transaction: "${submitError.message}"`);
+    }
+    if (!handle) {
+        throw new Error(`Handle is missing. Could not submit transaction - submit handle is missing`);
+    }
+    return handle;
+});
 exports.submitTransaction = submitTransaction;
-var submitAbarTransaction = function (anonTransferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
-    var submitData, result, err_2, e, handle, submitError;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                submitData = anonTransferOperationBuilder.transaction();
-                _a.label = 1;
-            case 1:
-                _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, Network.submitTransaction(submitData)];
-            case 2:
-                result = _a.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                err_2 = _a.sent();
-                e = err_2;
-                throw new Error("Error Could not submit abar transaction: \"".concat(e.message, "\""));
-            case 4:
-                handle = result.response, submitError = result.error;
-                if (submitError) {
-                    throw new Error("Could not submit abar transaction: \"".concat(submitError.message, "\""));
-                }
-                if (!handle) {
-                    throw new Error("Handle is missing. Could not submit abar transaction - submit handle is missing");
-                }
-                return [2 /*return*/, handle];
-        }
-    });
-}); };
+const submitAbarTransaction = (anonTransferOperationBuilder) => __awaiter(void 0, void 0, void 0, function* () {
+    const submitData = anonTransferOperationBuilder.transaction();
+    let result;
+    try {
+        result = yield Network.submitTransaction(submitData);
+    }
+    catch (err) {
+        const e = err;
+        throw new Error(`Error Could not submit abar transaction: "${e.message}"`);
+    }
+    const { response: handle, error: submitError } = result;
+    if (submitError) {
+        throw new Error(`Could not submit abar transaction: "${submitError.message}"`);
+    }
+    if (!handle) {
+        throw new Error(`Handle is missing. Could not submit abar transaction - submit handle is missing`);
+    }
+    return handle;
+});
 exports.submitAbarTransaction = submitAbarTransaction;
 /**
  * Send some asset to an address
@@ -483,18 +385,11 @@ exports.submitAbarTransaction = submitAbarTransaction;
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var sendToAddress = function (walletInfo, address, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var toWalletInfoLight, recieversInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
-            case 1:
-                toWalletInfoLight = _a.sent();
-                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
-                return [2 /*return*/, (0, exports.sendToMany)(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-        }
-    });
-}); };
+const sendToAddress = (walletInfo, address, amount, assetCode, assetBlindRules) => __awaiter(void 0, void 0, void 0, function* () {
+    const toWalletInfoLight = yield (0, keypair_1.getAddressPublicAndKey)(address);
+    const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+    return (0, exports.sendToMany)(walletInfo, recieversInfo, assetCode, assetBlindRules);
+});
 exports.sendToAddress = sendToAddress;
 /**
  * Send some asset to an address
@@ -528,140 +423,74 @@ exports.sendToAddress = sendToAddress;
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var sendToAddressV2 = function (walletInfo, address, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var toWalletInfoLight, recieversInfo;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(address)];
-            case 1:
-                toWalletInfoLight = _a.sent();
-                recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount: amount }];
-                return [2 /*return*/, (0, exports.sendToManyV2)(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-        }
-    });
-}); };
+const sendToAddressV2 = (walletInfo, address, amount, assetCode, assetBlindRules) => __awaiter(void 0, void 0, void 0, function* () {
+    const toWalletInfoLight = yield (0, keypair_1.getAddressPublicAndKey)(address);
+    const recieversInfo = [{ reciverWalletInfo: toWalletInfoLight, amount }];
+    return (0, exports.sendToManyV2)(walletInfo, recieversInfo, assetCode, assetBlindRules);
+});
 exports.sendToAddressV2 = sendToAddressV2;
-var sendToPublicKey = function (walletInfo, publicKey, amount, assetCode, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var address;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, keypair_1.getAddressByPublicKey)(publicKey)];
-            case 1:
-                address = _a.sent();
-                return [2 /*return*/, (0, exports.sendToAddress)(walletInfo, address, amount, assetCode, assetBlindRules)];
-        }
-    });
-}); };
+const sendToPublicKey = (walletInfo, publicKey, amount, assetCode, assetBlindRules) => __awaiter(void 0, void 0, void 0, function* () {
+    const address = yield (0, keypair_1.getAddressByPublicKey)(publicKey);
+    return (0, exports.sendToAddress)(walletInfo, address, amount, assetCode, assetBlindRules);
+});
 exports.sendToPublicKey = sendToPublicKey;
-var getTxnList = function (address, type, page, per_page) {
-    if (page === void 0) { page = 1; }
-    if (per_page === void 0) { per_page = 10; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var dataResult, txList, processedTxList;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Network.getTxList(address, type, page, per_page)];
-                case 1:
-                    dataResult = _a.sent();
-                    if (!dataResult.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    txList = helpers.getTxListFromResponse(dataResult);
-                    if (!txList) {
-                        throw new Error('Could not get a list of transactions from the server response.');
-                    }
-                    return [4 /*yield*/, (0, processor_1.processeTxInfoList)(txList)];
-                case 2:
-                    processedTxList = _a.sent();
-                    return [2 /*return*/, {
-                            page: dataResult.response.data.page,
-                            total: dataResult.response.data.total,
-                            page_size: dataResult.response.data.page_size,
-                            txs: processedTxList,
-                        }];
-            }
-        });
-    });
-};
+const getTxnList = (address, type, page = 1, per_page = 10) => __awaiter(void 0, void 0, void 0, function* () {
+    const dataResult = yield Network.getTxList(address, type, page, per_page);
+    if (!dataResult.response) {
+        throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+    const txList = helpers.getTxListFromResponse(dataResult);
+    if (!txList) {
+        throw new Error('Could not get a list of transactions from the server response.');
+    }
+    const processedTxList = yield (0, processor_1.processeTxInfoList)(txList);
+    return {
+        page: dataResult.response.data.page,
+        total: dataResult.response.data.total,
+        page_size: dataResult.response.data.page_size,
+        txs: processedTxList,
+    };
+});
 exports.getTxnList = getTxnList;
-var getTxnListByStaking = function (address, type, page, per_page) {
-    if (type === void 0) { type = 'claim'; }
-    if (page === void 0) { page = 1; }
-    if (per_page === void 0) { per_page = 10; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var dataResult_1, dataResult;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!(type == 'delegation')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, Network.getTxListByStakingDelegation(address, page, per_page)];
-                case 1:
-                    dataResult_1 = _a.sent();
-                    if (!dataResult_1.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    return [2 /*return*/, dataResult_1.response.data];
-                case 2: return [4 /*yield*/, Network.getTxListByClaim(address, page, per_page)];
-                case 3:
-                    dataResult = _a.sent();
-                    if (!dataResult.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    return [2 /*return*/, dataResult.response.data];
-            }
-        });
-    });
-};
+const getTxnListByStaking = (address, type = 'claim', page = 1, per_page = 10) => __awaiter(void 0, void 0, void 0, function* () {
+    if (type == 'delegation') {
+        const dataResult = yield Network.getTxListByStakingDelegation(address, page, per_page);
+        if (!dataResult.response) {
+            throw new Error('Could not fetch a list of transactions. No response from the server.');
+        }
+        return dataResult.response.data;
+    }
+    const dataResult = yield Network.getTxListByClaim(address, page, per_page);
+    if (!dataResult.response) {
+        throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+    return dataResult.response.data;
+});
 exports.getTxnListByStaking = getTxnListByStaking;
-var getTxnListByStakingUnDelegation = function (address, page, per_page) {
-    if (page === void 0) { page = 1; }
-    if (per_page === void 0) { per_page = 10; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var dataResult;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Network.getTxListByStakingUnDelegation(address, page, per_page)];
-                case 1:
-                    dataResult = _a.sent();
-                    if (!dataResult.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    return [2 /*return*/, dataResult.response.data];
-            }
-        });
-    });
-};
+const getTxnListByStakingUnDelegation = (address, page = 1, per_page = 10) => __awaiter(void 0, void 0, void 0, function* () {
+    const dataResult = yield Network.getTxListByStakingUnDelegation(address, page, per_page);
+    if (!dataResult.response) {
+        throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+    return dataResult.response.data;
+});
 exports.getTxnListByStakingUnDelegation = getTxnListByStakingUnDelegation;
-var getTxnListByPrism = function (address, type, page, per_page) {
-    if (type === void 0) { type = 'send'; }
-    if (page === void 0) { page = 1; }
-    if (per_page === void 0) { per_page = 10; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var dataResult_2, items, dataResult;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    if (!(type == 'receive')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, Network.getTxListByPrismReceive(address, page, per_page)];
-                case 1:
-                    dataResult_2 = _a.sent();
-                    if (!dataResult_2.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    items = dataResult_2.response.data.items.map(function (item) {
-                        return __assign(__assign({}, item), { data: JSON.parse(atob(item.data)) });
-                    });
-                    return [2 /*return*/, dataResult_2.response.data];
-                case 2: return [4 /*yield*/, Network.getTxListByPrismSend(address, page, per_page)];
-                case 3:
-                    dataResult = _a.sent();
-                    if (!dataResult.response) {
-                        throw new Error('Could not fetch a list of transactions. No response from the server.');
-                    }
-                    return [2 /*return*/, dataResult.response.data];
-            }
+const getTxnListByPrism = (address, type = 'send', page = 1, per_page = 10) => __awaiter(void 0, void 0, void 0, function* () {
+    if (type == 'receive') {
+        const dataResult = yield Network.getTxListByPrismReceive(address, page, per_page);
+        if (!dataResult.response) {
+            throw new Error('Could not fetch a list of transactions. No response from the server.');
+        }
+        const items = dataResult.response.data.items.map(item => {
+            return Object.assign(Object.assign({}, item), { data: JSON.parse(atob(item.data)) });
         });
-    });
-};
+        return dataResult.response.data;
+    }
+    const dataResult = yield Network.getTxListByPrismSend(address, page, per_page);
+    if (!dataResult.response) {
+        throw new Error('Could not fetch a list of transactions. No response from the server.');
+    }
+    return dataResult.response.data;
+});
 exports.getTxnListByPrism = getTxnListByPrism;
 //# sourceMappingURL=transaction.js.map

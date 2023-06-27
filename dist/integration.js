@@ -31,651 +31,390 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.issueAndSendConfidentialAsset = exports.getBalance = exports.sendFraToMultipleReceiversTransactionSubmit = exports.sendFraConfidentialTransactionSubmit = exports.sendFraTransactionSubmit = exports.defineIssueAndSendAssetTransactionSubmit = exports.defineAndIssueAssetTransactionSubmit = exports.defineAssetTransactionSubmit = exports.defineAssetTransaction = void 0;
-var api_1 = require("./api");
-var testHelpers_1 = require("./evm/testHelpers");
-var Sdk_1 = __importDefault(require("./Sdk"));
-var bigNumber = __importStar(require("./services/bigNumber"));
-var providers_1 = require("./services/cacheStore/providers");
-var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
-var utils_1 = require("./services/utils");
-var envConfigFile = process.env.INTEGRATION_ENV_NAME
-    ? "../.env_integration_".concat(process.env.INTEGRATION_ENV_NAME)
-    : "../.env_example";
-var envConfig = require("".concat(envConfigFile, ".json"));
-var walletKeys = envConfig.keys, envHostUrl = envConfig.hostUrl;
+const api_1 = require("./api");
+const testHelpers_1 = require("./evm/testHelpers");
+const Sdk_1 = __importDefault(require("./Sdk"));
+const bigNumber = __importStar(require("./services/bigNumber"));
+const providers_1 = require("./services/cacheStore/providers");
+const ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
+const utils_1 = require("./services/utils");
+const envConfigFile = process.env.INTEGRATION_ENV_NAME
+    ? `../.env_integration_${process.env.INTEGRATION_ENV_NAME}`
+    : `../.env_example`;
+const envConfig = require(`${envConfigFile}.json`);
+const { keys: walletKeys, hostUrl: envHostUrl } = envConfig;
 /**
  * Prior to using SDK we have to initialize its environment configuration
  */
-var sdkEnv = {
+const sdkEnv = {
     hostUrl: envHostUrl,
     cacheProvider: providers_1.MemoryCacheProvider,
     blockScanerUrl: '',
     cachePath: './cache',
 };
 (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 31 ~ Findora Sdk is configured to use:', sdkEnv);
-(0, utils_1.log)("Connecting to \"".concat(sdkEnv.hostUrl, "\""));
+(0, utils_1.log)(`Connecting to "${sdkEnv.hostUrl}"`);
 Sdk_1.default.init(sdkEnv);
-var mainFaucet = walletKeys.mainFaucet, receiverOne = walletKeys.receiverOne;
-var password = 'yourSecretPassword';
-var getTxSid = function (operationName, txHandle, retry) {
-    if (retry === void 0) { retry = true; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var transactionStatus, sendResponse, Committed, txnSID;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0:
-                    (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txHandle"), txHandle);
-                    return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-                case 1:
-                    _a.sent();
-                    return [4 /*yield*/, api_1.Network.getTransactionStatus(txHandle)];
-                case 2:
-                    transactionStatus = _a.sent();
-                    sendResponse = transactionStatus.response;
-                    if (!sendResponse) {
-                        (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 1 - ".concat(operationName, " ~ transactionStatus"), transactionStatus);
-                        return [2 /*return*/, false];
-                    }
-                    Committed = sendResponse.Committed;
-                    if (!Array.isArray(Committed)) {
-                        if (retry) {
-                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 2 - ".concat(operationName, " ~ sendResponse ").concat(txHandle, ". Response was: "), sendResponse, "- Retrying...");
-                            return [2 /*return*/, getTxSid(operationName, txHandle, false)];
-                        }
-                        else {
-                            (0, utils_1.log)("\uD83D\uDE80 ~ ERROR 2 - ".concat(operationName, " ~ sendResponse"), sendResponse);
-                            return [2 /*return*/, false];
-                        }
-                    }
-                    txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
-                    (0, utils_1.log)("\uD83D\uDE80 ~ ".concat(operationName, " ~ txnSID"), txnSID);
-                    if (!txnSID) {
-                        if (retry) {
-                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus, "- Retrying...");
-                            return [2 /*return*/, getTxSid(operationName, txHandle, false)];
-                        }
-                        else {
-                            (0, utils_1.log)("\uD83D\uDE80  ~ ERROR 3 - ".concat(operationName, " ~ Could not retrieve the transaction with a handle ").concat(txHandle, ". Response was: "), transactionStatus);
-                            return [2 /*return*/, false];
-                        }
-                    }
-                    return [2 /*return*/, true];
-            }
-        });
-    });
-};
-var defineAssetTransaction = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, memo, assetBuilder, submitData, operation;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  defineAssetTransaction //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 2:
-                tokenCode = _a.sent();
-                (0, utils_1.log)('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
-                memo = 'this is a test asset';
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo)];
-            case 3:
-                assetBuilder = _a.sent();
-                submitData = assetBuilder.transaction();
-                try {
-                    operation = JSON.parse(submitData).body.operations[0];
-                    return [2 /*return*/, 'DefineAsset' in operation];
-                }
-                catch (error) {
-                    (0, utils_1.log)('Error!', error);
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/];
+const { mainFaucet, receiverOne } = walletKeys;
+const password = 'yourSecretPassword';
+const getTxSid = (operationName, txHandle, retry = true) => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)(`🚀 ~ ${operationName} ~ txHandle`, txHandle);
+    yield (0, testHelpers_1.waitForBlockChange)();
+    const transactionStatus = yield api_1.Network.getTransactionStatus(txHandle);
+    const { response: sendResponse } = transactionStatus;
+    if (!sendResponse) {
+        (0, utils_1.log)(`🚀 ~ ERROR 1 - ${operationName} ~ transactionStatus`, transactionStatus);
+        return false;
+    }
+    const { Committed } = sendResponse;
+    if (!Array.isArray(Committed)) {
+        if (retry) {
+            (0, utils_1.log)(`🚀  ~ ERROR 2 - ${operationName} ~ sendResponse ${txHandle}. Response was: `, sendResponse, `- Retrying...`);
+            return getTxSid(operationName, txHandle, false);
         }
-    });
-}); };
+        else {
+            (0, utils_1.log)(`🚀 ~ ERROR 2 - ${operationName} ~ sendResponse`, sendResponse);
+            return false;
+        }
+    }
+    const txnSID = Committed && Array.isArray(Committed) ? Committed[0] : null;
+    (0, utils_1.log)(`🚀 ~ ${operationName} ~ txnSID`, txnSID);
+    if (!txnSID) {
+        if (retry) {
+            (0, utils_1.log)(`🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `, transactionStatus, `- Retrying...`);
+            return getTxSid(operationName, txHandle, false);
+        }
+        else {
+            (0, utils_1.log)(`🚀  ~ ERROR 3 - ${operationName} ~ Could not retrieve the transaction with a handle ${txHandle}. Response was: `, transactionStatus);
+            return false;
+        }
+    }
+    return true;
+});
+const defineAssetTransaction = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  defineAssetTransaction //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const tokenCode = yield api_1.Asset.getRandomAssetCode();
+    (0, utils_1.log)('🚀 ~ defineAssetTransaction ~ assetCode', tokenCode);
+    const memo = 'this is a test asset';
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, tokenCode, memo);
+    const submitData = assetBuilder.transaction();
+    try {
+        const { body: { operations: [operation], }, } = JSON.parse(submitData);
+        return 'DefineAsset' in operation;
+    }
+    catch (error) {
+        (0, utils_1.log)('Error!', error);
+        return false;
+    }
+});
 exports.defineAssetTransaction = defineAssetTransaction;
-var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, assetBuilder, handle, isTxSent;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  defineAssetTransactionSubmit //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 2:
-                tokenCode = _a.sent();
-                (0, utils_1.log)('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode)];
-            case 3:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 4:
-                handle = _a.sent();
-                return [4 /*yield*/, getTxSid('define asset', handle)];
-            case 5:
-                isTxSent = _a.sent();
-                if (!isTxSent) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ defineAssetTransactionSubmit ~ Could not submit define asset");
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/, true];
-        }
-    });
-}); };
+const defineAssetTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  defineAssetTransactionSubmit //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const tokenCode = yield api_1.Asset.getRandomAssetCode();
+    (0, utils_1.log)('🚀 ~ defineAssetTransactionSubmit ~ tokenCode', tokenCode);
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, tokenCode);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    const isTxSent = yield getTxSid('define asset', handle);
+    if (!isTxSent) {
+        (0, utils_1.log)(`🚀 ~ defineAssetTransactionSubmit ~ Could not submit define asset`);
+        return false;
+    }
+    return true;
+});
 exports.defineAssetTransactionSubmit = defineAssetTransactionSubmit;
-var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, derivedTokenCode, assetRules, memo, assetBuilder, handle, isTxSent, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssued;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  defineAndIssueAssetTransactionSubmit //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 2:
-                tokenCode = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(tokenCode)];
-            case 3:
-                derivedTokenCode = _a.sent();
-                (0, utils_1.log)('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
-                assetRules = {
-                    transferable: false,
-                    updatable: true,
-                    decimals: 6,
-                };
-                memo = 'this is a test asset';
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules)];
-            case 4:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 5:
-                handle = _a.sent();
-                return [4 /*yield*/, getTxSid('define asset', handle)];
-            case 6:
-                isTxSent = _a.sent();
-                if (!isTxSent) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset");
-                    return [2 /*return*/, false];
-                }
-                inputNumbers = '5';
-                assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, inputNumbers, assetBlindRules)];
-            case 7:
-                issueAssetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 8:
-                handleIssue = _a.sent();
-                return [4 /*yield*/, getTxSid('issue', handleIssue)];
-            case 9:
-                isTxIssued = _a.sent();
-                if (!isTxIssued) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue");
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/, true];
-        }
-    });
-}); };
+const defineAndIssueAssetTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  defineAndIssueAssetTransactionSubmit //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const tokenCode = yield api_1.Asset.getRandomAssetCode();
+    const derivedTokenCode = yield api_1.Asset.getDerivedAssetCode(tokenCode);
+    (0, utils_1.log)('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
+    const assetRules = {
+        transferable: false,
+        updatable: true,
+        decimals: 6,
+    };
+    const memo = 'this is a test asset';
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    const isTxSent = yield getTxSid('define asset', handle);
+    if (!isTxSent) {
+        (0, utils_1.log)(`🚀 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset`);
+        return false;
+    }
+    const inputNumbers = '5';
+    const assetBlindRules = { isAmountBlind: false };
+    const issueAssetBuilder = yield api_1.Asset.issueAsset(walletInfo, derivedTokenCode, inputNumbers, assetBlindRules);
+    const handleIssue = yield api_1.Transaction.submitTransaction(issueAssetBuilder);
+    const isTxIssued = yield getTxSid('issue', handleIssue);
+    if (!isTxIssued) {
+        (0, utils_1.log)(`🚀 ~ delegateFraTransactionAndClaimRewards ~ Could not submit asset issue`);
+        return false;
+    }
+    return true;
+});
 exports.defineAndIssueAssetTransactionSubmit = defineAndIssueAssetTransactionSubmit;
-var defineIssueAndSendAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, toPkey, walletInfo, toWalletInfo, tokenCode, derivedTokenCode, assetRules, memo, assetBuilder, handle, isTxDefineSent, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssueSent, assetBlindRulesForSend, sendTransactionBuilder, handleSend, isTxTransferSent;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  defineIssueAndSendAssetTransactionSubmit //////////////// ');
-                pkey = mainFaucet;
-                toPkey = receiverOne;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 3:
-                tokenCode = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(tokenCode)];
-            case 4:
-                derivedTokenCode = _a.sent();
-                (0, utils_1.log)('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
-                assetRules = {
-                    transferable: false,
-                    updatable: true,
-                    decimals: 6,
-                };
-                memo = 'this is a test asset';
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules)];
-            case 5:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 6:
-                handle = _a.sent();
-                return [4 /*yield*/, getTxSid('define', handle)];
-            case 7:
-                isTxDefineSent = _a.sent();
-                if (!isTxDefineSent) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define");
-                    return [2 /*return*/, false];
-                }
-                inputNumbers = 5;
-                assetBlindRules = { isAmountBlind: false };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, "".concat(inputNumbers), assetBlindRules)];
-            case 8:
-                issueAssetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 9:
-                handleIssue = _a.sent();
-                return [4 /*yield*/, getTxSid('define', handleIssue)];
-            case 10:
-                isTxIssueSent = _a.sent();
-                if (!isTxIssueSent) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue");
-                    return [2 /*return*/, false];
-                }
-                assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: false };
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, "".concat(inputNumbers / 2), derivedTokenCode, assetBlindRulesForSend)];
-            case 11:
-                sendTransactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(sendTransactionBuilder)];
-            case 12:
-                handleSend = _a.sent();
-                return [4 /*yield*/, getTxSid('send', handleSend)];
-            case 13:
-                isTxTransferSent = _a.sent();
-                if (!isTxTransferSent) {
-                    (0, utils_1.log)("\uD83D\uDE80 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send");
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/, true];
-        }
-    });
-}); };
+const defineIssueAndSendAssetTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  defineIssueAndSendAssetTransactionSubmit //////////////// ');
+    const pkey = mainFaucet;
+    const toPkey = receiverOne;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(toPkey, password);
+    const tokenCode = yield api_1.Asset.getRandomAssetCode();
+    const derivedTokenCode = yield api_1.Asset.getDerivedAssetCode(tokenCode);
+    (0, utils_1.log)('🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ tokenCode', tokenCode);
+    const assetRules = {
+        transferable: false,
+        updatable: true,
+        decimals: 6,
+    };
+    const memo = 'this is a test asset';
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    const isTxDefineSent = yield getTxSid('define', handle);
+    if (!isTxDefineSent) {
+        (0, utils_1.log)(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit define`);
+        return false;
+    }
+    const inputNumbers = 5;
+    const assetBlindRules = { isAmountBlind: false };
+    const issueAssetBuilder = yield api_1.Asset.issueAsset(walletInfo, derivedTokenCode, `${inputNumbers}`, assetBlindRules);
+    const handleIssue = yield api_1.Transaction.submitTransaction(issueAssetBuilder);
+    const isTxIssueSent = yield getTxSid('define', handleIssue);
+    if (!isTxIssueSent) {
+        (0, utils_1.log)(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit issue`);
+        return false;
+    }
+    const assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: false };
+    const sendTransactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, `${inputNumbers / 2}`, derivedTokenCode, assetBlindRulesForSend);
+    const handleSend = yield api_1.Transaction.submitTransaction(sendTransactionBuilder);
+    const isTxTransferSent = yield getTxSid('send', handleSend);
+    if (!isTxTransferSent) {
+        (0, utils_1.log)(`🚀 ~ defineIssueAndSendAssetTransactionSubmit ~ Could not submit send`);
+        return false;
+    }
+    return true;
+});
 exports.defineIssueAndSendAssetTransactionSubmit = defineIssueAndSendAssetTransactionSubmit;
-var sendFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, toWalletInfo, receiverBalanceBeforeTransfer, assetBlindRules, numbers, assetCode, transactionBuilder, resultHandle, isTxSend, receiverBalanceAfterTransfer, isItRight, peterCheckResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  sendFraTransactionSubmit //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 3:
-                receiverBalanceBeforeTransfer = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbers = '0.1';
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                assetCode = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbers, assetCode, assetBlindRules)];
-            case 5:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 6:
-                resultHandle = _a.sent();
-                return [4 /*yield*/, getTxSid('send', resultHandle)];
-            case 7:
-                isTxSend = _a.sent();
-                if (!isTxSend) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ sendFraTransactionSubmit ~ Could not submit send");
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 8:
-                receiverBalanceAfterTransfer = _a.sent();
-                isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
-                peterCheckResult = "Peter balance should be 0.100000 and now it is ".concat((0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer), ", so this is \"").concat(isItRight, "\" ");
-                (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
-                return [2 /*return*/, isItRight];
-        }
-    });
-}); };
+const sendFraTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  sendFraTransactionSubmit //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const receiverBalanceBeforeTransfer = yield api_1.Account.getBalanceInWei(toWalletInfo);
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const numbers = '0.1';
+    const assetCode = yield api_1.Asset.getFraAssetCode();
+    const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbers, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    const isTxSend = yield getTxSid('send', resultHandle);
+    if (!isTxSend) {
+        (0, utils_1.log)(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
+        return false;
+    }
+    const receiverBalanceAfterTransfer = yield api_1.Account.getBalanceInWei(toWalletInfo);
+    const isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
+    const peterCheckResult = `Peter balance should be 0.100000 and now it is ${(0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer)}, so this is "${isItRight}" `;
+    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
+    return isItRight;
+});
 exports.sendFraTransactionSubmit = sendFraTransactionSubmit;
-var sendFraConfidentialTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, toWalletInfo, receiverBalanceBeforeTransfer, assetBlindRules, numbers, assetCode, transactionBuilder, resultHandle, isTxSend, receiverBalanceAfterTransfer, isItRight, peterCheckResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  sendFraConfidentialTransactionSubmit //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 2:
-                toWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 3:
-                receiverBalanceBeforeTransfer = _a.sent();
-                assetBlindRules = { isTypeBlind: true, isAmountBlind: true };
-                numbers = '0.2';
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 4:
-                assetCode = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbers, assetCode, assetBlindRules)];
-            case 5:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 6:
-                resultHandle = _a.sent();
-                return [4 /*yield*/, getTxSid('send', resultHandle)];
-            case 7:
-                isTxSend = _a.sent();
-                if (!isTxSend) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ sendFraTransactionSubmit ~ Could not submit send");
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(toWalletInfo)];
-            case 8:
-                receiverBalanceAfterTransfer = _a.sent();
-                isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
-                peterCheckResult = "Peter balance should be 0.200000 and now it is ".concat((0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer), ", so this is \"").concat(isItRight, "\" ");
-                (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
-                return [2 /*return*/, isItRight];
-        }
-    });
-}); };
+const sendFraConfidentialTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  sendFraConfidentialTransactionSubmit //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const receiverBalanceBeforeTransfer = yield api_1.Account.getBalanceInWei(toWalletInfo);
+    const assetBlindRules = { isTypeBlind: true, isAmountBlind: true };
+    const numbers = '0.2';
+    const assetCode = yield api_1.Asset.getFraAssetCode();
+    const transactionBuilder = yield api_1.Transaction.sendToAddress(walletInfo, toWalletInfo.address, numbers, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    const isTxSend = yield getTxSid('send', resultHandle);
+    if (!isTxSend) {
+        (0, utils_1.log)(`🚀  ~ sendFraTransactionSubmit ~ Could not submit send`);
+        return false;
+    }
+    const receiverBalanceAfterTransfer = yield api_1.Account.getBalanceInWei(toWalletInfo);
+    const isItRight = (0, testHelpers_1.isNumberChangedBy)(receiverBalanceBeforeTransfer, receiverBalanceAfterTransfer, numbers);
+    const peterCheckResult = `Peter balance should be 0.200000 and now it is ${(0, testHelpers_1.formatFromWei)(receiverBalanceAfterTransfer)}, so this is "${isItRight}" `;
+    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 498 ~ sendFraTransactionSubmit ~ peterCheckResult', peterCheckResult);
+    return isItRight;
+});
 exports.sendFraConfidentialTransactionSubmit = sendFraConfidentialTransactionSubmit;
-var sendFraToMultipleReceiversTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, aliceWalletInfo, petereWalletInfo, aliceBalanceBeforeTransfer, peterBalanceBeforeTransfer, assetBlindRules, numbersForAlice, numbersForPeter, assetCode, recieversInfo, transactionBuilder, resultHandle, isTxSend, aliceBalanceAfterTransfer, peterBalanceAfterTransfer, isItRightAlice, isItRightPeter, aliceCheckResult, peterCheckResult;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = mainFaucet;
-                (0, utils_1.log)('////////////////  sendFraToMultipleReceiversTransactionSubmit //////////////// ');
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 2:
-                aliceWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.createKeypair(password)];
-            case 3:
-                petereWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(aliceWalletInfo)];
-            case 4:
-                aliceBalanceBeforeTransfer = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(petereWalletInfo)];
-            case 5:
-                peterBalanceBeforeTransfer = _a.sent();
-                assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
-                numbersForAlice = '0.1';
-                numbersForPeter = '0.2';
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
-            case 6:
-                assetCode = _a.sent();
-                recieversInfo = [
-                    { reciverWalletInfo: aliceWalletInfo, amount: numbersForAlice },
-                    { reciverWalletInfo: petereWalletInfo, amount: numbersForPeter },
-                ];
-                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules)];
-            case 7:
-                transactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilder)];
-            case 8:
-                resultHandle = _a.sent();
-                return [4 /*yield*/, getTxSid('send', resultHandle)];
-            case 9:
-                isTxSend = _a.sent();
-                if (!isTxSend) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send");
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(aliceWalletInfo)];
-            case 10:
-                aliceBalanceAfterTransfer = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalanceInWei(petereWalletInfo)];
-            case 11:
-                peterBalanceAfterTransfer = _a.sent();
-                isItRightAlice = (0, testHelpers_1.isNumberChangedBy)(aliceBalanceBeforeTransfer, aliceBalanceAfterTransfer, numbersForAlice);
-                isItRightPeter = (0, testHelpers_1.isNumberChangedBy)(peterBalanceBeforeTransfer, peterBalanceAfterTransfer, numbersForPeter);
-                aliceCheckResult = "Alice balance should be 0.100000 and now it is ".concat((0, testHelpers_1.formatFromWei)(aliceBalanceAfterTransfer), ", so this is \"").concat(isItRightAlice, "\" ");
-                peterCheckResult = "Peter balance should be 0.200000 and now it is ".concat((0, testHelpers_1.formatFromWei)(peterBalanceAfterTransfer), ", so this is \"").concat(isItRightPeter, "\" ");
-                (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult', aliceCheckResult);
-                (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 602 ~ sendFraToMultipleReceiversTransactionSubmit ~ peterCheckResult', peterCheckResult);
-                return [2 /*return*/, isItRightAlice && isItRightPeter];
-        }
-    });
-}); };
+const sendFraToMultipleReceiversTransactionSubmit = () => __awaiter(void 0, void 0, void 0, function* () {
+    const pkey = mainFaucet;
+    (0, utils_1.log)('////////////////  sendFraToMultipleReceiversTransactionSubmit //////////////// ');
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const aliceWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const petereWalletInfo = yield api_1.Keypair.createKeypair(password);
+    const aliceBalanceBeforeTransfer = yield api_1.Account.getBalanceInWei(aliceWalletInfo);
+    const peterBalanceBeforeTransfer = yield api_1.Account.getBalanceInWei(petereWalletInfo);
+    const assetBlindRules = { isTypeBlind: false, isAmountBlind: false };
+    const numbersForAlice = '0.1';
+    const numbersForPeter = '0.2';
+    const assetCode = yield api_1.Asset.getFraAssetCode();
+    const recieversInfo = [
+        { reciverWalletInfo: aliceWalletInfo, amount: numbersForAlice },
+        { reciverWalletInfo: petereWalletInfo, amount: numbersForPeter },
+    ];
+    const transactionBuilder = yield api_1.Transaction.sendToMany(walletInfo, recieversInfo, assetCode, assetBlindRules);
+    const resultHandle = yield api_1.Transaction.submitTransaction(transactionBuilder);
+    const isTxSend = yield getTxSid('send', resultHandle);
+    if (!isTxSend) {
+        (0, utils_1.log)(`🚀  ~ sendFraToMultipleReceiversTransactionSubmit ~ Could not submit send`);
+        return false;
+    }
+    const aliceBalanceAfterTransfer = yield api_1.Account.getBalanceInWei(aliceWalletInfo);
+    const peterBalanceAfterTransfer = yield api_1.Account.getBalanceInWei(petereWalletInfo);
+    const isItRightAlice = (0, testHelpers_1.isNumberChangedBy)(aliceBalanceBeforeTransfer, aliceBalanceAfterTransfer, numbersForAlice);
+    const isItRightPeter = (0, testHelpers_1.isNumberChangedBy)(peterBalanceBeforeTransfer, peterBalanceAfterTransfer, numbersForPeter);
+    const aliceCheckResult = `Alice balance should be 0.100000 and now it is ${(0, testHelpers_1.formatFromWei)(aliceBalanceAfterTransfer)}, so this is "${isItRightAlice}" `;
+    const peterCheckResult = `Peter balance should be 0.200000 and now it is ${(0, testHelpers_1.formatFromWei)(peterBalanceAfterTransfer)}, so this is "${isItRightPeter}" `;
+    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 597 ~ sendFraToMultipleReceiversTransactionSubmit ~ aliceCheckResult', aliceCheckResult);
+    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 602 ~ sendFraToMultipleReceiversTransactionSubmit ~ peterCheckResult', peterCheckResult);
+    return isItRightAlice && isItRightPeter;
+});
 exports.sendFraToMultipleReceiversTransactionSubmit = sendFraToMultipleReceiversTransactionSubmit;
-var getBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, balance;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  getBalance //////////////// ');
-                pkey = mainFaucet;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 2:
-                balance = _a.sent();
-                return [2 /*return*/, parseFloat(balance) > 0];
-        }
-    });
-}); };
+const getBalance = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  getBalance //////////////// ');
+    const pkey = mainFaucet;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const balance = yield api_1.Account.getBalance(walletInfo);
+    return parseFloat(balance) > 0;
+});
 exports.getBalance = getBalance;
-var issueAndSendConfidentialAsset = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var Ledger, pkey, toPkey, walletInfo, toWalletInfo, aliceKeyPair, bobKeyPair, tokenCode, derivedTokenCode, assetRules, memo, assetBuilder, handle, isTxDefine, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssue, issueTransactionStatus, issueResponse, IssueCommitted, confSid, nonConfSid, confUtxoResponse, nonConfUtxoResponse, confUtxo, nonConfUtxo, isNonConfidentialMatches, isConfidentiaExists, ownerMemoDataResult, ownerMemoJson, ownerMemo, assetRecord, decryptedRecord, isDecryptedRecordCorrect, transferAmount, numbersForPeter, assetBlindRulesForSend, recieversInfo, sendTransactionBuilder, handleSend, isTxSend, bobTxoSidsResult, bobTxoSids, newSid, bobUtxoDataResult, bobUtxoResponse, bobMemoDataResult, bobMemoJson, bobOwnerMemo, bobAssetRecord, bobDecryptedRecord, isBobDecryptedRecordCorrect, isAssetTypeCorrect;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                (0, utils_1.log)('////////////////  issueAndSendConfidentialAsset //////////////// ');
-                return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                Ledger = _a.sent();
-                pkey = mainFaucet;
-                toPkey = receiverOne;
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 2:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(toPkey, password)];
-            case 3:
-                toWalletInfo = _a.sent();
-                aliceKeyPair = walletInfo.keypair;
-                bobKeyPair = toWalletInfo.keypair;
-                return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
-            case 4:
-                tokenCode = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(tokenCode)];
-            case 5:
-                derivedTokenCode = _a.sent();
-                (0, utils_1.log)('Defining a custom asset:', tokenCode, derivedTokenCode);
-                assetRules = {
-                    transferable: false,
-                    updatable: true,
-                    decimals: 6,
-                };
-                memo = 'this is a test asset';
-                return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules)];
-            case 6:
-                assetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 7:
-                handle = _a.sent();
-                return [4 /*yield*/, getTxSid('defineAsset', handle)];
-            case 8:
-                isTxDefine = _a.sent();
-                if (!isTxDefine) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit define");
-                    return [2 /*return*/, false];
-                }
-                inputNumbers = '5';
-                assetBlindRules = { isAmountBlind: true };
-                return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, inputNumbers, assetBlindRules)];
-            case 9:
-                issueAssetBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(issueAssetBuilder)];
-            case 10:
-                handleIssue = _a.sent();
-                return [4 /*yield*/, getTxSid('issue', handleIssue)];
-            case 11:
-                isTxIssue = _a.sent();
-                if (!isTxIssue) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit issue");
-                    return [2 /*return*/, false];
-                }
-                (0, utils_1.log)('Issue Asset with secret amount Transaction handle:', handleIssue);
-                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)()];
-            case 12:
-                _a.sent();
-                return [4 /*yield*/, api_1.Network.getTransactionStatus(handleIssue)];
-            case 13:
-                issueTransactionStatus = _a.sent();
-                issueResponse = issueTransactionStatus.response;
-                if (!issueResponse) {
-                    (0, utils_1.log)('ERROR issueTransactionStatus', issueTransactionStatus);
-                    return [2 /*return*/, false];
-                }
-                IssueCommitted = issueResponse.Committed;
-                if (!Array.isArray(IssueCommitted)) {
-                    (0, utils_1.log)('ERROR could not get Commited from defineResponse, line 705');
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, IssueCommitted[1][0]];
-            case 14:
-                confSid = _a.sent();
-                return [4 /*yield*/, IssueCommitted[1][1]];
-            case 15:
-                nonConfSid = _a.sent();
-                return [4 /*yield*/, api_1.Network.getUtxo(confSid)];
-            case 16:
-                confUtxoResponse = _a.sent();
-                return [4 /*yield*/, api_1.Network.getUtxo(nonConfSid)];
-            case 17:
-                nonConfUtxoResponse = _a.sent();
-                confUtxo = confUtxoResponse.response;
-                nonConfUtxo = nonConfUtxoResponse.response;
-                isNonConfidentialMatches = (nonConfUtxo === null || nonConfUtxo === void 0 ? void 0 : nonConfUtxo.utxo.record.amount.NonConfidential) === '10000';
-                if (!isNonConfidentialMatches) {
-                    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 778 ~ issueAndSendConfidentialAsset ~ isNonConfidentialMatches IS FALSE', isNonConfidentialMatches, nonConfUtxo === null || nonConfUtxo === void 0 ? void 0 : nonConfUtxo.utxo.record.amount.NonConfidential);
-                    return [2 /*return*/, false];
-                }
-                isConfidentiaExists = confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo.record.amount.Confidential;
-                if (!isConfidentiaExists) {
-                    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 782 ~ issueAndSendConfidentialAsset ~ isConfidentiaExists IS FALSE , confUtxo?.utxo.record.amount', isConfidentiaExists, confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo.record.amount);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Network.getOwnerMemo(confSid)];
-            case 18:
-                ownerMemoDataResult = _a.sent();
-                ownerMemoJson = ownerMemoDataResult.response;
-                if (!ownerMemoJson) {
-                    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 794 ~ issueAndSendConfidentialAsset ~ there is not ownerMemo for confidential sid!');
-                    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 797 ~ issueAndSendConfidentialAsset ~ ownerMemoDataResult', ownerMemoDataResult);
-                    return [2 /*return*/, false];
-                }
-                ownerMemo = Ledger.OwnerMemo.from_json(ownerMemoJson);
-                assetRecord = Ledger.ClientAssetRecord.from_json(confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo);
-                decryptedRecord = Ledger.open_client_asset_record(assetRecord, ownerMemo.clone(), aliceKeyPair);
-                isDecryptedRecordCorrect = (decryptedRecord === null || decryptedRecord === void 0 ? void 0 : decryptedRecord.amount) === '5000000';
-                if (!isDecryptedRecordCorrect) {
-                    (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 815 ~ issueAndSendConfidentialAsset ~ isDecryptedRecordCorrect IS FALSE!, decryptedRecord', isDecryptedRecordCorrect, decryptedRecord);
-                }
-                transferAmount = decryptedRecord === null || decryptedRecord === void 0 ? void 0 : decryptedRecord.amount;
-                numbersForPeter = bigNumber.fromWei(transferAmount, 6).toFormat(6);
-                assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: true };
-                recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: numbersForPeter }];
-                return [4 /*yield*/, api_1.Transaction.sendToMany(walletInfo, recieversInfo, derivedTokenCode, assetBlindRulesForSend)];
-            case 19:
-                sendTransactionBuilder = _a.sent();
-                return [4 /*yield*/, api_1.Transaction.submitTransaction(sendTransactionBuilder)];
-            case 20:
-                handleSend = _a.sent();
-                return [4 /*yield*/, getTxSid('send', handleSend)];
-            case 21:
-                isTxSend = _a.sent();
-                if (!isTxSend) {
-                    (0, utils_1.log)("\uD83D\uDE80  ~ issueAndSendConfidentialAsset ~ Could not submit send");
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Network.getOwnedSids(toWalletInfo.publickey)];
-            case 22:
-                bobTxoSidsResult = _a.sent();
-                bobTxoSids = bobTxoSidsResult.response;
-                if (!bobTxoSids) {
-                    (0, utils_1.log)("Could not retrieve the list of sids of the receiver. Response was: ", bobTxoSidsResult);
-                    return [2 /*return*/, false];
-                }
-                newSid = bobTxoSids.sort(function (a, b) { return b - a; })[0];
-                return [4 /*yield*/, api_1.Network.getUtxo(newSid)];
-            case 23:
-                bobUtxoDataResult = _a.sent();
-                bobUtxoResponse = bobUtxoDataResult.response;
-                if (!bobUtxoResponse) {
-                    (0, utils_1.log)('ERROR could not get bobUtxoResponse', bobUtxoDataResult);
-                    return [2 /*return*/, false];
-                }
-                return [4 /*yield*/, api_1.Network.getOwnerMemo(newSid)];
-            case 24:
-                bobMemoDataResult = _a.sent();
-                bobMemoJson = bobMemoDataResult.response;
-                if (!bobMemoJson) {
-                    (0, utils_1.log)('could not get owner memo for the send to Bob transfer!', bobMemoDataResult);
-                    return [2 /*return*/, false];
-                }
-                bobOwnerMemo = Ledger.OwnerMemo.from_json(bobMemoJson);
-                bobAssetRecord = Ledger.ClientAssetRecord.from_json(bobUtxoResponse === null || bobUtxoResponse === void 0 ? void 0 : bobUtxoResponse.utxo);
-                bobDecryptedRecord = Ledger.open_client_asset_record(bobAssetRecord, bobOwnerMemo, bobKeyPair);
-                isBobDecryptedRecordCorrect = (bobDecryptedRecord === null || bobDecryptedRecord === void 0 ? void 0 : bobDecryptedRecord.amount) === '5000000';
-                if (!isBobDecryptedRecordCorrect) {
-                    (0, utils_1.log)('🚀 ERROR ~ file: integration.ts ~ line 883 ~ issueAndSendConfidentialAsset ~ isBobDecryptedRecordCorrect', isBobDecryptedRecordCorrect, bobDecryptedRecord);
-                    return [2 /*return*/, false];
-                }
-                isAssetTypeCorrect = Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derivedTokenCode;
-                if (!isAssetTypeCorrect) {
-                    (0, utils_1.log)('🚀 ERROR ~ file: integration.ts ~ line 893 ~ issueAndSendConfidentialAsset ~ isAssetTypeCorrect', isAssetTypeCorrect, bobDecryptedRecord);
-                    return [2 /*return*/, false];
-                }
-                return [2 /*return*/, true];
-        }
-    });
-}); };
+const issueAndSendConfidentialAsset = () => __awaiter(void 0, void 0, void 0, function* () {
+    (0, utils_1.log)('////////////////  issueAndSendConfidentialAsset //////////////// ');
+    const Ledger = yield (0, ledgerWrapper_1.getLedger)();
+    const pkey = mainFaucet;
+    const toPkey = receiverOne;
+    const walletInfo = yield api_1.Keypair.restoreFromPrivateKey(pkey, password);
+    const toWalletInfo = yield api_1.Keypair.restoreFromPrivateKey(toPkey, password);
+    const aliceKeyPair = walletInfo.keypair;
+    const bobKeyPair = toWalletInfo.keypair;
+    const tokenCode = yield api_1.Asset.getRandomAssetCode();
+    const derivedTokenCode = yield api_1.Asset.getDerivedAssetCode(tokenCode);
+    (0, utils_1.log)('Defining a custom asset:', tokenCode, derivedTokenCode);
+    const assetRules = {
+        transferable: false,
+        updatable: true,
+        decimals: 6,
+    };
+    const memo = 'this is a test asset';
+    const assetBuilder = yield api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules);
+    const handle = yield api_1.Transaction.submitTransaction(assetBuilder);
+    const isTxDefine = yield getTxSid('defineAsset', handle);
+    if (!isTxDefine) {
+        (0, utils_1.log)(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit define`);
+        return false;
+    }
+    const inputNumbers = '5';
+    const assetBlindRules = { isAmountBlind: true };
+    const issueAssetBuilder = yield api_1.Asset.issueAsset(walletInfo, derivedTokenCode, inputNumbers, assetBlindRules);
+    const handleIssue = yield api_1.Transaction.submitTransaction(issueAssetBuilder);
+    const isTxIssue = yield getTxSid('issue', handleIssue);
+    if (!isTxIssue) {
+        (0, utils_1.log)(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit issue`);
+        return false;
+    }
+    (0, utils_1.log)('Issue Asset with secret amount Transaction handle:', handleIssue);
+    yield (0, testHelpers_1.waitForBlockChange)();
+    const issueTransactionStatus = yield api_1.Network.getTransactionStatus(handleIssue);
+    const { response: issueResponse } = issueTransactionStatus;
+    if (!issueResponse) {
+        (0, utils_1.log)('ERROR issueTransactionStatus', issueTransactionStatus);
+        return false;
+    }
+    const { Committed: IssueCommitted } = issueResponse;
+    if (!Array.isArray(IssueCommitted)) {
+        (0, utils_1.log)('ERROR could not get Commited from defineResponse, line 705');
+        return false;
+    }
+    const confSid = yield IssueCommitted[1][0];
+    const nonConfSid = yield IssueCommitted[1][1];
+    const confUtxoResponse = yield api_1.Network.getUtxo(confSid);
+    const nonConfUtxoResponse = yield api_1.Network.getUtxo(nonConfSid);
+    const { response: confUtxo } = confUtxoResponse;
+    const { response: nonConfUtxo } = nonConfUtxoResponse;
+    const isNonConfidentialMatches = (nonConfUtxo === null || nonConfUtxo === void 0 ? void 0 : nonConfUtxo.utxo.record.amount.NonConfidential) === '10000';
+    if (!isNonConfidentialMatches) {
+        (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 778 ~ issueAndSendConfidentialAsset ~ isNonConfidentialMatches IS FALSE', isNonConfidentialMatches, nonConfUtxo === null || nonConfUtxo === void 0 ? void 0 : nonConfUtxo.utxo.record.amount.NonConfidential);
+        return false;
+    }
+    const isConfidentiaExists = confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo.record.amount.Confidential;
+    if (!isConfidentiaExists) {
+        (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 782 ~ issueAndSendConfidentialAsset ~ isConfidentiaExists IS FALSE , confUtxo?.utxo.record.amount', isConfidentiaExists, confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo.record.amount);
+        return false;
+    }
+    const ownerMemoDataResult = yield api_1.Network.getOwnerMemo(confSid);
+    const { response: ownerMemoJson } = ownerMemoDataResult;
+    if (!ownerMemoJson) {
+        (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 794 ~ issueAndSendConfidentialAsset ~ there is not ownerMemo for confidential sid!');
+        (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 797 ~ issueAndSendConfidentialAsset ~ ownerMemoDataResult', ownerMemoDataResult);
+        return false;
+    }
+    const ownerMemo = Ledger.OwnerMemo.from_json(ownerMemoJson);
+    const assetRecord = Ledger.ClientAssetRecord.from_json(confUtxo === null || confUtxo === void 0 ? void 0 : confUtxo.utxo);
+    const decryptedRecord = Ledger.open_client_asset_record(assetRecord, ownerMemo.clone(), aliceKeyPair);
+    const isDecryptedRecordCorrect = (decryptedRecord === null || decryptedRecord === void 0 ? void 0 : decryptedRecord.amount) === '5000000';
+    if (!isDecryptedRecordCorrect) {
+        (0, utils_1.log)('🚀 ~ file: integration.ts ~ line 815 ~ issueAndSendConfidentialAsset ~ isDecryptedRecordCorrect IS FALSE!, decryptedRecord', isDecryptedRecordCorrect, decryptedRecord);
+    }
+    const transferAmount = decryptedRecord === null || decryptedRecord === void 0 ? void 0 : decryptedRecord.amount;
+    const numbersForPeter = bigNumber.fromWei(transferAmount, 6).toFormat(6);
+    const assetBlindRulesForSend = { isTypeBlind: false, isAmountBlind: true };
+    const recieversInfo = [{ reciverWalletInfo: toWalletInfo, amount: numbersForPeter }];
+    const sendTransactionBuilder = yield api_1.Transaction.sendToMany(walletInfo, recieversInfo, derivedTokenCode, assetBlindRulesForSend);
+    const handleSend = yield api_1.Transaction.submitTransaction(sendTransactionBuilder);
+    const isTxSend = yield getTxSid('send', handleSend);
+    if (!isTxSend) {
+        (0, utils_1.log)(`🚀  ~ issueAndSendConfidentialAsset ~ Could not submit send`);
+        return false;
+    }
+    const bobTxoSidsResult = yield api_1.Network.getOwnedSids(toWalletInfo.publickey);
+    const { response: bobTxoSids } = bobTxoSidsResult;
+    if (!bobTxoSids) {
+        (0, utils_1.log)(`Could not retrieve the list of sids of the receiver. Response was: `, bobTxoSidsResult);
+        return false;
+    }
+    const [newSid] = bobTxoSids.sort((a, b) => b - a);
+    const bobUtxoDataResult = yield api_1.Network.getUtxo(newSid);
+    const { response: bobUtxoResponse } = bobUtxoDataResult;
+    if (!bobUtxoResponse) {
+        (0, utils_1.log)('ERROR could not get bobUtxoResponse', bobUtxoDataResult);
+        return false;
+    }
+    const bobMemoDataResult = yield api_1.Network.getOwnerMemo(newSid);
+    const { response: bobMemoJson } = bobMemoDataResult;
+    if (!bobMemoJson) {
+        (0, utils_1.log)('could not get owner memo for the send to Bob transfer!', bobMemoDataResult);
+        return false;
+    }
+    const bobOwnerMemo = Ledger.OwnerMemo.from_json(bobMemoJson);
+    const bobAssetRecord = Ledger.ClientAssetRecord.from_json(bobUtxoResponse === null || bobUtxoResponse === void 0 ? void 0 : bobUtxoResponse.utxo);
+    const bobDecryptedRecord = Ledger.open_client_asset_record(bobAssetRecord, bobOwnerMemo, bobKeyPair);
+    const isBobDecryptedRecordCorrect = (bobDecryptedRecord === null || bobDecryptedRecord === void 0 ? void 0 : bobDecryptedRecord.amount) === '5000000';
+    if (!isBobDecryptedRecordCorrect) {
+        (0, utils_1.log)('🚀 ERROR ~ file: integration.ts ~ line 883 ~ issueAndSendConfidentialAsset ~ isBobDecryptedRecordCorrect', isBobDecryptedRecordCorrect, bobDecryptedRecord);
+        return false;
+    }
+    const isAssetTypeCorrect = Ledger.asset_type_from_jsvalue(bobDecryptedRecord.asset_type) == derivedTokenCode;
+    if (!isAssetTypeCorrect) {
+        (0, utils_1.log)('🚀 ERROR ~ file: integration.ts ~ line 893 ~ issueAndSendConfidentialAsset ~ isAssetTypeCorrect', isAssetTypeCorrect, bobDecryptedRecord);
+        return false;
+    }
+    return true;
+});
 exports.issueAndSendConfidentialAsset = issueAndSendConfidentialAsset;
 // export const delegateFraTransactionSubmit = async () => {
 //   log('////////////////  delegateFraTransactionSubmit //////////////// ');

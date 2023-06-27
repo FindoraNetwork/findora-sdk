@@ -31,134 +31,89 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
-    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
-    function verb(n) { return function (v) { return step([n, v]); }; }
-    function step(op) {
-        if (f) throw new TypeError("Generator is already executing.");
-        while (g && (g = 0, op[0] && (_ = 0)), _) try {
-            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-            if (y = 0, t) op = [op[0] & 2, t.value];
-            switch (op[0]) {
-                case 0: case 1: t = op; break;
-                case 4: _.label++; return { value: op[1], done: false };
-                case 5: _.label++; y = op[1]; op = [0]; continue;
-                case 7: op = _.ops.pop(); _.trys.pop(); continue;
-                default:
-                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
-                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
-                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
-                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
-                    if (t[2]) _.ops.pop();
-                    _.trys.pop(); continue;
-            }
-            op = body.call(thisArg, _);
-        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
-        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
-    }
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
-var NetworkApi = __importStar(require("../network/network"));
-var helpers = __importStar(require("./helpers"));
-describe('helpers (unit test)', function () {
-    describe('getTxListFromResponse', function () {
-        it('returns proper list from the data result', function () {
-            var txList = [{ foo: 'bar' }];
-            var payload = {
+const NetworkApi = __importStar(require("../network/network"));
+const helpers = __importStar(require("./helpers"));
+describe('helpers (unit test)', () => {
+    describe('getTxListFromResponse', () => {
+        it('returns proper list from the data result', () => {
+            const txList = [{ foo: 'bar' }];
+            const payload = {
                 response: {
                     result: {
                         txs: txList,
                     },
                 },
             };
-            var result = helpers.getTxListFromResponse(payload);
+            const result = helpers.getTxListFromResponse(payload);
             expect(result).toBe(txList);
         });
-        it('returns null from data result if tx list is no found', function () {
-            var payload = {
+        it('returns null from data result if tx list is no found', () => {
+            const payload = {
                 bar: 'foo',
             };
-            var result = helpers.getTxListFromResponse(payload);
+            const result = helpers.getTxListFromResponse(payload);
             expect(result).toBe(null);
         });
     });
-    describe('getTxOperationsList', function () {
-        it('returns proper list from the parsed tx', function () {
-            var txList = [{ foo: 'bar' }];
-            var payload = {
+    describe('getTxOperationsList', () => {
+        it('returns proper list from the parsed tx', () => {
+            const txList = [{ foo: 'bar' }];
+            const payload = {
                 body: {
                     operations: txList,
                 },
             };
-            var result = helpers.getTxOperationsList(payload);
+            const result = helpers.getTxOperationsList(payload);
             expect(result).toBe(txList);
         });
-        it('returns an empty array from parsed tx if operations are notfound', function () {
-            var payload = {
+        it('returns an empty array from parsed tx if operations are notfound', () => {
+            const payload = {
                 bar: 'foo',
             };
-            var result = helpers.getTxOperationsList(payload);
+            const result = helpers.getTxOperationsList(payload);
             expect(Array.isArray(result)).toBe(true);
             expect(result.length).toBe(0);
         });
     });
-    describe('getBlockTime', function () {
-        it('returns proper time from the block', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var height, block, spyGetBlock, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        height = 1;
-                        block = {
-                            block: {
-                                header: {
-                                    time: 'footime',
-                                },
-                            },
-                        };
-                        spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(function () {
-                            return Promise.resolve({
-                                response: {
-                                    result: block,
-                                },
-                            });
-                        });
-                        return [4 /*yield*/, helpers.getBlockTime(height)];
-                    case 1:
-                        result = _a.sent();
-                        expect(result).toEqual('footime');
-                        spyGetBlock.mockRestore();
-                        return [2 /*return*/];
-                }
+    describe('getBlockTime', () => {
+        it('returns proper time from the block', () => __awaiter(void 0, void 0, void 0, function* () {
+            const height = 1;
+            const block = {
+                block: {
+                    header: {
+                        time: 'footime',
+                    },
+                },
+            };
+            const spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(() => {
+                return Promise.resolve({
+                    response: {
+                        result: block,
+                    },
+                });
             });
-        }); });
-        it('returns undefined if time is not found in the block', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var height, block, spyGetBlock, result;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        height = 1;
-                        block = {
-                            bar: 'foo',
-                        };
-                        spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(function () {
-                            return Promise.resolve({
-                                response: {
-                                    result: block,
-                                },
-                            });
-                        });
-                        return [4 /*yield*/, helpers.getBlockTime(height)];
-                    case 1:
-                        result = _a.sent();
-                        spyGetBlock.mockRestore();
-                        expect(result).toEqual(undefined);
-                        return [2 /*return*/];
-                }
+            const result = yield helpers.getBlockTime(height);
+            expect(result).toEqual('footime');
+            spyGetBlock.mockRestore();
+        }));
+        it('returns undefined if time is not found in the block', () => __awaiter(void 0, void 0, void 0, function* () {
+            const height = 1;
+            const block = {
+                bar: 'foo',
+            };
+            const spyGetBlock = jest.spyOn(NetworkApi, 'getBlock').mockImplementation(() => {
+                return Promise.resolve({
+                    response: {
+                        result: block,
+                    },
+                });
             });
-        }); });
+            const result = yield helpers.getBlockTime(height);
+            spyGetBlock.mockRestore();
+            expect(result).toEqual(undefined);
+        }));
     });
 });
 //# sourceMappingURL=helpers.spec.js.map
