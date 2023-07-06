@@ -70,21 +70,28 @@ var getNodeLedger = function () { return __awaiter(void 0, void 0, void 0, funct
 }); };
 exports.getNodeLedger = getNodeLedger;
 var getLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var isNodeEnv, myLedger;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var isNodeEnv, myLedger, _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
                 isNodeEnv = (0, exports.isItNodeEnv)();
                 return [4 /*yield*/, (isNodeEnv ? (0, exports.getNodeLedger)() : (0, exports.getWebLedger)())];
             case 1:
-                myLedger = _a.sent();
-                if (!!isInitNoah) return [3 /*break*/, 3];
-                return [4 /*yield*/, myLedger.init_noah()];
+                myLedger = _b.sent();
+                _b.label = 2;
             case 2:
-                _a.sent();
+                _b.trys.push([2, 5, , 6]);
+                if (!!isInitNoah) return [3 /*break*/, 4];
+                return [4 /*yield*/, myLedger.init_noah()];
+            case 3:
+                _b.sent();
                 isInitNoah = true;
-                _a.label = 3;
-            case 3: return [2 /*return*/, myLedger];
+                _b.label = 4;
+            case 4: return [3 /*break*/, 6];
+            case 5:
+                _a = _b.sent();
+                return [3 /*break*/, 6];
+            case 6: return [2 /*return*/, myLedger];
         }
     });
 }); };

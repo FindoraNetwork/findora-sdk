@@ -23,9 +23,15 @@ export const getLedger = async (): Promise<Ledger> => {
   const isNodeEnv = isItNodeEnv();
   const myLedger = await (isNodeEnv ? getNodeLedger() : getWebLedger());
 
-  if (!isInitNoah) {
-    await myLedger.init_noah();
-    isInitNoah = true;
+  // call init_noah() if it exists in the WASM used, if it fails just ignore.
+  try {
+    if (!isInitNoah) {
+      await myLedger.init_noah();
+      isInitNoah = true;
+    }
+  } catch {
+    // do nothing
   }
+
   return myLedger;
 };
