@@ -4,22 +4,30 @@ import { ethers } from 'ethers';
 import Web3 from 'web3';
 import { Contract } from 'web3-eth-contract';
 
+import ConfigAbi from './abis/Config.json';
 import Erc20Abi from './abis/Erc20.json';
 import FNSRegistryAbi from './abis/FNSRegistry.json';
+import NameResolverAbi from './abis/NameResolver.json';
 import NFT1155Abi from './abis/NFT1155.json';
 import NFT721Abi from './abis/NFT721.json';
-import NameResolverAbi from './abis/NameResolver.json';
 import PrismProxyAbi from './abis/PrismProxy.json';
 import PrismXXAssetAbi from './abis/PrismXXAsset.json';
+import RewardAbi from './abis/Reward.json';
 import SimBridgeAbi from './abis/SimBridge.json';
+import StakingAbi from './abis/Staking.json';
+import SystemAbi from './abis/System.json';
+import { Config } from './types/Config';
 import { Erc20 } from './types/Erc20';
 import { FNSRegistry } from './types/FNSRegistry';
+import { NameResolver } from './types/NameResolver';
 import { NFT1155 } from './types/NFT1155';
 import { NFT721 } from './types/NFT721';
-import { NameResolver } from './types/NameResolver';
 import { PrismProxy } from './types/PrismProxy';
 import { PrismXXAsset } from './types/PrismXXAsset';
+import { Reward } from './types/Reward';
 import { SimBridge } from './types/SimBridge';
+import { Staking } from './types/Staking';
+import { System } from './types/System';
 
 export interface IWebLinkedInfo {
   privateStr: string;
@@ -68,6 +76,22 @@ const getNameResolverContract = (web3: Web3, address: string) => {
 
 const getFNSRegistryContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(FNSRegistryAbi as AbiItem[], address) as unknown as MyContract<FNSRegistry>;
+};
+
+const getSystemContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(SystemAbi as AbiItem[], address) as unknown as MyContract<System>;
+};
+
+const getStakingContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(StakingAbi as AbiItem[], address) as unknown as MyContract<Staking>;
+};
+
+const getRewardContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(RewardAbi as AbiItem[], address) as unknown as MyContract<Reward>;
+};
+
+const getConfigContract = (web3: Web3, address: string) => {
+  return new web3.eth.Contract(ConfigAbi as AbiItem[], address) as unknown as MyContract<Config>;
 };
 
 const toHex = (covertThis: string, padding: number) => {
@@ -120,4 +144,8 @@ export {
   calculationDecimalsAmount,
   toHex,
   getCurrentBalance,
+  getSystemContract,
+  getStakingContract,
+  getRewardContract,
+  getConfigContract,
 };

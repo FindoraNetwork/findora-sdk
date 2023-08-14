@@ -39,18 +39,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getNameResolverContract = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getNFT1155Contract = exports.getNFT721Contract = exports.getFNSRegistryContract = exports.getPrismProxyContract = exports.getErc20Contract = exports.getWeb3 = void 0;
+exports.getConfigContract = exports.getRewardContract = exports.getStakingContract = exports.getSystemContract = exports.getCurrentBalance = exports.toHex = exports.calculationDecimalsAmount = exports.getNameResolverContract = exports.getSimBridgeContract = exports.getPrismXXAssetContract = exports.getNFT1155Contract = exports.getNFT721Contract = exports.getFNSRegistryContract = exports.getPrismProxyContract = exports.getErc20Contract = exports.getWeb3 = void 0;
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
 var ethers_1 = require("ethers");
 var web3_1 = __importDefault(require("web3"));
+var Config_json_1 = __importDefault(require("./abis/Config.json"));
 var Erc20_json_1 = __importDefault(require("./abis/Erc20.json"));
 var FNSRegistry_json_1 = __importDefault(require("./abis/FNSRegistry.json"));
+var NameResolver_json_1 = __importDefault(require("./abis/NameResolver.json"));
 var NFT1155_json_1 = __importDefault(require("./abis/NFT1155.json"));
 var NFT721_json_1 = __importDefault(require("./abis/NFT721.json"));
-var NameResolver_json_1 = __importDefault(require("./abis/NameResolver.json"));
 var PrismProxy_json_1 = __importDefault(require("./abis/PrismProxy.json"));
 var PrismXXAsset_json_1 = __importDefault(require("./abis/PrismXXAsset.json"));
+var Reward_json_1 = __importDefault(require("./abis/Reward.json"));
 var SimBridge_json_1 = __importDefault(require("./abis/SimBridge.json"));
+var Staking_json_1 = __importDefault(require("./abis/Staking.json"));
+var System_json_1 = __importDefault(require("./abis/System.json"));
 var getWeb3 = function (rpcUrl) {
     var provider = new web3_1.default.providers.HttpProvider(rpcUrl);
     var web3 = new web3_1.default(provider);
@@ -89,6 +93,22 @@ var getFNSRegistryContract = function (web3, address) {
     return new web3.eth.Contract(FNSRegistry_json_1.default, address);
 };
 exports.getFNSRegistryContract = getFNSRegistryContract;
+var getSystemContract = function (web3, address) {
+    return new web3.eth.Contract(System_json_1.default, address);
+};
+exports.getSystemContract = getSystemContract;
+var getStakingContract = function (web3, address) {
+    return new web3.eth.Contract(Staking_json_1.default, address);
+};
+exports.getStakingContract = getStakingContract;
+var getRewardContract = function (web3, address) {
+    return new web3.eth.Contract(Reward_json_1.default, address);
+};
+exports.getRewardContract = getRewardContract;
+var getConfigContract = function (web3, address) {
+    return new web3.eth.Contract(Config_json_1.default, address);
+};
+exports.getConfigContract = getConfigContract;
 var toHex = function (covertThis, padding) {
     var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(new bignumber_js_1.default(covertThis).toNumber()), padding);
     return temp1;
