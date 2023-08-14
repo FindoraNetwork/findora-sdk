@@ -58,8 +58,12 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 require("@testing-library/jest-dom/extend-expect");
+var web3_1 = __importDefault(require("web3"));
 var Fee = __importStar(require("../../services/fee"));
 var SdkAsset = __importStar(require("../sdkAsset/sdkAsset"));
 var Builder = __importStar(require("../transaction/builder"));
@@ -68,7 +72,7 @@ var Staking = __importStar(require("./staking"));
 describe('staking (unit test)', function () {
     describe('undelegate', function () {
         it('undelegates all funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegate, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake, result;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -79,10 +83,13 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate: jest.fn(function () {
+                            add_operation_undelegate_partially: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate_partially: jest.fn(function () {
+                            build: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            sign: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -91,11 +98,14 @@ describe('staking (unit test)', function () {
                             create: jest.fn(function () {
                                 return fakeTransferOperationBuilderFee;
                             }),
-                            sign: jest.fn(function () {
-                                return fakeTransferOperationBuilderFee;
-                            }),
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
+                            }),
+                            sign: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
                             }),
                         };
                         spyBuildTransferOperationWithFee = jest
@@ -107,11 +117,6 @@ describe('staking (unit test)', function () {
                             .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddOperationUndelegate = jest
-                            .spyOn(fakeTransactionBuilder, 'add_operation_undelegate')
-                            .mockImplementation(function () {
-                            return fakeTransactionBuilder;
                         });
                         spyAddOperationUndelegatePartially = jest
                             .spyOn(fakeTransactionBuilder, 'add_operation_undelegate_partially')
@@ -126,19 +131,18 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = true;
-                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator, isFullUnstake)];
+                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator)];
                     case 1:
                         result = _a.sent();
                         expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
                         expect(spyTransactionGetTransactionBuilder).toHaveBeenCalled();
-                        expect(spyAddOperationUndelegate).toHaveBeenCalledWith(walletInfo.keypair);
-                        expect(spyAddOperationUndelegatePartially).not.toHaveBeenCalled();
+                        // expect(spyAddOperationUndelegate).toHaveBeenCalledWith(walletInfo.keypair);
+                        expect(spyAddOperationUndelegatePartially).toHaveBeenCalled();
                         expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
                         expect(result).toBe(fakeTransactionBuilder);
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
-                        spyAddOperationUndelegate.mockRestore();
+                        // spyAddOperationUndelegate.mockRestore();
                         spyAddOperationUndelegatePartially.mockRestore();
                         spyAddTransferOperation.mockRestore();
                         return [2 /*return*/];
@@ -146,7 +150,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('partially undelegates funds from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegate, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake, result;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -157,10 +161,16 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate: jest.fn(function () {
+                            // add_operation_undelegate: jest.fn(() => {
+                            //   return fakeTransactionBuilder as unknown as TransactionBuilder;
+                            // }),
+                            add_operation_undelegate_partially: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate_partially: jest.fn(function () {
+                            build: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            sign: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -175,6 +185,9 @@ describe('staking (unit test)', function () {
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
                             }),
+                            build: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
                         };
                         spyBuildTransferOperationWithFee = jest
                             .spyOn(Fee, 'buildTransferOperationWithFee')
@@ -185,11 +198,6 @@ describe('staking (unit test)', function () {
                             .spyOn(Builder, 'getTransactionBuilder')
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
-                        });
-                        spyAddOperationUndelegate = jest
-                            .spyOn(fakeTransactionBuilder, 'add_operation_undelegate')
-                            .mockImplementation(function () {
-                            return fakeTransactionBuilder;
                         });
                         spyAddOperationUndelegatePartially = jest
                             .spyOn(fakeTransactionBuilder, 'add_operation_undelegate_partially')
@@ -204,19 +212,18 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = false;
-                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator, isFullUnstake)];
+                        return [4 /*yield*/, Staking.unStake(walletInfo, amount, validator)];
                     case 1:
                         result = _a.sent();
                         expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
                         expect(spyTransactionGetTransactionBuilder).toHaveBeenCalled();
-                        expect(spyAddOperationUndelegate).not.toHaveBeenCalledWith();
+                        // expect(spyAddOperationUndelegate).not.toHaveBeenCalledWith();
                         expect(spyAddOperationUndelegatePartially).toHaveBeenCalledWith(walletInfo.keypair, BigInt(amount), validator);
                         expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
                         expect(result).toBe(fakeTransactionBuilder);
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
-                        spyAddOperationUndelegate.mockRestore();
+                        // spyAddOperationUndelegate.mockRestore();
                         spyAddOperationUndelegatePartially.mockRestore();
                         spyAddTransferOperation.mockRestore();
                         return [2 /*return*/];
@@ -224,7 +231,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error when could not create a transfer operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, walletInfo, amount, validator, isFullUnstake;
+            var fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, walletInfo, amount, validator;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -235,6 +242,9 @@ describe('staking (unit test)', function () {
                             sign: jest.fn(function () {
                                 throw new Error('boom');
                             }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
+                            }),
                         };
                         spyBuildTransferOperationWithFee = jest
                             .spyOn(Fee, 'buildTransferOperationWithFee')
@@ -244,9 +254,10 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not create transfer operation with fee')];
+                        // const isFullUnstake = false;
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator)).rejects.toThrow('Could not create transfer operation with fee')];
                     case 1:
+                        // const isFullUnstake = false;
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
                         return [2 /*return*/];
@@ -254,7 +265,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error when could not create a transaction builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, walletInfo, amount, validator, isFullUnstake;
+            var receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, walletInfo, amount, validator;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -268,6 +279,9 @@ describe('staking (unit test)', function () {
                             }),
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
                             }),
                         };
                         spyBuildTransferOperationWithFee = jest
@@ -283,9 +297,10 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
+                        // const isFullUnstake = false;
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
                     case 1:
+                        // const isFullUnstake = false;
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
@@ -294,7 +309,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error when could not add staking unStake operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, walletInfo, amount, validator, isFullUnstake;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, walletInfo, amount, validator;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -305,10 +320,13 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate: jest.fn(function () {
+                            // add_operation_undelegate: jest.fn(() => {
+                            //   return fakeTransactionBuilder as unknown as TransactionBuilder;
+                            // }),
+                            add_operation_undelegate_partially: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate_partially: jest.fn(function () {
+                            build: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -322,6 +340,9 @@ describe('staking (unit test)', function () {
                             }),
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
                             }),
                         };
                         spyBuildTransferOperationWithFee = jest
@@ -342,9 +363,10 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add staking unStake operation')];
+                        // const isFullUnstake = false;
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator)).rejects.toThrow('Could not add staking unStake operation')];
                     case 1:
+                        // const isFullUnstake = false;
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
@@ -354,7 +376,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error when could not add transfer to unStake operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator, isFullUnstake;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationUndelegatePartially, spyAddTransferOperation, walletInfo, amount, validator;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -365,10 +387,13 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate: jest.fn(function () {
+                            // add_operation_undelegate: jest.fn(() => {
+                            //   return fakeTransactionBuilder as unknown as TransactionBuilder;
+                            // }),
+                            add_operation_undelegate_partially: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_undelegate_partially: jest.fn(function () {
+                            build: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -382,6 +407,9 @@ describe('staking (unit test)', function () {
                             }),
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
                             }),
                         };
                         spyBuildTransferOperationWithFee = jest
@@ -407,9 +435,10 @@ describe('staking (unit test)', function () {
                         walletInfo = { publickey: 'senderPub' };
                         amount = '2';
                         validator = 'myValidaotrAddress';
-                        isFullUnstake = false;
-                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator, isFullUnstake)).rejects.toThrow('Could not add transfer to unStake operation')];
+                        // const isFullUnstake = false;
+                        return [4 /*yield*/, expect(Staking.unStake(walletInfo, amount, validator)).rejects.toThrow('Could not add transfer to unStake operation')];
                     case 1:
+                        // const isFullUnstake = false;
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
@@ -428,6 +457,12 @@ describe('staking (unit test)', function () {
                     case 0:
                         fakeTransactionBuilder = {
                             add_operation_delegate: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            sign: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -471,7 +506,7 @@ describe('staking (unit test)', function () {
     });
     describe('claim', function () {
         it('claims the rewards from the validator', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationClaimCustom, spyAddTransferOperation, walletInfo, amount, result;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationClaim, spyAddTransferOperation, walletInfo, validators, result;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -479,7 +514,13 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_claim_custom: jest.fn(function () {
+                            add_operation_claim: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            sign: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -494,6 +535,9 @@ describe('staking (unit test)', function () {
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
                             }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
+                            }),
                         };
                         spyBuildTransferOperationWithFee = jest
                             .spyOn(Fee, 'buildTransferOperationWithFee')
@@ -505,8 +549,8 @@ describe('staking (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
-                        spyAddOperationClaimCustom = jest
-                            .spyOn(fakeTransactionBuilder, 'add_operation_claim_custom')
+                        spyAddOperationClaim = jest
+                            .spyOn(fakeTransactionBuilder, 'add_operation_claim')
                             .mockImplementation(function () {
                             return fakeTransactionBuilder;
                         });
@@ -516,25 +560,26 @@ describe('staking (unit test)', function () {
                             return fakeTransactionBuilder;
                         });
                         walletInfo = { publickey: 'senderPub' };
-                        amount = '2';
-                        return [4 /*yield*/, Staking.claim(walletInfo, amount)];
+                        validators = ['0x0856654F7CD4BB0D6CC4409EF4892136C9D24692'];
+                        return [4 /*yield*/, Staking.claim(walletInfo, validators)];
                     case 1:
                         result = _a.sent();
                         expect(spyBuildTransferOperationWithFee).toHaveBeenCalledWith(walletInfo);
                         expect(spyTransactionGetTransactionBuilder).toHaveBeenCalled();
-                        expect(spyAddOperationClaimCustom).toHaveBeenCalledWith(walletInfo.keypair, BigInt(amount));
+                        expect(spyAddOperationClaim).toHaveBeenCalledWith(walletInfo.keypair, Buffer.from(web3_1.default.utils.hexToBytes(validators[0])));
+                        // expect(spyAddOperationClaim).toHaveBeenCalledWith(walletInfo.keypair, Buffer.from(Web3.utils.hexToBytes(validators[1])));
                         expect(spyAddTransferOperation).toHaveBeenCalledWith(receivedTransferOperation);
                         expect(result).toBe(fakeTransactionBuilder);
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
-                        spyAddOperationClaimCustom.mockRestore();
+                        spyAddOperationClaim.mockRestore();
                         spyAddTransferOperation.mockRestore();
                         return [2 /*return*/];
                 }
             });
         }); });
         it('throws an error if it can not get a transfer operation builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, walletInfo, amount;
+            var receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, walletInfo, validators;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -549,6 +594,9 @@ describe('staking (unit test)', function () {
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
                             }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
+                            }),
                         };
                         spyBuildTransferOperationWithFee = jest
                             .spyOn(Fee, 'buildTransferOperationWithFee')
@@ -556,8 +604,8 @@ describe('staking (unit test)', function () {
                             return Promise.resolve(fakeTransferOperationBuilderFee);
                         });
                         walletInfo = { publickey: 'senderPub' };
-                        amount = '2';
-                        return [4 /*yield*/, expect(Staking.claim(walletInfo, amount)).rejects.toThrow('Could not create transfer operation')];
+                        validators = ['0x0856654F7CD4BB0D6CC4409EF4892136C9D24692'];
+                        return [4 /*yield*/, expect(Staking.claim(walletInfo, validators)).rejects.toThrow('Could not create transfer operation')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
@@ -566,7 +614,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error if it can not get a transaction operation builder', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, walletInfo, amount;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, walletInfo, validators;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -574,7 +622,10 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_claim_custom: jest.fn(function () {
+                            add_operation_claim: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            build: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -588,6 +639,9 @@ describe('staking (unit test)', function () {
                             }),
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
+                            }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
                             }),
                         };
                         spyBuildTransferOperationWithFee = jest
@@ -601,8 +655,8 @@ describe('staking (unit test)', function () {
                             throw new Error('boom');
                         });
                         walletInfo = { publickey: 'senderPub' };
-                        amount = '2';
-                        return [4 /*yield*/, expect(Staking.claim(walletInfo, amount)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
+                        validators = ['0x0856654F7CD4BB0D6CC4409EF4892136C9D24692'];
+                        return [4 /*yield*/, expect(Staking.claim(walletInfo, validators)).rejects.toThrow('Could not get "stakingTransactionBuilder"')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
@@ -612,7 +666,7 @@ describe('staking (unit test)', function () {
             });
         }); });
         it('throws an error if it can not add staking claim operation', function () { return __awaiter(void 0, void 0, void 0, function () {
-            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationClaimCustom, walletInfo, amount;
+            var fakeTransactionBuilder, receivedTransferOperation, fakeTransferOperationBuilderFee, spyBuildTransferOperationWithFee, spyTransactionGetTransactionBuilder, spyAddOperationClaim, walletInfo, validators;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
@@ -620,7 +674,10 @@ describe('staking (unit test)', function () {
                             add_transfer_operation: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
-                            add_operation_claim_custom: jest.fn(function () {
+                            add_operation_claim: jest.fn(function () {
+                                return fakeTransactionBuilder;
+                            }),
+                            build: jest.fn(function () {
                                 return fakeTransactionBuilder;
                             }),
                         };
@@ -635,6 +692,9 @@ describe('staking (unit test)', function () {
                             transaction: jest.fn(function () {
                                 return receivedTransferOperation;
                             }),
+                            build: jest.fn(function () {
+                                return fakeTransferOperationBuilderFee;
+                            }),
                         };
                         spyBuildTransferOperationWithFee = jest
                             .spyOn(Fee, 'buildTransferOperationWithFee')
@@ -646,19 +706,19 @@ describe('staking (unit test)', function () {
                             .mockImplementation(function () {
                             return Promise.resolve(fakeTransactionBuilder);
                         });
-                        spyAddOperationClaimCustom = jest
-                            .spyOn(fakeTransactionBuilder, 'add_operation_claim_custom')
+                        spyAddOperationClaim = jest
+                            .spyOn(fakeTransactionBuilder, 'add_operation_claim')
                             .mockImplementation(function () {
                             throw new Error('bam');
                         });
                         walletInfo = { publickey: 'senderPub' };
-                        amount = '2';
-                        return [4 /*yield*/, expect(Staking.claim(walletInfo, amount)).rejects.toThrow('Could not add staking claim operation')];
+                        validators = ['0x0856654F7CD4BB0D6CC4409EF4892136C9D24692'];
+                        return [4 /*yield*/, expect(Staking.claim(walletInfo, validators)).rejects.toThrow('Could not add staking claim operation')];
                     case 1:
                         _a.sent();
                         spyBuildTransferOperationWithFee.mockRestore();
                         spyTransactionGetTransactionBuilder.mockRestore();
-                        spyAddOperationClaimCustom.mockRestore();
+                        spyAddOperationClaim.mockRestore();
                         return [2 /*return*/];
                 }
             });
