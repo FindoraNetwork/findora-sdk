@@ -75,6 +75,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getDelegateInfo = exports.getValidatorList = exports.claim = exports.delegate = exports.unStake = void 0;
 var orderBy_1 = __importDefault(require("lodash/orderBy"));
+var web3_1 = __importDefault(require("web3"));
 var Transaction = __importStar(require("../../api/transaction"));
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
@@ -93,14 +94,11 @@ var Builder = __importStar(require("../transaction/builder"));
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
- *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
- *  const isFullUnstake = false;
  *
  *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
- *    isFullUnstake,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -108,70 +106,72 @@ var Builder = __importStar(require("../transaction/builder"));
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var unStake = function (walletInfo, amount, validator, isFullUnstake) {
-    if (isFullUnstake === void 0) { isFullUnstake = false; }
-    return __awaiter(void 0, void 0, void 0, function () {
-        var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, e, e;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
-                case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
-                case 1:
-                    transferFeeOperationBuilder = _a.sent();
-                    try {
-                        receivedTransferFeeOperation = transferFeeOperationBuilder
-                            .create()
-                            .sign(walletInfo.keypair)
-                            .transaction();
-                    }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not create transfer operation with fee, Error: \"".concat(e.message, "\""));
-                    }
-                    _a.label = 2;
-                case 2:
-                    _a.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, Builder.getTransactionBuilder()];
-                case 3:
-                    transactionBuilder = _a.sent();
-                    return [3 /*break*/, 5];
-                case 4:
-                    error_1 = _a.sent();
-                    e = error_1;
-                    throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"".concat(e.message, "\""));
-                case 5:
-                    try {
-                        if (isFullUnstake) {
-                            transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
-                        }
-                        else {
-                            transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, BigInt(amount), validator);
-                        }
-                    }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not add staking unStake operation, Error: \"".concat(e.message, "\""));
-                    }
-                    try {
-                        transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
-                    }
-                    catch (error) {
-                        e = error;
-                        throw new Error("Could not add transfer to unStake operation, Error: \"".concat(e.message, "\""));
-                    }
-                    try {
-                        transactionBuilder = transactionBuilder.build();
-                        transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
-                        // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
-                    }
-                    catch (err) {
-                        console.log('sendToMany error in build and sign ', err);
-                        throw new Error("could not build and sign txn \"".concat(err.message, "\""));
-                    }
-                    return [2 /*return*/, transactionBuilder];
-            }
-        });
+var unStake = function (walletInfo, amount, validator) { return __awaiter(void 0, void 0, void 0, function () {
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_1, e, targetValidator, e, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
+            case 1:
+                transferFeeOperationBuilder = _a.sent();
+                try {
+                    receivedTransferFeeOperation = transferFeeOperationBuilder
+                        .create()
+                        .sign(walletInfo.keypair)
+                        .transaction();
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not create transfer operation with fee, Error: \"".concat(e.message, "\""));
+                }
+                _a.label = 2;
+            case 2:
+                _a.trys.push([2, 4, , 5]);
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
+            case 3:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 5];
+            case 4:
+                error_1 = _a.sent();
+                e = error_1;
+                throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"".concat(e.message, "\""));
+            case 5:
+                try {
+                    targetValidator = validator.startsWith('0x') ? validator.slice(2) : validator;
+                    transactionBuilder = transactionBuilder.add_operation_undelegate_partially(walletInfo.keypair, BigInt(amount), targetValidator);
+                    // if (isFullUnstake) {
+                    //   transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
+                    // } else {
+                    //   transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
+                    //     walletInfo.keypair,
+                    //     BigInt(amount),
+                    //     validator.startsWith('0x') ? validator.slice(2) : validator,
+                    //   );
+                    // }
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not add staking unStake operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
+                }
+                catch (error) {
+                    e = error;
+                    throw new Error("Could not add transfer to unStake operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.build();
+                    transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
+                    // transactionBuilder = transactionBuilder.sign_origin(walletInfo.keypair);
+                }
+                catch (err) {
+                    console.log('sendToMany error in build and sign ', err);
+                    throw new Error("could not build and sign txn \"".concat(err.message, "\""));
+                }
+                return [2 /*return*/, transactionBuilder];
+        }
     });
-};
+}); };
 exports.unStake = unStake;
 /**
  * Delegates FRA tokens
@@ -217,7 +217,7 @@ exports.unStake = unStake;
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
 var delegate = function (walletInfo, address, amount, assetCode, validator, assetBlindRules) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, asset, decimals, delegateAmount;
+    var transactionBuilder, asset, decimals, delegateAmount, targetValidator;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Transaction.sendToAddress(walletInfo, address, amount, assetCode, assetBlindRules)];
@@ -228,7 +228,8 @@ var delegate = function (walletInfo, address, amount, assetCode, validator, asse
                 asset = _a.sent();
                 decimals = asset.assetRules.decimals;
                 delegateAmount = BigInt((0, bigNumber_1.toWei)(amount, decimals).toString());
-                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, validator);
+                targetValidator = validator.startsWith('0x') ? validator.slice(2) : validator;
+                transactionBuilder = transactionBuilder.add_operation_delegate(walletInfo.keypair, delegateAmount, targetValidator);
                 try {
                     transactionBuilder = transactionBuilder.build();
                     transactionBuilder = transactionBuilder.sign(walletInfo.keypair);
@@ -254,9 +255,11 @@ exports.delegate = delegate;
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
+ *  const validators = ['validator_addr1', 'validator_addr2'];
  *  const transactionBuilder = await StakingApi.claim(
  *    walletInfo,
  *    amount,
+ *    validators,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -264,8 +267,8 @@ exports.delegate = delegate;
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_2, e, e;
+var claim = function (walletInfo, validators) { return __awaiter(void 0, void 0, void 0, function () {
+    var transferFeeOperationBuilder, receivedTransferFeeOperation, e, transactionBuilder, error_2, e, _i, validators_1, validator, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Fee.buildTransferOperationWithFee(walletInfo)];
@@ -294,9 +297,11 @@ var claim = function (walletInfo, amount) { return __awaiter(void 0, void 0, voi
                 throw new Error("Could not get \"stakingTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 5:
                 try {
-                    transactionBuilder = transactionBuilder
-                        .add_operation_claim_custom(walletInfo.keypair, BigInt(amount))
-                        .add_transfer_operation(receivedTransferFeeOperation);
+                    for (_i = 0, validators_1 = validators; _i < validators_1.length; _i++) {
+                        validator = validators_1[_i];
+                        transactionBuilder = transactionBuilder.add_operation_claim(walletInfo.keypair, Buffer.from(web3_1.default.utils.hexToBytes(validator)));
+                    }
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
                 }
                 catch (error) {
                     e = error;
