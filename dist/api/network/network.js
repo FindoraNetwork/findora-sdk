@@ -219,7 +219,6 @@ var getDerivedAssetCode = function (assetCode, config) { return __awaiter(void 0
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();
-                console.log(url, config, dataResult);
                 return [2 /*return*/, dataResult];
         }
     });
