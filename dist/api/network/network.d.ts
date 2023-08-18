@@ -5,6 +5,7 @@ export declare const apiGet: (url: string, config?: Types.NetworkAxiosConfig) =>
 export declare const getOwnedSids: (address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnedSidsDataResult>;
 export declare const getRelatedSids: (address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnedSidsDataResult>;
 export declare const getUtxo: (utxoSid: number, config?: Types.NetworkAxiosConfig) => Promise<Types.UtxoDataResult>;
+export declare const getDerivedAssetCode: (assetCode: string, config?: Types.NetworkAxiosConfig) => Promise<Types.GetDerivedAssetCodeResult>;
 export declare const getOwnerMemo: (utxoSid: number, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnerMemoDataResult>;
 export declare const getAbarOwnerMemo: (atxoSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.OwnerMemoDataResult>;
 export declare const getMTLeafInfo: (atxoSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.MTLeafInfoDataResult>;

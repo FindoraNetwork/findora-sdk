@@ -165,6 +165,17 @@ export const getUtxo = async (
   return dataResult;
 };
 
+export const getDerivedAssetCode = async (
+  assetCode: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.GetDerivedAssetCodeResult> => {
+  const url = `${getLedgerRoute()}/get_derived_asset_code/${assetCode}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
 export const getOwnerMemo = async (
   utxoSid: number,
   config?: Types.NetworkAxiosConfig,
