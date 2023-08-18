@@ -4,6 +4,7 @@ import JSONbig from 'json-bigint';
 import Sdk from '../../Sdk';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import * as Types from './types';
+import { GetDerivedAssetCodeResult, SubmitTransactionDataResult, TransactionData } from './types';
 
 const _axios = axios.create({});
 
@@ -159,6 +160,17 @@ export const getUtxo = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.UtxoDataResult> => {
   const url = `${getLedgerRoute()}/utxo_sid/${utxoSid}`;
+
+  const dataResult = await apiGet(url, config);
+
+  return dataResult;
+};
+
+export const getDerivedAssetCode = async (
+  assetCode: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<GetDerivedAssetCodeResult> => {
+  const url = `${getLedgerRoute()}/get_derived_asset_code/${assetCode}`;
 
   const dataResult = await apiGet(url, config);
 

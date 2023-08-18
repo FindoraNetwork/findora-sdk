@@ -326,6 +326,10 @@ export interface SubmitTransactionDataResult extends NetworkAxiosDataResult {
   response?: string;
 }
 
+export interface GetDerivedAssetCodeResult extends NetworkAxiosDataResult {
+  response?: string;
+}
+
 export type TransactionStatusResponse = {
   Committed?: [number, number[]];
   Pending?: any;

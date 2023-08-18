@@ -172,13 +172,16 @@ var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, 
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
 var getDerivedAssetCode = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, derivedAssetCode;
+    var derivedAssetCodeResponse, derivedAssetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 0: return [4 /*yield*/, Network.getDerivedAssetCode(assetCode)];
             case 1:
-                ledger = _a.sent();
-                derivedAssetCode = ledger.hash_asset_code(assetCode);
+                derivedAssetCodeResponse = _a.sent();
+                derivedAssetCode = derivedAssetCodeResponse.response;
+                if (!derivedAssetCode) {
+                    throw new Error('derivedAssetCode API error {derivedAssetCodeResponse}');
+                }
                 return [2 /*return*/, derivedAssetCode];
         }
     });

@@ -86,8 +86,13 @@ export const getRandomAssetCode = async (): Promise<string> => {
 };
 
 export const getDerivedAssetCode = async (assetCode: string): Promise<string> => {
-  const ledger = await getLedger();
-  const derivedAssetCode = ledger.hash_asset_code(assetCode);
+  const derivedAssetCodeResponse = await Network.getDerivedAssetCode(assetCode);
+  const { response: derivedAssetCode } = derivedAssetCodeResponse;
+
+  if (!derivedAssetCode) {
+    throw new Error('derivedAssetCode API error {derivedAssetCodeResponse}');
+  }
+
   return derivedAssetCode;
 };
 
