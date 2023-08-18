@@ -1,5 +1,5 @@
 import * as Types from './types';
-import { GetDerivedAssetCodeResult, SubmitTransactionDataResult } from "./types";
+import { GetDerivedAssetCodeResult, SubmitTransactionDataResult } from './types';
 export declare const getRpcRoute: () => string;
 export declare const apiPost: (url: string, data?: Types.ParsedTransactionData, config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;
 export declare const apiGet: (url: string, config?: Types.NetworkAxiosConfig) => Promise<Types.NetworkAxiosDataResult>;

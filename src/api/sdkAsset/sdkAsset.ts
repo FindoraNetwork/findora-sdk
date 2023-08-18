@@ -90,7 +90,7 @@ export const getDerivedAssetCode = async (assetCode: string): Promise<string> =>
   const { response: derivedAssetCode } = derivedAssetCodeResponse;
 
   if (!derivedAssetCode) {
-    throw new Error('derivedAssetCode API error {derivedAssetCodeResponse}');
+    throw new Error(`derivedAssetCode API error "${derivedAssetCodeResponse}" for asset code "${assetCode}"`);
   }
 
   return derivedAssetCode;

@@ -174,6 +174,7 @@ export const getDerivedAssetCode = async (
 
   const dataResult = await apiGet(url, config);
 
+  console.log(url, config, dataResult);
   return dataResult;
 };
 

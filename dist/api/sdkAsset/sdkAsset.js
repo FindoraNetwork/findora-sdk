@@ -180,7 +180,7 @@ var getDerivedAssetCode = function (assetCode) { return __awaiter(void 0, void 0
                 derivedAssetCodeResponse = _a.sent();
                 derivedAssetCode = derivedAssetCodeResponse.response;
                 if (!derivedAssetCode) {
-                    throw new Error('derivedAssetCode API error {derivedAssetCodeResponse}');
+                    throw new Error("derivedAssetCode API error \"".concat(derivedAssetCodeResponse, "\" for asset code \"").concat(assetCode, "\""));
                 }
                 return [2 /*return*/, derivedAssetCode];
         }
