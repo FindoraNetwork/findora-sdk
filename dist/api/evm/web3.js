@@ -55,6 +55,18 @@ var Reward_json_1 = __importDefault(require("./abis/Reward.json"));
 var SimBridge_json_1 = __importDefault(require("./abis/SimBridge.json"));
 var Staking_json_1 = __importDefault(require("./abis/Staking.json"));
 var System_json_1 = __importDefault(require("./abis/System.json"));
+/**
+ * Returns a Web3
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * ```
+ *
+ * @param rpcUrl - RPC_NETWORK_URL
+ * @returns Web3
+ *
+ */
 var getWeb3 = function (rpcUrl) {
     var provider = new web3_1.default.providers.HttpProvider(rpcUrl);
     var web3 = new web3_1.default(provider);
@@ -221,8 +233,6 @@ var getFNSRegistryContract = function (web3, address) {
     return new web3.eth.Contract(FNSRegistry_json_1.default, address);
 };
 exports.getFNSRegistryContract = getFNSRegistryContract;
-var toHex = function (value, padding) {
-    var temp1 = ethers_1.ethers.utils.hexZeroPad(ethers_1.ethers.utils.hexlify(new bignumber_js_1.default(value).toNumber()), padding);
 var getSystemContract = function (web3, address) {
     return new web3.eth.Contract(System_json_1.default, address);
 };

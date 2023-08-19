@@ -175,6 +175,28 @@ declare const getStakingContract: (web3: Web3, address: string) => MyContract<St
 declare const getRewardContract: (web3: Web3, address: string) => MyContract<Reward>;
 declare const getConfigContract: (web3: Web3, address: string) => MyContract<Config>;
 declare const toHex: (covertThis: string, padding: number) => string;
+/**
+ * calculation decimals amount
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getErc20Contract(web3, contract_address);
+ * const amount = calculationDecimalsAmount(contract, web3, 'from address', 'to address', '0.2', 'toWei');
+ * const amount = calculationDecimalsAmount(contract, web3, 'from address', 'to address', '21000', 'formWei');
+ *
+ * ```
+ * @param contract - getErc20Contract()
+ * @param web3 - Web3
+ * @param from - wallet address
+ * @param to - wallet address
+ * @param amount - calculation amount
+ * @param type - value: toWei | formWei
+ *
+ * @returns Contract
+ *
+ */
 declare const calculationDecimalsAmount: (contract: MyContract<Erc20>, web3: Web3, from: string, to: string, amount: string, type: 'toWei' | 'formWei') => Promise<string>;
 declare const getCurrentBalance: (web3: Web3, account: string) => Promise<string>;
 export { getWeb3, getErc20Contract, getPrismProxyContract, getFNSRegistryContract, getNFT721Contract, getNFT1155Contract, getPrismXXAssetContract, getSimBridgeContract, getNameResolverContract, calculationDecimalsAmount, toHex, getCurrentBalance, getSystemContract, getStakingContract, getRewardContract, getConfigContract, };
