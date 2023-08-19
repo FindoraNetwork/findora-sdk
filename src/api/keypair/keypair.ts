@@ -162,6 +162,28 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
   }
 };
 
+export const getXfrPrivateKeyByBase64 = async (privateStr: string): Promise<XfrKeyPair> => {
+  const ledger = await getLedger();
+
+  const toSend = `"${privateStr}"`;
+  console.log('from sdk getXfrPrivateKeyByBase64 - to send 2', toSend);
+  console.log('from sdk getXfrPrivateKeyByBase64 - privateStr 2 ', privateStr);
+
+  let keypair;
+
+  try {
+    keypair = ledger.create_keypair_from_secret(toSend);
+  } catch (error) {
+    throw new Error(`could not restore keypair. details: "${error as Error}"`);
+  }
+
+  if (!keypair) {
+    throw new Error('could not restore keypair. Keypair is empty');
+  }
+
+  return keypair;
+};
+
 /**
  * Creates an instance of {@link WalletKeypar} using given private key and password.
  *
@@ -192,19 +214,22 @@ export const getAddressPublicAndKey = async (address: string): Promise<LightWall
 export const restoreFromPrivateKey = async (privateStr: string, password: string): Promise<WalletKeypar> => {
   const ledger = await getLedger();
 
-  const toSend = `"${privateStr}"`;
+  console.log('from sdk restoreFromPrivateKey privateStr', privateStr);
+  const keypair = await getXfrPrivateKeyByBase64(privateStr);
 
-  let keypair;
-
-  try {
-    keypair = ledger.create_keypair_from_secret(toSend);
-  } catch (error) {
-    throw new Error(`could not restore keypair. details: "${error as Error}"`);
-  }
-
-  if (!keypair) {
-    throw new Error('could not restore keypair. Keypair is empty');
-  }
+  // const toSend = `"${privateStr}"`;
+  //
+  // let keypair;
+  //
+  // try {
+  //   keypair = ledger.create_keypair_from_secret(toSend);
+  // } catch (error) {
+  //   throw new Error(`could not restore keypair. details: "${error as Error}"`);
+  // }
+  //
+  // if (!keypair) {
+  //   throw new Error('could not restore keypair. Keypair is empty');
+  // }
 
   const keypairStr = ledger.keypair_to_str(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keypairStr, password);
@@ -253,7 +278,8 @@ export const restoreFromMnemonic = async (mnemonic: string[], password: string):
   const ledger = await getLedger();
 
   const keypair = ledger.restore_keypair_from_mnemonic_default(mnemonic.join(' '));
-  const keyPairStr = await getPrivateKeyStr(keypair);
+  const privateStr = await getPrivateKeyStr(keypair);
+  const keyPairStr = ledger.keypair_to_str(keypair);
   const encrypted = ledger.encryption_pbkdf2_aes256gcm(keyPairStr, password);
 
   const publickey = await getPublicKeyStr(keypair);
@@ -264,7 +290,7 @@ export const restoreFromMnemonic = async (mnemonic: string[], password: string):
     publickey,
     address,
     keypair,
-    privateStr: keyPairStr,
+    privateStr,
   };
 };
 

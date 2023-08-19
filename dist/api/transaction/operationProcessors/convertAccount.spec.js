@@ -59,43 +59,51 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionBuilder = exports.getBlockHeight = void 0;
-var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var Network = __importStar(require("../network"));
-var getBlockHeight = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, stateCommitment, error, _, height, blockCount;
-    return __generator(this, function (_b) {
-        switch (_b.label) {
-            case 0: return [4 /*yield*/, Network.getStateCommitment()];
-            case 1:
-                _a = _b.sent(), stateCommitment = _a.response, error = _a.error;
-                if (error) {
-                    throw new Error(error.message);
+require("@testing-library/jest-dom/extend-expect");
+var KeypairApi = __importStar(require("../../keypair/keypair"));
+var convertAccount_1 = require("./convertAccount");
+describe('convertAccount (processor) (unit test)', function () {
+    describe('processConvertAccount', function () {
+        it('returns properly processed data', function () { return __awaiter(void 0, void 0, void 0, function () {
+            var address, type, myOperation, payload, spyGetAddressByPublicKey, result;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        address = 'barfoo';
+                        type = 'convertAccount';
+                        myOperation = {
+                            receiver: {
+                                Ethereum: address,
+                            },
+                            signer: address,
+                        };
+                        payload = {
+                            ConvertAccount: myOperation,
+                        };
+                        spyGetAddressByPublicKey = jest
+                            .spyOn(KeypairApi, 'getAddressByPublicKey')
+                            .mockImplementation(function () {
+                            return Promise.resolve(address);
+                        });
+                        return [4 /*yield*/, (0, convertAccount_1.processConvertAccount)(payload)];
+                    case 1:
+                        result = _a.sent();
+                        expect(result).toHaveProperty('convertAccount');
+                        expect(result).toHaveProperty('from');
+                        expect(result).toHaveProperty('to');
+                        expect(result).toHaveProperty('type');
+                        expect(result).toHaveProperty('originalOperation');
+                        expect(result.convertAccount).toBe(myOperation);
+                        expect(result.from).toEqual([address]);
+                        expect(result.to).toEqual([address]);
+                        expect(result.type).toEqual(type);
+                        expect(result.originalOperation).toBe(payload);
+                        expect(Object.keys(result)).toHaveLength(5);
+                        spyGetAddressByPublicKey.mockRestore();
+                        return [2 /*return*/];
                 }
-                if (!stateCommitment) {
-                    throw new Error('Could not receive response from state commitement call...');
-                }
-                _ = stateCommitment[0], height = stateCommitment[1];
-                blockCount = BigInt(height);
-                return [2 /*return*/, blockCount];
-        }
+            });
+        }); });
     });
-}); };
-exports.getBlockHeight = getBlockHeight;
-var getTransactionBuilder = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, blockCount, transactionBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                return [4 /*yield*/, (0, exports.getBlockHeight)()];
-            case 2:
-                blockCount = _a.sent();
-                transactionBuilder = ledger.TransactionBuilder.new(blockCount);
-                return [2 /*return*/, transactionBuilder];
-        }
-    });
-}); };
-exports.getTransactionBuilder = getTransactionBuilder;
-//# sourceMappingURL=builder.js.map
+});
+//# sourceMappingURL=convertAccount.spec.js.map

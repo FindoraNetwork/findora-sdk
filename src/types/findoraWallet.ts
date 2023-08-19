@@ -1,3 +1,4 @@
+import { WalletKeypar } from '../api/keypair/keypair';
 export interface IAssetRules {
   decimals: number;
   transferable: boolean;
@@ -56,17 +57,22 @@ export interface IWallet {
 }
 
 export interface FormattedAnonKeys {
-  axfrSecretKey: string;
-  axfrPublicKey: string;
+  // axfrSecretKey: string;
+  // axfrPublicKey: string;
+
+  publickey?: string;
+  privateStr?: string;
 }
 
 export interface BarToAbarData {
-  receiverAxfrPublicKey: string;
+  // receiverAxfrPublicKey: string;
+  receiverXfrPublicKey: string;
   commitments: string[];
 }
 
 export interface AbarToBarData {
-  anonKeysSender: FormattedAnonKeys;
+  // anonKeysSender: FormattedAnonKeys;
+  anonKeysSender: WalletKeypar;
 }
 
 export interface ProcessedCommitmentsMap {
@@ -77,7 +83,8 @@ export interface ProcessedCommitmentsMap {
 }
 
 export interface AbarToAbarData {
-  anonKeysSender: FormattedAnonKeys;
+  // anonKeysSender: FormattedAnonKeys;
+  anonKeysSender: WalletKeypar;
   anonPubKeyReceiver: string;
   commitmentsMap: ProcessedCommitmentsMap[];
 }
@@ -86,7 +93,19 @@ export interface BarToAbarResult<T> {
   transactionBuilder: T;
   barToAbarData: BarToAbarData;
   sids: number[];
-  // sid: string;
+}
+
+export interface AbarToAbarResult<T> {
+  anonTransferOperationBuilder: T;
+  abarToAbarData: AbarToAbarData;
+}
+
+export interface AbarToBarResult<T> {
+  transactionBuilder: T;
+  abarToBarData: AbarToBarData;
+  receiverXfrPublicKey: string;
+  spentCommitments?: string[];
+  remainderCommitements?: string[];
 }
 
 export interface AnonKeysResponse<T> {

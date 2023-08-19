@@ -35,7 +35,18 @@ export interface IWebLinkedInfo {
   chainId: number;
   account: string;
 }
-
+/**
+ * Returns a Web3
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * ```
+ *
+ * @param rpcUrl - RPC_NETWORK_URL
+ * @returns Web3
+ *
+ */
 const getWeb3 = (rpcUrl: string): Web3 => {
   const provider = new Web3.providers.HttpProvider(rpcUrl);
   const web3: Web3 = new Web3(provider);
@@ -46,34 +57,162 @@ interface MyContract<T> extends Contract {
   methods: T;
 }
 
+/**
+ * Returns a ERC20 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getErc20Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getErc20Contract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(Erc20Abi as AbiItem[], address) as unknown as MyContract<Erc20>;
 };
 
+/**
+ * Returns a PrismProxy Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = PrismProxyContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getPrismProxyContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(PrismProxyAbi as AbiItem[], address) as unknown as MyContract<PrismProxy>;
 };
 
+/**
+ * Returns a NFT721 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNFT721Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getNFT721Contract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(NFT721Abi as AbiItem[], address) as unknown as MyContract<NFT721>;
 };
 
+/**
+ * Returns a NFT1155 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNFT1155Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getNFT1155Contract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(NFT1155Abi as AbiItem[], address) as unknown as MyContract<NFT1155>;
 };
 
+/**
+ * Returns a PrismXXAsset Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getPrismXXAssetContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getPrismXXAssetContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(PrismXXAssetAbi as AbiItem[], address) as unknown as MyContract<PrismXXAsset>;
 };
 
+/**
+ * Returns a SimBridge Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getSimBridgeContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getSimBridgeContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(SimBridgeAbi as AbiItem[], address) as unknown as MyContract<SimBridge>;
 };
 
+/**
+ * Returns a NameResolver Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNameResolverContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getNameResolverContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(NameResolverAbi as AbiItem[], address) as unknown as MyContract<NameResolver>;
 };
 
+/**
+ * Returns a FNSRegistry Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getFNSRegistryContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 const getFNSRegistryContract = (web3: Web3, address: string) => {
   return new web3.eth.Contract(FNSRegistryAbi as AbiItem[], address) as unknown as MyContract<FNSRegistry>;
 };
@@ -99,6 +238,28 @@ const toHex = (covertThis: string, padding: number) => {
   return temp1;
 };
 
+/**
+ * calculation decimals amount
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getErc20Contract(web3, contract_address);
+ * const amount = calculationDecimalsAmount(contract, web3, 'from address', 'to address', '0.2', 'toWei');
+ * const amount = calculationDecimalsAmount(contract, web3, 'from address', 'to address', '21000', 'formWei');
+ *
+ * ```
+ * @param contract - getErc20Contract()
+ * @param web3 - Web3
+ * @param from - wallet address
+ * @param to - wallet address
+ * @param amount - calculation amount
+ * @param type - value: toWei | formWei
+ *
+ * @returns Contract
+ *
+ */
 const calculationDecimalsAmount = async (
   contract: MyContract<Erc20>,
   web3: Web3,

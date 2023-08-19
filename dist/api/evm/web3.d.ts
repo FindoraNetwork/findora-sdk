@@ -18,17 +18,157 @@ export interface IWebLinkedInfo {
     chainId: number;
     account: string;
 }
+/**
+ * Returns a Web3
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * ```
+ *
+ * @param rpcUrl - RPC_NETWORK_URL
+ * @returns Web3
+ *
+ */
 declare const getWeb3: (rpcUrl: string) => Web3;
 interface MyContract<T> extends Contract {
     methods: T;
 }
+/**
+ * Returns a ERC20 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getErc20Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getErc20Contract: (web3: Web3, address: string) => MyContract<Erc20>;
+/**
+ * Returns a PrismProxy Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = PrismProxyContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getPrismProxyContract: (web3: Web3, address: string) => MyContract<PrismProxy>;
+/**
+ * Returns a NFT721 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNFT721Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getNFT721Contract: (web3: Web3, address: string) => MyContract<NFT721>;
+/**
+ * Returns a NFT1155 Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNFT1155Contract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getNFT1155Contract: (web3: Web3, address: string) => MyContract<NFT1155>;
+/**
+ * Returns a PrismXXAsset Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getPrismXXAssetContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getPrismXXAssetContract: (web3: Web3, address: string) => MyContract<PrismXXAsset>;
+/**
+ * Returns a SimBridge Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getSimBridgeContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getSimBridgeContract: (web3: Web3, address: string) => MyContract<SimBridge>;
+/**
+ * Returns a NameResolver Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getNameResolverContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getNameResolverContract: (web3: Web3, address: string) => MyContract<NameResolver>;
+/**
+ * Returns a FNSRegistry Contract
+ *
+ * @example
+ * ```ts
+ * const web3 = getWeb3("RPC_NETWORK_URL");
+ * const contract_address = '0x....';
+ * const contract = getFNSRegistryContract(web3, contract_address);
+ * ```
+ *
+ * @param web3 - Web3
+ * @param address - contract address
+ *
+ * @returns Contract
+ *
+ */
 declare const getFNSRegistryContract: (web3: Web3, address: string) => MyContract<FNSRegistry>;
 declare const getSystemContract: (web3: Web3, address: string) => MyContract<System>;
 declare const getStakingContract: (web3: Web3, address: string) => MyContract<Staking>;

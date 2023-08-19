@@ -2,6 +2,7 @@ export {
   AssetRules,
   AssetTracerKeyPair,
   ClientAssetRecord,
+  AnonTransferOperationBuilder,
   FeeInputs,
   OwnerMemo,
   TracingPolicies,
@@ -11,4 +12,7 @@ export {
   TxoRef,
   XfrKeyPair,
   XfrPublicKey,
+  AxfrOwnerMemo,
+  AnonAssetRecord,
+  MTLeafInfo,
 } from 'findora-wallet-wasm/web/wasm';

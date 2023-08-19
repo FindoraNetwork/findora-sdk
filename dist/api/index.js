@@ -23,7 +23,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Transaction = exports.Staking = exports.Asset = exports.Network = exports.Keypair = exports.Evm = exports.Account = void 0;
+exports.TripleMasking = exports.Transaction = exports.Staking = exports.Asset = exports.Network = exports.Keypair = exports.Evm = exports.Account = void 0;
 exports.Account = __importStar(require("./account"));
 exports.Evm = __importStar(require("./evm"));
 exports.Keypair = __importStar(require("./keypair"));
@@ -31,4 +31,5 @@ exports.Network = __importStar(require("./network"));
 exports.Asset = __importStar(require("./sdkAsset"));
 exports.Staking = __importStar(require("./staking"));
 exports.Transaction = __importStar(require("./transaction"));
+exports.TripleMasking = __importStar(require("./tripleMasking"));
 //# sourceMappingURL=index.js.map
