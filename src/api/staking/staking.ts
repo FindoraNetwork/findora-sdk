@@ -1,4 +1,5 @@
 import orderBy from 'lodash/orderBy';
+import Web3 from 'web3';
 
 import * as Transaction from '../../api/transaction';
 import { create as createBigNumber, toWei } from '../../services/bigNumber';
@@ -20,14 +21,11 @@ import * as Builder from '../transaction/builder';
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
- *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
- *  const isFullUnstake = false;
  *
  *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
- *    isFullUnstake,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -39,7 +37,7 @@ export const unStake = async (
   walletInfo: WalletKeypar,
   amount: string,
   validator: string,
-  isFullUnstake = false,
+  // isFullUnstake = false,
 ): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
@@ -66,15 +64,21 @@ export const unStake = async (
   }
 
   try {
-    if (isFullUnstake) {
-      transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
-    } else {
-      transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
-        walletInfo.keypair,
-        BigInt(amount),
-        validator,
-      );
-    }
+    const targetValidator = validator.startsWith('0x') ? validator.slice(2) : validator;
+    transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
+      walletInfo.keypair,
+      BigInt(amount),
+      targetValidator,
+    );
+    // if (isFullUnstake) {
+    //   transactionBuilder = transactionBuilder.add_operation_undelegate(walletInfo.keypair);
+    // } else {
+    //   transactionBuilder = transactionBuilder.add_operation_undelegate_partially(
+    //     walletInfo.keypair,
+    //     BigInt(amount),
+    //     validator.startsWith('0x') ? validator.slice(2) : validator,
+    //   );
+    // }
   } catch (error) {
     const e: Error = error as Error;
 
@@ -164,10 +168,11 @@ export const delegate = async (
   const decimals = asset.assetRules.decimals;
   const delegateAmount = BigInt(toWei(amount, decimals).toString());
 
+  const targetValidator = validator.startsWith('0x') ? validator.slice(2) : validator;
   transactionBuilder = transactionBuilder.add_operation_delegate(
     walletInfo.keypair,
     delegateAmount,
-    validator,
+    targetValidator,
   );
 
   try {
@@ -193,9 +198,11 @@ export const delegate = async (
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
+ *  const validators = ['validator_addr1', 'validator_addr2'];
  *  const transactionBuilder = await StakingApi.claim(
  *    walletInfo,
  *    amount,
+ *    validators,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -203,7 +210,8 @@ export const delegate = async (
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<TransactionBuilder> => {
+
+export const claim = async (walletInfo: WalletKeypar, validators: string[]): Promise<TransactionBuilder> => {
   const transferFeeOperationBuilder = await Fee.buildTransferOperationWithFee(walletInfo);
 
   let receivedTransferFeeOperation;
@@ -229,9 +237,13 @@ export const claim = async (walletInfo: WalletKeypar, amount: string): Promise<T
   }
 
   try {
-    transactionBuilder = transactionBuilder
-      .add_operation_claim_custom(walletInfo.keypair, BigInt(amount))
-      .add_transfer_operation(receivedTransferFeeOperation);
+    for (const validator of validators) {
+      transactionBuilder = transactionBuilder.add_operation_claim(
+        walletInfo.keypair,
+        Buffer.from(Web3.utils.hexToBytes(validator)),
+      );
+    }
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferFeeOperation);
   } catch (error) {
     const e: Error = error as Error;
 

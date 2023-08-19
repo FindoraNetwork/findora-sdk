@@ -906,7 +906,7 @@ var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0
 }); };
 exports.delegateFraTransactionSubmit = delegateFraTransactionSubmit;
 var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, balanceBeforeSend, transactionBuilderSend, resultHandleSend, balanceAfterSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, balanceAfterDelegate, delegateInfo, isRewardsAdded, balanceBefore, amountToClaim, transactionBuilderClaim, resultHandleClaim, transactionStatusClaim, claimResponse, ClaimCommited, txnSIDClaim, balanceAfter, isClaimSuccessfull;
+    var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, balanceBeforeSend, transactionBuilderSend, resultHandleSend, balanceAfterSend, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, balanceAfterDelegate, delegateInfo, isRewardsAdded, balanceBefore, transactionBuilderClaim, resultHandleClaim, transactionStatusClaim, claimResponse, ClaimCommited, txnSIDClaim, balanceAfter, isClaimSuccessfull;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -1031,8 +1031,7 @@ var delegateFraTransactionAndClaimRewards = function () { return __awaiter(void 
             case 28:
                 balanceBefore = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ line 801 ~ delegateFraTransactionAndClaimRewards ~ balanceBeforeClaim', balanceBefore);
-                amountToClaim = delegateInfo.rewards;
-                return [4 /*yield*/, api_1.Staking.claim(toWalletInfo, amountToClaim)];
+                return [4 /*yield*/, api_1.Staking.claim(toWalletInfo, ['addr'])];
             case 29:
                 transactionBuilderClaim = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(transactionBuilderClaim)];

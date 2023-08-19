@@ -935,9 +935,9 @@ export const delegateFraTransactionAndClaimRewards = async () => {
     balanceBefore,
   );
 
-  const amountToClaim = delegateInfo.rewards;
+  // const amountToClaim = delegateInfo.rewards;
 
-  const transactionBuilderClaim = await Staking.claim(toWalletInfo, amountToClaim);
+  const transactionBuilderClaim = await Staking.claim(toWalletInfo, ['addr']);
 
   const resultHandleClaim = await Transaction.submitTransaction(transactionBuilderClaim);
 

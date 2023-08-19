@@ -723,5 +723,6 @@ export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
     fix_delegators_am_height: number;
     validators_limit_v2_height: number;
     fns_registry: string;
+    evm_staking_address: string;
   };
 }
