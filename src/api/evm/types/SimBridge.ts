@@ -51,16 +51,27 @@ export type ContractContext = Web3ContractContext<
   SimBridgeEvents
 >;
 export type SimBridgeEvents =
+  | 'DepositAsset'
   | 'DepositFRA'
   | 'DepositFRC1155'
   | 'DepositFRC20'
   | 'DepositFRC721'
+  | 'Initialized'
   | 'OwnershipTransferred'
   | 'WithdrawFRA'
   | 'WithdrawFRC1155'
   | 'WithdrawFRC20'
   | 'WithdrawFRC721';
 export interface SimBridgeEventsContext {
+  DepositAsset(
+    parameters: {
+      filter?: {};
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
   DepositFRA(
     parameters: {
       filter?: {};
@@ -89,6 +100,15 @@ export interface SimBridgeEventsContext {
     callback?: (error: Error, event: EventData) => void,
   ): EventResponse;
   DepositFRC721(
+    parameters: {
+      filter?: {};
+      fromBlock?: number;
+      toBlock?: 'latest' | number;
+      topics?: string[];
+    },
+    callback?: (error: Error, event: EventData) => void,
+  ): EventResponse;
+  Initialized(
     parameters: {
       filter?: {};
       fromBlock?: number;
@@ -147,29 +167,30 @@ export interface SimBridgeEventsContext {
   ): EventResponse;
 }
 export type SimBridgeMethodNames =
-  | 'new'
-  | '__self'
-  | '_consumeMint'
-  | '_withdrawAsset'
-  | '_withdrawFRA'
   | 'adminSetAsset'
   | 'adminSetLedger'
   | 'asset_contract'
+  | 'computeERC1155AssetType'
   | 'computeERC20AssetType'
-  | 'computeNFTAssetType'
-  | 'consumeMint'
+  | 'computeERC721AssetType'
   | 'depositFRA'
   | 'depositFRC1155'
   | 'depositFRC20'
   | 'depositFRC721'
+  | 'initialize'
   | 'ledger_contract'
-  | 'ops'
   | 'owner'
-  | 'proxy_contract'
   | 'renounceOwnership'
   | 'transferOwnership'
   | 'withdrawAsset'
   | 'withdrawFRA';
+export interface DepositAssetEventEmittedResponse {
+  asset: string | number[];
+  receiver: string | number[];
+  amount: string;
+  decimal: string | number;
+  max_supply: string;
+}
 export interface DepositFRAEventEmittedResponse {
   _from: string;
   _to: string | number[];
@@ -193,6 +214,9 @@ export interface DepositFRC721EventEmittedResponse {
   _from: string;
   _to: string | number[];
   _id: string;
+}
+export interface InitializedEventEmittedResponse {
+  version: string | number;
 }
 export interface OwnershipTransferredEventEmittedResponse {
   previousOwner: string;
@@ -222,71 +246,7 @@ export interface WithdrawFRC721EventEmittedResponse {
   _to: string;
   _id: string;
 }
-export interface MintopResponse {
-  asset: string;
-  receiver: string;
-  amount: string;
-  decimal: string;
-  max_supply: string;
-}
-export interface OpsResponse {
-  asset: string;
-  receiver: string;
-  amount: string;
-  decimal: string;
-  max_supply: string;
-}
 export interface SimBridge {
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: constructor
-   * @param _proxy_contract Type: address, Indexed: false
-   */
-  'new'(_proxy_contract: string): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  __self(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   */
-  _consumeMint(): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _asset Type: bytes32, Indexed: false
-   * @param _from Type: bytes, Indexed: false
-   * @param _to Type: address, Indexed: false
-   * @param _value Type: uint256, Indexed: false
-   * @param _data Type: bytes, Indexed: false
-   */
-  _withdrawAsset(
-    _asset: string | number[],
-    _from: string | number[],
-    _to: string,
-    _value: string,
-    _data: string | number[],
-  ): MethodReturnContext;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   * @param _to Type: address, Indexed: false
-   * @param _value Type: uint256, Indexed: false
-   * @param _data Type: bytes, Indexed: false
-   */
-  _withdrawFRA(_to: string, _value: string, _data: string | number[]): MethodReturnContext;
   /**
    * Payable: false
    * Constant: false
@@ -313,7 +273,16 @@ export interface SimBridge {
   /**
    * Payable: false
    * Constant: true
-   * StateMutability: pure
+   * StateMutability: view
+   * Type: function
+   * @param addr Type: address, Indexed: false
+   * @param tokenId Type: uint256, Indexed: false
+   */
+  computeERC1155AssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
    * Type: function
    * @param addr Type: address, Indexed: false
    */
@@ -321,19 +290,12 @@ export interface SimBridge {
   /**
    * Payable: false
    * Constant: true
-   * StateMutability: pure
+   * StateMutability: view
    * Type: function
    * @param addr Type: address, Indexed: false
    * @param tokenId Type: uint256, Indexed: false
    */
-  computeNFTAssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: false
-   * StateMutability: nonpayable
-   * Type: function
-   */
-  consumeMint(): MethodReturnContext;
+  computeERC721AssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
   /**
    * Payable: true
    * Constant: false
@@ -375,6 +337,13 @@ export interface SimBridge {
   depositFRC721(_addr: string, _to: string | number[], _id: string): MethodReturnContext;
   /**
    * Payable: false
+   * Constant: false
+   * StateMutability: nonpayable
+   * Type: function
+   */
+  initialize(): MethodReturnContext;
+  /**
+   * Payable: false
    * Constant: true
    * StateMutability: view
    * Type: function
@@ -385,23 +354,8 @@ export interface SimBridge {
    * Constant: true
    * StateMutability: view
    * Type: function
-   * @param parameter0 Type: uint256, Indexed: false
-   */
-  ops(parameter0: string): MethodConstantReturnContext<OpsResponse>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
    */
   owner(): MethodConstantReturnContext<string>;
-  /**
-   * Payable: false
-   * Constant: true
-   * StateMutability: view
-   * Type: function
-   */
-  proxy_contract(): MethodConstantReturnContext<string>;
   /**
    * Payable: false
    * Constant: false
@@ -440,15 +394,9 @@ export interface SimBridge {
    * Constant: false
    * StateMutability: nonpayable
    * Type: function
-   * @param _from Type: bytes, Indexed: false
-   * @param _to Type: address, Indexed: false
-   * @param _value Type: uint256, Indexed: false
-   * @param _data Type: bytes, Indexed: false
+   * @param to Type: address, Indexed: false
+   * @param value Type: uint256, Indexed: false
+   * @param data Type: bytes, Indexed: false
    */
-  withdrawFRA(
-    _from: string | number[],
-    _to: string,
-    _value: string,
-    _data: string | number[],
-  ): MethodReturnContext;
+  withdrawFRA(to: string, value: string, data: string | number[]): MethodReturnContext;
 }

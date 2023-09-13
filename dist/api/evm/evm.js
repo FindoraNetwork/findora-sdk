@@ -62,7 +62,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.hashAddressTofraAddressOld = exports.fraAddressToHashAddress = void 0;
+exports.sendEvmToAccount = exports.sendAccountToEvm = exports.tokenBalance = exports.frcNftToBar = exports.getDomainCurrentText = exports.approveNFT = exports.getPrismConfig = exports.frc20ToBar = exports.approveToken = exports.fraToBar = exports.hashAddressTofraAddressBy1155 = exports.hashAddressTofraAddressByNFT = exports.hashAddressTofraAddress = exports.hashAddressTofraAddressOld = exports.fraAddressToHashAddress = void 0;
 var eth_ens_namehash_1 = __importDefault(require("@ensdomains/eth-ens-namehash"));
 var bech32ToBuffer = __importStar(require("bech32-buffer"));
 var bignumber_js_1 = __importDefault(require("bignumber.js"));
@@ -117,20 +117,42 @@ var hashAddressTofraAddress = function (addresss, bridgeAddress, web3WalletInfo)
     });
 }); };
 exports.hashAddressTofraAddress = hashAddressTofraAddress;
-var hashAddressTofraAddressByNFT = function (addresss, tokenId) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, tokenAddress, tokenAddressHex;
+var hashAddressTofraAddressByNFT = function (address, tokenId, bridgeAddress, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, web3, contract, nftAddressHex, assetType;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
-                tokenAddress = ethereumjs_abi_1.default.rawEncode(['address', 'address', 'uint256'], ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId]);
-                tokenAddressHex = web3_1.default.utils.keccak256("0x".concat(tokenAddress.toString('hex')));
-                return [2 /*return*/, ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(tokenAddressHex))];
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                return [4 /*yield*/, contract.methods.computeERC721AssetType(address, tokenId).call()];
+            case 2:
+                nftAddressHex = _a.sent();
+                assetType = ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(nftAddressHex));
+                return [2 /*return*/, assetType];
         }
     });
 }); };
 exports.hashAddressTofraAddressByNFT = hashAddressTofraAddressByNFT;
+var hashAddressTofraAddressBy1155 = function (address, tokenId, bridgeAddress, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, web3, contract, erc1155AddressHex, assetType;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                web3 = (0, web3_2.getWeb3)(web3WalletInfo.rpcUrl);
+                contract = (0, web3_2.getSimBridgeContract)(web3, bridgeAddress);
+                return [4 /*yield*/, contract.methods.computeERC1155AssetType(address, tokenId).call()];
+            case 2:
+                erc1155AddressHex = _a.sent();
+                assetType = ledger.asset_type_from_jsvalue(web3_1.default.utils.hexToBytes(erc1155AddressHex));
+                return [2 /*return*/, assetType];
+        }
+    });
+}); };
+exports.hashAddressTofraAddressBy1155 = hashAddressTofraAddressBy1155;
 var fraToBar = function (bridgeAddress, recipientAddress, amount, web3WalletInfo) { return __awaiter(void 0, void 0, void 0, function () {
     var web3, contract, convertAmount, findoraTo, nonce, gasPrice, contractData, estimategas, txParams, signed_txn;
     return __generator(this, function (_a) {
