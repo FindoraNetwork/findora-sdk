@@ -338,6 +338,27 @@
 },
 {
   "inputs": [{
+      "internalType": "address",
+      "name": "addr",
+      "type": "address"
+    },
+    {
+      "internalType": "uint256",
+      "name": "tokenId",
+      "type": "uint256"
+    }
+  ],
+  "name": "computeERC1155AssetType",
+  "outputs": [{
+    "internalType": "bytes32",
+    "name": "result",
+    "type": "bytes32"
+  }],
+  "stateMutability": "view",
+  "type": "function"
+},
+{
+  "inputs": [{
     "internalType": "address",
     "name": "addr",
     "type": "address"
@@ -348,7 +369,7 @@
     "name": "",
     "type": "bytes32"
   }],
-  "stateMutability": "pure",
+  "stateMutability": "view",
   "type": "function"
 },
 {
@@ -363,13 +384,13 @@
       "type": "uint256"
     }
   ],
-  "name": "computeNFTAssetType",
+  "name": "computeERC721AssetType",
   "outputs": [{
     "internalType": "bytes32",
     "name": "",
     "type": "bytes32"
   }],
-  "stateMutability": "pure",
+  "stateMutability": "view",
   "type": "function"
 },
 {

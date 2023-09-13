@@ -170,8 +170,9 @@ export type SimBridgeMethodNames =
   | 'adminSetAsset'
   | 'adminSetLedger'
   | 'asset_contract'
+  | 'computeERC1155AssetType'
   | 'computeERC20AssetType'
-  | 'computeNFTAssetType'
+  | 'computeERC721AssetType'
   | 'depositFRA'
   | 'depositFRC1155'
   | 'depositFRC20'
@@ -272,7 +273,16 @@ export interface SimBridge {
   /**
    * Payable: false
    * Constant: true
-   * StateMutability: pure
+   * StateMutability: view
+   * Type: function
+   * @param addr Type: address, Indexed: false
+   * @param tokenId Type: uint256, Indexed: false
+   */
+  computeERC1155AssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
+  /**
+   * Payable: false
+   * Constant: true
+   * StateMutability: view
    * Type: function
    * @param addr Type: address, Indexed: false
    */
@@ -280,12 +290,12 @@ export interface SimBridge {
   /**
    * Payable: false
    * Constant: true
-   * StateMutability: pure
+   * StateMutability: view
    * Type: function
    * @param addr Type: address, Indexed: false
    * @param tokenId Type: uint256, Indexed: false
    */
-  computeNFTAssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
+  computeERC721AssetType(addr: string, tokenId: string): MethodConstantReturnContext<string>;
   /**
    * Payable: true
    * Constant: false

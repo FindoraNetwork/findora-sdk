@@ -1,19 +1,42 @@
-[
-    {
-        "inputs": [
+[{
+        "anonymous": false,
+        "inputs": [{
+                "indexed": false,
+                "internalType": "bytes32",
+                "name": "asset",
+                "type": "bytes32"
+            },
             {
-                "internalType": "address",
-                "name": "_proxy_contract",
-                "type": "address"
+                "indexed": false,
+                "internalType": "bytes",
+                "name": "receiver",
+                "type": "bytes"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "amount",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "decimal",
+                "type": "uint8"
+            },
+            {
+                "indexed": false,
+                "internalType": "uint256",
+                "name": "max_supply",
+                "type": "uint256"
             }
         ],
-        "stateMutability": "nonpayable",
-        "type": "constructor"
+        "name": "DepositAsset",
+        "type": "event"
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_from",
@@ -37,8 +60,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_addr",
@@ -74,8 +96,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_frc20",
@@ -105,8 +126,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_addr",
@@ -136,8 +156,18 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
+                "indexed": false,
+                "internalType": "uint8",
+                "name": "version",
+                "type": "uint8"
+            }],
+        "name": "Initialized",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [{
                 "indexed": true,
                 "internalType": "address",
                 "name": "previousOwner",
@@ -155,8 +185,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "bytes",
                 "name": "_from",
@@ -180,8 +209,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_frc20",
@@ -217,8 +245,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_frc20",
@@ -248,8 +275,7 @@
     },
     {
         "anonymous": false,
-        "inputs": [
-            {
+        "inputs": [{
                 "indexed": false,
                 "internalType": "address",
                 "name": "_frc20",
@@ -278,135 +304,22 @@
         "type": "event"
     },
     {
-        "inputs": [],
-        "name": "__self",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "_consumeMint",
-        "outputs": [
-            {
-                "components": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "asset",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "receiver",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint8",
-                        "name": "decimal",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "max_supply",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct PrismXXBridge.MintOp[]",
-                "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "bytes32",
-                "name": "_asset",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_from",
-                "type": "bytes"
-            },
-            {
-                "internalType": "address",
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_value",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_data",
-                "type": "bytes"
-            }
-        ],
-        "name": "_withdrawAsset",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
-                "internalType": "address payable",
-                "name": "_to",
-                "type": "address"
-            },
-            {
-                "internalType": "uint256",
-                "name": "_value",
-                "type": "uint256"
-            },
-            {
-                "internalType": "bytes",
-                "name": "_data",
-                "type": "bytes"
-            }
-        ],
-        "name": "_withdrawFRA",
-        "outputs": [],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "_asset_contract",
                 "type": "address"
-            }
-        ],
+            }],
         "name": "adminSetAsset",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "_ledger_contract",
                 "type": "address"
-            }
-        ],
+            }],
         "name": "adminSetLedger",
         "outputs": [],
         "stateMutability": "nonpayable",
@@ -415,38 +328,16 @@
     {
         "inputs": [],
         "name": "asset_contract",
-        "outputs": [
-            {
+        "outputs": [{
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
+            }],
         "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "address",
-                "name": "addr",
-                "type": "address"
-            }
-        ],
-        "name": "computeERC20AssetType",
-        "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "",
-                "type": "bytes32"
-            }
-        ],
-        "stateMutability": "pure",
-        "type": "function"
-    },
-    {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "addr",
                 "type": "address"
@@ -457,73 +348,64 @@
                 "type": "uint256"
             }
         ],
-        "name": "computeNFTAssetType",
-        "outputs": [
-            {
+        "name": "computeERC1155AssetType",
+        "outputs": [{
+                "internalType": "bytes32",
+                "name": "result",
+                "type": "bytes32"
+            }],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [{
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            }],
+        "name": "computeERC20AssetType",
+        "outputs": [{
                 "internalType": "bytes32",
                 "name": "",
                 "type": "bytes32"
-            }
-        ],
-        "stateMutability": "pure",
+            }],
+        "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [],
-        "name": "consumeMint",
-        "outputs": [
+        "inputs": [{
+                "internalType": "address",
+                "name": "addr",
+                "type": "address"
+            },
             {
-                "components": [
-                    {
-                        "internalType": "bytes32",
-                        "name": "asset",
-                        "type": "bytes32"
-                    },
-                    {
-                        "internalType": "bytes",
-                        "name": "receiver",
-                        "type": "bytes"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "amount",
-                        "type": "uint256"
-                    },
-                    {
-                        "internalType": "uint8",
-                        "name": "decimal",
-                        "type": "uint8"
-                    },
-                    {
-                        "internalType": "uint256",
-                        "name": "max_supply",
-                        "type": "uint256"
-                    }
-                ],
-                "internalType": "struct PrismXXBridge.MintOp[]",
+                "internalType": "uint256",
+                "name": "tokenId",
+                "type": "uint256"
+            }
+        ],
+        "name": "computeERC721AssetType",
+        "outputs": [{
+                "internalType": "bytes32",
                 "name": "",
-                "type": "tuple[]"
-            }
-        ],
-        "stateMutability": "nonpayable",
+                "type": "bytes32"
+            }],
+        "stateMutability": "view",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "bytes",
                 "name": "_to",
                 "type": "bytes"
-            }
-        ],
+            }],
         "name": "depositFRA",
         "outputs": [],
         "stateMutability": "payable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "_addr",
                 "type": "address"
@@ -550,8 +432,7 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "_frc20",
                 "type": "address"
@@ -573,8 +454,7 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "_addr",
                 "type": "address"
@@ -597,79 +477,30 @@
     },
     {
         "inputs": [],
-        "name": "ledger_contract",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
-        "stateMutability": "view",
+        "name": "initialize",
+        "outputs": [],
+        "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "uint256",
+        "inputs": [],
+        "name": "ledger_contract",
+        "outputs": [{
+                "internalType": "address",
                 "name": "",
-                "type": "uint256"
-            }
-        ],
-        "name": "ops",
-        "outputs": [
-            {
-                "internalType": "bytes32",
-                "name": "asset",
-                "type": "bytes32"
-            },
-            {
-                "internalType": "bytes",
-                "name": "receiver",
-                "type": "bytes"
-            },
-            {
-                "internalType": "uint256",
-                "name": "amount",
-                "type": "uint256"
-            },
-            {
-                "internalType": "uint8",
-                "name": "decimal",
-                "type": "uint8"
-            },
-            {
-                "internalType": "uint256",
-                "name": "max_supply",
-                "type": "uint256"
-            }
-        ],
+                "type": "address"
+            }],
         "stateMutability": "view",
         "type": "function"
     },
     {
         "inputs": [],
         "name": "owner",
-        "outputs": [
-            {
+        "outputs": [{
                 "internalType": "address",
                 "name": "",
                 "type": "address"
-            }
-        ],
-        "stateMutability": "view",
-        "type": "function"
-    },
-    {
-        "inputs": [],
-        "name": "proxy_contract",
-        "outputs": [
-            {
-                "internalType": "address",
-                "name": "",
-                "type": "address"
-            }
-        ],
+            }],
         "stateMutability": "view",
         "type": "function"
     },
@@ -681,21 +512,18 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "address",
                 "name": "newOwner",
                 "type": "address"
-            }
-        ],
+            }],
         "name": "transferOwnership",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
     },
     {
-        "inputs": [
-            {
+        "inputs": [{
                 "internalType": "bytes32",
                 "name": "_asset",
                 "type": "bytes32"
@@ -727,25 +555,19 @@
         "type": "function"
     },
     {
-        "inputs": [
-            {
-                "internalType": "bytes",
-                "name": "_from",
-                "type": "bytes"
-            },
-            {
+        "inputs": [{
                 "internalType": "address payable",
-                "name": "_to",
+                "name": "to",
                 "type": "address"
             },
             {
                 "internalType": "uint256",
-                "name": "_value",
+                "name": "value",
                 "type": "uint256"
             },
             {
                 "internalType": "bytes",
-                "name": "_data",
+                "name": "data",
                 "type": "bytes"
             }
         ],

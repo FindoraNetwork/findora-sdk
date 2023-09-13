@@ -68,17 +68,40 @@ export const hashAddressTofraAddress = async (
   return assetType;
 };
 
-export const hashAddressTofraAddressByNFT = async (addresss: string, tokenId: string) => {
+export const hashAddressTofraAddressByNFT = async (
+  address: string,
+  tokenId: string,
+  bridgeAddress: string,
+  web3WalletInfo: IWebLinkedInfo,
+) => {
   const ledger = await getLedger();
 
-  const tokenAddress = ethereumjsAbi.rawEncode(
-    ['address', 'address', 'uint256'],
-    ['0x0000000000000000000000000000000000000000000000000000000000000002', addresss, tokenId],
-  );
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+  const contract = getSimBridgeContract(web3, bridgeAddress);
 
-  const tokenAddressHex = Web3.utils.keccak256(`0x${tokenAddress.toString('hex')}`);
+  const nftAddressHex = await contract.methods.computeERC721AssetType(address, tokenId).call();
+  // const tokenAddressHex = Web3.utils.keccak256(tokenAddressHexA);
 
-  return ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(tokenAddressHex));
+  const assetType = ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(nftAddressHex));
+  return assetType;
+};
+
+export const hashAddressTofraAddressBy1155 = async (
+  address: string,
+  tokenId: string,
+  bridgeAddress: string,
+  web3WalletInfo: IWebLinkedInfo,
+) => {
+  const ledger = await getLedger();
+
+  const web3 = getWeb3(web3WalletInfo.rpcUrl);
+  const contract = getSimBridgeContract(web3, bridgeAddress);
+
+  const erc1155AddressHex = await contract.methods.computeERC1155AssetType(address, tokenId).call();
+  // const tokenAddressHex = Web3.utils.keccak256(tokenAddressHexA);
+
+  const assetType = ledger.asset_type_from_jsvalue(Web3.utils.hexToBytes(erc1155AddressHex));
+  return assetType;
 };
 
 export const fraToBar = async (
