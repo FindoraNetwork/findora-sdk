@@ -86,10 +86,10 @@ var sdkEnv = {
     // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'http://54.213.254.47',
     // hostUrl: 'https://dev-qa04.dev.findora.org',
-    // hostUrl: 'https://dev-qa01.dev.findora.org',
+    hostUrl: 'https://dev-qa01.dev.findora.org',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -138,47 +138,41 @@ var getFraAssetCode = function () { return __awaiter(void 0, void 0, void 0, fun
  * Get FRA balance
  */
 var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, isFra, faucetWalletInfo, newWalletMine1, newWalletMine2, balanceFaucet, balanceNewMine1, balanceNewMine2;
+    var password, isFra, faucetWalletInfo, balanceFaucet;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '12345';
                 isFra = false;
                 console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password)];
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '), password)];
             case 1:
                 faucetWalletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(PKEY_MINE, password)];
-            case 2:
-                newWalletMine1 = _a.sent();
-                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '), password)];
-            case 3:
-                newWalletMine2 = _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(faucetWalletInfo)];
-            case 4:
+            case 2:
                 balanceFaucet = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(newWalletMine1)];
-            case 5:
-                balanceNewMine1 = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(newWalletMine2)];
-            case 6:
-                balanceNewMine2 = _a.sent();
+                // const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+                // const balanceNewMine2 = await Account.getBalance(newWalletMine2);
+                //
                 console.log('\n');
                 console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
                 console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
                 console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
-                console.log('\n');
-                console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
-                console.log('newWalletMine1.address ', newWalletMine1.address);
-                console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
-                console.log('\n');
-                console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
-                console.log('newWalletMine2.address', newWalletMine2.address);
-                console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
-                console.log('\n');
+                // console.log('\n');
+                // console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+                // console.log('newWalletMine1.address ', newWalletMine1.address);
+                // console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
+                //
+                // console.log('\n');
+                // console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+                // console.log('newWalletMine2.address', newWalletMine2.address);
+                // console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
+                //
+                // console.log('\n');
                 console.log('balance from restored faucet IS', balanceFaucet);
-                console.log('balance from restored MINE1 IS', balanceNewMine1);
-                console.log('balance from restored MINE2 IS', balanceNewMine2);
+                // console.log('balance from restored MINE1 IS', balanceNewMine1);
+                // console.log('balance from restored MINE2 IS', balanceNewMine2);
+                //
                 console.log('\n');
                 console.log('\n');
                 return [2 /*return*/];
