@@ -27,10 +27,10 @@ const sdkEnv = {
   // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'http://54.213.254.47',
   // hostUrl: 'https://dev-qa04.dev.findora.org',
-  // hostUrl: 'https://dev-qa01.dev.findora.org',
+  hostUrl: 'https://dev-qa01.dev.findora.org',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -104,51 +104,52 @@ const getFraBalance = async () => {
 
   console.log('🚀 ~ file: run.ts ~ line 113 ~ getFraBalance ~ isFra', isFra);
 
-  const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
-  // const faucetWalletInfo = await Keypair.restoreFromMnemonic(
-  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
-  //   password,
-  // );
+  // const faucetWalletInfo = await Keypair.restoreFromPrivateKey(PKEY_LOCAL_FAUCET, password);
+  const faucetWalletInfo = await Keypair.restoreFromMnemonic(
+    PKEY_LOCAL_FAUCET_MNEMONIC_STRING.split(' '),
+    password,
+  );
 
-  const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   // const newWalletMine1 = await Keypair.restoreFromMnemonic(
   //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
   //   password,
   // );
 
   // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
-  const newWalletMine2 = await Keypair.restoreFromMnemonic(
-    PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
-    password,
-  );
+  // const newWalletMine2 = await Keypair.restoreFromMnemonic(
+  //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
+  //   password,
+  // );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
-  const balanceNewMine1 = await Account.getBalance(newWalletMine1);
-  const balanceNewMine2 = await Account.getBalance(newWalletMine2);
-
+  // const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+  // const balanceNewMine2 = await Account.getBalance(newWalletMine2);
+  //
   console.log('\n');
 
   console.log('Faucet Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING, '\n');
   console.log('faucetWalletInfo.address ', faucetWalletInfo.address);
   console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
-  console.log('\n');
-  console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
-  console.log('newWalletMine1.address ', newWalletMine1.address);
-  console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
-
-  console.log('\n');
-  console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
-  console.log('newWalletMine2.address', newWalletMine2.address);
-  console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
-
-  console.log('\n');
+  // console.log('\n');
+  // console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+  // console.log('newWalletMine1.address ', newWalletMine1.address);
+  // console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
+  //
+  // console.log('\n');
+  // console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+  // console.log('newWalletMine2.address', newWalletMine2.address);
+  // console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
+  //
+  // console.log('\n');
 
   console.log('balance from restored faucet IS', balanceFaucet);
-  console.log('balance from restored MINE1 IS', balanceNewMine1);
-  console.log('balance from restored MINE2 IS', balanceNewMine2);
-
+  // console.log('balance from restored MINE1 IS', balanceNewMine1);
+  // console.log('balance from restored MINE2 IS', balanceNewMine2);
+  //
   console.log('\n');
+
   console.log('\n');
 };
 
