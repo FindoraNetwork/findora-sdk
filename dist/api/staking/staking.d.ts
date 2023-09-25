@@ -12,14 +12,11 @@ import * as AssetApi from '../sdkAsset';
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
  *
- *  // Define whether or not user desires to unstake all the tokens, or only part of the staked amount
- *  const isFullUnstake = false;
  *
  *  const transactionBuilder = await StakingApi.unStake(
  *    walletInfo,
  *    amount,
  *    validator,
- *    isFullUnstake,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -27,7 +24,7 @@ import * as AssetApi from '../sdkAsset';
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const unStake: (walletInfo: WalletKeypar, amount: string, validator: string, isFullUnstake?: boolean) => Promise<TransactionBuilder>;
+export declare const unStake: (walletInfo: WalletKeypar, amount: string, validator: string) => Promise<TransactionBuilder>;
 /**
  * Delegates FRA tokens
  *
@@ -83,9 +80,11 @@ export declare const delegate: (walletInfo: WalletKeypar, address: string, amoun
  * ```ts
  *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
 
+ *  const validators = ['validator_addr1', 'validator_addr2'];
  *  const transactionBuilder = await StakingApi.claim(
  *    walletInfo,
  *    amount,
+ *    validators,
  *  );
  *
  *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
@@ -93,7 +92,7 @@ export declare const delegate: (walletInfo: WalletKeypar, address: string, amoun
  *
  * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
  */
-export declare const claim: (walletInfo: WalletKeypar, amount: string) => Promise<TransactionBuilder>;
+export declare const claim: (walletInfo: WalletKeypar, validators: string[]) => Promise<TransactionBuilder>;
 /**
  * @returns
  * @todo add unit test

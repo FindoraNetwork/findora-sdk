@@ -139,7 +139,7 @@
     "ethereum-protocol": "^1.0.1",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
-    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git#v0.4.2",
+    "findora-wallet-wasm": "https://github.com/FindoraNetwork/wasm-js-bindings.git",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",

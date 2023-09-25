@@ -9,14 +9,14 @@ export declare const hashAddressTofraAddress: (addresss: string, bridgeAddress: 
 export declare const hashAddressTofraAddressByNFT: (address: string, tokenId: string, bridgeAddress: string, web3WalletInfo: IWebLinkedInfo) => Promise<string>;
 export declare const hashAddressTofraAddressBy1155: (address: string, tokenId: string, bridgeAddress: string, web3WalletInfo: IWebLinkedInfo) => Promise<string>;
 export declare const fraToBar: (bridgeAddress: string, recipientAddress: string, amount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
-export declare const approveToken: (tokenAddress: string, deckAddress: string, price: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
+export declare const approveToken: (tokenAddress: string, deckAddress: string, price: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-core").TransactionReceipt>;
 export declare const frc20ToBar: (bridgeAddress: string, recipientAddress: string, tokenAddress: string, tokenAmount: string, web3WalletInfo: IWebLinkedInfo) => Promise<TransactionReceipt | any>;
 export declare function getPrismConfig(): Promise<{
     ledgerAddress: string;
     assetAddress: string;
     bridgeAddress: string;
 }>;
-export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-eth").TransactionReceipt>;
+export declare const approveNFT: (tokenAddress: string, deckAddress: string, tokenId: string, nftType: string, web3WalletInfo: IWebLinkedInfo) => Promise<import("web3-core").TransactionReceipt>;
 export declare const getDomainCurrentText: (name: string) => Promise<{
     eth: string;
     fra: string;
