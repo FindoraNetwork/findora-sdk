@@ -79,22 +79,4 @@ describe(`Findora SDK integration (integration test)`, () => {
       expect(result).toBe(true);
     }, 5000);
   });
-  // describe('Staking', () => {
-  //   it(
-  //     'Should get delegate tokens and see some rewards',
-  //     async () => {
-  //       const result = await Integration.delegateFraTransactionSubmit();
-  //       expect(result).toBe(true);
-  //     },
-  //     extendedExecutionTimeout * 13,
-  //   );
-  //   it(
-  //     'Should get delegate tokens and claim the rewards',
-  //     async () => {
-  //       const result = await Integration.delegateFraTransactionAndClaimRewards();
-  //       expect(result).toBe(true);
-  //     },
-  //     extendedExecutionTimeout * 25,
-  //   );
-  // });
 });

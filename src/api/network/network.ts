@@ -171,6 +171,7 @@ export const getDerivedAssetCode = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<GetDerivedAssetCodeResult> => {
   const url = `${getLedgerRoute()}/get_derived_asset_code/${assetCode}`;
+  console.log('url for getting get_derived_asset_code', url);
 
   const dataResult = await apiGet(url, config);
 

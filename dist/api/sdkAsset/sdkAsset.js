@@ -172,15 +172,23 @@ var getRandomAssetCode = function () { return __awaiter(void 0, void 0, void 0, 
 }); };
 exports.getRandomAssetCode = getRandomAssetCode;
 var getDerivedAssetCode = function (assetCode) { return __awaiter(void 0, void 0, void 0, function () {
-    var derivedAssetCodeResponse, derivedAssetCode;
+    var ledger, derivedAssetCodeResponse, derivedAssetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, Network.getDerivedAssetCode(assetCode)];
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
+                ledger = _a.sent();
+                return [4 /*yield*/, Network.getDerivedAssetCode(assetCode)];
+            case 2:
                 derivedAssetCodeResponse = _a.sent();
+                console.log('derivedAssetCodeResponse!!!!', derivedAssetCodeResponse);
                 derivedAssetCode = derivedAssetCodeResponse.response;
+                // qa01
+                // const { response: derivedAssetCodeObj } = derivedAssetCodeResponse;
+                // const { val } = derivedAssetCodeObj as any;
+                // const derivedAssetCode = ledger.asset_type_from_jsvalue(val);
                 if (!derivedAssetCode) {
-                    throw new Error("derivedAssetCode API error \"".concat(derivedAssetCodeResponse, "\" for asset code \"").concat(assetCode, "\""));
+                    throw new Error("derivedAssetCode API error !!! \"".concat(derivedAssetCodeResponse, "\" for asset code \"").concat(assetCode, "\""));
                 }
                 return [2 /*return*/, derivedAssetCode];
         }

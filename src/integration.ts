@@ -155,9 +155,6 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const walletInfo = await KeypairApi.restoreFromPrivateKey(pkey, password);
 
   const tokenCode = await AssetApi.getRandomAssetCode();
-  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
-
-  log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const assetRules = {
     transferable: false,
@@ -181,6 +178,10 @@ export const defineAndIssueAssetTransactionSubmit = async () => {
   const inputNumbers = '5';
 
   const assetBlindRules = { isAmountBlind: false };
+
+  const derivedTokenCode = await AssetApi.getDerivedAssetCode(tokenCode);
+
+  log('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
 
   const issueAssetBuilder = await AssetApi.issueAsset(
     walletInfo,

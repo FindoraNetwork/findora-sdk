@@ -110,21 +110,21 @@ const getFraBalance = async () => {
     password,
   );
 
-  // const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
+  const newWalletMine1 = await Keypair.restoreFromPrivateKey(PKEY_MINE, password);
   // const newWalletMine1 = await Keypair.restoreFromMnemonic(
   //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1.split(' '),
   //   password,
   // );
 
-  // const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
+  const newWalletMine2 = await Keypair.restoreFromPrivateKey(PKEY_MINE2, password);
   // const newWalletMine2 = await Keypair.restoreFromMnemonic(
   //   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2.split(' '),
   //   password,
   // );
 
   const balanceFaucet = await Account.getBalance(faucetWalletInfo);
-  // const balanceNewMine1 = await Account.getBalance(newWalletMine1);
-  // const balanceNewMine2 = await Account.getBalance(newWalletMine2);
+  const balanceNewMine1 = await Account.getBalance(newWalletMine1);
+  const balanceNewMine2 = await Account.getBalance(newWalletMine2);
   //
   console.log('\n');
 
@@ -133,20 +133,20 @@ const getFraBalance = async () => {
   console.log('faucetWalletInfo.privateStr', faucetWalletInfo.privateStr);
 
   // console.log('\n');
-  // console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
-  // console.log('newWalletMine1.address ', newWalletMine1.address);
-  // console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
+  console.log('Mine1 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1, '\n');
+  console.log('newWalletMine1.address ', newWalletMine1.address);
+  console.log('newWalletMine1.privateStr ', newWalletMine1.privateStr);
   //
-  // console.log('\n');
-  // console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
-  // console.log('newWalletMine2.address', newWalletMine2.address);
-  // console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
-  //
-  // console.log('\n');
+  console.log('\n');
+  console.log('Mine2 Mnemonic', PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2, '\n');
+  console.log('newWalletMine2.address', newWalletMine2.address);
+  console.log('newWalletMine2.privateStr', newWalletMine2.privateStr);
+
+  console.log('\n');
 
   console.log('balance from restored faucet IS', balanceFaucet);
-  // console.log('balance from restored MINE1 IS', balanceNewMine1);
-  // console.log('balance from restored MINE2 IS', balanceNewMine2);
+  console.log('balance from restored MINE1 IS', balanceNewMine1);
+  console.log('balance from restored MINE2 IS', balanceNewMine2);
   //
   console.log('\n');
 

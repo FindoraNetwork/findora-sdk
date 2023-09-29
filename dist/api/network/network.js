@@ -216,6 +216,7 @@ var getDerivedAssetCode = function (assetCode, config) { return __awaiter(void 0
         switch (_a.label) {
             case 0:
                 url = "".concat(getLedgerRoute(), "/get_derived_asset_code/").concat(assetCode);
+                console.log('url for getting get_derived_asset_code', url);
                 return [4 /*yield*/, (0, exports.apiGet)(url, config)];
             case 1:
                 dataResult = _a.sent();

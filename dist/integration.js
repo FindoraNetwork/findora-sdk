@@ -201,7 +201,7 @@ var defineAssetTransactionSubmit = function () { return __awaiter(void 0, void 0
 }); };
 exports.defineAssetTransactionSubmit = defineAssetTransactionSubmit;
 var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, walletInfo, tokenCode, derivedTokenCode, assetRules, memo, assetBuilder, handle, isTxSent, inputNumbers, assetBlindRules, issueAssetBuilder, handleIssue, isTxIssued;
+    var pkey, walletInfo, tokenCode, assetRules, memo, assetBuilder, handle, isTxSent, inputNumbers, assetBlindRules, derivedTokenCode, issueAssetBuilder, handleIssue, isTxIssued;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -213,10 +213,6 @@ var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0
                 return [4 /*yield*/, api_1.Asset.getRandomAssetCode()];
             case 2:
                 tokenCode = _a.sent();
-                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(tokenCode)];
-            case 3:
-                derivedTokenCode = _a.sent();
-                (0, utils_1.log)('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
                 assetRules = {
                     transferable: false,
                     updatable: true,
@@ -224,13 +220,13 @@ var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0
                 };
                 memo = 'this is a test asset';
                 return [4 /*yield*/, api_1.Asset.defineAsset(walletInfo, tokenCode, memo, assetRules)];
-            case 4:
+            case 3:
                 assetBuilder = _a.sent();
                 return [4 /*yield*/, api_1.Transaction.submitTransaction(assetBuilder)];
-            case 5:
+            case 4:
                 handle = _a.sent();
                 return [4 /*yield*/, getTxSid('define asset', handle)];
-            case 6:
+            case 5:
                 isTxSent = _a.sent();
                 if (!isTxSent) {
                     (0, utils_1.log)("\uD83D\uDE80 ~ defineAndIssueAssetTransactionSubmit ~ Could not submit define asset");
@@ -238,6 +234,10 @@ var defineAndIssueAssetTransactionSubmit = function () { return __awaiter(void 0
                 }
                 inputNumbers = '5';
                 assetBlindRules = { isAmountBlind: false };
+                return [4 /*yield*/, api_1.Asset.getDerivedAssetCode(tokenCode)];
+            case 6:
+                derivedTokenCode = _a.sent();
+                (0, utils_1.log)('🚀 ~ defineAndIssueAssetTransactionSubmit ~ tokenCode', tokenCode, derivedTokenCode);
                 return [4 /*yield*/, api_1.Asset.issueAsset(walletInfo, derivedTokenCode, inputNumbers, assetBlindRules)];
             case 7:
                 issueAssetBuilder = _a.sent();
