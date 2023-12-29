@@ -568,3 +568,78 @@ export const getTxnListByPrism = async (
 
   return dataResult.response.data;
 };
+
+type OperationType = 'deploy' | 'mint' | 'transfer';
+export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', tick: string) => {
+  console.log(op);
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const recieversInfo: Fee.ReciverInfo[] = [];
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const feeRecieverInfoItem = {
+    utxoNumbers: minimalFee,
+    toPublickey,
+  };
+  recieversInfo.push(feeRecieverInfoItem);
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
+  let receivedTransferOperation = '';
+
+  try {
+    switch (op) {
+      case 'deploy':
+        receivedTransferOperation = transferOperationBuilder
+          .add_output_no_tracing(
+            BigInt(0),
+            ledger.public_key_from_base64(wallet.publickey),
+            fraAssetCode,
+            false,
+            false,
+            `{"p":"brc-20","op":"deploy","tick":${tick},"max":"21000000","lim":"1000"}`,
+          )
+          .create()
+          .sign(wallet.keypair)
+          .transaction();
+        break;
+    }
+
+    // receivedTransferOperation = transferOperationBuilder.create().sign(wallet.keypair).transaction();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Full error (main)', error);
+
+    throw new Error(`Could not create transfer operation (main), Error: "${e}"`);
+  }
+
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.sign(wallet.keypair);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+  }
+
+  return transactionBuilder;
+};

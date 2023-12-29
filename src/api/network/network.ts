@@ -653,3 +653,21 @@ export const getMaxAtxoSid = async (
   const dataResult = await apiGet(url, { ...config });
   return dataResult;
 };
+
+export const submitBRC20Tx = async (
+  tx: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.SubmitEvmTxResult> => {
+  const url = `${getExplorerApiRoute()}`;
+  const params = {
+    id: 'anything',
+    jsonrpc: '2.0',
+    method: 'broadcast_tx_sync',
+    params: {
+      tx,
+    },
+  };
+  const dataResult = await apiPost(url, params, { ...config });
+
+  return dataResult;
+};

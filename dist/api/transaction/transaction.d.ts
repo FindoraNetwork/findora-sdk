@@ -182,3 +182,6 @@ export declare const getTxnList: (address: string, type: 'from' | 'to', page?: n
 export declare const getTxnListByStaking: (address: string, type?: 'claim' | 'delegation' | 'unDelegation', page?: number, per_page?: number) => Promise<ProcessedTxListByStakingResponseResult>;
 export declare const getTxnListByStakingUnDelegation: (address: string, page?: number, per_page?: number) => Promise<ProcessedTxListByStakingUnDelagtionResponseResult>;
 export declare const getTxnListByPrism: (address: string, type?: 'send' | 'receive', page?: number, per_page?: number) => Promise<ProcessedTxListByPrismResponseResult>;
+type OperationType = 'deploy' | 'mint' | 'transfer';
+export declare const brc20: (wallet: WalletKeypar, op: OperationType | undefined, tick: string) => Promise<TransactionBuilder>;
+export {};

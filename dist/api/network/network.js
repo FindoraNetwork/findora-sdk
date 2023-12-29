@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
+exports.submitBRC20Tx = exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -795,4 +795,26 @@ var getMaxAtxoSid = function (config) { return __awaiter(void 0, void 0, void 0,
     });
 }); };
 exports.getMaxAtxoSid = getMaxAtxoSid;
+var submitBRC20Tx = function (tx, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var url, params, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                url = "".concat(getExplorerApiRoute());
+                params = {
+                    id: "anything",
+                    jsonrpc: '2.0',
+                    method: 'broadcast_tx_sync',
+                    params: {
+                        tx: tx,
+                    },
+                };
+                return [4 /*yield*/, (0, exports.apiPost)(url, params, __assign({}, config))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.submitBRC20Tx = submitBRC20Tx;
 //# sourceMappingURL=network.js.map
