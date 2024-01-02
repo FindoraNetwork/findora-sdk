@@ -588,6 +588,8 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
   const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
   let receivedTransferOperation = '';
 
+  const brc20Memo = `{"p":"brc-20","op":"deploy","tick":"${tick}","max":"21000000","lim":"1000"}`;
+
   try {
     switch (op) {
       case 'deploy':
@@ -598,7 +600,7 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
             fraAssetCode,
             false,
             false,
-            `{"p":"brc-20","op":"deploy","tick":${tick},"max":"21000000","lim":"1000"}`,
+            brc20Memo,
           )
           .create()
           .sign(wallet.keypair)

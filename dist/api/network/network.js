@@ -802,7 +802,7 @@ var submitBRC20Tx = function (tx, config) { return __awaiter(void 0, void 0, voi
             case 0:
                 url = "".concat(getExplorerApiRoute());
                 params = {
-                    id: "anything",
+                    id: 'anything',
                     jsonrpc: '2.0',
                     method: 'broadcast_tx_sync',
                     params: {

@@ -635,7 +635,7 @@ exports.getTxnListByPrism = getTxnListByPrism;
 var brc20 = function (wallet, op, tick) {
     if (op === void 0) { op = 'deploy'; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, e, transactionBuilder, error_3, e, e, e;
+        var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, brc20Memo, e, transactionBuilder, error_3, e, e, e;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -660,11 +660,12 @@ var brc20 = function (wallet, op, tick) {
                 case 4:
                     transferOperationBuilder = _a.sent();
                     receivedTransferOperation = '';
+                    brc20Memo = "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":\"".concat(tick, "\",\"max\":\"21000000\",\"lim\":\"1000\"}");
                     try {
                         switch (op) {
                             case 'deploy':
                                 receivedTransferOperation = transferOperationBuilder
-                                    .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":".concat(tick, ",\"max\":\"21000000\",\"lim\":\"1000\"}"))
+                                    .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
                                     .create()
                                     .sign(wallet.keypair)
                                     .transaction();

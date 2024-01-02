@@ -1748,7 +1748,7 @@ var deployBrc20 = function () { return __awaiter(void 0, void 0, void 0, functio
             case 3:
                 sidsResult = _a.sent();
                 console.log('sids:', sidsResult);
-                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', 'giambi_brc2')];
+                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', 'giambi222')];
             case 4:
                 transactionBuilder = _a.sent();
                 tx = stringToHex(transactionBuilder.transaction());
