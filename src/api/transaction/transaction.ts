@@ -588,7 +588,10 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
   const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
   let receivedTransferOperation = '';
 
+  // deploy
   const brc20Memo = `{"p":"brc-20","op":"deploy","tick":"${tick}","max":"21000000","lim":"1000"}`;
+  // mint:      '{"p":"brc-20","op":"mint","tick":"ordi","amt":"1000"}'
+  // transfer:  '{"p":"brc-20","op":"transfer","tick":"ordi","amt":"1000"}'
 
   try {
     switch (op) {
