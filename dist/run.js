@@ -64,7 +64,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.unstakeFraTransactionSubmit = exports.delegateFraTransactionAndClaimRewards = exports.delegateFraTransactionSubmit = void 0;
 /* eslint-disable no-console */
-var s3_1 = __importDefault(require("aws-sdk/clients/s3"));
+// import S3 from 'aws-sdk/clients/s3';
 var dotenv_1 = __importDefault(require("dotenv"));
 var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var Sdk_1 = __importDefault(require("./Sdk"));
@@ -734,65 +734,58 @@ var myFunc18 = function () { return __awaiter(void 0, void 0, void 0, function (
     });
 }); };
 // s3 cache
-var myFuncS3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME, accessKeyId, secretAccessKey, cacheBucketName, cacheItemKey, s3Params, s3, readRes, error_1, e, existingContent, res, myBody, error_2, e;
-    var _b, _c;
-    return __generator(this, function (_d) {
-        switch (_d.label) {
-            case 0:
-                _a = process.env, AWS_ACCESS_KEY_ID = _a.AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY = _a.AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME = _a.UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME = _a.UTXO_CACHE_KEY_NAME;
-                accessKeyId = AWS_ACCESS_KEY_ID || '';
-                secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
-                cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
-                cacheItemKey = UTXO_CACHE_KEY_NAME || '';
-                s3Params = {
-                    accessKeyId: accessKeyId,
-                    secretAccessKey: secretAccessKey,
-                };
-                s3 = new s3_1.default(s3Params);
-                _d.label = 1;
-            case 1:
-                _d.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, s3
-                        .getObject({
-                        Bucket: cacheBucketName,
-                        Key: cacheItemKey,
-                    })
-                        .promise()];
-            case 2:
-                readRes = _d.sent();
-                return [3 /*break*/, 4];
-            case 3:
-                error_1 = _d.sent();
-                e = error_1;
-                console.log('Error!', e.message);
-                return [3 /*break*/, 4];
-            case 4:
-                console.log('readRes :)', (_b = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _b === void 0 ? void 0 : _b.toString());
-                existingContent = (_c = readRes === null || readRes === void 0 ? void 0 : readRes.Body) === null || _c === void 0 ? void 0 : _c.toString('utf8');
-                myBody = "".concat(existingContent, "\nFUNCTION STARTED: ").concat(new Date());
-                _d.label = 5;
-            case 5:
-                _d.trys.push([5, 7, , 8]);
-                return [4 /*yield*/, s3
-                        .putObject({
-                        Bucket: cacheBucketName,
-                        Key: cacheItemKey,
-                        Body: myBody,
-                    })
-                        .promise()];
-            case 6:
-                res = _d.sent();
-                return [3 /*break*/, 8];
-            case 7:
-                error_2 = _d.sent();
-                e = error_2;
-                console.log('Error!', e.message);
-                return [3 /*break*/, 8];
-            case 8: return [2 /*return*/];
-        }
-    });
-}); };
+// const myFuncS3 = async () => {
+//   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+//     process.env;
+//   const accessKeyId = AWS_ACCESS_KEY_ID || '';
+//   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+//   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+//   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+//
+//   const s3Params = {
+//     accessKeyId,
+//     secretAccessKey,
+//   };
+//
+//   const s3 = new S3(s3Params);
+//
+//   let readRes;
+//
+//   try {
+//     readRes = await s3
+//       .getObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+//
+//   console.log('readRes :)', readRes?.Body?.toString());
+//
+//   const existingContent = readRes?.Body?.toString('utf8');
+//
+//   let res;
+//
+//   const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+//
+//   try {
+//     res = await s3
+//       .putObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//         Body: myBody,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+// };
 var delegateFraTransactionSubmit = function () { return __awaiter(void 0, void 0, void 0, function () {
     var password, Ledger, pkey, walletInfo, toWalletInfo, fraCode, assetBlindRules, numbersToSend, numbersToDelegate, transactionBuilderSend, resultHandleSend, balanceAfterUnstake, delegationTargetPublicKey, delegationTargetAddress, formattedVlidators, validatorAddress, transactionBuilder, resultHandle, transactionStatus, sendResponse, Committed, txnSID, delegateInfo, isRewardsAdded;
     return __generator(this, function (_a) {
@@ -1604,7 +1597,7 @@ function testBrokenKeypairs() {
 }
 function getNewBalanace() {
     return __awaiter(this, void 0, void 0, function () {
-        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_3, error_4, error_5;
+        var isFra, pkeyLocalFaucetFra, pkeyLocalFaucetEth, mnemonicLocalFaucet, faucetWalletInfoPkeyFra, faucetWalletInfoPkeyEth, faucetWalletInfoMnemonic, balanceFaucetFra, balanceFaucetEth, balanceFaucetMnemonic, error_1, error_2, error_3;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
@@ -1645,8 +1638,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 10];
                 case 9:
-                    error_3 = _a.sent();
-                    console.log('we have an error', error_3);
+                    error_1 = _a.sent();
+                    console.log('we have an error', error_1);
                     return [3 /*break*/, 10];
                 case 10:
                     console.log('\n');
@@ -1665,8 +1658,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 14];
                 case 13:
-                    error_4 = _a.sent();
-                    console.log('we have an error', error_4);
+                    error_2 = _a.sent();
+                    console.log('we have an error', error_2);
                     return [3 /*break*/, 14];
                 case 14:
                     console.log('\n');
@@ -1685,8 +1678,8 @@ function getNewBalanace() {
                     _a.sent();
                     return [3 /*break*/, 18];
                 case 17:
-                    error_5 = _a.sent();
-                    console.log('we have an error', error_5);
+                    error_3 = _a.sent();
+                    console.log('we have an error', error_3);
                     return [3 /*break*/, 18];
                 case 18:
                     console.log('\n');
@@ -1719,7 +1712,7 @@ function fnsNameResolver() {
 // prism();
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1730,6 +1723,22 @@ function fnsNameResolver() {
 // testBrokenKeypairs();
 // getTxnListTest();
 // fnsNameResolver();
+function hexToBytes(hex) {
+    var bytes = [];
+    for (var c = 0; c < hex.length; c += 2)
+        bytes.push(parseInt(hex.substr(c, 2), 16));
+    return bytes;
+}
+var stringToHex = function (str) {
+    var hex = '';
+    for (var i = 0; i < str.length; i++) {
+        var charCode = str.charCodeAt(i);
+        var hexValue = charCode.toString(16);
+        // Pad with zeros to ensure two-digit representation
+        hex += hexValue.padStart(2, '0');
+    }
+    return hex;
+};
 var deployBrc20 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var pkey, password, walletInfo, balanceOld, sidsResult, transactionBuilder, tx, bytes, binary, i, result;
     return __generator(this, function (_a) {
@@ -1772,21 +1781,5 @@ var deployBrc20 = function () { return __awaiter(void 0, void 0, void 0, functio
         }
     });
 }); };
-deployBrc20();
-function hexToBytes(hex) {
-    var bytes = [];
-    for (var c = 0; c < hex.length; c += 2)
-        bytes.push(parseInt(hex.substr(c, 2), 16));
-    return bytes;
-}
-var stringToHex = function (str) {
-    var hex = '';
-    for (var i = 0; i < str.length; i++) {
-        var charCode = str.charCodeAt(i);
-        var hexValue = charCode.toString(16);
-        // Pad with zeros to ensure two-digit representation
-        hex += hexValue.padStart(2, '0');
-    }
-    return hex;
-};
+// deployBrc20();
 //# sourceMappingURL=run.js.map

@@ -661,6 +661,8 @@ var brc20 = function (wallet, op, tick) {
                     transferOperationBuilder = _a.sent();
                     receivedTransferOperation = '';
                     brc20Memo = "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":\"".concat(tick, "\",\"max\":\"21000000\",\"lim\":\"1000\"}");
+                    // mint:      '{"p":"brc-20","op":"mint","tick":"ordi","amt":"1000"}'
+                    // transfer:  '{"p":"brc-20","op":"transfer","tick":"ordi","amt":"1000"}'
                     try {
                         switch (op) {
                             case 'deploy':

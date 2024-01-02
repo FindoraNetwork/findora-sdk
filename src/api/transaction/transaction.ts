@@ -570,6 +570,7 @@ export const getTxnListByPrism = async (
 };
 
 type OperationType = 'deploy' | 'mint' | 'transfer';
+
 export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', tick: string) => {
   console.log(op);
   const ledger = await getLedger();

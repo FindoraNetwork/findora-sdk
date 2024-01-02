@@ -39,6 +39,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// import S3 from 'aws-sdk/clients/s3';
 var dotenv_1 = __importDefault(require("dotenv"));
 var api_1 = require("./api");
 var Sdk_1 = __importDefault(require("./Sdk"));
@@ -50,10 +51,10 @@ var waitingTimeBeforeCheckTxStatus = 19000;
  */
 var sdkEnv = {
     // hostUrl: 'https://prod-mainnet.prod.findora.org',
-    // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+    hostUrl: 'https://prod-testnet.prod.findora.org',
     // hostUrl: 'https://dev-staging.dev.findora.org',
     // hostUrl: 'https://dev-evm.dev.findora.org',
-    hostUrl: 'http://127.0.0.1',
+    // hostUrl: 'http://127.0.0.1',
     // hostUrl: 'https://dev-qa02.dev.findora.org',
     // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
     // cacheProvider: FileCacheProvider,
@@ -120,6 +121,7 @@ var getFraBalance = function () { return __awaiter(void 0, void 0, void 0, funct
                 console.log('\n');
                 console.log('newWallet.address (from mnenmonic)', newWallet.address);
                 console.log('newWallet.privateStr', newWallet.privateStr);
+                console.log('newWallet.publickey', newWallet.publickey);
                 console.log('\n');
                 console.log('balance from restored from pkey IS', balance);
                 console.log('balance from restored using mnemonic IS', balanceNew);

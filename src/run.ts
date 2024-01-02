@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import S3 from 'aws-sdk/clients/s3';
+// import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
 import Sdk from './Sdk';
@@ -608,58 +608,58 @@ const myFunc18 = async () => {
 };
 
 // s3 cache
-const myFuncS3 = async () => {
-  const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
-    process.env;
-  const accessKeyId = AWS_ACCESS_KEY_ID || '';
-  const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
-  const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
-  const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
-
-  const s3Params = {
-    accessKeyId,
-    secretAccessKey,
-  };
-
-  const s3 = new S3(s3Params);
-
-  let readRes;
-
-  try {
-    readRes = await s3
-      .getObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-
-  console.log('readRes :)', readRes?.Body?.toString());
-
-  const existingContent = readRes?.Body?.toString('utf8');
-
-  let res;
-
-  const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
-
-  try {
-    res = await s3
-      .putObject({
-        Bucket: cacheBucketName,
-        Key: cacheItemKey,
-        Body: myBody,
-      })
-      .promise();
-  } catch (error) {
-    const e: Error = error as Error;
-
-    console.log('Error!', e.message);
-  }
-};
+// const myFuncS3 = async () => {
+//   const { AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, UTXO_CACHE_BUCKET_NAME, UTXO_CACHE_KEY_NAME } =
+//     process.env;
+//   const accessKeyId = AWS_ACCESS_KEY_ID || '';
+//   const secretAccessKey = AWS_SECRET_ACCESS_KEY || '';
+//   const cacheBucketName = UTXO_CACHE_BUCKET_NAME || '';
+//   const cacheItemKey = UTXO_CACHE_KEY_NAME || '';
+//
+//   const s3Params = {
+//     accessKeyId,
+//     secretAccessKey,
+//   };
+//
+//   const s3 = new S3(s3Params);
+//
+//   let readRes;
+//
+//   try {
+//     readRes = await s3
+//       .getObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+//
+//   console.log('readRes :)', readRes?.Body?.toString());
+//
+//   const existingContent = readRes?.Body?.toString('utf8');
+//
+//   let res;
+//
+//   const myBody = `${existingContent}\nFUNCTION STARTED: ${new Date()}`;
+//
+//   try {
+//     res = await s3
+//       .putObject({
+//         Bucket: cacheBucketName,
+//         Key: cacheItemKey,
+//         Body: myBody,
+//       })
+//       .promise();
+//   } catch (error) {
+//     const e: Error = error as Error;
+//
+//     console.log('Error!', e.message);
+//   }
+// };
 
 export const delegateFraTransactionSubmit = async () => {
   console.log('////////////////  delegateFraTransactionSubmit //////////////// ');
@@ -1664,7 +1664,7 @@ async function fnsNameResolver() {
 
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1678,6 +1678,24 @@ async function fnsNameResolver() {
 // getTxnListTest();
 
 // fnsNameResolver();
+
+function hexToBytes(hex: string) {
+  let bytes = [];
+  for (let c = 0; c < hex.length; c += 2) bytes.push(parseInt(hex.substr(c, 2), 16));
+  return bytes;
+}
+
+const stringToHex = (str: string) => {
+  let hex = '';
+  for (let i = 0; i < str.length; i++) {
+    const charCode = str.charCodeAt(i);
+    const hexValue = charCode.toString(16);
+
+    // Pad with zeros to ensure two-digit representation
+    hex += hexValue.padStart(2, '0');
+  }
+  return hex;
+};
 
 const deployBrc20 = async () => {
   const pkey = 'eWI2DwxJY7v3JGVn9T16iHgV-ORhVa9hKAqfgpkzmsg=';
@@ -1708,22 +1726,5 @@ const deployBrc20 = async () => {
 
   await waitForBlockChange();
 };
-deployBrc20();
 
-function hexToBytes(hex: string) {
-  let bytes = [];
-  for (let c = 0; c < hex.length; c += 2) bytes.push(parseInt(hex.substr(c, 2), 16));
-  return bytes;
-}
-
-const stringToHex = (str: string) => {
-  let hex = '';
-  for (let i = 0; i < str.length; i++) {
-    const charCode = str.charCodeAt(i);
-    const hexValue = charCode.toString(16);
-
-    // Pad with zeros to ensure two-digit representation
-    hex += hexValue.padStart(2, '0');
-  }
-  return hex;
-};
+// deployBrc20();

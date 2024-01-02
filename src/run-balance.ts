@@ -1,4 +1,4 @@
-import S3 from 'aws-sdk/clients/s3';
+// import S3 from 'aws-sdk/clients/s3';
 import dotenv from 'dotenv';
 import sleep from 'sleep-promise';
 import { Account, Asset, Keypair, Network, Staking, Transaction } from './api';
@@ -21,10 +21,10 @@ const waitingTimeBeforeCheckTxStatus = 19000;
  */
 const sdkEnv = {
   // hostUrl: 'https://prod-mainnet.prod.findora.org',
-  // hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
+  hostUrl: 'https://prod-testnet.prod.findora.org', // anvil balance!
   // hostUrl: 'https://dev-staging.dev.findora.org',
   // hostUrl: 'https://dev-evm.dev.findora.org',
-  hostUrl: 'http://127.0.0.1',
+  // hostUrl: 'http://127.0.0.1',
   // hostUrl: 'https://dev-qa02.dev.findora.org',
   // hostUrl: 'https://prod-forge.prod.findora.org', // forge balance!
   // cacheProvider: FileCacheProvider,
@@ -92,7 +92,6 @@ const getFraBalance = async () => {
   //  const pkey = PKEY_MINE2;
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
-
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
@@ -118,6 +117,7 @@ const getFraBalance = async () => {
 
   console.log('newWallet.address (from mnenmonic)', newWallet.address);
   console.log('newWallet.privateStr', newWallet.privateStr);
+  console.log('newWallet.publickey', newWallet.publickey);
 
   console.log('\n');
 
