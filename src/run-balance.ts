@@ -48,6 +48,7 @@ const {
   CUSTOM_ASSET_CODE = '',
   PKEY_MINE = '',
   PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1 = '',
+  PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2 = '',
   PKEY_MINE2 = '',
   PKEY_MINE3 = '',
   PKEY_LOCAL_FAUCET = '',
@@ -93,7 +94,7 @@ const getFraBalance = async () => {
   // const pkey = PKEY_MINE3;
   // const pkey = ENG_PKEY;
   // const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING;
-  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2;
   // console.log(`🚀 ~ file: run.ts ~ line 82 ~ getFraBalance ~ mString "${mString}"`);
 
   const mm = mString.split(' ');

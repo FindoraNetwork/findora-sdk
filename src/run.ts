@@ -1755,7 +1755,7 @@ const deployBrc20v2 = async () => {
 const deployBrc20v3 = async () => {
   const password = '123';
 
-  const ticker = 'oleks123';
+  const ticker = 'oleks125';
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
@@ -1763,16 +1763,47 @@ const deployBrc20v3 = async () => {
   const balanceOld = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
 
-  const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', ticker);
+  // const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', ticker);
+  const transactionBuilder = await Transaction.brc20Deploy(walletInfo, ticker);
 
   const myTxInJson = transactionBuilder.transaction();
 
   const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
 
   const result = await Network.submitBRC20Tx(myTxInBase64);
-  console.log('submitBRC20Tx result', result);
+  console.log('submitBRC20Tx deploy result', result);
 
   await waitForBlockChange(2);
+  const balanceNew = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
+};
+
+const mintBrc20 = async () => {
+  const password = '123';
+
+  const ticker = 'oleks125';
+  const amount = '5';
+
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+  const mm = mString.split(' ');
+
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
+  const balanceOld = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
+
+  const transactionBuilder = await Transaction.brc20Mint(walletInfo, ticker, amount);
+
+  const myTxInJson = transactionBuilder.transaction();
+
+  const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+
+  const result = await Network.submitBRC20Tx(myTxInBase64);
+
+  console.log('submitBRC20Tx mint result', result);
+
+  await waitForBlockChange(2);
+
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
 };
@@ -1785,11 +1816,11 @@ const brc20ApiTest = async () => {
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
   const brc20Address = walletInfo.address;
 
-  const result = await Network.getBrc20Balance(ticker, brc20Address);
-  console.log('getBrc20Balance result', result);
+  // const result = await Network.getBrc20Balance(ticker, brc20Address);
+  // console.log('getBrc20Balance result', result);
 
-  // const result = await Network.getBrc20TokenList(0, 1, 10);
-  // console.log('getBrc20TokenList result', result);
+  const result = await Network.getBrc20TokenList(0, 1, 10);
+  console.log('getBrc20TokenList result', result.response);
 };
 
 // prism();
@@ -1811,6 +1842,8 @@ const brc20ApiTest = async () => {
 
 // fnsNameResolver();
 
-// deployBrc20v3();
-brc20ApiTest();
+// brc20ApiTest();
 // getTransactionStatus();
+
+// deployBrc20v3();
+mintBrc20();

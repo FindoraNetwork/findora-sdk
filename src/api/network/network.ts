@@ -701,7 +701,7 @@ export const getBrc20TokenList = async (
   pageNo = 1,
   pageCount = 10,
   config?: Types.NetworkAxiosConfig,
-): Promise<Types.Brc20BalanceDataResult> => {
+): Promise<Types.Brc20TokenListDataResult> => {
   const params = { type: tokenType, pageNo, pageCount };
 
   console.log('p', params);

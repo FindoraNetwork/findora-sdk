@@ -1,7 +1,7 @@
 import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
-import { TransactionBuilder } from '../../services/ledger/types';
+import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
 import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
@@ -611,8 +611,6 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
           .transaction();
         break;
     }
-
-    // receivedTransferOperation = transferOperationBuilder.create().sign(wallet.keypair).transaction();
   } catch (error) {
     const e: Error = error as Error;
 
@@ -646,6 +644,229 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
 
     throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
   }
+
+  return transactionBuilder;
+};
+
+/// refactored and code split below
+
+// next 3 methods are very similar , the only difference is the brc20Memo, but i keep those separately
+// since we might have the wasm methods / order changed. we might need to refactor those later
+export const getBrc20DeployBuilder = async (
+  wallet: WalletKeypar,
+  tick: string,
+  transferOperationBuilder: TransferOperationBuilder,
+) => {
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  // deploy
+  const brc20Memo = `{"p":"brc-20","op":"deploy","tick":"${tick}","max":"21000000","lim":"1000"}`;
+
+  try {
+    const receivedTransferOperation = transferOperationBuilder
+      .add_output_no_tracing(
+        BigInt(0),
+        ledger.public_key_from_base64(wallet.publickey),
+        fraAssetCode,
+        false,
+        false,
+        brc20Memo,
+      )
+      .create()
+      .sign(wallet.keypair)
+      .transaction();
+
+    return receivedTransferOperation;
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Full error (main)', error);
+
+    throw new Error(`Could not create transfer operation (deploy), Error: "${e}"`);
+  }
+};
+
+export const getBrc20MintBuilder = async (
+  wallet: WalletKeypar,
+  tick: string,
+  amount: string,
+  transferOperationBuilder: TransferOperationBuilder,
+) => {
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  // mint:      '{"p":"brc-20","op":"mint","tick":"ordi","amt":"1000"}'
+  const brc20Memo = `{"p":"brc-20","op":"mint","tick":"${tick}","amt":"${amount}"}`;
+
+  try {
+    const receivedTransferOperation = transferOperationBuilder
+      .add_output_no_tracing(
+        BigInt(0),
+        ledger.public_key_from_base64(wallet.publickey),
+        fraAssetCode,
+        false,
+        false,
+        brc20Memo,
+      )
+      .create()
+      .sign(wallet.keypair)
+      .transaction();
+
+    return receivedTransferOperation;
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Full error (main)', error);
+
+    throw new Error(`Could not create transfer operation (mint), Error: "${e}"`);
+  }
+};
+
+export const getBrc20TransferBuilder = async (
+  wallet: WalletKeypar,
+  tick: string,
+  amount: string,
+  transferOperationBuilder: TransferOperationBuilder,
+) => {
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+
+  // transfer:  '{"p":"brc-20","op":"transfer","tick":"ordi","amt":"1000"}'
+  const brc20Memo = `{"p":"brc-20","op":"transfer","${tick}":"ordi","amt":"${amount}"}`;
+
+  try {
+    const receivedTransferOperation = transferOperationBuilder
+      .add_output_no_tracing(
+        BigInt(0),
+        ledger.public_key_from_base64(wallet.publickey),
+        fraAssetCode,
+        false,
+        false,
+        brc20Memo,
+      )
+      .create()
+      .sign(wallet.keypair)
+      .transaction();
+
+    return receivedTransferOperation;
+  } catch (error) {
+    const e: Error = error as Error;
+
+    console.log('Full error (main)', error);
+
+    throw new Error(`Could not create transfer operation (transfer), Error: "${e}"`);
+  }
+};
+
+export const getBrc20TransactionBuilder = async (wallet: WalletKeypar, receivedTransferOperation: string) => {
+  let transactionBuilder;
+
+  try {
+    transactionBuilder = await Builder.getTransactionBuilder();
+  } catch (error) {
+    const e: Error = error as Error;
+
+    throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+  }
+
+  try {
+    transactionBuilder = transactionBuilder.sign(wallet.keypair);
+  } catch (err) {
+    const e: Error = err as Error;
+
+    throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+  }
+
+  return transactionBuilder;
+};
+
+// next 3 methods will be exposed to the wallet to use
+export const brc20Deploy = async (wallet: WalletKeypar, tick: string) => {
+  // we might need to revisit the highlighted part as the fee is identical for all 3 methods,
+  // (at leeast for now) and extract it into the helper function
+  // --- begin
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const recieversInfo: Fee.ReciverInfo[] = [];
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const feeRecieverInfoItem = {
+    utxoNumbers: minimalFee,
+    toPublickey,
+  };
+
+  recieversInfo.push(feeRecieverInfoItem);
+  // --- end
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
+
+  const receivedTransferOperation = await getBrc20DeployBuilder(wallet, tick, transferOperationBuilder);
+
+  const transactionBuilder = getBrc20TransactionBuilder(wallet, receivedTransferOperation);
+
+  return transactionBuilder;
+};
+
+export const brc20Mint = async (wallet: WalletKeypar, tick: string, amount: string) => {
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const recieversInfo: Fee.ReciverInfo[] = [];
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const feeRecieverInfoItem = {
+    utxoNumbers: minimalFee,
+    toPublickey,
+  };
+
+  recieversInfo.push(feeRecieverInfoItem);
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
+
+  const receivedTransferOperation = await getBrc20MintBuilder(wallet, tick, amount, transferOperationBuilder);
+
+  const transactionBuilder = getBrc20TransactionBuilder(wallet, receivedTransferOperation);
+
+  return transactionBuilder;
+};
+
+export const brc20Transfer = async (wallet: WalletKeypar, tick: string, amount: string) => {
+  const ledger = await getLedger();
+  const fraAssetCode = ledger.fra_get_asset_code();
+  const recieversInfo: Fee.ReciverInfo[] = [];
+
+  const minimalFee = await AssetApi.getMinimalFee();
+  const toPublickey = await AssetApi.getFraPublicKey();
+
+  const feeRecieverInfoItem = {
+    utxoNumbers: minimalFee,
+    toPublickey,
+  };
+
+  recieversInfo.push(feeRecieverInfoItem);
+
+  const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
+
+  const receivedTransferOperation = await getBrc20TransferBuilder(
+    wallet,
+    tick,
+    amount,
+    transferOperationBuilder,
+  );
+
+  const transactionBuilder = getBrc20TransactionBuilder(wallet, receivedTransferOperation);
 
   return transactionBuilder;
 };

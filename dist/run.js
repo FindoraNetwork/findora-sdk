@@ -1798,7 +1798,7 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
         switch (_a.label) {
             case 0:
                 password = '123';
-                ticker = 'oleks123';
+                ticker = 'oleks125';
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1808,7 +1808,7 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
             case 2:
                 balanceOld = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', ticker)];
+                return [4 /*yield*/, api_1.Transaction.brc20Deploy(walletInfo, ticker)];
             case 3:
                 transactionBuilder = _a.sent();
                 myTxInJson = transactionBuilder.transaction();
@@ -1816,7 +1816,44 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
             case 4:
                 result = _a.sent();
-                console.log('submitBRC20Tx result', result);
+                console.log('submitBRC20Tx deploy result', result);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
+            case 5:
+                _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 6:
+                balanceNew = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, ticker, amount, mString, mm, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                ticker = 'oleks125';
+                amount = '5';
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+                mm = mString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                walletInfo = _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 2:
+                balanceOld = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
+                return [4 /*yield*/, api_1.Transaction.brc20Mint(walletInfo, ticker, amount)];
+            case 3:
+                transactionBuilder = _a.sent();
+                myTxInJson = transactionBuilder.transaction();
+                myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+                return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
+            case 4:
+                result = _a.sent();
+                console.log('submitBRC20Tx mint result', result);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 5:
                 _a.sent();
@@ -1840,10 +1877,10 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
             case 1:
                 walletInfo = _a.sent();
                 brc20Address = walletInfo.address;
-                return [4 /*yield*/, api_1.Network.getBrc20Balance(ticker, brc20Address)];
+                return [4 /*yield*/, api_1.Network.getBrc20TokenList(0, 1, 10)];
             case 2:
                 result = _a.sent();
-                console.log('getBrc20Balance result', result);
+                console.log('getBrc20TokenList result', result.response);
                 return [2 /*return*/];
         }
     });
@@ -1862,7 +1899,8 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // testBrokenKeypairs();
 // getTxnListTest();
 // fnsNameResolver();
-// deployBrc20v3();
-brc20ApiTest();
+// brc20ApiTest();
 // getTransactionStatus();
+// deployBrc20v3();
+mintBrc20();
 //# sourceMappingURL=run.js.map

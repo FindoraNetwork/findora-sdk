@@ -70,7 +70,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.brc20 = exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
+exports.getBrc20TxBuilder = exports.getBrc20TransferBuilder = exports.getBrc20MintBuilder = exports.getBrc20DeployBuilder = exports.brc20Mint = exports.brc20Deploy = exports.brc20 = exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -673,7 +673,6 @@ var brc20 = function (wallet, op, tick) {
                                     .transaction();
                                 break;
                         }
-                        // receivedTransferOperation = transferOperationBuilder.create().sign(wallet.keypair).transaction();
                     }
                     catch (error) {
                         e = error;
@@ -712,4 +711,233 @@ var brc20 = function (wallet, op, tick) {
     });
 };
 exports.brc20 = brc20;
+var brc20Deploy = function (wallet, tick) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                recieversInfo = [];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
+            case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, tick, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _a.sent();
+                transactionBuilder = (0, exports.getBrc20TxBuilder)(wallet, receivedTransferOperation);
+                // let transactionBuilder;
+                //
+                // try {
+                //   transactionBuilder = await Builder.getTransactionBuilder();
+                // } catch (error) {
+                //   const e: Error = error as Error;
+                //
+                //   throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+                // }
+                //
+                // try {
+                //   transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //
+                //   throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+                // }
+                //
+                // try {
+                //   transactionBuilder = transactionBuilder.sign(wallet.keypair);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //
+                //   throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+                // }
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.brc20Deploy = brc20Deploy;
+var brc20Mint = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                recieversInfo = [];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
+            case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, tick, amount, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _a.sent();
+                transactionBuilder = (0, exports.getBrc20TxBuilder)(wallet, receivedTransferOperation);
+                // let transactionBuilder;
+                //
+                // try {
+                //   transactionBuilder = await Builder.getTransactionBuilder();
+                // } catch (error) {
+                //   const e: Error = error as Error;
+                //
+                //   throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
+                // }
+                //
+                // try {
+                //   transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //
+                //   throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
+                // }
+                //
+                // try {
+                //   transactionBuilder = transactionBuilder.sign(wallet.keypair);
+                // } catch (err) {
+                //   const e: Error = err as Error;
+                //
+                //   throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
+                // }
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.brc20Mint = brc20Mint;
+var getBrc20DeployBuilder = function (wallet, tick, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":\"".concat(tick, "\",\"max\":\"21000000\",\"lim\":\"1000\"}");
+                try {
+                    receivedTransferOperation = transferOperationBuilder
+                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
+                        .create()
+                        .sign(wallet.keypair)
+                        .transaction();
+                    return [2 /*return*/, receivedTransferOperation];
+                }
+                catch (error) {
+                    e = error;
+                    console.log('Full error (main)', error);
+                    throw new Error("Could not create transfer operation (deploy), Error: \"".concat(e, "\""));
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getBrc20DeployBuilder = getBrc20DeployBuilder;
+var getBrc20MintBuilder = function (wallet, tick, amount, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"mint\",\"tick\":\"".concat(tick, "\",\"amt\":\"").concat(amount, "\"}");
+                try {
+                    receivedTransferOperation = transferOperationBuilder
+                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
+                        .create()
+                        .sign(wallet.keypair)
+                        .transaction();
+                    return [2 /*return*/, receivedTransferOperation];
+                }
+                catch (error) {
+                    e = error;
+                    console.log('Full error (main)', error);
+                    throw new Error("Could not create transfer operation (mint), Error: \"".concat(e, "\""));
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getBrc20MintBuilder = getBrc20MintBuilder;
+var getBrc20TransferBuilder = function (wallet, tick, amount, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"transfer\",\"".concat(tick, "\":\"ordi\",\"amt\":\"").concat(amount, "\"}");
+                try {
+                    receivedTransferOperation = transferOperationBuilder
+                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
+                        .create()
+                        .sign(wallet.keypair)
+                        .transaction();
+                    return [2 /*return*/, receivedTransferOperation];
+                }
+                catch (error) {
+                    e = error;
+                    console.log('Full error (main)', error);
+                    throw new Error("Could not create transfer operation (transfer), Error: \"".concat(e, "\""));
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+exports.getBrc20TransferBuilder = getBrc20TransferBuilder;
+var getBrc20TxBuilder = function (wallet, receivedTransferOperation) { return __awaiter(void 0, void 0, void 0, function () {
+    var transactionBuilder, error_4, e, e, e;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Builder.getTransactionBuilder()];
+            case 1:
+                transactionBuilder = _a.sent();
+                return [3 /*break*/, 3];
+            case 2:
+                error_4 = _a.sent();
+                e = error_4;
+                throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
+            case 3:
+                try {
+                    transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not add transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                try {
+                    transactionBuilder = transactionBuilder.sign(wallet.keypair);
+                }
+                catch (err) {
+                    e = err;
+                    throw new Error("Could not sign transfer operation, Error: \"".concat(e.message, "\""));
+                }
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.getBrc20TxBuilder = getBrc20TxBuilder;
 //# sourceMappingURL=transaction.js.map
