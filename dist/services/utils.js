@@ -39,11 +39,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.delay = exports.wait = exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.uint8arrayToHexStr = void 0;
+exports.delay = exports.wait = exports.getRandomNumber = exports.generateSeedString = exports.getCryptoInstance = exports.log = exports.now = exports.createCacheDir = exports.readFile = exports.writeFile = exports.hexToBytes = exports.stringToHex = exports.uint8arrayToHexStr = void 0;
 var fs_1 = __importDefault(require("fs"));
 var crypto = require('crypto');
 var uint8arrayToHexStr = function (input) { return Buffer.from(input).toString('hex'); };
 exports.uint8arrayToHexStr = uint8arrayToHexStr;
+var stringToHex = function (input, encoding) {
+    return Buffer.from(input, encoding).toString('hex');
+};
+exports.stringToHex = stringToHex;
+var hexToBytes = function (input) { return new Uint8Array(Buffer.from(input, 'hex')); };
+exports.hexToBytes = hexToBytes;
 var writeFile = function (filePath, cacheData) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         return [2 /*return*/, new Promise(function (resolve, reject) {

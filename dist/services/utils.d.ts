@@ -1,4 +1,6 @@
 export declare const uint8arrayToHexStr: (input: Uint8Array) => string;
+export declare const stringToHex: (input: string, encoding?: 'base64' | 'hex') => string;
+export declare const hexToBytes: (input: string) => Uint8Array;
 export declare const writeFile: (filePath: string, cacheData: string) => Promise<true>;
 export declare const readFile: (filePath: string) => Promise<string>;
 export declare const createCacheDir: (dirPath: string) => string | undefined;

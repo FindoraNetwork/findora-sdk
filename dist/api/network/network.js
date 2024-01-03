@@ -801,6 +801,7 @@ var submitBRC20Tx = function (tx, config) { return __awaiter(void 0, void 0, voi
         switch (_a.label) {
             case 0:
                 url = "".concat(getExplorerApiRoute());
+                console.log('url for submit brc', url);
                 params = {
                     id: 'anything',
                     jsonrpc: '2.0',

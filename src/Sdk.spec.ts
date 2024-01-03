@@ -55,6 +55,8 @@ describe('SdkMain (unit test)', () => {
       const sdkEnv = {
         hostUrl: 'foo',
         queryPort: 'bar',
+        cacheProvider: FileCacheProvider,
+        cachePath: 'pCacheDir',
         blockScanerUrl: 'https://foo.bar',
       };
 

@@ -95,6 +95,8 @@ describe('SdkMain (unit test)', function () {
                 sdkEnv = {
                     hostUrl: 'foo',
                     queryPort: 'bar',
+                    cacheProvider: providers_1.FileCacheProvider,
+                    cachePath: 'pCacheDir',
                     blockScanerUrl: 'https://foo.bar',
                 };
                 Sdk_1.default.init(sdkEnv);

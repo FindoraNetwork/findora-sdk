@@ -3,6 +3,11 @@ const crypto = require('crypto');
 
 export const uint8arrayToHexStr = (input: Uint8Array): string => Buffer.from(input).toString('hex');
 
+export const stringToHex = (input: string, encoding?: 'base64' | 'hex'): string =>
+  Buffer.from(input, encoding).toString('hex');
+
+export const hexToBytes = (input: string): Uint8Array => new Uint8Array(Buffer.from(input, 'hex'));
+
 export const writeFile = async (filePath: string, cacheData: string): Promise<true> => {
   return new Promise((resolve, reject) => {
     fs.writeFile(filePath, cacheData, 'utf8', err => {

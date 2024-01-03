@@ -12,11 +12,15 @@ export interface SdkEnvironmentConfig {
   queryPort?: string;
   ledgerPort?: string;
   submissionPort?: string;
-  cacheProvider?: SdkCacheProvider;
-  cachePath?: string;
+  explorerApiPort?: string;
+  rpcPort?: string;
+  cacheProvider: SdkCacheProvider;
+  cachePath: string;
+  brc20url?: string;
+  brc20port?: string;
 }
 
-const SdkDefaultEnvironment = {
+const SdkDefaultEnvironment: SdkEnvironmentConfig = {
   hostUrl: 'https://dev-evm.dev.findora.org',
   blockScanerUrl: '',
   configServerUrl: 'http://columbus-config-qa02.s3-website-us-west-1.amazonaws.com/',
@@ -27,6 +31,8 @@ const SdkDefaultEnvironment = {
   rpcPort: '8545',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
+  brc20url: 'https://api-testnet.brc20.findora.org/',
+  brc20port: '8090',
 };
 
 export default class Sdk {

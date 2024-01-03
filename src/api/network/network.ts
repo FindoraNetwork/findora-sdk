@@ -659,6 +659,7 @@ export const submitBRC20Tx = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.SubmitEvmTxResult> => {
   const url = `${getExplorerApiRoute()}`;
+  console.log('url for submit brc', url);
   const params = {
     id: 'anything',
     jsonrpc: '2.0',
