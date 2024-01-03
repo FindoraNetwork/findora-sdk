@@ -97,6 +97,8 @@ var sdkEnv = {
     blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
+    brc20url: 'https://api-testnet.brc20.findora.org',
+    // brc20port: '8090',
 };
 /**
  * This file is a developer "sandbox". You can debug existing methods here, or play with new and so on.
@@ -652,7 +654,7 @@ var getTransactionStatus = function () { return __awaiter(void 0, void 0, void 0
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                h = 'YOUR_TX_HASH';
+                h = '5B6A7DF62EBD9D89DE80D8438A1D7399E7E5764DFFD8E7C26282E151C4197090';
                 return [4 /*yield*/, api_1.Network.getTransactionStatus(h)];
             case 1:
                 txStatus = _a.sent();
@@ -687,7 +689,7 @@ var myFunc14 = function () { return __awaiter(void 0, void 0, void 0, function (
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                h = 'YOUR_TX_HASH';
+                h = '5B6A7DF62EBD9D89DE80D8438A1D7399E7E5764DFFD8E7C26282E151C4197090';
                 return [4 /*yield*/, api_1.Network.getHashSwap(h)];
             case 1:
                 dataResult = _a.sent();
@@ -1709,20 +1711,6 @@ function fnsNameResolver() {
         });
     });
 }
-// prism();
-// approveToken();
-// testItSync();
-// getFraBalance();
-// testWasmFunctions();
-// getAnonKeys();
-// runAbarCreating(2);
-// getMas();
-// getAbarBalance();
-// testFailure();
-// getNewBalanace();
-// testBrokenKeypairs();
-// getTxnListTest();
-// fnsNameResolver();
 function hexToBytes(hex) {
     var bytes = [];
     for (var c = 0; c < hex.length; c += 2)
@@ -1805,11 +1793,12 @@ var deployBrc20v2 = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, mString, mm, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
+    var password, ticker, mString, mm, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '123';
+                ticker = 'oleks123';
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1819,7 +1808,7 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
             case 2:
                 balanceOld = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', 'oleks123')];
+                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', ticker)];
             case 3:
                 transactionBuilder = _a.sent();
                 myTxInJson = transactionBuilder.transaction();
@@ -1827,7 +1816,7 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
             case 4:
                 result = _a.sent();
-                console.log(result);
+                console.log('submitBRC20Tx result', result);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 5:
                 _a.sent();
@@ -1839,5 +1828,41 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
         }
     });
 }); };
-deployBrc20v3();
+var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var ticker, mString, mm, walletInfo, brc20Address, result;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                ticker = 'oleks123';
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+                mm = mString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                walletInfo = _a.sent();
+                brc20Address = walletInfo.address;
+                return [4 /*yield*/, api_1.Network.getBrc20Balance(ticker, brc20Address)];
+            case 2:
+                result = _a.sent();
+                console.log('getBrc20Balance result', result);
+                return [2 /*return*/];
+        }
+    });
+}); };
+// prism();
+// approveToken();
+// testItSync();
+// getFraBalance();
+// testWasmFunctions();
+// getAnonKeys();
+// runAbarCreating(2);
+// getMas();
+// getAbarBalance();
+// testFailure();
+// getNewBalanace();
+// testBrokenKeypairs();
+// getTxnListTest();
+// fnsNameResolver();
+// deployBrc20v3();
+brc20ApiTest();
+// getTransactionStatus();
 //# sourceMappingURL=run.js.map

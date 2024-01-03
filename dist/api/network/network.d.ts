@@ -67,3 +67,5 @@ export declare const getConfig: (config?: Types.NetworkAxiosConfig) => Promise<T
 export declare const getAbarCommitment: (atxoSid: string, config?: Types.NetworkAxiosConfig) => Promise<Types.AbarCommitmentDataResult>;
 export declare const getMaxAtxoSid: (config?: Types.NetworkAxiosConfig) => Promise<Types.MaxAtxoSidDataResult>;
 export declare const submitBRC20Tx: (tx: string, config?: Types.NetworkAxiosConfig) => Promise<Types.SubmitEvmTxResult>;
+export declare const getBrc20Balance: (ticker: string, address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20BalanceDataResult>;
+export declare const getBrc20TokenList: (tokenType?: Types.Brc20TokenType, pageNo?: number, pageCount?: number, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20BalanceDataResult>;

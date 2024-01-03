@@ -31,8 +31,8 @@ const SdkDefaultEnvironment: SdkEnvironmentConfig = {
   rpcPort: '8545',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
-  brc20url: 'https://api-testnet.brc20.findora.org/',
-  brc20port: '8090',
+  brc20url: 'https://api-testnet.brc20.findora.org',
+  brc20port: '',
 };
 
 export default class Sdk {

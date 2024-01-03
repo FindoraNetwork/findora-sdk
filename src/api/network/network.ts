@@ -17,6 +17,14 @@ _axios.defaults.transformResponse = [
   },
 ];
 
+const getBrc20Route = (): string => {
+  const { brc20url: hostUrl, brc20port: queryPort } = Sdk.environment;
+
+  const url = `${hostUrl}${queryPort ? `:${queryPort}` : ''}`;
+
+  return url;
+};
+
 const getQueryRoute = (): string => {
   const { hostUrl, queryPort } = Sdk.environment;
 
@@ -670,5 +678,37 @@ export const submitBRC20Tx = async (
   };
   const dataResult = await apiPost(url, params, { ...config });
 
+  return dataResult;
+};
+
+export const getBrc20Balance = async (
+  ticker: string,
+  address: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20BalanceDataResult> => {
+  const params = { ticker: ticker.trim(), address: address.trim() };
+  console.log('p', params);
+
+  const url = `${getBrc20Route()}/balance`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
+export const getBrc20TokenList = async (
+  tokenType: Types.Brc20TokenType = 0,
+  pageNo = 1,
+  pageCount = 10,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20BalanceDataResult> => {
+  const params = { type: tokenType, pageNo, pageCount };
+
+  console.log('p', params);
+
+  const url = `${getBrc20Route()}/tokenList`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config, params });
   return dataResult;
 };

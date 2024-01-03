@@ -42,6 +42,8 @@ const sdkEnv = {
   blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
   cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
+  brc20url: 'https://api-testnet.brc20.findora.org',
+  // brc20port: '8090',
 };
 
 /**
@@ -555,8 +557,9 @@ const getCustomAssetDetails = async () => {
  * Get transaction status
  */
 const getTransactionStatus = async () => {
-  const h = 'YOUR_TX_HASH';
+  // const h = 'YOUR_TX_HASH';
 
+  const h = '5B6A7DF62EBD9D89DE80D8438A1D7399E7E5764DFFD8E7C26282E151C4197090';
   const txStatus = await Network.getTransactionStatus(h);
 
   console.log('transaction status', JSON.stringify(txStatus, null, 2));
@@ -580,7 +583,8 @@ const getBlockDetails = async () => {
 
 // get tx hash details
 const myFunc14 = async () => {
-  const h = 'YOUR_TX_HASH';
+  // const h = 'YOUR_TX_HASH';
+  const h = '5B6A7DF62EBD9D89DE80D8438A1D7399E7E5764DFFD8E7C26282E151C4197090';
 
   const dataResult = await Network.getHashSwap(h);
 
@@ -1665,25 +1669,6 @@ async function fnsNameResolver() {
   console.log(result?.eth);
 }
 
-// prism();
-
-// approveToken();
-// testItSync();
-// getFraBalance();
-// testWasmFunctions();
-// getAnonKeys();
-// runAbarCreating(2);
-// getMas();
-// getAbarBalance();
-// testFailure();
-
-// getNewBalanace();
-// testBrokenKeypairs();
-
-// getTxnListTest();
-
-// fnsNameResolver();
-
 function hexToBytes(hex: string) {
   let bytes = [];
   for (let c = 0; c < hex.length; c += 2) bytes.push(parseInt(hex.substr(c, 2), 16));
@@ -1770,29 +1755,62 @@ const deployBrc20v2 = async () => {
 const deployBrc20v3 = async () => {
   const password = '123';
 
+  const ticker = 'oleks123';
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
   // const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
   const balanceOld = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-  // const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-  // console.log('sids:', sidsResult);
 
-  const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', 'oleks123');
+  const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', ticker);
 
   const myTxInJson = transactionBuilder.transaction();
-  // console.log('myTxInJson', myTxInJson);
 
   const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
-  // console.log(myTxInBase64);
 
   const result = await Network.submitBRC20Tx(myTxInBase64);
-  console.log(result);
+  console.log('submitBRC20Tx result', result);
 
   await waitForBlockChange(2);
   const balanceNew = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
 };
 
-deployBrc20v3();
+const brc20ApiTest = async () => {
+  const ticker = 'oleks123';
+
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+  const mm = mString.split(' ');
+  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const brc20Address = walletInfo.address;
+
+  const result = await Network.getBrc20Balance(ticker, brc20Address);
+  console.log('getBrc20Balance result', result);
+
+  // const result = await Network.getBrc20TokenList(0, 1, 10);
+  // console.log('getBrc20TokenList result', result);
+};
+
+// prism();
+
+// approveToken();
+// testItSync();
+// getFraBalance();
+// testWasmFunctions();
+// getAnonKeys();
+// runAbarCreating(2);
+// getMas();
+// getAbarBalance();
+// testFailure();
+
+// getNewBalanace();
+// testBrokenKeypairs();
+
+// getTxnListTest();
+
+// fnsNameResolver();
+
+// deployBrc20v3();
+brc20ApiTest();
+// getTransactionStatus();

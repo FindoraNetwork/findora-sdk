@@ -722,3 +722,43 @@ export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
     evm_staking_address: string;
   };
 }
+
+// 0: 搜所有， 1 搜inprogress， 2 搜complete)
+export type Brc20TokenType = 0 | 1 | 2;
+
+export type Brc20BalanceResponse = {
+  id: number;
+  create_time: number;
+  update_time: number;
+  address: string;
+  ticker: string;
+  overall_balance: string;
+  height: number;
+};
+
+export interface Brc20BalanceDataResult extends NetworkAxiosDataResult {
+  response?: Brc20BalanceResponse;
+}
+
+export type Brc20Token = {
+  id: number;
+  ticker: string;
+  deploy_time: number;
+  mint_total: string;
+  limit: string;
+  decimal: number;
+  max: string;
+  holders: number;
+};
+
+export type Brc20TokenListResponse = {
+  total: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  data: Brc20Token[];
+};
+
+export interface Brc20TokenListDataResult extends NetworkAxiosDataResult {
+  response?: Brc20TokenListResponse;
+}

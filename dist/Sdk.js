@@ -64,8 +64,8 @@ var SdkDefaultEnvironment = {
     rpcPort: '8545',
     cacheProvider: providers_1.MemoryCacheProvider,
     cachePath: './cache',
-    brc20url: 'https://api-testnet.brc20.findora.org/',
-    brc20port: '8090',
+    brc20url: 'https://api-testnet.brc20.findora.org',
+    brc20port: '',
 };
 var Sdk = /** @class */ (function () {
     function Sdk() {

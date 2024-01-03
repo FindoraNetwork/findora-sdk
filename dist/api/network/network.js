@@ -50,7 +50,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.submitBRC20Tx = exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
+exports.getBrc20TokenList = exports.getBrc20Balance = exports.submitBRC20Tx = exports.getMaxAtxoSid = exports.getAbarCommitment = exports.getConfig = exports.checkNullifierHashSpent = exports.getAbarMemos = exports.getOwnedAbars = exports.getLatestBlock = exports.getRpcPayload = exports.sendRpcCallV2 = exports.sendRpcCall = exports.getDelegateInfo = exports.getValidatorList = exports.submitEvmTx = exports.getAbciInfo = exports.getAbciNoce = exports.getTransactionDetails = exports.getTxListByPrismReceive = exports.getTxListByPrismSend = exports.getTxListByStakingUnDelegation = exports.getTxListByStakingDelegation = exports.getTxListByClaim = exports.getTxList = exports.getAnonymousTxList = exports.getParamsForTransparentTxList = exports.getHashSwap = exports.getBlock = exports.getTransactionStatus = exports.getIssuedRecords = exports.getAssetToken = exports.submitTransaction = exports.getSubmitTransactionData = exports.getStateCommitment = exports.getMTLeafInfo = exports.getAbarOwnerMemo = exports.getOwnerMemo = exports.getUtxo = exports.getRelatedSids = exports.getOwnedSids = exports.apiGet = exports.apiPost = exports.getRpcRoute = void 0;
 var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
@@ -66,6 +66,11 @@ _axios.defaults.transformResponse = [
         }
     },
 ];
+var getBrc20Route = function () {
+    var _a = Sdk_1.default.environment, hostUrl = _a.brc20url, queryPort = _a.brc20port;
+    var url = "".concat(hostUrl).concat(queryPort ? ":".concat(queryPort) : '');
+    return url;
+};
 var getQueryRoute = function () {
     var _a = Sdk_1.default.environment, hostUrl = _a.hostUrl, queryPort = _a.queryPort;
     var url = "".concat(hostUrl, ":").concat(queryPort);
@@ -818,4 +823,43 @@ var submitBRC20Tx = function (tx, config) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.submitBRC20Tx = submitBRC20Tx;
+var getBrc20Balance = function (ticker, address, config) { return __awaiter(void 0, void 0, void 0, function () {
+    var params, url, dataResult;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                params = { ticker: ticker.trim(), address: address.trim() };
+                console.log('p', params);
+                url = "".concat(getBrc20Route(), "/balance");
+                console.log('url ', url);
+                return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+            case 1:
+                dataResult = _a.sent();
+                return [2 /*return*/, dataResult];
+        }
+    });
+}); };
+exports.getBrc20Balance = getBrc20Balance;
+var getBrc20TokenList = function (tokenType, pageNo, pageCount, config) {
+    if (tokenType === void 0) { tokenType = 0; }
+    if (pageNo === void 0) { pageNo = 1; }
+    if (pageCount === void 0) { pageCount = 10; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var params, url, dataResult;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    params = { type: tokenType, pageNo: pageNo, pageCount: pageCount };
+                    console.log('p', params);
+                    url = "".concat(getBrc20Route(), "/tokenList");
+                    console.log('url ', url);
+                    return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];
+                case 1:
+                    dataResult = _a.sent();
+                    return [2 /*return*/, dataResult];
+            }
+        });
+    });
+};
+exports.getBrc20TokenList = getBrc20TokenList;
 //# sourceMappingURL=network.js.map
