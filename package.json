@@ -140,7 +140,7 @@
     "ethereum-protocol": "^1.0.1",
     "ethereumjs-abi": "^0.6.8",
     "ethereumjs-util": "^7.1.5",
-    "findora-wallet-wasm": "../wasm",
+    "findora-wallet-wasm": "../wasm-js-bindings/",
     "js-base64": "^3.6.1",
     "json-bigint": "^1.0.0",
     "lodash": "^4.17.21",
