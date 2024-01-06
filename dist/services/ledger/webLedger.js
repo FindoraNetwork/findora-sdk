@@ -66,11 +66,10 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
             case 0: return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('findora-wallet-wasm/bundler/wasm.js')); })];
             case 1:
                 awaitedLedgerModuleLoader = _a.sent();
-                console.log('awaited module loader!', awaitedLedgerModuleLoader);
                 return [4 /*yield*/, awaitedLedgerModuleLoader.default];
             case 2:
                 wasmLedgerModule = _a.sent();
-                console.log('resolved wasm module!', wasmLedgerModule);
+                console.log('resolved wasm module for web', wasmLedgerModule);
                 return [2 /*return*/, wasmLedgerModule];
         }
     });
