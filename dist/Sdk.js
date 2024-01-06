@@ -71,6 +71,7 @@ var Sdk = /** @class */ (function () {
     function Sdk() {
     }
     Sdk.init = function (sdkEnv) {
+        console.log('sdk init was called');
         Sdk.environment = __assign(__assign({}, SdkDefaultEnvironment), sdkEnv);
     };
     Sdk.reset = function () {
@@ -86,7 +87,7 @@ var Sdk = /** @class */ (function () {
                         utxoCache.forEach(function (item) {
                             cacheDataToSave["sid_".concat(item.sid)] = item;
                         });
-                        return [4 /*yield*/, factory_1.default.write("".concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletAddress), cacheDataToSave, Sdk.environment.cacheProvider)];
+                        return [4 /*yield*/, factory_1.default.write("".concat(cache_1.CACHE_ENTRIES.UTXO_DATA, "_").concat(walletAddress), cacheDataToSave, Sdk.environment.cacheProvider || providers_1.MemoryCacheProvider)];
                     case 1:
                         _a.sent();
                         return [2 /*return*/, true];

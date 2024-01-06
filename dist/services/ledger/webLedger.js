@@ -60,13 +60,18 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger;
+    var awaitedLedgerModuleLoader, wasmLedgerModule;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('findora-wallet-wasm/bundler/wasm.js')); })];
             case 1:
-                ledger = _a.sent();
-                return [2 /*return*/, ledger];
+                awaitedLedgerModuleLoader = _a.sent();
+                console.log('awaited module loader!', awaitedLedgerModuleLoader);
+                return [4 /*yield*/, awaitedLedgerModuleLoader.default];
+            case 2:
+                wasmLedgerModule = _a.sent();
+                console.log('resolved wasm module!', wasmLedgerModule);
+                return [2 /*return*/, wasmLedgerModule];
         }
     });
 }); };

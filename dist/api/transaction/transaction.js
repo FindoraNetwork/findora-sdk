@@ -70,7 +70,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBrc20TxBuilder = exports.getBrc20TransferBuilder = exports.getBrc20MintBuilder = exports.getBrc20DeployBuilder = exports.brc20Mint = exports.brc20Deploy = exports.brc20 = exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
+exports.brc20Transfer = exports.brc20Mint = exports.brc20Deploy = exports.getBrc20TransactionBuilder = exports.getBrc20TransferBuilder = exports.getBrc20MintBuilder = exports.getBrc20DeployBuilder = exports.brc20 = exports.getTxnListByPrism = exports.getTxnListByStakingUnDelegation = exports.getTxnListByStaking = exports.getTxnList = exports.sendToPublicKey = exports.sendToAddressV2 = exports.sendToAddress = exports.submitTransaction = exports.sendToManyV2 = exports.sendToMany = void 0;
 var bigNumber_1 = require("../../services/bigNumber");
 var Fee = __importStar(require("../../services/fee"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
@@ -711,120 +711,9 @@ var brc20 = function (wallet, op, tick) {
     });
 };
 exports.brc20 = brc20;
-var brc20Deploy = function (wallet, tick) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                fraAssetCode = ledger.fra_get_asset_code();
-                recieversInfo = [];
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 2:
-                minimalFee = _a.sent();
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 3:
-                toPublickey = _a.sent();
-                feeRecieverInfoItem = {
-                    utxoNumbers: minimalFee,
-                    toPublickey: toPublickey,
-                };
-                recieversInfo.push(feeRecieverInfoItem);
-                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
-            case 4:
-                transferOperationBuilder = _a.sent();
-                return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, tick, transferOperationBuilder)];
-            case 5:
-                receivedTransferOperation = _a.sent();
-                transactionBuilder = (0, exports.getBrc20TxBuilder)(wallet, receivedTransferOperation);
-                // let transactionBuilder;
-                //
-                // try {
-                //   transactionBuilder = await Builder.getTransactionBuilder();
-                // } catch (error) {
-                //   const e: Error = error as Error;
-                //
-                //   throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
-                // }
-                //
-                // try {
-                //   transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //
-                //   throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
-                // }
-                //
-                // try {
-                //   transactionBuilder = transactionBuilder.sign(wallet.keypair);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //
-                //   throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
-                // }
-                return [2 /*return*/, transactionBuilder];
-        }
-    });
-}); };
-exports.brc20Deploy = brc20Deploy;
-var brc20Mint = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
-            case 1:
-                ledger = _a.sent();
-                fraAssetCode = ledger.fra_get_asset_code();
-                recieversInfo = [];
-                return [4 /*yield*/, AssetApi.getMinimalFee()];
-            case 2:
-                minimalFee = _a.sent();
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
-            case 3:
-                toPublickey = _a.sent();
-                feeRecieverInfoItem = {
-                    utxoNumbers: minimalFee,
-                    toPublickey: toPublickey,
-                };
-                recieversInfo.push(feeRecieverInfoItem);
-                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
-            case 4:
-                transferOperationBuilder = _a.sent();
-                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, tick, amount, transferOperationBuilder)];
-            case 5:
-                receivedTransferOperation = _a.sent();
-                transactionBuilder = (0, exports.getBrc20TxBuilder)(wallet, receivedTransferOperation);
-                // let transactionBuilder;
-                //
-                // try {
-                //   transactionBuilder = await Builder.getTransactionBuilder();
-                // } catch (error) {
-                //   const e: Error = error as Error;
-                //
-                //   throw new Error(`Could not get transactionBuilder from "getTransactionBuilder", Error: "${e.message}"`);
-                // }
-                //
-                // try {
-                //   transactionBuilder = transactionBuilder.add_transfer_operation(receivedTransferOperation);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //
-                //   throw new Error(`Could not add transfer operation, Error: "${e.message}"`);
-                // }
-                //
-                // try {
-                //   transactionBuilder = transactionBuilder.sign(wallet.keypair);
-                // } catch (err) {
-                //   const e: Error = err as Error;
-                //
-                //   throw new Error(`Could not sign transfer operation, Error: "${e.message}"`);
-                // }
-                return [2 /*return*/, transactionBuilder];
-        }
-    });
-}); };
-exports.brc20Mint = brc20Mint;
+/// refactored and code split below
+// next 3 methods are very similar , the only difference is the brc20Memo, but i keep those separately
+// since we might have the wasm methods / order changed. we might need to refactor those later
 var getBrc20DeployBuilder = function (wallet, tick, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
     return __generator(this, function (_a) {
@@ -906,7 +795,7 @@ var getBrc20TransferBuilder = function (wallet, tick, amount, transferOperationB
     });
 }); };
 exports.getBrc20TransferBuilder = getBrc20TransferBuilder;
-var getBrc20TxBuilder = function (wallet, receivedTransferOperation) { return __awaiter(void 0, void 0, void 0, function () {
+var getBrc20TransactionBuilder = function (wallet, receivedTransferOperation) { return __awaiter(void 0, void 0, void 0, function () {
     var transactionBuilder, error_4, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -939,5 +828,102 @@ var getBrc20TxBuilder = function (wallet, receivedTransferOperation) { return __
         }
     });
 }); };
-exports.getBrc20TxBuilder = getBrc20TxBuilder;
+exports.getBrc20TransactionBuilder = getBrc20TransactionBuilder;
+// next 3 methods will be exposed to the wallet to use
+var brc20Deploy = function (wallet, tick) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                recieversInfo = [];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
+            case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, tick, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _a.sent();
+                transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.brc20Deploy = brc20Deploy;
+var brc20Mint = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                recieversInfo = [];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
+            case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, tick, amount, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _a.sent();
+                transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.brc20Mint = brc20Mint;
+var brc20Transfer = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
+            case 1:
+                ledger = _a.sent();
+                fraAssetCode = ledger.fra_get_asset_code();
+                recieversInfo = [];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
+            case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _a.sent();
+                feeRecieverInfoItem = {
+                    utxoNumbers: minimalFee,
+                    toPublickey: toPublickey,
+                };
+                recieversInfo.push(feeRecieverInfoItem);
+                return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
+            case 4:
+                transferOperationBuilder = _a.sent();
+                return [4 /*yield*/, (0, exports.getBrc20TransferBuilder)(wallet, tick, amount, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _a.sent();
+                transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
+                return [2 /*return*/, transactionBuilder];
+        }
+    });
+}); };
+exports.brc20Transfer = brc20Transfer;
 //# sourceMappingURL=transaction.js.map

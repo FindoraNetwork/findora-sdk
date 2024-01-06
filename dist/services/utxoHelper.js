@@ -78,6 +78,7 @@ var Network = __importStar(require("../api/network"));
 var cache_1 = require("../config/cache");
 var Sdk_1 = __importDefault(require("../Sdk"));
 var factory_1 = __importDefault(require("./cacheStore/factory"));
+var providers_1 = require("./cacheStore/providers");
 var ledgerWrapper_1 = require("./ledger/ledgerWrapper");
 var mergeUtxoList = function (arr1, arr2) {
     var res = [];
@@ -216,7 +217,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, factory_1.default.read(fullPathToCacheEntry, Sdk_1.default.environment.cacheProvider)];
+                return [4 /*yield*/, factory_1.default.read(fullPathToCacheEntry, Sdk_1.default.environment.cacheProvider || providers_1.MemoryCacheProvider)];
             case 2:
                 utxoDataCache = _a.sent();
                 return [3 /*break*/, 4];
@@ -251,7 +252,7 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
                 return [3 /*break*/, 5];
             case 10:
                 _a.trys.push([10, 12, , 13]);
-                return [4 /*yield*/, factory_1.default.write(fullPathToCacheEntry, cacheDataToSave, Sdk_1.default.environment.cacheProvider)];
+                return [4 /*yield*/, factory_1.default.write(fullPathToCacheEntry, cacheDataToSave, Sdk_1.default.environment.cacheProvider || providers_1.MemoryCacheProvider)];
             case 11:
                 _a.sent();
                 return [3 /*break*/, 13];

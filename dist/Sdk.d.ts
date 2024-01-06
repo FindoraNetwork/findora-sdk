@@ -10,7 +10,7 @@ export interface SdkEnvironmentConfig {
     submissionPort?: string;
     explorerApiPort?: string;
     rpcPort?: string;
-    cacheProvider: SdkCacheProvider;
+    cacheProvider?: SdkCacheProvider;
     cachePath: string;
     brc20url?: string;
     brc20port?: string;
@@ -25,7 +25,7 @@ export default class Sdk {
         submissionPort?: string | undefined;
         explorerApiPort?: string | undefined;
         rpcPort?: string | undefined;
-        cacheProvider: import("./services/cacheStore/types").CacheProvider;
+        cacheProvider?: import("./services/cacheStore/types").CacheProvider | undefined;
         cachePath: string;
         brc20url?: string | undefined;
         brc20port?: string | undefined;

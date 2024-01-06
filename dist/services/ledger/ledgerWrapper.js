@@ -42,7 +42,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getLedger = exports.getNodeLedger = exports.getWebLedger = exports.isItNodeEnv = void 0;
 var nodeLedger_1 = __importDefault(require("./nodeLedger"));
 var webLedger_1 = __importDefault(require("./webLedger"));
-var isItNodeEnv = function () { return typeof process !== 'undefined' && process.release.name === 'node'; };
+var isItNodeEnv = function () {
+    var _a;
+    var weHaveProcess = typeof process !== undefined;
+    var releaseNameIsNode = ((_a = process === null || process === void 0 ? void 0 : process.release) === null || _a === void 0 ? void 0 : _a.name) === 'node';
+    return weHaveProcess && releaseNameIsNode;
+};
 exports.isItNodeEnv = isItNodeEnv;
 var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, function () {
     var myLedger;
@@ -51,6 +56,7 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
             case 0: return [4 /*yield*/, (0, webLedger_1.default)()];
             case 1:
                 myLedger = _a.sent();
+                console.log('myLedger module', myLedger);
                 return [2 /*return*/, myLedger];
         }
     });

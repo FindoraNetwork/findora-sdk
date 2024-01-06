@@ -70,7 +70,6 @@ var sleep_promise_1 = __importDefault(require("sleep-promise"));
 var Sdk_1 = __importDefault(require("./Sdk"));
 var api_1 = require("./api");
 var testHelpers_1 = require("./evm/testHelpers");
-var providers_1 = require("./services/cacheStore/providers");
 var Fee = __importStar(require("./services/fee"));
 var fee_1 = require("./services/fee");
 var ledgerWrapper_1 = require("./services/ledger/ledgerWrapper");
@@ -95,7 +94,7 @@ var sdkEnv = {
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
     blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
-    cacheProvider: providers_1.MemoryCacheProvider,
+    // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
     brc20url: 'https://api-testnet.brc20.findora.org',
     // brc20port: '8090',
@@ -1866,7 +1865,7 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ticker, mString, mm, walletInfo, brc20Address, result;
+    var ticker, mString, mm, walletInfo, brc20Address, assetCode;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -1877,10 +1876,10 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
             case 1:
                 walletInfo = _a.sent();
                 brc20Address = walletInfo.address;
-                return [4 /*yield*/, api_1.Network.getBrc20TokenList(0, 1, 10)];
+                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
             case 2:
-                result = _a.sent();
-                console.log('getBrc20TokenList result', result.response);
+                assetCode = _a.sent();
+                console.log('assetCode 2', assetCode);
                 return [2 /*return*/];
         }
     });
@@ -1899,8 +1898,8 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // testBrokenKeypairs();
 // getTxnListTest();
 // fnsNameResolver();
-// brc20ApiTest();
+brc20ApiTest();
 // getTransactionStatus();
 // deployBrc20v3();
-mintBrc20();
+// mintBrc20();
 //# sourceMappingURL=run.js.map
