@@ -40,7 +40,7 @@ const sdkEnv = {
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
   blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
-  cacheProvider: MemoryCacheProvider,
+  // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
   brc20url: 'https://api-testnet.brc20.findora.org',
   // brc20port: '8090',
@@ -1819,8 +1819,10 @@ const brc20ApiTest = async () => {
   // const result = await Network.getBrc20Balance(ticker, brc20Address);
   // console.log('getBrc20Balance result', result);
 
-  const result = await Network.getBrc20TokenList(0, 1, 10);
-  console.log('getBrc20TokenList result', result.response);
+  const assetCode = await Asset.getFraAssetCode();
+  console.log('assetCode 2', assetCode);
+  // const result = await Network.getBrc20TokenList(0, 1, 10);
+  // console.log('getBrc20TokenList result', result.response);
 };
 
 // prism();
@@ -1842,8 +1844,8 @@ const brc20ApiTest = async () => {
 
 // fnsNameResolver();
 
-// brc20ApiTest();
+brc20ApiTest();
 // getTransactionStatus();
 
 // deployBrc20v3();
-mintBrc20();
+// mintBrc20();

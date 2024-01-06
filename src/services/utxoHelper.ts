@@ -4,6 +4,7 @@ import { LedgerUtxo, OwnedMemoResponse, UtxoResponse } from '../api/network/type
 import { CACHE_ENTRIES } from '../config/cache';
 import Sdk from '../Sdk';
 import Cache from './cacheStore/factory';
+import { MemoryCacheProvider } from './cacheStore/providers';
 import { CacheItem } from './cacheStore/types';
 import { getLedger } from './ledger/ledgerWrapper';
 import {
@@ -206,7 +207,10 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
   }
 
   try {
-    utxoDataCache = await Cache.read(fullPathToCacheEntry, Sdk.environment.cacheProvider);
+    utxoDataCache = await Cache.read(
+      fullPathToCacheEntry,
+      Sdk.environment.cacheProvider || MemoryCacheProvider,
+    );
   } catch (error) {
     const err: Error = error as Error;
     throw new Error(`Error reading the cache, "${err.message}"`);
@@ -232,7 +236,11 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
 
   // console.log('🚀 ~ file: utxoHelper.ts ~ line 229 ~ addUtxo ~ utxoDataList', utxoDataList);
   try {
-    await Cache.write(fullPathToCacheEntry, cacheDataToSave, Sdk.environment.cacheProvider);
+    await Cache.write(
+      fullPathToCacheEntry,
+      cacheDataToSave,
+      Sdk.environment.cacheProvider || MemoryCacheProvider,
+    );
   } catch (error) {
     const err: Error = error as Error;
     console.log(`Could not write cache for utxoData, "${err.message}"`);

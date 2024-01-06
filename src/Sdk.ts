@@ -14,7 +14,7 @@ export interface SdkEnvironmentConfig {
   submissionPort?: string;
   explorerApiPort?: string;
   rpcPort?: string;
-  cacheProvider: SdkCacheProvider;
+  cacheProvider?: SdkCacheProvider;
   cachePath: string;
   brc20url?: string;
   brc20port?: string;
@@ -39,6 +39,7 @@ export default class Sdk {
   public static environment = { ...SdkDefaultEnvironment };
 
   public static init(sdkEnv: SdkEnvironmentConfig): void {
+    console.log('sdk init was called');
     Sdk.environment = { ...SdkDefaultEnvironment, ...sdkEnv };
   }
 
@@ -56,7 +57,7 @@ export default class Sdk {
     await Cache.write(
       `${CACHE_ENTRIES.UTXO_DATA}_${walletAddress}`,
       cacheDataToSave,
-      Sdk.environment.cacheProvider,
+      Sdk.environment.cacheProvider || MemoryCacheProvider,
     );
 
     return true;
