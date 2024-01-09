@@ -714,7 +714,7 @@ exports.brc20 = brc20;
 /// refactored and code split below
 // next 3 methods are very similar , the only difference is the brc20Memo, but i keep those separately
 // since we might have the wasm methods / order changed. we might need to refactor those later
-var getBrc20DeployBuilder = function (wallet, tick, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+var getBrc20DeployBuilder = function (wallet, tick, max, lim, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -722,7 +722,7 @@ var getBrc20DeployBuilder = function (wallet, tick, transferOperationBuilder) { 
             case 1:
                 ledger = _a.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
-                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":\"".concat(tick, "\",\"max\":\"21000000\",\"lim\":\"1000\"}");
+                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"deploy\",\"tick\":\"".concat(tick, "\",\"max\":\"").concat(max, "\",\"lim\":\"").concat(lim, "\"}");
                 try {
                     receivedTransferOperation = transferOperationBuilder
                         .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
@@ -830,7 +830,7 @@ var getBrc20TransactionBuilder = function (wallet, receivedTransferOperation) { 
 }); };
 exports.getBrc20TransactionBuilder = getBrc20TransactionBuilder;
 // next 3 methods will be exposed to the wallet to use
-var brc20Deploy = function (wallet, tick) { return __awaiter(void 0, void 0, void 0, function () {
+var brc20Deploy = function (wallet, params) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -853,7 +853,7 @@ var brc20Deploy = function (wallet, tick) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
             case 4:
                 transferOperationBuilder = _a.sent();
-                return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, tick, transferOperationBuilder)];
+                return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, params.tick, params.max, params.lim, transferOperationBuilder)];
             case 5:
                 receivedTransferOperation = _a.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);

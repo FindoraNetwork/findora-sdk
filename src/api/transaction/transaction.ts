@@ -2,7 +2,7 @@ import { toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
-import { getAddressByPublicKey, getAddressPublicAndKey, LightWalletKeypair, WalletKeypar } from '../keypair';
+import { LightWalletKeypair, WalletKeypar, getAddressByPublicKey, getAddressPublicAndKey } from '../keypair';
 import * as Network from '../network';
 import * as AssetApi from '../sdkAsset';
 import * as Builder from './builder';
@@ -655,13 +655,15 @@ export const brc20 = async (wallet: WalletKeypar, op: OperationType = 'deploy', 
 export const getBrc20DeployBuilder = async (
   wallet: WalletKeypar,
   tick: string,
+  max: number,
+  lim: number,
   transferOperationBuilder: TransferOperationBuilder,
 ) => {
   const ledger = await getLedger();
   const fraAssetCode = ledger.fra_get_asset_code();
 
   // deploy
-  const brc20Memo = `{"p":"brc-20","op":"deploy","tick":"${tick}","max":"21000000","lim":"1000"}`;
+  const brc20Memo = `{"p":"brc-20","op":"deploy","tick":"${tick}","max":"${max}","lim":"${lim}"}`;
 
   try {
     const receivedTransferOperation = transferOperationBuilder
@@ -789,8 +791,14 @@ export const getBrc20TransactionBuilder = async (wallet: WalletKeypar, receivedT
   return transactionBuilder;
 };
 
+type DeployParams = {
+  tick: string;
+  max: number;
+  lim: number;
+};
+
 // next 3 methods will be exposed to the wallet to use
-export const brc20Deploy = async (wallet: WalletKeypar, tick: string) => {
+export const brc20Deploy = async (wallet: WalletKeypar, params: DeployParams) => {
   // we might need to revisit the highlighted part as the fee is identical for all 3 methods,
   // (at leeast for now) and extract it into the helper function
   // --- begin
@@ -811,7 +819,13 @@ export const brc20Deploy = async (wallet: WalletKeypar, tick: string) => {
 
   const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
 
-  const receivedTransferOperation = await getBrc20DeployBuilder(wallet, tick, transferOperationBuilder);
+  const receivedTransferOperation = await getBrc20DeployBuilder(
+    wallet,
+    params.tick,
+    params.max,
+    params.lim,
+    transferOperationBuilder,
+  );
 
   const transactionBuilder = getBrc20TransactionBuilder(wallet, receivedTransferOperation);
 

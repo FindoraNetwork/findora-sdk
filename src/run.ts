@@ -13,9 +13,9 @@ import { getFeeInputs } from './services/fee';
 import { getLedger } from './services/ledger/ledgerWrapper';
 import {
   getRandomNumber,
+  hexToBytes as hexToBytesUtil,
   log,
   stringToHex as stringToHexUtil,
-  hexToBytes as hexToBytesUtil,
 } from './services/utils';
 import * as UtxoHelper from './services/utxoHelper';
 // import * as TMI from './tripleMasking/tripleMasking.integration';
@@ -1764,7 +1764,11 @@ const deployBrc20v3 = async () => {
   console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
 
   // const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', ticker);
-  const transactionBuilder = await Transaction.brc20Deploy(walletInfo, ticker);
+  const transactionBuilder = await Transaction.brc20Deploy(walletInfo, {
+    tick: ticker,
+    max: 100000,
+    lim: 200,
+  });
 
   const myTxInJson = transactionBuilder.transaction();
 
