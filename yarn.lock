@@ -712,6 +712,11 @@
     "@ethersproject/properties" "^5.7.0"
     "@ethersproject/strings" "^5.7.0"
 
+"@haverstack/axios-fetch-adapter@^0.12.0":
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/@haverstack/axios-fetch-adapter/-/axios-fetch-adapter-0.12.0.tgz#a3cf27451123d4f772d638a251f1c24e9a13486d"
+  integrity sha512-+9WzqzeIvEC6Qrs6ImSqaX5P+eCrWbhzR+GoB7+p8/yqxmq59CPEo0uFuu0wINU9DQuJMzyER9WYdpYVwZV9rw==
+
 "@humanwhocodes/config-array@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@humanwhocodes/config-array/-/config-array-0.5.0.tgz#1407967d4c6eecd7388f83acf1eaf4d0c6e58ef9"

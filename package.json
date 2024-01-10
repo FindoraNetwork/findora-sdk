@@ -128,6 +128,7 @@
   },
   "dependencies": {
     "@ensdomains/eth-ens-namehash": "^2.0.15",
+    "@haverstack/axios-fetch-adapter": "^0.12.0",
     "@types/btoa": "^1.2.3",
     "@types/web3-provider-engine": "^14.0.1",
     "@vespaiach/axios-fetch-adapter": "0.3.1",
