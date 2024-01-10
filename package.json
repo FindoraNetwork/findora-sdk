@@ -131,7 +131,7 @@
     "@types/btoa": "^1.2.3",
     "@types/web3-provider-engine": "^14.0.1",
     "@vespaiach/axios-fetch-adapter": "0.3.1",
-    "axios": "^0.21.1",
+    "axios": "^1.6.5",
     "axios-retry": "^3.1.9",
     "bech32-buffer": "^0.2.0",
     "bignumber.js": "^9.0.1",
