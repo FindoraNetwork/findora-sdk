@@ -1807,7 +1807,11 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
             case 2:
                 balanceOld = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Transaction.brc20Deploy(walletInfo, { tick: ticker, max: 100000, lim: 200 })];
+                return [4 /*yield*/, api_1.Transaction.brc20Deploy(walletInfo, {
+                        tick: ticker,
+                        max: 100000,
+                        lim: 200,
+                    })];
             case 3:
                 transactionBuilder = _a.sent();
                 myTxInJson = transactionBuilder.transaction();

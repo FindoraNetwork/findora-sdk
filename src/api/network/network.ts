@@ -5,7 +5,9 @@ import Sdk from '../../Sdk';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import * as Types from './types';
 
-const _axios = axios.create({});
+import adapter from '@vespaiach/axios-fetch-adapter';
+
+const _axios = axios.create({ adapter });
 
 _axios.defaults.transformResponse = [
   data => {

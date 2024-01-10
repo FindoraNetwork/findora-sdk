@@ -55,7 +55,8 @@ var axios_1 = __importDefault(require("axios"));
 var json_bigint_1 = __importDefault(require("json-bigint"));
 var Sdk_1 = __importDefault(require("../../Sdk"));
 var ledgerWrapper_1 = require("../../services/ledger/ledgerWrapper");
-var _axios = axios_1.default.create({});
+var axios_fetch_adapter_1 = __importDefault(require("@vespaiach/axios-fetch-adapter"));
+var _axios = axios_1.default.create({ adapter: axios_fetch_adapter_1.default });
 _axios.defaults.transformResponse = [
     function (data) {
         try {
