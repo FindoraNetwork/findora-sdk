@@ -762,3 +762,50 @@ export type Brc20TokenListResponse = {
 export interface Brc20TokenListDataResult extends NetworkAxiosDataResult {
   response?: Brc20TokenListResponse;
 }
+
+export type Brc20TokenDetailResponse = {
+  ticker: string;
+  deploy_time: number;
+  max: string;
+  limit: string;
+  decimal: number;
+  deploy_user: string;
+  holders: number;
+  mint_total: string;
+};
+
+export interface Brc20TokenDetailtDataResult extends NetworkAxiosDataResult {
+  response?: Brc20TokenDetailResponse;
+}
+
+export type Brc20UserRank = {
+  rank: number;
+  address: string;
+  balance: string;
+};
+
+export type Brc20UserRankResponse = {
+  total: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  data: Brc20UserRank[];
+};
+
+export interface Brc20UserRankDataResult extends NetworkAxiosDataResult {
+  response?: Brc20UserRankResponse;
+}
+
+export type Brc20BalanceAllResponse = Brc20BalanceResponse[];
+
+export interface Brc20BalanceAllDataResult extends NetworkAxiosDataResult {
+  response?: Brc20BalanceAllResponse;
+}
+
+export type Brc20CheckTickerResponse = {
+  result: boolean;
+};
+
+export interface Brc20CheckTickerDataResult extends NetworkAxiosDataResult {
+  response?: Brc20CheckTickerResponse;
+}

@@ -69,3 +69,7 @@ export declare const getMaxAtxoSid: (config?: Types.NetworkAxiosConfig) => Promi
 export declare const submitBRC20Tx: (tx: string, config?: Types.NetworkAxiosConfig) => Promise<Types.SubmitEvmTxResult>;
 export declare const getBrc20Balance: (ticker: string, address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20BalanceDataResult>;
 export declare const getBrc20TokenList: (tokenType?: Types.Brc20TokenType, pageNo?: number, pageCount?: number, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20TokenListDataResult>;
+export declare const getBrc20TokenDetail: (id: number, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20TokenDetailtDataResult>;
+export declare const getBrc20UserRank: (ticker: string, pageNo?: number, pageCount?: number, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20UserRankDataResult>;
+export declare const getBrc20BalanceAll: (address: string, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20BalanceAllDataResult>;
+export declare const getBrc20CheckTicker: (ticker: string, config?: Types.NetworkAxiosConfig) => Promise<Types.Brc20BalanceAllDataResult>;

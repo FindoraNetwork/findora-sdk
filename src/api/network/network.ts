@@ -689,7 +689,6 @@ export const getBrc20Balance = async (
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.Brc20BalanceDataResult> => {
   const params = { ticker: ticker.trim(), address: address.trim() };
-  console.log('p', params);
 
   const url = `${getBrc20Route()}/balance`;
   console.log('url ', url);
@@ -706,11 +705,63 @@ export const getBrc20TokenList = async (
 ): Promise<Types.Brc20TokenListDataResult> => {
   const params = { type: tokenType, pageNo, pageCount };
 
-  console.log('p', params);
-
   const url = `${getBrc20Route()}/tokenList`;
   console.log('url ', url);
 
   const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
+export const getBrc20TokenDetail = async (
+  id: number,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20TokenDetailtDataResult> => {
+  const params = { id: id.toString().trim() };
+
+  const url = `${getBrc20Route()}/token/${params.id}/detail`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config });
+  return dataResult;
+};
+
+export const getBrc20UserRank = async (
+  ticker: string,
+  pageNo = 1,
+  pageCount = 10,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20UserRankDataResult> => {
+  const params = { ticker: ticker.trim(), pageNo, pageCount };
+
+  const url = `${getBrc20Route()}/token/userRank`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
+export const getBrc20BalanceAll = async (
+  address: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20BalanceAllDataResult> => {
+  const params = { address: address.trim() };
+
+  const url = `${getBrc20Route()}/balance/all`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config, params });
+  return dataResult;
+};
+
+export const getBrc20CheckTicker = async (
+  ticker: string,
+  config?: Types.NetworkAxiosConfig,
+): Promise<Types.Brc20BalanceAllDataResult> => {
+  const params = { ticker: ticker.trim() };
+
+  const url = `${getBrc20Route()}/token/check/${params.ticker}`;
+  console.log('url ', url);
+
+  const dataResult = await apiGet(url, { ...config });
   return dataResult;
 };

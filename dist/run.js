@@ -1873,7 +1873,7 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ticker, mString, mm, walletInfo, brc20Address, assetCode;
+    var ticker, mString, mm, walletInfo, brc20Address, result, testBackendUserAddress, testTicker;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -1884,10 +1884,12 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
             case 1:
                 walletInfo = _a.sent();
                 brc20Address = walletInfo.address;
-                return [4 /*yield*/, api_1.Asset.getFraAssetCode()];
+                return [4 /*yield*/, api_1.Network.getBrc20TokenDetail(13)];
             case 2:
-                assetCode = _a.sent();
-                console.log('assetCode 2', assetCode);
+                result = _a.sent();
+                console.log('getBrc20TokenDetail result', result.response);
+                testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
+                testTicker = 'test111111';
                 return [2 /*return*/];
         }
     });
@@ -1906,8 +1908,8 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // testBrokenKeypairs();
 // getTxnListTest();
 // fnsNameResolver();
-// brc20ApiTest();
+brc20ApiTest();
 // getTransactionStatus();
 // deployBrc20v3();
-mintBrc20();
+// mintBrc20();
 //# sourceMappingURL=run.js.map

@@ -1827,10 +1827,22 @@ const brc20ApiTest = async () => {
   // const result = await Network.getBrc20Balance(ticker, brc20Address);
   // console.log('getBrc20Balance result', result);
 
-  const assetCode = await Asset.getFraAssetCode();
-  console.log('assetCode 2', assetCode);
   // const result = await Network.getBrc20TokenList(0, 1, 10);
   // console.log('getBrc20TokenList result', result.response);
+
+  const result = await Network.getBrc20TokenDetail(13);
+  console.log('getBrc20TokenDetail result', result.response);
+
+  const testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
+  const testTicker = 'test111111';
+  // const result = await Network.getBrc20UserRank(testTicker, 1, 10);
+  // console.log('getBrc20UserRank result', result.response);
+
+  // const result = await Network.getBrc20BalanceAll(testBackendUserAddress);
+  // console.log('getBrc20BalanceAll result', result);
+
+  // const result = await Network.getBrc20CheckTicker(testTicker);
+  // console.log('getBrc20CheckTicker result', result);
 };
 
 // prism();
@@ -1852,8 +1864,8 @@ const brc20ApiTest = async () => {
 
 // fnsNameResolver();
 
-// brc20ApiTest();
+brc20ApiTest();
 // getTransactionStatus();
 
 // deployBrc20v3();
-mintBrc20();
+// mintBrc20();
