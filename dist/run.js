@@ -1848,7 +1848,11 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
             case 2:
                 balanceOld = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Transaction.brc20Mint(walletInfo, ticker, amount)];
+                return [4 /*yield*/, api_1.Transaction.brc20Mint(walletInfo, {
+                        tick: ticker,
+                        amt: +amount,
+                        repeat: 1,
+                    })];
             case 3:
                 transactionBuilder = _a.sent();
                 myTxInJson = transactionBuilder.transaction();

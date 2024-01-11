@@ -741,8 +741,8 @@ var getBrc20DeployBuilder = function (wallet, tick, max, lim, transferOperationB
     });
 }); };
 exports.getBrc20DeployBuilder = getBrc20DeployBuilder;
-var getBrc20MintBuilder = function (wallet, tick, amount, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
+var getBrc20MintBuilder = function (wallet, tick, amount, repeat, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, brc20Memo, op, idx, receivedTransferOperation, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
@@ -751,11 +751,11 @@ var getBrc20MintBuilder = function (wallet, tick, amount, transferOperationBuild
                 fraAssetCode = ledger.fra_get_asset_code();
                 brc20Memo = "{\"p\":\"brc-20\",\"op\":\"mint\",\"tick\":\"".concat(tick, "\",\"amt\":\"").concat(amount, "\"}");
                 try {
-                    receivedTransferOperation = transferOperationBuilder
-                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
-                        .create()
-                        .sign(wallet.keypair)
-                        .transaction();
+                    op = transferOperationBuilder;
+                    for (idx = repeat; idx > 0; idx--) {
+                        op = transferOperationBuilder.add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo);
+                    }
+                    receivedTransferOperation = op.create().sign(wallet.keypair).transaction();
                     return [2 /*return*/, receivedTransferOperation];
                 }
                 catch (error) {
@@ -862,21 +862,22 @@ var brc20Deploy = function (wallet, params) { return __awaiter(void 0, void 0, v
     });
 }); };
 exports.brc20Deploy = brc20Deploy;
-var brc20Mint = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
+var brc20Mint = function (wallet, params) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _a.sent();
+                ledger = _b.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
                 recieversInfo = [];
                 return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 2:
-                minimalFee = _a.sent();
+                minimalFee = _b.sent();
                 return [4 /*yield*/, AssetApi.getFraPublicKey()];
             case 3:
-                toPublickey = _a.sent();
+                toPublickey = _b.sent();
                 feeRecieverInfoItem = {
                     utxoNumbers: minimalFee,
                     toPublickey: toPublickey,
@@ -884,10 +885,10 @@ var brc20Mint = function (wallet, tick, amount) { return __awaiter(void 0, void 
                 recieversInfo.push(feeRecieverInfoItem);
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
             case 4:
-                transferOperationBuilder = _a.sent();
-                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, tick, amount, transferOperationBuilder)];
+                transferOperationBuilder = _b.sent();
+                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, params.tick, params.amt, (_a = params.repeat) !== null && _a !== void 0 ? _a : 1, transferOperationBuilder)];
             case 5:
-                receivedTransferOperation = _a.sent();
+                receivedTransferOperation = _b.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
                 return [2 /*return*/, transactionBuilder];
         }

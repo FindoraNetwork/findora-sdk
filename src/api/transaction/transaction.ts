@@ -692,7 +692,8 @@ export const getBrc20DeployBuilder = async (
 export const getBrc20MintBuilder = async (
   wallet: WalletKeypar,
   tick: string,
-  amount: string,
+  amount: number,
+  repeat: number,
   transferOperationBuilder: TransferOperationBuilder,
 ) => {
   const ledger = await getLedger();
@@ -702,18 +703,18 @@ export const getBrc20MintBuilder = async (
   const brc20Memo = `{"p":"brc-20","op":"mint","tick":"${tick}","amt":"${amount}"}`;
 
   try {
-    const receivedTransferOperation = transferOperationBuilder
-      .add_output_no_tracing(
+    let op = transferOperationBuilder;
+    for (let idx = repeat; idx > 0; idx--) {
+      op = transferOperationBuilder.add_output_no_tracing(
         BigInt(0),
         ledger.public_key_from_base64(wallet.publickey),
         fraAssetCode,
         false,
         false,
         brc20Memo,
-      )
-      .create()
-      .sign(wallet.keypair)
-      .transaction();
+      );
+    }
+    const receivedTransferOperation = op.create().sign(wallet.keypair).transaction();
 
     return receivedTransferOperation;
   } catch (error) {
@@ -832,7 +833,13 @@ export const brc20Deploy = async (wallet: WalletKeypar, params: DeployParams) =>
   return transactionBuilder;
 };
 
-export const brc20Mint = async (wallet: WalletKeypar, tick: string, amount: string) => {
+type MintParams = {
+  tick: string;
+  amt: number;
+  repeat?: number;
+};
+
+export const brc20Mint = async (wallet: WalletKeypar, params: MintParams) => {
   const ledger = await getLedger();
   const fraAssetCode = ledger.fra_get_asset_code();
   const recieversInfo: Fee.ReciverInfo[] = [];
@@ -849,7 +856,13 @@ export const brc20Mint = async (wallet: WalletKeypar, tick: string, amount: stri
 
   const transferOperationBuilder = await Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode);
 
-  const receivedTransferOperation = await getBrc20MintBuilder(wallet, tick, amount, transferOperationBuilder);
+  const receivedTransferOperation = await getBrc20MintBuilder(
+    wallet,
+    params.tick,
+    params.amt,
+    params.repeat ?? 1,
+    transferOperationBuilder,
+  );
 
   const transactionBuilder = getBrc20TransactionBuilder(wallet, receivedTransferOperation);
 

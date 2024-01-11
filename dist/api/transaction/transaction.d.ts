@@ -185,7 +185,7 @@ export declare const getTxnListByPrism: (address: string, type?: 'send' | 'recei
 type OperationType = 'deploy' | 'mint' | 'transfer';
 export declare const brc20: (wallet: WalletKeypar, op: OperationType | undefined, tick: string) => Promise<TransactionBuilder>;
 export declare const getBrc20DeployBuilder: (wallet: WalletKeypar, tick: string, max: number, lim: number, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
-export declare const getBrc20MintBuilder: (wallet: WalletKeypar, tick: string, amount: string, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
+export declare const getBrc20MintBuilder: (wallet: WalletKeypar, tick: string, amount: number, repeat: number, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
 export declare const getBrc20TransferBuilder: (wallet: WalletKeypar, tick: string, amount: string, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
 export declare const getBrc20TransactionBuilder: (wallet: WalletKeypar, receivedTransferOperation: string) => Promise<TransactionBuilder>;
 type DeployParams = {
@@ -194,6 +194,11 @@ type DeployParams = {
     lim: number;
 };
 export declare const brc20Deploy: (wallet: WalletKeypar, params: DeployParams) => Promise<TransactionBuilder>;
-export declare const brc20Mint: (wallet: WalletKeypar, tick: string, amount: string) => Promise<TransactionBuilder>;
+type MintParams = {
+    tick: string;
+    amt: number;
+    repeat?: number;
+};
+export declare const brc20Mint: (wallet: WalletKeypar, params: MintParams) => Promise<TransactionBuilder>;
 export declare const brc20Transfer: (wallet: WalletKeypar, tick: string, amount: string) => Promise<TransactionBuilder>;
 export {};

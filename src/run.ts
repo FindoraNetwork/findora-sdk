@@ -1796,7 +1796,11 @@ const mintBrc20 = async () => {
   const balanceOld = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
 
-  const transactionBuilder = await Transaction.brc20Mint(walletInfo, ticker, amount);
+  const transactionBuilder = await Transaction.brc20Mint(walletInfo, {
+    tick: ticker,
+    amt: +amount,
+    repeat: 1,
+  });
 
   const myTxInJson = transactionBuilder.transaction();
 
