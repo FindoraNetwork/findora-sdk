@@ -753,7 +753,7 @@ var getBrc20MintBuilder = function (wallet, tick, amount, repeat, transferOperat
                 try {
                     op = transferOperationBuilder;
                     for (idx = repeat; idx > 0; idx--) {
-                        op = transferOperationBuilder.add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo);
+                        op = op.add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo);
                     }
                     receivedTransferOperation = op.create().sign(wallet.keypair).transaction();
                     return [2 /*return*/, receivedTransferOperation];

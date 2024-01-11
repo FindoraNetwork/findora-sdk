@@ -1785,8 +1785,8 @@ const deployBrc20v3 = async () => {
 const mintBrc20 = async () => {
   const password = '123';
 
-  const ticker = 'oleks125';
-  const amount = '5';
+  const ticker = 'goooodppp';
+  const amount = 50;
 
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
@@ -1798,8 +1798,8 @@ const mintBrc20 = async () => {
 
   const transactionBuilder = await Transaction.brc20Mint(walletInfo, {
     tick: ticker,
-    amt: +amount,
-    repeat: 1,
+    amt: amount,
+    repeat: 2,
   });
 
   const myTxInJson = transactionBuilder.transaction();
@@ -1852,8 +1852,8 @@ const brc20ApiTest = async () => {
 
 // fnsNameResolver();
 
-brc20ApiTest();
+// brc20ApiTest();
 // getTransactionStatus();
 
 // deployBrc20v3();
-// mintBrc20();
+mintBrc20();

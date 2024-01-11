@@ -1837,8 +1837,8 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
         switch (_a.label) {
             case 0:
                 password = '123';
-                ticker = 'oleks125';
-                amount = '5';
+                ticker = 'goooodppp';
+                amount = 50;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1850,8 +1850,8 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
                 return [4 /*yield*/, api_1.Transaction.brc20Mint(walletInfo, {
                         tick: ticker,
-                        amt: +amount,
-                        repeat: 1,
+                        amt: amount,
+                        repeat: 2,
                     })];
             case 3:
                 transactionBuilder = _a.sent();
@@ -1906,8 +1906,8 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // testBrokenKeypairs();
 // getTxnListTest();
 // fnsNameResolver();
-brc20ApiTest();
+// brc20ApiTest();
 // getTransactionStatus();
 // deployBrc20v3();
-// mintBrc20();
+mintBrc20();
 //# sourceMappingURL=run.js.map

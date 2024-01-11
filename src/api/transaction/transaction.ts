@@ -705,7 +705,7 @@ export const getBrc20MintBuilder = async (
   try {
     let op = transferOperationBuilder;
     for (let idx = repeat; idx > 0; idx--) {
-      op = transferOperationBuilder.add_output_no_tracing(
+      op = op.add_output_no_tracing(
         BigInt(0),
         ledger.public_key_from_base64(wallet.publickey),
         fraAssetCode,
