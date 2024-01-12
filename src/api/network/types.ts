@@ -726,7 +726,7 @@ export interface DisplayCheckpointDataResult extends NetworkAxiosDataResult {
 // 0: 搜所有， 1 搜inprogress， 2 搜complete)
 export type Brc20TokenType = 0 | 1 | 2;
 
-export type Brc20BalanceResponse = {
+export type Brc20BalanceItem = {
   id: number;
   create_time: number;
   update_time: number;
@@ -735,6 +735,8 @@ export type Brc20BalanceResponse = {
   overall_balance: string;
   height: number;
 };
+
+export type Brc20BalanceResponse = Brc20BalanceItem;
 
 export interface Brc20BalanceDataResult extends NetworkAxiosDataResult {
   response?: Brc20BalanceResponse;
