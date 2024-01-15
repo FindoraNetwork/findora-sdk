@@ -1827,11 +1827,11 @@ const brc20ApiTest = async () => {
   // const result = await Network.getBrc20Balance(ticker, brc20Address);
   // console.log('getBrc20Balance result', result);
 
-  // const result = await Network.getBrc20TokenList(0, 1, 10);
-  // console.log('getBrc20TokenList result', result.response);
+  const result = await Network.getBrc20TokenList(0, 1, 10);
+  console.log('getBrc20TokenList result', result.response);
 
-  const result = await Network.getBrc20TokenDetail(13);
-  console.log('getBrc20TokenDetail result', result.response);
+  // const result = await Network.getBrc20TokenDetail(13);
+  // console.log('getBrc20TokenDetail result', result.response);
 
   const testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
   const testTicker = 'test111111';

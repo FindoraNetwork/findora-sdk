@@ -840,16 +840,24 @@ var getBrc20Balance = function (ticker, address, config) { return __awaiter(void
     });
 }); };
 exports.getBrc20Balance = getBrc20Balance;
-var getBrc20TokenList = function (tokenType, pageNo, pageCount, config) {
+var getBrc20TokenList = function (tokenType, pageNo, pageCount, ticker, config) {
     if (tokenType === void 0) { tokenType = 0; }
     if (pageNo === void 0) { pageNo = 1; }
     if (pageCount === void 0) { pageCount = 10; }
+    if (ticker === void 0) { ticker = ''; }
     return __awaiter(void 0, void 0, void 0, function () {
         var params, url, dataResult;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
-                    params = { type: tokenType, pageNo: pageNo, pageCount: pageCount };
+                    params = {
+                        type: tokenType,
+                        pageNo: pageNo,
+                        pageCount: pageCount,
+                    };
+                    if (ticker) {
+                        params.ticker = ticker.trim();
+                    }
                     url = "".concat(getBrc20Route(), "/tokenList");
                     console.log('url ', url);
                     return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: params }))];

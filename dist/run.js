@@ -1884,10 +1884,10 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
             case 1:
                 walletInfo = _a.sent();
                 brc20Address = walletInfo.address;
-                return [4 /*yield*/, api_1.Network.getBrc20TokenDetail(13)];
+                return [4 /*yield*/, api_1.Network.getBrc20TokenList(0, 1, 10)];
             case 2:
                 result = _a.sent();
-                console.log('getBrc20TokenDetail result', result.response);
+                console.log('getBrc20TokenList result', result.response);
                 testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
                 testTicker = 'test111111';
                 return [2 /*return*/];

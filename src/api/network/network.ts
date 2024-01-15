@@ -701,9 +701,18 @@ export const getBrc20TokenList = async (
   tokenType: Types.Brc20TokenType = 0,
   pageNo = 1,
   pageCount = 10,
+  ticker = '',
   config?: Types.NetworkAxiosConfig,
 ): Promise<Types.Brc20TokenListDataResult> => {
-  const params = { type: tokenType, pageNo, pageCount };
+  const params: { type: Types.Brc20TokenType; pageNo: number; pageCount: number; ticker?: string } = {
+    type: tokenType,
+    pageNo,
+    pageCount,
+  };
+
+  if (ticker) {
+    params.ticker = ticker.trim();
+  }
 
   const url = `${getBrc20Route()}/tokenList`;
   console.log('url ', url);
