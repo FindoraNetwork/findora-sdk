@@ -1,4 +1,4 @@
-import { toWei } from '../../services/bigNumber';
+import { fromWei, toWei } from '../../services/bigNumber';
 import * as Fee from '../../services/fee';
 import { getLedger } from '../../services/ledger/ledgerWrapper';
 import { TransactionBuilder, TransferOperationBuilder } from '../../services/ledger/types';
@@ -701,6 +701,7 @@ export const getBrc20MintBuilder = async (
 
   // mint:      '{"p":"brc-20","op":"mint","tick":"ordi","amt":"1000"}'
   const brc20Memo = `{"p":"brc-20","op":"mint","tick":"${tick}","amt":"${amount}"}`;
+  console.log('brc20Memo mint', brc20Memo);
 
   try {
     let op = transferOperationBuilder;
@@ -726,27 +727,134 @@ export const getBrc20MintBuilder = async (
   }
 };
 
+// move it to helper?
+const getTickerDecimal = async (tickerId: number) => {
+  try {
+    const result = await Network.getBrc20TokenDetail(tickerId);
+    const { response } = result;
+
+    if (!response) {
+      throw Error(`could not get response from the getBrc20TokenDetail tickerId ${tickerId}`);
+    }
+
+    const { decimal: decimalToken } = response;
+
+    if (!decimalToken) {
+      throw Error(`could not get decimal for ticker id ${tickerId}, token data is incorrect`);
+    }
+
+    return decimalToken;
+  } catch (error) {
+    console.log('we got an error while trying to get the decimal by the ticker id: ', error);
+  }
+  throw Error(`could not get decimal by the token id for ${tickerId}, smth is really wrong`);
+};
+
+// move it to helper?
+const getTickerId = async (ticker: string) => {
+  try {
+    const result = await Network.getBrc20TokenList(0, 1, 10, ticker);
+    const { response } = result;
+
+    if (!response) {
+      throw Error(`could not get response from the getBrc20TokenList tick ${ticker}`);
+    }
+
+    const { data } = response;
+
+    if (!data.length) {
+      throw Error(
+        `could not get token list from the response from the getBrc20TokenList tick ${ticker}, data is empty`,
+      );
+    }
+    const [firstToken] = data;
+
+    const { id } = firstToken;
+
+    if (!id) {
+      throw Error(`could not get token id  from the getTickerId for ${ticker}, token data is incorrect`);
+    }
+
+    return id;
+  } catch (error) {
+    console.log('we got an error while trying to get the ticker id: ', error);
+  }
+  throw Error(`could not get token id from the getTickerId for ${ticker}, smth is really wrong`);
+};
+
+// move it to helper?
+const getReminderBalance = async (wallet: WalletKeypar, ticker: string, amountToSend: string) => {
+  try {
+    const tokenId = await getTickerId(ticker);
+    const tokenDecimal = await getTickerDecimal(tokenId);
+
+    const resultBalance = await Network.getBrc20Balance(ticker, wallet.address);
+    const { response } = resultBalance;
+    if (!response) {
+      throw Error(
+        `could not get response from the getBrc20Balance to calculate the remainderAmount for tick ${ticker} and address ${wallet.address}`,
+      );
+    }
+    const { overall_balance: ownedAmount } = response;
+
+    if (!ownedAmount) {
+      throw Error(
+        `could not get the remainderAmount from the getBrc20Balance for tick ${ticker} , result is: ${JSON.stringify(
+          resultBalance,
+        )}`,
+      );
+    }
+    const remainderAmount = toWei(ownedAmount, tokenDecimal)
+      .minus(toWei(amountToSend, tokenDecimal))
+      .toString();
+
+    console.log('remainderAmount', remainderAmount);
+    const remainderAmountF = fromWei(remainderAmount, tokenDecimal).toFormat(tokenDecimal);
+
+    console.log('remainderAmountF', remainderAmountF);
+    return remainderAmountF;
+  } catch (error) {
+    console.log('we got an error while trying to get the remainderAmount: ', error);
+  }
+  return '0';
+};
+
 export const getBrc20TransferBuilder = async (
   wallet: WalletKeypar,
+  receiverAddress: string,
   tick: string,
-  amount: string,
+  amount: number,
   transferOperationBuilder: TransferOperationBuilder,
 ) => {
   const ledger = await getLedger();
   const fraAssetCode = ledger.fra_get_asset_code();
 
+  const remainderAmount = await getReminderBalance(wallet, tick, `${amount}`);
+  // const remainderAmount = '90';
+
   // transfer:  '{"p":"brc-20","op":"transfer","tick":"ordi","amt":"1000"}'
-  const brc20Memo = `{"p":"brc-20","op":"transfer","${tick}":"ordi","amt":"${amount}"}`;
+  const brc20Memo = `{"p":"brc-20","op":"transfer", "tick":"${tick}","amt":"${amount}"}`;
+  const brc20MemoSender = `{"p":"brc-20","op":"transfer", "tick":"${tick}","amt":"${remainderAmount}"}`;
+
+  const toWalletInfoLight = await getAddressPublicAndKey(receiverAddress);
 
   try {
     const receivedTransferOperation = transferOperationBuilder
+      .add_output_no_tracing(
+        BigInt(0),
+        ledger.public_key_from_base64(toWalletInfoLight.publickey),
+        fraAssetCode,
+        false,
+        false,
+        brc20Memo,
+      )
       .add_output_no_tracing(
         BigInt(0),
         ledger.public_key_from_base64(wallet.publickey),
         fraAssetCode,
         false,
         false,
-        brc20Memo,
+        brc20MemoSender,
       )
       .create()
       .sign(wallet.keypair)
@@ -869,7 +977,13 @@ export const brc20Mint = async (wallet: WalletKeypar, params: MintParams) => {
   return transactionBuilder;
 };
 
-export const brc20Transfer = async (wallet: WalletKeypar, tick: string, amount: string) => {
+type Brc20TransferParams = {
+  receiverAddress: string;
+  tick: string;
+  amt: number;
+};
+
+export const brc20Transfer = async (wallet: WalletKeypar, params: Brc20TransferParams) => {
   const ledger = await getLedger();
   const fraAssetCode = ledger.fra_get_asset_code();
   const recieversInfo: Fee.ReciverInfo[] = [];
@@ -888,8 +1002,9 @@ export const brc20Transfer = async (wallet: WalletKeypar, tick: string, amount: 
 
   const receivedTransferOperation = await getBrc20TransferBuilder(
     wallet,
-    tick,
-    amount,
+    params.receiverAddress,
+    params.tick,
+    params.amt,
     transferOperationBuilder,
   );
 

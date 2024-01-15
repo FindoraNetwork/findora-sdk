@@ -39,7 +39,7 @@ const sdkEnv = {
   // cacheProvider: FileCacheProvider,
   // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
   // hostUrl: 'https://dev-qa01.dev.findora.org',
-  blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
+  blockScanerUrl: 'https://mainnet.backend.findorascan.io',
   // cacheProvider: MemoryCacheProvider,
   cachePath: './cache',
   brc20url: 'https://api-testnet.brc20.findora.org',
@@ -1687,75 +1687,10 @@ const stringToHex = (str: string) => {
   return hex;
 };
 
-const deployBrc20 = async () => {
-  const pkey = 'eWI2DwxJY7v3JGVn9T16iHgV-ORhVa9hKAqfgpkzmsg=';
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const balanceOld = await Account.getBalance(walletInfo);
-  console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-  console.log('sids:', sidsResult);
-
-  const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', 'giambi222');
-
-  const myTx = transactionBuilder.transaction();
-  console.log('myTx', myTx);
-  // const tx = stringToHex(myTx);
-  const tx2 = stringToHexUtil(myTx);
-  // console.log('tx', tx);
-  console.log('tx2', tx2);
-  // console.log('the same is', tx === tx2);
-  // const tx = '7b22626f6479223a7b226e6f5f7265706c61795f746f6b656e223a5b5b3131302c3230372c33332c3138362c3235342c3134372c3138362c3133375d2c31393132315d2c226f7065726174696f6e73223a5b7b225472616e736665724173736574223a7b22626f6479223a7b22696e70757473223a5b7b224162736f6c757465223a35373331347d5d2c22706f6c6963696573223a7b2276616c6964223a747275652c22696e707574735f74726163696e675f706f6c6963696573223a5b5b5d5d2c22696e707574735f7369675f636f6d6d69746d656e7473223a5b6e756c6c5d2c226f7574707574735f74726163696e675f706f6c6963696573223a5b5b5d2c5b5d2c5b5d5d2c226f7574707574735f7369675f636f6d6d69746d656e7473223a5b6e756c6c2c6e756c6c2c6e756c6c5d7d2c226f757470757473223a5b7b226964223a6e756c6c2c227265636f7264223a7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a223130303030227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a22414141414141414141414141414141414141414141414141414141414141414141414141414141414141413d227d7d2c7b226964223a6e756c6c2c227265636f7264223a7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a2231227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a226c30517567744e554b47443533574b6646364271364548457550775a63526e45766e5f5047343852336a673d227d2c226d656d6f223a227b5c22705c223a5c226272632d32305c222c5c226f705c223a5c227472616e736665725c222c5c227469636b5c223a5c226f7264695c222c5c22616d745c223a5c22313030305c227d227d2c7b226964223a6e756c6c2c227265636f7264223a7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a223437343839363233313039393935227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a22485a6e787750493550445f78705158314e714b54485871506448585658744765377951304a49334d5654733d227d7d5d2c227472616e73666572223a7b22696e70757473223a5b7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a223437343839363233313139393936227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a22485a6e787750493550445f78705158314e714b54485871506448585658744765377951304a49334d5654733d227d5d2c226f757470757473223a5b7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a223130303030227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a22414141414141414141414141414141414141414141414141414141414141414141414141414141414141413d227d2c7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a2231227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a226c30517567744e554b47443533574b6646364271364548457550775a63526e45766e5f5047343852336a673d227d2c7b22616d6f756e74223a7b224e6f6e436f6e666964656e7469616c223a223437343839363233313039393935227d2c2261737365745f74797065223a7b224e6f6e436f6e666964656e7469616c223a5b302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c302c305d7d2c227075626c69635f6b6579223a22485a6e787750493550445f78705158314e714b54485871506448585658744765377951304a49334d5654733d227d5d2c2270726f6f6673223a7b2261737365745f747970655f616e645f616d6f756e745f70726f6f66223a224e6f50726f6f66222c2261737365745f74726163696e675f70726f6f66223a7b2261737365745f747970655f616e645f616d6f756e745f70726f6f6673223a5b5d2c22696e707574735f6964656e746974795f70726f6f6673223a5b5b5d5d2c226f7574707574735f6964656e746974795f70726f6f6673223a5b5b5d2c5b5d2c5b5d5d7d7d2c2261737365745f74726163696e675f6d656d6f73223a5b5b5d2c5b5d2c5b5d2c5b5d5d2c226f776e6572735f6d656d6f73223a5b6e756c6c2c6e756c6c2c6e756c6c5d7d2c227472616e736665725f74797065223a225374616e64617264227d2c22626f64795f7369676e617475726573223a5b7b2261646472657373223a7b226b6579223a22485a6e787750493550445f78705158314e714b54485871506448585658744765377951304a49334d5654733d227d2c227369676e6174757265223a22594e2d473466437258334b5938614d464a78734e6a654b6135527266396c79584861453975773876583877455f557575706633736a6b67477530347573334e574f6d6f4167733042317a32624a31636f7356396344513d3d227d5d7d7d5d7d2c227075626b65795f7369676e5f6d6170223a7b22485a6e787750493550445f78705158314e714b54485871506448585658744765377951304a49334d5654733d223a2261556f7775334b7462634d446b4539592d4b6673646859617467596852613367475833774464505a595337394847634a6d617a6d567134337669384d6561584e4c446944333268324165716f4c506a31554c713742773d3d227d7d';
-  // console.log('send fra result handle!!');
-  // const bytes = hexToBytes(tx);
-  const bytes2 = hexToBytesUtil(tx2);
-  // console.log('bytes', bytes);
-  console.log('bytes2', bytes2);
-
-  // let binary = '';
-  // for (let i = 0; i < bytes.length; i++) {
-  // binary += String.fromCharCode(bytes[i]);
-  // }
-  // console.log(btoa(binary));
-  const convertedString = Buffer.from(bytes2).toString('base64');
-  console.log(convertedString);
-
-  // const result = await Network.submitBRC20Tx(btoa(binary));
-  // console.log(result);
-
-  // await waitForBlockChange();
-};
-
-const deployBrc20v2 = async () => {
-  const pkey = 'eWI2DwxJY7v3JGVn9T16iHgV-ORhVa9hKAqfgpkzmsg=';
-  const password = '123';
-
-  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
-  const balanceOld = await Account.getBalance(walletInfo);
-  console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-  const sidsResult = await Network.getOwnedSids(walletInfo.publickey);
-  console.log('sids:', sidsResult);
-
-  const transactionBuilder = await Transaction.brc20(walletInfo, 'deploy', 'giambi222');
-
-  const myTxInJson = transactionBuilder.transaction();
-  console.log('myTxInJson', myTxInJson);
-  const myTxInHex = stringToHexUtil(myTxInJson);
-
-  const myTxInBase64 = Buffer.from(myTxInHex, 'hex').toString('base64');
-  console.log(myTxInBase64);
-
-  // const result = await Network.submitBRC20Tx(btoa(binary));
-  // console.log(result);
-
-  // await waitForBlockChange();
-};
-
 const deployBrc20v3 = async () => {
   const password = '123';
 
-  const ticker = 'oleks125';
+  const ticker = 'oleksjan15_2';
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
   const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
@@ -1767,7 +1702,7 @@ const deployBrc20v3 = async () => {
   const transactionBuilder = await Transaction.brc20Deploy(walletInfo, {
     tick: ticker,
     max: 100000,
-    lim: 200,
+    lim: 100,
   });
 
   const myTxInJson = transactionBuilder.transaction();
@@ -1785,13 +1720,14 @@ const deployBrc20v3 = async () => {
 const mintBrc20 = async () => {
   const password = '123';
 
-  const ticker = 'goooodppp';
-  const amount = 50;
+  const ticker = 'oleksjan15_2';
+  const amount = 100;
 
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
 
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+  const _account = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(_account.privateStr!.replace(/"/g, ''), '123');
 
   const balanceOld = await Account.getBalance(walletInfo);
   console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
@@ -1799,11 +1735,10 @@ const mintBrc20 = async () => {
   const transactionBuilder = await Transaction.brc20Mint(walletInfo, {
     tick: ticker,
     amt: amount,
-    repeat: 2,
+    repeat: 1,
   });
 
   const myTxInJson = transactionBuilder.transaction();
-
   const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
 
   const result = await Network.submitBRC20Tx(myTxInBase64);
@@ -1816,27 +1751,65 @@ const mintBrc20 = async () => {
   console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
 };
 
-const brc20ApiTest = async () => {
-  const ticker = 'oleks123';
+const transferBrc20 = async () => {
+  const password = '123';
+
+  const ticker = 'oleksjan15_2';
+  const amount = 2;
 
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');
-  const walletInfo = await Keypair.restoreFromMnemonic(mm, password);
+
+  const _account = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(_account.privateStr!.replace(/"/g, ''), '123');
+
+  const mStringReceiver = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2;
+  const mmR = mStringReceiver.split(' ');
+
+  const walletInfoReceiver = await Keypair.restoreFromMnemonic(mmR, password);
+
+  const transactionBuilder = await Transaction.brc20Transfer(walletInfo, {
+    receiverAddress: walletInfoReceiver.address,
+    tick: ticker,
+    amt: amount,
+  });
+
+  const myTxInJson = transactionBuilder.transaction();
+  const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+
+  const result = await Network.submitBRC20Tx(myTxInBase64);
+
+  console.log('submitBRC20Tx transfer result', result);
+
+  await waitForBlockChange(2);
+
+  const balanceNew = await Account.getBalance(walletInfo);
+  console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
+};
+
+const brc20ApiTest = async () => {
+  // const ticker = 'oleks123';
+  const ticker = 'oleksjan15_2';
+
+  const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+  const mm = mString.split(' ');
+  const _account = await Keypair.restoreFromMnemonic(mm, password);
+  const walletInfo = await Keypair.restoreFromPrivateKey(_account.privateStr!.replace(/"/g, ''), '123');
   const brc20Address = walletInfo.address;
 
-  // const result = await Network.getBrc20Balance(ticker, brc20Address);
-  // console.log('getBrc20Balance result', result);
+  // const result1 = await Network.getBrc20Balance(ticker, brc20Address);
+  // console.log('getBrc20Balance result', result1);
 
-  const result = await Network.getBrc20TokenList(0, 1, 10);
+  const result = await Network.getBrc20TokenList(0, 1, 10, ticker);
   console.log('getBrc20TokenList result', result.response);
 
-  // const result = await Network.getBrc20TokenDetail(13);
-  // console.log('getBrc20TokenDetail result', result.response);
+  const result3 = await Network.getBrc20TokenDetail(22);
+  console.log('getBrc20TokenDetail result3', result3.response);
 
-  const testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
-  const testTicker = 'test111111';
-  // const result = await Network.getBrc20UserRank(testTicker, 1, 10);
-  // console.log('getBrc20UserRank result', result.response);
+  // const testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
+  // const testTicker = 'test111111';
+  const result2 = await Network.getBrc20UserRank(ticker, 1, 10);
+  console.log('getBrc20UserRank result', result2.response);
 
   // const result = await Network.getBrc20BalanceAll(testBackendUserAddress);
   // console.log('getBrc20BalanceAll result', result);
@@ -1855,17 +1828,8 @@ const brc20ApiTest = async () => {
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
-// testFailure();
-
-// getNewBalanace();
-// testBrokenKeypairs();
-
-// getTxnListTest();
-
-// fnsNameResolver();
-
-brc20ApiTest();
-// getTransactionStatus();
 
 // deployBrc20v3();
 // mintBrc20();
+transferBrc20();
+// brc20ApiTest();

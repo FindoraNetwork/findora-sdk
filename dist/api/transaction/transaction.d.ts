@@ -186,7 +186,7 @@ type OperationType = 'deploy' | 'mint' | 'transfer';
 export declare const brc20: (wallet: WalletKeypar, op: OperationType | undefined, tick: string) => Promise<TransactionBuilder>;
 export declare const getBrc20DeployBuilder: (wallet: WalletKeypar, tick: string, max: number, lim: number, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
 export declare const getBrc20MintBuilder: (wallet: WalletKeypar, tick: string, amount: number, repeat: number, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
-export declare const getBrc20TransferBuilder: (wallet: WalletKeypar, tick: string, amount: string, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
+export declare const getBrc20TransferBuilder: (wallet: WalletKeypar, receiverAddress: string, tick: string, amount: number, transferOperationBuilder: TransferOperationBuilder) => Promise<string>;
 export declare const getBrc20TransactionBuilder: (wallet: WalletKeypar, receivedTransferOperation: string) => Promise<TransactionBuilder>;
 type DeployParams = {
     tick: string;
@@ -200,5 +200,10 @@ type MintParams = {
     repeat?: number;
 };
 export declare const brc20Mint: (wallet: WalletKeypar, params: MintParams) => Promise<TransactionBuilder>;
-export declare const brc20Transfer: (wallet: WalletKeypar, tick: string, amount: string) => Promise<TransactionBuilder>;
+type Brc20TransferParams = {
+    receiverAddress: string;
+    tick: string;
+    amt: number;
+};
+export declare const brc20Transfer: (wallet: WalletKeypar, params: Brc20TransferParams) => Promise<TransactionBuilder>;
 export {};

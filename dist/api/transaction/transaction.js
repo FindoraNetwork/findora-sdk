@@ -750,6 +750,7 @@ var getBrc20MintBuilder = function (wallet, tick, amount, repeat, transferOperat
                 ledger = _a.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
                 brc20Memo = "{\"p\":\"brc-20\",\"op\":\"mint\",\"tick\":\"".concat(tick, "\",\"amt\":\"").concat(amount, "\"}");
+                console.log('brc20Memo mint', brc20Memo);
                 try {
                     op = transferOperationBuilder;
                     for (idx = repeat; idx > 0; idx--) {
@@ -768,18 +769,122 @@ var getBrc20MintBuilder = function (wallet, tick, amount, repeat, transferOperat
     });
 }); };
 exports.getBrc20MintBuilder = getBrc20MintBuilder;
-var getBrc20TransferBuilder = function (wallet, tick, amount, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
-    var ledger, fraAssetCode, brc20Memo, receivedTransferOperation, e;
+var getTickerDecimal = function (tickerId) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, response, decimalToken, error_4;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Network.getBrc20TokenDetail(tickerId)];
+            case 1:
+                result = _a.sent();
+                response = result.response;
+                if (!response) {
+                    throw Error("could not get response from the getBrc20TokenDetail tickerId ".concat(tickerId));
+                }
+                decimalToken = response.decimal;
+                if (!decimalToken) {
+                    throw Error("could not get decimal for ticker id ".concat(tickerId, ", token data is incorrect"));
+                }
+                return [2 /*return*/, decimalToken];
+            case 2:
+                error_4 = _a.sent();
+                console.log('we got an error while trying to get the decimal by the ticker id: ', error_4);
+                return [3 /*break*/, 3];
+            case 3: throw Error("could not get decimal by the token id for ".concat(tickerId, ", smth is really wrong"));
+        }
+    });
+}); };
+var getTickerId = function (ticker) { return __awaiter(void 0, void 0, void 0, function () {
+    var result, response, data, firstToken, id, error_5;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 2, , 3]);
+                return [4 /*yield*/, Network.getBrc20TokenList(0, 1, 10, ticker)];
+            case 1:
+                result = _a.sent();
+                response = result.response;
+                if (!response) {
+                    throw Error("could not get response from the getBrc20TokenList tick ".concat(ticker));
+                }
+                data = response.data;
+                if (!data.length) {
+                    throw Error("could not get token list from the response from the getBrc20TokenList tick ".concat(ticker, ", data is empty"));
+                }
+                firstToken = data[0];
+                id = firstToken.id;
+                if (!id) {
+                    throw Error("could not get token id  from the getTickerId for ".concat(ticker, ", token data is incorrect"));
+                }
+                return [2 /*return*/, id];
+            case 2:
+                error_5 = _a.sent();
+                console.log('we got an error while trying to get the ticker id: ', error_5);
+                return [3 /*break*/, 3];
+            case 3: throw Error("could not get token id from the getTickerId for ".concat(ticker, ", smth is really wrong"));
+        }
+    });
+}); };
+// move it to helper?
+var getReminderBalance = function (wallet, ticker, amountToSend) { return __awaiter(void 0, void 0, void 0, function () {
+    var tokenId, tokenDecimal, resultBalance, response, ownedAmount, remainderAmount, remainderAmountF, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _a.trys.push([0, 4, , 5]);
+                return [4 /*yield*/, getTickerId(ticker)];
+            case 1:
+                tokenId = _a.sent();
+                return [4 /*yield*/, getTickerDecimal(tokenId)];
+            case 2:
+                tokenDecimal = _a.sent();
+                return [4 /*yield*/, Network.getBrc20Balance(ticker, wallet.address)];
+            case 3:
+                resultBalance = _a.sent();
+                response = resultBalance.response;
+                if (!response) {
+                    throw Error("could not get response from the getBrc20Balance to calculate the remainderAmount for tick ".concat(ticker, " and address ").concat(wallet.address));
+                }
+                ownedAmount = response.overall_balance;
+                if (!ownedAmount) {
+                    throw Error("could not get the remainderAmount from the getBrc20Balance for tick ".concat(ticker, " , result is: ").concat(JSON.stringify(resultBalance)));
+                }
+                remainderAmount = (0, bigNumber_1.toWei)(ownedAmount, tokenDecimal)
+                    .minus((0, bigNumber_1.toWei)(amountToSend, tokenDecimal))
+                    .toString();
+                console.log('remainderAmount', remainderAmount);
+                remainderAmountF = (0, bigNumber_1.fromWei)(remainderAmount, tokenDecimal).toFormat(tokenDecimal);
+                console.log('remainderAmountF', remainderAmountF);
+                return [2 /*return*/, remainderAmountF];
+            case 4:
+                error_6 = _a.sent();
+                console.log('we got an error while trying to get the remainderAmount: ', error_6);
+                return [3 /*break*/, 5];
+            case 5: return [2 /*return*/, '0'];
+        }
+    });
+}); };
+var getBrc20TransferBuilder = function (wallet, receiverAddress, tick, amount, transferOperationBuilder) { return __awaiter(void 0, void 0, void 0, function () {
+    var ledger, fraAssetCode, remainderAmount, brc20Memo, brc20MemoSender, toWalletInfoLight, receivedTransferOperation, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
                 ledger = _a.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
-                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"transfer\",\"".concat(tick, "\":\"ordi\",\"amt\":\"").concat(amount, "\"}");
+                return [4 /*yield*/, getReminderBalance(wallet, tick, "".concat(amount))];
+            case 2:
+                remainderAmount = _a.sent();
+                brc20Memo = "{\"p\":\"brc-20\",\"op\":\"transfer\", \"tick\":\"".concat(tick, "\",\"amt\":\"").concat(amount, "\"}");
+                brc20MemoSender = "{\"p\":\"brc-20\",\"op\":\"transfer\", \"tick\":\"".concat(tick, "\",\"amt\":\"").concat(remainderAmount, "\"}");
+                return [4 /*yield*/, (0, keypair_1.getAddressPublicAndKey)(receiverAddress)];
+            case 3:
+                toWalletInfoLight = _a.sent();
                 try {
                     receivedTransferOperation = transferOperationBuilder
-                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20Memo)
+                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(toWalletInfoLight.publickey), fraAssetCode, false, false, brc20Memo)
+                        .add_output_no_tracing(BigInt(0), ledger.public_key_from_base64(wallet.publickey), fraAssetCode, false, false, brc20MemoSender)
                         .create()
                         .sign(wallet.keypair)
                         .transaction();
@@ -796,7 +901,7 @@ var getBrc20TransferBuilder = function (wallet, tick, amount, transferOperationB
 }); };
 exports.getBrc20TransferBuilder = getBrc20TransferBuilder;
 var getBrc20TransactionBuilder = function (wallet, receivedTransferOperation) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, error_4, e, e, e;
+    var transactionBuilder, error_7, e, e, e;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -806,8 +911,8 @@ var getBrc20TransactionBuilder = function (wallet, receivedTransferOperation) { 
                 transactionBuilder = _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                error_4 = _a.sent();
-                e = error_4;
+                error_7 = _a.sent();
+                e = error_7;
                 throw new Error("Could not get transactionBuilder from \"getTransactionBuilder\", Error: \"".concat(e.message, "\""));
             case 3:
                 try {
@@ -895,7 +1000,7 @@ var brc20Mint = function (wallet, params) { return __awaiter(void 0, void 0, voi
     });
 }); };
 exports.brc20Mint = brc20Mint;
-var brc20Transfer = function (wallet, tick, amount) { return __awaiter(void 0, void 0, void 0, function () {
+var brc20Transfer = function (wallet, params) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
     return __generator(this, function (_a) {
         switch (_a.label) {
@@ -918,7 +1023,7 @@ var brc20Transfer = function (wallet, tick, amount) { return __awaiter(void 0, v
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
             case 4:
                 transferOperationBuilder = _a.sent();
-                return [4 /*yield*/, (0, exports.getBrc20TransferBuilder)(wallet, tick, amount, transferOperationBuilder)];
+                return [4 /*yield*/, (0, exports.getBrc20TransferBuilder)(wallet, params.receiverAddress, params.tick, params.amt, transferOperationBuilder)];
             case 5:
                 receivedTransferOperation = _a.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);

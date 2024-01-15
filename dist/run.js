@@ -93,7 +93,7 @@ var sdkEnv = {
     // cacheProvider: FileCacheProvider,
     // hostUrl: 'https://dev-mainnetmock.dev.findora.org', //works but have 0 balance
     // hostUrl: 'https://dev-qa01.dev.findora.org',
-    blockScanerUrl: 'https://prod-testnet.backend.findorascan.io',
+    blockScanerUrl: 'https://mainnet.backend.findorascan.io',
     // cacheProvider: MemoryCacheProvider,
     cachePath: './cache',
     brc20url: 'https://api-testnet.brc20.findora.org',
@@ -1726,78 +1726,13 @@ var stringToHex = function (str) {
     }
     return hex;
 };
-var deployBrc20 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, balanceOld, sidsResult, transactionBuilder, myTx, tx2, bytes2, convertedString;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = 'eWI2DwxJY7v3JGVn9T16iHgV-ORhVa9hKAqfgpkzmsg=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 2:
-                balanceOld = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 3:
-                sidsResult = _a.sent();
-                console.log('sids:', sidsResult);
-                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', 'giambi222')];
-            case 4:
-                transactionBuilder = _a.sent();
-                myTx = transactionBuilder.transaction();
-                console.log('myTx', myTx);
-                tx2 = (0, utils_1.stringToHex)(myTx);
-                // console.log('tx', tx);
-                console.log('tx2', tx2);
-                bytes2 = (0, utils_1.hexToBytes)(tx2);
-                // console.log('bytes', bytes);
-                console.log('bytes2', bytes2);
-                convertedString = Buffer.from(bytes2).toString('base64');
-                console.log(convertedString);
-                return [2 /*return*/];
-        }
-    });
-}); };
-var deployBrc20v2 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var pkey, password, walletInfo, balanceOld, sidsResult, transactionBuilder, myTxInJson, myTxInHex, myTxInBase64;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0:
-                pkey = 'eWI2DwxJY7v3JGVn9T16iHgV-ORhVa9hKAqfgpkzmsg=';
-                password = '123';
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(pkey, password)];
-            case 1:
-                walletInfo = _a.sent();
-                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 2:
-                balanceOld = _a.sent();
-                console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
-                return [4 /*yield*/, api_1.Network.getOwnedSids(walletInfo.publickey)];
-            case 3:
-                sidsResult = _a.sent();
-                console.log('sids:', sidsResult);
-                return [4 /*yield*/, api_1.Transaction.brc20(walletInfo, 'deploy', 'giambi222')];
-            case 4:
-                transactionBuilder = _a.sent();
-                myTxInJson = transactionBuilder.transaction();
-                console.log('myTxInJson', myTxInJson);
-                myTxInHex = (0, utils_1.stringToHex)(myTxInJson);
-                myTxInBase64 = Buffer.from(myTxInHex, 'hex').toString('base64');
-                console.log(myTxInBase64);
-                return [2 /*return*/];
-        }
-    });
-}); };
 var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, function () {
     var password, ticker, mString, mm, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '123';
-                ticker = 'oleks125';
+                ticker = 'oleksjan15_2';
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
@@ -1810,7 +1745,7 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
                 return [4 /*yield*/, api_1.Transaction.brc20Deploy(walletInfo, {
                         tick: ticker,
                         max: 100000,
-                        lim: 200,
+                        lim: 100,
                     })];
             case 3:
                 transactionBuilder = _a.sent();
@@ -1832,40 +1767,88 @@ var deployBrc20v3 = function () { return __awaiter(void 0, void 0, void 0, funct
     });
 }); };
 var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var password, ticker, amount, mString, mm, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
+    var password, ticker, amount, mString, mm, _account, walletInfo, balanceOld, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 password = '123';
-                ticker = 'goooodppp';
-                amount = 50;
+                ticker = 'oleksjan15_2';
+                amount = 100;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
+                _account = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(_account.privateStr.replace(/"/g, ''), '123')];
+            case 2:
                 walletInfo = _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
-            case 2:
+            case 3:
                 balanceOld = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceOld', balanceOld);
                 return [4 /*yield*/, api_1.Transaction.brc20Mint(walletInfo, {
                         tick: ticker,
                         amt: amount,
-                        repeat: 2,
+                        repeat: 1,
                     })];
-            case 3:
+            case 4:
                 transactionBuilder = _a.sent();
                 myTxInJson = transactionBuilder.transaction();
                 myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
                 return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
-            case 4:
+            case 5:
                 result = _a.sent();
                 console.log('submitBRC20Tx mint result', result);
                 return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
-            case 5:
+            case 6:
                 _a.sent();
                 return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 7:
+                balanceNew = _a.sent();
+                console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
+                return [2 /*return*/];
+        }
+    });
+}); };
+var transferBrc20 = function () { return __awaiter(void 0, void 0, void 0, function () {
+    var password, ticker, amount, mString, mm, _account, walletInfo, mStringReceiver, mmR, walletInfoReceiver, transactionBuilder, myTxInJson, myTxInBase64, result, balanceNew;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                password = '123';
+                ticker = 'oleksjan15_2';
+                amount = 2;
+                mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
+                mm = mString.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
+            case 1:
+                _account = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(_account.privateStr.replace(/"/g, ''), '123')];
+            case 2:
+                walletInfo = _a.sent();
+                mStringReceiver = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE2;
+                mmR = mStringReceiver.split(' ');
+                return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mmR, password)];
+            case 3:
+                walletInfoReceiver = _a.sent();
+                return [4 /*yield*/, api_1.Transaction.brc20Transfer(walletInfo, {
+                        receiverAddress: walletInfoReceiver.address,
+                        tick: ticker,
+                        amt: amount,
+                    })];
+            case 4:
+                transactionBuilder = _a.sent();
+                myTxInJson = transactionBuilder.transaction();
+                myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+                return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
+            case 5:
+                result = _a.sent();
+                console.log('submitBRC20Tx transfer result', result);
+                return [4 /*yield*/, (0, testHelpers_1.waitForBlockChange)(2)];
             case 6:
+                _a.sent();
+                return [4 /*yield*/, api_1.Account.getBalance(walletInfo)];
+            case 7:
                 balanceNew = _a.sent();
                 console.log('🚀 ~ file: run.ts ~ balanceNew', balanceNew);
                 return [2 /*return*/];
@@ -1873,23 +1856,32 @@ var mintBrc20 = function () { return __awaiter(void 0, void 0, void 0, function 
     });
 }); };
 var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var ticker, mString, mm, walletInfo, brc20Address, result, testBackendUserAddress, testTicker;
+    var ticker, mString, mm, _account, walletInfo, brc20Address, result, result3, result2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
-                ticker = 'oleks123';
+                ticker = 'oleksjan15_2';
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
             case 1:
+                _account = _a.sent();
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(_account.privateStr.replace(/"/g, ''), '123')];
+            case 2:
                 walletInfo = _a.sent();
                 brc20Address = walletInfo.address;
-                return [4 /*yield*/, api_1.Network.getBrc20TokenList(0, 1, 10)];
-            case 2:
+                return [4 /*yield*/, api_1.Network.getBrc20TokenList(0, 1, 10, ticker)];
+            case 3:
                 result = _a.sent();
                 console.log('getBrc20TokenList result', result.response);
-                testBackendUserAddress = 'fra16acam7lsg27y2l06rx2vmpgc6flw08j6qag2uvad9yag0yp7eyqq79wwc3';
-                testTicker = 'test111111';
+                return [4 /*yield*/, api_1.Network.getBrc20TokenDetail(22)];
+            case 4:
+                result3 = _a.sent();
+                console.log('getBrc20TokenDetail result3', result3.response);
+                return [4 /*yield*/, api_1.Network.getBrc20UserRank(ticker, 1, 10)];
+            case 5:
+                result2 = _a.sent();
+                console.log('getBrc20UserRank result', result2.response);
                 return [2 /*return*/];
         }
     });
@@ -1903,13 +1895,8 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // runAbarCreating(2);
 // getMas();
 // getAbarBalance();
-// testFailure();
-// getNewBalanace();
-// testBrokenKeypairs();
-// getTxnListTest();
-// fnsNameResolver();
-brc20ApiTest();
-// getTransactionStatus();
 // deployBrc20v3();
 // mintBrc20();
+transferBrc20();
+// brc20ApiTest();
 //# sourceMappingURL=run.js.map
