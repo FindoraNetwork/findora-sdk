@@ -1817,7 +1817,7 @@ var transferBrc20 = function () { return __awaiter(void 0, void 0, void 0, funct
             case 0:
                 password = '123';
                 ticker = 'oleksjan15_2';
-                amount = 2;
+                amount = 5.55;
                 mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
                 mm = mString.split(' ');
                 return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];

@@ -1755,7 +1755,7 @@ const transferBrc20 = async () => {
   const password = '123';
 
   const ticker = 'oleksjan15_2';
-  const amount = 2;
+  const amount = 5.55;
 
   const mString = PKEY_LOCAL_FAUCET_MNEMONIC_STRING_MINE1;
   const mm = mString.split(' ');

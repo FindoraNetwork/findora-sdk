@@ -769,6 +769,7 @@ var getBrc20MintBuilder = function (wallet, tick, amount, repeat, transferOperat
     });
 }); };
 exports.getBrc20MintBuilder = getBrc20MintBuilder;
+// move it to helper?
 var getTickerDecimal = function (tickerId) { return __awaiter(void 0, void 0, void 0, function () {
     var result, response, decimalToken, error_4;
     return __generator(this, function (_a) {
@@ -795,6 +796,7 @@ var getTickerDecimal = function (tickerId) { return __awaiter(void 0, void 0, vo
         }
     });
 }); };
+// move it to helper?
 var getTickerId = function (ticker) { return __awaiter(void 0, void 0, void 0, function () {
     var result, response, data, firstToken, id, error_5;
     return __generator(this, function (_a) {
