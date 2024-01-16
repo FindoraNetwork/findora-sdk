@@ -238,9 +238,10 @@ var addUtxo = function (walletInfo, addSids) { return __awaiter(void 0, void 0, 
             case 7:
                 item = _a.sent();
                 // console.log('🚀 ~ file: utxoHelper.ts ~ line 211 ~ addUtxo ~ item', item);
-                utxoDataList.push(item);
-                // console.log('sid processed!!', sid);
-                cacheDataToSave["sid_".concat(item.sid)] = item;
+                if (item.body.amount != 0) {
+                    utxoDataList.push(item);
+                    cacheDataToSave["sid_".concat(item.sid)] = item;
+                }
                 return [3 /*break*/, 9];
             case 8:
                 error_3 = _a.sent();

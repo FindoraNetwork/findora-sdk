@@ -223,10 +223,12 @@ export const addUtxo = async (walletInfo: WalletKeypar, addSids: number[]): Prom
     try {
       const item = await getUtxoItem(sid, walletInfo, utxoDataCache?.[`sid_${sid}`]);
       // console.log('🚀 ~ file: utxoHelper.ts ~ line 211 ~ addUtxo ~ item', item);
-      utxoDataList.push(item);
+      if (item.body.amount != 0) {
+        utxoDataList.push(item);
+        cacheDataToSave[`sid_${item.sid}`] = item;
+      }
 
       // console.log('sid processed!!', sid);
-      cacheDataToSave[`sid_${item.sid}`] = item;
     } catch (error) {
       const err: Error = error as Error;
       console.log(`Could not process addUtxo for sid ${sid}, Details: "${err.message}"`);
