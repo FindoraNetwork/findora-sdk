@@ -809,7 +809,7 @@ const getReminderBalance = async (wallet: WalletKeypar, ticker: string, amountTo
       .toString();
 
     console.log('remainderAmount', remainderAmount);
-    const remainderAmountF = fromWei(remainderAmount, tokenDecimal).toFormat(tokenDecimal);
+    const remainderAmountF = fromWei(remainderAmount, tokenDecimal).toString(10);
 
     console.log('remainderAmountF', remainderAmountF);
     return remainderAmountF;

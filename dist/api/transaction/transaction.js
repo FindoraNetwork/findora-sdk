@@ -856,7 +856,7 @@ var getReminderBalance = function (wallet, ticker, amountToSend) { return __awai
                     .minus((0, bigNumber_1.toWei)(amountToSend, tokenDecimal))
                     .toString();
                 console.log('remainderAmount', remainderAmount);
-                remainderAmountF = (0, bigNumber_1.fromWei)(remainderAmount, tokenDecimal).toFormat(tokenDecimal);
+                remainderAmountF = (0, bigNumber_1.fromWei)(remainderAmount, tokenDecimal).toString(10);
                 console.log('remainderAmountF', remainderAmountF);
                 return [2 /*return*/, remainderAmountF];
             case 4:
