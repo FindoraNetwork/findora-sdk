@@ -1897,6 +1897,6 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // getAbarBalance();
 // deployBrc20v3();
 // mintBrc20();
-transferBrc20();
-// brc20ApiTest();
+// transferBrc20();
+brc20ApiTest();
 //# sourceMappingURL=run.js.map

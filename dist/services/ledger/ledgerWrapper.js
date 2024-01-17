@@ -56,7 +56,7 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
             case 0: return [4 /*yield*/, (0, webLedger_1.default)()];
             case 1:
                 myLedger = _a.sent();
-                console.log('myLedger module', myLedger);
+                // console.log('myLedger module', myLedger);
                 return [2 /*return*/, myLedger];
         }
     });

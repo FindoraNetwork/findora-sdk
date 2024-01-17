@@ -1831,5 +1831,5 @@ const brc20ApiTest = async () => {
 
 // deployBrc20v3();
 // mintBrc20();
-transferBrc20();
-// brc20ApiTest();
+// transferBrc20();
+brc20ApiTest();

@@ -69,7 +69,7 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
                 return [4 /*yield*/, awaitedLedgerModuleLoader.default];
             case 2:
                 wasmLedgerModule = _a.sent();
-                console.log('resolved wasm module for web', wasmLedgerModule);
+                // console.log('resolved wasm module for web', wasmLedgerModule);
                 return [2 /*return*/, wasmLedgerModule];
         }
     });

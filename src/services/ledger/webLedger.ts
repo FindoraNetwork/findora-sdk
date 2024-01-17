@@ -6,7 +6,8 @@ const getWebLedger = async (): Promise<LegerWasm> => {
 
   // we must keep awaiting for this promise to fullfil, so do not remove the next line await
   const wasmLedgerModule = await awaitedLedgerModuleLoader.default;
-  console.log('resolved wasm module for web', wasmLedgerModule);
+
+  // console.log('resolved wasm module for web', wasmLedgerModule);
 
   return wasmLedgerModule;
 };
