@@ -1822,7 +1822,7 @@ const brc20ApiTest = async () => {
 
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1832,4 +1832,4 @@ const brc20ApiTest = async () => {
 // deployBrc20v3();
 // mintBrc20();
 // transferBrc20();
-brc20ApiTest();
+// brc20ApiTest();

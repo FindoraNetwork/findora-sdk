@@ -12,7 +12,6 @@ export const isItNodeEnv = () => {
 
 export const getWebLedger = async (): Promise<Ledger> => {
   const myLedger = await webLedger();
-  // console.log('myLedger module', myLedger);
 
   return myLedger;
 };

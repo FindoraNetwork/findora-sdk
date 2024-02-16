@@ -1889,7 +1889,7 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // prism();
 // approveToken();
 // testItSync();
-// getFraBalance();
+getFraBalance();
 // testWasmFunctions();
 // getAnonKeys();
 // runAbarCreating(2);
@@ -1898,5 +1898,5 @@ var brc20ApiTest = function () { return __awaiter(void 0, void 0, void 0, functi
 // deployBrc20v3();
 // mintBrc20();
 // transferBrc20();
-brc20ApiTest();
+// brc20ApiTest();
 //# sourceMappingURL=run.js.map
