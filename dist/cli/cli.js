@@ -80,6 +80,7 @@ var sdkEnv = {
     cacheProvider: providers_1.MemoryCacheProvider,
     blockScanerUrl: 'https://foo.bar',
     cachePath: './cache',
+    brc20url: 'https://api-testnet.brc20.findora.org',
 };
 Sdk_1.default.init(sdkEnv);
 var COMMANDS = {
@@ -90,6 +91,7 @@ var COMMANDS = {
     BATCH_SEND_FRA: 'batchSendFra',
     CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
     BATCH_MINT_TICKET: 'batchMintTicket',
+    BATCH_ADD_LIST: 'batchAddList',
 };
 var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
@@ -99,6 +101,7 @@ var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.BATCH_SEND_FRA] = "please run as \"yarn cli batchSendFra --privateKey=XXX --filePath=\"./fileFra.csv\"",
     _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10",
     _a[COMMANDS.BATCH_MINT_TICKET] = "please run as \"yarn cli batchMintTicket --privateKey=XXX --filePath=\"./fileMintTicket.csv\"",
+    _a[COMMANDS.BATCH_ADD_LIST] = "please run as \"yarn cli batchAddList --privateKey=XXX --filePath=\"./fileAddList.csv\"",
     _a);
 var showHelp = function () {
     for (var prop in ERROR_MESSAGES) {
@@ -160,6 +163,13 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     break;
                 }
                 CliCommands.runBatchMintTicket(filePath, privateKey);
+                break;
+            case COMMANDS.BATCH_ADD_LIST:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_ADD_LIST]);
+                    break;
+                }
+                CliCommands.runBatchAddList(filePath, privateKey);
                 break;
             default:
                 showHelp();

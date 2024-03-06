@@ -149,11 +149,30 @@ export interface TxInfo {
     ty: number;
     value: Types.ParsedTx;
 }
+export interface TxRpcInfo {
+    hash: string;
+    height: number;
+    index: number;
+    tx_result: {
+        code: number;
+        data?: any;
+        log: string;
+        info: string;
+        gasWanted: string;
+        gasUsed: string;
+        codespace: string;
+    };
+    tx: string;
+}
 export interface TxListResponseResult {
     txs: null | TxInfo[];
     page: number;
     page_size: number;
     total: number;
+}
+export interface TxListHashSwapResponseResult {
+    txs: null | TxRpcInfo[];
+    total_count: number;
 }
 export type TxListResponse<T> = {
     code: number;
@@ -228,7 +247,7 @@ export interface TxDetailsDataResult extends NetworkAxiosDataResult {
     response?: TxDetailsResponse;
 }
 export type HashSwapResponse = {
-    result: TxListResponseResult;
+    result: TxListHashSwapResponseResult;
 };
 export interface ValidatorItem {
     addr: string;
