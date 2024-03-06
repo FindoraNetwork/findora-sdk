@@ -27,6 +27,7 @@ const COMMANDS = {
   BATCH_SEND_ERC20: 'batchSendErc20',
   BATCH_SEND_FRA: 'batchSendFra',
   CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
+  BATCH_MINT_TICKET: 'batchMintTicket',
 };
 
 const ERROR_MESSAGES = {
@@ -36,6 +37,7 @@ const ERROR_MESSAGES = {
   [COMMANDS.BATCH_SEND_ERC20]: `please run as "yarn cli batchSendErc20 --filePath="./file.csv"`,
   [COMMANDS.BATCH_SEND_FRA]: `please run as "yarn cli batchSendFra --privateKey=XXX --filePath="./fileFra.csv"`,
   [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10`,
+  [COMMANDS.BATCH_MINT_TICKET]: `please run as "yarn cli batchMintTicket --privateKey=XXX --filePath="./fileMintTicket.csv"`,
 };
 
 const showHelp = () => {
@@ -98,6 +100,14 @@ const main = async () => {
       }
 
       CliCommands.runCreateAndSaveWallets(numberOfWallets);
+      break;
+    case COMMANDS.BATCH_MINT_TICKET:
+      if (!filePath) {
+        log(ERROR_MESSAGES[COMMANDS.BATCH_MINT_TICKET]);
+        break;
+      }
+
+      CliCommands.runBatchMintTicket(filePath, privateKey);
       break;
     default:
       showHelp();
