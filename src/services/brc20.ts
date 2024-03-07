@@ -109,11 +109,10 @@ const confirmList = async (listId: number, user: string, baseUrl: string) => {
     const _axios = getAxios();
 
     const result = await _axios.post(`${baseUrl}${brcEnpoints.confirmList}`, formData, { headers });
-    console.log('confirmList result, ', result);
 
     const { data } = result;
 
-    console.log('confirmList response data', data);
+    console.log('confirmList result data', data);
 
     if (data.result === 'ok') {
       return true;

@@ -112,26 +112,26 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
     });
 }); };
 var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, parsedListOfRecords, err_1, error_2, password, hostUrl, walletFrom, processedInfo, errorsInfo, recordsList, i, _i, recordsList_1, currentRecord, tick, totalFraPrice, amt, rndSecMin, rndSecMax, waitTimeInMSec, txHash, rowData, errorMessage, error_3, rowData, errorMessage;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
+    var data, parsedListOfRecords, err_1, error_2, password, hostUrl, walletFrom, processedInfo, errorsInfo, recordsList, i, _i, recordsList_1, currentRecord, tick, totalFraPrice, amt, rndSecMin, rndSecMax, waitTimeInMSec, _a, txHash, confirmResult, rowData, errorMessage, rowData, errorMessage, error_3, rowData, errorMessage;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0:
-                _a.trys.push([0, 2, , 3]);
+                _b.trys.push([0, 2, , 3]);
                 return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
             case 1:
-                data = _a.sent();
+                data = _b.sent();
                 return [3 /*break*/, 3];
             case 2:
-                err_1 = _a.sent();
+                err_1 = _b.sent();
                 throw Error("Could not read file \"".concat(defaultFileName, "\" "));
             case 3:
-                _a.trys.push([3, 5, , 6]);
+                _b.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, (0, neat_csv_1.default)(data)];
             case 4:
-                parsedListOfRecords = _a.sent();
+                parsedListOfRecords = _b.sent();
                 return [3 /*break*/, 6];
             case 5:
-                error_2 = _a.sent();
+                error_2 = _b.sent();
                 throw Error("Could not parse file \"".concat(defaultFileName, "\" "));
             case 6:
                 password = '123';
@@ -141,7 +141,7 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 }
                 return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(fromPk, password)];
             case 7:
-                walletFrom = _a.sent();
+                walletFrom = _b.sent();
                 processedInfo = [];
                 errorsInfo = [];
                 try {
@@ -153,20 +153,26 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 recordsList = getRecordsList(parsedListOfRecords);
                 i = 1;
                 _i = 0, recordsList_1 = recordsList;
-                _a.label = 8;
+                _b.label = 8;
             case 8:
                 if (!(_i < recordsList_1.length)) return [3 /*break*/, 15];
                 currentRecord = recordsList_1[_i];
-                _a.label = 9;
+                _b.label = 9;
             case 9:
-                _a.trys.push([9, 12, , 13]);
+                _b.trys.push([9, 12, , 13]);
                 (0, utils_1.log)("".concat(i, ": Processing data row # ").concat(i));
                 tick = currentRecord.tick, totalFraPrice = currentRecord.totalFraPrice, amt = currentRecord.amt, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
                 waitTimeInMSec = (0, utils_1.getRandomNumber)(rndSecMin * 1000, rndSecMax * 1000);
                 return [4 /*yield*/, (0, brc20_1.addList)(tick, "".concat(totalFraPrice), "".concat(amt), hostUrl, walletFrom)];
             case 10:
-                txHash = _a.sent();
+                _a = _b.sent(), txHash = _a.txHash, confirmResult = _a.confirmResult;
                 (0, utils_1.log)("".concat(i, ": Tx hash is \"").concat(txHash, "\""));
+                if (!confirmResult) {
+                    rowData = JSON.stringify(currentRecord);
+                    errorMessage = "".concat(i, ": !! ERROR!! - potential error while processing data \"").concat(rowData, "\". Error: - confirmResult is false.");
+                    errorsInfo.push(errorMessage);
+                    (0, utils_1.log)(errorMessage);
+                }
                 if (!txHash) {
                     rowData = JSON.stringify(currentRecord);
                     errorMessage = "".concat(i, ": !! ERROR!! - potential error while processing data \"").concat(rowData, "\". Error: - txHash is empty.");
@@ -181,10 +187,10 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 (0, utils_1.log)("".concat(i, ": Waiting for randomly chosen ").concat(waitTimeInMSec / 1000, "s (given range is ").concat(rndSecMin, " - ").concat(rndSecMax, ") before processing next record"));
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitTimeInMSec)];
             case 11:
-                _a.sent();
+                _b.sent();
                 return [3 /*break*/, 13];
             case 12:
-                error_3 = _a.sent();
+                error_3 = _b.sent();
                 rowData = JSON.stringify(currentRecord);
                 errorMessage = "".concat(i, ": !! ERROR!! - could not process data from this row \"").concat(rowData, "\". Error: - ").concat(error_3.message);
                 errorsInfo.push(errorMessage);
@@ -192,13 +198,13 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 return [3 /*break*/, 13];
             case 13:
                 i += 1;
-                _a.label = 14;
+                _b.label = 14;
             case 14:
                 _i++;
                 return [3 /*break*/, 8];
             case 15: return [4 /*yield*/, writeDistributionLog(processedInfo, errorsInfo)];
             case 16:
-                _a.sent();
+                _b.sent();
                 (0, utils_1.log)("Command Log ", JSON.stringify(processedInfo, null, 2));
                 (0, utils_1.log)("Command Errors Log ", JSON.stringify(errorsInfo, null, 2));
                 return [2 /*return*/];

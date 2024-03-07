@@ -142,7 +142,7 @@ var getMiddleman = function (listId, baseUrl) { return __awaiter(void 0, void 0,
 }); };
 exports.getMiddleman = getMiddleman;
 var confirmList = function (listId, user, baseUrl) { return __awaiter(void 0, void 0, void 0, function () {
-    var formData, headers, _axios, data, error_2;
+    var formData, headers, _axios, result, data, error_2;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -155,24 +155,23 @@ var confirmList = function (listId, user, baseUrl) { return __awaiter(void 0, vo
                 _axios = getAxios();
                 return [4 /*yield*/, _axios.post("".concat(baseUrl).concat(brcEnpoints.confirmList), formData, { headers: headers })];
             case 1:
-                data = (_a.sent()).data;
-                console.log('confirmList response data', data);
+                result = _a.sent();
+                data = result.data;
+                console.log('confirmList result data', data);
                 if (data.result === 'ok') {
                     return [2 /*return*/, true];
                 }
                 return [3 /*break*/, 3];
             case 2:
                 error_2 = _a.sent();
-                console.log(error_2);
+                console.log('confirmList error', error_2);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/, false];
         }
     });
 }); };
-var addList = function (ticker, 
-// user: string,
-totalPrice, amount, baseUrl, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
-    var _axios, user, formData, headers, data, listId, receiver, fraTx, brc20Tx, error_3;
+var addList = function (ticker, totalPrice, amount, baseUrl, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
+    var _axios, user, formData, headers, data, listId, receiver, fraTx, brc20Tx, confirmResult, error_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -203,6 +202,7 @@ totalPrice, amount, baseUrl, walletInfoFrom) { return __awaiter(void 0, void 0, 
                     }, walletInfoFrom)];
             case 4:
                 fraTx = _a.sent();
+                console.log("addList fraTx - \"".concat(fraTx, "\""));
                 return [4 /*yield*/, transfer({
                         tick: ticker,
                         amt: "".concat(amount),
@@ -210,18 +210,21 @@ totalPrice, amount, baseUrl, walletInfoFrom) { return __awaiter(void 0, void 0, 
                     }, walletInfoFrom)];
             case 5:
                 brc20Tx = _a.sent();
-                if (!fraTx || !brc20Tx)
-                    return [2 /*return*/, ''];
+                console.log("addList brc20Tx - \"".concat(brc20Tx, "\""));
+                if (!fraTx || !brc20Tx) {
+                    console.log('addList error!! either fraTransfer or brc20Transfer has failed, returning an empty string without calling list confirm');
+                    return [2 /*return*/, { txHash: brc20Tx, confirmResult: false }];
+                }
                 return [4 /*yield*/, confirmList(listId, user, baseUrl)];
             case 6:
-                _a.sent();
-                return [2 /*return*/, brc20Tx];
+                confirmResult = _a.sent();
+                return [2 /*return*/, { txHash: brc20Tx, confirmResult: confirmResult }];
             case 7: return [3 /*break*/, 9];
             case 8:
                 error_3 = _a.sent();
                 console.log(error_3);
                 return [3 /*break*/, 9];
-            case 9: return [2 /*return*/, ''];
+            case 9: return [2 /*return*/, { txHash: '', confirmResult: false }];
         }
     });
 }); };
@@ -254,14 +257,12 @@ var sendBRC20TransferTx = function (tick, amt, receiver, walletInfoFrom) { retur
         }
     });
 }); };
-//
 var sendFRATransferTx = function (data, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
     var amt, receiver, assetCode, assetBlindRules, transactionBuilder, result, txHash, response, tx, hash, er_3;
     var _a, _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
             case 0:
-                console.log('sendFRATransferTx data', data);
                 amt = data.amt, receiver = data.receiver;
                 _d.label = 1;
             case 1:
@@ -305,7 +306,7 @@ var sendFRATransferTx = function (data, walletInfoFrom) { return __awaiter(void 
     });
 }); };
 var transfer = function (data, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
-    var tick, amt, receiver, response, error_4;
+    var tick, amt, receiver, result, response, error_4;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -316,7 +317,9 @@ var transfer = function (data, walletInfoFrom) { return __awaiter(void 0, void 0
                 _c.trys.push([1, 3, , 4]);
                 return [4 /*yield*/, sendBRC20TransferTx(tick, +amt, receiver, walletInfoFrom)];
             case 2:
-                response = (_c.sent()).response;
+                result = _c.sent();
+                console.log('transfer - sendBRC20TransferTx result', result);
+                response = result.response;
                 return [2 /*return*/, (_b = (_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash) !== null && _b !== void 0 ? _b : ''];
             case 3:
                 error_4 = _c.sent();
@@ -341,14 +344,11 @@ var fraTransfer = function (data, walletInfoFrom) { return __awaiter(void 0, voi
                     }, walletInfoFrom)];
             case 2:
                 data_1 = _a.sent();
-                // const { response } = data;
                 console.log('sendFRATransferTx data response', data_1);
-                // return response?.result?.hash ?? "";
-                // yes, it is not an object but a plain string
                 return [2 /*return*/, data_1];
             case 3:
                 error_5 = _a.sent();
-                console.log('aaaa!!! fra transfer error ', error_5);
+                console.log('ERROR!!! fra transfer error ', error_5);
                 return [2 /*return*/, ''];
             case 4: return [2 /*return*/];
         }

@@ -390,7 +390,6 @@ var getHashSwap = function (hash, config) { return __awaiter(void 0, void 0, voi
                 return [4 /*yield*/, (0, exports.apiGet)(url, __assign(__assign({}, config), { params: { query: "\"tx.prehash='".concat(hash, "'\"") } }))];
             case 1:
                 dataResult = _a.sent();
-                console.log('getHashSwap dataResult', dataResult);
                 return [2 /*return*/, dataResult];
         }
     });
