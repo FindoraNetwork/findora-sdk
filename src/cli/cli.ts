@@ -30,6 +30,7 @@ const COMMANDS = {
   CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
   BATCH_MINT_TICKET: 'batchMintTicket',
   BATCH_ADD_LIST: 'batchAddList',
+  BATCH_BUY_TICKET: 'batchBuyTicket',
 };
 
 const ERROR_MESSAGES = {
@@ -41,6 +42,7 @@ const ERROR_MESSAGES = {
   [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10`,
   [COMMANDS.BATCH_MINT_TICKET]: `please run as "yarn cli batchMintTicket --privateKey=XXX --filePath="./fileMintTicket.csv"`,
   [COMMANDS.BATCH_ADD_LIST]: `please run as "yarn cli batchAddList --privateKey=XXX --filePath="./fileAddList.csv"`,
+  [COMMANDS.BATCH_BUY_TICKET]: `please run as "yarn cli batchBuyTicket --privateKey=XXX --filePath="./fileBuyTicket.csv"`,
 };
 
 const showHelp = () => {
@@ -119,6 +121,14 @@ const main = async () => {
       }
 
       CliCommands.runBatchAddList(filePath, privateKey);
+      break;
+    case COMMANDS.BATCH_BUY_TICKET:
+      if (!filePath) {
+        log(ERROR_MESSAGES[COMMANDS.BATCH_BUY_TICKET]);
+        break;
+      }
+
+      CliCommands.runBatchBuyTicket(filePath, privateKey);
       break;
     default:
       showHelp();

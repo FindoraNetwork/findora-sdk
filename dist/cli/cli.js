@@ -92,6 +92,7 @@ var COMMANDS = {
     CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
     BATCH_MINT_TICKET: 'batchMintTicket',
     BATCH_ADD_LIST: 'batchAddList',
+    BATCH_BUY_TICKET: 'batchBuyTicket',
 };
 var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.FUND] = 'please run as "yarn cli fund --address=fraXXX --amountToFund=1 "',
@@ -102,6 +103,7 @@ var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10",
     _a[COMMANDS.BATCH_MINT_TICKET] = "please run as \"yarn cli batchMintTicket --privateKey=XXX --filePath=\"./fileMintTicket.csv\"",
     _a[COMMANDS.BATCH_ADD_LIST] = "please run as \"yarn cli batchAddList --privateKey=XXX --filePath=\"./fileAddList.csv\"",
+    _a[COMMANDS.BATCH_BUY_TICKET] = "please run as \"yarn cli batchBuyTicket --privateKey=XXX --filePath=\"./fileBuyTicket.csv\"",
     _a);
 var showHelp = function () {
     for (var prop in ERROR_MESSAGES) {
@@ -170,6 +172,13 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     break;
                 }
                 CliCommands.runBatchAddList(filePath, privateKey);
+                break;
+            case COMMANDS.BATCH_BUY_TICKET:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_BUY_TICKET]);
+                    break;
+                }
+                CliCommands.runBatchBuyTicket(filePath, privateKey);
                 break;
             default:
                 showHelp();

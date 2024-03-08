@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = void 0;
+exports.getTradingListingList = exports.buy = exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = void 0;
 var api_1 = require("../api");
 var utils_1 = require("../services/utils");
 var axios_1 = __importStar(require("axios"));
@@ -354,4 +354,129 @@ var fraTransfer = function (data, walletInfoFrom) { return __awaiter(void 0, voi
         }
     });
 }); };
+var buy = function (listId, amt, baseUrl, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
+    var _axios, user, receiver, tx, formData, headers, url, data, error_6;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                _axios = getAxios();
+                user = walletInfoFrom.address;
+                _a.label = 1;
+            case 1:
+                _a.trys.push([1, 5, , 6]);
+                return [4 /*yield*/, (0, exports.getMiddleman)(listId, baseUrl)];
+            case 2:
+                receiver = _a.sent();
+                console.log('receiver for fra transfer', receiver);
+                console.log('amount ', amt);
+                console.log('listId', listId);
+                console.log('user', user);
+                return [4 /*yield*/, fraTransfer({
+                        amt: amt,
+                        receiver: receiver,
+                    }, walletInfoFrom)];
+            case 3:
+                tx = _a.sent();
+                console.log('buy our fra tansfer tx!', tx);
+                formData = new FormData();
+                formData.append('listId', "".concat(listId));
+                formData.append('user', user);
+                formData.append('tx', tx);
+                headers = new axios_1.AxiosHeaders();
+                headers.setContentType('multipart/form-data');
+                url = "".concat(baseUrl).concat(brcEnpoints.buy);
+                console.log('url to post form', url);
+                console.log('buy - tx, ', tx);
+                if (!tx) {
+                    console.log('buy error!! fraTransfer has failed, returning the received tx');
+                    return [2 /*return*/, { txHash: tx, buyResult: false }];
+                }
+                return [4 /*yield*/, _axios.post(url, formData, { headers: headers })];
+            case 4:
+                data = (_a.sent()).data;
+                console.log('buy response data', data);
+                if (data.result === 'ok') {
+                    return [2 /*return*/, { txHash: tx, buyResult: data.result }];
+                }
+                console.log('buy error!! buy request has failed, returning false as buy result');
+                return [2 /*return*/, { txHash: tx, buyResult: false }];
+            case 5:
+                error_6 = _a.sent();
+                console.log('buy error!!, ', error_6);
+                return [2 /*return*/, { txHash: '', buyResult: false }];
+            case 6: return [2 /*return*/];
+        }
+    });
+}); };
+exports.buy = buy;
+var getTradingListingList = function (pageNo, pageCount, ticker, baseUrl, walletInfoFrom, listingState, withoutMyListings) {
+    if (listingState === void 0) { listingState = 0; }
+    if (withoutMyListings === void 0) { withoutMyListings = true; }
+    return __awaiter(void 0, void 0, void 0, function () {
+        var _axios, user, responseData, currentPage, pageSize, totalPages, total, ourData, dataToReturn, filteredDataToReturn, data, error_7, data;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0:
+                    _axios = getAxios();
+                    user = walletInfoFrom.address;
+                    _a.label = 1;
+                case 1:
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, _axios.get("".concat(baseUrl).concat(brcEnpoints.listedList), {
+                            params: {
+                                pageNo: pageNo,
+                                pageCount: pageCount,
+                                ticker: ticker.toLowerCase(),
+                                state: listingState,
+                            },
+                        })];
+                case 2:
+                    responseData = (_a.sent()).data;
+                    currentPage = responseData.currentPage, pageSize = responseData.pageSize, totalPages = responseData.totalPages, total = responseData.total, ourData = responseData.data;
+                    dataToReturn = ourData.map(function (item) {
+                        var ticker = item.ticker, amount = item.amount, create_time = item.create_time, from = item.from, to = item.to, id = item.id, price = item.price, state = item.state;
+                        var pricePerUnit = +price / +amount;
+                        var res = {
+                            id: id,
+                            seller: from,
+                            to: to,
+                            ticker: ticker.trim(),
+                            amount: amount,
+                            unitsAmount: "".concat(pricePerUnit),
+                            unitsPrice: 0,
+                            fraPrice: price,
+                            fraTotalPrice: 0,
+                            create_time: create_time,
+                            state: state,
+                        };
+                        return res;
+                    });
+                    filteredDataToReturn = withoutMyListings
+                        ? dataToReturn.filter(function (element) { return element.seller !== user; })
+                        : dataToReturn;
+                    data = {
+                        data: filteredDataToReturn,
+                        total: total,
+                        currentPage: currentPage,
+                        pageSize: pageSize,
+                        totalPages: totalPages,
+                    };
+                    return [2 /*return*/, data];
+                case 3:
+                    error_7 = _a.sent();
+                    console.log('getTradingListingList error', error_7);
+                    data = {
+                        data: [],
+                        total: 0,
+                        currentPage: pageNo,
+                        pageSize: pageCount,
+                        totalPages: 0,
+                    };
+                    return [2 /*return*/, data];
+                case 4: return [2 /*return*/];
+            }
+        });
+    });
+};
+exports.getTradingListingList = getTradingListingList;
 //# sourceMappingURL=brc20.js.map

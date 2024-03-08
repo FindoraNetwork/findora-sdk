@@ -4,5 +4,6 @@ export * from './createAndSaveWallets';
 export * from './createWallet';
 export * from './batchMintTicket';
 export * from './batchAddList';
+export * from './batchBuyTicket';
 export * from './fund';
 export * from './restoreWallet';

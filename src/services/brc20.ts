@@ -1,5 +1,5 @@
 import { Asset, Keypair, Transaction, Network } from '../api';
-import { log, now, readFile, writeFile, getRandomNumber, delay } from '../services/utils';
+import { delay } from '../services/utils';
 
 import axios, { AxiosHeaders } from 'axios';
 
@@ -26,6 +26,37 @@ export interface FRATransferRequest {
     params: FRATransferRequestParams;
   };
 }
+
+export type ListedItemResponse = {
+  amount: string;
+  create_time: number;
+  from: string;
+  id: number;
+  price: string;
+  state: 0 | 1;
+  ticker: string;
+  to: string;
+};
+
+export type TradingListingDetail = {
+  id: number;
+  ticker: string;
+  amount: string; // 1,000
+  seller: string; // fra12345
+  unitsAmount: string; // 23,000
+  unitsPrice: string; // $23.44 FRA
+  fraPrice: string; // fra 244.99
+  fraTotalPrice: string; // $203.44
+  create_time: number;
+};
+
+type TradingListingListResponse = {
+  total: number;
+  currentPage: number;
+  pageSize: number;
+  totalPages: number;
+  data: TradingListingDetail[];
+};
 const brcEnpoints = {
   balance: '/balance',
   balanceAll: '/balance/all',
@@ -296,5 +327,145 @@ const fraTransfer = async (data: FRATransferType, walletInfoFrom: Keypair.Wallet
   } catch (error) {
     console.log('ERROR!!! fra transfer error ', error);
     return '';
+  }
+};
+
+export const buy = async (
+  listId: number,
+  amt: string,
+  baseUrl: string,
+  walletInfoFrom: Keypair.WalletKeypar,
+) => {
+  const _axios = getAxios();
+
+  const user = walletInfoFrom.address;
+
+  try {
+    const receiver = await getMiddleman(listId, baseUrl);
+    console.log('receiver for fra transfer', receiver);
+    console.log('amount ', amt);
+    console.log('listId', listId);
+    console.log('user', user);
+
+    const tx = await fraTransfer(
+      {
+        amt,
+        receiver,
+      },
+
+      walletInfoFrom,
+    );
+
+    console.log('buy our fra tansfer tx!', tx);
+
+    const formData = new FormData();
+
+    formData.append('listId', `${listId}`);
+    formData.append('user', user);
+    formData.append('tx', tx);
+
+    const headers = new AxiosHeaders();
+    headers.setContentType('multipart/form-data');
+
+    const url = `${baseUrl}${brcEnpoints.buy}`;
+    console.log('url to post form', url);
+    console.log('buy - tx, ', tx);
+
+    if (!tx) {
+      console.log('buy error!! fraTransfer has failed, returning the received tx');
+
+      return { txHash: tx, buyResult: false };
+    }
+
+    const { data } = await _axios.post(url, formData, { headers });
+
+    console.log('buy response data', data);
+
+    if (data.result === 'ok') {
+      return { txHash: tx, buyResult: data.result };
+    }
+
+    console.log('buy error!! buy request has failed, returning false as buy result');
+
+    return { txHash: tx, buyResult: false };
+  } catch (error) {
+    console.log('buy error!!, ', error);
+    return { txHash: '', buyResult: false };
+  }
+};
+
+export const getTradingListingList = async (
+  pageNo: number,
+  pageCount: number,
+  ticker: string,
+  baseUrl: string,
+  walletInfoFrom: Keypair.WalletKeypar,
+  listingState = 0,
+  withoutMyListings = true,
+): Promise<TradingListingListResponse> => {
+  const _axios = getAxios();
+
+  const user = walletInfoFrom.address;
+
+  try {
+    const { data: responseData } = await _axios.get(`${baseUrl}${brcEnpoints.listedList}`, {
+      params: {
+        pageNo,
+        pageCount,
+        ticker: ticker.toLowerCase(),
+        state: listingState,
+      },
+    });
+
+    const { currentPage, pageSize, totalPages, total, data: ourData } = responseData;
+
+    const dataToReturn: TradingListingDetail[] = ourData.map((item: ListedItemResponse) => {
+      const { ticker, amount, create_time, from, to, id, price, state } = item;
+
+      const pricePerUnit = +price / +amount;
+
+      const res = {
+        id,
+        seller: from,
+        to,
+        ticker: ticker.trim(),
+        amount,
+        unitsAmount: `${pricePerUnit}`,
+        unitsPrice: 0,
+        fraPrice: price,
+        fraTotalPrice: 0,
+        create_time,
+        state,
+      };
+
+      return res;
+    });
+
+    const filteredDataToReturn = withoutMyListings
+      ? dataToReturn.filter(element => element.seller !== user)
+      : dataToReturn;
+
+    const data: TradingListingListResponse = {
+      data: filteredDataToReturn,
+      total,
+      currentPage,
+      pageSize,
+      totalPages,
+    };
+
+    return data;
+  } catch (error) {
+    console.log('getTradingListingList error', error);
+    // return null;
+
+    const data: TradingListingListResponse = {
+      data: [],
+      total: 0,
+      currentPage: pageNo,
+      pageSize: pageCount,
+      totalPages: 0,
+    };
+
+    return data;
   }
 };

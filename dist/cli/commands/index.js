@@ -20,6 +20,7 @@ __exportStar(require("./createAndSaveWallets"), exports);
 __exportStar(require("./createWallet"), exports);
 __exportStar(require("./batchMintTicket"), exports);
 __exportStar(require("./batchAddList"), exports);
+__exportStar(require("./batchBuyTicket"), exports);
 __exportStar(require("./fund"), exports);
 __exportStar(require("./restoreWallet"), exports);
 //# sourceMappingURL=index.js.map
