@@ -41,8 +41,8 @@ const ERROR_MESSAGES = {
   [COMMANDS.BATCH_SEND_FRA]: `please run as "yarn cli batchSendFra --privateKey=XXX --filePath="./fileFra.csv"`,
   [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10`,
   [COMMANDS.BATCH_MINT_TICKET]: `please run as "yarn cli batchMintTicket --privateKey=XXX --filePath="./fileMintTicket.csv"`,
-  [COMMANDS.BATCH_ADD_LIST]: `please run as "yarn cli batchAddList --privateKey=XXX --filePath="./fileAddList.csv"`,
-  [COMMANDS.BATCH_BUY_TICKET]: `please run as "yarn cli batchBuyTicket --privateKey=XXX --filePath="./fileBuyTicket.csv"`,
+  [COMMANDS.BATCH_ADD_LIST]: `please run as "yarn cli batchAddList --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileAddList.csv"`,
+  [COMMANDS.BATCH_BUY_TICKET]: `please run as "yarn cli batchBuyTicket --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileBuyTicket.csv"`,
 };
 
 const showHelp = () => {
@@ -54,7 +54,16 @@ const showHelp = () => {
 const main = async () => {
   const argv = minimist(process.argv.slice(4));
   const [command] = argv._;
-  const { address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets } = argv;
+  const {
+    address,
+    amountToFund,
+    mnemonicString,
+    filePath,
+    privateKey,
+    numberOfWallets,
+    repeatTimes,
+    waitBetweenRepeatMinutes,
+  } = argv;
 
   if (!command) {
     showHelp();
@@ -120,15 +129,15 @@ const main = async () => {
         break;
       }
 
-      CliCommands.runBatchAddList(filePath, privateKey);
+      CliCommands.runBatchAddList(filePath, +`${repeatTimes}`, +waitBetweenRepeatMinutes);
       break;
     case COMMANDS.BATCH_BUY_TICKET:
-      if (!filePath) {
+      if (!filePath || !waitBetweenRepeatMinutes || !repeatTimes) {
         log(ERROR_MESSAGES[COMMANDS.BATCH_BUY_TICKET]);
         break;
       }
 
-      CliCommands.runBatchBuyTicket(filePath, privateKey);
+      CliCommands.runBatchBuyTicket(filePath, +`${repeatTimes}`, +waitBetweenRepeatMinutes);
       break;
     default:
       showHelp();

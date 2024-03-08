@@ -1,3 +1,9 @@
-tick,totalFraPrice,amt,rndSecMin,rndSecMax
-ole6,100,1,5,8
-ole6,280,6,5,8
+pKey,tick,totalFraPrice,amt,rndSecMin,rndSecMax
+sellerPk,ole6,150,2,5,15
+sellerPk,ole6,350,3,5,15
+sellerPk,ole6,150,2,5,15
+sellerPk,ole6,350,3,5,15
+sellerPk,ole6,150,2,5,15
+sellerPk,ole6,350,3,5,15
+sellerPk,ole6,150,2,5,15
+sellerPk,ole6,350,2,5,15

@@ -57,26 +57,32 @@ var Sdk_1 = __importDefault(require("../../Sdk"));
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
 var brc20_1 = require("../../services/brc20");
-var defaultFileName = 'fileAddList.csv';
 var resultFileLogName = "batchAddListLog";
 var isCsvValid = function (listOfRecords) {
     for (var i = 0; i < listOfRecords.length; i += 1) {
         var currentRecord = listOfRecords[i];
+        var isPkPresented = Object.keys(currentRecord).includes('pKey');
         var isTickPresented = Object.keys(currentRecord).includes('tick');
         var isPricePresented = Object.keys(currentRecord).includes('totalFraPrice');
         var isAmountPresented = Object.keys(currentRecord).includes('amt');
         var isMinPresented = Object.keys(currentRecord).includes('rndSecMin');
         var isMaxPresented = Object.keys(currentRecord).includes('rndSecMax');
-        if (!isTickPresented || !isAmountPresented || !isPricePresented || !isMinPresented || !isMaxPresented) {
-            throw Error("ERROR - The data row must have \"tick\", \"amt\", \"totalFraPrice\", \"rndSecMin\" and \"rndSecMax\" fields ".concat(JSON.stringify(currentRecord), " "));
+        if (!isPkPresented ||
+            !isTickPresented ||
+            !isAmountPresented ||
+            !isPricePresented ||
+            !isMinPresented ||
+            !isMaxPresented) {
+            throw Error("ERROR - The data row must have \"pKey\", \"tick\", \"amt\", \"totalFraPrice\", \"rndSecMin\" and \"rndSecMax\" fields ".concat(JSON.stringify(currentRecord), " "));
         }
     }
     return true;
 };
 var getRecordsList = function (parsedListOfRecords) {
     var recordsList = parsedListOfRecords.map(function (currentRecord) {
-        var tick = currentRecord.tick, totalFraPrice = currentRecord.totalFraPrice, amt = currentRecord.amt, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+        var pKey = currentRecord.pKey, tick = currentRecord.tick, totalFraPrice = currentRecord.totalFraPrice, amt = currentRecord.amt, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
         return {
+            pKey: pKey.trim(),
             tick: tick.trim().toLowerCase(),
             totalFraPrice: +totalFraPrice.trim().replace(',', ''),
             amt: +amt.trim().replace(',', ''),
@@ -111,8 +117,8 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
         }
     });
 }); };
-var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, parsedListOfRecords, err_1, error_2, password, hostUrl, walletFrom, processedInfo, errorsInfo, recordsList, i, _i, recordsList_1, currentRecord, tick, totalFraPrice, amt, rndSecMin, rndSecMax, waitTimeInMSec, _a, txHash, confirmResult, rowData, errorMessage, rowData, errorMessage, error_3, rowData, errorMessage;
+var runBatchAddList = function (filePath, repeatTimes, waitBetweenRepeatMinutes) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, parsedListOfRecords, err_1, error_2, hostUrl, processedInfo, errorsInfo, recordsList, password, totalRepetitions, i, _i, recordsList_1, currentRecord, fromPk, tick, totalFraPrice, amt, rndSecMin, rndSecMax, walletFrom, waitTimeInMSec, _a, txHash, confirmResult, rowData, errorMessage, rowData, errorMessage, error_3, rowData, errorMessage;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
@@ -123,7 +129,7 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _b.sent();
-                throw Error("Could not read file \"".concat(defaultFileName, "\" "));
+                throw Error("Could not read file \"".concat(filePath, "\" "));
             case 3:
                 _b.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, (0, neat_csv_1.default)(data)];
@@ -132,16 +138,12 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 return [3 /*break*/, 6];
             case 5:
                 error_2 = _b.sent();
-                throw Error("Could not parse file \"".concat(defaultFileName, "\" "));
+                throw Error("Could not parse file \"".concat(filePath, "\" "));
             case 6:
-                password = '123';
                 hostUrl = Sdk_1.default.environment.brc20url;
                 if (!hostUrl) {
                     throw Error("brc20url must be set for Sdk initialization");
                 }
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(fromPk, password)];
-            case 7:
-                walletFrom = _b.sent();
                 processedInfo = [];
                 errorsInfo = [];
                 try {
@@ -151,20 +153,28 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                     throw new Error("ERROR: CSV is not valid. Details: ".concat(err.message));
                 }
                 recordsList = getRecordsList(parsedListOfRecords);
+                password = '123';
+                totalRepetitions = 1;
+                _b.label = 7;
+            case 7:
+                (0, utils_1.log)("Begin: Set \"".concat(totalRepetitions, "\" out of \"").concat(repeatTimes, "\""));
                 i = 1;
                 _i = 0, recordsList_1 = recordsList;
                 _b.label = 8;
             case 8:
-                if (!(_i < recordsList_1.length)) return [3 /*break*/, 15];
+                if (!(_i < recordsList_1.length)) return [3 /*break*/, 16];
                 currentRecord = recordsList_1[_i];
                 _b.label = 9;
             case 9:
-                _b.trys.push([9, 12, , 13]);
+                _b.trys.push([9, 13, , 14]);
                 (0, utils_1.log)("".concat(i, ": Processing data row # ").concat(i));
-                tick = currentRecord.tick, totalFraPrice = currentRecord.totalFraPrice, amt = currentRecord.amt, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+                fromPk = currentRecord.pKey, tick = currentRecord.tick, totalFraPrice = currentRecord.totalFraPrice, amt = currentRecord.amt, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(fromPk, password)];
+            case 10:
+                walletFrom = _b.sent();
                 waitTimeInMSec = (0, utils_1.getRandomNumber)(rndSecMin * 1000, rndSecMax * 1000);
                 return [4 /*yield*/, (0, brc20_1.addList)(tick, "".concat(totalFraPrice), "".concat(amt), hostUrl, walletFrom)];
-            case 10:
+            case 11:
                 _a = _b.sent(), txHash = _a.txHash, confirmResult = _a.confirmResult;
                 (0, utils_1.log)("".concat(i, ": Tx hash is \"").concat(txHash, "\""));
                 if (!confirmResult) {
@@ -186,24 +196,35 @@ var runBatchAddList = function (filePath, fromPk) { return __awaiter(void 0, voi
                 });
                 (0, utils_1.log)("".concat(i, ": Waiting for randomly chosen ").concat(waitTimeInMSec / 1000, "s (given range is ").concat(rndSecMin, " - ").concat(rndSecMax, ") before processing next record"));
                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitTimeInMSec)];
-            case 11:
-                _b.sent();
-                return [3 /*break*/, 13];
             case 12:
+                _b.sent();
+                return [3 /*break*/, 14];
+            case 13:
                 error_3 = _b.sent();
                 rowData = JSON.stringify(currentRecord);
                 errorMessage = "".concat(i, ": !! ERROR!! - could not process data from this row \"").concat(rowData, "\". Error: - ").concat(error_3.message);
                 errorsInfo.push(errorMessage);
                 (0, utils_1.log)(errorMessage);
-                return [3 /*break*/, 13];
-            case 13:
-                i += 1;
-                _b.label = 14;
+                return [3 /*break*/, 14];
             case 14:
+                i += 1;
+                _b.label = 15;
+            case 15:
                 _i++;
                 return [3 /*break*/, 8];
-            case 15: return [4 /*yield*/, writeDistributionLog(processedInfo, errorsInfo)];
             case 16:
+                (0, utils_1.log)("End: Set \"".concat(totalRepetitions, "\" out of \"").concat(repeatTimes, "\""));
+                (0, utils_1.log)("Waiting for \"".concat(waitBetweenRepeatMinutes, "\" minutes before the next set"));
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitBetweenRepeatMinutes * 60 * 1000)];
+            case 17:
+                _b.sent();
+                totalRepetitions += 1;
+                _b.label = 18;
+            case 18:
+                if (totalRepetitions <= repeatTimes) return [3 /*break*/, 7];
+                _b.label = 19;
+            case 19: return [4 /*yield*/, writeDistributionLog(processedInfo, errorsInfo)];
+            case 20:
                 _b.sent();
                 (0, utils_1.log)("Command Log ", JSON.stringify(processedInfo, null, 2));
                 (0, utils_1.log)("Command Errors Log ", JSON.stringify(errorsInfo, null, 2));

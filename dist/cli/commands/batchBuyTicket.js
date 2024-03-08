@@ -57,26 +57,32 @@ var Sdk_1 = __importDefault(require("../../Sdk"));
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
 var brc20_1 = require("../../services/brc20");
-var defaultFileName = 'fileBuyTicket.csv';
 var resultFileLogName = "batchBuyTicketLog";
 var isCsvValid = function (listOfRecords) {
     for (var i = 0; i < listOfRecords.length; i += 1) {
         var currentRecord = listOfRecords[i];
+        var isPkPresented = Object.keys(currentRecord).includes('pKey');
         var isTickPresented = Object.keys(currentRecord).includes('tick');
         var isPricePresented = Object.keys(currentRecord).includes('totalFraToSpend');
         var isAmountPresented = Object.keys(currentRecord).includes('maxAmtToBuy');
         var isMinPresented = Object.keys(currentRecord).includes('rndSecMin');
         var isMaxPresented = Object.keys(currentRecord).includes('rndSecMax');
-        if (!isTickPresented || !isAmountPresented || !isPricePresented || !isMinPresented || !isMaxPresented) {
-            throw Error("ERROR - The data row must have \"tick\", \"maxAmtToBuy\", \"totalFraToSpend\", \"rndSecMin\" and \"rndSecMax\" fields ".concat(JSON.stringify(currentRecord), " "));
+        if (!isPkPresented ||
+            !isTickPresented ||
+            !isAmountPresented ||
+            !isPricePresented ||
+            !isMinPresented ||
+            !isMaxPresented) {
+            throw Error("ERROR - The data row must have \"pKey\", \"tick\", \"maxAmtToBuy\", \"totalFraToSpend\", \"rndSecMin\" and \"rndSecMax\" fields ".concat(JSON.stringify(currentRecord), " "));
         }
     }
     return true;
 };
 var getRecordsList = function (parsedListOfRecords) {
     var recordsList = parsedListOfRecords.map(function (currentRecord) {
-        var tick = currentRecord.tick, totalFraToSpend = currentRecord.totalFraToSpend, maxAmtToBuy = currentRecord.maxAmtToBuy, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+        var pKey = currentRecord.pKey, tick = currentRecord.tick, totalFraToSpend = currentRecord.totalFraToSpend, maxAmtToBuy = currentRecord.maxAmtToBuy, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
         return {
+            pKey: pKey.trim(),
             tick: tick.trim().toLowerCase(),
             totalFraToSpend: +totalFraToSpend.trim().replace(',', ''),
             maxAmtToBuy: +maxAmtToBuy.trim().replace(',', ''),
@@ -111,8 +117,8 @@ var writeDistributionLog = function (sendInfo, errorsInfo) { return __awaiter(vo
         }
     });
 }); };
-var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, void 0, void 0, function () {
-    var data, parsedListOfRecords, err_1, error_2, password, hostUrl, walletFrom, processedInfo, errorsInfo, recordsList, i, _loop_1, _i, recordsList_1, currentRecord;
+var runBatchBuyTicket = function (filePath, repeatTimes, waitBetweenRepeatMinutes) { return __awaiter(void 0, void 0, void 0, function () {
+    var data, parsedListOfRecords, err_1, error_2, hostUrl, processedInfo, errorsInfo, recordsList, password, totalRepetitions, i, _loop_1, _i, recordsList_1, currentRecord;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -123,7 +129,7 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
                 return [3 /*break*/, 3];
             case 2:
                 err_1 = _a.sent();
-                throw Error("Could not read file \"".concat(defaultFileName, "\" "));
+                throw Error("Could not read file \"".concat(filePath, "\" "));
             case 3:
                 _a.trys.push([3, 5, , 6]);
                 return [4 /*yield*/, (0, neat_csv_1.default)(data)];
@@ -132,16 +138,12 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
                 return [3 /*break*/, 6];
             case 5:
                 error_2 = _a.sent();
-                throw Error("Could not parse file \"".concat(defaultFileName, "\" "));
+                throw Error("Could not parse file \"".concat(filePath, "\" "));
             case 6:
-                password = '123';
                 hostUrl = Sdk_1.default.environment.brc20url;
                 if (!hostUrl) {
                     throw Error("brc20url must be set for Sdk initialization");
                 }
-                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(fromPk, password)];
-            case 7:
-                walletFrom = _a.sent();
                 processedInfo = [];
                 errorsInfo = [];
                 try {
@@ -151,19 +153,27 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
                     throw new Error("ERROR: CSV is not valid. Details: ".concat(err.message));
                 }
                 recordsList = getRecordsList(parsedListOfRecords);
+                password = '123';
+                totalRepetitions = 1;
+                _a.label = 7;
+            case 7:
+                (0, utils_1.log)("Begin: Set \"".concat(totalRepetitions, "\" out of \"").concat(repeatTimes, "\""));
                 i = 1;
                 _loop_1 = function (currentRecord) {
-                    var tick, totalFraToSpend_1, maxAmtToBuy_1, rndSecMin, rndSecMax, waitTimeInMSec, rowData, postedListings, data_1, total, errorMessage, sortedList, errorMessage, selectedOrderIdx, selectedOrder, listId, amt, fraPrice, _b, txHash, buyResult, rowData_1, errorMessage, rowData_2, errorMessage, error_3, rowData, errorMessage;
+                    var fromPk, tick, totalFraToSpend_1, maxAmtToBuy_1, rndSecMin, rndSecMax, walletFrom, waitTimeInMSec, rowData, postedListings, data_1, total, errorMessage, sortedList, errorMessage, selectedOrderIdx, selectedOrder, listId, amt, fraPrice, _b, txHash, buyResult, rowData_1, errorMessage, rowData_2, errorMessage, error_3, rowData, errorMessage;
                     return __generator(this, function (_c) {
                         switch (_c.label) {
                             case 0:
-                                _c.trys.push([0, 4, , 5]);
+                                _c.trys.push([0, 5, , 6]);
                                 (0, utils_1.log)("".concat(i, ": Processing data row # ").concat(i));
-                                tick = currentRecord.tick, totalFraToSpend_1 = currentRecord.totalFraToSpend, maxAmtToBuy_1 = currentRecord.maxAmtToBuy, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+                                fromPk = currentRecord.pKey, tick = currentRecord.tick, totalFraToSpend_1 = currentRecord.totalFraToSpend, maxAmtToBuy_1 = currentRecord.maxAmtToBuy, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
+                                return [4 /*yield*/, api_1.Keypair.restoreFromPrivateKey(fromPk, password)];
+                            case 1:
+                                walletFrom = _c.sent();
                                 waitTimeInMSec = (0, utils_1.getRandomNumber)(rndSecMin * 1000, rndSecMax * 1000);
                                 rowData = JSON.stringify(currentRecord);
                                 return [4 /*yield*/, (0, brc20_1.getTradingListingList)(1, 100, tick, hostUrl, walletFrom, 0, true)];
-                            case 1:
+                            case 2:
                                 postedListings = _c.sent();
                                 data_1 = postedListings.data, total = postedListings.total;
                                 if (!total || data_1.length === 0) {
@@ -189,7 +199,7 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
                                 console.log('selectedOrder', selectedOrder);
                                 listId = selectedOrder.id, amt = selectedOrder.amount, fraPrice = selectedOrder.fraPrice;
                                 return [4 /*yield*/, (0, brc20_1.buy)(listId, fraPrice, hostUrl, walletFrom)];
-                            case 2:
+                            case 3:
                                 _b = _c.sent(), txHash = _b.txHash, buyResult = _b.buyResult;
                                 (0, utils_1.log)("".concat(i, ": Tx hash is \"").concat(txHash, "\""));
                                 if (!buyResult) {
@@ -211,17 +221,17 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
                                 });
                                 (0, utils_1.log)("".concat(i, ": Waiting for randomly chosen ").concat(waitTimeInMSec / 1000, "s (given range is ").concat(rndSecMin, " - ").concat(rndSecMax, ") before processing next record"));
                                 return [4 /*yield*/, (0, sleep_promise_1.default)(waitTimeInMSec)];
-                            case 3:
-                                _c.sent();
-                                return [3 /*break*/, 5];
                             case 4:
+                                _c.sent();
+                                return [3 /*break*/, 6];
+                            case 5:
                                 error_3 = _c.sent();
                                 rowData = JSON.stringify(currentRecord);
                                 errorMessage = "".concat(i, ": !! ERROR!! - could not process data from this row \"").concat(rowData, "\". Error: - ").concat(error_3.message);
                                 errorsInfo.push(errorMessage);
                                 (0, utils_1.log)(errorMessage);
-                                return [3 /*break*/, 5];
-                            case 5:
+                                return [3 /*break*/, 6];
+                            case 6:
                                 i += 1;
                                 return [2 /*return*/];
                         }
@@ -239,8 +249,19 @@ var runBatchBuyTicket = function (filePath, fromPk) { return __awaiter(void 0, v
             case 10:
                 _i++;
                 return [3 /*break*/, 8];
-            case 11: return [4 /*yield*/, writeDistributionLog(processedInfo, errorsInfo)];
+            case 11:
+                (0, utils_1.log)("End: Set \"".concat(totalRepetitions, "\" out of \"").concat(repeatTimes, "\""));
+                (0, utils_1.log)("Waiting for \"".concat(waitBetweenRepeatMinutes, "\" minutes before the next set"));
+                return [4 /*yield*/, (0, sleep_promise_1.default)(waitBetweenRepeatMinutes * 60 * 1000)];
             case 12:
+                _a.sent();
+                totalRepetitions += 1;
+                _a.label = 13;
+            case 13:
+                if (totalRepetitions <= repeatTimes) return [3 /*break*/, 7];
+                _a.label = 14;
+            case 14: return [4 /*yield*/, writeDistributionLog(processedInfo, errorsInfo)];
+            case 15:
                 _a.sent();
                 (0, utils_1.log)("Command Log ", JSON.stringify(processedInfo, null, 2));
                 (0, utils_1.log)("Command Errors Log ", JSON.stringify(errorsInfo, null, 2));

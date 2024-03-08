@@ -1,1 +1,1 @@
-export declare const runBatchAddList: (filePath: string, fromPk: string) => Promise<void>;
+export declare const runBatchAddList: (filePath: string, repeatTimes: number, waitBetweenRepeatMinutes: number) => Promise<void>;

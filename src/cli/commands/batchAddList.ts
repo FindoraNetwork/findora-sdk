@@ -5,7 +5,6 @@ import { Keypair } from '../../api';
 import { log, now, readFile, writeFile, getRandomNumber, delay } from '../../services/utils';
 import { addList } from '../../services/brc20';
 
-const defaultFileName = 'fileAddList.csv';
 const resultFileLogName = `batchAddListLog`;
 
 interface ProcessedRecordInfo {
@@ -14,6 +13,7 @@ interface ProcessedRecordInfo {
 }
 
 interface DataRecord {
+  pKey: string;
   tick: string;
   totalFraPrice: number;
   amt: number;
@@ -27,15 +27,23 @@ const isCsvValid = (listOfRecords: neatCsv.Row[]) => {
   for (let i = 0; i < listOfRecords.length; i += 1) {
     const currentRecord = listOfRecords[i];
 
+    const isPkPresented = Object.keys(currentRecord).includes('pKey');
     const isTickPresented = Object.keys(currentRecord).includes('tick');
     const isPricePresented = Object.keys(currentRecord).includes('totalFraPrice');
     const isAmountPresented = Object.keys(currentRecord).includes('amt');
     const isMinPresented = Object.keys(currentRecord).includes('rndSecMin');
     const isMaxPresented = Object.keys(currentRecord).includes('rndSecMax');
 
-    if (!isTickPresented || !isAmountPresented || !isPricePresented || !isMinPresented || !isMaxPresented) {
+    if (
+      !isPkPresented ||
+      !isTickPresented ||
+      !isAmountPresented ||
+      !isPricePresented ||
+      !isMinPresented ||
+      !isMaxPresented
+    ) {
       throw Error(
-        `ERROR - The data row must have "tick", "amt", "totalFraPrice", "rndSecMin" and "rndSecMax" fields ${JSON.stringify(
+        `ERROR - The data row must have "pKey", "tick", "amt", "totalFraPrice", "rndSecMin" and "rndSecMax" fields ${JSON.stringify(
           currentRecord,
         )} `,
       );
@@ -47,9 +55,10 @@ const isCsvValid = (listOfRecords: neatCsv.Row[]) => {
 
 const getRecordsList = (parsedListOfRecords: neatCsv.Row[]): DataRecord[] => {
   const recordsList = parsedListOfRecords.map(currentRecord => {
-    const { tick, totalFraPrice, amt, rndSecMin, rndSecMax } = currentRecord;
+    const { pKey, tick, totalFraPrice, amt, rndSecMin, rndSecMax } = currentRecord;
 
     return {
+      pKey: pKey.trim(),
       tick: tick.trim().toLowerCase(),
       totalFraPrice: +totalFraPrice.trim().replace(',', ''),
       amt: +amt.trim().replace(',', ''),
@@ -84,34 +93,31 @@ const writeDistributionLog = async (sendInfo: ProcessedRecordInfo[], errorsInfo:
   }
 };
 
-export const runBatchAddList = async (filePath: string, fromPk: string) => {
+export const runBatchAddList = async (
+  filePath: string,
+  repeatTimes: number,
+  waitBetweenRepeatMinutes: number,
+) => {
   let data;
   let parsedListOfRecords;
 
   try {
     data = await readFile(filePath);
   } catch (err) {
-    throw Error(`Could not read file "${defaultFileName}" `);
+    throw Error(`Could not read file "${filePath}" `);
   }
 
   try {
     parsedListOfRecords = await neatCsv(data);
   } catch (error) {
-    throw Error(`Could not parse file "${defaultFileName}" `);
+    throw Error(`Could not parse file "${filePath}" `);
   }
 
-  const password = '123';
-
-  const {
-    brc20url: hostUrl,
-    // brc20port: queryPort
-  } = Sdk.environment;
+  const { brc20url: hostUrl } = Sdk.environment;
 
   if (!hostUrl) {
     throw Error(`brc20url must be set for Sdk initialization`);
   }
-
-  const walletFrom = await Keypair.restoreFromPrivateKey(fromPk, password);
 
   const processedInfo = [];
   const errorsInfo = [];
@@ -124,65 +130,82 @@ export const runBatchAddList = async (filePath: string, fromPk: string) => {
 
   const recordsList = getRecordsList(parsedListOfRecords);
 
-  let i = 1;
+  const password = '123';
 
-  for (let currentRecord of recordsList) {
-    try {
-      log(`${i}: Processing data row # ${i}`);
-      const { tick, totalFraPrice, amt, rndSecMin, rndSecMax } = currentRecord;
-      const waitTimeInMSec = getRandomNumber(rndSecMin * 1000, rndSecMax * 1000);
+  let totalRepetitions = 1;
 
-      const { txHash, confirmResult } = await addList(
-        tick,
-        `${totalFraPrice}`,
-        `${amt}`,
-        hostUrl,
-        walletFrom,
-      );
+  do {
+    log(`Begin: Set "${totalRepetitions}" out of "${repeatTimes}"`);
 
-      log(`${i}: Tx hash is "${txHash}"`);
+    let i = 1;
 
-      if (!confirmResult) {
+    for (let currentRecord of recordsList) {
+      try {
+        log(`${i}: Processing data row # ${i}`);
+        const { pKey: fromPk, tick, totalFraPrice, amt, rndSecMin, rndSecMax } = currentRecord;
+
+        const walletFrom = await Keypair.restoreFromPrivateKey(fromPk, password);
+
+        const waitTimeInMSec = getRandomNumber(rndSecMin * 1000, rndSecMax * 1000);
+
+        const { txHash, confirmResult } = await addList(
+          tick,
+          `${totalFraPrice}`,
+          `${amt}`,
+          hostUrl,
+          walletFrom,
+        );
+
+        log(`${i}: Tx hash is "${txHash}"`);
+
+        if (!confirmResult) {
+          const rowData = JSON.stringify(currentRecord);
+
+          const errorMessage = `${i}: !! ERROR!! - potential error while processing data "${rowData}". Error: - confirmResult is false.`;
+          errorsInfo.push(errorMessage);
+          log(errorMessage);
+        }
+
+        if (!txHash) {
+          const rowData = JSON.stringify(currentRecord);
+
+          const errorMessage = `${i}: !! ERROR!! - potential error while processing data "${rowData}". Error: - txHash is empty.`;
+          errorsInfo.push(errorMessage);
+          log(errorMessage);
+        }
+
+        processedInfo.push({
+          txHash,
+          dataItem: { ...currentRecord },
+          chosenRandomWaitingTimeSec: `${(waitTimeInMSec / 1000).toFixed(1)}`,
+        });
+
+        log(
+          `${i}: Waiting for randomly chosen ${
+            waitTimeInMSec / 1000
+          }s (given range is ${rndSecMin} - ${rndSecMax}) before processing next record`,
+        );
+        await sleep(waitTimeInMSec);
+      } catch (error) {
         const rowData = JSON.stringify(currentRecord);
 
-        const errorMessage = `${i}: !! ERROR!! - potential error while processing data "${rowData}". Error: - confirmResult is false.`;
+        const errorMessage = `${i}: !! ERROR!! - could not process data from this row "${rowData}". Error: - ${
+          (error as Error).message
+        }`;
+
         errorsInfo.push(errorMessage);
         log(errorMessage);
       }
 
-      if (!txHash) {
-        const rowData = JSON.stringify(currentRecord);
-
-        const errorMessage = `${i}: !! ERROR!! - potential error while processing data "${rowData}". Error: - txHash is empty.`;
-        errorsInfo.push(errorMessage);
-        log(errorMessage);
-      }
-
-      processedInfo.push({
-        txHash,
-        dataItem: { ...currentRecord },
-        chosenRandomWaitingTimeSec: `${(waitTimeInMSec / 1000).toFixed(1)}`,
-      });
-
-      log(
-        `${i}: Waiting for randomly chosen ${
-          waitTimeInMSec / 1000
-        }s (given range is ${rndSecMin} - ${rndSecMax}) before processing next record`,
-      );
-      await sleep(waitTimeInMSec);
-    } catch (error) {
-      const rowData = JSON.stringify(currentRecord);
-
-      const errorMessage = `${i}: !! ERROR!! - could not process data from this row "${rowData}". Error: - ${
-        (error as Error).message
-      }`;
-
-      errorsInfo.push(errorMessage);
-      log(errorMessage);
+      i += 1;
     }
 
-    i += 1;
-  }
+    log(`End: Set "${totalRepetitions}" out of "${repeatTimes}"`);
+    log(`Waiting for "${waitBetweenRepeatMinutes}" minutes before the next set`);
+
+    await sleep(waitBetweenRepeatMinutes * 60 * 1000);
+    totalRepetitions += 1;
+  } while (totalRepetitions <= repeatTimes);
 
   await writeDistributionLog(processedInfo, errorsInfo);
 

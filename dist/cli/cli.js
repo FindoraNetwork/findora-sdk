@@ -111,11 +111,11 @@ var showHelp = function () {
     }
 };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets;
+    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets, repeatTimes, waitBetweenRepeatMinutes;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets;
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets, repeatTimes = argv.repeatTimes, waitBetweenRepeatMinutes = argv.waitBetweenRepeatMinutes;
         if (!command) {
             showHelp();
             return [2 /*return*/];
@@ -171,14 +171,15 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_ADD_LIST]);
                     break;
                 }
-                CliCommands.runBatchAddList(filePath, privateKey);
+                // const defaultFileName = 'fileAddList.csv';
+                CliCommands.runBatchAddList(filePath, +"".concat(repeatTimes), +waitBetweenRepeatMinutes);
                 break;
             case COMMANDS.BATCH_BUY_TICKET:
-                if (!filePath) {
+                if (!filePath || !waitBetweenRepeatMinutes || !repeatTimes) {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_BUY_TICKET]);
                     break;
                 }
-                CliCommands.runBatchBuyTicket(filePath, privateKey);
+                CliCommands.runBatchBuyTicket(filePath, +"".concat(repeatTimes), +waitBetweenRepeatMinutes);
                 break;
             default:
                 showHelp();
