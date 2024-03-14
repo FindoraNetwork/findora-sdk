@@ -90,6 +90,10 @@ var COMMANDS = {
     BATCH_SEND_ERC20: 'batchSendErc20',
     BATCH_SEND_FRA: 'batchSendFra',
     CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
+    CREATE_BUY_FILE_FROM_WALLETS: 'createBuyFileFromWallets',
+    CREATE_FUND_FILE_FROM_WALLETS: 'createFundFileFromWallets',
+    COLLECT_FUNDS_FROM_WALLETS: 'collectFundsFromWallets',
+    GET_BALANCE_FROM_WALLETS: 'getBalanceFromWallets',
     BATCH_DEPLOY_TICKET: 'batchDeployTicket',
     BATCH_MINT_TICKET: 'batchMintTicket',
     BATCH_ADD_LIST: 'batchAddList',
@@ -101,7 +105,11 @@ var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
     _a[COMMANDS.BATCH_SEND_ERC20] = "please run as \"yarn cli batchSendErc20 --filePath=\"./file.csv\"",
     _a[COMMANDS.BATCH_SEND_FRA] = "please run as \"yarn cli batchSendFra --privateKey=XXX --filePath=\"./fileFra.csv\"",
-    _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10 [--generateFundFile=true] [--amountToFund=5] --fileName=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10 [--generateFundFile=true] [--amountToFund=5] --filePath=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.CREATE_BUY_FILE_FROM_WALLETS] = "please run as \"yarn cli createBuyFileFromWallets --tick=ole6 --totalFraToSpend=1000 --maxAmtToBuy=100 --filePath=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.CREATE_FUND_FILE_FROM_WALLETS] = "please run as \"yarn cli createFundFileFromWallets --amountToFund=100 --filePath=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.COLLECT_FUNDS_FROM_WALLETS] = "please run as \"yarn cli collectFundsFromWallets --privateKey=XXX --filePath=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.GET_BALANCE_FROM_WALLETS] = "please run as \"yarn cli getBalanceFromWallets --filePath=\"./yourWalletsFile.json\"",
     _a[COMMANDS.BATCH_DEPLOY_TICKET] = "please run as \"yarn cli batchDeployTicket --privateKey=XXX --filePath=\"./fileDeployTicket.csv\"",
     _a[COMMANDS.BATCH_MINT_TICKET] = "please run as \"yarn cli batchMintTicket --privateKey=XXX --filePath=\"./fileMintTicket.csv\"",
     _a[COMMANDS.BATCH_ADD_LIST] = "please run as \"yarn cli batchAddList --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath=\"./fileAddList.csv\"",
@@ -113,11 +121,11 @@ var showHelp = function () {
     }
 };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets, repeatTimes, waitBetweenRepeatMinutes, fileName, generateFundFile;
+    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets, repeatTimes, waitBetweenRepeatMinutes, generateFundFile, tick, totalFraToSpend, maxAmtToBuy;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets, repeatTimes = argv.repeatTimes, waitBetweenRepeatMinutes = argv.waitBetweenRepeatMinutes, fileName = argv.fileName, generateFundFile = argv.generateFundFile;
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets, repeatTimes = argv.repeatTimes, waitBetweenRepeatMinutes = argv.waitBetweenRepeatMinutes, generateFundFile = argv.generateFundFile, tick = argv.tick, totalFraToSpend = argv.totalFraToSpend, maxAmtToBuy = argv.maxAmtToBuy;
         if (!command) {
             showHelp();
             return [2 /*return*/];
@@ -155,11 +163,11 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 CliCommands.runBatchSendFra(filePath, privateKey, 12);
                 break;
             case COMMANDS.CREATE_AND_SAVE_WALLETS:
-                if (!numberOfWallets) {
+                if (!numberOfWallets || !filePath) {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_AND_SAVE_WALLETS]);
                     break;
                 }
-                CliCommands.runCreateAndSaveWallets(numberOfWallets, fileName, generateFundFile, amountToFund);
+                CliCommands.runCreateAndSaveWallets(filePath, numberOfWallets, generateFundFile, amountToFund);
                 break;
             case COMMANDS.BATCH_DEPLOY_TICKET:
                 if (!filePath) {
@@ -189,7 +197,36 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                 }
                 CliCommands.runBatchBuyTicket(filePath, +"".concat(repeatTimes), +waitBetweenRepeatMinutes);
                 break;
+            case COMMANDS.CREATE_BUY_FILE_FROM_WALLETS:
+                if (!filePath || !tick || !totalFraToSpend || !maxAmtToBuy) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_BUY_FILE_FROM_WALLETS]);
+                    break;
+                }
+                CliCommands.runCreateBuyFileFromeWallets(filePath, tick.trim(), +"".concat(totalFraToSpend), +"".concat(maxAmtToBuy));
+                break;
+            case COMMANDS.CREATE_FUND_FILE_FROM_WALLETS:
+                if (!filePath || !amountToFund) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_FUND_FILE_FROM_WALLETS]);
+                    break;
+                }
+                CliCommands.runCreateFundFileFromeWallets(filePath, +"".concat(amountToFund));
+                break;
+            case COMMANDS.COLLECT_FUNDS_FROM_WALLETS:
+                if (!filePath || !privateKey) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.COLLECT_FUNDS_FROM_WALLETS]);
+                    break;
+                }
+                CliCommands.runCollectFundsFromWallets(filePath, privateKey.trim());
+                break;
+            case COMMANDS.GET_BALANCE_FROM_WALLETS:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.GET_BALANCE_FROM_WALLETS]);
+                    break;
+                }
+                CliCommands.runGetBalanceFromWallets(filePath);
+                break;
             default:
+                (0, utils_1.log)("\n\nIt seems you have provided an unsupported command \n \"".concat(command, "\" \n"));
                 showHelp();
         }
         return [2 /*return*/];

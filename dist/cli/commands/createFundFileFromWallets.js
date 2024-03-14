@@ -36,88 +36,57 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.runCreateAndSaveWallets = void 0;
-var api_1 = require("../../api");
+exports.runCreateFundFileFromeWallets = void 0;
 var utils_1 = require("../../services/utils");
-var createFundFile = function (fileName, amountToFund, sendersWallets) { return __awaiter(void 0, void 0, void 0, function () {
+var createFile = function (fileName, amountToFund, sendersWallets) { return __awaiter(void 0, void 0, void 0, function () {
     var fileData, resultFundFile;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 fileData = ['tokenAllocated,tokenReceiveAddress'];
                 sendersWallets.forEach(function (el) {
-                    fileData.push("".concat(amountToFund, ",").concat(el.address));
+                    var dataRow = "".concat(amountToFund, ",").concat(el.address);
+                    fileData.push(dataRow);
                 });
                 return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName, "_to_fund.csv"), fileData.join('\n'))];
             case 1:
                 resultFundFile = _a.sent();
                 if (resultFundFile) {
-                    (0, utils_1.log)("\n\n\n".concat(fileName, "_to_fund.csv has written successfully\n\n\n"));
+                    (0, utils_1.log)("".concat(fileName, "_to_fund.csv has written successfully"));
                 }
                 return [2 /*return*/];
         }
     });
 }); };
-var runCreateAndSaveWallets = function (fileName, amount, generateFundFile, amountToFund) {
-    if (amount === void 0) { amount = 5; }
-    if (generateFundFile === void 0) { generateFundFile = false; }
+var runCreateFundFileFromeWallets = function (filePath, amountToFund) {
     if (amountToFund === void 0) { amountToFund = 10; }
     return __awaiter(void 0, void 0, void 0, function () {
-        var data, err_1, sendersWallets, password, i, mm, newWalletInfo, data_1, resultSenders;
+        var data, err_1, error_1;
         return __generator(this, function (_a) {
             switch (_a.label) {
                 case 0:
                     _a.trys.push([0, 2, , 3]);
-                    return [4 /*yield*/, (0, utils_1.readFile)(fileName)];
+                    return [4 /*yield*/, (0, utils_1.readFile)(filePath)];
                 case 1:
                     data = _a.sent();
                     return [3 /*break*/, 3];
                 case 2:
                     err_1 = _a.sent();
-                    (0, utils_1.log)("New file \"".concat(fileName, "\" does not exist yet and it will be created."));
-                    return [3 /*break*/, 3];
+                    throw Error("Could not read file \"".concat(filePath, "\" "));
                 case 3:
-                    if (data) {
-                        throw Error("Error! file \"".concat(fileName, "\" already exists! Chose a different name! "));
-                    }
-                    sendersWallets = [];
-                    password = '123';
-                    i = 0;
-                    _a.label = 4;
+                    _a.trys.push([3, 5, , 6]);
+                    return [4 /*yield*/, createFile(filePath.replace('.json', ''), amountToFund, JSON.parse(data))];
                 case 4:
-                    if (!(i < amount)) return [3 /*break*/, 8];
-                    return [4 /*yield*/, api_1.Keypair.getMnemonic(24)];
-                case 5:
-                    mm = _a.sent();
-                    return [4 /*yield*/, api_1.Keypair.restoreFromMnemonic(mm, password)];
-                case 6:
-                    newWalletInfo = _a.sent();
-                    (0, utils_1.log)("\"".concat(i, "\". Created sender wallet \"").concat(newWalletInfo.address, "\" (\"").concat(newWalletInfo.privateStr, "\")"));
-                    data_1 = {
-                        index: i,
-                        privateKey: newWalletInfo.privateStr,
-                        address: newWalletInfo.address,
-                    };
-                    sendersWallets.push(data_1);
-                    _a.label = 7;
-                case 7:
-                    i += 1;
-                    return [3 /*break*/, 4];
-                case 8: return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName), JSON.stringify(sendersWallets, null, 2))];
-                case 9:
-                    resultSenders = _a.sent();
-                    if (resultSenders) {
-                        (0, utils_1.log)('senders.json has written successfully');
-                    }
-                    if (!generateFundFile) return [3 /*break*/, 11];
-                    return [4 /*yield*/, createFundFile(fileName, amountToFund, sendersWallets)];
-                case 10:
                     _a.sent();
-                    _a.label = 11;
-                case 11: return [2 /*return*/];
+                    return [3 /*break*/, 6];
+                case 5:
+                    error_1 = _a.sent();
+                    console.log('could not create a fund file', error_1);
+                    return [3 /*break*/, 6];
+                case 6: return [2 /*return*/];
             }
         });
     });
 };
-exports.runCreateAndSaveWallets = runCreateAndSaveWallets;
-//# sourceMappingURL=createAndSaveWallets.js.map
+exports.runCreateFundFileFromeWallets = runCreateFundFileFromeWallets;
+//# sourceMappingURL=createFundFileFromWallets.js.map

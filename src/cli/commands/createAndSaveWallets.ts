@@ -1,7 +1,5 @@
 import { Keypair } from '../../api';
-import { log, writeFile } from '../../services/utils';
-
-const defaultWalletsFileName = './senders';
+import { log, writeFile, readFile } from '../../services/utils';
 
 type SenderWallet = { index: number; privateKey: string | undefined; address: string };
 
@@ -15,16 +13,28 @@ const createFundFile = async (fileName: string, amountToFund: number, sendersWal
   const resultFundFile = await writeFile(`${fileName}_to_fund.csv`, fileData.join('\n'));
 
   if (resultFundFile) {
-    log(`${fileName}_to_fund.csv has written successfully`);
+    log(`\n\n\n${fileName}_to_fund.csv has written successfully\n\n\n`);
   }
 };
 
 export const runCreateAndSaveWallets = async (
+  fileName: string,
   amount = 5,
-  fileName = defaultWalletsFileName,
   generateFundFile = false,
   amountToFund = 10,
 ) => {
+  let data;
+
+  try {
+    data = await readFile(fileName);
+  } catch (err) {
+    log(`New file "${fileName}" does not exist yet and it will be created.`);
+  }
+
+  if (data) {
+    throw Error(`Error! file "${fileName}" already exists! Chose a different name! `);
+  }
+
   const sendersWallets = [];
 
   const password = '123';
@@ -45,7 +55,7 @@ export const runCreateAndSaveWallets = async (
     sendersWallets.push(data);
   }
 
-  const resultSenders = await writeFile(`${fileName}.json`, JSON.stringify(sendersWallets, null, 2));
+  const resultSenders = await writeFile(`${fileName}`, JSON.stringify(sendersWallets, null, 2));
 
   if (resultSenders) {
     log('senders.json has written successfully');

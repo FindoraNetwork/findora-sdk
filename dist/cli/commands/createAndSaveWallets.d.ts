@@ -1,1 +1,1 @@
-export declare const runCreateAndSaveWallets: (amount?: number, fileName?: string, generateFundFile?: boolean, amountToFund?: number) => Promise<void>;
+export declare const runCreateAndSaveWallets: (fileName: string, amount?: number, generateFundFile?: boolean, amountToFund?: number) => Promise<void>;
