@@ -77,6 +77,34 @@ const brcEnpoints = {
   buy: '/buy',
 };
 
+// const { tick, totalSupply,  limitPerMint, rndSecMin, rndSecMax } = currentRecord;
+export const sendBRC20DeployTx = async (
+  tick: string,
+  totalSupply: number,
+  limitPerMint: number,
+  walletInfoFrom: Keypair.WalletKeypar,
+) => {
+  try {
+    const params = { tick, max: totalSupply, lim: limitPerMint };
+
+    const transactionBuilder = await Transaction.brc20Deploy(walletInfoFrom, params);
+
+    const myTxInJson = transactionBuilder.transaction();
+    const myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+
+    const result = await Network.submitBRC20Tx(myTxInBase64);
+
+    console.log('submitBRC20Tx deploy result', result);
+
+    const { response } = result;
+
+    return response?.result?.hash ?? '';
+  } catch (er) {
+    console.log(er);
+  }
+  return '';
+};
+
 export const sendBRC20MintTx = async (
   tick: string,
   amt: number,

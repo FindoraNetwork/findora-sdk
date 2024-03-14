@@ -1,7 +1,30 @@
 import { Keypair } from '../../api';
 import { log, writeFile } from '../../services/utils';
 
-export const runCreateAndSaveWallets = async (amount = 5) => {
+const defaultWalletsFileName = './senders';
+
+type SenderWallet = { index: number; privateKey: string | undefined; address: string };
+
+const createFundFile = async (fileName: string, amountToFund: number, sendersWallets: SenderWallet[]) => {
+  const fileData = ['tokenAllocated,tokenReceiveAddress'];
+
+  sendersWallets.forEach(el => {
+    fileData.push(`${amountToFund},${el.address}`);
+  });
+
+  const resultFundFile = await writeFile(`${fileName}_to_fund.csv`, fileData.join('\n'));
+
+  if (resultFundFile) {
+    log(`${fileName}_to_fund.csv has written successfully`);
+  }
+};
+
+export const runCreateAndSaveWallets = async (
+  amount = 5,
+  fileName = defaultWalletsFileName,
+  generateFundFile = false,
+  amountToFund = 10,
+) => {
   const sendersWallets = [];
 
   const password = '123';
@@ -13,7 +36,7 @@ export const runCreateAndSaveWallets = async (amount = 5) => {
 
     log(`"${i}". Created sender wallet "${newWalletInfo.address}" ("${newWalletInfo.privateStr}")`);
 
-    const data = {
+    const data: SenderWallet = {
       index: i,
       privateKey: newWalletInfo.privateStr,
       address: newWalletInfo.address,
@@ -22,9 +45,13 @@ export const runCreateAndSaveWallets = async (amount = 5) => {
     sendersWallets.push(data);
   }
 
-  const resultSenders = await writeFile('./cache/senders.json', JSON.stringify(sendersWallets, null, 2));
+  const resultSenders = await writeFile(`${fileName}.json`, JSON.stringify(sendersWallets, null, 2));
 
   if (resultSenders) {
     log('senders.json has written successfully');
+  }
+
+  if (generateFundFile) {
+    await createFundFile(fileName, amountToFund, sendersWallets);
   }
 };

@@ -28,6 +28,7 @@ const COMMANDS = {
   BATCH_SEND_ERC20: 'batchSendErc20',
   BATCH_SEND_FRA: 'batchSendFra',
   CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
+  BATCH_DEPLOY_TICKET: 'batchDeployTicket',
   BATCH_MINT_TICKET: 'batchMintTicket',
   BATCH_ADD_LIST: 'batchAddList',
   BATCH_BUY_TICKET: 'batchBuyTicket',
@@ -39,7 +40,8 @@ const ERROR_MESSAGES = {
   [COMMANDS.RESTORE_WALLET]: `please run as "yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'"`,
   [COMMANDS.BATCH_SEND_ERC20]: `please run as "yarn cli batchSendErc20 --filePath="./file.csv"`,
   [COMMANDS.BATCH_SEND_FRA]: `please run as "yarn cli batchSendFra --privateKey=XXX --filePath="./fileFra.csv"`,
-  [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10`,
+  [COMMANDS.CREATE_AND_SAVE_WALLETS]: `please run as "yarn cli createAndSaveWallets --numberOfWallets=10 [--generateFundFile=true] [--amountToFund=5] --fileName="./yourWalletsFile.json"`,
+  [COMMANDS.BATCH_DEPLOY_TICKET]: `please run as "yarn cli batchDeployTicket --privateKey=XXX --filePath="./fileDeployTicket.csv"`,
   [COMMANDS.BATCH_MINT_TICKET]: `please run as "yarn cli batchMintTicket --privateKey=XXX --filePath="./fileMintTicket.csv"`,
   [COMMANDS.BATCH_ADD_LIST]: `please run as "yarn cli batchAddList --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileAddList.csv"`,
   [COMMANDS.BATCH_BUY_TICKET]: `please run as "yarn cli batchBuyTicket --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileBuyTicket.csv"`,
@@ -63,6 +65,8 @@ const main = async () => {
     numberOfWallets,
     repeatTimes,
     waitBetweenRepeatMinutes,
+    fileName,
+    generateFundFile,
   } = argv;
 
   if (!command) {
@@ -113,7 +117,15 @@ const main = async () => {
         break;
       }
 
-      CliCommands.runCreateAndSaveWallets(numberOfWallets);
+      CliCommands.runCreateAndSaveWallets(numberOfWallets, fileName, generateFundFile, amountToFund);
+      break;
+    case COMMANDS.BATCH_DEPLOY_TICKET:
+      if (!filePath) {
+        log(ERROR_MESSAGES[COMMANDS.BATCH_DEPLOY_TICKET]);
+        break;
+      }
+
+      CliCommands.runBatchDeployTicket(filePath, privateKey);
       break;
     case COMMANDS.BATCH_MINT_TICKET:
       if (!filePath) {

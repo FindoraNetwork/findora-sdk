@@ -90,6 +90,7 @@ var COMMANDS = {
     BATCH_SEND_ERC20: 'batchSendErc20',
     BATCH_SEND_FRA: 'batchSendFra',
     CREATE_AND_SAVE_WALLETS: 'createAndSaveWallets',
+    BATCH_DEPLOY_TICKET: 'batchDeployTicket',
     BATCH_MINT_TICKET: 'batchMintTicket',
     BATCH_ADD_LIST: 'batchAddList',
     BATCH_BUY_TICKET: 'batchBuyTicket',
@@ -100,10 +101,11 @@ var ERROR_MESSAGES = (_a = {},
     _a[COMMANDS.RESTORE_WALLET] = "please run as \"yarn cli restoreWallet --mnemonicString='XXX ... ... XXX'\"",
     _a[COMMANDS.BATCH_SEND_ERC20] = "please run as \"yarn cli batchSendErc20 --filePath=\"./file.csv\"",
     _a[COMMANDS.BATCH_SEND_FRA] = "please run as \"yarn cli batchSendFra --privateKey=XXX --filePath=\"./fileFra.csv\"",
-    _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10",
+    _a[COMMANDS.CREATE_AND_SAVE_WALLETS] = "please run as \"yarn cli createAndSaveWallets --numberOfWallets=10 [--generateFundFile=true] [--amountToFund=5] --fileName=\"./yourWalletsFile.json\"",
+    _a[COMMANDS.BATCH_DEPLOY_TICKET] = "please run as \"yarn cli batchDeployTicket --privateKey=XXX --filePath=\"./fileDeployTicket.csv\"",
     _a[COMMANDS.BATCH_MINT_TICKET] = "please run as \"yarn cli batchMintTicket --privateKey=XXX --filePath=\"./fileMintTicket.csv\"",
-    _a[COMMANDS.BATCH_ADD_LIST] = "please run as \"yarn cli batchAddList --privateKey=XXX --filePath=\"./fileAddList.csv\"",
-    _a[COMMANDS.BATCH_BUY_TICKET] = "please run as \"yarn cli batchBuyTicket --privateKey=XXX --filePath=\"./fileBuyTicket.csv\"",
+    _a[COMMANDS.BATCH_ADD_LIST] = "please run as \"yarn cli batchAddList --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath=\"./fileAddList.csv\"",
+    _a[COMMANDS.BATCH_BUY_TICKET] = "please run as \"yarn cli batchBuyTicket --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath=\"./fileBuyTicket.csv\"",
     _a);
 var showHelp = function () {
     for (var prop in ERROR_MESSAGES) {
@@ -111,11 +113,11 @@ var showHelp = function () {
     }
 };
 var main = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets, repeatTimes, waitBetweenRepeatMinutes;
+    var argv, command, address, amountToFund, mnemonicString, filePath, privateKey, numberOfWallets, repeatTimes, waitBetweenRepeatMinutes, fileName, generateFundFile;
     return __generator(this, function (_a) {
         argv = (0, minimist_1.default)(process.argv.slice(4));
         command = argv._[0];
-        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets, repeatTimes = argv.repeatTimes, waitBetweenRepeatMinutes = argv.waitBetweenRepeatMinutes;
+        address = argv.address, amountToFund = argv.amountToFund, mnemonicString = argv.mnemonicString, filePath = argv.filePath, privateKey = argv.privateKey, numberOfWallets = argv.numberOfWallets, repeatTimes = argv.repeatTimes, waitBetweenRepeatMinutes = argv.waitBetweenRepeatMinutes, fileName = argv.fileName, generateFundFile = argv.generateFundFile;
         if (!command) {
             showHelp();
             return [2 /*return*/];
@@ -157,7 +159,14 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.CREATE_AND_SAVE_WALLETS]);
                     break;
                 }
-                CliCommands.runCreateAndSaveWallets(numberOfWallets);
+                CliCommands.runCreateAndSaveWallets(numberOfWallets, fileName, generateFundFile, amountToFund);
+                break;
+            case COMMANDS.BATCH_DEPLOY_TICKET:
+                if (!filePath) {
+                    (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_DEPLOY_TICKET]);
+                    break;
+                }
+                CliCommands.runBatchDeployTicket(filePath, privateKey);
                 break;
             case COMMANDS.BATCH_MINT_TICKET:
                 if (!filePath) {
@@ -171,7 +180,6 @@ var main = function () { return __awaiter(void 0, void 0, void 0, function () {
                     (0, utils_1.log)(ERROR_MESSAGES[COMMANDS.BATCH_ADD_LIST]);
                     break;
                 }
-                // const defaultFileName = 'fileAddList.csv';
                 CliCommands.runBatchAddList(filePath, +"".concat(repeatTimes), +waitBetweenRepeatMinutes);
                 break;
             case COMMANDS.BATCH_BUY_TICKET:

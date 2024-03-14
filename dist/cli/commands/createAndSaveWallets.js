@@ -39,8 +39,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.runCreateAndSaveWallets = void 0;
 var api_1 = require("../../api");
 var utils_1 = require("../../services/utils");
-var runCreateAndSaveWallets = function (amount) {
+var defaultWalletsFileName = './senders';
+var createFundFile = function (fileName, amountToFund, sendersWallets) { return __awaiter(void 0, void 0, void 0, function () {
+    var fileData, resultFundFile;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0:
+                fileData = ['tokenAllocated,tokenReceiveAddress'];
+                sendersWallets.forEach(function (el) {
+                    fileData.push("".concat(amountToFund, ",").concat(el.address));
+                });
+                return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName, "_to_fund.csv"), fileData.join('\n'))];
+            case 1:
+                resultFundFile = _a.sent();
+                if (resultFundFile) {
+                    (0, utils_1.log)("".concat(fileName, "_to_fund.csv has written successfully"));
+                }
+                return [2 /*return*/];
+        }
+    });
+}); };
+var runCreateAndSaveWallets = function (amount, fileName, generateFundFile, amountToFund) {
     if (amount === void 0) { amount = 5; }
+    if (fileName === void 0) { fileName = defaultWalletsFileName; }
+    if (generateFundFile === void 0) { generateFundFile = false; }
+    if (amountToFund === void 0) { amountToFund = 10; }
     return __awaiter(void 0, void 0, void 0, function () {
         var sendersWallets, password, i, mm, newWalletInfo, data, resultSenders;
         return __generator(this, function (_a) {
@@ -69,13 +92,18 @@ var runCreateAndSaveWallets = function (amount) {
                 case 4:
                     i += 1;
                     return [3 /*break*/, 1];
-                case 5: return [4 /*yield*/, (0, utils_1.writeFile)('./cache/senders.json', JSON.stringify(sendersWallets, null, 2))];
+                case 5: return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName, ".json"), JSON.stringify(sendersWallets, null, 2))];
                 case 6:
                     resultSenders = _a.sent();
                     if (resultSenders) {
                         (0, utils_1.log)('senders.json has written successfully');
                     }
-                    return [2 /*return*/];
+                    if (!generateFundFile) return [3 /*break*/, 8];
+                    return [4 /*yield*/, createFundFile(fileName, amountToFund, sendersWallets)];
+                case 7:
+                    _a.sent();
+                    _a.label = 8;
+                case 8: return [2 /*return*/];
             }
         });
     });

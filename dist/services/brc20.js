@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTradingListingList = exports.buy = exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = void 0;
+exports.getTradingListingList = exports.buy = exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = exports.sendBRC20DeployTx = void 0;
 var api_1 = require("../api");
 var utils_1 = require("../services/utils");
 var axios_1 = __importStar(require("axios"));
@@ -81,8 +81,37 @@ var brcEnpoints = {
     banner: '/banner',
     buy: '/buy',
 };
-var sendBRC20MintTx = function (tick, amt, repeat, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
+// const { tick, totalSupply,  limitPerMint, rndSecMin, rndSecMax } = currentRecord;
+var sendBRC20DeployTx = function (tick, totalSupply, limitPerMint, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
     var params, transactionBuilder, myTxInJson, myTxInBase64, result, response, er_1;
+    var _a, _b;
+    return __generator(this, function (_c) {
+        switch (_c.label) {
+            case 0:
+                _c.trys.push([0, 3, , 4]);
+                params = { tick: tick, max: totalSupply, lim: limitPerMint };
+                return [4 /*yield*/, api_1.Transaction.brc20Deploy(walletInfoFrom, params)];
+            case 1:
+                transactionBuilder = _c.sent();
+                myTxInJson = transactionBuilder.transaction();
+                myTxInBase64 = Buffer.from(myTxInJson).toString('base64');
+                return [4 /*yield*/, api_1.Network.submitBRC20Tx(myTxInBase64)];
+            case 2:
+                result = _c.sent();
+                console.log('submitBRC20Tx deploy result', result);
+                response = result.response;
+                return [2 /*return*/, (_b = (_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash) !== null && _b !== void 0 ? _b : ''];
+            case 3:
+                er_1 = _c.sent();
+                console.log(er_1);
+                return [3 /*break*/, 4];
+            case 4: return [2 /*return*/, ''];
+        }
+    });
+}); };
+exports.sendBRC20DeployTx = sendBRC20DeployTx;
+var sendBRC20MintTx = function (tick, amt, repeat, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
+    var params, transactionBuilder, myTxInJson, myTxInBase64, result, response, er_2;
     var _a, _b;
     return __generator(this, function (_c) {
         switch (_c.label) {
@@ -101,8 +130,8 @@ var sendBRC20MintTx = function (tick, amt, repeat, walletInfoFrom) { return __aw
                 response = result.response;
                 return [2 /*return*/, (_b = (_a = response === null || response === void 0 ? void 0 : response.result) === null || _a === void 0 ? void 0 : _a.hash) !== null && _b !== void 0 ? _b : ''];
             case 3:
-                er_1 = _c.sent();
-                console.log(er_1);
+                er_2 = _c.sent();
+                console.log(er_2);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/, ''];
         }
@@ -230,7 +259,7 @@ var addList = function (ticker, totalPrice, amount, baseUrl, walletInfoFrom) { r
 }); };
 exports.addList = addList;
 var sendBRC20TransferTx = function (tick, amt, receiver, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
-    var transactionBuilder, myTxInJson, myTxInBase64, result, er_2;
+    var transactionBuilder, myTxInJson, myTxInBase64, result, er_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -250,15 +279,15 @@ var sendBRC20TransferTx = function (tick, amt, receiver, walletInfoFrom) { retur
                 console.log('submitBRC20Tx transfer result', result);
                 return [2 /*return*/, result];
             case 3:
-                er_2 = _a.sent();
-                console.log(er_2);
+                er_3 = _a.sent();
+                console.log(er_3);
                 return [3 /*break*/, 4];
             case 4: return [2 /*return*/, {}];
         }
     });
 }); };
 var sendFRATransferTx = function (data, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
-    var amt, receiver, assetCode, assetBlindRules, transactionBuilder, result, txHash, response, tx, hash, er_3;
+    var amt, receiver, assetCode, assetBlindRules, transactionBuilder, result, txHash, response, tx, hash, er_4;
     var _a, _b, _c;
     return __generator(this, function (_d) {
         switch (_d.label) {
@@ -298,8 +327,8 @@ var sendFRATransferTx = function (data, walletInfoFrom) { return __awaiter(void 
                 return [3 /*break*/, 5];
             case 8: return [2 /*return*/, txHash];
             case 9:
-                er_3 = _d.sent();
-                console.log('sendFRATransferTx err', er_3);
+                er_4 = _d.sent();
+                console.log('sendFRATransferTx err', er_4);
                 return [3 /*break*/, 10];
             case 10: return [2 /*return*/, ''];
         }
