@@ -48,11 +48,11 @@ var createFundFile = function (fileName, amountToFund, sendersWallets) { return 
                 sendersWallets.forEach(function (el) {
                     fileData.push("".concat(amountToFund, ",").concat(el.address));
                 });
-                return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName, "_to_fund.csv"), fileData.join('\n'))];
+                return [4 /*yield*/, (0, utils_1.writeFile)("".concat(fileName.replace('.json', ''), "_to_fund.csv"), fileData.join('\n'))];
             case 1:
                 resultFundFile = _a.sent();
                 if (resultFundFile) {
-                    (0, utils_1.log)("\n\n\n".concat(fileName, "_to_fund.csv has written successfully\n\n\n"));
+                    (0, utils_1.log)("\n\n\n".concat(fileName.replace('.json', ''), "_to_fund.csv has written successfully\n\n\n"));
                 }
                 return [2 /*return*/];
         }
@@ -107,7 +107,7 @@ var runCreateAndSaveWallets = function (fileName, amount, generateFundFile, amou
                 case 9:
                     resultSenders = _a.sent();
                     if (resultSenders) {
-                        (0, utils_1.log)('senders.json has written successfully');
+                        (0, utils_1.log)("".concat(fileName, " has written successfully"));
                     }
                     if (!generateFundFile) return [3 /*break*/, 11];
                     return [4 /*yield*/, createFundFile(fileName, amountToFund, sendersWallets)];

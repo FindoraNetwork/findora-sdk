@@ -10,10 +10,10 @@ const createFundFile = async (fileName: string, amountToFund: number, sendersWal
     fileData.push(`${amountToFund},${el.address}`);
   });
 
-  const resultFundFile = await writeFile(`${fileName}_to_fund.csv`, fileData.join('\n'));
+  const resultFundFile = await writeFile(`${fileName.replace('.json', '')}_to_fund.csv`, fileData.join('\n'));
 
   if (resultFundFile) {
-    log(`\n\n\n${fileName}_to_fund.csv has written successfully\n\n\n`);
+    log(`\n\n\n${fileName.replace('.json', '')}_to_fund.csv has written successfully\n\n\n`);
   }
 };
 
@@ -58,7 +58,7 @@ export const runCreateAndSaveWallets = async (
   const resultSenders = await writeFile(`${fileName}`, JSON.stringify(sendersWallets, null, 2));
 
   if (resultSenders) {
-    log('senders.json has written successfully');
+    log(`${fileName} has written successfully`);
   }
 
   if (generateFundFile) {

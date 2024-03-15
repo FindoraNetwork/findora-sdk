@@ -68,7 +68,6 @@ var processRecord = function (index, privateKey, receiverWalletInfo, assetCode, 
                 resultHandle = _a.sent();
                 txResult = "send to the receipient result handle', ".concat(resultHandle);
                 result = "".concat(index, ". send from \"").concat(walletInfo.address, "\" to \"").concat(receiverWalletInfo.address, "\" is \"").concat(txResult, "\"");
-                // await delay(1000);
                 return [2 /*return*/, result];
         }
     });
