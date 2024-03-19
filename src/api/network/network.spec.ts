@@ -924,7 +924,7 @@ describe('network (unit test)', () => {
       expect(result).toHaveProperty('total_count');
       expect(result).toHaveProperty('txs');
 
-      const { txs, total } = result;
+      const { txs, total_count: total } = result;
 
       expect(txs?.length).toBe(1);
       expect(total).toBe(1);

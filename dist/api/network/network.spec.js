@@ -1053,7 +1053,7 @@ describe('network (unit test)', function () {
                         result = response.result;
                         expect(result).toHaveProperty('total_count');
                         expect(result).toHaveProperty('txs');
-                        txs = result.txs, total = result.total;
+                        txs = result.txs, total = result.total_count;
                         expect(txs === null || txs === void 0 ? void 0 : txs.length).toBe(1);
                         expect(total).toBe(1);
                         expect(spy).toHaveBeenCalledWith(url, __assign(__assign({}, testConfig), { params: { query: "\"tx.prehash='".concat(hash, "'\"") } }));

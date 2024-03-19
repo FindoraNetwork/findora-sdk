@@ -17,7 +17,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./batchSendErc20"), exports);
 __exportStar(require("./batchSendFra"), exports);
 __exportStar(require("./createAndSaveWallets"), exports);
+__exportStar(require("./createBuyFileFromWallets"), exports);
+__exportStar(require("./createFundFileFromWallets"), exports);
+__exportStar(require("./collectFundsFromWallets"), exports);
+__exportStar(require("./getBalanceFromWallets"), exports);
 __exportStar(require("./createWallet"), exports);
+__exportStar(require("./batchMintTicket"), exports);
+__exportStar(require("./batchDeployTicket"), exports);
+__exportStar(require("./batchAddList"), exports);
+__exportStar(require("./batchBuyTicket"), exports);
+__exportStar(require("./batchTransferTicket"), exports);
 __exportStar(require("./fund"), exports);
 __exportStar(require("./restoreWallet"), exports);
 //# sourceMappingURL=index.js.map

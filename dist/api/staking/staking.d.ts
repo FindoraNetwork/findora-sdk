@@ -100,7 +100,29 @@ export declare const claim: (walletInfo: WalletKeypar, validators: string[]) => 
 export declare const getValidatorList: () => Promise<{
     validators: {
         commission_rate_view: string;
-        addr: string;
+        addr: string; /**
+         * Claim FRA Token Rewards
+         *
+         * @remarks
+         * This function enables users to claim rewards earned from staking FRA tokens.
+         *
+         * @example
+         *
+         * ```ts
+         *  const walletInfo = await Keypair.restoreFromPrivateKey(pkey, password);
+        
+         *  const validators = ['validator_addr1', 'validator_addr2'];
+         *  const transactionBuilder = await StakingApi.claim(
+         *    walletInfo,
+         *    amount,
+         *    validators,
+         *  );
+         *
+         *  const resultHandle = await Transaction.submitTransaction(transactionBuilder);
+         * ```
+         *
+         * @returns TransactionBuilder which should be used in `Transaction.submitTransaction`
+         */
         power: string;
         commission_rate: number[];
         accept_delegation: boolean;
