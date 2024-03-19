@@ -10,5 +10,6 @@ export * from './batchMintTicket';
 export * from './batchDeployTicket';
 export * from './batchAddList';
 export * from './batchBuyTicket';
+export * from './batchTransferTicket';
 export * from './fund';
 export * from './restoreWallet';

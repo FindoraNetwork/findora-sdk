@@ -36,6 +36,7 @@ const COMMANDS = {
   BATCH_MINT_TICKET: 'batchMintTicket',
   BATCH_ADD_LIST: 'batchAddList',
   BATCH_BUY_TICKET: 'batchBuyTicket',
+  BATCH_TRANSFER_TICKET: 'batchTransferTicket',
 };
 
 const ERROR_MESSAGES = {
@@ -53,6 +54,7 @@ const ERROR_MESSAGES = {
   [COMMANDS.BATCH_MINT_TICKET]: `please run as "yarn cli batchMintTicket --privateKey=XXX --filePath="./fileMintTicket.csv"`,
   [COMMANDS.BATCH_ADD_LIST]: `please run as "yarn cli batchAddList --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileAddList.csv"`,
   [COMMANDS.BATCH_BUY_TICKET]: `please run as "yarn cli batchBuyTicket --repeatTimes=XXX --waitBetweenRepeatMinutes=X --filePath="./fileBuyTicket.csv"`,
+  [COMMANDS.BATCH_TRANSFER_TICKET]: `please run as "yarn cli batchTransferTicket  --filePath="./fileTransferTicket.csv"`,
 };
 
 const showHelp = () => {
@@ -160,6 +162,15 @@ const main = async () => {
       }
 
       CliCommands.runBatchBuyTicket(filePath, +`${repeatTimes}`, +waitBetweenRepeatMinutes);
+      break;
+
+    case COMMANDS.BATCH_TRANSFER_TICKET:
+      if (!filePath) {
+        log(ERROR_MESSAGES[COMMANDS.BATCH_TRANSFER_TICKET]);
+        break;
+      }
+
+      CliCommands.runBatchTransferTicket(filePath);
       break;
     case COMMANDS.CREATE_BUY_FILE_FROM_WALLETS:
       if (!filePath || !tick || !totalFraToSpend || !maxAmtToBuy) {

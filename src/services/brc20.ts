@@ -250,17 +250,13 @@ export const addList = async (
   return { txHash: '', confirmResult: false };
 };
 
-const sendBRC20TransferTx = async (
+export const sendBRC20TransferTx = async (
   tick: string,
   amt: number,
   receiver: string,
   walletInfoFrom: Keypair.WalletKeypar,
 ) => {
   try {
-    // const _account = await this.getCurrentAccount();
-    // const walletInfo = await Keypair.restoreFromPrivateKey(_account.privateKey.replace(/"/g, ''), '123');
-
-    // again, we Probably need a reciepient here too?
     const transactionBuilder = await Transaction.brc20Transfer(walletInfoFrom, {
       receiverAddress: receiver,
       amt,
