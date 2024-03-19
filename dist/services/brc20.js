@@ -59,7 +59,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTradingListingList = exports.buy = exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = exports.sendBRC20DeployTx = void 0;
+exports.getTradingListingList = exports.buy = exports.sendBRC20TransferTx = exports.addList = exports.getMiddleman = exports.sendBRC20MintTx = exports.sendBRC20DeployTx = void 0;
 var api_1 = require("../api");
 var utils_1 = require("../services/utils");
 var axios_1 = __importStar(require("axios"));
@@ -286,6 +286,7 @@ var sendBRC20TransferTx = function (tick, amt, receiver, walletInfoFrom) { retur
         }
     });
 }); };
+exports.sendBRC20TransferTx = sendBRC20TransferTx;
 var sendFRATransferTx = function (data, walletInfoFrom) { return __awaiter(void 0, void 0, void 0, function () {
     var amt, receiver, assetCode, assetBlindRules, transactionBuilder, result, txHash, response, tx, hash, er_4;
     var _a, _b, _c;
@@ -344,7 +345,7 @@ var transfer = function (data, walletInfoFrom) { return __awaiter(void 0, void 0
                 _c.label = 1;
             case 1:
                 _c.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, sendBRC20TransferTx(tick, +amt, receiver, walletInfoFrom)];
+                return [4 /*yield*/, (0, exports.sendBRC20TransferTx)(tick, +amt, receiver, walletInfoFrom)];
             case 2:
                 result = _c.sent();
                 console.log('transfer - sendBRC20TransferTx result', result);

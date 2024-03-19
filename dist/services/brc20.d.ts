@@ -47,6 +47,7 @@ export declare const addList: (ticker: string, totalPrice: string, amount: strin
     txHash: string;
     confirmResult: boolean;
 }>;
+export declare const sendBRC20TransferTx: (tick: string, amt: number, receiver: string, walletInfoFrom: Keypair.WalletKeypar) => Promise<import("../api/network/types").SubmitEvmTxResult>;
 export declare const buy: (listId: number, amt: string, baseUrl: string, walletInfoFrom: Keypair.WalletKeypar) => Promise<{
     txHash: string;
     buyResult: any;
