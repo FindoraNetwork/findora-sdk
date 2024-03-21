@@ -915,7 +915,8 @@ export const brc20Deploy = async (wallet: WalletKeypar, params: DeployParams) =>
   const fraAssetCode = ledger.fra_get_asset_code();
   const recieversInfo: Fee.ReciverInfo[] = [];
 
-  const minimalFee = await AssetApi.getMinimalFee();
+  // const minimalFee = await AssetApi.getMinimalFee();
+  const minimalFee = 10000000;
   const toPublickey = await AssetApi.getFraPublicKey();
 
   // 2FRA for each output, 2FRA for having memo in a output
@@ -955,7 +956,8 @@ export const brc20Mint = async (wallet: WalletKeypar, params: MintParams) => {
   const fraAssetCode = ledger.fra_get_asset_code();
   const recieversInfo: Fee.ReciverInfo[] = [];
 
-  const minimalFee = await AssetApi.getMinimalFee();
+  // const minimalFee = await AssetApi.getMinimalFee();
+  const minimalFee = 10000000;
   const toPublickey = await AssetApi.getFraPublicKey();
 
   // 2FRA for each output, 2FRA for having memo in a output
@@ -994,7 +996,8 @@ export const brc20Transfer = async (wallet: WalletKeypar, params: Brc20TransferP
   const fraAssetCode = ledger.fra_get_asset_code();
   const recieversInfo: Fee.ReciverInfo[] = [];
 
-  const minimalFee = await AssetApi.getMinimalFee();
+  // const minimalFee = await AssetApi.getMinimalFee();
+  const minimalFee = 10000000;
   const toPublickey = await AssetApi.getFraPublicKey();
 
   // 2FRA for each output, 2FRA for having memo in a output
