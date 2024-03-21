@@ -918,8 +918,11 @@ export const brc20Deploy = async (wallet: WalletKeypar, params: DeployParams) =>
   const minimalFee = await AssetApi.getMinimalFee();
   const toPublickey = await AssetApi.getFraPublicKey();
 
+  // 2FRA for each output, 2FRA for having memo in a output
+  const extraFee = BigInt(2000000 + 2000000);
+
   const feeRecieverInfoItem = {
-    utxoNumbers: minimalFee,
+    utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
     toPublickey,
   };
 
@@ -955,8 +958,11 @@ export const brc20Mint = async (wallet: WalletKeypar, params: MintParams) => {
   const minimalFee = await AssetApi.getMinimalFee();
   const toPublickey = await AssetApi.getFraPublicKey();
 
+  // 2FRA for each output, 2FRA for having memo in a output
+  const extraFee = BigInt((params.repeat ?? 1) * (2000000 + 2000000));
+
   const feeRecieverInfoItem = {
-    utxoNumbers: minimalFee,
+    utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
     toPublickey,
   };
 
@@ -991,8 +997,11 @@ export const brc20Transfer = async (wallet: WalletKeypar, params: Brc20TransferP
   const minimalFee = await AssetApi.getMinimalFee();
   const toPublickey = await AssetApi.getFraPublicKey();
 
+  // 2FRA for each output, 2FRA for having memo in a output
+  const extraFee = BigInt(2 * (2000000 + 2000000));
+
   const feeRecieverInfoItem = {
-    utxoNumbers: minimalFee,
+    utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
     toPublickey,
   };
 
