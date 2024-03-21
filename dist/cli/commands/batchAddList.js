@@ -84,10 +84,10 @@ var getRecordsList = function (parsedListOfRecords) {
         return {
             pKey: pKey.trim(),
             tick: tick.trim().toLowerCase(),
-            totalFraPrice: +totalFraPrice.trim().replace(',', ''),
-            amt: +amt.trim().replace(',', ''),
-            rndSecMin: +rndSecMin.trim().replace(',', ''),
-            rndSecMax: +rndSecMax.trim().replace(',', ''),
+            totalFraPrice: +totalFraPrice.trim().replace(/,/g, ''),
+            amt: +amt.trim().replace(/,/g, ''),
+            rndSecMin: +rndSecMin.trim().replace(/,/g, ''),
+            rndSecMax: +rndSecMax.trim().replace(/,/g, ''),
         };
     });
     return recordsList;

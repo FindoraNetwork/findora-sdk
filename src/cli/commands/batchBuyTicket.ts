@@ -60,10 +60,10 @@ const getRecordsList = (parsedListOfRecords: neatCsv.Row[]): DataRecord[] => {
     return {
       pKey: pKey.trim(),
       tick: tick.trim().toLowerCase(),
-      totalFraToSpend: +totalFraToSpend.trim().replace(',', ''),
-      maxAmtToBuy: +maxAmtToBuy.trim().replace(',', ''),
-      rndSecMin: +rndSecMin.trim().replace(',', ''),
-      rndSecMax: +rndSecMax.trim().replace(',', ''),
+      totalFraToSpend: +totalFraToSpend.trim().replace(/,/g, ''),
+      maxAmtToBuy: +maxAmtToBuy.trim().replace(/,/g, ''),
+      rndSecMin: +rndSecMin.trim().replace(/,/g, ''),
+      rndSecMax: +rndSecMax.trim().replace(/,/g, ''),
     };
   });
 

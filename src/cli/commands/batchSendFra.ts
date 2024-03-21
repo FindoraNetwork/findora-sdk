@@ -45,7 +45,7 @@ const getRecieversList = (parsedListOfRecievers: neatCsv.Row[]): TokenReceiver[]
 
     return {
       address: tokenReceiveAddress,
-      numbers: tokenAllocated.replace(',', ''),
+      numbers: tokenAllocated.replace(/,/g, ''),
     };
   });
 

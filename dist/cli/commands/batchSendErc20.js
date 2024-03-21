@@ -74,7 +74,7 @@ var getRecieversList = function (parsedListOfRecievers) {
         var tokenAllocated = currentReciever.tokenAllocated, tokenReceiveAddress = currentReciever.tokenReceiveAddress;
         return {
             address: tokenReceiveAddress,
-            numbers: parseFloat(tokenAllocated.replace(',', '')),
+            numbers: parseFloat(tokenAllocated.replace(/,/g, '')),
         };
     });
     return receiversList;

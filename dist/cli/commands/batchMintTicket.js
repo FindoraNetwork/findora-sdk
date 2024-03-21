@@ -77,10 +77,10 @@ var getRecordsList = function (parsedListOfRecords) {
         var tick = currentRecord.tick, amt = currentRecord.amt, repeat = currentRecord.repeat, rndSecMin = currentRecord.rndSecMin, rndSecMax = currentRecord.rndSecMax;
         return {
             tick: tick.trim().toLowerCase(),
-            amt: +amt.trim().replace(',', ''),
-            repeat: +repeat.trim().replace(',', ''),
-            rndSecMin: +rndSecMin.trim().replace(',', ''),
-            rndSecMax: +rndSecMax.trim().replace(',', ''),
+            amt: +amt.trim().replace(/,/g, ''),
+            repeat: +repeat.trim().replace(/,/g, ''),
+            rndSecMin: +rndSecMin.trim().replace(/,/g, ''),
+            rndSecMax: +rndSecMax.trim().replace(/,/g, ''),
         };
     });
     return recordsList;

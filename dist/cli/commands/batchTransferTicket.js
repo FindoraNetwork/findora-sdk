@@ -84,10 +84,10 @@ var getRecordsList = function (parsedListOfRecords) {
         return {
             pKey: pKey.trim(),
             tick: tick.trim().toLowerCase(),
-            amt: +amt.trim().replace(',', ''),
+            amt: +amt.trim().replace(/,/g, '').replace(/"/g, ''),
             tickReceiveAddress: tickReceiveAddress.trim().toLowerCase(),
-            rndSecMin: +rndSecMin.trim().replace(',', ''),
-            rndSecMax: +rndSecMax.trim().replace(',', ''),
+            rndSecMin: +rndSecMin.trim().replace(/,/g, '').replace(/"/g, ''),
+            rndSecMax: +rndSecMax.trim().replace(/,/g, '').replace(/"/g, ''),
         };
     });
     return recordsList;

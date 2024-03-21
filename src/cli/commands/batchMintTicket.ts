@@ -50,10 +50,10 @@ const getRecordsList = (parsedListOfRecords: neatCsv.Row[]): DataRecord[] => {
 
     return {
       tick: tick.trim().toLowerCase(),
-      amt: +amt.trim().replace(',', ''),
-      repeat: +repeat.trim().replace(',', ''),
-      rndSecMin: +rndSecMin.trim().replace(',', ''),
-      rndSecMax: +rndSecMax.trim().replace(',', ''),
+      amt: +amt.trim().replace(/,/g, ''),
+      repeat: +repeat.trim().replace(/,/g, ''),
+      rndSecMin: +rndSecMin.trim().replace(/,/g, ''),
+      rndSecMax: +rndSecMax.trim().replace(/,/g, ''),
     };
   });
 
