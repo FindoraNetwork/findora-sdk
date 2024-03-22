@@ -66,6 +66,7 @@ var SdkDefaultEnvironment = {
     cachePath: './cache',
     brc20url: 'https://api-testnet.brc20.findora.org',
     brc20port: '',
+    needToAwaitForWasm: false,
 };
 var Sdk = /** @class */ (function () {
     function Sdk() {

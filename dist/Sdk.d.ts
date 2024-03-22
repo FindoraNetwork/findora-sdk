@@ -14,6 +14,7 @@ export interface SdkEnvironmentConfig {
     cachePath: string;
     brc20url?: string;
     brc20port?: string;
+    needToAwaitForWasm?: boolean;
 }
 export default class Sdk {
     static environment: {
@@ -29,6 +30,7 @@ export default class Sdk {
         cachePath: string;
         brc20url?: string | undefined;
         brc20port?: string | undefined;
+        needToAwaitForWasm?: boolean | undefined;
     };
     static init(sdkEnv: SdkEnvironmentConfig): void;
     static reset(): void;
