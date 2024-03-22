@@ -18,6 +18,7 @@ export interface SdkEnvironmentConfig {
   cachePath: string;
   brc20url?: string;
   brc20port?: string;
+  needToAwaitForWasm?: boolean;
 }
 
 const SdkDefaultEnvironment: SdkEnvironmentConfig = {
@@ -33,6 +34,7 @@ const SdkDefaultEnvironment: SdkEnvironmentConfig = {
   cachePath: './cache',
   brc20url: 'https://api-testnet.brc20.findora.org',
   brc20port: '',
+  needToAwaitForWasm: false,
 };
 
 export default class Sdk {
