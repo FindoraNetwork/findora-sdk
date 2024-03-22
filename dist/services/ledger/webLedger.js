@@ -69,11 +69,10 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
         switch (_a.label) {
             case 0:
                 needToAwaitForWasm = Sdk_1.default.environment.needToAwaitForWasm;
-                console.log('3 1 web Ledger getWebLedger , needToAwaitForWasm', needToAwaitForWasm);
                 return [4 /*yield*/, Promise.resolve().then(function () { return __importStar(require('findora-wallet-wasm/bundler/wasm.js')); })];
             case 1:
                 awaitedLedgerModuleLoader = _a.sent();
-                console.log('webleger awaitedLedgerModuleLoader', awaitedLedgerModuleLoader);
+                // console.log('webleger awaitedLedgerModuleLoader', awaitedLedgerModuleLoader);
                 // here we are returning the ledger to the electrcon app, where it does not need
                 // to be awaited , like in the next line, when getWebLedger is called from the web app
                 // then we need to have an extra promise to be resolved,
@@ -86,7 +85,7 @@ var getWebLedger = function () { return __awaiter(void 0, void 0, void 0, functi
                 return [4 /*yield*/, awaitedLedgerModuleLoader.default];
             case 2:
                 wasmLedgerModule = _a.sent();
-                console.log('webleger wasmLedgerModule', wasmLedgerModule);
+                // console.log('webleger wasmLedgerModule', wasmLedgerModule);
                 return [2 /*return*/, wasmLedgerModule];
         }
     });

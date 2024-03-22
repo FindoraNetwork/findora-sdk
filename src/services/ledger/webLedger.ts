@@ -4,10 +4,10 @@ import Sdk from '../../Sdk';
 
 const getWebLedger = async (): Promise<LegerWasm> => {
   const { needToAwaitForWasm } = Sdk.environment;
-  console.log('3 1 web Ledger getWebLedger , needToAwaitForWasm', needToAwaitForWasm);
+  // console.log('3 1 web Ledger getWebLedger , needToAwaitForWasm', needToAwaitForWasm);
   const awaitedLedgerModuleLoader = await import('findora-wallet-wasm/bundler/wasm.js');
 
-  console.log('webleger awaitedLedgerModuleLoader', awaitedLedgerModuleLoader);
+  // console.log('webleger awaitedLedgerModuleLoader', awaitedLedgerModuleLoader);
 
   // here we are returning the ledger to the electrcon app, where it does not need
   // to be awaited , like in the next line, when getWebLedger is called from the web app
@@ -21,7 +21,7 @@ const getWebLedger = async (): Promise<LegerWasm> => {
 
   // we must keep awaiting for this promise to fullfil, so do not remove the next line await
   const wasmLedgerModule = await awaitedLedgerModuleLoader.default;
-  console.log('webleger wasmLedgerModule', wasmLedgerModule);
+  // console.log('webleger wasmLedgerModule', wasmLedgerModule);
 
   return wasmLedgerModule;
 };
