@@ -946,21 +946,23 @@ var brc20Deploy = function (wallet, params) { return __awaiter(void 0, void 0, v
                 ledger = _a.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
                 recieversInfo = [];
-                minimalFee = 10000000;
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
                 toPublickey = _a.sent();
-                extraFee = BigInt(2000000 + 2000000);
+                extraFee = BigInt(0);
                 feeRecieverInfoItem = {
                     utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
                     toPublickey: toPublickey,
                 };
                 recieversInfo.push(feeRecieverInfoItem);
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
-            case 3:
+            case 4:
                 transferOperationBuilder = _a.sent();
                 return [4 /*yield*/, (0, exports.getBrc20DeployBuilder)(wallet, params.tick, params.max, params.lim, transferOperationBuilder)];
-            case 4:
+            case 5:
                 receivedTransferOperation = _a.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
                 return [2 /*return*/, transactionBuilder];
@@ -970,30 +972,32 @@ var brc20Deploy = function (wallet, params) { return __awaiter(void 0, void 0, v
 exports.brc20Deploy = brc20Deploy;
 var brc20Mint = function (wallet, params) { return __awaiter(void 0, void 0, void 0, function () {
     var ledger, fraAssetCode, recieversInfo, minimalFee, toPublickey, extraFee, feeRecieverInfoItem, transferOperationBuilder, receivedTransferOperation, transactionBuilder;
-    var _a, _b;
-    return __generator(this, function (_c) {
-        switch (_c.label) {
+    var _a;
+    return __generator(this, function (_b) {
+        switch (_b.label) {
             case 0: return [4 /*yield*/, (0, ledgerWrapper_1.getLedger)()];
             case 1:
-                ledger = _c.sent();
+                ledger = _b.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
                 recieversInfo = [];
-                minimalFee = 10000000;
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 2:
-                toPublickey = _c.sent();
-                extraFee = BigInt(((_a = params.repeat) !== null && _a !== void 0 ? _a : 1) * (2000000 + 2000000));
+                minimalFee = _b.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
+                toPublickey = _b.sent();
+                extraFee = BigInt(0);
                 feeRecieverInfoItem = {
                     utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
                     toPublickey: toPublickey,
                 };
                 recieversInfo.push(feeRecieverInfoItem);
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
-            case 3:
-                transferOperationBuilder = _c.sent();
-                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, params.tick, params.amt, (_b = params.repeat) !== null && _b !== void 0 ? _b : 1, transferOperationBuilder)];
             case 4:
-                receivedTransferOperation = _c.sent();
+                transferOperationBuilder = _b.sent();
+                return [4 /*yield*/, (0, exports.getBrc20MintBuilder)(wallet, params.tick, params.amt, (_a = params.repeat) !== null && _a !== void 0 ? _a : 1, transferOperationBuilder)];
+            case 5:
+                receivedTransferOperation = _b.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
                 return [2 /*return*/, transactionBuilder];
         }
@@ -1009,21 +1013,23 @@ var brc20Transfer = function (wallet, params) { return __awaiter(void 0, void 0,
                 ledger = _a.sent();
                 fraAssetCode = ledger.fra_get_asset_code();
                 recieversInfo = [];
-                minimalFee = 10000000;
-                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+                return [4 /*yield*/, AssetApi.getMinimalFee()];
             case 2:
+                minimalFee = _a.sent();
+                return [4 /*yield*/, AssetApi.getFraPublicKey()];
+            case 3:
                 toPublickey = _a.sent();
-                extraFee = BigInt(2 * (2000000 + 2000000));
+                extraFee = BigInt(0);
                 feeRecieverInfoItem = {
                     utxoNumbers: BigInt(Number(minimalFee) + Number(extraFee)),
                     toPublickey: toPublickey,
                 };
                 recieversInfo.push(feeRecieverInfoItem);
                 return [4 /*yield*/, Fee.buildTransferOperation(wallet, recieversInfo, fraAssetCode)];
-            case 3:
+            case 4:
                 transferOperationBuilder = _a.sent();
                 return [4 /*yield*/, (0, exports.getBrc20TransferBuilder)(wallet, params.receiverAddress, params.tick, params.amt, transferOperationBuilder)];
-            case 4:
+            case 5:
                 receivedTransferOperation = _a.sent();
                 transactionBuilder = (0, exports.getBrc20TransactionBuilder)(wallet, receivedTransferOperation);
                 return [2 /*return*/, transactionBuilder];
